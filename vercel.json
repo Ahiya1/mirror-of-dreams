@@ -10,6 +10,10 @@
       "destination": "/index.html"
     },
     {
+      "source": "/breathing",
+      "destination": "/breathing.html"
+    },
+    {
       "source": "/reflection",
       "destination": "/reflection.html"
     },
@@ -35,6 +39,11 @@
     {
       "source": "/truth",
       "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/breathe",
+      "destination": "/breathing",
       "permanent": true
     }
   ],

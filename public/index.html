@@ -609,6 +609,8 @@
           langFlag: "🇮🇱",
           namePlaceholder: "Enter your name",
           emailPlaceholder: "your@email.com",
+          bitPaymentNote:
+            "Bit payment will redirect to verification code entry",
         },
         he: {
           mainTitle: "מראה האמת",
@@ -627,6 +629,7 @@
           langFlag: "🇺🇸",
           namePlaceholder: "הכנס את שמך",
           emailPlaceholder: "your@email.com",
+          bitPaymentNote: "תשלום ביט יעביר להכנסת קוד אימות",
         },
       };
 
@@ -755,47 +758,44 @@
           language: currentLanguage,
         };
 
-        if (selectedPayment === "cash") {
-          // Store data and redirect to reflection with cash payment flag
-          localStorage.setItem("pendingCashPayment", JSON.stringify(userData));
-          window.location.href = `./reflection.html?payment=cash&lang=${currentLanguage}`;
-        } else if (selectedPayment === "bit") {
-          // Process Bit payment
-          processBitPayment(userData);
-        }
-      }
-
-      function processBitPayment(userData) {
-        // Generate Bit payment link
-        const amount = 20;
-        const businessNumber = "325761682";
-        const phone = "+972587789019";
-        const description = encodeURIComponent(
-          currentLanguage === "he"
-            ? "מראה האמת - השתקפות"
-            : "Mirror of Truth - Reflection"
-        );
-
         // Store user data for after payment
-        localStorage.setItem("pendingBitPayment", JSON.stringify(userData));
+        localStorage.setItem("pendingPayment", JSON.stringify(userData));
 
-        // Create Bit payment URL
-        const bitUrl = `https://bit.ly/pay?amount=${amount}&phone=${phone}&description=${description}&business=${businessNumber}`;
+        if (selectedPayment === "cash") {
+          // Show breathing animation then redirect to access code entry
+          window.location.href = `./breathing.html?payment=cash&lang=${currentLanguage}`;
+        } else if (selectedPayment === "bit") {
+          // For Bit payment, first redirect to breathing animation, then to access code
+          // This simulates the payment flow where user pays and gets a verification code
 
-        // Open Bit payment (this is a simplified approach - in production you'd use proper Bit API)
-        window.open(bitUrl, "_blank");
+          // Generate Bit payment link
+          const amount = 20;
+          const businessNumber = "325761682";
+          const phone = "+972587789019";
+          const description = encodeURIComponent(
+            currentLanguage === "he"
+              ? "מראה האמת - השתקפות"
+              : "Mirror of Truth - Reflection"
+          );
 
-        // Show instructions
-        alert(
-          currentLanguage === "he"
-            ? "לאחר השלמת התשלום בביט, חזור לכאן והמשך להשתקפות"
-            : "After completing payment via Bit, return here and continue to reflection"
-        );
+          // Create Bit payment URL
+          const bitUrl = `https://bit.ly/pay?amount=${amount}&phone=${phone}&description=${description}&business=${businessNumber}`;
 
-        // For now, redirect directly (in production, verify payment first)
-        setTimeout(() => {
-          window.location.href = `./reflection.html?payment=bit&lang=${currentLanguage}`;
-        }, 3000);
+          // Show instructions for Bit payment
+          alert(
+            currentLanguage === "he"
+              ? `${translations[currentLanguage].bitPaymentNote}\n\nלחץ OK כדי לפתוח את תשלום ביט. לאחר התשלום, תקבל קוד אימות במייל.`
+              : `${translations[currentLanguage].bitPaymentNote}\n\nClick OK to open Bit payment. After payment, you'll receive a verification code via email.`
+          );
+
+          // Open Bit payment in new tab
+          window.open(bitUrl, "_blank");
+
+          // Redirect to breathing animation and then to access code entry
+          setTimeout(() => {
+            window.location.href = `./breathing.html?payment=bit&lang=${currentLanguage}`;
+          }, 2000);
+        }
       }
     </script>
   </body>
