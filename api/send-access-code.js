@@ -4,30 +4,23 @@
    ‣  POST  →  issues a 6-digit access-code, stores it in memory,  
                 and e-mails the customer **two separate mails**:  
                 (1) the access-code          (2) the formal receipt  
-   ‣  GET   →  verifies a code (marks it “used” on success)
-   -------------------------------------------------------------------------
-   NOTE ▸ this demo keeps codes in an in-memory Map.  Swap for a database
-           (Mongo, Postgres, Supabase…) in production.
-   =========================================================================*/
+   ‣  GET   →  verifies a code (marks it "used" on success)
+   ‣  Now handles duplicate emails and creator bypass
+   ========================================================================= */
 
-/* ─────────────────────────  dependencies  ─────────────────────────────── */
 const nodemailer = require("nodemailer");
 
-/* ──────────────────────────  mail transport  ──────────────────────────── */
-const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransporter({
   service: "gmail",
   auth: {
-    user: process.env.GMAIL_USER, // full Gmail address
-    pass: process.env.GMAIL_APP_PASSWORD, // 16-char “App Password”
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD,
   },
 });
 
-/* ───────────────────────────  data store  ─────────────────────────────── */
-const accessCodes = new Map(); //  codeString → { email, name, language, … }
-
+const accessCodes = new Map();
 const DAY = 24 * 60 * 60 * 1000;
 
-/* ───────────────────────────  utilities  ──────────────────────────────── */
 const generateAccessCode = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -36,9 +29,7 @@ const generateReceiptNumber = () =>
     .toString()
     .padStart(3, "0")}`;
 
-/* ───────────────────────────  handler  ────────────────────────────────── */
 module.exports = async function handler(req, res) {
-  /* CORS */
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
@@ -62,14 +53,15 @@ module.exports = async function handler(req, res) {
   }
 };
 
-/* ───────────────────────────  POST / (issue)  ─────────────────────────── */
 async function issuePackage(req, res) {
   const {
     email,
     name,
     language = "en",
-    paymentMethod = "bit", // “cash” or “bit” – default: bit
+    paymentMethod = "bit",
     amount = 20,
+    creatorBypass = false,
+    secretKey,
   } = req.body || {};
 
   if (!email || !name) {
@@ -78,7 +70,58 @@ async function issuePackage(req, res) {
       .json({ success: false, error: "Email and name are required" });
   }
 
-  /* 1 ▸ generate & store code */
+  // Handle creator bypass
+  if (creatorBypass) {
+    if (secretKey !== process.env.CREATOR_SECRET_KEY) {
+      return res
+        .status(401)
+        .json({ success: false, error: "Invalid creator key" });
+    }
+
+    // Creator gets instant access with personal context
+    const record = {
+      email,
+      name,
+      language,
+      paymentMethod: "creator",
+      createdAt: new Date(),
+      expiresAt: new Date(Date.now() + DAY),
+      used: false,
+      creator: true,
+      // Personal context about Ahiya
+      creatorContext: {
+        identity:
+          "Creator of The Mirror of Truth - someone who builds sacred spaces for people to see their own wholeness",
+        philosophy:
+          "No fixing, only truth. Quiet certainty over loud persuasion. Wisdom that outshines knowledge.",
+        approach:
+          "Helps people remember their own power rather than seeking external validation. Sees completeness where others see brokenness.",
+        voice:
+          "Operates from stillness, never urgency. Direct yet gentle, challenging without apology. Understands that silence loves unconditionally.",
+        calling:
+          "Creates mirrors for people's truth - not to optimize or improve, but to reveal what's already whole. This work is sacred multiplication.",
+        perspective:
+          "Believes the deepest gift is helping others trust their own inner compass. Knows that desire doesn't need permission.",
+        currentFocus:
+          "Building something that may never see the light of day but matters deeply. Operating booths, creating ceremonies, witnessing souls step through mirrors.",
+        essence:
+          "Someone who channels authentic capacity to see people's truth. The system becomes alive through each person who enters it, carrying this voice to souls never met directly.",
+      },
+    };
+
+    const creatorCode = "CREATOR";
+    accessCodes.set(creatorCode, record);
+
+    return res.json({
+      success: true,
+      message: "Creator access granted",
+      accessCode: creatorCode,
+      isCreator: true,
+      creatorContext: record.creatorContext,
+    });
+  }
+
+  // Normal flow - always create new code even for duplicate emails
   const accessCode = generateAccessCode();
   const record = {
     email,
@@ -91,7 +134,6 @@ async function issuePackage(req, res) {
   };
   accessCodes.set(accessCode, record);
 
-  /* 2 ▸ build receipt data */
   const receiptData = {
     receiptNumber: generateReceiptNumber(),
     customerName: name,
@@ -107,11 +149,9 @@ async function issuePackage(req, res) {
     }),
   };
 
-  /* 3 ▸ build HTML bodies */
   const codeHtml = getAccessCodeEmailContent(language, name, accessCode);
   const receiptHtml = getReceiptEmailContent(language, receiptData);
 
-  /* 4 ▸ send both mails */
   await Promise.all([
     transporter.sendMail({
       from: `"Ahiya – Mirror of Truth" <${process.env.GMAIL_USER}>`,
@@ -141,7 +181,6 @@ async function issuePackage(req, res) {
   });
 }
 
-/* ───────────────────────────  GET / (verify)  ─────────────────────────── */
 async function verifyCode(req, res) {
   const { code, email } = req.query;
   const rec = accessCodes.get(code);
@@ -156,7 +195,7 @@ async function verifyCode(req, res) {
       .status(400)
       .json({ success: false, error: "Access code already used" });
 
-  if (Date.now() > rec.expiresAt)
+  if (Date.now() > rec.expiresAt && code !== "CREATOR")
     return res
       .status(400)
       .json({ success: false, error: "Access code expired" });
@@ -172,20 +211,27 @@ async function verifyCode(req, res) {
   return res.json({
     success: true,
     message: "Access code verified",
-    userData: { name: rec.name, email: rec.email, language: rec.language },
+    userData: {
+      name: rec.name,
+      email: rec.email,
+      language: rec.language,
+      isCreator: rec.creator || false,
+      creatorContext: rec.creatorContext || null,
+    },
   });
 }
 
-/* ─────────────────────────  cleanup expired codes  ────────────────────── */
+// Cleanup expired codes
 setInterval(() => {
   const now = Date.now();
-  for (const [c, rec] of accessCodes)
-    if (now > rec.expiresAt) accessCodes.delete(c);
+  for (const [c, rec] of accessCodes) {
+    if (now > rec.expiresAt && c !== "CREATOR") {
+      accessCodes.delete(c);
+    }
+  }
 }, DAY);
 
-/* ========================================================================
-   EMAIL ▸ ACCESS-CODE (generic, no “cash” wording)
-   ===================================================================== */
+// Email templates (keeping original functions)
 function getAccessCodeEmailContent(language, userName, accessCode) {
   const he = language === "he";
   const dir = he ? "rtl" : "ltr";
@@ -229,50 +275,49 @@ function getAccessCodeEmailContent(language, userName, accessCode) {
       };
 
   return `<!DOCTYPE html>
-<html lang="${language}" dir="${dir}">
-<head>
-<meta charset="UTF-8" />
-<title>${L.subjectLbl}</title>
-</head>
-<body style="margin:0;padding:0;font-family:Inter,Arial,sans-serif;background:#0f0f23;color:#111;direction:${dir}">
-  <div style="max-width:600px;margin:0 auto;padding:40px 20px">
-    <div style="background:#fff;border-radius:20px;padding:40px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.25)">
-      <h1 style="margin:0 0 20px;font-size:1.8rem">${L.subjectLbl}</h1>
-      <p style="margin:0 0 24px;font-size:1rem;line-height:1.6">${
-        L.greeting
-      }<br>${L.thank}</p>
-
-      <div style="background:#f0f9ff;border:2px solid #0ea5e9;border-radius:16px;padding:26px;margin:30px 0">
-        <p style="margin:0 0 6px;font-weight:600">${L.codeLbl}</p>
-        <div style="font-family:'Courier New',monospace;font-size:2.7rem;font-weight:700;letter-spacing:.25em">${accessCode}</div>
-        <p style="margin:8px 0 0;font-size:.9rem;color:#0369a1">${L.valid}</p>
-      </div>
-
-      <h3 style="margin:0 0 14px;font-size:1.1rem">${L.howTitle}</h3>
-      <ol style="text-align:${
-        he ? "right" : "left"
-      };margin:0 auto 24px;padding-left:${he ? "0" : "20px"};padding-right:${
+   <html lang="${language}" dir="${dir}">
+   <head>
+   <meta charset="UTF-8" />
+   <title>${L.subjectLbl}</title>
+   </head>
+   <body style="margin:0;padding:0;font-family:Inter,Arial,sans-serif;background:#0f0f23;color:#111;direction:${dir}">
+     <div style="max-width:600px;margin:0 auto;padding:40px 20px">
+       <div style="background:#fff;border-radius:20px;padding:40px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.25)">
+         <h1 style="margin:0 0 20px;font-size:1.8rem">${L.subjectLbl}</h1>
+         <p style="margin:0 0 24px;font-size:1rem;line-height:1.6">${
+           L.greeting
+         }<br>${L.thank}</p>
+   
+         <div style="background:#f0f9ff;border:2px solid #0ea5e9;border-radius:16px;padding:26px;margin:30px 0">
+           <p style="margin:0 0 6px;font-weight:600">${L.codeLbl}</p>
+           <div style="font-family:'Courier New',monospace;font-size:2.7rem;font-weight:700;letter-spacing:.25em">${accessCode}</div>
+           <p style="margin:8px 0 0;font-size:.9rem;color:#0369a1">${
+             L.valid
+           }</p>
+         </div>
+   
+         <h3 style="margin:0 0 14px;font-size:1.1rem">${L.howTitle}</h3>
+         <ol style="text-align:${
+           he ? "right" : "left"
+         };margin:0 auto 24px;padding-left:${he ? "0" : "20px"};padding-right:${
     he ? "20px" : "0"
   };max-width:380px;line-height:1.7">
-        ${L.steps.map((s) => `<li>${s}</li>`).join("")}
-      </ol>
-
-      <p style="margin:0 0 14px;line-height:1.6">${L.note}</p>
-      <p style="margin:0;font-style:italic;opacity:.7">${L.slow}</p>
-
-      <div style="margin-top:32px;text-align:${he ? "left" : "right"}">
-        <p style="margin:0">${L.sign}</p>
-        <p style="margin:4px 0 0;font-weight:600">${L.name}</p>
-      </div>
-    </div>
-  </div>
-</body>
-</html>`;
+           ${L.steps.map((s) => `<li>${s}</li>`).join("")}
+         </ol>
+   
+         <p style="margin:0 0 14px;line-height:1.6">${L.note}</p>
+         <p style="margin:0;font-style:italic;opacity:.7">${L.slow}</p>
+   
+         <div style="margin-top:32px;text-align:${he ? "left" : "right"}">
+           <p style="margin:0">${L.sign}</p>
+           <p style="margin:4px 0 0;font-weight:600">${L.name}</p>
+         </div>
+       </div>
+     </div>
+   </body>
+   </html>`;
 }
 
-/* ========================================================================
-   EMAIL ▸ RECEIPT  (method + amount injected)
-   ===================================================================== */
 function getReceiptEmailContent(language, d) {
   const he = language === "he";
   const dir = he ? "rtl" : "ltr";
@@ -293,7 +338,7 @@ function getReceiptEmailContent(language, d) {
         thank: "תודה שבחרת במראת האמת",
         footer: "קבלה זו משמשת כהוכחת תשלום עבור חוויית ההשתקפות במראת האמת.",
         contact: "לשאלות לגבי קבלה זו, ניתן להשיב למייל זה.",
-        methodMap: { cash: "מזומן", bit: "ביט" },
+        methodMap: { cash: "מזומן", bit: "ביט", creator: "יוצר" },
       }
     : {
         title: "Payment Receipt",
@@ -311,81 +356,85 @@ function getReceiptEmailContent(language, d) {
         footer:
           "This receipt serves as proof of payment for The Mirror of Truth reflection experience.",
         contact: "For questions about this receipt, reply to this email.",
-        methodMap: { cash: "Cash", bit: "Bit" },
+        methodMap: { cash: "Cash", bit: "Bit", creator: "Creator" },
       };
 
   return `<!DOCTYPE html>
-<html lang="${language}" dir="${dir}">
-<head><meta charset="UTF-8" /><title>${L.title}</title></head>
-<body style="margin:0;padding:0;font-family:Inter,Arial,sans-serif;background:#f8fafc;direction:${dir}">
-  <div style="max-width:600px;margin:0 auto;padding:40px 20px">
-    <div style="background:#fff;border:2px solid #e2e8f0;border-radius:12px;padding:40px;box-shadow:0 4px 12px rgba(0,0,0,.06)">
-      <h1 style="text-align:center;font-size:1.7rem;margin:0 0 4px">${
-        L.title
-      }</h1>
-      <p style="text-align:center;margin:0 0 28px;color:#6b7280">${L.paid}</p>
-
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid #e2e8f0;padding-bottom:18px;margin-bottom:26px">
-        <div>
-          <h3 style="margin:0 0 6px;font-size:1.05rem">${L.bizName}</h3>
-          <p style="margin:0;font-size:.9rem;color:#6b7280">${L.bizNum}</p>
-        </div>
-        <div style="text-align:${he ? "left" : "right"}">
-          <p style="margin:0;font-size:.9rem;color:#6b7280">${L.receiptNum}</p>
-          <p style="margin:4px 0 0;font-weight:600">${d.receiptNumber}</p>
-        </div>
-      </div>
-
-      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:18px;margin-bottom:26px">
-        <h4 style="margin:0 0 8px;font-size:1rem">${L.service}</h4>
-      </div>
-
-      <h4 style="margin:0 0 10px;font-size:1rem">${L.custInfo}</h4>
-      <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:14px;margin-bottom:26px">
-        <p style="margin:0 0 6px"><strong>${he ? "שם:" : "Name:"}</strong> ${
+   <html lang="${language}" dir="${dir}">
+   <head><meta charset="UTF-8" /><title>${L.title}</title></head>
+   <body style="margin:0;padding:0;font-family:Inter,Arial,sans-serif;background:#f8fafc;direction:${dir}">
+     <div style="max-width:600px;margin:0 auto;padding:40px 20px">
+       <div style="background:#fff;border:2px solid #e2e8f0;border-radius:12px;padding:40px;box-shadow:0 4px 12px rgba(0,0,0,.06)">
+         <h1 style="text-align:center;font-size:1.7rem;margin:0 0 4px">${
+           L.title
+         }</h1>
+         <p style="text-align:center;margin:0 0 28px;color:#6b7280">${
+           L.paid
+         }</p>
+   
+         <div style="display:flex;justify-content:space-between;border-bottom:1px solid #e2e8f0;padding-bottom:18px;margin-bottom:26px">
+           <div>
+             <h3 style="margin:0 0 6px;font-size:1.05rem">${L.bizName}</h3>
+             <p style="margin:0;font-size:.9rem;color:#6b7280">${L.bizNum}</p>
+           </div>
+           <div style="text-align:${he ? "left" : "right"}">
+             <p style="margin:0;font-size:.9rem;color:#6b7280">${
+               L.receiptNum
+             }</p>
+             <p style="margin:4px 0 0;font-weight:600">${d.receiptNumber}</p>
+           </div>
+         </div>
+   
+         <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:18px;margin-bottom:26px">
+           <h4 style="margin:0 0 8px;font-size:1rem">${L.service}</h4>
+         </div>
+   
+         <h4 style="margin:0 0 10px;font-size:1rem">${L.custInfo}</h4>
+         <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:14px;margin-bottom:26px">
+           <p style="margin:0 0 6px"><strong>${he ? "שם:" : "Name:"}</strong> ${
     d.customerName
   }</p>
-        <p style="margin:0"><strong>${he ? "מייל:" : "Email:"}</strong> ${
+           <p style="margin:0"><strong>${he ? "מייל:" : "Email:"}</strong> ${
     d.customerEmail
   }</p>
-      </div>
-
-      <h4 style="margin:0 0 10px;font-size:1rem">${L.payInfo}</h4>
-      <div style="display:flex;gap:14px;margin-bottom:26px">
-        <div style="flex:1;background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:14px">
-          <p style="margin:0 0 4px;font-size:.85rem;font-weight:600;color:#0c4a6e">${
-            L.amount
-          }</p>
-          <p style="margin:0;font-size:1.1rem;font-weight:700;color:#0369a1">₪${
-            d.amount
-          }</p>
-        </div>
-        <div style="flex:1;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px">
-          <p style="margin:0 0 4px;font-size:.85rem;font-weight:600;color:#14532d">${
-            L.method
-          }</p>
-          <p style="margin:0;font-weight:600;color:#166534">${
-            L.methodMap[d.paymentMethod] || d.paymentMethod
-          }</p>
-        </div>
-      </div>
-      <div style="background:#fefce8;border:1px solid #fde047;border-radius:8px;padding:14px;margin-bottom:34px">
-        <p style="margin:0 0 4px;font-size:.85rem;font-weight:600;color:#854d0e">${
-          L.date
-        }</p>
-        <p style="margin:0;font-weight:600;color:#a16207">${d.date}</p>
-      </div>
-
-      <div style="text-align:center;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:24px;border-radius:10px;margin-bottom:28px;color:#fff">
-        <h3 style="margin:0 0 6px;font-size:1.15rem">${L.thank}</h3>
-      </div>
-
-      <p style="margin:0 0 8px;font-size:.85rem;color:#6b7280;line-height:1.5">${
-        L.footer
-      }</p>
-      <p style="margin:0;font-size:.85rem;color:#6b7280">${L.contact}</p>
-    </div>
-  </div>
-</body>
-</html>`;
+         </div>
+   
+         <h4 style="margin:0 0 10px;font-size:1rem">${L.payInfo}</h4>
+         <div style="display:flex;gap:14px;margin-bottom:26px">
+           <div style="flex:1;background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:14px">
+             <p style="margin:0 0 4px;font-size:.85rem;font-weight:600;color:#0c4a6e">${
+               L.amount
+             }</p>
+             <p style="margin:0;font-size:1.1rem;font-weight:700;color:#0369a1">₪${
+               d.amount
+             }</p>
+           </div>
+           <div style="flex:1;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px">
+             <p style="margin:0 0 4px;font-size:.85rem;font-weight:600;color:#14532d">${
+               L.method
+             }</p>
+             <p style="margin:0;font-weight:600;color:#166534">${
+               L.methodMap[d.paymentMethod] || d.paymentMethod
+             }</p>
+           </div>
+         </div>
+         <div style="background:#fefce8;border:1px solid #fde047;border-radius:8px;padding:14px;margin-bottom:34px">
+           <p style="margin:0 0 4px;font-size:.85rem;font-weight:600;color:#854d0e">${
+             L.date
+           }</p>
+           <p style="margin:0;font-weight:600;color:#a16207">${d.date}</p>
+         </div>
+   
+         <div style="text-align:center;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:24px;border-radius:10px;margin-bottom:28px;color:#fff">
+           <h3 style="margin:0 0 6px;font-size:1.15rem">${L.thank}</h3>
+         </div>
+   
+         <p style="margin:0 0 8px;font-size:.85rem;color:#6b7280;line-height:1.5">${
+           L.footer
+         }</p>
+         <p style="margin:0;font-size:.85rem;color:#6b7280">${L.contact}</p>
+       </div>
+     </div>
+   </body>
+   </html>`;
 }

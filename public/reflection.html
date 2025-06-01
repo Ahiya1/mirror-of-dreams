@@ -1,4 +1,4 @@
-<!-- FILE: public/reflection.html • direct code-entry first-screen • full i18n table • 2025-06-01 -->
+<!-- FILE: public/reflection.html • enhanced with creator context support • 2025-06-01 -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -643,6 +643,15 @@
           if (!d.success) throw new Error("bad");
           userData = d.userData;
           localStorage.setItem("mirrorVerifiedUser", JSON.stringify(userData));
+
+          // Store creator context if available
+          if (userData.isCreator && userData.creatorContext) {
+            localStorage.setItem(
+              "mirrorCreatorContext",
+              JSON.stringify(userData.creatorContext)
+            );
+          }
+
           location.href = `/breathing.html?payment=cash&verified=true&lang=${currentLanguage}`;
         } catch (e) {
           showError(translations[currentLanguage].invalidCode);
@@ -685,6 +694,11 @@
           e.preventDefault();
           showSection("loading");
           const f = new FormData(reflectionForm);
+
+          // Check for creator context
+          const creatorContext = localStorage.getItem("mirrorCreatorContext");
+          const isCreatorMode = userData?.isCreator || false;
+
           const payload = {
             dream: f.get("dream"),
             plan: f.get("plan"),
@@ -696,7 +710,10 @@
             userEmail: userData?.email || "",
             language: currentLanguage,
             isAdmin: isAdminMode,
+            isCreator: isCreatorMode,
+            creatorContext: creatorContext ? JSON.parse(creatorContext) : null,
           };
+
           try {
             const r = await fetch("/api/mirror-reflection", {
               method: "POST",

@@ -789,14 +789,93 @@
       /*── UI interactions ──*/
       const mirrorsCont = document.getElementById("mirrorsContainer");
       const reflectBtn = document.getElementById("reflectBtn");
+
+      let pressTimer = null;
+      let pressStartTime = 0;
+
+      // Secret bypass - hold for 8.3 seconds
+      reflectBtn.addEventListener("mousedown", startPress);
+      reflectBtn.addEventListener("touchstart", startPress);
+      reflectBtn.addEventListener("mouseup", endPress);
+      reflectBtn.addEventListener("mouseleave", endPress);
+      reflectBtn.addEventListener("touchend", endPress);
+      reflectBtn.addEventListener("touchcancel", endPress);
+
+      function startPress(e) {
+        pressStartTime = Date.now();
+        pressTimer = setTimeout(() => {
+          showSecretBypass();
+        }, 8300); // 8.3 seconds
+      }
+
+      function endPress(e) {
+        const pressDuration = Date.now() - pressStartTime;
+        if (pressTimer) {
+          clearTimeout(pressTimer);
+          pressTimer = null;
+        }
+
+        // Normal click if released before 8.3 seconds
+        if (pressDuration < 8300) {
+          document.getElementById("paymentModal").classList.add("show");
+        }
+      }
+
+      function showSecretBypass() {
+        const password = prompt("🪞 Creator Access\nEnter the sacred key:");
+        if (password) {
+          // Verify with backend
+          fetch("/api/send-access-code", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: "ahiya.butman@gmail.com",
+              name: "Ahiya",
+              language: currentLanguage,
+              creatorBypass: true,
+              secretKey: password,
+            }),
+          })
+            .then((r) => r.json())
+            .then((data) => {
+              if (data.success && data.isCreator) {
+                // Auto-populate with creator context
+                const creatorData = {
+                  name: "Ahiya",
+                  email: "ahiya.butman@gmail.com",
+                  language: currentLanguage,
+                  isCreator: true,
+                  creatorContext: data.creatorContext,
+                };
+                try {
+                  localStorage.setItem(
+                    "mirrorVerifiedUser",
+                    JSON.stringify(creatorData)
+                  );
+                  if (data.creatorContext) {
+                    localStorage.setItem(
+                      "mirrorCreatorContext",
+                      JSON.stringify(data.creatorContext)
+                    );
+                  }
+                } catch {}
+
+                location.href = `./reflection.html?admin=true&verified=true&lang=${currentLanguage}`;
+              } else {
+                alert("🪞 Invalid sacred key");
+              }
+            })
+            .catch(() => {
+              alert("🪞 Connection error");
+            });
+        }
+      }
+
       reflectBtn.addEventListener("mouseenter", () =>
         mirrorsCont.classList.add("hover")
       );
       reflectBtn.addEventListener("mouseleave", () =>
         mirrorsCont.classList.remove("hover")
-      );
-      reflectBtn.addEventListener("click", () =>
-        document.getElementById("paymentModal").classList.add("show")
       );
 
       document.getElementById("langToggle").addEventListener("click", () => {
