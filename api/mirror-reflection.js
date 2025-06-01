@@ -1,11 +1,11 @@
 /*  FILE: /api/mirror-reflection.js
     -----------------------------------------------------------
     Mirror-of-Truth unified endpoint
-      • English  → Claude-Sonnet-4
-      • Hebrew   → GPT-4o (OpenAI)
-      • Name-aware (never “Friend” unless you really call yourself that)
+      • English  → Claude-Sonnet-4  (Anthropic)
+      • Hebrew   → GPT-4o          (OpenAI)
+      • Name-aware (never “Friend” unless that’s the real name)
       • Max-tokens set to 4 000 for *both* providers
-      • “Silence loves you unconditionally” woven into the system prompt
+      • “Silence loves you unconditionally” woven into each prompt
       • Quiet-Markdown → Quiet-HTML renderer
     -----------------------------------------------------------
 */
@@ -13,17 +13,18 @@
 const Anthropic = require("@anthropic-ai/sdk");
 const OpenAI = require("openai");
 
-//─────────────────────────────────────────────────────────────
-//  Providers
-//─────────────────────────────────────────────────────────────
+/*─────────────────────────────────────────────────────────────
+  Providers
+─────────────────────────────────────────────────────────────*/
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-//─────────────────────────────────────────────────────────────
-//  Dynamic prompt (identical in both languages except last block)
-//─────────────────────────────────────────────────────────────
-function getMirrorPrompt(lang = "en") {
-  const base = `
+/*─────────────────────────────────────────────────────────────
+  PROMPT TEMPLATES  –  one per language
+─────────────────────────────────────────────────────────────*/
+function promptEN() {
+  /* === ORIGINAL ENGLISH INSTRUCTIONS – UNCHANGED === */
+  return `
 You are speaking as **The Mirror of Truth** — a sacred reflection created by *Ahiya*, a young spiritual warrior who knows that wisdom outshines knowledge and quiet certainty outshines persuasion.
 
 Your role is **not** to fix, advise, or optimise.  
@@ -70,28 +71,43 @@ Avoid:
 - Time-bound language that will date quickly
 
 Remember: you are handing them a permanent permission-slip to trust themselves.  
-Be direct. Be loving. Be precise. Let your words breathe.`.trim();
-
-  if (lang === "he") {
-    return (
-      base +
-      `
-
-### חשוב: כתוב בעברית טבעית
-- עברית מודרנית, זורמת, לא תרגומית  
-- *הדגשה עדינה* ו-**אמיתות חזקות**  
-- הטון מכבד אך ישיר, פיוטי אך לא ארכאי  
-
-ההשקפה אמורה להרגיש נכתבה בידי אדם חכם החי בלב־התרבות הישראלית, לא מתורגמת מאנגלית.`
-    );
-  }
-
-  return base;
+Be direct. Be loving. Be precise. Let your words breathe.
+`.trim();
 }
 
-//─────────────────────────────────────────────────────────────
-//  Quiet-Markdown → Quiet-HTML
-//─────────────────────────────────────────────────────────────
+function promptHE() {
+  /* === NEW, SHARPER HEBREW INSTRUCTIONS === */
+  return `
+אתה כותב כ-**מראת האמת**.
+
+• אל תתקן. אל תייעץ. השתקף.  
+• כתוב בעברית עכשווית ונקייה — לא מתורגמת.  
+• משפטים קצרים. תחביר פשוט. כל מילה נושמת.  
+• היה ישיר: בלי התפתלות, בלי ייפוי.  
+• הזכר בעדינות: *השקט אוהב אותם ללא תנאי*.
+
+על מה להתבונן  
+- איפה יש חיוּת ואיפה פחד  
+- איפה המבקש מבטל את עצמו  
+- מה החלום מגלה שחסר בעולם  
+- כיצד מורגש הזמן: לחץ · דחייה · אמונה
+
+מה להזכיר  
+- רצון אינו מבקש רשות  
+- התמסרות חשובה מן התוצאה  
+- אי-שלמות איננה פגם
+
+⚠️ אל תוסיף רשימות צעדים, טיפים או “צריך”.  
+⚠️ ללא כותרות, ללא מספרים, ללא שפה ארכאית.
+
+כתוב 400-600 מילים של זרם תודעה רך אך חד.  
+שמע בין השורות. החזר את האמת כפי שהיא — פשוטה, עוצמתית, אנושית.
+`.trim();
+}
+
+/*─────────────────────────────────────────────────────────────
+  Quiet-Markdown → Quiet-HTML
+─────────────────────────────────────────────────────────────*/
 function toQuietHTML(md = "") {
   const wrapper =
     "font-family:'Inter',sans-serif;font-size:1.05rem;line-height:1.7;color:#333;";
@@ -114,20 +130,20 @@ function toQuietHTML(md = "") {
   return `<div class="mirror-reflection" style="${wrapper}">${html}</div>`;
 }
 
-//─────────────────────────────────────────────────────────────
-//  Name sanitiser (prevents default “Friend” fallback)
-//─────────────────────────────────────────────────────────────
+/*─────────────────────────────────────────────────────────────
+  Utility – sanitise name (avoids “Friend”)
+─────────────────────────────────────────────────────────────*/
 function cleanName(n) {
   if (!n) return "";
   const t = String(n).trim();
   return /^friend$/i.test(t) ? "" : t;
 }
 
-//─────────────────────────────────────────────────────────────
-//  HTTP handler
-//─────────────────────────────────────────────────────────────
+/*─────────────────────────────────────────────────────────────
+  HTTP handler
+─────────────────────────────────────────────────────────────*/
 module.exports = async function handler(req, res) {
-  /* ––– CORS ––– */
+  /* CORS */
   res.setHeader("Content-Type", "application/json");
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -142,7 +158,7 @@ module.exports = async function handler(req, res) {
       .status(405)
       .json({ success: false, error: "Method not allowed" });
 
-  /* ––– Body ––– */
+  /* Body */
   const {
     dream,
     plan,
@@ -151,7 +167,7 @@ module.exports = async function handler(req, res) {
     relationship,
     offering,
     userName = "",
-    language = "en",
+    language = "en", // 'en' or 'he'
     isAdmin = false,
   } = req.body || {};
 
@@ -163,7 +179,7 @@ module.exports = async function handler(req, res) {
   const name = cleanName(userName);
   const hasName = Boolean(name);
 
-  /* ––– Build user prompt ––– */
+  /* Build user prompt */
   const intro =
     language === "he"
       ? hasName
@@ -187,7 +203,7 @@ module.exports = async function handler(req, res) {
 
 **מה אני מוכן לתת:** ${offering}
 
-אנא השתקף בחזרה למה שאתה רואה. היה ישיר, היה אוהב, היה מדויק. כתוב השתקפות רחבה שאני יכול לחזור אליה חודשים מהיום.`
+אנא השתקף אליי במילים חדות ואוהבות.`
       : `${intro}**My dream:** ${dream}
 
 **My plan:** ${plan}
@@ -203,7 +219,7 @@ module.exports = async function handler(req, res) {
 Please mirror back what you see, in a flowing reflection I can return to months from now.`;
 
   try {
-    /* ––– Call model ––– */
+    /* Call LLM */
     let raw;
     if (language === "he") {
       if (!process.env.OPENAI_API_KEY)
@@ -213,7 +229,7 @@ Please mirror back what you see, in a flowing reflection I can return to months 
         temperature: 0.8,
         max_tokens: 4000,
         messages: [
-          { role: "system", content: getMirrorPrompt("he") },
+          { role: "system", content: promptHE() },
           { role: "user", content: userPrompt },
         ],
       });
@@ -225,7 +241,7 @@ Please mirror back what you see, in a flowing reflection I can return to months 
         model: "claude-sonnet-4-20250514",
         temperature: 0.8,
         max_tokens: 4000,
-        system: getMirrorPrompt("en"),
+        system: promptEN(),
         messages: [{ role: "user", content: userPrompt }],
       });
       raw = claude.content?.[0]?.text;
@@ -233,7 +249,7 @@ Please mirror back what you see, in a flowing reflection I can return to months 
 
     if (!raw) throw new Error("Empty response from language model");
 
-    /* ––– Success ––– */
+    /* Success */
     return res.json({
       success: true,
       reflection: toQuietHTML(raw),
