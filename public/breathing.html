@@ -159,6 +159,29 @@
         animation-duration: 48s;
       }
 
+      /* subtle stars */
+      .particle.star {
+        width: 0.5px;
+        height: 0.5px;
+        background: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 0 2px rgba(255, 255, 255, 0.2);
+      }
+      .particle.star:nth-child(8) {
+        left: 12%;
+        animation-delay: 15s;
+        animation-duration: 60s;
+      }
+      .particle.star:nth-child(9) {
+        left: 88%;
+        animation-delay: 40s;
+        animation-duration: 65s;
+      }
+      .particle.star:nth-child(10) {
+        left: 55%;
+        animation-delay: 22s;
+        animation-duration: 70s;
+      }
+
       @keyframes particleFloat {
         0% {
           transform: translateY(110vh) rotate(0deg);
@@ -378,6 +401,7 @@
         letter-spacing: 1px;
         text-shadow: 0 0 40px rgba(157, 78, 221, 0.3);
         position: relative;
+        margin-top: 4rem;
       }
       .what-now-text::after {
         content: "";
@@ -420,7 +444,7 @@
       /* continue indicator */
       .continue-indicator {
         position: absolute;
-        bottom: 3rem;
+        bottom: 8rem;
         left: 50%;
         transform: translateX(-50%);
         font-size: 0.9rem;
@@ -429,7 +453,7 @@
         color: rgba(255, 255, 255, 0.6);
         cursor: pointer;
         transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        animation: indicatorReveal 1.5s ease-out 7s forwards;
+        animation: indicatorReveal 1.5s ease-out 8s forwards;
         padding: 1rem 2rem;
         border-radius: 30px;
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -462,7 +486,7 @@
         inset: -10px;
         border-radius: 40px;
         border: 1px solid rgba(255, 255, 255, 0.05);
-        animation: pulseRing 3s ease-in-out infinite 7s;
+        animation: pulseRing 3s ease-in-out infinite 8s;
         pointer-events: none;
       }
       @keyframes pulseRing {
@@ -496,7 +520,7 @@
           height: 45px;
         }
         .continue-indicator {
-          bottom: 2rem;
+          bottom: 6rem;
           font-size: 0.85rem;
           padding: 0.8rem 1.5rem;
         }
@@ -539,6 +563,9 @@
       <div class="particle sparkle"></div>
       <div class="particle sparkle"></div>
       <div class="particle sparkle"></div>
+      <div class="particle star"></div>
+      <div class="particle star"></div>
+      <div class="particle star"></div>
     </div>
 
     <!-- main breathing experience -->
@@ -594,7 +621,7 @@
       setTimeout(() => {
         document.body.addEventListener("click", proceed);
         document.body.style.cursor = "pointer";
-      }, 7000);
+      }, 8500);
 
       /* auto-proceed after 12 seconds total */
       setTimeout(proceed, 12000);
