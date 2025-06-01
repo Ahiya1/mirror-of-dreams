@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Mirror of Truth | מראת האמת</title>
 
-    <!-- ───────────  INLINE STYLES (identical to original except minor tweaks) ─────────── -->
+    <!-- ───────────  INLINE STYLES  ─────────── -->
     <style>
       * {
         margin: 0;
@@ -64,119 +64,107 @@
         transform: translateY(-2px);
       }
 
-      /* mirrors */
+      /* mirrors as subtle glass shards */
       .mirrors-container {
         position: absolute;
         inset: 0;
         pointer-events: none;
       }
       .mirror {
+        --deg: 0deg;
         position: absolute;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(15px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        animation: float 8s ease-in-out infinite;
-        transition: 0.4s;
-        overflow: hidden;
-      }
-      .mirror::before,
-      .mirror::after {
-        content: \"\";
-        position: absolute;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-      }
-      .mirror::before {
-        top: 20%;
-        left: 15%;
-        width: 30%;
-        height: 35%;
-        border-radius: 60% 40% 30% 70%;
-      }
-      .mirror::after {
-        bottom: 25%;
-        right: 20%;
-        width: 25%;
-        height: 30%;
-        border-radius: 40% 60% 70% 30%;
-      }
-
-      /* individual mirrors */
-      .mirror:nth-child(1) {
-        top: 15%;
-        left: 20%;
         width: 80px;
         height: 80px;
-        animation-delay: 0s;
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(25px) saturate(140%);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        clip-path: polygon(
+          6% 0,
+          94% 2%,
+          100% 30%,
+          92% 98%,
+          8% 100%,
+          0 70%
+        ); /* irregular shard */
+        transform: rotate(var(--deg));
+        animation: float 10s ease-in-out infinite;
+        transition: 0.4s;
+      }
+      /* give each fragment a different rotation & size */
+      .mirror:nth-child(1) {
+        top: 12%;
+        left: 18%;
+        --deg: 3deg;
       }
       .mirror:nth-child(2) {
-        top: 25%;
-        right: 15%;
+        top: 24%;
+        right: 14%;
+        --deg: -6deg;
         width: 60px;
         height: 60px;
-        animation-delay: -2s;
       }
       .mirror:nth-child(3) {
-        top: 45%;
-        left: 10%;
-        width: 50px;
-        height: 50px;
-        animation-delay: -4s;
+        top: 46%;
+        left: 8%;
+        --deg: 8deg;
+        width: 55px;
+        height: 55px;
       }
       .mirror:nth-child(4) {
         top: 60%;
-        right: 25%;
+        right: 22%;
+        --deg: -4deg;
         width: 90px;
         height: 90px;
-        animation-delay: -6s;
       }
       .mirror:nth-child(5) {
-        bottom: 20%;
+        bottom: 22%;
         left: 30%;
+        --deg: 12deg;
         width: 70px;
         height: 70px;
-        animation-delay: -3s;
       }
       .mirror:nth-child(6) {
-        bottom: 35%;
+        bottom: 34%;
         right: 40%;
-        width: 55px;
-        height: 55px;
-        animation-delay: -5s;
+        --deg: -12deg;
+        width: 50px;
+        height: 50px;
       }
       .mirror:nth-child(7) {
-        top: 35%;
+        top: 34%;
         left: 50%;
+        --deg: 0deg;
         width: 45px;
         height: 45px;
-        animation-delay: -1s;
       }
 
       @keyframes float {
         0%,
         100% {
-          transform: translateY(0) rotate(0deg);
+          transform: translateY(0) rotate(var(--deg));
           opacity: 0.6;
         }
         25% {
-          transform: translateY(-20px) rotate(5deg);
+          transform: translateY(-25px) rotate(calc(var(--deg) + 2deg));
           opacity: 0.8;
         }
         50% {
-          transform: translateY(-10px) rotate(-3deg);
+          transform: translateY(-10px) rotate(calc(var(--deg) - 2deg));
           opacity: 1;
         }
         75% {
-          transform: translateY(-15px) rotate(2deg);
+          transform: translateY(-18px) rotate(calc(var(--deg) + 1deg));
           opacity: 0.7;
         }
       }
       .mirrors-container.hover .mirror {
         animation-play-state: paused;
-        background: rgba(255, 255, 255, 0.15);
-        box-shadow: 0 15px 40px rgba(255, 255, 255, 0.1);
-        transform: scale(1.05);
+        background: rgba(255, 255, 255, 0.14);
+        border-color: rgba(255, 255, 255, 0.35);
+        box-shadow: 0 15px 45px rgba(255, 255, 255, 0.12);
+        transform: scale(1.06) rotate(var(--deg));
       }
 
       /* main content */
@@ -227,7 +215,7 @@
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
       }
       .reflect-button::before {
-        content: \"\";
+        content: "";
         position: absolute;
         top: 50%;
         left: 50%;
@@ -299,17 +287,17 @@
         transform: scale(1);
       }
       .modal h3 {
-        margin-bottom: 2.5rem;
+        margin-bottom: 2rem;
         font-weight: 400;
         font-size: 1.4rem;
         line-height: 1.3;
       }
 
       .form-group {
-        margin-bottom: 1.8rem;
+        margin-bottom: 1.6rem;
         text-align: left;
       }
-      [dir=\"rtl\"] .form-group {
+      [dir="rtl"] .form-group {
         text-align: right;
       }
       .form-group label {
@@ -339,34 +327,17 @@
         color: rgba(255, 255, 255, 0.4);
       }
 
-      .payment-options {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
+      .payment-info {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-top: 1rem;
         margin-bottom: 2.5rem;
       }
-      .payment-option {
-        padding: 1.5rem 1rem;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        border-radius: 16px;
-        cursor: pointer;
-        transition: 0.3s;
-        text-align: center;
-        font-size: 0.95rem;
-        line-height: 1.4;
-      }
-      .payment-option:hover,
-      .payment-option.selected {
-        background: rgba(255, 255, 255, 0.15);
-        border-color: rgba(255, 255, 255, 0.5);
-        transform: translateY(-2px);
-      }
-      .payment-emoji {
-        font-size: 1.8rem;
-        margin-bottom: 0.5rem;
-        display: block;
-      }
+
       .continue-btn {
         width: 100%;
         padding: 1.2rem 2rem;
@@ -388,6 +359,7 @@
         opacity: 0.5;
         cursor: not-allowed;
       }
+
       .modal-close {
         position: absolute;
         top: 1.5rem;
@@ -409,15 +381,12 @@
         color: #fff;
         background: rgba(255, 255, 255, 0.1);
       }
-      [dir=\"rtl\"] .modal-close {
+      [dir="rtl"] .modal-close {
         right: auto;
         left: 1.5rem;
       }
-      [dir=\"rtl\"] .payment-options {
-        direction: rtl;
-      }
 
-      /* responsive tweaks */
+      /* responsive */
       @media (max-width: 768px) {
         .reflect-button {
           width: 160px;
@@ -431,15 +400,11 @@
           padding: 2rem;
           margin: 1rem;
         }
-        .payment-options {
-          grid-template-columns: 1fr;
-          gap: 0.8rem;
-        }
         .language-toggle {
           top: 1rem;
           right: 1rem;
         }
-        [dir=\"rtl\"] .language-toggle {
+        [dir="rtl"] .language-toggle {
           right: auto;
           left: 1rem;
         }
@@ -453,7 +418,7 @@
   </head>
 
   <body>
-    <!-- Floating mirrors -->
+    <!-- Floating mirror shards -->
     <div class="mirrors-container" id="mirrorsContainer">
       <div class="mirror"></div>
       <div class="mirror"></div>
@@ -486,7 +451,7 @@
       </section>
     </main>
 
-    <!-- payment modal -->
+    <!-- simple payment modal -->
     <div class="modal" id="paymentModal">
       <div class="modal-content">
         <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -502,24 +467,8 @@
           <input id="userEmail" type="email" required />
         </div>
 
-        <div class="form-group">
-          <label id="paymentLabel">Payment Method</label>
-
-          <div class="payment-options">
-            <div class="payment-option" data-payment="cash">
-              <span class="payment-emoji">💰</span>
-              <div class="payment-title" id="cashTitle">Cash</div>
-              <div class="payment-subtitle" id="cashSubtitle">
-                At booth only
-              </div>
-            </div>
-
-            <div class="payment-option" data-payment="bit">
-              <span class="payment-emoji">📱</span>
-              <div class="payment-title" id="bitTitle">Bit</div>
-              <div class="payment-subtitle" id="bitSubtitle">20 ₪</div>
-            </div>
-          </div>
+        <div class="payment-info" id="paymentInfo">
+          20&nbsp;₪ — Cash at booth or Bit to +972&nbsp;58-778-9019
         </div>
 
         <button class="continue-btn" id="continueBtn" disabled>
@@ -551,18 +500,13 @@
           modalTitle: "Begin Your Reflection",
           nameLabel: "Your Name",
           emailLabel: "Your Email",
-          paymentLabel: "Payment Method",
-          cashTitle: "Cash",
-          cashSubtitle: "At booth only",
-          bitTitle: "Bit",
-          bitSubtitle: "20 ₪",
+          paymentInfo:
+            "20&nbsp;₪ — Cash at booth or Bit to +972&nbsp;58-778-9019",
           continueText: "Continue to Reflection",
           langText: "עברית",
           langFlag: "🇮🇱",
           namePlaceholder: "Enter your name",
           emailPlaceholder: "name@example.com",
-          bitPaymentNote:
-            "Send 20 ₪ via Bit to +972 58-778-9019. Then press OK to continue.",
         },
         he: {
           mainTitle: "מראת האמת",
@@ -571,18 +515,12 @@
           modalTitle: "התחל את ההשתקפות",
           nameLabel: "שם מלא",
           emailLabel: "אימייל",
-          paymentLabel: "אמצעי תשלום",
-          cashTitle: "מזומן",
-          cashSubtitle: "בדוכן בלבד",
-          bitTitle: "ביט",
-          bitSubtitle: "20 ₪",
+          paymentInfo: "20&nbsp;₪ — מזומן בדוכן או ביט ל-+972&nbsp;58-778-9019",
           continueText: "המשך להשתקפות",
           langText: "English",
           langFlag: "🇺🇸",
           namePlaceholder: "הזן את שמך",
           emailPlaceholder: "name@example.com",
-          bitPaymentNote:
-            "שלם 20 ₪ בביט ל-+972 58-778-9019 ולאחר מכן לחץ OK להמשך.",
         },
       };
 
@@ -604,12 +542,13 @@
 
       /* interactions */
       const reflectBtn = document.getElementById("reflectBtn");
-      const mirrors = document.getElementById("mirrorsContainer");
+      const mirrorsCont = document.getElementById("mirrorsContainer");
+
       reflectBtn.addEventListener("mouseenter", () =>
-        mirrors.classList.add("hover")
+        mirrorsCont.classList.add("hover")
       );
       reflectBtn.addEventListener("mouseleave", () =>
-        mirrors.classList.remove("hover")
+        mirrorsCont.classList.remove("hover")
       );
       reflectBtn.addEventListener("click", () =>
         document.getElementById("paymentModal").classList.add("show")
@@ -623,18 +562,8 @@
         applyLanguage();
       });
 
-      /* payment logic */
-      let selectedPayment = null;
-      document.querySelectorAll(".payment-option").forEach((opt) =>
-        opt.addEventListener("click", () => {
-          document
-            .querySelectorAll(".payment-option")
-            .forEach((o) => o.classList.remove("selected"));
-          opt.classList.add("selected");
-          selectedPayment = opt.dataset.payment;
-          updateContinue();
-        })
-      );
+      /* form logic */
+      const continueBtn = document.getElementById("continueBtn");
       document
         .getElementById("userName")
         .addEventListener("input", updateContinue);
@@ -644,20 +573,26 @@
 
       function updateContinue() {
         const ready =
-          document.getElementById("userName").value &&
-          document.getElementById("userEmail").value &&
-          selectedPayment;
-        document.getElementById("continueBtn").disabled = !ready;
+          document.getElementById("userName").value.trim() &&
+          document.getElementById("userEmail").value.trim();
+        continueBtn.disabled = !ready;
       }
 
-      document
-        .getElementById("continueBtn")
-        .addEventListener("click", continueFlow);
+      continueBtn.addEventListener("click", () => {
+        const data = {
+          name: document.getElementById("userName").value.trim(),
+          email: document.getElementById("userEmail").value.trim(),
+          language: currentLanguage,
+        };
+        try {
+          localStorage.setItem("pendingPayment", JSON.stringify(data));
+        } catch {}
+        location.href = `./breathing.html?payment=cash&lang=${currentLanguage}`;
+      });
 
+      /* modal helpers */
       function closeModal() {
         document.getElementById("paymentModal").classList.remove("show");
-        selectedPayment = null;
-        updateContinue();
       }
       document.getElementById("paymentModal").addEventListener("click", (e) => {
         if (e.target === e.currentTarget) closeModal();
@@ -665,24 +600,6 @@
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeModal();
       });
-
-      function continueFlow() {
-        const t = translations[currentLanguage];
-        const data = {
-          name: document.getElementById("userName").value.trim(),
-          email: document.getElementById("userEmail").value.trim(),
-          payment: selectedPayment,
-          language: currentLanguage,
-        };
-        try {
-          localStorage.setItem("pendingPayment", JSON.stringify(data));
-        } catch {}
-
-        if (selectedPayment === "bit") alert(t.bitPaymentNote);
-
-        /* both cash & bit now funnel to same access-code flow */
-        location.href = `./breathing.html?payment=cash&lang=${currentLanguage}`;
-      }
     </script>
   </body>
 </html>

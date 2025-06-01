@@ -1,4 +1,4 @@
-<!-- FILE: public/breathing.html  •  Hebrew copy refined, local-storage bug fixed, auto-proceed logic corrected •  2025-06-01 -->
+<!-- FILE: public/breathing.html • timing tightened to 8 s, Hebrew refined, word-reveal fixed • 2025-06-01 -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Breathing | נשימה</title>
 
-    <!--────────────────────────  INLINE STYLES  ────────────────────────-->
+    <!--──────────────  INLINE STYLES  ──────────────-->
     <style>
       * {
         margin: 0;
@@ -16,61 +16,56 @@
       body {
         font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
           sans-serif;
-        background: linear-gradient(
-          135deg,
-          #0f0f23 0%,
-          #1a1a2e 25%,
-          #16213e 50%,
-          #0f0f23 100%
-        );
-        min-height: 100vh;
+        background: #0b0b15
+          radial-gradient(
+            circle at 50% 120%,
+            rgba(255, 255, 255, 0.06),
+            transparent 60%
+          );
         color: #fff;
-        overflow: hidden;
-        position: relative;
+        min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
+        overflow: hidden;
+        position: relative;
       }
       [dir="rtl"] {
         font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
           sans-serif;
       }
 
+      /* container fades in quickly */
       .breathing-container {
         text-align: center;
-        position: relative;
-        z-index: 10;
         opacity: 0;
-        animation: fade-in-container 1s ease-out 2s forwards;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+        animation: container-in 1s ease-out 1s forwards;
         min-height: 60vh;
+        z-index: 10;
       }
-      @keyframes fade-in-container {
-        0% {
-          opacity: 0;
-        }
-        100% {
+      @keyframes container-in {
+        to {
           opacity: 1;
         }
       }
 
-      /* luminous circle */
+      /* luminous pulse */
       .breathing-circle {
         width: 160px;
         height: 160px;
         border-radius: 50%;
         background: radial-gradient(
           circle,
-          rgba(255, 255, 255, 0.4) 0%,
-          rgba(255, 255, 255, 0.1) 50%,
-          transparent 80%
+          rgba(255, 255, 255, 0.45) 0%,
+          rgba(255, 255, 255, 0.1) 55%,
+          transparent 85%
         );
-        position: relative;
-        animation: breathe-main 4s ease-in-out infinite;
         box-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+        position: relative;
+        animation: circle-breathe 4s ease-in-out infinite;
         order: 2;
       }
       .breathing-circle::after {
@@ -85,177 +80,150 @@
         background: radial-gradient(
           circle,
           rgba(255, 255, 255, 0.3) 0%,
-          rgba(255, 255, 255, 0.1) 40%,
-          transparent 80%
+          rgba(255, 255, 255, 0.12) 50%,
+          transparent 85%
         );
-        animation: breathe-core 4s ease-in-out infinite;
+        animation: core-breathe 4s ease-in-out infinite;
       }
-      @keyframes breathe-main {
+      @keyframes circle-breathe {
         0%,
         100% {
           transform: scale(1);
-          opacity: 0.8;
-          box-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
         }
         50% {
           transform: scale(1.05);
-          opacity: 1;
-          box-shadow: 0 0 60px rgba(255, 255, 255, 0.25);
         }
       }
-      @keyframes breathe-core {
+      @keyframes core-breathe {
         0%,
         100% {
-          opacity: 0.7;
           transform: translate(-50%, -50%) scale(1);
         }
         50% {
-          opacity: 1;
           transform: translate(-50%, -50%) scale(1.1);
         }
       }
 
-      /* text */
+      /* purple-gradient text helper */
+      .gradient-text {
+        background: linear-gradient(135deg, #e0aaff 0%, #9d4edd 100%);
+        -webkit-background-clip: text;
+        color: transparent;
+      }
+
+      /* complete sentence */
       .complete-text {
-        font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+        font-size: clamp(1.3rem, 3.5vw, 1.9rem);
         font-weight: 300;
         letter-spacing: 0.02em;
         margin-bottom: 2rem;
         line-height: 1.3;
         opacity: 0;
-        transform: translateY(10px);
-        animation: arrive-quietly 1.5s ease-out 2s forwards;
-        color: rgba(255, 255, 255, 0.9);
         order: 1;
-      }
-      .what-now-container {
-        font-size: clamp(1.8rem, 5vw, 2.8rem);
-        font-weight: 400;
-        letter-spacing: 0.05em;
-        opacity: 0;
-        margin-top: 2rem;
-        order: 3;
-      }
-      .what-now-word,
-      .question-mark {
-        display: inline-block;
-        opacity: 0;
-        transform: translateY(15px) scale(0.9);
-        margin: 0 0.4rem;
-        color: rgba(144, 238, 144, 0.8);
-        transition: 1.2s ease-out;
-      }
-      .what-now-word:nth-child(1) {
-        animation: arrive-with-power 1.2s ease-out 5s forwards;
-      }
-      .what-now-word:nth-child(2) {
-        animation: arrive-with-power 1.2s ease-out 6.5s forwards;
-      }
-      .question-mark {
-        margin-left: 0.2rem;
-        color: rgba(144, 238, 144, 0.9);
-        animation: arrive-with-power 1.2s ease-out 8s forwards;
+        animation: quiet-in 0.9s ease-out 1.8s forwards;
+        color: rgba(255, 255, 255, 0.9);
       }
 
-      @keyframes arrive-quietly {
-        0% {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        100% {
-          opacity: 1;
-          transform: translateY(0);
-        }
+      /* WHAT  NOW ? sequence */
+      .what-now-container {
+        font-size: clamp(2rem, 6vw, 3rem);
+        font-weight: 500;
+        order: 3;
       }
-      @keyframes arrive-with-power {
+      .word,
+      .qm {
+        display: inline-block;
+        opacity: 0;
+        transform: translateY(14px) scale(0.9);
+      }
+      .word:nth-child(1) {
+        animation: word-in 1s ease-out 3s forwards;
+      }
+      .word:nth-child(2) {
+        animation: word-in 1s ease-out 4.5s forwards;
+      }
+      .qm {
+        animation: word-in 1s ease-out 6s forwards;
+      }
+      @keyframes word-in {
         0% {
           opacity: 0;
-          transform: translateY(15px) scale(0.9);
+          transform: translateY(14px) scale(0.9);
         }
-        60% {
-          opacity: 0.7;
-          transform: translateY(-3px) scale(1.05);
-        }
-        80% {
-          opacity: 0.9;
-          transform: translateY(1px) scale(0.98);
+        50% {
+          opacity: 0.8;
+          transform: translateY(-2px) scale(1.06);
         }
         100% {
           opacity: 1;
           transform: translateY(0) scale(1);
         }
       }
+      @keyframes quiet-in {
+        to {
+          opacity: 1;
+        }
+      }
 
-      /* continue indicator */
+      /* continue indicator appears at 7 s, gives subtle cue */
       .continue-indicator {
         position: absolute;
-        bottom: 3rem;
+        bottom: 2.6rem;
         left: 50%;
         transform: translateX(-50%);
-        opacity: 0;
         font-size: 0.85rem;
         font-weight: 300;
+        opacity: 0;
         color: rgba(255, 255, 255, 0.5);
-        animation: fade-in 1.5s ease-out 9.5s forwards;
+        animation: indicate 1.2s ease-out 7s forwards;
         cursor: pointer;
-        transition: 0.4s;
-        font-family: "Inter", sans-serif;
+        transition: 0.35s;
       }
       .continue-indicator:hover {
-        color: rgba(144, 238, 144, 0.7);
-        transform: translateX(-50%) translateY(-3px);
+        color: #b983ff;
+        transform: translate(-50%, -3px);
       }
-      @keyframes fade-in {
-        0% {
-          opacity: 0;
-          transform: translateX(-50%) translateY(5px);
-        }
-        100% {
+      @keyframes indicate {
+        to {
           opacity: 1;
-          transform: translateX(-50%) translateY(0);
         }
       }
 
-      /* ambient particle */
+      /* one ambient speck for motion */
       .particle {
         position: absolute;
-        border-radius: 50%;
-        animation: float-quietly 40s linear infinite;
-        opacity: 0;
-        pointer-events: none;
-      }
-      .particle:nth-child(1) {
         left: 25%;
         width: 1px;
         height: 1px;
+        border-radius: 50%;
         background: rgba(255, 255, 255, 0.1);
-        animation-delay: 15s;
-        animation-duration: 45s;
+        pointer-events: none;
+        opacity: 0;
+        animation: float 32s linear infinite 4s;
       }
-      @keyframes float-quietly {
+      @keyframes float {
         0% {
+          transform: translateY(110vh);
           opacity: 0;
-          transform: translateY(100vh);
         }
-        30%,
-        70% {
+        20%,
+        60% {
           opacity: 0.1;
         }
         100% {
+          transform: translateY(-12vh);
           opacity: 0;
-          transform: translateY(-10vh);
         }
       }
 
-      /* mobile */
+      /* mobile tweak */
       @media (max-width: 768px) {
         .breathing-circle {
           width: 150px;
           height: 150px;
-          margin-bottom: 3rem;
         }
         .continue-indicator {
-          bottom: 2rem;
+          bottom: 1.8rem;
         }
       }
     </style>
@@ -269,10 +237,10 @@
 
       <div id="completeText" class="complete-text">You are complete.</div>
 
-      <div class="what-now-container">
-        <span id="what" class="what-now-word">what</span>
-        <span id="now" class="what-now-word">now</span>
-        <span class="question-mark">?</span>
+      <div class="what-now-container gradient-text">
+        <span id="what" class="word">what</span>
+        <span id="now" class="word">now</span>
+        <span class="qm">?</span>
       </div>
 
       <div
@@ -284,10 +252,10 @@
       </div>
     </div>
 
-    <!--────────────────────────  SCRIPT  ────────────────────────-->
+    <!--──────────────  SCRIPT  ──────────────-->
     <script>
-      /* safe language detection */
-      const currentLanguage = (() => {
+      /* language detection */
+      const lang = (() => {
         try {
           return (
             new URLSearchParams(location.search).get("lang") ||
@@ -300,7 +268,7 @@
       })();
 
       /* translations */
-      const tr = {
+      const t = {
         en: {
           completeText: "You are complete.",
           what: "what",
@@ -315,31 +283,28 @@
         },
       };
 
-      function applyLang() {
-        const L = tr[currentLanguage];
-        document.documentElement.dir = currentLanguage === "he" ? "rtl" : "ltr";
-        document.documentElement.lang = currentLanguage;
-        completeText.textContent = L.completeText;
-        what.textContent = L.what;
-        now.textContent = L.now;
-        continueText.textContent = L.continueText;
-      }
-      applyLang();
+      /* apply copy */
+      const L = t[lang];
+      document.documentElement.dir = lang === "he" ? "rtl" : "ltr";
+      document.documentElement.lang = lang;
+      completeText.textContent = L.completeText;
+      what.textContent = L.what;
+      now.textContent = L.now;
+      continueText.textContent = L.continueText;
 
-      /* auto-proceed after animation finishes (12 s) */
-      setTimeout(() => proceed(), 12000);
-
-      /* allow click anywhere after indicator is visible */
+      /* click-anywhere after indicator appears */
       setTimeout(() => {
         document.body.addEventListener("click", proceed);
         document.body.style.cursor = "pointer";
-      }, 9500);
+      }, 7000);
 
-      /* navigate forward */
+      /* auto-proceed shortly after full reveal (≈9 s total) */
+      setTimeout(proceed, 9000);
+
       function proceed() {
         const payment =
           new URLSearchParams(location.search).get("payment") || "cash";
-        location.href = `/reflection.html?payment=${payment}&lang=${currentLanguage}`;
+        location.href = `/reflection.html?payment=${payment}&lang=${lang}`;
       }
     </script>
   </body>
