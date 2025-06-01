@@ -1,4 +1,5 @@
-<!-- FILE: public/index.html  •  updated 2025-06-01 -->
+<!-- FILE: public/index.html • subtle “glass-shard” reflections added • flow now goes
+     → access-code (reflection.html) before any breathing scene • 2025-06-01 -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -6,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Mirror of Truth | מראת האמת</title>
 
-    <!-- ───────────  INLINE STYLES  ─────────── -->
+    <!--──────────────  INLINE STYLES  ──────────────-->
     <style>
       * {
         margin: 0;
@@ -33,7 +34,7 @@
           sans-serif;
       }
 
-      /* language toggle */
+      /*── language toggle ──*/
       .language-toggle {
         position: fixed;
         top: 2rem;
@@ -64,7 +65,7 @@
         transform: translateY(-2px);
       }
 
-      /* mirrors as subtle glass shards */
+      /*── mirror shards ──*/
       .mirrors-container {
         position: absolute;
         inset: 0;
@@ -79,19 +80,28 @@
         backdrop-filter: blur(25px) saturate(140%);
         border: 1px solid rgba(255, 255, 255, 0.18);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-        clip-path: polygon(
-          6% 0,
-          94% 2%,
-          100% 30%,
-          92% 98%,
-          8% 100%,
-          0 70%
-        ); /* irregular shard */
+        clip-path: polygon(6% 0, 94% 2%, 100% 30%, 92% 98%, 8% 100%, 0 70%);
         transform: rotate(var(--deg));
         animation: float 10s ease-in-out infinite;
         transition: 0.4s;
+        overflow: hidden; /* allow inner reflection overlay   */
       }
-      /* give each fragment a different rotation & size */
+      /* subtle inner gleam */
+      .mirror::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.35) 0%,
+          rgba(255, 255, 255, 0) 65%
+        );
+        opacity: 0.35;
+        mix-blend-mode: screen;
+        pointer-events: none;
+      }
+
+      /* shard instances */
       .mirror:nth-child(1) {
         top: 12%;
         left: 18%;
@@ -167,7 +177,7 @@
         transform: scale(1.06) rotate(var(--deg));
       }
 
-      /* main content */
+      /*── core content ──*/
       .main-content {
         display: flex;
         align-items: center;
@@ -248,11 +258,10 @@
         line-height: 1.6;
         margin-top: 1.5rem;
         max-width: 400px;
-        margin-left: auto;
-        margin-right: auto;
+        margin-inline: auto;
       }
 
-      /* modal */
+      /*── modal ──*/
       .modal {
         position: fixed;
         inset: 0;
@@ -316,7 +325,6 @@
         color: #fff;
         font-size: 1rem;
         transition: 0.3s;
-        font-family: inherit;
       }
       .form-group input:focus {
         outline: none;
@@ -334,8 +342,7 @@
         border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 12px;
         padding: 1rem;
-        margin-top: 1rem;
-        margin-bottom: 2.5rem;
+        margin: 1rem 0 2.5rem;
       }
 
       .continue-btn {
@@ -386,7 +393,7 @@
         left: 1.5rem;
       }
 
-      /* responsive */
+      /*── responsive tweaks ──*/
       @media (max-width: 768px) {
         .reflect-button {
           width: 160px;
@@ -418,7 +425,7 @@
   </head>
 
   <body>
-    <!-- Floating mirror shards -->
+    <!-- floating mirror shards -->
     <div class="mirrors-container" id="mirrorsContainer">
       <div class="mirror"></div>
       <div class="mirror"></div>
@@ -436,22 +443,20 @@
       </button>
     </div>
 
-    <!-- landing copy -->
+    <!-- core copy -->
     <main class="main-content">
       <section class="center-container">
         <h1 class="title" id="mainTitle">The Mirror of Truth</h1>
-
         <button class="reflect-button" id="reflectBtn">
           <span id="reflectText">Reflect Me</span>
         </button>
-
         <p class="tagline" id="tagline">
           A space to see yourself clearly.<br />No fixing. Only truth.
         </p>
       </section>
     </main>
 
-    <!-- simple payment modal -->
+    <!-- payment / access-code modal -->
     <div class="modal" id="paymentModal">
       <div class="modal-content">
         <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -477,9 +482,9 @@
       </div>
     </div>
 
-    <!-- ─────────── JavaScript ─────────── -->
+    <!--──────────────  SCRIPT  ──────────────-->
     <script>
-      /* language */
+      /*── language persistence ──*/
       let currentLanguage = (() => {
         try {
           return (
@@ -528,7 +533,6 @@
         const t = translations[currentLanguage];
         document.documentElement.dir = currentLanguage === "he" ? "rtl" : "ltr";
         document.documentElement.lang = currentLanguage;
-
         Object.entries(t).forEach(([k, v]) => {
           const el = document.getElementById(k);
           if (el) el.innerHTML = v;
@@ -540,10 +544,9 @@
       }
       applyLanguage();
 
-      /* interactions */
-      const reflectBtn = document.getElementById("reflectBtn");
+      /*── UI interactions ──*/
       const mirrorsCont = document.getElementById("mirrorsContainer");
-
+      const reflectBtn = document.getElementById("reflectBtn");
       reflectBtn.addEventListener("mouseenter", () =>
         mirrorsCont.classList.add("hover")
       );
@@ -562,23 +565,22 @@
         applyLanguage();
       });
 
-      /* form logic */
-      const continueBtn = document.getElementById("continueBtn");
+      /*── form validation ──*/
       document
         .getElementById("userName")
         .addEventListener("input", updateContinue);
       document
         .getElementById("userEmail")
         .addEventListener("input", updateContinue);
-
       function updateContinue() {
         const ready =
           document.getElementById("userName").value.trim() &&
           document.getElementById("userEmail").value.trim();
-        continueBtn.disabled = !ready;
+        document.getElementById("continueBtn").disabled = !ready;
       }
 
-      continueBtn.addEventListener("click", () => {
+      /*── proceed: save info → reflection.html (access-code) ──*/
+      document.getElementById("continueBtn").addEventListener("click", () => {
         const data = {
           name: document.getElementById("userName").value.trim(),
           email: document.getElementById("userEmail").value.trim(),
@@ -587,10 +589,11 @@
         try {
           localStorage.setItem("pendingPayment", JSON.stringify(data));
         } catch {}
-        location.href = `./breathing.html?payment=cash&lang=${currentLanguage}`;
+        /* go straight to access-code gate; breathing comes only *after* code is entered */
+        location.href = `./reflection.html?payment=cash&lang=${currentLanguage}`;
       });
 
-      /* modal helpers */
+      /*── modal helpers ──*/
       function closeModal() {
         document.getElementById("paymentModal").classList.remove("show");
       }
