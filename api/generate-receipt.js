@@ -44,20 +44,20 @@ function getReceiptContent(language, receiptData) {
       bitMethod: "Bit Payment",
     },
     he: {
-      subject: `קבלה - שירות מראה האמת`,
+      subject: `קבלה - שירות מראת האמת`,
       receiptTitle: "קבלת תשלום",
       businessName: "אחיה",
       businessNumber: "עוסק מורשה #325761682",
       receiptNumber: "קבלה מס׳",
       paymentReceived: "תשלום התקבל",
-      serviceDescription: "מראה האמת - סשן השתקפות אישי",
+      serviceDescription: "מראת האמת - סשן השתקפות אישי",
       customerInfo: "פרטי לקוח:",
       paymentInfo: "פרטי תשלום:",
       amount: "סכום:",
       method: "אמצעי תשלום:",
       date: "תאריך:",
-      thankYou: "תודה שבחרת במראה האמת",
-      footerNote: "קבלה זו משמשת כהוכחת תשלום עבור חוויית ההשתקפות במראה האמת.",
+      thankYou: "תודה שבחרת במראת האמת",
+      footerNote: "קבלה זו משמשת כהוכחת תשלום עבור חוויית ההשתקפות מראת האמת.",
       contactInfo: "לשאלות לגבי קבלה זו, אנא הגב למייל זה.",
       vatNote: "השירות ניתן על ידי עוסק מורשה בישראל.",
       cashMethod: "מזומן",
@@ -397,14 +397,14 @@ module.exports = async function handler(req, res) {
 
     const isHebrew = language === "he";
     const subject = isHebrew
-      ? `קבלה - שירות מראה האמת`
+      ? `קבלה - שירות מראת האמת`
       : `Receipt - Mirror of Truth Service`;
 
     const htmlContent = getReceiptContent(language, receiptData);
 
     await transporter.sendMail({
       from: `"${
-        isHebrew ? "אחיה - מראה האמת" : "Ahiya - The Mirror of Truth"
+        isHebrew ? "אחיה - מראת האמת" : "Ahiya - The Mirror of Truth"
       }" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: subject,

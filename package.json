@@ -1,7 +1,7 @@
 {
   "name": "mirror-of-truth",
   "version": "1.0.0",
-  "description": "The Mirror of Truth - A sacred bilingual space to see yourself clearly | מראה האמת - מקום קדוש דו-לשוני לראות את עצמך בבהירות",
+  "description": "The Mirror of Truth - A sacred bilingual space to see yourself clearly | מראת האמת - מקום קדוש דו-לשוני לראות את עצמך בבהירות",
   "main": "index.html",
   "scripts": {
     "dev": "vercel dev",

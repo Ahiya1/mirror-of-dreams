@@ -36,10 +36,10 @@ function getEmailContent(language, userName, content) {
       websiteText: "Experience another reflection at The Mirror of Truth",
     },
     he: {
-      subject: `${userName} - השתקפות מראה האמת שלך`,
+      subject: `${userName} - השתקפות מראת האמת שלך`,
       greeting: `${userName} היקר,`,
       intro:
-        "הנה ההשתקפות שלך ממראה האמת. זה לא רק מילים על מסך — זה תזכורת למי שאתה כשאתה מפסיק להתחבא מהכוח שלך.",
+        "הנה ההשתקפות שלך ממראת האמת. זה לא רק מילים על מסך — זה תזכורת למי שאתה כשאתה מפסיק להתחבא מהכוח שלך.",
       howToUse: "איך לעבוד עם ההשתקפות הזו:",
       instructions:
         "חזור למילים האלה כשהספק נכנס. כשאחרים מטילים ספק בדרך שלך. כשאתה שוכח שהרצון שלך קם מסיבה. ההשתקפות הזו רואה את האמת של מי שאתה — לא מי שאתה חושב שאתה צריך להיות, אלא מי שאתה כבר כשאתה מפסיק להתנצל על זה שאתה רוצה את מה שאתה רוצה.",
@@ -49,13 +49,13 @@ function getEmailContent(language, userName, content) {
         "העבודה הזו של יצירת מראות לאמת של אנשים — לעזור להם לראות את השלמות שלהם במקום השבריריות — זה מה שאני כאן לעשות. אם ההשתקפות הזו נגעה בך, אם היא עזרה לך לראות משהו שלא ראית בעבר, אני אשמח לשמוע על זה.",
       replyNote: "פשוט הגב למייל הזה. אני קורא כל תגובה באופן אישי.",
       shareNote:
-        "ואם אתה מכיר מישהו שיכול להשתמש במראה שלו — מישהו שחיכה לאישור לבטוח בחלומות שלו — שלח אותו למראה האמת. המתנה הכי עמוקה שאנחנו יכולים לתת היא לעזור לאחרים להיזכר בכוח שלהם.",
+        "ואם אתה מכיר מישהו שיכול להשתמש במראה שלו — מישהו שחיכה לאישור לבטוח בחלומות שלו — שלח אותו אל מראת האמת. המתנה הכי עמוקה שאנחנו יכולים לתת היא לעזור לאחרים להיזכר בכוח שלהם.",
       signature: "בוודאות שקטה,",
       name: "אחיה",
-      title: "יוצר, מראה האמת",
+      title: "יוצר, מראת האמת",
       postScript:
         "זה לא מייל עסקי או משפך שיווקי. זה אדם אחד שמציע לאדם אחר הזדמנות לראות את עצמו בבהירות. אם זה מה שקיבלת, אז המראה עבדה בדיוק כמו שהתכוונה.",
-      websiteText: "חווה השתקפות נוספת במראה האמת",
+      websiteText: "חווה השתקפות נוספת במראת האמת",
     },
   };
 
@@ -112,7 +112,7 @@ function getEmailContent(language, userName, content) {
                     color: #1f2937;
                     line-height: 1.2;
                 ">
-                    ${isHebrew ? "מראה האמת שלך" : "Your Mirror of Truth"}
+                    ${isHebrew ? "מראת האמת שלך" : "Your Mirror of Truth"}
                 </h1>
                 <div style="
                     width: 80px;
@@ -332,14 +332,14 @@ module.exports = async function handler(req, res) {
 
     const isHebrew = language === "he";
     const subject = isHebrew
-      ? `${userName} - השתקפות מראה האמת שלך`
+      ? `${userName} - השתקפות מראת האמת שלך`
       : `${userName} - Your Mirror of Truth Reflection`;
 
     const htmlContent = getEmailContent(language, userName, content);
 
     await transporter.sendMail({
       from: `"${
-        isHebrew ? "אחיה - מראה האמת" : "Ahiya - The Mirror of Truth"
+        isHebrew ? "אחיה - מראת האמת" : "Ahiya - The Mirror of Truth"
       }" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: subject,

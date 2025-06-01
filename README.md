@@ -1,4 +1,4 @@
-# The Mirror of Truth | מראה האמת
+# The Mirror of Truth | מראת האמת
 
 **A sacred bilingual space to see yourself clearly**
 
