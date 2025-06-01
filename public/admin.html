@@ -1,18 +1,28 @@
+<!-- =========================================================================
+     FILE:  public/admin.html                                updated 2025-06-01
+     =========================================================================
+     • Clean, single-purpose admin panel – no mock fillers.
+     • “Send Package” button e-mails BOTH access-code + receipt (API: /api/send-access-code)
+     • Fully bilingual (English / עברית) – live toggle.
+     • Stats auto-populate from session list (kept in memory client-side for now).
+     ========================================================================= -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Panel | פאנל ניהול</title>
+    <title>Admin | Mirror of Truth</title>
+
+    <!-- ───────────  styles  ─────────── -->
     <style>
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
-
       body {
-        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
         background: linear-gradient(
           135deg,
           #0f0f23 0%,
@@ -21,991 +31,484 @@
           #0f0f23 100%
         );
         min-height: 100vh;
-        color: white;
+        color: #fff;
         padding: 2rem;
+        overflow-x: hidden;
       }
-
       [dir="rtl"] {
         font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
           sans-serif;
       }
 
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-      }
-
-      .header {
+      h1 {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 0.4rem;
         text-align: center;
-        margin-bottom: 3rem;
-        position: relative;
+      }
+      p.sub {
+        opacity: 0.75;
+        text-align: center;
+        margin-bottom: 2.5rem;
       }
 
-      .language-toggle {
-        position: absolute;
-        top: 0;
-        right: 0;
+      /* language toggle */
+      .lang-toggle {
+        position: fixed;
+        top: 1.4rem;
+        right: 1.6rem;
+        z-index: 1000;
       }
-
-      [dir="rtl"] .language-toggle {
+      [dir="rtl"] .lang-toggle {
         right: auto;
-        left: 0;
+        left: 1.6rem;
       }
-
       .lang-btn {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 25px;
+        gap: 0.45rem;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        padding: 0.55rem 1.1rem;
+        border-radius: 30px;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: 0.3s;
         font-size: 0.9rem;
       }
-
       .lang-btn:hover {
         background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
       }
 
-      .header h1 {
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-      }
-
-      .header p {
-        opacity: 0.7;
-        font-size: 1rem;
-      }
-
-      .stats-grid {
+      /* cards */
+      .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 3rem;
+        gap: 2rem;
       }
-
-      .stat-card {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 16px;
+      .stats {
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        margin-bottom: 2.2rem;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(22px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 18px;
         padding: 2rem;
+      }
+      .stat-num {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #f59e0b;
+        margin-bottom: 0.4rem;
         text-align: center;
       }
-
-      .stat-number {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-        color: #f59e0b;
-      }
-
       .stat-label {
-        font-size: 0.9rem;
-        opacity: 0.8;
+        font-size: 0.85rem;
+        opacity: 0.7;
+        text-align: center;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.4px;
       }
 
-      .admin-sections {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin-bottom: 3rem;
+      /* form */
+      form .field {
+        margin-bottom: 1.4rem;
       }
-
-      .admin-card {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 16px;
-        padding: 2rem;
-      }
-
-      .admin-card h3 {
-        margin-bottom: 1.5rem;
-        font-size: 1.3rem;
-        font-weight: 600;
-      }
-
-      .form-group {
-        margin-bottom: 1.5rem;
-      }
-
-      .form-group label {
+      label {
         display: block;
-        margin-bottom: 0.5rem;
         font-size: 0.9rem;
+        margin-bottom: 0.4rem;
         opacity: 0.9;
       }
-
-      .form-group input,
-      .form-group select {
+      input,
+      select {
         width: 100%;
-        padding: 0.8rem;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 8px;
-        color: white;
-        font-size: 0.9rem;
-      }
-
-      .form-group input::placeholder {
-        color: rgba(255, 255, 255, 0.5);
-      }
-
-      .btn {
-        padding: 0.8rem 1.5rem;
-        background: rgba(255, 255, 255, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 8px;
-        color: white;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-size: 0.9rem;
-        width: 100%;
-        margin-top: 0.5rem;
-      }
-
-      .btn:hover {
-        background: rgba(255, 255, 255, 0.25);
-        border-color: rgba(255, 255, 255, 0.5);
-      }
-
-      .btn-primary {
-        background: rgba(59, 130, 246, 0.3);
-        border-color: rgba(59, 130, 246, 0.5);
-      }
-
-      .btn-success {
-        background: rgba(34, 197, 94, 0.3);
-        border-color: rgba(34, 197, 94, 0.5);
-      }
-
-      .btn-danger {
-        background: rgba(239, 68, 68, 0.3);
-        border-color: rgba(239, 68, 68, 0.5);
-      }
-
-      .quick-actions {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-      }
-
-      .sessions-section {
-        grid-column: 1 / -1;
-      }
-
-      .sessions-list {
-        max-height: 400px;
-        overflow-y: auto;
-      }
-
-      .session-item {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
         padding: 1rem;
-        margin-bottom: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 10px;
+        color: #fff;
+        font-size: 0.9rem;
+      }
+      input::placeholder {
+        color: rgba(255, 255, 255, 0.45);
+      }
+      select {
+        cursor: pointer;
+      }
+      .btn {
+        display: block;
+        width: 100%;
+        padding: 1.1rem;
+        margin-top: 0.4rem;
+        font-size: 0.95rem;
+        background: rgba(59, 130, 246, 0.25);
+        border: 1px solid rgba(59, 130, 246, 0.45);
+        color: #fff;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+        text-align: center;
+      }
+      .btn:hover {
+        background: rgba(59, 130, 246, 0.35);
+        transform: translateY(-2px);
+      }
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* sessions */
+      #sessions {
+        margin-top: 3rem;
+      }
+      .session {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 0.8rem;
         flex-wrap: wrap;
         gap: 1rem;
       }
-
-      .session-info {
-        flex: 1;
-        min-width: 200px;
-      }
-
-      .session-email {
-        font-weight: 500;
-        margin-bottom: 0.2rem;
-      }
-
       .session-meta {
         font-size: 0.8rem;
         opacity: 0.7;
       }
-
-      .session-actions {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-      }
-
-      .btn-small {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.8rem;
-        width: auto;
-        margin: 0;
-      }
-
       .status {
         padding: 0.2rem 0.6rem;
         border-radius: 4px;
         font-size: 0.7rem;
-        font-weight: 500;
-        text-transform: uppercase;
+        font-weight: 600;
       }
-
-      .status-pending {
-        background: rgba(251, 191, 36, 0.3);
+      .status.pending {
+        background: rgba(251, 191, 36, 0.25);
         color: #fbbf24;
       }
-
-      .status-completed {
-        background: rgba(34, 197, 94, 0.3);
+      .status.completed {
+        background: rgba(34, 197, 94, 0.25);
         color: #22c55e;
       }
+      .small-btn {
+        padding: 0.35rem 0.8rem;
+        font-size: 0.8rem;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        background: rgba(255, 255, 255, 0.15);
+        cursor: pointer;
+        transition: 0.25s;
+      }
+      .small-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+      }
 
-      .notification {
+      /* notification */
+      .note {
         position: fixed;
-        top: 2rem;
-        right: 2rem;
+        top: 1.6rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(-120%);
         background: rgba(34, 197, 94, 0.9);
-        color: white;
-        padding: 1rem 1.5rem;
+        padding: 0.9rem 1.6rem;
         border-radius: 8px;
         font-weight: 500;
-        transform: translateX(100%);
-        transition: transform 0.3s ease;
-        z-index: 1000;
+        transition: 0.35s;
       }
-
-      [dir="rtl"] .notification {
-        right: auto;
-        left: 2rem;
-        transform: translateX(-100%);
+      .note.show {
+        transform: translateX(-50%) translateY(0);
       }
-
-      [dir="rtl"] .notification.show {
-        transform: translateX(0);
-      }
-
-      .notification.show {
-        transform: translateX(0);
-      }
-
-      .notification.error {
+      .note.error {
         background: rgba(239, 68, 68, 0.9);
       }
 
-      .admin-access {
-        background: rgba(99, 102, 241, 0.2);
-        border: 1px solid rgba(99, 102, 241, 0.4);
-        padding: 1rem;
-        border-radius: 12px;
-        margin-bottom: 2rem;
-        text-align: center;
-      }
-
-      .admin-link {
-        display: inline-block;
-        padding: 0.8rem 1.5rem;
-        background: rgba(99, 102, 241, 0.3);
-        border: 1px solid rgba(99, 102, 241, 0.5);
-        border-radius: 8px;
-        color: white;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        margin-top: 1rem;
-      }
-
-      .admin-link:hover {
-        background: rgba(99, 102, 241, 0.5);
-        transform: translateY(-2px);
-      }
-
+      /* responsive */
       @media (max-width: 768px) {
         body {
           padding: 1rem;
         }
-
-        .admin-sections {
-          grid-template-columns: 1fr;
-        }
-
-        .stats-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-
-        .session-item {
-          flex-direction: column;
-          align-items: flex-start;
-        }
-
-        .session-actions {
-          width: 100%;
-          justify-content: flex-start;
-        }
-
-        .header {
-          text-align: center;
-        }
-
-        .language-toggle {
-          position: static;
-          margin-bottom: 1rem;
-          display: flex;
-          justify-content: center;
+        .lang-toggle {
+          top: 0.8rem;
+          right: 0.8rem;
         }
       }
     </style>
   </head>
+
   <body>
-    <div class="container">
-      <div class="header">
-        <div class="language-toggle">
-          <button id="langToggle" class="lang-btn">
-            <span class="lang-flag">🇮🇱</span>
-            <span class="lang-text">עברית</span>
-          </button>
-        </div>
-        <h1 id="mainTitle">The Mirror of Truth</h1>
-        <p id="subtitle">Admin Panel - Booth Management</p>
-      </div>
-
-      <!-- Stats -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-number" id="todayReflections">0</div>
-          <div class="stat-label" id="todayReflectionsLabel">
-            Today's Reflections
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="todayRevenue">0</div>
-          <div class="stat-label" id="todayRevenueLabel">
-            Today's Revenue (₪)
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="pendingCash">0</div>
-          <div class="stat-label" id="pendingCashLabel">Pending Cash</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="totalReflections">0</div>
-          <div class="stat-label" id="totalReflectionsLabel">
-            Total Reflections
-          </div>
-        </div>
-      </div>
-
-      <!-- Admin Access for Testing -->
-      <div class="admin-access">
-        <div id="adminAccessText">
-          🚀 Test the system as admin (unlimited reflections)
-        </div>
-        <a href="/reflection.html?admin=true" class="admin-link" id="adminLink">
-          <span id="adminLinkText">Start Admin Reflection</span>
-        </a>
-      </div>
-
-      <!-- Admin Actions -->
-      <div class="admin-sections">
-        <!-- Send Access Code -->
-        <div class="admin-card">
-          <h3 id="cashPaymentTitle">💰 Cash Payment Access</h3>
-          <form id="sendCodeForm">
-            <div class="form-group">
-              <label for="userEmail" id="emailLabel">Customer Email</label>
-              <input type="email" id="userEmail" required />
-            </div>
-            <div class="form-group">
-              <label for="userName" id="nameLabel">Customer Name</label>
-              <input type="text" id="userName" required />
-            </div>
-            <button type="submit" class="btn btn-success" id="sendCodeBtn">
-              Send Access Code
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              id="sendReceiptBtn"
-              onclick="sendCashReceipt()"
-            >
-              Send Receipt
-            </button>
-          </form>
-        </div>
-
-        <!-- Location Settings -->
-        <div class="admin-card">
-          <h3 id="locationTitle">📍 Booth Location</h3>
-          <div class="form-group">
-            <label for="currentLocation" id="locationLabel"
-              >Current Location</label
-            >
-            <select id="currentLocation">
-              <option value="rothschild">Rothschild Boulevard</option>
-              <option value="online">Online Only</option>
-              <option value="dizengoff">Dizengoff Center</option>
-              <option value="sarona">Sarona Market</option>
-              <option value="custom">Custom Location</option>
-            </select>
-          </div>
-          <div
-            class="form-group"
-            id="customLocationGroup"
-            style="display: none"
-          >
-            <label for="customLocationText" id="customLocationLabel"
-              >Custom Location</label
-            >
-            <input type="text" id="customLocationText" />
-          </div>
-          <button
-            class="btn btn-primary"
-            onclick="updateLocation()"
-            id="updateLocationBtn"
-          >
-            Update Location
-          </button>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="admin-card">
-          <h3 id="quickActionsTitle">⚡ Quick Actions</h3>
-          <div class="quick-actions">
-            <button
-              class="btn btn-primary"
-              onclick="generateDailyReport()"
-              id="dailyReportBtn"
-            >
-              📊 Generate Daily Report
-            </button>
-            <button
-              class="btn btn-primary"
-              onclick="exportData()"
-              id="exportDataBtn"
-            >
-              💾 Export All Data
-            </button>
-            <button
-              class="btn btn-danger"
-              onclick="clearPendingCash()"
-              id="clearPendingBtn"
-            >
-              🗑️ Clear Pending Cash
-            </button>
-          </div>
-        </div>
-
-        <!-- Booth Status -->
-        <div class="admin-card">
-          <h3 id="boothStatusTitle">🏪 Booth Status</h3>
-          <div class="form-group">
-            <label for="boothStatus" id="statusLabel">Status</label>
-            <select id="boothStatus">
-              <option value="open">🟢 Open</option>
-              <option value="break">🟡 On Break</option>
-              <option value="closed">🔴 Closed</option>
-            </select>
-          </div>
-          <button
-            class="btn btn-primary"
-            onclick="updateBoothStatus()"
-            id="updateStatusBtn"
-          >
-            Update Status
-          </button>
-          <div
-            id="statusDisplay"
-            style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8"
-          >
-            <span id="statusDisplayText">Current: Open</span>
-          </div>
-        </div>
-
-        <!-- Recent Sessions -->
-        <div class="admin-card sessions-section">
-          <h3 id="recentSessionsTitle">📝 Recent Sessions</h3>
-          <div class="sessions-list" id="sessionsList">
-            <!-- Sessions will be populated here -->
-          </div>
-        </div>
-      </div>
+    <!-- language -->
+    <div class="lang-toggle">
+      <button id="langBtn" class="lang-btn">
+        <span id="flag">🇮🇱</span><span id="langTxt">עברית</span>
+      </button>
     </div>
 
-    <!-- Notification -->
-    <div class="notification" id="notification"></div>
+    <!-- header -->
+    <h1 id="title">The Mirror of Truth</h1>
+    <p class="sub" id="subtitle">Admin Panel</p>
 
+    <!-- stats -->
+    <section class="grid stats" id="statsGrid">
+      <div class="card">
+        <div class="stat-num" id="statToday">0</div>
+        <div class="stat-label" id="lblToday">Today</div>
+      </div>
+      <div class="card">
+        <div class="stat-num" id="statRevenue">0</div>
+        <div class="stat-label" id="lblRevenue">Revenue ₪</div>
+      </div>
+      <div class="card">
+        <div class="stat-num" id="statPending">0</div>
+        <div class="stat-label" id="lblPending">Pending</div>
+      </div>
+      <div class="card">
+        <div class="stat-num" id="statTotal">0</div>
+        <div class="stat-label" id="lblTotal">Total</div>
+      </div>
+    </section>
+
+    <!-- send package -->
+    <section class="card" style="max-width: 420px; margin: 0 auto">
+      <h2
+        style="font-size: 1.25rem; margin-bottom: 1.5rem; text-align: center"
+        id="pkgTitle"
+      >
+        Send Package
+      </h2>
+      <form id="pkgForm">
+        <div class="field">
+          <label for="name" id="lblName">Customer Name</label>
+          <input id="name" type="text" required />
+        </div>
+        <div class="field">
+          <label for="email" id="lblEmail">Customer E-mail</label>
+          <input id="email" type="email" required />
+        </div>
+        <div class="field">
+          <label for="payMethod" id="lblMethod">Payment Method</label>
+          <select id="payMethod">
+            <option value="bit">Bit</option>
+            <option value="cash">Cash</option>
+          </select>
+        </div>
+        <button type="submit" class="btn" id="sendBtn" disabled>
+          Send Package
+        </button>
+      </form>
+    </section>
+
+    <!-- session list -->
+    <section id="sessions">
+      <h2 style="font-size: 1.25rem; margin: 2.5rem 0 1rem" id="sessTitle">
+        Recent Sessions
+      </h2>
+      <div id="sessList"></div>
+    </section>
+
+    <!-- notification -->
+    <div id="note" class="note"></div>
+
+    <!-- ───────────  script  ─────────── -->
     <script>
-      // Language management
-      let currentLanguage = localStorage.getItem("adminLanguage") || "en";
-
-      const translations = {
+      /* language setup */
+      const tr = {
         en: {
-          mainTitle: "The Mirror of Truth",
-          subtitle: "Admin Panel - Booth Management",
-          todayReflectionsLabel: "Today's Reflections",
-          todayRevenueLabel: "Today's Revenue (₪)",
-          pendingCashLabel: "Pending Cash",
-          totalReflectionsLabel: "Total Reflections",
-          adminAccessText:
-            "🚀 Test the system as admin (unlimited reflections)",
-          adminLinkText: "Start Admin Reflection",
-          cashPaymentTitle: "💰 Cash Payment Access",
-          emailLabel: "Customer Email",
-          nameLabel: "Customer Name",
-          sendCodeBtn: "Send Access Code",
-          sendReceiptBtn: "Send Receipt",
-          locationTitle: "📍 Booth Location",
-          locationLabel: "Current Location",
-          customLocationLabel: "Custom Location",
-          updateLocationBtn: "Update Location",
-          quickActionsTitle: "⚡ Quick Actions",
-          dailyReportBtn: "📊 Generate Daily Report",
-          exportDataBtn: "💾 Export All Data",
-          clearPendingBtn: "🗑️ Clear Pending Cash",
-          boothStatusTitle: "🏪 Booth Status",
-          statusLabel: "Status",
-          updateStatusBtn: "Update Status",
-          statusDisplayText: "Current: Open",
-          recentSessionsTitle: "📝 Recent Sessions",
-          langText: "עברית",
-          emailPlaceholder: "customer@email.com",
-          namePlaceholder: "Customer Name",
-          customLocationPlaceholder: "Enter custom location",
-          noSessions: "No sessions yet today",
-          markComplete: "Mark Complete",
-          viewBtn: "View",
-          accessCodeSent: "Access code sent successfully!",
-          receiptSent: "Receipt sent successfully!",
-          locationUpdated: "Location updated successfully!",
-          statusUpdated: "Booth status updated!",
-          dailyReportGenerated: "Daily report generated (check console)",
-          dataExported: "Data exported successfully",
-          pendingCleared: "Pending cash payments cleared",
-          errorSending: "Error sending. Please try again.",
-          confirmClear:
-            "Are you sure you want to clear all pending cash payments?",
-          sessionCompleted: "Session marked as completed",
+          title: "The Mirror of Truth",
+          subtitle: "Admin Panel",
+          lblToday: "Today",
+          lblRevenue: "Revenue ₪",
+          lblPending: "Pending",
+          lblTotal: "Total",
+          pkgTitle: "Send Package",
+          lblName: "Customer Name",
+          lblEmail: "Customer E-mail",
+          lblMethod: "Payment Method",
+          send: "Send Package",
+          sessTitle: "Recent Sessions",
+          noteSent: "Package sent ✉️",
+          noteErr: "Error – try again",
+          lang: "עברית",
+          flag: "🇮🇱",
+          placeholderName: "Full name",
+          placeholderEmail: "name@email.com",
+          btnMark: "Mark Done",
+          noSess: "No sessions yet",
         },
         he: {
-          mainTitle: "מראה האמת",
-          subtitle: "פאנל ניהול - ניהול דוכן",
-          todayReflectionsLabel: "השתקפויות היום",
-          todayRevenueLabel: "הכנסות היום (₪)",
-          pendingCashLabel: "מזומן ממתין",
-          totalReflectionsLabel: "סה״כ השתקפויות",
-          adminAccessText: "🚀 בדוק את המערכת כמנהל (השתקפויות ללא הגבלה)",
-          adminLinkText: "התחל השתקפות מנהל",
-          cashPaymentTitle: "💰 גישה לתשלום מזומן",
-          emailLabel: "מייל לקוח",
-          nameLabel: "שם לקוח",
-          sendCodeBtn: "שלח קוד גישה",
-          sendReceiptBtn: "שלח קבלה",
-          locationTitle: "📍 מיקום דוכן",
-          locationLabel: "מיקום נוכחי",
-          customLocationLabel: "מיקום מותאם",
-          updateLocationBtn: "עדכן מיקום",
-          quickActionsTitle: "⚡ פעולות מהירות",
-          dailyReportBtn: "📊 צור דוח יומי",
-          exportDataBtn: "💾 ייצא כל הנתונים",
-          clearPendingBtn: "🗑️ נקה מזומן ממתין",
-          boothStatusTitle: "🏪 סטטוס דוכן",
-          statusLabel: "סטטוס",
-          updateStatusBtn: "עדכן סטטוס",
-          statusDisplayText: "נוכחי: פתוח",
-          recentSessionsTitle: "📝 סשנים אחרונים",
-          langText: "English",
-          emailPlaceholder: "customer@email.com",
-          namePlaceholder: "שם לקוח",
-          customLocationPlaceholder: "הכנס מיקום מותאם",
-          noSessions: "אין סשנים היום עדיין",
-          markComplete: "סמן כהושלם",
-          viewBtn: "צפה",
-          accessCodeSent: "קוד גישה נשלח בהצלחה!",
-          receiptSent: "קבלה נשלחה בהצלחה!",
-          locationUpdated: "מיקום עודכן בהצלחה!",
-          statusUpdated: "סטטוס דוכן עודכן!",
-          dailyReportGenerated: "דוח יומי נוצר (בדוק בקונסול)",
-          dataExported: "נתונים יוצאו בהצלחה",
-          pendingCleared: "תשלומי מזומן ממתינים נוקו",
-          errorSending: "שגיאה בשליחה. אנא נסה שוב.",
-          confirmClear:
-            "האם אתה בטוח שברצונך לנקות את כל תשלומי המזומן הממתינים?",
-          sessionCompleted: "סשן סומן כהושלם",
+          title: "מראת האמת",
+          subtitle: "פאנל ניהול",
+          lblToday: "היום",
+          lblRevenue: "הכנסות ₪",
+          lblPending: "ממתין",
+          lblTotal: "סה״כ",
+          pkgTitle: "שלח חבילה",
+          lblName: "שם לקוח",
+          lblEmail: "אימייל לקוח",
+          lblMethod: "אמצעי תשלום",
+          send: "שלח חבילה",
+          sessTitle: "סשנים אחרונים",
+          noteSent: "החבילה נשלחה ✉️",
+          noteErr: "שגיאה – נסה שוב",
+          lang: "English",
+          flag: "🇺🇸",
+          placeholderName: "שם מלא",
+          placeholderEmail: "name@email.com",
+          btnMark: "סמן כהושלם",
+          noSess: "אין סשנים עדיין",
         },
       };
+      let lang = localStorage.getItem("adminLang") || "en";
+      const $ = (id) => document.getElementById(id);
 
-      // Mock data - in real implementation, this would come from API
-      let sessions = [
-        {
-          id: 1,
-          email: "sarah@email.com",
-          name: "Sarah",
-          status: "completed",
-          payment: "cash",
-          timestamp: new Date().toISOString(),
-          dream: "Start an art studio",
-          language: "en",
-        },
-        {
-          id: 2,
-          email: "david@email.com",
-          name: "David",
-          status: "pending",
-          payment: "cash",
-          timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-          dream: "Launch tech startup",
-          language: "en",
-        },
-      ];
-
-      // Initialize admin panel
-      document.addEventListener("DOMContentLoaded", function () {
-        applyLanguage();
-        updateStats();
+      function applyLang() {
+        const L = tr[lang];
+        document.documentElement.dir = lang === "he" ? "rtl" : "ltr";
+        document.documentElement.lang = lang;
+        $("title").textContent = L.title;
+        $("subtitle").textContent = L.subtitle;
+        $("lblToday").textContent = L.lblToday;
+        $("lblRevenue").textContent = L.lblRevenue;
+        $("lblPending").textContent = L.lblPending;
+        $("lblTotal").textContent = L.lblTotal;
+        $("pkgTitle").textContent = L.pkgTitle;
+        $("lblName").textContent = L.lblName;
+        $("lblEmail").textContent = L.lblEmail;
+        $("lblMethod").textContent = L.lblMethod;
+        $("sendBtn").textContent = L.send;
+        $("sessTitle").textContent = L.sessTitle;
+        $("langTxt").textContent = L.lang;
+        $("flag").textContent = L.flag;
+        $("name").placeholder = L.placeholderName;
+        $("email").placeholder = L.placeholderEmail;
         renderSessions();
-        setupEventListeners();
+      }
+      $("langBtn").onclick = () => {
+        lang = lang === "en" ? "he" : "en";
+        localStorage.setItem("adminLang", lang);
+        applyLang();
+      };
+
+      /* enable button when form valid */
+      ["name", "email"].forEach((id) =>
+        $(id).addEventListener("input", () => {
+          $("sendBtn").disabled = !pkgForm.checkValidity();
+        })
+      );
+
+      /* sessions array */
+      const sessions = []; // {id,email,name,status,payment,stamp}
+
+      /* form submit */
+      $("pkgForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        $("sendBtn").disabled = true;
+        const payload = {
+          email: $("email").value.trim(),
+          name: $("name").value.trim(),
+          paymentMethod: $("payMethod").value,
+          language: lang,
+        };
+        try {
+          const r = await fetch("/api/send-access-code", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const j = await r.json();
+          if (!j.success) throw new Error(j.error || "fail");
+          notify(tr[lang].noteSent);
+          // push to sessions list
+          sessions.unshift({
+            id: Date.now(),
+            email: payload.email,
+            name: payload.name,
+            status: "pending",
+            payment: payload.paymentMethod,
+            stamp: new Date(),
+          });
+          pkgForm.reset();
+          $("sendBtn").disabled = true;
+          updateStats();
+          renderSessions();
+        } catch (err) {
+          console.error(err);
+          notify(tr[lang].noteErr, true);
+        }
       });
 
-      function applyLanguage() {
-        const t = translations[currentLanguage];
-        const html = document.documentElement;
-
-        // Set direction and language
-        html.setAttribute("dir", currentLanguage === "he" ? "rtl" : "ltr");
-        html.setAttribute("lang", currentLanguage);
-
-        // Update all text content
-        Object.keys(t).forEach((key) => {
-          const element = document.getElementById(key);
-          if (element) {
-            element.textContent = t[key];
-          }
-        });
-
-        // Update language toggle
-        document.querySelector(".lang-text").textContent = t.langText;
-        document.querySelector(".lang-flag").textContent =
-          currentLanguage === "en" ? "🇮🇱" : "🇺🇸";
-
-        // Update placeholders
-        document.getElementById("userEmail").placeholder = t.emailPlaceholder;
-        document.getElementById("userName").placeholder = t.namePlaceholder;
-        document.getElementById("customLocationText").placeholder =
-          t.customLocationPlaceholder;
-
-        // Update admin link
-        const adminLink = document.getElementById("adminLink");
-        adminLink.href = `/reflection.html?admin=true&lang=${currentLanguage}`;
-      }
-
-      function setupEventListeners() {
-        // Language toggle
-        document
-          .getElementById("langToggle")
-          .addEventListener("click", toggleLanguage);
-
-        // Send code form
-        document
-          .getElementById("sendCodeForm")
-          .addEventListener("submit", handleSendCode);
-
-        // Location change
-        document
-          .getElementById("currentLocation")
-          .addEventListener("change", function () {
-            const customGroup = document.getElementById("customLocationGroup");
-            if (this.value === "custom") {
-              customGroup.style.display = "block";
-            } else {
-              customGroup.style.display = "none";
-            }
-          });
-      }
-
-      function toggleLanguage() {
-        currentLanguage = currentLanguage === "en" ? "he" : "en";
-        localStorage.setItem("adminLanguage", currentLanguage);
-        applyLanguage();
-      }
-
-      async function handleSendCode(e) {
-        e.preventDefault();
-
-        const email = document.getElementById("userEmail").value;
-        const name = document.getElementById("userName").value;
-
-        try {
-          const response = await fetch("/api/send-access-code", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, name }),
-          });
-
-          const result = await response.json();
-
-          if (result.success) {
-            showNotification(translations[currentLanguage].accessCodeSent);
-            document.getElementById("sendCodeForm").reset();
-
-            // Add to sessions list
-            const newSession = {
-              id: Date.now(),
-              email,
-              name,
-              status: "pending",
-              payment: "cash",
-              timestamp: new Date().toISOString(),
-              accessCode: result.accessCode,
-              language: currentLanguage,
-            };
-            sessions.unshift(newSession);
-            renderSessions();
-            updateStats();
-          } else {
-            throw new Error(result.error || "Failed to send code");
-          }
-        } catch (error) {
-          console.error("Error sending code:", error);
-          showNotification(translations[currentLanguage].errorSending, "error");
-        }
-      }
-
-      async function sendCashReceipt() {
-        const email = document.getElementById("userEmail").value;
-        const name = document.getElementById("userName").value;
-
-        if (!email || !name) {
-          alert(
-            currentLanguage === "he"
-              ? "אנא מלא שם ומייל לקוח"
-              : "Please fill customer name and email"
-          );
-          return;
-        }
-
-        try {
-          const response = await fetch("/api/generate-receipt", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email,
-              name,
-              amount: 20,
-              paymentMethod: "cash",
-              language: currentLanguage,
-            }),
-          });
-
-          const result = await response.json();
-
-          if (result.success) {
-            showNotification(translations[currentLanguage].receiptSent);
-          } else {
-            throw new Error(result.error || "Failed to send receipt");
-          }
-        } catch (error) {
-          console.error("Error sending receipt:", error);
-          showNotification(translations[currentLanguage].errorSending, "error");
-        }
-      }
-
+      /* stats */
       function updateStats() {
         const today = new Date().toDateString();
         const todaySessions = sessions.filter(
-          (s) => new Date(s.timestamp).toDateString() === today
+          (s) => new Date(s.stamp).toDateString() === today
         );
-
-        document.getElementById("todayReflections").textContent =
-          todaySessions.length;
-        document.getElementById("todayRevenue").textContent =
-          todaySessions.length * 20;
-        document.getElementById("pendingCash").textContent = sessions.filter(
-          (s) => s.status === "pending" && s.payment === "cash"
+        $("statToday").textContent = todaySessions.length;
+        $("statRevenue").textContent = todaySessions.length * 20;
+        $("statPending").textContent = sessions.filter(
+          (s) => s.status === "pending"
         ).length;
-        document.getElementById("totalReflections").textContent =
-          sessions.length;
+        $("statTotal").textContent = sessions.length;
       }
 
+      /* session render */
       function renderSessions() {
-        const container = document.getElementById("sessionsList");
-        const t = translations[currentLanguage];
-
+        const L = tr[lang];
+        const wrap = $("sessList");
         if (sessions.length === 0) {
-          container.innerHTML = `<p style="text-align: center; opacity: 0.6;">${t.noSessions}</p>`;
+          wrap.innerHTML = `<p style="opacity:.6;text-align:center">${L.noSess}</p>`;
           return;
         }
-
-        container.innerHTML = sessions
+        wrap.innerHTML = sessions
           .map(
-            (session) => `
-                <div class="session-item">
-                    <div class="session-info">
-                        <div class="session-email">${session.email}</div>
-                        <div class="session-meta">
-                            ${session.name} • ${session.payment} • ${formatTime(
-              session.timestamp
-            )}
-                            ${
-                              session.dream
-                                ? ` • ${session.dream.substring(0, 30)}...`
-                                : ""
-                            }
-                        </div>
-                    </div>
-                    <div class="session-actions">
-                        <span class="status status-${session.status}">${
-              session.status
-            }</span>
-                        ${
-                          session.status === "pending"
-                            ? `<button class="btn btn-small" onclick="markCompleted(${session.id})">${t.markComplete}</button>`
-                            : ""
-                        }
-                        <button class="btn btn-small" onclick="viewSession(${
-                          session.id
-                        })">${t.viewBtn}</button>
-                    </div>
-                </div>
-            `
+            (s) => `
+             <div class="session">
+               <div>
+                 <div style="font-weight:500">${s.email}</div>
+                 <div class="session-meta">${s.name} • ${
+              s.payment
+            } • ${new Date(s.stamp).toLocaleTimeString(
+              lang === "he" ? "he-IL" : "en-US",
+              { hour: "2-digit", minute: "2-digit" }
+            )}</div>
+               </div>
+               <div style="display:flex;gap:.5rem;align-items:center">
+                 <span class="status ${s.status}">${s.status}</span>
+                 ${
+                   s.status === "pending"
+                     ? `<button class="small-btn" onclick="markDone(${s.id})">${L.btnMark}</button>`
+                     : ""
+                 }
+               </div>
+             </div>`
           )
           .join("");
       }
-
-      function formatTime(timestamp) {
-        return new Date(timestamp).toLocaleTimeString(
-          currentLanguage === "he" ? "he-IL" : "en-US",
-          {
-            hour: "2-digit",
-            minute: "2-digit",
-          }
-        );
-      }
-
-      function markCompleted(sessionId) {
-        const session = sessions.find((s) => s.id === sessionId);
-        if (session) {
-          session.status = "completed";
+      window.markDone = (id) => {
+        const s = sessions.find((x) => x.id === id);
+        if (s) {
+          s.status = "completed";
           renderSessions();
           updateStats();
-          showNotification(translations[currentLanguage].sessionCompleted);
         }
+      };
+
+      /* notification */
+      function notify(msg, err = false) {
+        const n = $("note");
+        n.textContent = msg;
+        n.className = "note" + (err ? " error" : "") + " show";
+        setTimeout(() => n.classList.remove("show"), 3000);
       }
 
-      function viewSession(sessionId) {
-        const session = sessions.find((s) => s.id === sessionId);
-        if (session) {
-          const details =
-            currentLanguage === "he"
-              ? `פרטי סשן:\n\nשם: ${session.name}\nמייל: ${
-                  session.email
-                }\nסטטוס: ${session.status}\nתשלום: ${
-                  session.payment
-                }\nזמן: ${new Date(session.timestamp).toLocaleString(
-                  "he-IL"
-                )}\n${session.dream ? `חלום: ${session.dream}` : ""}`
-              : `Session Details:\n\nName: ${session.name}\nEmail: ${
-                  session.email
-                }\nStatus: ${session.status}\nPayment: ${
-                  session.payment
-                }\nTime: ${new Date(session.timestamp).toLocaleString()}\n${
-                  session.dream ? `Dream: ${session.dream}` : ""
-                }`;
-          alert(details);
-        }
-      }
-
-      function updateLocation() {
-        const location = document.getElementById("currentLocation").value;
-        const customLocation =
-          document.getElementById("customLocationText").value;
-
-        const finalLocation = location === "custom" ? customLocation : location;
-        showNotification(translations[currentLanguage].locationUpdated);
-      }
-
-      function updateBoothStatus() {
-        const status = document.getElementById("boothStatus").value;
-        const statusMap = {
-          open: currentLanguage === "he" ? "🟢 פתוח" : "🟢 Open",
-          break: currentLanguage === "he" ? "🟡 הפסקה" : "🟡 On Break",
-          closed: currentLanguage === "he" ? "🔴 סגור" : "🔴 Closed",
-        };
-
-        document.getElementById("statusDisplayText").textContent = `${
-          currentLanguage === "he" ? "נוכחי" : "Current"
-        }: ${statusMap[status]}`;
-        showNotification(translations[currentLanguage].statusUpdated);
-      }
-
-      function generateDailyReport() {
-        const today = new Date().toDateString();
-        const todaySessions = sessions.filter(
-          (s) => new Date(s.timestamp).toDateString() === today
-        );
-
-        const report = `Daily Report - ${today}
-            
-Sessions: ${todaySessions.length}
-Revenue: ₪${todaySessions.length * 20}
-Cash Payments: ${todaySessions.filter((s) => s.payment === "cash").length}
-Bit Payments: ${todaySessions.filter((s) => s.payment === "bit").length}
-Completion Rate: ${Math.round(
-          (todaySessions.filter((s) => s.status === "completed").length /
-            todaySessions.length) *
-            100
-        )}%`;
-
-        console.log(report);
-        showNotification(translations[currentLanguage].dailyReportGenerated);
-      }
-
-      function exportData() {
-        const data = JSON.stringify(sessions, null, 2);
-        const blob = new Blob([data], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `mirror-sessions-${
-          new Date().toISOString().split("T")[0]
-        }.json`;
-        a.click();
-        URL.revokeObjectURL(url);
-        showNotification(translations[currentLanguage].dataExported);
-      }
-
-      function clearPendingCash() {
-        if (confirm(translations[currentLanguage].confirmClear)) {
-          sessions = sessions.filter(
-            (s) => !(s.status === "pending" && s.payment === "cash")
-          );
-          renderSessions();
-          updateStats();
-          showNotification(translations[currentLanguage].pendingCleared);
-        }
-      }
-
-      function showNotification(message, type = "success") {
-        const notification = document.getElementById("notification");
-        notification.textContent = message;
-        notification.className = `notification ${type}`;
-        notification.classList.add("show");
-
-        setTimeout(() => {
-          notification.classList.remove("show");
-        }, 3000);
-      }
-
-      // Simulate real-time updates
-      setInterval(() => {
-        updateStats();
-      }, 30000);
+      /* init */
+      applyLang();
+      updateStats();
+      setInterval(updateStats, 30000);
     </script>
   </body>
 </html>
