@@ -4,7 +4,7 @@ const nodemailer = require("nodemailer");
 // In production, use a database like MongoDB, Supabase, or PostgreSQL
 let accessCodes = new Map();
 
-const transporter = nodemailer.createTransporter({
+const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: process.env.GMAIL_USER,
