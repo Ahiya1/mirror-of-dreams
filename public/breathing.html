@@ -1,4 +1,4 @@
-<!-- FILE: public/breathing.html • word-reveal fixed, total flow ≈ 8 s, velvet-star field added • 2025-06-01 -->
+<!-- FILE: public/breathing.html • simplified reveal (circle → “You are complete” → “What now” → continue) • verified flag fixed • 2025-06-01 -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -6,18 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Breathing | נשימה</title>
 
-    <!--──────────────  INLINE STYLES  ──────────────-->
+    <!--──────────  INLINE STYLES  ──────────-->
     <style>
-      :root {
-        /* central timing – edit once if you ever tweak pace */
-        --fade-in: 1s; /* container fade  */
-        --complete-delay: 1.4s; /* “You are complete.” */
-        --first-word-delay: 2.4s; /* “what | מה”      */
-        --second-word-delay: 3.6s; /* “now | עכשיו”    */
-        --qmark-delay: 4.6s; /* “?”              */
-        --indicator-delay: 5.2s; /* “click to…”      */
-        --auto-proceed: 7.8s; /* leave page       */
-      }
       * {
         margin: 0;
         padding: 0;
@@ -26,13 +16,18 @@
       body {
         font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
           sans-serif;
-        background: #0b0b15; /* velvet base      */
+        background: #0b0b15
+          radial-gradient(
+            circle at 50% 120%,
+            rgba(255, 255, 255, 0.06),
+            transparent 60%
+          );
         color: #fff;
         min-height: 100vh;
-        overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
+        overflow: hidden;
         position: relative;
       }
       [dir="rtl"] {
@@ -40,47 +35,24 @@
           sans-serif;
       }
 
-      /* ——— velvet-star ambience ——— */
-      .star {
-        position: absolute;
-        border-radius: 50%;
-        pointer-events: none;
-        width: 2px;
-        height: 2px;
-        background: rgba(255, 255, 255, 0.12);
-        animation: twinkle 6s linear infinite;
-      }
-      @keyframes twinkle {
-        0%,
-        100% {
-          transform: translateY(0) scale(0.8);
-          opacity: 0.28;
-        }
-        50% {
-          transform: translateY(-15px) scale(1);
-          opacity: 0.5;
-        }
-      }
-      /* scatter a handful via inline style (below)  */
-
-      /* ——— main container ——— */
+      /* container fade-in */
       .breathing-container {
         text-align: center;
         opacity: 0;
         display: flex;
         flex-direction: column;
         align-items: center;
-        animation: container-in var(--fade-in) ease-out 0.4s forwards;
-        min-height: 60vh;
+        gap: 2.2rem;
+        animation: containerIn 1s ease-out 1s forwards;
         z-index: 10;
       }
-      @keyframes container-in {
+      @keyframes containerIn {
         to {
           opacity: 1;
         }
       }
 
-      /* pulsating circle */
+      /* pulsing circle */
       .breathing-circle {
         width: 160px;
         height: 160px;
@@ -92,14 +64,16 @@
           transparent 85%
         );
         box-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
-        position: relative;
-        animation: breathe 4s ease-in-out infinite;
-        order: 2;
+        animation: pulse 4s ease-in-out infinite;
       }
       .breathing-circle::after {
         content: "";
         position: absolute;
-        inset: 25%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50%;
+        height: 50%;
         border-radius: 50%;
         background: radial-gradient(
           circle,
@@ -107,9 +81,9 @@
           rgba(255, 255, 255, 0.12) 50%,
           transparent 85%
         );
-        animation: breathe-core 4s ease-in-out infinite;
+        animation: pulseCore 4s ease-in-out infinite;
       }
-      @keyframes breathe {
+      @keyframes pulse {
         0%,
         100% {
           transform: scale(1);
@@ -118,75 +92,46 @@
           transform: scale(1.05);
         }
       }
-      @keyframes breathe-core {
+      @keyframes pulseCore {
         0%,
         100% {
-          transform: scale(1);
+          transform: translate(-50%, -50%) scale(1);
         }
         50% {
-          transform: scale(1.1);
+          transform: translate(-50%, -50%) scale(1.1);
         }
       }
 
-      /* gentle sentence */
+      /* top line */
       .complete-text {
-        font-size: clamp(1.35rem, 3.5vw, 1.9rem);
+        font-size: clamp(1.3rem, 3.5vw, 1.9rem);
         font-weight: 300;
-        letter-spacing: 0.02em;
-        margin-bottom: 2rem;
-        line-height: 1.3;
         opacity: 0;
-        order: 1;
-        animation: fade-up 0.9s ease-out var(--complete-delay) forwards;
-        color: rgba(255, 255, 255, 0.9);
+        animation: fadeIn 0.9s ease-out 1.8s forwards;
       }
-
-      /* “WHAT NOW ?” line */
-      .gradient-text {
-        background: linear-gradient(135deg, #e0aaff 0%, #9d4edd 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        color: transparent;
-      }
-      .what-now-container {
+      /* “what now” */
+      .what-now-text {
         font-size: clamp(2rem, 6vw, 3rem);
         font-weight: 500;
-        order: 3;
-      }
-      .word,
-      .qm {
-        display: inline-block;
+        background: linear-gradient(135deg, #e0aaff 0%, #9d4edd 100%);
+        -webkit-background-clip: text;
+        color: transparent;
         opacity: 0;
-        transform: translateY(14px) scale(0.9);
+        animation: whatIn 1s ease-out 3.5s forwards;
       }
-      .word:first-of-type {
-        animation: word-in 0.9s ease-out var(--first-word-delay) forwards;
-      }
-      .word:last-of-type {
-        animation: word-in 0.9s ease-out var(--second-word-delay) forwards;
-      }
-      .qm {
-        animation: word-in 0.9s ease-out var(--qmark-delay) forwards;
-      }
-      @keyframes word-in {
-        0% {
-          opacity: 0;
-          transform: translateY(14px) scale(0.9);
-        }
-        50% {
-          opacity: 0.8;
-          transform: translateY(-2px) scale(1.06);
-        }
-        100% {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
-      }
-      @keyframes fade-up {
+      @keyframes fadeIn {
         to {
           opacity: 1;
-          transform: none;
+        }
+      }
+      @keyframes whatIn {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
       }
 
@@ -199,22 +144,57 @@
         font-size: 0.85rem;
         font-weight: 300;
         opacity: 0;
-        color: rgba(255, 255, 255, 0.5);
+        color: rgba(255, 255, 255, 0.55);
         cursor: pointer;
         transition: 0.35s;
-        animation: fade-in 0.9s ease-out var(--indicator-delay) forwards;
+        animation: indicatorIn 1.2s ease-out 6s forwards;
       }
       .continue-indicator:hover {
         color: #b983ff;
         transform: translate(-50%, -3px);
       }
-      @keyframes fade-in {
+      @keyframes indicatorIn {
         to {
           opacity: 1;
         }
       }
 
-      /* mobile tweak */
+      /* subtle stars */
+      .particle {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        opacity: 0;
+        pointer-events: none;
+        animation: float 40s linear infinite;
+      }
+      .particle:nth-child(1) {
+        left: 25%;
+        width: 2px;
+        height: 2px;
+        animation-delay: 5s;
+      }
+      .particle:nth-child(2) {
+        left: 60%;
+        width: 1px;
+        height: 1px;
+        animation-delay: 12s;
+        animation-duration: 48s;
+      }
+      @keyframes float {
+        0% {
+          transform: translateY(110vh);
+        }
+        20%,
+        60% {
+          opacity: 0.15;
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-12vh);
+        }
+      }
+
       @media (max-width: 768px) {
         .breathing-circle {
           width: 150px;
@@ -228,104 +208,63 @@
   </head>
 
   <body>
-    <!-- tiny velvet-stars -->
-    <div class="star" style="top: 18%; left: 22%; animation-duration: 7s"></div>
-    <div
-      class="star"
-      style="top: 40%; left: 70%; animation-duration: 6s; animation-delay: 0.8s"
-    ></div>
-    <div
-      class="star"
-      style="top: 62%; left: 15%; animation-duration: 8s; animation-delay: 1.2s"
-    ></div>
-    <div
-      class="star"
-      style="
-        top: 28%;
-        left: 50%;
-        animation-duration: 7.5s;
-        animation-delay: 0.4s;
-      "
-    ></div>
-    <div
-      class="star"
-      style="top: 75%; left: 62%; animation-duration: 9s; animation-delay: 1s"
-    ></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
 
     <div class="breathing-container">
-      <div class="breathing-circle"></div>
-
       <div id="completeText" class="complete-text">You are complete.</div>
-
-      <div class="what-now-container gradient-text">
-        <span id="what" class="word">what</span>
-        <span id="now" class="word">now</span>
-        <span class="qm">?</span>
-      </div>
-
-      <div id="continueIndicator" class="continue-indicator" onclick="go()">
+      <div class="breathing-circle"></div>
+      <div id="whatNow" class="what-now-text">what now</div>
+      <div
+        id="continueIndicator"
+        class="continue-indicator"
+        onclick="proceed()"
+      >
         <span id="continueText">Click to continue</span>
       </div>
     </div>
 
-    <!--──────────────  SCRIPT  ──────────────-->
+    <!--──────────  SCRIPT  ──────────-->
     <script>
-      /* language resolve */
-      const lang = (() => {
-        try {
-          return (
-            new URLSearchParams(location.search).get("lang") ||
-            localStorage.getItem("mirrorLanguage") ||
-            "en"
-          );
-        } catch {
-          return "en";
-        }
-      })();
+      /* language selection */
+      const lang =
+        new URLSearchParams(location.search).get("lang") ||
+        localStorage.getItem("mirrorLanguage") ||
+        "en";
 
-      const copy = {
+      const T = {
         en: {
           completeText: "You are complete.",
-          what: "what",
-          now: "now",
+          whatNow: "what now?",
           continueText: "Click to continue",
         },
         he: {
           completeText: "אתה שלם.",
-          what: "מה",
-          now: "עכשיו",
-          continueText: "לחצו כדי להמשיך",
+          whatNow: "?מה עכשיו",
+          continueText: "לחצו להמשך",
         },
-      }[lang];
+      };
+      const L = T[lang];
 
-      /* inject copy */
       document.documentElement.dir = lang === "he" ? "rtl" : "ltr";
       document.documentElement.lang = lang;
-      completeText.textContent = copy.completeText;
-      document.getElementById("what").textContent = copy.what;
-      document.getElementById("now").textContent = copy.now;
-      continueText.textContent = copy.continueText;
+      completeText.textContent = L.completeText;
+      whatNow.textContent = L.whatNow;
+      continueText.textContent = L.continueText;
 
-      /* enable click-anywhere when indicator shows */
+      /* activate click-anywhere once indicator shows */
       setTimeout(() => {
-        document.body.addEventListener("click", go);
+        document.body.addEventListener("click", proceed);
         document.body.style.cursor = "pointer";
-      }, parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--indicator-delay")) * 1000 + 400);
+      }, 6000);
 
-      /* auto proceed after master timing */
-      setTimeout(
-        go,
-        parseFloat(
-          getComputedStyle(document.documentElement).getPropertyValue(
-            "--auto-proceed"
-          )
-        ) * 1000
-      );
+      /* auto-proceed after 8 s total */
+      setTimeout(proceed, 8000);
 
-      function go() {
-        const payment =
-          new URLSearchParams(location.search).get("payment") || "cash";
-        location.href = `/reflection.html?payment=${payment}&lang=${lang}`;
+      function proceed() {
+        const qs = new URLSearchParams(location.search);
+        const payment = qs.get("payment") || "cash";
+        window.location.href = `/reflection.html?payment=${payment}&verified=true&lang=${lang}`;
       }
     </script>
   </body>
