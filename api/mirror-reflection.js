@@ -1,9 +1,29 @@
-const Anthropic = require("@anthropic-ai/sdk");
+/*  FILE: /api/mirror-reflection.js
+    -----------------------------------------------------------
+    “Mirror of Truth” unified endpoint
+    • English → Claude-Sonnet-4
+    • Hebrew  → GPT-4o (OpenAI)
+    • Quiet, elegant HTML rendering
+    -----------------------------------------------------------
+*/
 
+const Anthropic = require("@anthropic-ai/sdk");
+const OpenAI = require("openai");
+
+//─────────────────────────────────────────────────────────────
+//  Clients
+//─────────────────────────────────────────────────────────────
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+//─────────────────────────────────────────────────────────────
+//  Prompt builder
+//─────────────────────────────────────────────────────────────
 function getMirrorPrompt(language = "en") {
   const basePrompt = `You are speaking as the Mirror of Truth — a sacred reflection experience created by Ahiya, a young spiritual warrior who knows that wisdom trumps knowledge and quiet certainty trumps persuasion. 
 
@@ -126,8 +146,44 @@ The reflection should feel like it's written by a wise Hebrew speaker who unders
   return basePrompt;
 }
 
+//─────────────────────────────────────────────────────────────
+//  Helper → turn quiet Markdown into quiet HTML
+//─────────────────────────────────────────────────────────────
+function toQuietHTML(markdown = "") {
+  const wrapperStyle =
+    "font-family:'Inter',sans-serif;font-size:1.05rem;line-height:1.7;color:#333;";
+  const paragraphStyle = "margin:0 0 1.4rem 0;";
+  const strongStyle = "font-weight:600;color:#16213e;";
+  const emStyle = "font-style:italic;color:#444;";
+
+  // split into paragraphs on double line-breaks
+  const paragraphs = markdown.trim().split(/\r?\n\s*\r?\n/);
+
+  const htmlParagraphs = paragraphs.map((para) => {
+    // inline line-breaks become <br>
+    let html = para.replace(/\r?\n/g, "<br>");
+
+    // strong / gentle emphasis replacements
+    html = html.replace(/\*\*(.*?)\*\*/g, (_, txt) => {
+      return `<span style="${strongStyle}">${txt}</span>`;
+    });
+    html = html.replace(/\*(.*?)\*/g, (_, txt) => {
+      return `<span style="${emStyle}">${txt}</span>`;
+    });
+
+    return `<p style="${paragraphStyle}">${html}</p>`;
+  });
+
+  return `<div class="mirror-reflection" style="${wrapperStyle}">${htmlParagraphs.join(
+    ""
+  )}</div>`;
+}
+
+//─────────────────────────────────────────────────────────────
+//  Handler
+//─────────────────────────────────────────────────────────────
 module.exports = async function handler(req, res) {
-  // Set response headers
+  /*–––– CORS ––––*/
   res.setHeader("Content-Type", "application/json");
   res.setHeader("Access-Control-Allow-Credentials", true);
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -137,30 +193,26 @@ module.exports = async function handler(req, res) {
   );
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+    "X-CSRF-Token,X-Requested-With,Accept,Accept-Version,Content-Length,Content-MD5,Content-Type,Date,X-Api-Version"
   );
-
-  // Handle preflight
   if (req.method === "OPTIONS") {
     return res.status(200).json({ success: true, message: "CORS preflight" });
   }
-
   if (req.method !== "POST") {
-    return res.status(405).json({
-      success: false,
-      error: "Method not allowed",
-    });
+    return res
+      .status(405)
+      .json({ success: false, error: "Method not allowed" });
   }
 
-  // Validate environment
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return res.status(500).json({
-      success: false,
-      error: "Server configuration error",
-    });
+  /*–––– ENV validation ––––*/
+  if (!process.env.ANTHROPIC_API_KEY && !process.env.OPENAI_API_KEY) {
+    return res
+      .status(500)
+      .json({ success: false, error: "Server configuration error" });
   }
 
   try {
+    /*–––– Extract body ––––*/
     const {
       dream,
       plan,
@@ -171,97 +223,94 @@ module.exports = async function handler(req, res) {
       userName = "Friend",
       language = "en",
       isAdmin = false,
-    } = req.body;
+    } = req.body || {};
 
-    // Validate required fields
     if (!dream || !plan || !hasDate || !relationship || !offering) {
-      return res.status(400).json({
-        success: false,
-        error: "Missing required fields",
-      });
+      return res
+        .status(400)
+        .json({ success: false, error: "Missing required fields" });
     }
 
-    // Check if this is an admin session (unlimited reflections)
-    if (!isAdmin) {
-      // In production, you might want to implement rate limiting here
-      // For now, we'll allow all non-admin requests
-    }
-
-    // Build the user message in the appropriate language
-    let userMessage;
-
-    if (language === "he") {
-      userMessage = `השם שלי הוא ${userName}.
+    /*–––– Compose user message ––––*/
+    const userMessage =
+      language === "he"
+        ? `השם שלי הוא ${userName}.
 
 **החלום שלי:** ${dream}
 
 **התוכנית שלי:** ${plan}
 
 **האם קבעתי תאריך מוגדר?** ${hasDate === "yes" ? "כן" : "לא"}${
-        hasDate === "yes" && dreamDate ? ` (תאריך: ${dreamDate})` : ""
-      }
+            hasDate === "yes" && dreamDate ? ` (תאריך: ${dreamDate})` : ""
+          }
 
 **הקשר שלי עם החלום הזה:** ${relationship}
 
 **מה אני מוכן לתת:** ${offering}
 
-אנא השתקף בחזרה למה שאתה רואה בתשובות שלי. השתמש בניתוח התבניות שלך כדי לקרוא בין השורות. עזור לי לראות את עצמי בבהירות ולהיכנס לכוח שלי. היה ישיר, היה אוהב, היה מדויק. כתוב השתקפות זורמת וארוכה שאני יכול לחזור אליה חודשים מהיום.`;
-    } else {
-      userMessage = `My name is ${userName}.
+אנא השתקף בחזרה למה שאתה רואה. היה ישיר, היה אוהב, היה מדויק. כתוב השתקפות רחבה וזורמת שאני יכול לחזור אליה חודשים מהיום.`
+        : `My name is ${userName}.
 
 **My dream:** ${dream}
 
 **My plan:** ${plan}
 
 **Have I set a definite date?** ${hasDate}${
-        hasDate === "yes" && dreamDate ? ` (Date: ${dreamDate})` : ""
-      }
+            hasDate === "yes" && dreamDate ? ` (Date: ${dreamDate})` : ""
+          }
 
 **My relationship with this dream:** ${relationship}
 
 **What I'm willing to give:** ${offering}
 
-Please reflect back what you see in my answers. Use your pattern analysis to read between the lines. Help me see myself clearly and step into my power. Be direct, be loving, be precise. Write a flowing, longer reflection I can return to months from now.`;
+Please mirror back what you see, in a flowing reflection I can return to months from now.`;
+
+    /*–––– Call provider ––––*/
+    let rawReflection;
+
+    if (language === "he") {
+      /*— GPT-4o for Hebrew —*/
+      if (!process.env.OPENAI_API_KEY) {
+        throw new Error("OPENAI_API_KEY missing for Hebrew reflections");
+      }
+
+      const oaiResp = await openai.chat.completions.create({
+        model: "gpt-4o",
+        temperature: 0.8,
+        max_tokens: 2048,
+        messages: [
+          { role: "system", content: getMirrorPrompt("he") },
+          { role: "user", content: userMessage },
+        ],
+      });
+
+      rawReflection = oaiResp.choices?.[0]?.message?.content;
+    } else {
+      /*— Claude Sonnet for English —*/
+      if (!process.env.ANTHROPIC_API_KEY) {
+        throw new Error("ANTHROPIC_API_KEY missing for English reflections");
+      }
+
+      const claudeResp = await anthropic.messages.create({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 4000,
+        temperature: 0.8,
+        system: getMirrorPrompt("en"),
+        messages: [{ role: "user", content: userMessage }],
+      });
+
+      rawReflection = claudeResp.content?.[0]?.text;
     }
 
-    console.log(`Calling Anthropic API for ${language} mirror reflection...`);
-
-    const message = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 4000,
-      temperature: 0.8,
-      system: getMirrorPrompt(language),
-      messages: [
-        {
-          role: "user",
-          content: userMessage,
-        },
-      ],
-    });
-
-    console.log("Mirror reflection generated successfully");
-
-    // Validate response
-    if (
-      !message ||
-      !message.content ||
-      !message.content[0] ||
-      !message.content[0].text
-    ) {
-      throw new Error("Invalid response structure from AI");
+    if (!rawReflection) {
+      throw new Error("Empty response from language model");
     }
 
-    const reflection = message.content[0].text;
+    /*–––– Markdown → quiet HTML ––––*/
+    const htmlReflection = toQuietHTML(rawReflection);
 
-    // Convert markdown to HTML with gentle formatting
-    const htmlReflection = reflection
-      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // Strong emphasis
-      .replace(/\*(.*?)\*/g, "<em>$1</em>") // Gentle emphasis
-      .replace(/\n\n/g, "</p><p>") // Paragraphs with breathing space
-      .replace(/^/, "<p>")
-      .replace(/$/, "</p>");
-
-    const response = {
+    /*–––– Success ––––*/
+    return res.status(200).json({
       success: true,
       reflection: htmlReflection,
       userData: {
@@ -276,37 +325,30 @@ Please reflect back what you see in my answers. Use your pattern analysis to rea
         isAdmin,
       },
       timestamp: new Date().toISOString(),
-    };
+    });
+  } catch (err) {
+    console.error("Mirror Reflection API Error:", err);
 
-    return res.status(200).json(response);
-  } catch (error) {
-    console.error("Mirror Reflection API Error:", error);
+    /*— map common errors —*/
+    let status = 500;
+    let message = "Failed to generate reflection";
 
-    // Handle specific error types
-    let errorMessage = "Failed to generate reflection";
-    let statusCode = 500;
-
-    if (error.message.includes("timeout")) {
-      errorMessage = "Request timeout - please try again";
-      statusCode = 408;
-    } else if (error.message.includes("API key")) {
-      errorMessage = "Authentication error";
-      statusCode = 401;
-    } else if (error.message.includes("rate")) {
-      errorMessage = "Too many requests - please wait a moment";
-      statusCode = 429;
+    if (err.message.includes("timeout")) {
+      status = 408;
+      message = "Request timeout — please try again";
+    } else if (err.message.includes("API key")) {
+      status = 401;
+      message = "Authentication error — check server keys";
+    } else if (err.message.includes("rate")) {
+      status = 429;
+      message = "Too many requests — slow down a moment";
     }
 
-    const errorResponse = {
+    return res.status(status).json({
       success: false,
-      error: errorMessage,
+      error: message,
+      ...(process.env.NODE_ENV === "development" && { details: err.message }),
       timestamp: new Date().toISOString(),
-      // Include details in development
-      ...(process.env.NODE_ENV === "development" && {
-        details: error.message,
-      }),
-    };
-
-    return res.status(statusCode).json(errorResponse);
+    });
   }
 };

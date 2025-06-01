@@ -1,18 +1,21 @@
+<!-- FILE: public/breathing.html  •  Hebrew copy refined, local-storage bug fixed, auto-proceed logic corrected •  2025-06-01 -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Breathing | נושם</title>
+    <title>Breathing | נשימה</title>
+
+    <!--────────────────────────  INLINE STYLES  ────────────────────────-->
     <style>
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
-
       body {
-        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
         background: linear-gradient(
           135deg,
           #0f0f23 0%,
@@ -21,14 +24,13 @@
           #0f0f23 100%
         );
         min-height: 100vh;
-        color: white;
+        color: #fff;
         overflow: hidden;
         position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
       }
-
       [dir="rtl"] {
         font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
           sans-serif;
@@ -46,7 +48,6 @@
         justify-content: center;
         min-height: 60vh;
       }
-
       @keyframes fade-in-container {
         0% {
           opacity: 0;
@@ -56,7 +57,7 @@
         }
       }
 
-      /* Main breathing circle - pure luminous white */
+      /* luminous circle */
       .breathing-circle {
         width: 160px;
         height: 160px;
@@ -70,9 +71,8 @@
         position: relative;
         animation: breathe-main 4s ease-in-out infinite;
         box-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+        order: 2;
       }
-
-      /* Inner soft glow only */
       .breathing-circle::after {
         content: "";
         position: absolute;
@@ -81,16 +81,15 @@
         transform: translate(-50%, -50%);
         width: 50%;
         height: 50%;
+        border-radius: 50%;
         background: radial-gradient(
           circle,
           rgba(255, 255, 255, 0.3) 0%,
           rgba(255, 255, 255, 0.1) 40%,
           transparent 80%
         );
-        border-radius: 50%;
         animation: breathe-core 4s ease-in-out infinite;
       }
-
       @keyframes breathe-main {
         0%,
         100% {
@@ -104,7 +103,6 @@
           box-shadow: 0 0 60px rgba(255, 255, 255, 0.25);
         }
       }
-
       @keyframes breathe-core {
         0%,
         100% {
@@ -117,9 +115,8 @@
         }
       }
 
-      /* Text animations - 9-second flow with powerful "What now?" */
+      /* text */
       .complete-text {
-        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
         font-size: clamp(1.2rem, 3.5vw, 1.8rem);
         font-weight: 300;
         letter-spacing: 0.02em;
@@ -129,51 +126,35 @@
         transform: translateY(10px);
         animation: arrive-quietly 1.5s ease-out 2s forwards;
         color: rgba(255, 255, 255, 0.9);
-        position: relative;
-        z-index: 15;
-        order: 1; /* Appears at top */
+        order: 1;
       }
-
       .what-now-container {
-        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
         font-size: clamp(1.8rem, 5vw, 2.8rem);
         font-weight: 400;
         letter-spacing: 0.05em;
         opacity: 0;
         margin-top: 2rem;
-        position: relative;
-        z-index: 15;
-        order: 3; /* Appears at bottom */
+        order: 3;
       }
-
-      .breathing-circle {
-        order: 2; /* Appears in middle */
-      }
-
-      .what-now-word {
-        display: inline-block;
-        opacity: 0;
-        transform: translateY(15px) scale(0.9);
-        margin: 0 0.4rem;
-        color: rgba(144, 238, 144, 0.8); /* Subtle green */
-        transition: all 1.2s ease-out;
-      }
-
-      .what-now-word:nth-child(1) {
-        animation: arrive-with-power 1.2s ease-out 5s forwards;
-      }
-
-      .what-now-word:nth-child(2) {
-        animation: arrive-with-power 1.2s ease-out 6.5s forwards;
-      }
-
+      .what-now-word,
       .question-mark {
         display: inline-block;
         opacity: 0;
         transform: translateY(15px) scale(0.9);
-        animation: arrive-with-power 1.2s ease-out 8s forwards;
-        color: rgba(144, 238, 144, 0.9); /* Slightly stronger green */
+        margin: 0 0.4rem;
+        color: rgba(144, 238, 144, 0.8);
+        transition: 1.2s ease-out;
+      }
+      .what-now-word:nth-child(1) {
+        animation: arrive-with-power 1.2s ease-out 5s forwards;
+      }
+      .what-now-word:nth-child(2) {
+        animation: arrive-with-power 1.2s ease-out 6.5s forwards;
+      }
+      .question-mark {
         margin-left: 0.2rem;
+        color: rgba(144, 238, 144, 0.9);
+        animation: arrive-with-power 1.2s ease-out 8s forwards;
       }
 
       @keyframes arrive-quietly {
@@ -186,7 +167,6 @@
           transform: translateY(0);
         }
       }
-
       @keyframes arrive-with-power {
         0% {
           opacity: 0;
@@ -206,7 +186,7 @@
         }
       }
 
-      /* Continue indication */
+      /* continue indicator */
       .continue-indicator {
         position: absolute;
         bottom: 3rem;
@@ -218,16 +198,13 @@
         color: rgba(255, 255, 255, 0.5);
         animation: fade-in 1.5s ease-out 9.5s forwards;
         cursor: pointer;
-        transition: all 0.4s ease;
+        transition: 0.4s;
         font-family: "Inter", sans-serif;
-        letter-spacing: 0.02em;
       }
-
       .continue-indicator:hover {
         color: rgba(144, 238, 144, 0.7);
         transform: translateX(-50%) translateY(-3px);
       }
-
       @keyframes fade-in {
         0% {
           opacity: 0;
@@ -239,7 +216,7 @@
         }
       }
 
-      /* Minimal ambient elements */
+      /* ambient particle */
       .particle {
         position: absolute;
         border-radius: 50%;
@@ -247,7 +224,6 @@
         opacity: 0;
         pointer-events: none;
       }
-
       .particle:nth-child(1) {
         left: 25%;
         width: 1px;
@@ -256,15 +232,12 @@
         animation-delay: 15s;
         animation-duration: 45s;
       }
-
       @keyframes float-quietly {
         0% {
           opacity: 0;
           transform: translateY(100vh);
         }
-        30% {
-          opacity: 0.1;
-        }
+        30%,
         70% {
           opacity: 0.1;
         }
@@ -274,56 +247,60 @@
         }
       }
 
-      /* Mobile responsive */
+      /* mobile */
       @media (max-width: 768px) {
         .breathing-circle {
           width: 150px;
           height: 150px;
           margin-bottom: 3rem;
         }
-
-        .complete-text {
-          margin-bottom: 2rem;
-        }
-
         .continue-indicator {
           bottom: 2rem;
         }
       }
     </style>
   </head>
+
   <body>
-    <!-- Minimal ambient element -->
     <div class="particle"></div>
 
     <div class="breathing-container">
       <div class="breathing-circle"></div>
 
-      <div class="complete-text" id="completeText">You are complete.</div>
+      <div id="completeText" class="complete-text">You are complete.</div>
 
       <div class="what-now-container">
-        <span class="what-now-word" id="what">what</span>
-        <span class="what-now-word" id="now">now</span>
+        <span id="what" class="what-now-word">what</span>
+        <span id="now" class="what-now-word">now</span>
         <span class="question-mark">?</span>
       </div>
 
       <div
-        class="continue-indicator"
         id="continueIndicator"
-        onclick="proceedToReflection()"
+        class="continue-indicator"
+        onclick="proceed()"
       >
         <span id="continueText">Click to continue</span>
       </div>
     </div>
 
+    <!--────────────────────────  SCRIPT  ────────────────────────-->
     <script>
-      // Language management
-      let currentLanguage =
-        new URLSearchParams(window.location.search).get("lang") ||
-        localStorage.getItem("mirrorLanguage") ||
-        "en";
+      /* safe language detection */
+      const currentLanguage = (() => {
+        try {
+          return (
+            new URLSearchParams(location.search).get("lang") ||
+            localStorage.getItem("mirrorLanguage") ||
+            "en"
+          );
+        } catch {
+          return "en";
+        }
+      })();
 
-      const translations = {
+      /* translations */
+      const tr = {
         en: {
           completeText: "You are complete.",
           what: "what",
@@ -334,54 +311,36 @@
           completeText: "אתה שלם.",
           what: "מה",
           now: "עכשיו",
-          continueText: "לחץ כדי להמשיך",
+          continueText: "לחצו כדי להמשיך",
         },
       };
 
-      // Initialize
-      document.addEventListener("DOMContentLoaded", function () {
-        applyLanguage();
-
-        // Auto-proceed after the 9-second animation completes
-        setTimeout(() => {
-          if (
-            !document.getElementById("continueIndicator").style.display ===
-            "none"
-          ) {
-            proceedToReflection();
-          }
-        }, 12000); // Auto-proceed after 12 seconds total
-      });
-
-      function applyLanguage() {
-        const t = translations[currentLanguage];
-        const html = document.documentElement;
-
-        // Set direction and language
-        html.setAttribute("dir", currentLanguage === "he" ? "rtl" : "ltr");
-        html.setAttribute("lang", currentLanguage);
-
-        // Update text content
-        document.getElementById("completeText").textContent = t.completeText;
-        document.getElementById("what").textContent = t.what;
-        document.getElementById("now").textContent = t.now;
-        document.getElementById("continueText").textContent = t.continueText;
+      function applyLang() {
+        const L = tr[currentLanguage];
+        document.documentElement.dir = currentLanguage === "he" ? "rtl" : "ltr";
+        document.documentElement.lang = currentLanguage;
+        completeText.textContent = L.completeText;
+        what.textContent = L.what;
+        now.textContent = L.now;
+        continueText.textContent = L.continueText;
       }
+      applyLang();
 
-      function proceedToReflection() {
-        // Get payment method from URL or storage
-        const urlParams = new URLSearchParams(window.location.search);
-        const paymentMethod = urlParams.get("payment") || "cash";
+      /* auto-proceed after animation finishes (12 s) */
+      setTimeout(() => proceed(), 12000);
 
-        // Redirect to reflection with appropriate flow
-        window.location.href = `/reflection.html?payment=${paymentMethod}&lang=${currentLanguage}`;
-      }
-
-      // Allow clicking anywhere to proceed after the continue indicator appears
+      /* allow click anywhere after indicator is visible */
       setTimeout(() => {
-        document.body.addEventListener("click", proceedToReflection);
+        document.body.addEventListener("click", proceed);
         document.body.style.cursor = "pointer";
-      }, 9500); // After continue indicator appears
+      }, 9500);
+
+      /* navigate forward */
+      function proceed() {
+        const payment =
+          new URLSearchParams(location.search).get("payment") || "cash";
+        location.href = `/reflection.html?payment=${payment}&lang=${currentLanguage}`;
+      }
     </script>
   </body>
 </html>
