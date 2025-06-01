@@ -3,8 +3,7 @@
      =========================================================================
      • Mobile-first admin panel for booth operation
      • Shows queue of pending registrations from main site
-     • Simple approve & send workflow - no duplicate data entry
-     • Large touch targets, clean visual hierarchy
+     • Simple approve / send / remove workflow – duplicates allowed
      ========================================================================= -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
@@ -463,12 +462,14 @@
         localStorage.getItem("adminRegistrations") || "[]"
       );
 
-      /* simulate receiving registrations from main site */
+      /* ─────────────────────────────────────────
+              Allow duplicate e-mails: no uniqueness test
+              ───────────────────────────────────────── */
       function checkForNewRegistrations() {
         const pending = JSON.parse(
           localStorage.getItem("pendingPayment") || "null"
         );
-        if (pending && !registrations.find((r) => r.email === pending.email)) {
+        if (pending) {
           registrations.unshift({
             id: Date.now(),
             name: pending.name,
@@ -499,7 +500,9 @@
         return `${hours} ${L.timeAgo.hours}`;
       }
 
-      /* render queue */
+      /* ─────────────────────────────────────────
+              Always render a Remove button; Approve only when pending
+              ───────────────────────────────────────── */
       function renderQueue() {
         const L = tr[lang];
         const list = $("queueList");
@@ -518,30 +521,31 @@
         list.innerHTML = registrations
           .map(
             (reg) => `
-               <div class="registration ${reg.status}" data-id="${reg.id}">
-                 <div class="reg-header">
-                   <div>
-                     <div class="reg-name">${reg.name}</div>
-                     <div class="reg-email">${reg.email}</div>
-                   </div>
-                   <div class="reg-time">${timeAgo(reg.timestamp)}</div>
-                 </div>
-                 ${
-                   reg.status === "pending"
-                     ? `
-                   <div class="reg-actions">
-                     <button class="action-btn approve-btn" onclick="approveRegistration(${reg.id})">
-                       ${L.approveBtn}
-                     </button>
-                     <button class="action-btn remove-btn" onclick="removeRegistration(${reg.id})">
-                       ${L.removeBtn}
-                     </button>
+                   <div class="registration ${reg.status}" data-id="${reg.id}">
+                     <div class="reg-header">
+                       <div>
+                         <div class="reg-name">${reg.name}</div>
+                         <div class="reg-email">${reg.email}</div>
+                       </div>
+                       <div class="reg-time">${timeAgo(reg.timestamp)}</div>
+                     </div>
+     
+                     <div class="reg-actions">
+                       ${
+                         reg.status === "pending"
+                           ? `<button class="action-btn approve-btn" onclick="approveRegistration(${reg.id})">
+                                ${L.approveBtn}
+                              </button>`
+                           : ""
+                       }
+                       <button class="action-btn remove-btn" onclick="removeRegistration(${
+                         reg.id
+                       })">
+                         ${L.removeBtn}
+                       </button>
+                     </div>
                    </div>
                  `
-                     : ""
-                 }
-               </div>
-             `
           )
           .join("");
       }
