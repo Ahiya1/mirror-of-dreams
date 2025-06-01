@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Mirror of Truth | מראה האמת</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: linear-gradient(
+          135deg,
+          #0f0f23 0%,
+          #1a1a2e 25%,
+          #16213e 50%,
+          #0f0f23 100%
+        );
+        min-height: 100vh;
+        overflow: hidden;
+        position: relative;
+      }
+
+      [dir="rtl"] {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+      }
+
+      /* Language Toggle */
+      .language-toggle {
+        position: fixed;
+        top: 2rem;
+        right: 2rem;
+        z-index: 1000;
+      }
+
+      [dir="rtl"] .language-toggle {
+        right: auto;
+        left: 2rem;
+      }
+
+      .lang-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.8rem 1.2rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        font-size: 0.9rem;
+      }
+
+      .lang-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+
+      /* Floating Broken Mirrors */
+      .mirrors-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .mirror {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        animation: float 8s ease-in-out infinite;
+        transition: all 0.4s ease;
+        overflow: hidden;
+      }
+
+      /* Broken mirror effect */
+      .mirror::before,
+      .mirror::after {
+        content: "";
+        position: absolute;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+      }
+
+      .mirror::before {
+        top: 20%;
+        left: 15%;
+        width: 30%;
+        height: 35%;
+        border-radius: 60% 40% 30% 70%;
+      }
+
+      .mirror::after {
+        bottom: 25%;
+        right: 20%;
+        width: 25%;
+        height: 30%;
+        border-radius: 40% 60% 70% 30%;
+      }
+
+      /* Individual mirror positioning */
+      .mirror:nth-child(1) {
+        top: 15%;
+        left: 20%;
+        width: 80px;
+        height: 80px;
+        animation-delay: 0s;
+      }
+
+      .mirror:nth-child(2) {
+        top: 25%;
+        right: 15%;
+        width: 60px;
+        height: 60px;
+        animation-delay: -2s;
+      }
+
+      .mirror:nth-child(3) {
+        top: 45%;
+        left: 10%;
+        width: 50px;
+        height: 50px;
+        animation-delay: -4s;
+      }
+
+      .mirror:nth-child(4) {
+        top: 60%;
+        right: 25%;
+        width: 90px;
+        height: 90px;
+        animation-delay: -6s;
+      }
+
+      .mirror:nth-child(5) {
+        bottom: 20%;
+        left: 30%;
+        width: 70px;
+        height: 70px;
+        animation-delay: -3s;
+      }
+
+      .mirror:nth-child(6) {
+        bottom: 35%;
+        right: 40%;
+        width: 55px;
+        height: 55px;
+        animation-delay: -5s;
+      }
+
+      .mirror:nth-child(7) {
+        top: 35%;
+        left: 50%;
+        width: 45px;
+        height: 45px;
+        animation-delay: -1s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+          opacity: 0.6;
+        }
+        25% {
+          transform: translateY(-20px) rotate(5deg);
+          opacity: 0.8;
+        }
+        50% {
+          transform: translateY(-10px) rotate(-3deg);
+          opacity: 1;
+        }
+        75% {
+          transform: translateY(-15px) rotate(2deg);
+          opacity: 0.7;
+        }
+      }
+
+      /* Mirror hover effect */
+      .mirrors-container.hover .mirror {
+        animation-play-state: paused;
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 15px 40px rgba(255, 255, 255, 0.1);
+        transform: scale(1.05);
+      }
+
+      /* Main Content */
+      .main-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        position: relative;
+        z-index: 10;
+      }
+
+      .center-container {
+        text-align: center;
+        color: white;
+        max-width: 600px;
+        padding: 2rem;
+      }
+
+      .title {
+        font-size: clamp(2rem, 8vw, 4rem);
+        font-weight: 300;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+        opacity: 0.95;
+      }
+
+      .reflect-button {
+        width: clamp(180px, 25vw, 220px);
+        height: clamp(180px, 25vw, 220px);
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.12) 0%,
+          rgba(255, 255, 255, 0.03) 70%
+        );
+        backdrop-filter: blur(30px);
+        border: 2px solid rgba(255, 255, 255, 0.25);
+        color: white;
+        font-size: clamp(1rem, 3vw, 1.3rem);
+        font-weight: 400;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        margin: 2rem auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      }
+
+      .reflect-button::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 0;
+        height: 0;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.08) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+        transition: all 0.6s ease;
+      }
+
+      .reflect-button:hover::before {
+        width: 100%;
+        height: 100%;
+      }
+
+      .reflect-button:hover {
+        transform: scale(1.03);
+        border-color: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 25px 80px rgba(255, 255, 255, 0.08);
+      }
+
+      .tagline {
+        font-size: clamp(0.85rem, 2.5vw, 1rem);
+        opacity: 0.75;
+        font-weight: 300;
+        letter-spacing: 0.3px;
+        line-height: 1.6;
+        margin-top: 1.5rem;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      /* Payment Modal */
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(20px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .modal.show {
+        display: flex;
+        opacity: 1;
+      }
+
+      .modal-content {
+        background: rgba(30, 30, 60, 0.95);
+        backdrop-filter: blur(30px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 24px;
+        padding: 3rem;
+        max-width: 450px;
+        width: 90%;
+        text-align: center;
+        color: white;
+        position: relative;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+      }
+
+      .modal.show .modal-content {
+        transform: scale(1);
+      }
+
+      .modal h3 {
+        margin-bottom: 2.5rem;
+        font-weight: 400;
+        font-size: 1.4rem;
+        line-height: 1.3;
+      }
+
+      .form-group {
+        margin-bottom: 1.8rem;
+        text-align: left;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.8rem;
+        font-size: 0.95rem;
+        opacity: 0.9;
+        font-weight: 400;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 1.2rem;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 12px;
+        color: white;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .form-group input::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .payment-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .payment-option {
+        padding: 1.5rem 1rem;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        font-size: 0.95rem;
+        line-height: 1.4;
+      }
+
+      .payment-option:hover,
+      .payment-option.selected {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-2px);
+      }
+
+      .payment-emoji {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+        display: block;
+      }
+
+      .payment-title {
+        font-weight: 500;
+        margin-bottom: 0.3rem;
+      }
+
+      .payment-subtitle {
+        font-size: 0.8rem;
+        opacity: 0.7;
+      }
+
+      .continue-btn {
+        width: 100%;
+        padding: 1.2rem 2rem;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 16px;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .continue-btn:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-2px);
+      }
+
+      .continue-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 1.8rem;
+        cursor: pointer;
+        transition: color 0.3s ease;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+      }
+
+      .modal-close:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      /* Hebrew RTL Support */
+      [dir="rtl"] .modal-close {
+        right: auto;
+        left: 1.5rem;
+      }
+
+      [dir="rtl"] .payment-options {
+        direction: rtl;
+      }
+
+      [dir="rtl"] .form-group {
+        text-align: right;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .reflect-button {
+          width: 160px;
+          height: 160px;
+          font-size: 1rem;
+        }
+
+        .center-container {
+          padding: 1rem;
+        }
+
+        .modal-content {
+          padding: 2rem;
+          margin: 1rem;
+        }
+
+        .payment-options {
+          grid-template-columns: 1fr;
+          gap: 0.8rem;
+        }
+
+        .language-toggle {
+          top: 1rem;
+          right: 1rem;
+        }
+
+        [dir="rtl"] .language-toggle {
+          right: auto;
+          left: 1rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .title {
+          font-size: 2rem;
+        }
+
+        .modal-content {
+          padding: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="mirrors-container" id="mirrorsContainer">
+      <div class="mirror"></div>
+      <div class="mirror"></div>
+      <div class="mirror"></div>
+      <div class="mirror"></div>
+      <div class="mirror"></div>
+      <div class="mirror"></div>
+      <div class="mirror"></div>
+    </div>
+
+    <!-- Language Toggle -->
+    <div class="language-toggle">
+      <button id="langToggle" class="lang-btn">
+        <span class="lang-flag">🇮🇱</span>
+        <span class="lang-text">עברית</span>
+      </button>
+    </div>
+
+    <div class="main-content">
+      <div class="center-container">
+        <h1 class="title" id="mainTitle">The Mirror of Truth</h1>
+        <button class="reflect-button" id="reflectBtn">
+          <span id="reflectText">Reflect Me</span>
+        </button>
+        <p class="tagline" id="tagline">
+          A space to see yourself clearly.<br />
+          No fixing. Only truth.
+        </p>
+      </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+      <div class="modal-content">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <h3 id="modalTitle">Begin Your Reflection</h3>
+
+        <div class="form-group">
+          <label for="userName" id="nameLabel">Your Name</label>
+          <input type="text" id="userName" required />
+        </div>
+
+        <div class="form-group">
+          <label for="userEmail" id="emailLabel">Your Email</label>
+          <input type="email" id="userEmail" required />
+        </div>
+
+        <div class="form-group">
+          <label id="paymentLabel">Payment Method</label>
+          <div class="payment-options">
+            <div class="payment-option" data-payment="cash">
+              <span class="payment-emoji">💰</span>
+              <div class="payment-title" id="cashTitle">Cash</div>
+              <div class="payment-subtitle" id="cashSubtitle">
+                At booth only
+              </div>
+            </div>
+            <div class="payment-option" data-payment="bit">
+              <span class="payment-emoji">📱</span>
+              <div class="payment-title" id="bitTitle">Bit</div>
+              <div class="payment-subtitle" id="bitSubtitle">20 ₪</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="continue-btn" id="continueBtn" disabled>
+          <span id="continueText">Continue to Reflection</span>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // Language System
+      let currentLanguage = localStorage.getItem("mirrorLanguage") || "en";
+      let selectedPayment = null;
+
+      const translations = {
+        en: {
+          mainTitle: "The Mirror of Truth",
+          reflectText: "Reflect Me",
+          tagline: "A space to see yourself clearly.<br>No fixing. Only truth.",
+          modalTitle: "Begin Your Reflection",
+          nameLabel: "Your Name",
+          emailLabel: "Your Email",
+          paymentLabel: "Payment Method",
+          cashTitle: "Cash",
+          cashSubtitle: "At booth only",
+          bitTitle: "Bit",
+          bitSubtitle: "20 ₪",
+          continueText: "Continue to Reflection",
+          langText: "עברית",
+          langFlag: "🇮🇱",
+          namePlaceholder: "Enter your name",
+          emailPlaceholder: "your@email.com",
+        },
+        he: {
+          mainTitle: "מראה האמת",
+          reflectText: "תראה לי",
+          tagline: "מקום לראות את עצמך בבהירות.<br>ללא תיקונים. רק אמת.",
+          modalTitle: "התחל את ההשתקפות שלך",
+          nameLabel: "השם שלך",
+          emailLabel: "המייל שלך",
+          paymentLabel: "אמצעי תשלום",
+          cashTitle: "מזומן",
+          cashSubtitle: "בדוכן בלבד",
+          bitTitle: "ביט",
+          bitSubtitle: "20 ₪",
+          continueText: "המשך להשתקפות",
+          langText: "English",
+          langFlag: "🇺🇸",
+          namePlaceholder: "הכנס את שמך",
+          emailPlaceholder: "your@email.com",
+        },
+      };
+
+      // Initialize
+      document.addEventListener("DOMContentLoaded", function () {
+        applyLanguage();
+        setupEventListeners();
+      });
+
+      function setupEventListeners() {
+        // Mirror hover effect
+        const reflectBtn = document.getElementById("reflectBtn");
+        const mirrorsContainer = document.getElementById("mirrorsContainer");
+
+        reflectBtn.addEventListener("mouseenter", () => {
+          mirrorsContainer.classList.add("hover");
+        });
+
+        reflectBtn.addEventListener("mouseleave", () => {
+          mirrorsContainer.classList.remove("hover");
+        });
+
+        // Open payment modal
+        reflectBtn.addEventListener("click", () => {
+          document.getElementById("paymentModal").classList.add("show");
+        });
+
+        // Language toggle
+        document
+          .getElementById("langToggle")
+          .addEventListener("click", toggleLanguage);
+
+        // Payment selection
+        document.querySelectorAll(".payment-option").forEach((option) => {
+          option.addEventListener("click", () => {
+            document
+              .querySelectorAll(".payment-option")
+              .forEach((opt) => opt.classList.remove("selected"));
+            option.classList.add("selected");
+            selectedPayment = option.dataset.payment;
+            updateContinueButton();
+          });
+        });
+
+        // Input validation
+        document
+          .getElementById("userName")
+          .addEventListener("input", updateContinueButton);
+        document
+          .getElementById("userEmail")
+          .addEventListener("input", updateContinueButton);
+
+        // Continue button
+        document
+          .getElementById("continueBtn")
+          .addEventListener("click", handleContinue);
+
+        // Modal close events
+        document
+          .getElementById("paymentModal")
+          .addEventListener("click", (e) => {
+            if (e.target === e.currentTarget) closeModal();
+          });
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") closeModal();
+        });
+      }
+
+      function toggleLanguage() {
+        currentLanguage = currentLanguage === "en" ? "he" : "en";
+        localStorage.setItem("mirrorLanguage", currentLanguage);
+        applyLanguage();
+      }
+
+      function applyLanguage() {
+        const t = translations[currentLanguage];
+        const html = document.documentElement;
+
+        // Set direction and language
+        html.setAttribute("dir", currentLanguage === "he" ? "rtl" : "ltr");
+        html.setAttribute("lang", currentLanguage);
+
+        // Update text content
+        document.getElementById("mainTitle").textContent = t.mainTitle;
+        document.getElementById("reflectText").textContent = t.reflectText;
+        document.getElementById("tagline").innerHTML = t.tagline;
+        document.getElementById("modalTitle").textContent = t.modalTitle;
+        document.getElementById("nameLabel").textContent = t.nameLabel;
+        document.getElementById("emailLabel").textContent = t.emailLabel;
+        document.getElementById("paymentLabel").textContent = t.paymentLabel;
+        document.getElementById("cashTitle").textContent = t.cashTitle;
+        document.getElementById("cashSubtitle").textContent = t.cashSubtitle;
+        document.getElementById("bitTitle").textContent = t.bitTitle;
+        document.getElementById("bitSubtitle").textContent = t.bitSubtitle;
+        document.getElementById("continueText").textContent = t.continueText;
+
+        // Update language toggle
+        document.querySelector(".lang-text").textContent = t.langText;
+        document.querySelector(".lang-flag").textContent = t.langFlag;
+
+        // Update placeholders
+        document.getElementById("userName").placeholder = t.namePlaceholder;
+        document.getElementById("userEmail").placeholder = t.emailPlaceholder;
+      }
+
+      function closeModal() {
+        document.getElementById("paymentModal").classList.remove("show");
+        selectedPayment = null;
+        updateContinueButton();
+      }
+
+      function updateContinueButton() {
+        const userName = document.getElementById("userName").value;
+        const userEmail = document.getElementById("userEmail").value;
+        const continueBtn = document.getElementById("continueBtn");
+
+        continueBtn.disabled = !(userName && userEmail && selectedPayment);
+      }
+
+      function handleContinue() {
+        const userData = {
+          name: document.getElementById("userName").value,
+          email: document.getElementById("userEmail").value,
+          payment: selectedPayment,
+          language: currentLanguage,
+        };
+
+        if (selectedPayment === "cash") {
+          // Store data and redirect to reflection with cash payment flag
+          localStorage.setItem("pendingCashPayment", JSON.stringify(userData));
+          window.location.href = `./reflection.html?payment=cash&lang=${currentLanguage}`;
+        } else if (selectedPayment === "bit") {
+          // Process Bit payment
+          processBitPayment(userData);
+        }
+      }
+
+      function processBitPayment(userData) {
+        // Generate Bit payment link
+        const amount = 20;
+        const businessNumber = "325761682";
+        const phone = "+972587789019";
+        const description = encodeURIComponent(
+          currentLanguage === "he"
+            ? "מראה האמת - השתקפות"
+            : "Mirror of Truth - Reflection"
+        );
+
+        // Store user data for after payment
+        localStorage.setItem("pendingBitPayment", JSON.stringify(userData));
+
+        // Create Bit payment URL
+        const bitUrl = `https://bit.ly/pay?amount=${amount}&phone=${phone}&description=${description}&business=${businessNumber}`;
+
+        // Open Bit payment (this is a simplified approach - in production you'd use proper Bit API)
+        window.open(bitUrl, "_blank");
+
+        // Show instructions
+        alert(
+          currentLanguage === "he"
+            ? "לאחר השלמת התשלום בביט, חזור לכאן והמשך להשתקפות"
+            : "After completing payment via Bit, return here and continue to reflection"
+        );
+
+        // For now, redirect directly (in production, verify payment first)
+        setTimeout(() => {
+          window.location.href = `./reflection.html?payment=bit&lang=${currentLanguage}`;
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>
