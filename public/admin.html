@@ -530,14 +530,26 @@
         z-index: 2000;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         border: 1px solid rgba(255, 255, 255, 0.2);
+        opacity: 0;
+        visibility: hidden;
       }
 
       .notification.show {
         transform: translateX(-50%) translateY(0);
+        opacity: 1;
+        visibility: visible;
       }
 
       .notification.error {
         background: rgba(239, 68, 68, 0.9);
+      }
+
+      /* Ensure notification completely disappears */
+      .notification:not(.show) {
+        pointer-events: none;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transform: translateX(-50%) translateY(-120%) !important;
       }
 
       /* Loading States */
@@ -1028,10 +1040,35 @@
       // Show notification
       function notify(message, isError = false) {
         const notification = document.getElementById("notification");
+
+        // Clear any existing classes and states
+        notification.classList.remove("show", "error");
+        notification.style.opacity = "";
+        notification.style.visibility = "";
+        notification.style.transform = "";
+
+        // Set new content and type
         notification.textContent = message;
-        notification.className =
-          "notification" + (isError ? " error" : "") + " show";
-        setTimeout(() => notification.classList.remove("show"), 3000);
+        if (isError) {
+          notification.classList.add("error");
+        }
+
+        // Show notification
+        requestAnimationFrame(() => {
+          notification.classList.add("show");
+        });
+
+        // Hide after 3 seconds with complete cleanup
+        setTimeout(() => {
+          notification.classList.remove("show");
+
+          // Extra cleanup after animation completes
+          setTimeout(() => {
+            notification.style.opacity = "0";
+            notification.style.visibility = "hidden";
+            notification.style.transform = "translateX(-50%) translateY(-120%)";
+          }, 400);
+        }, 3000);
       }
 
       // Handle Enter key in auth
