@@ -33,24 +33,26 @@ export default async function handler(req, res) {
   }
 
   /*── Build a reliable base URL for the same deployment ────────────────*/
-  const proto = (req.headers["x-forwarded-proto"] || "https")
-    .split(",")[0]
-    .trim();
+  const proto = req.headers["x-forwarded-proto"] ? "https" : "http";
   const host =
     req.headers["x-forwarded-host"] || req.headers.host || "localhost:3000";
-  const baseURL =
-    process.env.INTERNAL_BASE_URL ||
-    (process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`) ||
-    `${proto}://${host}`;
 
-  const adminURL = `${baseURL}/api/admin-data?key=${encodeURIComponent(
-    process.env.CREATOR_SECRET_KEY
-  )}`;
+  // For Vercel, use the canonical URL or fallback to headers
+  const baseURL = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : `${proto}://${host}`;
+
+  const adminURL = `${baseURL}/api/admin-data`;
+
+  console.log("🔗 Making internal request to:", adminURL);
 
   try {
     const adminRes = await fetch(adminURL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: process.env.CREATOR_SECRET_KEY,
+      },
       body: JSON.stringify({
         action: "addRegistration",
         name,
@@ -61,18 +63,24 @@ export default async function handler(req, res) {
       }),
     });
 
+    console.log("📡 Admin response status:", adminRes.status);
+
     /*── Accept JSON only; treat anything else as an error ──────────────*/
     const ct = adminRes.headers.get("content-type") || "";
     if (!ct.includes("application/json")) {
       const txt = await adminRes.text();
+      console.error("❌ Non-JSON response:", txt.slice(0, 200));
       throw new Error(
         `Upstream non-JSON (${adminRes.status}): ${txt.slice(0, 120)}`
       );
     }
 
     const payload = await adminRes.json();
-    if (!payload.success)
+    console.log("📋 Admin response payload:", payload);
+
+    if (!payload.success) {
       throw new Error(payload.error || "Admin insert failed");
+    }
 
     return res.json({ success: true, message: "Registration recorded" });
   } catch (err) {
