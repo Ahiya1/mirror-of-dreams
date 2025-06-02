@@ -1,7 +1,7 @@
 /* =========================================================================
    FILE: api/admin-data.js
    Sacred data management for Mirror of Truth admin panel
-   ========================================================================= */
+   =========================== */
 
 import {
   addRegistration,
@@ -9,8 +9,7 @@ import {
   updateRegistration,
   removeRegistration,
   updateBoothSettings,
-  importFromStorage,
-} from "../lib/admin-data.js";
+} from "../lib/storage.js";
 
 export default async function handler(req, res) {
   // CORS headers
@@ -34,7 +33,7 @@ export default async function handler(req, res) {
 
   // Simple auth check
   const authKey = req.headers.authorization || req.query.key;
-  console.log("🔐 Auth check:", {
+  console.log("🔐 Auth check for admin-data:", {
     hasAuthKey: !!authKey,
     hasEnvKey: !!process.env.CREATOR_SECRET_KEY,
     keysMatch: authKey === process.env.CREATOR_SECRET_KEY,
@@ -52,6 +51,9 @@ export default async function handler(req, res) {
     // GET - Fetch all admin data
     if (req.method === "GET") {
       const data = getAllData();
+      console.log(
+        `📊 Returning ${data.registrations.length} registrations to admin`
+      );
       return res.json({
         success: true,
         data,
@@ -79,15 +81,6 @@ export default async function handler(req, res) {
             success: true,
             data: updatedData,
             message: "Booth settings updated successfully",
-          });
-
-        case "importFromStorage":
-          importFromStorage(data.existingRegistrations);
-          const importedData = getAllData();
-          return res.json({
-            success: true,
-            data: importedData,
-            message: "Data imported successfully",
           });
 
         default:

@@ -1,8 +1,8 @@
 /* =========================================================================
-   FILE: api/register.js  (Public endpoint → calls shared logic directly)
+   FILE: api/register.js  (Public endpoint → uses shared storage)
    ========================================================================= */
 
-import { addRegistration } from "../lib/admin-data.js";
+import { addRegistration } from "../lib/storage.js";
 
 export default async function handler(req, res) {
   /*── Verify the secret is really available here ───────────────────────*/
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Call shared logic directly instead of making HTTP request
+    // Use shared storage directly
     const newRegistration = addRegistration({
       name,
       email,
