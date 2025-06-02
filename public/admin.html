@@ -6,558 +6,627 @@
     <title>Sacred Admin | Mirror of Truth</title>
 
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
       * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
 
       body {
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-          background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f0f23 100%);
-          min-height: 100vh;
-          color: #fff;
-          overflow-x: hidden;
-          position: relative;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: linear-gradient(
+          135deg,
+          #0f0f23 0%,
+          #1a1a2e 25%,
+          #16213e 50%,
+          #0f0f23 100%
+        );
+        min-height: 100vh;
+        color: #fff;
+        overflow-x: hidden;
+        position: relative;
       }
 
       /* Sacred background particles */
       .sacred-bg {
-          position: fixed;
-          inset: 0;
-          pointer-events: none;
-          overflow: hidden;
-          z-index: 1;
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 1;
       }
 
       .particle {
-          position: absolute;
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: 50%;
-          animation: float 20s linear infinite;
+        position: absolute;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: float 20s linear infinite;
       }
 
-      .particle:nth-child(1) { width: 2px; height: 2px; left: 20%; animation-delay: 0s; }
-      .particle:nth-child(2) { width: 3px; height: 3px; left: 60%; animation-delay: 5s; }
-      .particle:nth-child(3) { width: 1px; height: 1px; left: 80%; animation-delay: 10s; }
-      .particle:nth-child(4) { width: 2px; height: 2px; left: 40%; animation-delay: 15s; }
+      .particle:nth-child(1) {
+        width: 2px;
+        height: 2px;
+        left: 20%;
+        animation-delay: 0s;
+      }
+      .particle:nth-child(2) {
+        width: 3px;
+        height: 3px;
+        left: 60%;
+        animation-delay: 5s;
+      }
+      .particle:nth-child(3) {
+        width: 1px;
+        height: 1px;
+        left: 80%;
+        animation-delay: 10s;
+      }
+      .particle:nth-child(4) {
+        width: 2px;
+        height: 2px;
+        left: 40%;
+        animation-delay: 15s;
+      }
 
       @keyframes float {
-          0% { transform: translateY(100vh) opacity: 0; }
-          10% { opacity: 0.6; }
-          90% { opacity: 0.2; }
-          100% { transform: translateY(-20vh) opacity: 0; }
+        0% {
+          transform: translateY(100vh);
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.6;
+        }
+        90% {
+          opacity: 0.2;
+        }
+        100% {
+          transform: translateY(-20vh);
+          opacity: 0;
+        }
       }
 
       /* Authentication Screen */
       .auth-screen {
-          position: fixed;
-          inset: 0;
-          background: rgba(15, 15, 35, 0.95);
-          backdrop-filter: blur(20px);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 1000;
-          transition: opacity 0.6s ease, visibility 0.6s ease;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 15, 35, 0.95);
+        backdrop-filter: blur(20px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        transition: opacity 0.6s ease, visibility 0.6s ease;
       }
 
       .auth-screen.hidden {
-          opacity: 0;
-          visibility: hidden;
+        opacity: 0;
+        visibility: hidden;
       }
 
       .auth-card {
-          background: rgba(255, 255, 255, 0.08);
-          backdrop-filter: blur(30px);
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          border-radius: 24px;
-          padding: 3rem 2.5rem;
-          max-width: 400px;
-          width: 90%;
-          text-align: center;
-          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-          position: relative;
-          overflow: hidden;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(30px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 24px;
+        padding: 3rem 2.5rem;
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
       }
 
       .auth-card::before {
-          content: '';
-          position: absolute;
-          inset: 1px;
-          background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
-          border-radius: 23px;
-          pointer-events: none;
+        content: "";
+        position: absolute;
+        inset: 1px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0.02) 100%
+        );
+        border-radius: 23px;
+        pointer-events: none;
       }
 
       .auth-title {
-          font-size: 1.8rem;
-          font-weight: 300;
-          margin-bottom: 0.5rem;
-          background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%);
-          -webkit-background-clip: text;
-          color: transparent;
+        font-size: 1.8rem;
+        font-weight: 300;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(
+          135deg,
+          #ffffff 0%,
+          rgba(255, 255, 255, 0.8) 100%
+        );
+        -webkit-background-clip: text;
+        color: transparent;
       }
 
       .auth-subtitle {
-          font-size: 0.9rem;
-          opacity: 0.7;
-          margin-bottom: 2rem;
-          letter-spacing: 0.5px;
+        font-size: 0.9rem;
+        opacity: 0.7;
+        margin-bottom: 2rem;
+        letter-spacing: 0.5px;
       }
 
       .auth-input {
-          width: 100%;
-          padding: 1rem 1.2rem;
-          background: rgba(255, 255, 255, 0.06);
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          border-radius: 16px;
-          color: #fff;
-          font-size: 1rem;
-          margin-bottom: 1.5rem;
-          transition: all 0.3s ease;
-          text-align: center;
-          letter-spacing: 1px;
+        width: 100%;
+        padding: 1rem 1.2rem;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 16px;
+        color: #fff;
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+        text-align: center;
+        letter-spacing: 1px;
       }
 
       .auth-input:focus {
-          outline: none;
-          border-color: rgba(255, 255, 255, 0.3);
-          background: rgba(255, 255, 255, 0.1);
-          box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
       }
 
       .auth-button {
-          width: 100%;
-          padding: 1rem 2rem;
-          background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 16px;
-          color: #fff;
-          font-size: 1rem;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          letter-spacing: 0.5px;
+        width: 100%;
+        padding: 1rem 2rem;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.15) 0%,
+          rgba(255, 255, 255, 0.08) 100%
+        );
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        letter-spacing: 0.5px;
       }
 
       .auth-button:hover {
-          background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.12) 100%);
-          transform: translateY(-2px);
-          box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.2) 0%,
+          rgba(255, 255, 255, 0.12) 100%
+        );
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
       }
 
       .auth-error {
-          background: rgba(239, 68, 68, 0.2);
-          border: 1px solid rgba(239, 68, 68, 0.4);
-          color: #fecaca;
-          padding: 0.8rem;
-          border-radius: 12px;
-          margin-top: 1rem;
-          font-size: 0.9rem;
-          display: none;
+        background: rgba(239, 68, 68, 0.2);
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        color: #fecaca;
+        padding: 0.8rem;
+        border-radius: 12px;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        display: none;
       }
 
       /* Main Admin Interface */
       .admin-interface {
-          position: relative;
-          z-index: 10;
-          padding: 1.5rem;
-          max-width: 1200px;
-          margin: 0 auto;
-          opacity: 0;
-          transition: opacity 0.8s ease;
+        position: relative;
+        z-index: 10;
+        padding: 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        opacity: 0;
+        transition: opacity 0.8s ease;
       }
 
       .admin-interface.visible {
-          opacity: 1;
+        opacity: 1;
       }
 
       /* Header */
       .admin-header {
-          text-align: center;
-          margin-bottom: 2rem;
-          padding-bottom: 1.5rem;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       }
 
       .admin-title {
-          font-size: 2rem;
-          font-weight: 300;
-          margin-bottom: 0.5rem;
-          background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%);
-          -webkit-background-clip: text;
-          color: transparent;
+        font-size: 2rem;
+        font-weight: 300;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(
+          135deg,
+          #ffffff 0%,
+          rgba(255, 255, 255, 0.8) 100%
+        );
+        -webkit-background-clip: text;
+        color: transparent;
       }
 
       .admin-subtitle {
-          font-size: 0.9rem;
-          opacity: 0.7;
-          letter-spacing: 0.5px;
-      }
-
-      /* Language Toggle */
-      .lang-toggle {
-          position: absolute;
-          top: 1.5rem;
-          right: 1.5rem;
-          z-index: 100;
-      }
-
-      .lang-btn {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          background: rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(20px);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          padding: 0.8rem 1.2rem;
-          border-radius: 25px;
-          cursor: pointer;
-          transition: 0.3s;
-          font-size: 0.9rem;
-          color: #fff;
-      }
-
-      .lang-btn:hover {
-          background: rgba(255, 255, 255, 0.15);
-          transform: translateY(-2px);
+        font-size: 0.9rem;
+        opacity: 0.7;
+        letter-spacing: 0.5px;
       }
 
       /* Sacred Stats Grid */
       .stats-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: 1.5rem;
-          margin-bottom: 3rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
       }
 
       .stat-card {
-          background: rgba(255, 255, 255, 0.06);
-          backdrop-filter: blur(25px);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          border-radius: 20px;
-          padding: 2rem 1.5rem;
-          text-align: center;
-          position: relative;
-          overflow: hidden;
-          transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 20px;
+        padding: 2rem 1.5rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
       }
 
       .stat-card:hover {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(255, 255, 255, 0.2);
-          transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-5px);
       }
 
       .stat-card::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 3px;
-          background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
-          opacity: 0.6;
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+        opacity: 0.6;
       }
 
       .stat-number {
-          font-size: 2.5rem;
-          font-weight: 700;
-          margin-bottom: 0.5rem;
-          background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%);
-          -webkit-background-clip: text;
-          color: transparent;
-          line-height: 1;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(
+          135deg,
+          #f093fb 0%,
+          #f5576c 50%,
+          #4facfe 100%
+        );
+        -webkit-background-clip: text;
+        color: transparent;
+        line-height: 1;
       }
 
       .stat-label {
-          font-size: 0.9rem;
-          opacity: 0.8;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-          font-weight: 500;
+        font-size: 0.9rem;
+        opacity: 0.8;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 500;
       }
 
       /* Registrations Section */
       .registrations-section {
-          background: rgba(255, 255, 255, 0.04);
-          backdrop-filter: blur(20px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 24px;
-          padding: 2rem;
-          position: relative;
-          overflow: hidden;
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
       }
 
       .section-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2rem;
       }
 
       .section-title {
-          font-size: 1.3rem;
-          font-weight: 500;
-          opacity: 0.95;
+        font-size: 1.3rem;
+        font-weight: 500;
+        opacity: 0.95;
       }
 
       .pending-badge {
-          background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-          padding: 0.4rem 1rem;
-          border-radius: 20px;
-          font-size: 0.8rem;
-          font-weight: 600;
-          letter-spacing: 0.5px;
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
       }
 
       /* Registration Cards */
       .registration-card {
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 16px;
-          padding: 1.5rem;
-          margin-bottom: 1rem;
-          position: relative;
-          transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        position: relative;
+        transition: all 0.3s ease;
       }
 
       .registration-card:hover {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(255, 255, 255, 0.2);
-          transform: translateX(5px);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(5px);
       }
 
       .registration-card.completed {
-          background: rgba(34, 197, 94, 0.06);
-          border-color: rgba(34, 197, 94, 0.2);
+        background: rgba(34, 197, 94, 0.06);
+        border-color: rgba(34, 197, 94, 0.2);
       }
 
       .registration-card.completed::after {
-          content: '✓';
-          position: absolute;
-          top: 1rem;
-          right: 1rem;
-          color: #22c55e;
-          font-size: 1.2rem;
-          font-weight: bold;
+        content: "✓";
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        color: #22c55e;
+        font-size: 1.2rem;
+        font-weight: bold;
       }
 
       .reg-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
       }
 
       .reg-info h3 {
-          font-size: 1.1rem;
-          font-weight: 600;
-          margin-bottom: 0.3rem;
-          color: #fff;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+        color: #fff;
       }
 
       .reg-info p {
-          font-size: 0.9rem;
-          opacity: 0.7;
-          word-break: break-all;
+        font-size: 0.9rem;
+        opacity: 0.7;
+        word-break: break-all;
       }
 
       .reg-time {
-          font-size: 0.8rem;
-          opacity: 0.6;
-          text-align: right;
-          white-space: nowrap;
+        font-size: 0.8rem;
+        opacity: 0.6;
+        text-align: right;
+        white-space: nowrap;
       }
 
       .reg-actions {
-          display: flex;
-          gap: 1rem;
-          margin-top: 1rem;
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
       }
 
       /* Sacred Action Buttons */
       .action-btn {
-          flex: 1;
-          padding: 1rem 1.5rem;
-          border: none;
-          border-radius: 12px;
-          font-size: 0.9rem;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          min-height: 48px;
-          position: relative;
-          overflow: hidden;
+        flex: 1;
+        padding: 1rem 1.5rem;
+        border: none;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        min-height: 48px;
+        position: relative;
+        overflow: hidden;
       }
 
       .action-btn::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
-          opacity: 0;
-          transition: opacity 0.3s ease;
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
       }
 
       .action-btn:hover::before {
-          opacity: 1;
+        opacity: 1;
       }
 
       .approve-btn {
-          background: linear-gradient(135deg, #10b981, #059669);
-          color: white;
-          box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
       }
 
       .approve-btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+      }
+
+      .approve-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
       }
 
       .remove-btn {
-          background: linear-gradient(135deg, #ef4444, #dc2626);
-          color: white;
-          flex: 0 0 48px;
-          box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+        flex: 0 0 48px;
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
       }
 
       .remove-btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
       }
 
       /* Empty State */
       .empty-state {
-          text-align: center;
-          padding: 4rem 2rem;
-          opacity: 0.6;
+        text-align: center;
+        padding: 4rem 2rem;
+        opacity: 0.6;
       }
 
       .empty-icon {
-          font-size: 4rem;
-          margin-bottom: 1rem;
-          opacity: 0.3;
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.3;
       }
 
       .empty-title {
-          font-size: 1.2rem;
-          margin-bottom: 0.5rem;
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
       }
 
       .empty-subtitle {
-          font-size: 0.9rem;
-          opacity: 0.7;
+        font-size: 0.9rem;
+        opacity: 0.7;
       }
 
       /* Sacred Notifications */
       .notification {
-          position: fixed;
-          top: 2rem;
-          left: 50%;
-          transform: translateX(-50%) translateY(-120%);
-          background: rgba(16, 185, 129, 0.9);
-          backdrop-filter: blur(20px);
-          padding: 1rem 2rem;
-          border-radius: 16px;
-          font-weight: 500;
-          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-          z-index: 2000;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-          border: 1px solid rgba(255, 255, 255, 0.2);
+        position: fixed;
+        top: 2rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(-120%);
+        background: rgba(16, 185, 129, 0.9);
+        backdrop-filter: blur(20px);
+        padding: 1rem 2rem;
+        border-radius: 16px;
+        font-weight: 500;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        z-index: 2000;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
       }
 
       .notification.show {
-          transform: translateX(-50%) translateY(0);
+        transform: translateX(-50%) translateY(0);
       }
 
       .notification.error {
-          background: rgba(239, 68, 68, 0.9);
+        background: rgba(239, 68, 68, 0.9);
       }
 
       /* Loading States */
       .loading {
-          opacity: 0.5;
-          pointer-events: none;
-          position: relative;
+        opacity: 0.5;
+        pointer-events: none;
+        position: relative;
       }
 
       .loading::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: inherit;
-          animation: pulse 2s ease-in-out infinite;
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: inherit;
+        animation: pulse 2s ease-in-out infinite;
       }
 
       @keyframes pulse {
-          0%, 100% { opacity: 0.5; }
-          50% { opacity: 0.8; }
+        0%,
+        100% {
+          opacity: 0.5;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+
+      /* Connection status indicator */
+      .connection-status {
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        z-index: 100;
+        transition: all 0.3s ease;
+      }
+
+      .connection-status.connected {
+        background: rgba(34, 197, 94, 0.2);
+        border: 1px solid rgba(34, 197, 94, 0.4);
+        color: #22c55e;
+      }
+
+      .connection-status.disconnected {
+        background: rgba(239, 68, 68, 0.2);
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        color: #ef4444;
       }
 
       /* Responsive Design */
       @media (max-width: 768px) {
-          .admin-interface {
-              padding: 1rem;
-          }
+        .admin-interface {
+          padding: 1rem;
+        }
 
-          .stats-grid {
-              grid-template-columns: repeat(2, 1fr);
-              gap: 1rem;
-          }
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 1rem;
+        }
 
-          .stat-card {
-              padding: 1.5rem 1rem;
-          }
+        .stat-card {
+          padding: 1.5rem 1rem;
+        }
 
-          .stat-number {
-              font-size: 2rem;
-          }
+        .stat-number {
+          font-size: 2rem;
+        }
 
-          .registrations-section {
-              padding: 1.5rem;
-          }
+        .registrations-section {
+          padding: 1.5rem;
+        }
 
-          .registration-card {
-              padding: 1.2rem;
-          }
+        .registration-card {
+          padding: 1.2rem;
+        }
 
-          .reg-actions {
-              flex-direction: column;
-              gap: 0.8rem;
-          }
+        .reg-actions {
+          flex-direction: column;
+          gap: 0.8rem;
+        }
 
-          .remove-btn {
-              flex: 1;
-          }
-
-          .lang-toggle {
-              top: 1rem;
-              right: 1rem;
-          }
+        .remove-btn {
+          flex: 1;
+        }
       }
 
       @media (max-width: 480px) {
-          .stats-grid {
-              grid-template-columns: 1fr;
-          }
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
 
-          .reg-header {
-              flex-direction: column;
-              gap: 0.5rem;
-          }
+        .reg-header {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
 
-          .reg-time {
-              text-align: left;
-          }
+        .reg-time {
+          text-align: left;
+        }
       }
     </style>
   </head>
@@ -569,6 +638,11 @@
       <div class="particle"></div>
       <div class="particle"></div>
       <div class="particle"></div>
+    </div>
+
+    <!-- Connection Status -->
+    <div class="connection-status connected" id="connectionStatus">
+      🔗 Connected
     </div>
 
     <!-- Authentication Screen -->
@@ -592,44 +666,36 @@
 
     <!-- Main Admin Interface -->
     <div class="admin-interface" id="adminInterface">
-      <!-- Language Toggle -->
-      <div class="lang-toggle">
-        <button id="langBtn" class="lang-btn">
-          <span id="flag">🇮🇱</span>
-          <span id="langTxt">עברית</span>
-        </button>
-      </div>
-
       <!-- Header -->
       <div class="admin-header">
-        <h1 class="admin-title" id="adminTitle">Mirror of Truth</h1>
-        <p class="admin-subtitle" id="adminSubtitle">Sacred Admin Portal</p>
+        <h1 class="admin-title">Mirror of Truth</h1>
+        <p class="admin-subtitle">Sacred Admin Portal</p>
       </div>
 
       <!-- Sacred Stats -->
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-number" id="statPending">-</div>
-          <div class="stat-label" id="lblPending">Pending</div>
+          <div class="stat-label">Pending</div>
         </div>
         <div class="stat-card">
           <div class="stat-number" id="statToday">-</div>
-          <div class="stat-label" id="lblToday">Today</div>
+          <div class="stat-label">Today</div>
         </div>
         <div class="stat-card">
           <div class="stat-number" id="statRevenue">-</div>
-          <div class="stat-label" id="lblRevenue">Revenue ₪</div>
+          <div class="stat-label">Revenue ₪</div>
         </div>
         <div class="stat-card">
           <div class="stat-number" id="statTotal">-</div>
-          <div class="stat-label" id="lblTotal">Total</div>
+          <div class="stat-label">Total</div>
         </div>
       </div>
 
       <!-- Registrations Section -->
       <div class="registrations-section">
         <div class="section-header">
-          <h2 class="section-title" id="registrationsTitle">Sacred Queue</h2>
+          <h2 class="section-title">Sacred Queue</h2>
           <div class="pending-badge" id="pendingBadge">0 pending</div>
         </div>
         <div id="registrationsList">
@@ -642,74 +708,10 @@
     <div id="notification" class="notification"></div>
 
     <script>
-      // Translations
-      const translations = {
-        en: {
-          adminTitle: "Mirror of Truth",
-          adminSubtitle: "Sacred Admin Portal",
-          lblPending: "Pending",
-          lblToday: "Today",
-          lblRevenue: "Revenue ₪",
-          lblTotal: "Total",
-          registrationsTitle: "Sacred Queue",
-          approveBtn: "💰 Approve & Send",
-          removeBtn: "✕",
-          emptyQueue: "No souls in queue",
-          emptySubtext: "Sacred reflections will appear when souls are ready",
-          noteSent: "Sacred package sent ✨",
-          noteRemoved: "Soul released from queue",
-          noteError: "Sacred process interrupted - try again",
-          lang: "עברית",
-          flag: "🇮🇱",
-          pendingText: "pending",
-        },
-        he: {
-          adminTitle: "מראת האמת",
-          adminSubtitle: "פורטל ניהול קדוש",
-          lblPending: "ממתין",
-          lblToday: "היום",
-          lblRevenue: "הכנסות ₪",
-          lblTotal: "סה״כ",
-          registrationsTitle: "תור קדוש",
-          approveBtn: "💰 אשר ושלח",
-          removeBtn: "✕",
-          emptyQueue: "אין נשמות בתור",
-          emptySubtext: "השתקפויות קדושות יופיעו כשנשמות יהיו מוכנות",
-          noteSent: "חבילה קדושה נשלחה ✨",
-          noteRemoved: "נשמה שוחררה מהתור",
-          noteError: "תהליך קדוש נקטע - נסה שוב",
-          lang: "English",
-          flag: "🇺🇸",
-          pendingText: "ממתין",
-        },
-      };
-
-      let currentLang = localStorage.getItem("adminLang") || "he";
       let adminData = null;
       let authKey = null;
 
-      // Apply language
-      function applyLanguage() {
-        const t = translations[currentLang];
-        document.documentElement.dir = currentLang === "he" ? "rtl" : "ltr";
-        document.documentElement.lang = currentLang;
-
-        Object.entries(t).forEach(([key, value]) => {
-          const element = document.getElementById(key);
-          if (element) element.textContent = value;
-        });
-
-        renderRegistrations();
-      }
-
-      // Language toggle
-      document.getElementById("langBtn").onclick = () => {
-        currentLang = currentLang === "en" ? "he" : "en";
-        localStorage.setItem("adminLang", currentLang);
-        applyLanguage();
-      };
-
-      // Authentication
+      // Authentication with backend
       async function authenticate() {
         const password = document.getElementById("authPassword").value.trim();
         const errorDiv = document.getElementById("authError");
@@ -735,18 +737,20 @@
             // Hide auth screen and show admin interface
             document.getElementById("authScreen").classList.add("hidden");
             document.getElementById("adminInterface").classList.add("visible");
+            updateConnectionStatus(true);
 
             // Load admin data
             await loadAdminData();
 
             // Start auto-refresh
-            setInterval(loadAdminData, 10000); // Refresh every 10 seconds
+            setInterval(loadAdminData, 5000); // Refresh every 5 seconds
           } else {
             showAuthError("Invalid sacred key");
           }
         } catch (error) {
           console.error("Auth error:", error);
           showAuthError("Sacred realm temporarily unavailable");
+          updateConnectionStatus(false);
         }
       }
 
@@ -757,20 +761,48 @@
         document.getElementById("authPassword").value = "";
       }
 
+      // Connection status indicator
+      function updateConnectionStatus(connected) {
+        const statusEl = document.getElementById("connectionStatus");
+        if (connected) {
+          statusEl.className = "connection-status connected";
+          statusEl.textContent = "🔗 Connected";
+        } else {
+          statusEl.className = "connection-status disconnected";
+          statusEl.textContent = "⚠️ Offline";
+        }
+      }
+
       // Check for existing auth
-      window.addEventListener("load", () => {
+      window.addEventListener("load", async () => {
         const savedKey = sessionStorage.getItem("mirrorAuthKey");
         if (savedKey) {
-          authKey = savedKey;
-          document.getElementById("authScreen").classList.add("hidden");
-          document.getElementById("adminInterface").classList.add("visible");
-          loadAdminData();
-          setInterval(loadAdminData, 10000);
+          try {
+            // Verify the key is still valid
+            const response = await fetch(
+              `/api/admin-auth?key=${encodeURIComponent(savedKey)}`
+            );
+            if (response.ok) {
+              authKey = savedKey;
+              document.getElementById("authScreen").classList.add("hidden");
+              document
+                .getElementById("adminInterface")
+                .classList.add("visible");
+              updateConnectionStatus(true);
+              loadAdminData();
+              setInterval(loadAdminData, 5000);
+            } else {
+              sessionStorage.removeItem("mirrorAuthKey");
+            }
+          } catch (error) {
+            console.error("Auth check error:", error);
+            sessionStorage.removeItem("mirrorAuthKey");
+            updateConnectionStatus(false);
+          }
         }
-        applyLanguage();
       });
 
-      // Load admin data from backend
+      // FIXED: Load admin data from backend API
       async function loadAdminData() {
         if (!authKey) return;
 
@@ -778,19 +810,31 @@
           const response = await fetch(
             `/api/admin-data?key=${encodeURIComponent(authKey)}`
           );
+
+          if (!response.ok) {
+            if (response.status === 401) {
+              // Auth expired
+              sessionStorage.removeItem("mirrorAuthKey");
+              location.reload();
+              return;
+            }
+            throw new Error(`HTTP ${response.status}`);
+          }
+
           const result = await response.json();
 
           if (result.success) {
             adminData = result.data;
             updateStats();
             renderRegistrations();
-          } else if (response.status === 401) {
-            // Auth expired
-            sessionStorage.removeItem("mirrorAuthKey");
-            location.reload();
+            updateConnectionStatus(true);
+          } else {
+            throw new Error(result.error || "Failed to load admin data");
           }
         } catch (error) {
           console.error("Error loading admin data:", error);
+          updateConnectionStatus(false);
+          notify("Connection error - retrying...", true);
         }
       }
 
@@ -803,11 +847,9 @@
         document.getElementById("statToday").textContent = stats.today;
         document.getElementById("statRevenue").textContent = stats.revenue;
         document.getElementById("statTotal").textContent = stats.total;
-
-        const t = translations[currentLang];
         document.getElementById(
           "pendingBadge"
-        ).textContent = `${stats.pending} ${t.pendingText}`;
+        ).textContent = `${stats.pending} pending`;
       }
 
       // Render registrations
@@ -816,14 +858,13 @@
 
         const container = document.getElementById("registrationsList");
         const registrations = adminData.registrations;
-        const t = translations[currentLang];
 
         if (registrations.length === 0) {
           container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">🪞</div>
-                        <div class="empty-title">${t.emptyQueue}</div>
-                        <div class="empty-subtitle">${t.emptySubtext}</div>
+                        <div class="empty-title">No souls in queue</div>
+                        <div class="empty-subtitle">Sacred reflections will appear when souls are ready</div>
                     </div>
                 `;
           return;
@@ -847,10 +888,10 @@
                         ? `
                         <div class="reg-actions">
                             <button class="action-btn approve-btn" onclick="approveRegistration('${reg.id}')">
-                                ${t.approveBtn}
+                                💰 Approve & Send
                             </button>
                             <button class="action-btn remove-btn" onclick="removeRegistration('${reg.id}')">
-                                ${t.removeBtn}
+                                ✕
                             </button>
                         </div>
                     `
@@ -862,7 +903,7 @@
           .join("");
       }
 
-      // Approve registration
+      // FIXED: Approve registration with backend sync
       async function approveRegistration(id) {
         const registration = adminData.registrations.find((r) => r.id === id);
         if (!registration) return;
@@ -890,7 +931,7 @@
           const result = await response.json();
           if (!result.success) throw new Error("Failed to send access code");
 
-          // Update registration status
+          // Update registration status in backend
           await fetch("/api/admin-data", {
             method: "PUT",
             headers: {
@@ -906,39 +947,38 @@
             }),
           });
 
-          notify(translations[currentLang].noteSent);
+          notify("Sacred package sent ✨");
           await loadAdminData(); // Refresh data
         } catch (error) {
           console.error("Error approving registration:", error);
           button.disabled = false;
-          button.innerHTML = translations[currentLang].approveBtn;
+          button.innerHTML = "💰 Approve & Send";
           button.classList.remove("loading");
-          notify(translations[currentLang].noteError, true);
+          notify("Sacred process interrupted - try again", true);
         }
       }
 
-      // Remove registration
+      // FIXED: Remove registration with backend sync
       async function removeRegistration(id) {
-        const confirmText =
-          currentLang === "he"
-            ? "האם אתה בטוח שברצונך להסיר רישום זה?"
-            : "Are you sure you want to remove this registration?";
-
-        if (!confirm(confirmText)) return;
+        if (!confirm("Are you sure you want to remove this registration?"))
+          return;
 
         try {
-          await fetch(
+          const response = await fetch(
             `/api/admin-data?id=${id}&key=${encodeURIComponent(authKey)}`,
             {
               method: "DELETE",
             }
           );
 
-          notify(translations[currentLang].noteRemoved);
+          const result = await response.json();
+          if (!result.success) throw new Error(result.error);
+
+          notify("Soul released from queue");
           await loadAdminData(); // Refresh data
         } catch (error) {
           console.error("Error removing registration:", error);
-          notify(translations[currentLang].noteError, true);
+          notify("Sacred process interrupted - try again", true);
         }
       }
 

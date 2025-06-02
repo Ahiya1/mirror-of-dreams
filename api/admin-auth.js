@@ -27,6 +27,7 @@ module.exports = async function handler(req, res) {
 
       // Use the same creator secret key for admin access
       if (password === process.env.CREATOR_SECRET_KEY) {
+        console.log(`🔐 Admin authenticated at ${new Date().toISOString()}`);
         return res.json({
           success: true,
           message: "Welcome to the sacred admin space",
@@ -34,6 +35,9 @@ module.exports = async function handler(req, res) {
         });
       }
 
+      console.log(
+        `❌ Failed admin auth attempt at ${new Date().toISOString()}`
+      );
       return res.status(401).json({
         success: false,
         error: "Invalid admin credentials",
