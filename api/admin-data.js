@@ -1,18 +1,12 @@
-/* =========================================================================
-   FILE: api/admin-data.js
-   Sacred data management for Mirror of Truth admin panel
-   ========================================================================= */
-
 const {
   addRegistration,
   getAllData,
   updateRegistration,
   removeRegistration,
   updateBoothSettings,
-} = require("../lib/edge-storage.js");
+} = require("../lib/redis-storage.js");
 
 module.exports = async function handler(req, res) {
-  // CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
@@ -22,7 +16,6 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  // Debug environment variable
   if (!process.env.CREATOR_SECRET_KEY) {
     console.error("🚨 CREATOR_SECRET_KEY not found in environment");
     return res.status(500).json({
@@ -31,7 +24,6 @@ module.exports = async function handler(req, res) {
     });
   }
 
-  // Simple auth check
   const authKey = req.headers.authorization || req.query.key;
   console.log("🔐 Auth check for admin-data:", {
     hasAuthKey: !!authKey,
@@ -50,9 +42,9 @@ module.exports = async function handler(req, res) {
   try {
     console.log(`📡 Admin request: ${req.method} to /api/admin-data`);
 
-    // GET - Fetch all admin data
+    // GET - Fetch all admin data (FIXED: properly await)
     if (req.method === "GET") {
-      const data = getAllData();
+      const data = await getAllData(); // Added await!
       console.log(
         `📊 Returning ${data.registrations.length} registrations to admin`
       );
@@ -62,14 +54,14 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // POST - Add new registration or update settings
+    // POST - Add new registration or update settings (FIXED: properly await)
     if (req.method === "POST") {
       const { action, ...data } = req.body;
 
       switch (action) {
         case "addRegistration":
-          const newRegistration = addRegistration(data);
-          const allData = getAllData();
+          const newRegistration = await addRegistration(data); // Added await!
+          const allData = await getAllData(); // Added await!
           return res.json({
             success: true,
             data: allData,
@@ -77,8 +69,8 @@ module.exports = async function handler(req, res) {
           });
 
         case "updateBoothSettings":
-          updateBoothSettings(data.settings);
-          const updatedData = getAllData();
+          await updateBoothSettings(data.settings); // Added await!
+          const updatedData = await getAllData(); // Added await!
           return res.json({
             success: true,
             data: updatedData,
@@ -93,13 +85,13 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    // PUT - Update existing registration
+    // PUT - Update existing registration (FIXED: properly await)
     if (req.method === "PUT") {
       const { id, updates } = req.body;
 
       try {
-        updateRegistration(id, updates);
-        const data = getAllData();
+        await updateRegistration(id, updates); // Added await!
+        const data = await getAllData(); // Added await!
         return res.json({
           success: true,
           data: { registrations: data.registrations, stats: data.stats },
@@ -113,13 +105,13 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    // DELETE - Remove registration
+    // DELETE - Remove registration (FIXED: properly await)
     if (req.method === "DELETE") {
       const { id } = req.query;
 
       try {
-        removeRegistration(id);
-        const data = getAllData();
+        await removeRegistration(id); // Added await!
+        const data = await getAllData(); // Added await!
         return res.json({
           success: true,
           data: { registrations: data.registrations, stats: data.stats },

@@ -1,11 +1,6 @@
-/* =========================================================================
-   FILE: api/register.js  (Public endpoint → uses shared storage)
-   ========================================================================= */
-
-const { addRegistration } = require("../lib/edge-storage.js");
+const { addRegistration } = require("../lib/redis-storage.js");
 
 module.exports = async function handler(req, res) {
-  /*── Verify the secret is really available here ───────────────────────*/
   if (!process.env.CREATOR_SECRET_KEY) {
     console.error("🚨 register.js: CREATOR_SECRET_KEY is NOT defined!");
     return res
@@ -13,20 +8,17 @@ module.exports = async function handler(req, res) {
       .json({ success: false, error: "Server mis-configuration" });
   }
 
-  /*── CORS & pre-flight ────────────────────────────────────────────────*/
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   if (req.method === "OPTIONS") return res.status(200).end();
 
-  /*── Only POST is accepted ────────────────────────────────────────────*/
   if (req.method !== "POST") {
     return res
       .status(405)
       .json({ success: false, error: "Method not allowed" });
   }
 
-  /*── Minimal validation ───────────────────────────────────────────────*/
   const { name, email, language = "en" } = req.body || {};
   if (!name || !email) {
     return res
@@ -37,8 +29,7 @@ module.exports = async function handler(req, res) {
   try {
     console.log(`🚀 Processing registration for: ${name} (${email})`);
 
-    // Use shared storage directly
-    const newRegistration = addRegistration({
+    const newRegistration = await addRegistration({
       name,
       email,
       language,
