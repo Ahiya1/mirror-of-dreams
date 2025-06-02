@@ -1,6 +1,8 @@
 /* =========================================================================
-   FILE: api/register.js  (Public endpoint → proxies to /api/admin-data)
+   FILE: api/register.js  (Public endpoint → calls shared logic directly)
    ========================================================================= */
+
+import { addRegistration } from "../lib/admin-data.js";
 
 export default async function handler(req, res) {
   /*── Verify the secret is really available here ───────────────────────*/
@@ -32,59 +34,25 @@ export default async function handler(req, res) {
       .json({ success: false, error: "Name and email are required" });
   }
 
-  /*── Build a reliable base URL for the same deployment ────────────────*/
-  const proto = req.headers["x-forwarded-proto"] ? "https" : "http";
-  const host =
-    req.headers["x-forwarded-host"] || req.headers.host || "localhost:3000";
-
-  // For Vercel, use the canonical URL or fallback to headers
-  const baseURL = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : `${proto}://${host}`;
-
-  const adminURL = `${baseURL}/api/admin-data`;
-
-  console.log("🔗 Making internal request to:", adminURL);
-
   try {
-    const adminRes = await fetch(adminURL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: process.env.CREATOR_SECRET_KEY,
-      },
-      body: JSON.stringify({
-        action: "addRegistration",
-        name,
-        email,
-        language,
-        source: "website",
-        timestamp: new Date().toISOString(),
-      }),
+    // Call shared logic directly instead of making HTTP request
+    const newRegistration = addRegistration({
+      name,
+      email,
+      language,
+      source: "website",
+      timestamp: new Date().toISOString(),
     });
 
-    console.log("📡 Admin response status:", adminRes.status);
+    console.log("✅ Registration added successfully:", newRegistration.id);
 
-    /*── Accept JSON only; treat anything else as an error ──────────────*/
-    const ct = adminRes.headers.get("content-type") || "";
-    if (!ct.includes("application/json")) {
-      const txt = await adminRes.text();
-      console.error("❌ Non-JSON response:", txt.slice(0, 200));
-      throw new Error(
-        `Upstream non-JSON (${adminRes.status}): ${txt.slice(0, 120)}`
-      );
-    }
-
-    const payload = await adminRes.json();
-    console.log("📋 Admin response payload:", payload);
-
-    if (!payload.success) {
-      throw new Error(payload.error || "Admin insert failed");
-    }
-
-    return res.json({ success: true, message: "Registration recorded" });
+    return res.json({
+      success: true,
+      message: "Registration recorded",
+      id: newRegistration.id,
+    });
   } catch (err) {
-    console.error("Public register proxy error:", err);
+    console.error("Registration error:", err);
     return res
       .status(500)
       .json({ success: false, error: err.message || "Unknown error" });

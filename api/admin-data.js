@@ -1,57 +1,16 @@
 /* =========================================================================
    FILE: api/admin-data.js
    Sacred data management for Mirror of Truth admin panel
-   Real-time sync across all devices
    ========================================================================= */
 
-// In-memory storage for registrations (synced across all admin sessions)
-let registrations = [];
-let boothSettings = {
-  location: "Rothschild Boulevard",
-  status: "active",
-  openTime: new Date().toISOString(),
-  dailyGoal: 100,
-};
-
-// Helper functions
-function generateId() {
-  return Date.now() + Math.random().toString(36).substr(2, 9);
-}
-
-function calculateStats() {
-  const now = new Date();
-  const today = now.toDateString();
-
-  const todayRegistrations = registrations.filter(
-    (r) => new Date(r.timestamp).toDateString() === today
-  );
-
-  const pending = registrations.filter((r) => r.status === "pending");
-  const completed = registrations.filter((r) => r.status === "completed");
-
-  return {
-    pending: pending.length,
-    today: todayRegistrations.length,
-    revenue: completed.length * 20, // 20 NIS per reflection
-    total: registrations.length,
-    completionRate:
-      registrations.length > 0
-        ? Math.round((completed.length / registrations.length) * 100)
-        : 0,
-  };
-}
-
-function timeAgo(date) {
-  const now = new Date();
-  const diff = Math.floor((now - new Date(date)) / 1000 / 60);
-
-  if (diff < 1) return "now";
-  if (diff === 1) return "1 min ago";
-  if (diff < 60) return `${diff} mins ago`;
-  if (diff < 120) return "1 hour ago";
-  const hours = Math.floor(diff / 60);
-  return `${hours} hours ago`;
-}
+import {
+  addRegistration,
+  getAllData,
+  updateRegistration,
+  removeRegistration,
+  updateBoothSettings,
+  importFromStorage,
+} from "../lib/admin-data.js";
 
 export default async function handler(req, res) {
   // CORS headers
@@ -92,22 +51,10 @@ export default async function handler(req, res) {
   try {
     // GET - Fetch all admin data
     if (req.method === "GET") {
-      const stats = calculateStats();
-
-      // Add time ago to registrations
-      const enrichedRegistrations = registrations.map((reg) => ({
-        ...reg,
-        timeAgo: timeAgo(reg.timestamp),
-      }));
-
+      const data = getAllData();
       return res.json({
         success: true,
-        data: {
-          registrations: enrichedRegistrations,
-          stats,
-          boothSettings,
-          lastUpdated: new Date().toISOString(),
-        },
+        data,
       });
     }
 
@@ -117,44 +64,31 @@ export default async function handler(req, res) {
 
       switch (action) {
         case "addRegistration":
-          const newRegistration = {
-            id: generateId(),
-            name: data.name,
-            email: data.email,
-            language: data.language || "en",
-            timestamp: data.timestamp || new Date().toISOString(),
-            status: "pending",
-            source: data.source || "manual",
-          };
-          registrations.unshift(newRegistration);
-          console.log(`📝 New registration: ${data.name} (${data.email})`);
-          break;
+          const newRegistration = addRegistration(data);
+          const allData = getAllData();
+          return res.json({
+            success: true,
+            data: allData,
+            message: "Registration added successfully",
+          });
 
         case "updateBoothSettings":
-          boothSettings = { ...boothSettings, ...data.settings };
-          break;
+          updateBoothSettings(data.settings);
+          const updatedData = getAllData();
+          return res.json({
+            success: true,
+            data: updatedData,
+            message: "Booth settings updated successfully",
+          });
 
         case "importFromStorage":
-          // Import existing localStorage data if provided
-          if (
-            data.existingRegistrations &&
-            Array.isArray(data.existingRegistrations)
-          ) {
-            // Merge without duplicates
-            data.existingRegistrations.forEach((reg) => {
-              if (
-                !registrations.find(
-                  (r) => r.email === reg.email && r.timestamp === reg.timestamp
-                )
-              ) {
-                registrations.push({
-                  ...reg,
-                  id: reg.id || generateId(),
-                });
-              }
-            });
-          }
-          break;
+          importFromStorage(data.existingRegistrations);
+          const importedData = getAllData();
+          return res.json({
+            success: true,
+            data: importedData,
+            message: "Data imported successfully",
+          });
 
         default:
           return res.status(400).json({
@@ -162,70 +96,46 @@ export default async function handler(req, res) {
             error: "Unknown action",
           });
       }
-
-      const stats = calculateStats();
-      return res.json({
-        success: true,
-        data: { registrations, stats, boothSettings },
-        message: "Data updated successfully",
-      });
     }
 
     // PUT - Update existing registration
     if (req.method === "PUT") {
       const { id, updates } = req.body;
 
-      const registrationIndex = registrations.findIndex((r) => r.id === id);
-      if (registrationIndex === -1) {
+      try {
+        updateRegistration(id, updates);
+        const data = getAllData();
+        return res.json({
+          success: true,
+          data: { registrations: data.registrations, stats: data.stats },
+          message: "Registration updated successfully",
+        });
+      } catch (error) {
         return res.status(404).json({
           success: false,
-          error: "Registration not found",
+          error: error.message,
         });
       }
-
-      registrations[registrationIndex] = {
-        ...registrations[registrationIndex],
-        ...updates,
-        updatedAt: new Date().toISOString(),
-      };
-
-      console.log(
-        `✅ Registration updated: ${registrations[registrationIndex].name} -> ${updates.status}`
-      );
-
-      const stats = calculateStats();
-      return res.json({
-        success: true,
-        data: { registrations, stats },
-        message: "Registration updated successfully",
-      });
     }
 
     // DELETE - Remove registration
     if (req.method === "DELETE") {
       const { id } = req.query;
 
-      const initialLength = registrations.length;
-      const removedReg = registrations.find((r) => r.id === id);
-      registrations = registrations.filter((r) => r.id !== id);
-
-      if (registrations.length === initialLength) {
+      try {
+        removeRegistration(id);
+        const data = getAllData();
+        return res.json({
+          success: true,
+          data: { registrations: data.registrations, stats: data.stats },
+          message: "Registration removed successfully",
+        });
+      } catch (error) {
         return res.status(404).json({
           success: false,
-          error: "Registration not found",
+          error: error.message,
         });
       }
-
-      console.log(
-        `🗑️ Registration removed: ${removedReg?.name} (${removedReg?.email})`
-      );
-
-      const stats = calculateStats();
-      return res.json({
-        success: true,
-        data: { registrations, stats },
-        message: "Registration removed successfully",
-      });
     }
 
     return res.status(405).json({
