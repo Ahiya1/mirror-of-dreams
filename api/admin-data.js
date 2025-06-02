@@ -45,12 +45,12 @@ function timeAgo(date) {
   const now = new Date();
   const diff = Math.floor((now - new Date(date)) / 1000 / 60);
 
-  if (diff < 1) return "עכשיו";
-  if (diff === 1) return "לפני דקה";
-  if (diff < 60) return `לפני ${diff} דקות`;
-  if (diff < 120) return "לפני שעה";
+  if (diff < 1) return "now";
+  if (diff === 1) return "1 min ago";
+  if (diff < 60) return `${diff} mins ago`;
+  if (diff < 120) return "1 hour ago";
   const hours = Math.floor(diff / 60);
-  return `לפני ${hours} שעות`;
+  return `${hours} hours ago`;
 }
 
 module.exports = async function handler(req, res) {
@@ -105,12 +105,13 @@ module.exports = async function handler(req, res) {
             id: generateId(),
             name: data.name,
             email: data.email,
-            language: data.language || "he",
-            timestamp: new Date().toISOString(),
+            language: data.language || "en",
+            timestamp: data.timestamp || new Date().toISOString(),
             status: "pending",
             source: data.source || "manual",
           };
           registrations.unshift(newRegistration);
+          console.log(`📝 New registration: ${data.name} (${data.email})`);
           break;
 
         case "updateBoothSettings":
@@ -172,6 +173,10 @@ module.exports = async function handler(req, res) {
         updatedAt: new Date().toISOString(),
       };
 
+      console.log(
+        `✅ Registration updated: ${registrations[registrationIndex].name} -> ${updates.status}`
+      );
+
       const stats = calculateStats();
       return res.json({
         success: true,
@@ -185,6 +190,7 @@ module.exports = async function handler(req, res) {
       const { id } = req.query;
 
       const initialLength = registrations.length;
+      const removedReg = registrations.find((r) => r.id === id);
       registrations = registrations.filter((r) => r.id !== id);
 
       if (registrations.length === initialLength) {
@@ -193,6 +199,10 @@ module.exports = async function handler(req, res) {
           error: "Registration not found",
         });
       }
+
+      console.log(
+        `🗑️ Registration removed: ${removedReg?.name} (${removedReg?.email})`
+      );
 
       const stats = calculateStats();
       return res.json({

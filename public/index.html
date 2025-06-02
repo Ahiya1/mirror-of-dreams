@@ -1,4 +1,4 @@
-<!-- FILE: public/index.html • enhanced sacred modal with breathing gradients, stellar particles, and luminous presence • FIXED creator bypass • 2025-06-01 -->
+<!-- FILE: public/index.html • enhanced sacred modal with breathing gradients, stellar particles, and luminous presence • FIXED creator bypass + BACKEND SYNC • 2025-06-01 -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -928,19 +928,53 @@
         document.getElementById("continueBtn").disabled = !ready;
       }
 
-      /*── proceed: save info → reflection.html (access-code) ──*/
-      document.getElementById("continueBtn").addEventListener("click", () => {
-        const data = {
-          name: document.getElementById("userName").value.trim(),
-          email: document.getElementById("userEmail").value.trim(),
-          language: currentLanguage,
-        };
-        try {
-          localStorage.setItem("pendingPayment", JSON.stringify(data));
-        } catch {}
-        /* go straight to access-code gate; breathing comes only *after* code is entered */
-        location.href = `./reflection.html?payment=cash&lang=${currentLanguage}`;
-      });
+      /*── FIXED: proceed with backend sync ──*/
+      document
+        .getElementById("continueBtn")
+        .addEventListener("click", async () => {
+          const data = {
+            name: document.getElementById("userName").value.trim(),
+            email: document.getElementById("userEmail").value.trim(),
+            language: currentLanguage,
+          };
+
+          // Show loading state
+          const continueBtn = document.getElementById("continueBtn");
+          const originalText = continueBtn.innerHTML;
+          continueBtn.innerHTML = "<span>⏳ Registering...</span>";
+          continueBtn.disabled = true;
+
+          try {
+            // Save locally for this user's flow
+            localStorage.setItem("pendingPayment", JSON.stringify(data));
+
+            // CRITICAL FIX: Send to admin backend immediately
+            await fetch("/api/admin-data", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: process.env.CREATOR_SECRET_KEY || "fallback-key",
+              },
+              body: JSON.stringify({
+                action: "addRegistration",
+                name: data.name,
+                email: data.email,
+                language: data.language,
+                source: "website",
+                timestamp: new Date().toISOString(),
+              }),
+            });
+
+            // Continue to reflection flow
+            location.href = `./reflection.html?payment=cash&lang=${currentLanguage}`;
+          } catch (error) {
+            console.error("Registration error:", error);
+
+            // Still continue even if backend fails
+            console.warn("Backend sync failed, proceeding with local flow");
+            location.href = `./reflection.html?payment=cash&lang=${currentLanguage}`;
+          }
+        });
 
       /*── modal helpers ──*/
       function closeModal() {
