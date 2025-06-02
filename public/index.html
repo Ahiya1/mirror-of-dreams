@@ -1,4 +1,4 @@
-<!-- FILE: public/index.html • enhanced sacred modal with breathing gradients, stellar particles, and luminous presence • 2025-06-01 -->
+<!-- FILE: public/index.html • enhanced sacred modal with breathing gradients, stellar particles, and luminous presence • FIXED creator bypass • 2025-06-01 -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -277,7 +277,7 @@
         opacity: 1;
       }
 
-      /* sacred stellar particles */
+      /* subtle sparkling stars */
       .modal-stars {
         position: absolute;
         inset: 0;
@@ -286,64 +286,79 @@
       }
       .star {
         position: absolute;
-        background: rgba(255, 255, 255, 0.6);
         border-radius: 50%;
-        animation: starDrift 20s linear infinite;
+        background: rgba(255, 255, 255, 0.6);
+        box-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+        animation: starSparkle 6s ease-in-out infinite;
       }
+
+      /* uniform subtle sparkles */
       .star:nth-child(1) {
-        width: 1px;
-        height: 1px;
-        left: 15%;
-        top: -5%;
+        width: 2px;
+        height: 2px;
+        left: 12%;
+        top: 15%;
         animation-delay: 0s;
-        animation-duration: 25s;
       }
       .star:nth-child(2) {
         width: 1.5px;
         height: 1.5px;
-        left: 75%;
-        top: -5%;
-        animation-delay: 7s;
-        animation-duration: 30s;
+        left: 78%;
+        top: 25%;
+        animation-delay: 1s;
       }
       .star:nth-child(3) {
         width: 1px;
         height: 1px;
-        left: 45%;
-        top: -5%;
-        animation-delay: 14s;
-        animation-duration: 22s;
+        left: 35%;
+        top: 65%;
+        animation-delay: 2s;
       }
       .star:nth-child(4) {
         width: 2px;
         height: 2px;
         left: 85%;
-        top: -5%;
+        top: 80%;
         animation-delay: 3s;
-        animation-duration: 28s;
       }
       .star:nth-child(5) {
         width: 1px;
         height: 1px;
         left: 25%;
-        top: -5%;
-        animation-delay: 11s;
-        animation-duration: 26s;
+        top: 45%;
+        animation-delay: 4s;
       }
-      @keyframes starDrift {
-        0% {
-          transform: translateY(0) translateX(0);
-          opacity: 0;
-        }
-        20% {
-          opacity: 0.4;
-        }
-        80% {
-          opacity: 0.2;
-        }
+      .star:nth-child(6) {
+        width: 1.5px;
+        height: 1.5px;
+        left: 65%;
+        top: 10%;
+        animation-delay: 5s;
+      }
+      .star:nth-child(7) {
+        width: 1px;
+        height: 1px;
+        left: 15%;
+        top: 75%;
+        animation-delay: 2.5s;
+      }
+      .star:nth-child(8) {
+        width: 1.5px;
+        height: 1.5px;
+        left: 55%;
+        top: 35%;
+        animation-delay: 3.5s;
+      }
+
+      @keyframes starSparkle {
+        0%,
         100% {
-          transform: translateY(110vh) translateX(-20px);
-          opacity: 0;
+          opacity: 0.3;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.4);
         }
       }
 
@@ -500,16 +515,20 @@
       .payment-info {
         font-size: 1rem;
         line-height: 1.6;
-        background: rgba(255, 255, 255, 0.04);
-        backdrop-filter: blur(15px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border: 2px solid rgba(255, 255, 255, 0.25);
         border-radius: 16px;
-        padding: 1.4rem;
-        margin: 1.5rem 0 3rem;
-        color: rgba(255, 255, 255, 0.8);
+        padding: 1.8rem 1.5rem;
+        margin: 2rem 0 3rem;
+        color: rgba(255, 255, 255, 0.9);
         letter-spacing: 0.2px;
         position: relative;
         overflow: hidden;
+        text-align: center;
+        font-weight: 400;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
       }
 
       /* subtle shimmer effect */
@@ -523,12 +542,13 @@
         background: linear-gradient(
           90deg,
           transparent,
-          rgba(255, 255, 255, 0.04),
+          rgba(255, 255, 255, 0.06),
           transparent
         );
-        animation: shimmer 3s ease-in-out infinite;
+        animation: paymentShimmer 4s ease-in-out infinite;
       }
-      @keyframes shimmer {
+
+      @keyframes paymentShimmer {
         0% {
           left: -100%;
         }
@@ -699,6 +719,9 @@
         <div class="star"></div>
         <div class="star"></div>
         <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
       </div>
       <div class="modal-content">
         <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -839,7 +862,7 @@
             .then((r) => r.json())
             .then((data) => {
               if (data.success && data.isCreator) {
-                // Auto-populate with creator context
+                // FIXED: Store complete creator data in localStorage
                 const creatorData = {
                   name: "Ahiya",
                   email: "ahiya.butman@gmail.com",
@@ -847,6 +870,7 @@
                   isCreator: true,
                   creatorContext: data.creatorContext,
                 };
+
                 try {
                   localStorage.setItem(
                     "mirrorVerifiedUser",
@@ -858,14 +882,18 @@
                       JSON.stringify(data.creatorContext)
                     );
                   }
-                } catch {}
+                } catch (error) {
+                  console.warn("Could not save to localStorage:", error);
+                }
 
+                // Navigate with creator data properly stored
                 location.href = `./reflection.html?admin=true&verified=true&lang=${currentLanguage}`;
               } else {
                 alert("🪞 Invalid sacred key");
               }
             })
-            .catch(() => {
+            .catch((error) => {
+              console.error("Creator bypass error:", error);
               alert("🪞 Connection error");
             });
         }
