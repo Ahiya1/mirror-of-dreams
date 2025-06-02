@@ -1,17 +1,17 @@
 /* =========================================================================
    FILE: api/admin-data.js
    Sacred data management for Mirror of Truth admin panel
-   =========================== */
+   ========================================================================= */
 
-import {
+const {
   addRegistration,
   getAllData,
   updateRegistration,
   removeRegistration,
   updateBoothSettings,
-} from "../lib/storage.js";
+} = require("../lib/storage.js");
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
@@ -48,6 +48,8 @@ export default async function handler(req, res) {
   }
 
   try {
+    console.log(`📡 Admin request: ${req.method} to /api/admin-data`);
+
     // GET - Fetch all admin data
     if (req.method === "GET") {
       const data = getAllData();
@@ -144,4 +146,4 @@ export default async function handler(req, res) {
         process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
-}
+};
