@@ -10,6 +10,10 @@
       "destination": "/index.html"
     },
     {
+      "source": "/register",
+      "destination": "/register.html"
+    },
+    {
       "source": "/breathing",
       "destination": "/breathing.html"
     },
@@ -44,6 +48,16 @@
     {
       "source": "/breathe",
       "destination": "/breathing",
+      "permanent": true
+    },
+    {
+      "source": "/signup",
+      "destination": "/register",
+      "permanent": true
+    },
+    {
+      "source": "/join",
+      "destination": "/register",
       "permanent": true
     }
   ],

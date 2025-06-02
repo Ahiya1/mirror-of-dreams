@@ -1,4 +1,4 @@
-<!-- FILE: public/index.html • enhanced sacred modal with breathing gradients, stellar particles, and luminous presence • FIXED creator bypass + BACKEND SYNC • 2025-06-01 -->
+<!-- FILE: public/index.html • Clean main page without modal • 2025-06-01 -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -220,6 +220,7 @@
         align-items: center;
         justify-content: center;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
       }
       .reflect-button::before {
         content: "";
@@ -258,428 +259,6 @@
         margin-inline: auto;
       }
 
-      /*── enhanced sacred modal with breathing stars ──*/
-      .modal {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.85);
-        backdrop-filter: blur(20px);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 1000;
-        opacity: 0;
-        transition: opacity 0.4s ease;
-        overflow: hidden;
-      }
-      .modal.show {
-        display: flex;
-        opacity: 1;
-      }
-
-      /* breathing starfield background */
-      .modal-starfield {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        overflow: hidden;
-      }
-      .breath-star {
-        position: absolute;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.4);
-        box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
-        animation: starBreathe 8s ease-in-out infinite;
-      }
-
-      /* distributed breathing stars */
-      .breath-star:nth-child(1) {
-        width: 2px;
-        height: 2px;
-        left: 8%;
-        top: 12%;
-        animation-delay: 0s;
-      }
-      .breath-star:nth-child(2) {
-        width: 1.5px;
-        height: 1.5px;
-        left: 92%;
-        top: 18%;
-        animation-delay: 1.5s;
-      }
-      .breath-star:nth-child(3) {
-        width: 1px;
-        height: 1px;
-        left: 15%;
-        top: 85%;
-        animation-delay: 3s;
-      }
-      .breath-star:nth-child(4) {
-        width: 2px;
-        height: 2px;
-        left: 88%;
-        top: 75%;
-        animation-delay: 4.5s;
-      }
-      .breath-star:nth-child(5) {
-        width: 1px;
-        height: 1px;
-        left: 5%;
-        top: 45%;
-        animation-delay: 6s;
-      }
-      .breath-star:nth-child(6) {
-        width: 1.5px;
-        height: 1.5px;
-        left: 95%;
-        top: 55%;
-        animation-delay: 7.5s;
-      }
-      .breath-star:nth-child(7) {
-        width: 1px;
-        height: 1px;
-        left: 25%;
-        top: 8%;
-        animation-delay: 2s;
-      }
-      .breath-star:nth-child(8) {
-        width: 1.5px;
-        height: 1.5px;
-        left: 75%;
-        top: 92%;
-        animation-delay: 3.5s;
-      }
-      .breath-star:nth-child(9) {
-        width: 1px;
-        height: 1px;
-        left: 45%;
-        top: 5%;
-        animation-delay: 5s;
-      }
-      .breath-star:nth-child(10) {
-        width: 2px;
-        height: 2px;
-        left: 55%;
-        top: 95%;
-        animation-delay: 6.5s;
-      }
-      .breath-star:nth-child(11) {
-        width: 1px;
-        height: 1px;
-        left: 12%;
-        top: 65%;
-        animation-delay: 1s;
-      }
-      .breath-star:nth-child(12) {
-        width: 1.5px;
-        height: 1.5px;
-        left: 82%;
-        top: 35%;
-        animation-delay: 4s;
-      }
-
-      @keyframes starBreathe {
-        0%,
-        100% {
-          opacity: 0.2;
-          transform: scale(1);
-        }
-        25% {
-          opacity: 0.7;
-          transform: scale(1.2);
-        }
-        50% {
-          opacity: 0.4;
-          transform: scale(0.8);
-        }
-        75% {
-          opacity: 0.9;
-          transform: scale(1.1);
-        }
-      }
-
-      /* breathing aurora background */
-      .modal-aurora {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          135deg,
-          rgba(76, 29, 149, 0.03) 0%,
-          rgba(59, 130, 246, 0.02) 25%,
-          rgba(16, 185, 129, 0.02) 50%,
-          rgba(245, 158, 11, 0.02) 75%,
-          rgba(239, 68, 68, 0.03) 100%
-        );
-        background-size: 400% 400%;
-        animation: auroraShift 12s ease-in-out infinite;
-        pointer-events: none;
-      }
-      @keyframes auroraShift {
-        0%,
-        100% {
-          background-position: 0% 50%;
-        }
-        25% {
-          background-position: 100% 25%;
-        }
-        50% {
-          background-position: 50% 100%;
-        }
-        75% {
-          background-position: 25% 0%;
-        }
-      }
-
-      .modal-content {
-        background: rgba(15, 15, 35, 0.85);
-        backdrop-filter: blur(40px) saturate(120%);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 32px;
-        padding: 4rem 3.5rem;
-        max-width: 480px;
-        width: 90%;
-        text-align: center;
-        color: #fff;
-        position: relative;
-        transform: scale(0.92) translateY(20px);
-        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5),
-          0 0 0 1px rgba(255, 255, 255, 0.05),
-          inset 0 1px 0 rgba(255, 255, 255, 0.1);
-      }
-      .modal.show .modal-content {
-        transform: scale(1) translateY(0);
-      }
-
-      /* subtle inner glow */
-      .modal-content::before {
-        content: "";
-        position: absolute;
-        inset: 1px;
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.05) 0%,
-          rgba(255, 255, 255, 0.01) 50%,
-          rgba(255, 255, 255, 0.03) 100%
-        );
-        border-radius: 31px;
-        pointer-events: none;
-        opacity: 0.7;
-      }
-
-      .modal h3 {
-        margin-bottom: 2.5rem;
-        font-weight: 400;
-        font-size: 1.6rem;
-        line-height: 1.3;
-        letter-spacing: 0.3px;
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.95) 0%,
-          rgba(255, 255, 255, 0.8) 100%
-        );
-        -webkit-background-clip: text;
-        color: transparent;
-        text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
-      }
-
-      .form-group {
-        margin-bottom: 2rem;
-        text-align: left;
-        position: relative;
-      }
-      [dir="rtl"] .form-group {
-        text-align: right;
-      }
-      .form-group label {
-        display: block;
-        margin-bottom: 1rem;
-        font-size: 1rem;
-        opacity: 0.9;
-        font-weight: 400;
-        letter-spacing: 0.2px;
-        color: rgba(255, 255, 255, 0.85);
-      }
-      .form-group input {
-        width: 100%;
-        padding: 1.4rem 1.2rem;
-        background: rgba(255, 255, 255, 0.06);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 16px;
-        color: #fff;
-        font-size: 1.05rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1),
-          0 1px 0 rgba(255, 255, 255, 0.05);
-      }
-      .form-group input:focus {
-        outline: none;
-        border-color: rgba(255, 255, 255, 0.3);
-        background: rgba(255, 255, 255, 0.1);
-        transform: translateY(-1px);
-        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1),
-          0 4px 20px rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
-      }
-      .form-group input::placeholder {
-        color: rgba(255, 255, 255, 0.4);
-        letter-spacing: 0.2px;
-      }
-
-      /* enhanced input field glow */
-      .form-group::after {
-        content: "";
-        position: absolute;
-        bottom: -2px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 0;
-        height: 1px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(255, 255, 255, 0.6),
-          transparent
-        );
-        transition: width 0.4s ease;
-      }
-      .form-group:focus-within::after {
-        width: 100%;
-      }
-
-      .payment-info {
-        font-size: 1rem;
-        line-height: 1.6;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(20px);
-        border: 2px solid rgba(255, 255, 255, 0.25);
-        border-radius: 16px;
-        padding: 1.8rem 1.5rem;
-        margin: 2rem 0 3rem;
-        color: rgba(255, 255, 255, 0.9);
-        letter-spacing: 0.2px;
-        position: relative;
-        overflow: hidden;
-        text-align: center;
-        font-weight: 400;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1),
-          inset 0 1px 0 rgba(255, 255, 255, 0.1);
-      }
-
-      /* subtle shimmer effect */
-      .payment-info::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(255, 255, 255, 0.06),
-          transparent
-        );
-        animation: paymentShimmer 4s ease-in-out infinite;
-      }
-
-      @keyframes paymentShimmer {
-        0% {
-          left: -100%;
-        }
-        50% {
-          left: 100%;
-        }
-        100% {
-          left: 100%;
-        }
-      }
-
-      .continue-btn {
-        width: 100%;
-        padding: 1.4rem 2rem;
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.12) 0%,
-          rgba(255, 255, 255, 0.08) 100%
-        );
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 20px;
-        color: #fff;
-        font-size: 1.1rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        letter-spacing: 0.3px;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2),
-          inset 0 1px 0 rgba(255, 255, 255, 0.1);
-      }
-      .continue-btn::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.1) 0%,
-          transparent 50%,
-          rgba(255, 255, 255, 0.05) 100%
-        );
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-      .continue-btn:hover:not(:disabled)::before {
-        opacity: 1;
-      }
-      .continue-btn:hover:not(:disabled) {
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.18) 0%,
-          rgba(255, 255, 255, 0.12) 100%
-        );
-        border-color: rgba(255, 255, 255, 0.35);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 30px rgba(255, 255, 255, 0.15),
-          inset 0 1px 0 rgba(255, 255, 255, 0.15);
-      }
-      .continue-btn:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-        transform: none;
-      }
-
-      .modal-close {
-        position: absolute;
-        top: 1.5rem;
-        right: 1.5rem;
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 1.6rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        width: 44px;
-        height: 44px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-      }
-      .modal-close:hover {
-        color: #fff;
-        background: rgba(255, 255, 255, 0.15);
-        border-color: rgba(255, 255, 255, 0.25);
-        transform: scale(1.05);
-      }
-      [dir="rtl"] .modal-close {
-        right: auto;
-        left: 1.5rem;
-      }
-
       /*── responsive tweaks ──*/
       @media (max-width: 768px) {
         .reflect-button {
@@ -689,10 +268,6 @@
         }
         .center-container {
           padding: 1rem;
-        }
-        .modal-content {
-          padding: 3rem 2.5rem;
-          margin: 1rem;
         }
         .language-toggle {
           top: 1rem;
@@ -706,9 +281,6 @@
       @media (max-width: 480px) {
         .title {
           font-size: 2rem;
-        }
-        .modal-content {
-          padding: 2.5rem 2rem;
         }
       }
     </style>
@@ -733,59 +305,18 @@
       </button>
     </div>
 
-    <!-- core copy -->
+    <!-- core content -->
     <main class="main-content">
       <section class="center-container">
         <h1 class="title" id="mainTitle">The Mirror of Truth</h1>
-        <button class="reflect-button" id="reflectBtn">
+        <a href="./register.html" class="reflect-button" id="reflectBtn">
           <span id="reflectText">Reflect Me</span>
-        </button>
+        </a>
         <p class="tagline" id="tagline">
           A space to see yourself clearly.<br />No fixing. Only truth.
         </p>
       </section>
     </main>
-
-    <!-- enhanced sacred modal -->
-    <div class="modal" id="paymentModal">
-      <div class="modal-aurora"></div>
-      <div class="modal-starfield">
-        <div class="breath-star"></div>
-        <div class="breath-star"></div>
-        <div class="breath-star"></div>
-        <div class="breath-star"></div>
-        <div class="breath-star"></div>
-        <div class="breath-star"></div>
-        <div class="breath-star"></div>
-        <div class="breath-star"></div>
-        <div class="breath-star"></div>
-        <div class="breath-star"></div>
-        <div class="breath-star"></div>
-        <div class="breath-star"></div>
-      </div>
-      <div class="modal-content">
-        <button class="modal-close" onclick="closeModal()">&times;</button>
-        <h3 id="modalTitle">Begin Your Reflection</h3>
-
-        <div class="form-group">
-          <label id="nameLabel" for="userName">Your Name</label>
-          <input id="userName" type="text" required />
-        </div>
-
-        <div class="form-group">
-          <label id="emailLabel" for="userEmail">Your Email</label>
-          <input id="userEmail" type="email" required />
-        </div>
-
-        <div class="payment-info" id="paymentInfo">
-          20&nbsp;₪ — Cash at booth or Bit to +972&nbsp;58-778-9019
-        </div>
-
-        <button class="continue-btn" id="continueBtn" disabled>
-          <span id="continueText">Continue to Reflection</span>
-        </button>
-      </div>
-    </div>
 
     <!--──────────────  SCRIPT  ──────────────-->
     <script>
@@ -807,30 +338,15 @@
           mainTitle: "The Mirror of Truth",
           reflectText: "Reflect Me",
           tagline: "A space to see yourself clearly.<br>No fixing. Only truth.",
-          modalTitle: "Begin Your Reflection",
-          nameLabel: "Your Name",
-          emailLabel: "Your Email",
-          paymentInfo:
-            "20&nbsp;₪ — Cash at booth or Bit to +972&nbsp;58-778-9019",
-          continueText: "Continue to Reflection",
           langText: "עברית",
           langFlag: "🇮🇱",
-          namePlaceholder: "Enter your name",
-          emailPlaceholder: "name@example.com",
         },
         he: {
           mainTitle: "מראת האמת",
           reflectText: "תראה אותי",
           tagline: "מרחב לראות את עצמך בבירור.<br>בלי תיקונים. רק אמת.",
-          modalTitle: "התחל את ההשתקפות",
-          nameLabel: "שם מלא",
-          emailLabel: "אימייל",
-          paymentInfo: "20&nbsp;₪ — מזומן בדוכן או ביט ל-+972&nbsp;58-778-9019",
-          continueText: "המשך להשתקפות",
           langText: "English",
           langFlag: "🇺🇸",
-          namePlaceholder: "הזן את שמך",
-          emailPlaceholder: "name@example.com",
         },
       };
 
@@ -844,8 +360,11 @@
         });
         document.querySelector(".lang-text").textContent = t.langText;
         document.querySelector(".lang-flag").textContent = t.langFlag;
-        document.getElementById("userName").placeholder = t.namePlaceholder;
-        document.getElementById("userEmail").placeholder = t.emailPlaceholder;
+
+        // Update the reflect button link
+        document.getElementById(
+          "reflectBtn"
+        ).href = `./register.html?lang=${currentLanguage}`;
       }
       applyLanguage();
 
@@ -856,7 +375,7 @@
       let pressTimer = null;
       let pressStartTime = 0;
 
-      // Secret bypass - hold for 8.3 seconds
+      // Secret creator bypass - hold for 8.3 seconds
       reflectBtn.addEventListener("mousedown", startPress);
       reflectBtn.addEventListener("touchstart", startPress);
       reflectBtn.addEventListener("mouseup", endPress);
@@ -865,6 +384,7 @@
       reflectBtn.addEventListener("touchcancel", endPress);
 
       function startPress(e) {
+        e.preventDefault();
         pressStartTime = Date.now();
         pressTimer = setTimeout(() => {
           showSecretBypass();
@@ -878,9 +398,10 @@
           pressTimer = null;
         }
 
-        // Normal click if released before 8.3 seconds
+        // Normal navigation if released before 8.3 seconds
         if (pressDuration < 8300) {
-          document.getElementById("paymentModal").classList.add("show");
+          // Let the normal link behavior happen
+          return true;
         }
       }
 
@@ -903,7 +424,7 @@
             .then((r) => r.json())
             .then((data) => {
               if (data.success && data.isCreator) {
-                // FIXED: Store complete creator data properly
+                // Store complete creator data properly
                 const creatorData = {
                   name: "Ahiya",
                   email: "ahiya.butman@gmail.com",
@@ -953,78 +474,6 @@
           localStorage.setItem("mirrorLanguage", currentLanguage);
         } catch {}
         applyLanguage();
-      });
-
-      /*── form validation ──*/
-      document
-        .getElementById("userName")
-        .addEventListener("input", updateContinue);
-      document
-        .getElementById("userEmail")
-        .addEventListener("input", updateContinue);
-      function updateContinue() {
-        const ready =
-          document.getElementById("userName").value.trim() &&
-          document.getElementById("userEmail").value.trim();
-        document.getElementById("continueBtn").disabled = !ready;
-      }
-
-      /*── FIXED: proceed with backend sync ──*/
-      document
-        .getElementById("continueBtn")
-        .addEventListener("click", async () => {
-          const data = {
-            name: document.getElementById("userName").value.trim(),
-            email: document.getElementById("userEmail").value.trim(),
-            language: currentLanguage,
-          };
-
-          // Show loading state
-          const continueBtn = document.getElementById("continueBtn");
-          const originalText = continueBtn.innerHTML;
-          continueBtn.innerHTML = "<span>⏳ Registering...</span>";
-          continueBtn.disabled = true;
-
-          try {
-            // Save locally for this user's flow
-            localStorage.setItem("pendingPayment", JSON.stringify(data));
-
-            // CRITICAL FIX: Send to admin backend immediately
-            await fetch("/api/register", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                action: "addRegistration",
-                name: data.name,
-                email: data.email,
-                language: data.language,
-                source: "website",
-                timestamp: new Date().toISOString(),
-              }),
-            });
-
-            // Continue to reflection flow
-            location.href = `./reflection.html?payment=cash&lang=${currentLanguage}`;
-          } catch (error) {
-            console.error("Registration error:", error);
-
-            // Still continue even if backend fails
-            console.warn("Backend sync failed, proceeding with local flow");
-            location.href = `./reflection.html?payment=cash&lang=${currentLanguage}`;
-          }
-        });
-
-      /*── modal helpers ──*/
-      function closeModal() {
-        document.getElementById("paymentModal").classList.remove("show");
-      }
-      document.getElementById("paymentModal").addEventListener("click", (e) => {
-        if (e.target === e.currentTarget) closeModal();
-      });
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closeModal();
       });
     </script>
   </body>
