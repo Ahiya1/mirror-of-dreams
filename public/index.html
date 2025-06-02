@@ -949,11 +949,10 @@
             localStorage.setItem("pendingPayment", JSON.stringify(data));
 
             // CRITICAL FIX: Send to admin backend immediately
-            await fetch("/api/admin-data", {
+            await fetch("/api/register", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: process.env.CREATOR_SECRET_KEY || "fallback-key",
               },
               body: JSON.stringify({
                 action: "addRegistration",
