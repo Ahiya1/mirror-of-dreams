@@ -53,7 +53,7 @@ function timeAgo(date) {
   return `${hours} hours ago`;
 }
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   // CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
@@ -64,9 +64,25 @@ module.exports = async function handler(req, res) {
     return;
   }
 
+  // Debug environment variable
+  if (!process.env.CREATOR_SECRET_KEY) {
+    console.error("🚨 CREATOR_SECRET_KEY not found in environment");
+    return res.status(500).json({
+      success: false,
+      error: "Server configuration error - missing secret key",
+    });
+  }
+
   // Simple auth check
   const authKey = req.headers.authorization || req.query.key;
+  console.log("🔐 Auth check:", {
+    hasAuthKey: !!authKey,
+    hasEnvKey: !!process.env.CREATOR_SECRET_KEY,
+    keysMatch: authKey === process.env.CREATOR_SECRET_KEY,
+  });
+
   if (authKey !== process.env.CREATOR_SECRET_KEY) {
+    console.log("❌ Auth failed for admin-data");
     return res.status(401).json({
       success: false,
       error: "Unauthorized access to sacred admin data",
@@ -225,4 +241,4 @@ module.exports = async function handler(req, res) {
         process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
-};
+}

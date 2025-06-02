@@ -3,7 +3,7 @@
    Sacred authentication for Mirror of Truth admin panel
    ========================================================================= */
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   // CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
@@ -74,4 +74,4 @@ module.exports = async function handler(req, res) {
         process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
-};
+}
