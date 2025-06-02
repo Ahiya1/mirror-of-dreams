@@ -690,14 +690,34 @@
           });
         });
 
+        // FIXED: Form submission with proper creator context flow
         reflectionForm.addEventListener("submit", async (e) => {
           e.preventDefault();
           showSection("loading");
           const f = new FormData(reflectionForm);
 
-          // Check for creator context
-          const creatorContext = localStorage.getItem("mirrorCreatorContext");
-          const isCreatorMode = userData?.isCreator || false;
+          // FIXED: Properly check and use creator context
+          let creatorContext = null;
+          let isCreatorMode = false;
+
+          // Check if user is creator and get context
+          if (userData?.isCreator) {
+            isCreatorMode = true;
+            // Try to get creator context from multiple sources
+            const storedContext = localStorage.getItem("mirrorCreatorContext");
+            if (storedContext) {
+              try {
+                creatorContext = JSON.parse(storedContext);
+              } catch (e) {
+                console.warn("Failed to parse creator context:", e);
+              }
+            }
+
+            // Fallback: use context from userData if available
+            if (!creatorContext && userData.creatorContext) {
+              creatorContext = userData.creatorContext;
+            }
+          }
 
           const payload = {
             dream: f.get("dream"),
@@ -711,8 +731,14 @@
             language: currentLanguage,
             isAdmin: isAdminMode,
             isCreator: isCreatorMode,
-            creatorContext: creatorContext ? JSON.parse(creatorContext) : null,
+            creatorContext: creatorContext,
           };
+
+          console.log("Sending payload:", {
+            isCreator: isCreatorMode,
+            hasContext: !!creatorContext,
+            userName: payload.userName,
+          });
 
           try {
             const r = await fetch("/api/mirror-reflection", {
@@ -721,10 +747,12 @@
               body: JSON.stringify(payload),
             });
             const j = await r.json();
-            if (!j.success) throw new Error();
+            if (!j.success) throw new Error(j.error || "Reflection failed");
+
             reflectionContent.innerHTML = j.reflection;
             showSection("results");
           } catch (err) {
+            console.error("Reflection error:", err);
             reflectionContent.innerHTML = `<h2>${
               currentLanguage === "he" ? "רגע של שקט…" : "A moment of silence…"
             }</h2>
