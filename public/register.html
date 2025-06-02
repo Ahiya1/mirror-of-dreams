@@ -359,7 +359,11 @@
         z-index: 10;
         width: 100%;
         max-width: 500px;
-        padding: 2rem;
+        padding: 2rem 2rem 4rem 2rem; /* Extra bottom padding */
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       .registration-card {
@@ -633,9 +637,12 @@
 
       /*── responsive tweaks ──*/
       @media (max-width: 768px) {
+        .registration-container {
+          padding: 1.5rem 1.5rem 3rem 1.5rem; /* Adjust padding for mobile */
+        }
         .registration-card {
           padding: 3rem 2.5rem;
-          margin: 1rem;
+          margin: 0; /* Remove margin on mobile */
         }
         .language-toggle,
         .back-button {
@@ -659,11 +666,26 @@
         }
       }
       @media (max-width: 480px) {
+        .registration-container {
+          padding: 1rem 1rem 2.5rem 1rem; /* Even more compact on small screens */
+        }
         .registration-card {
           padding: 2.5rem 2rem;
         }
         .registration-card h1 {
           font-size: 1.5rem;
+        }
+      }
+
+      /* Extra safety for very short screens */
+      @media (max-height: 700px) {
+        .registration-container {
+          align-items: flex-start;
+          padding-top: 1rem;
+          padding-bottom: 2rem;
+        }
+        .registration-card {
+          margin-top: 2rem;
         }
       }
     </style>
