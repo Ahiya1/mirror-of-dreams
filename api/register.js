@@ -2,7 +2,7 @@
    FILE: api/register.js  (Public endpoint → uses shared storage)
    ========================================================================= */
 
-const { addRegistration } = require("../lib/storage.js");
+const { addRegistration } = require("../lib/edge-storage.js");
 
 module.exports = async function handler(req, res) {
   /*── Verify the secret is really available here ───────────────────────*/

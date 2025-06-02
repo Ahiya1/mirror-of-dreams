@@ -9,7 +9,7 @@ const {
   updateRegistration,
   removeRegistration,
   updateBoothSettings,
-} = require("../lib/storage.js");
+} = require("../lib/edge-storage.js");
 
 module.exports = async function handler(req, res) {
   // CORS headers
