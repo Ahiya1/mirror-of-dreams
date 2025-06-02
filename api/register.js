@@ -2,9 +2,9 @@
    FILE: api/register.js  (Public endpoint → uses shared storage)
    ========================================================================= */
 
-import { addRegistration } from "../lib/storage.js";
+const { addRegistration } = require("../lib/storage.js");
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   /*── Verify the secret is really available here ───────────────────────*/
   if (!process.env.CREATOR_SECRET_KEY) {
     console.error("🚨 register.js: CREATOR_SECRET_KEY is NOT defined!");
@@ -35,6 +35,8 @@ export default async function handler(req, res) {
   }
 
   try {
+    console.log(`🚀 Processing registration for: ${name} (${email})`);
+
     // Use shared storage directly
     const newRegistration = addRegistration({
       name,
@@ -57,4 +59,4 @@ export default async function handler(req, res) {
       .status(500)
       .json({ success: false, error: err.message || "Unknown error" });
   }
-}
+};
