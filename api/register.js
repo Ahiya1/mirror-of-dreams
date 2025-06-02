@@ -1,72 +1,56 @@
 /* =========================================================================
-   FILE: api/register.js
-   PUBLIC REGISTRATION ENDPOINT (Vercel‑friendly)
-   -------------------------------------------------------------------------
-   Accepts a registration payload from the browser and forwards it to
-   the secured /api/admin-data route WITH the CREATOR_SECRET_KEY so that
-   the entry appears in the admin panel. Works both locally and on Vercel.
+   FILE: api/register.js      (Public endpoint → proxies to /api/admin-data)
+   Updated: 2025‑06‑03 – fixes Vercel self‑fetch + non‑JSON response handling
    ========================================================================= */
 
 export default async function handler(req, res) {
-  /*───────────────────────────────────────────────────────────────────────
-      CORS pre‑flight support
-    ───────────────────────────────────────────────────────────────────────*/
+  /*───────────────────────────────────────────────────────────
+      CORS & Pre‑flight
+    ───────────────────────────────────────────────────────────*/
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method === "OPTIONS") return res.status(200).end();
 
-  if (req.method === "OPTIONS") {
-    res.status(200).end();
-    return;
-  }
-
-  // Only POST is allowed
-  if (req.method !== "POST") {
+  if (req.method !== "POST")
     return res
       .status(405)
       .json({ success: false, error: "Method not allowed" });
-  }
 
-  /*───────────────────────────────────────────────────────────────────────
-      Basic payload validation
-    ───────────────────────────────────────────────────────────────────────*/
+  /*───────────────────────────────────────────────────────────
+      Basic validation – name + email are required
+    ───────────────────────────────────────────────────────────*/
   const { name, email, language = "en" } = req.body || {};
-  if (!name || !email) {
+  if (!name || !email)
     return res
       .status(400)
       .json({ success: false, error: "Name and email are required" });
-  }
 
-  /*───────────────────────────────────────────────────────────────────────
-      Utility: derive the base URL for the *same* deployment
-        1. INTERNAL_BASE_URL (explicit override)
-        2. VERCEL_URL (set by Vercel at runtime)
-        3. req.headers.host   (fallback for other hosts)
-        4. localhost fallback (dev)
-    ───────────────────────────────────────────────────────────────────────*/
-  const deriveBaseUrl = () => {
-    if (process.env.INTERNAL_BASE_URL) return process.env.INTERNAL_BASE_URL;
-    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  /*───────────────────────────────────────────────────────────
+      Resolve the base URL that points back to *this* deployment
+      – INTERNAL_BASE_URL      (manual override)
+      – https://${VERCEL_URL}  (Vercel sets this at runtime)
+      – req.headers.host       (works for most other hosts)
+    ───────────────────────────────────────────────────────────*/
+  const proto = (req.headers["x-forwarded-proto"] ?? "https").split(",")[0];
+  const hostHeader = req.headers["x-forwarded-host"] ?? req.headers.host;
+  const baseURL =
+    process.env.INTERNAL_BASE_URL ??
+    (process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`) ??
+    (hostHeader && `${proto}://${hostHeader}`) ??
+    "http://localhost:3000";
 
-    if (req.headers && req.headers.host) {
-      const proto = req.headers["x-forwarded-proto"] || "https";
-      return `${proto}://${req.headers.host}`;
-    }
-
-    return "http://localhost:3000";
-  };
-
-  const adminEndpoint = `${deriveBaseUrl()}/api/admin-data`;
+  const adminURL = `${baseURL.replace(/\/$/, "")}/api/admin-data`;
 
   try {
-    /*───────────────────────────────────────────────────────────────────
-        Forward the registration to the secure admin endpoint
-      ───────────────────────────────────────────────────────────────────*/
-    const adminRes = await fetch(adminEndpoint, {
+    /*─────────────────────────────────────────────────────────
+        Forward the registration with the creator key (server‑side)
+      ─────────────────────────────────────────────────────────*/
+    const adminRes = await fetch(adminURL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: process.env.CREATOR_SECRET_KEY,
+        Authorization: process.env.CREATOR_SECRET_KEY ?? "",
       },
       body: JSON.stringify({
         action: "addRegistration",
@@ -78,22 +62,26 @@ export default async function handler(req, res) {
       }),
     });
 
-    const result = await adminRes.json();
-    if (!adminRes.ok || !result.success) {
+    /*─────────────────────────────────────────────────────────
+        Handle JSON or non‑JSON responses gracefully
+      ─────────────────────────────────────────────────────────*/
+    let forwarded;
+    const ct = adminRes.headers.get("content-type") || "";
+    if (ct.includes("application/json")) {
+      forwarded = await adminRes.json();
+    } else {
+      const text = await adminRes.text();
       throw new Error(
-        result.error || `Admin insert failed (status ${adminRes.status})`
+        `Upstream non‑JSON (${adminRes.status}): ${text.slice(0, 120)}`
       );
     }
 
-    // Success response for the browser
+    if (!forwarded.success)
+      throw new Error(forwarded.error || "Admin insert failed");
+
     return res.json({ success: true, message: "Registration recorded" });
   } catch (err) {
     console.error("Public register proxy error:", err);
-    return res
-      .status(500)
-      .json({
-        success: false,
-        error: "Registration failed – please try again.",
-      });
+    return res.status(500).json({ success: false, error: err.message });
   }
 }
