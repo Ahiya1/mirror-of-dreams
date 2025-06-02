@@ -1,0 +1,920 @@
+<!-- FILE: public/register.html • Registration page with consciousness waves • 2025-06-01 -->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Begin Your Reflection | התחל את ההשתקפות</title>
+
+    <!--──────────────  INLINE STYLES  ──────────────-->
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: linear-gradient(
+          135deg,
+          #0f0f23 0%,
+          #1a1a2e 25%,
+          #16213e 50%,
+          #0f0f23 100%
+        );
+        min-height: 100vh;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      [dir="rtl"] {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+      }
+
+      /*── language toggle ──*/
+      .language-toggle {
+        position: fixed;
+        top: 2rem;
+        right: 2rem;
+        z-index: 1000;
+      }
+      [dir="rtl"] .language-toggle {
+        right: auto;
+        left: 2rem;
+      }
+      .lang-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        padding: 0.8rem 1.2rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: 0.3s;
+        font-weight: 500;
+        font-size: 0.9rem;
+      }
+      .lang-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+
+      /*── back button ──*/
+      .back-button {
+        position: fixed;
+        top: 2rem;
+        left: 2rem;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        padding: 0.8rem 1.2rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: 0.3s;
+        font-weight: 500;
+        font-size: 0.9rem;
+        text-decoration: none;
+      }
+      .back-button:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+      [dir="rtl"] .back-button {
+        left: auto;
+        right: 2rem;
+      }
+      [dir="rtl"] .back-button .back-arrow {
+        transform: scaleX(-1);
+      }
+
+      /*── consciousness waves background ──*/
+      .consciousness-waves {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 1;
+      }
+
+      .wave {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.06) 0%,
+          rgba(255, 255, 255, 0.02) 40%,
+          rgba(255, 255, 255, 0.005) 70%,
+          transparent 100%
+        );
+        animation: waveRecognition 12s ease-in-out infinite;
+        opacity: 0;
+      }
+
+      /* Different waves at different scales and timings */
+      .wave:nth-child(1) {
+        width: 200px;
+        height: 200px;
+        left: 15%;
+        top: 20%;
+        animation-delay: 0s;
+        animation-duration: 15s;
+      }
+
+      .wave:nth-child(2) {
+        width: 150px;
+        height: 150px;
+        right: 20%;
+        top: 60%;
+        animation-delay: 3s;
+        animation-duration: 18s;
+      }
+
+      .wave:nth-child(3) {
+        width: 100px;
+        height: 100px;
+        left: 60%;
+        top: 15%;
+        animation-delay: 6s;
+        animation-duration: 12s;
+      }
+
+      .wave:nth-child(4) {
+        width: 120px;
+        height: 120px;
+        left: 25%;
+        bottom: 25%;
+        animation-delay: 9s;
+        animation-duration: 16s;
+      }
+
+      .wave:nth-child(5) {
+        width: 80px;
+        height: 80px;
+        right: 15%;
+        bottom: 40%;
+        animation-delay: 12s;
+        animation-duration: 14s;
+      }
+
+      .wave:nth-child(6) {
+        width: 180px;
+        height: 180px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        animation-delay: 4s;
+        animation-duration: 20s;
+      }
+
+      /* Wave recognition animation */
+      @keyframes waveRecognition {
+        0% {
+          opacity: 0;
+          transform: scale(0.5);
+          filter: blur(10px);
+        }
+
+        15% {
+          opacity: 0.2;
+          transform: scale(0.8);
+          filter: blur(5px);
+        }
+
+        30% {
+          opacity: 0.4;
+          transform: scale(1);
+          filter: blur(2px);
+        }
+
+        45% {
+          opacity: 0.6;
+          transform: scale(1.1);
+          filter: blur(0px);
+          box-shadow: 0 0 30px rgba(255, 255, 255, 0.08);
+        }
+
+        50% {
+          opacity: 0.7;
+          transform: scale(1.05);
+          filter: blur(0px);
+          box-shadow: 0 0 40px rgba(255, 255, 255, 0.12);
+        }
+
+        60% {
+          opacity: 0.5;
+          transform: scale(1.2);
+          filter: blur(1px);
+          box-shadow: 0 0 20px rgba(255, 255, 255, 0.06);
+        }
+
+        75% {
+          opacity: 0.3;
+          transform: scale(1.5);
+          filter: blur(5px);
+          box-shadow: none;
+        }
+
+        90% {
+          opacity: 0.1;
+          transform: scale(2);
+          filter: blur(15px);
+        }
+
+        100% {
+          opacity: 0;
+          transform: scale(2.5);
+          filter: blur(20px);
+        }
+      }
+
+      /*── flowing energy lines ──*/
+      .energy-flow {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      .energy-line {
+        position: absolute;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.08) 20%,
+          rgba(255, 255, 255, 0.2) 50%,
+          rgba(255, 255, 255, 0.08) 80%,
+          transparent 100%
+        );
+        animation: energyFlow 8s ease-in-out infinite;
+        opacity: 0;
+      }
+
+      .energy-line:nth-child(1) {
+        width: 200px;
+        left: 20%;
+        top: 30%;
+        transform: rotate(45deg);
+        animation-delay: 2s;
+      }
+
+      .energy-line:nth-child(2) {
+        width: 150px;
+        right: 25%;
+        top: 65%;
+        transform: rotate(-30deg);
+        animation-delay: 6s;
+      }
+
+      .energy-line:nth-child(3) {
+        width: 100px;
+        left: 50%;
+        bottom: 30%;
+        transform: rotate(15deg);
+        animation-delay: 10s;
+      }
+
+      @keyframes energyFlow {
+        0%,
+        90%,
+        100% {
+          opacity: 0;
+          transform: scaleX(0);
+        }
+
+        30% {
+          opacity: 0.3;
+          transform: scaleX(0.5);
+        }
+
+        50% {
+          opacity: 0.6;
+          transform: scaleX(1);
+        }
+
+        70% {
+          opacity: 0.2;
+          transform: scaleX(0.8);
+        }
+      }
+
+      /*── consciousness aurora ──*/
+      .consciousness-aurora {
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(76, 29, 149, 0.015) 0%,
+          rgba(59, 130, 246, 0.008) 25%,
+          rgba(16, 185, 129, 0.01) 50%,
+          rgba(245, 158, 11, 0.008) 75%,
+          rgba(236, 72, 153, 0.015) 100%
+        );
+        background-size: 300% 300%;
+        animation: auroraBreathing 20s ease-in-out infinite;
+        pointer-events: none;
+        opacity: 0.6;
+        z-index: 1;
+      }
+
+      @keyframes auroraBreathing {
+        0%,
+        100% {
+          background-position: 0% 50%;
+          opacity: 0.4;
+        }
+
+        25% {
+          background-position: 100% 25%;
+          opacity: 0.7;
+        }
+
+        50% {
+          background-position: 50% 100%;
+          opacity: 0.5;
+        }
+
+        75% {
+          background-position: 25% 0%;
+          opacity: 0.8;
+        }
+      }
+
+      /*── main content ──*/
+      .registration-container {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        max-width: 500px;
+        padding: 2rem;
+      }
+
+      .registration-card {
+        background: rgba(15, 15, 35, 0.85);
+        backdrop-filter: blur(40px) saturate(120%);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 32px;
+        padding: 4rem 3.5rem;
+        text-align: center;
+        color: #fff;
+        position: relative;
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5),
+          0 0 0 1px rgba(255, 255, 255, 0.05),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1),
+          0 0 100px rgba(255, 255, 255, 0.03);
+        animation: cardAppear 1s ease-out;
+      }
+
+      @keyframes cardAppear {
+        from {
+          opacity: 0;
+          transform: scale(0.9) translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      /* Breathing glow that syncs with consciousness waves */
+      .registration-card::before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.08) 0%,
+          rgba(255, 255, 255, 0.02) 50%,
+          rgba(255, 255, 255, 0.06) 100%
+        );
+        border-radius: 34px;
+        pointer-events: none;
+        opacity: 0;
+        animation: contentBreathing 18s ease-in-out infinite;
+        z-index: -1;
+      }
+
+      @keyframes contentBreathing {
+        0%,
+        100% {
+          opacity: 0;
+          transform: scale(1);
+        }
+
+        30% {
+          opacity: 0.3;
+          transform: scale(1.02);
+        }
+
+        50% {
+          opacity: 0.5;
+          transform: scale(1.01);
+        }
+
+        70% {
+          opacity: 0.2;
+          transform: scale(1.03);
+        }
+      }
+
+      .registration-card h1 {
+        margin-bottom: 2.5rem;
+        font-weight: 400;
+        font-size: 1.8rem;
+        line-height: 1.3;
+        letter-spacing: 0.3px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.95) 0%,
+          rgba(255, 255, 255, 0.8) 100%
+        );
+        -webkit-background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+      }
+
+      .form-group {
+        margin-bottom: 2rem;
+        text-align: left;
+        position: relative;
+      }
+      [dir="rtl"] .form-group {
+        text-align: right;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        opacity: 0.9;
+        font-weight: 400;
+        letter-spacing: 0.2px;
+        color: rgba(255, 255, 255, 0.85);
+      }
+      .form-group input {
+        width: 100%;
+        padding: 1.4rem 1.2rem;
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 16px;
+        color: #fff;
+        font-size: 1.05rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1),
+          0 1px 0 rgba(255, 255, 255, 0.05);
+      }
+      .form-group input:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1),
+          0 4px 20px rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1),
+          0 0 30px rgba(255, 255, 255, 0.05);
+      }
+      .form-group input::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+        letter-spacing: 0.2px;
+      }
+
+      /* Enhanced input field glow */
+      .form-group::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.6),
+          transparent
+        );
+        transition: width 0.4s ease;
+      }
+      .form-group:focus-within::after {
+        width: 100%;
+      }
+
+      .payment-info {
+        font-size: 1rem;
+        line-height: 1.6;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border: 2px solid rgba(255, 255, 255, 0.25);
+        border-radius: 16px;
+        padding: 1.8rem 1.5rem;
+        margin: 2rem 0 3rem;
+        color: rgba(255, 255, 255, 0.9);
+        letter-spacing: 0.2px;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+        font-weight: 400;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      }
+
+      /* Subtle shimmer effect */
+      .payment-info::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.06),
+          transparent
+        );
+        animation: paymentShimmer 4s ease-in-out infinite;
+      }
+
+      @keyframes paymentShimmer {
+        0% {
+          left: -100%;
+        }
+        50% {
+          left: 100%;
+        }
+        100% {
+          left: 100%;
+        }
+      }
+
+      .continue-btn {
+        width: 100%;
+        padding: 1.4rem 2rem;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.12) 0%,
+          rgba(255, 255, 255, 0.08) 100%
+        );
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        color: #fff;
+        font-size: 1.1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        letter-spacing: 0.3px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        animation: buttonHarmony 16s ease-in-out infinite;
+      }
+
+      .continue-btn::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.1) 0%,
+          transparent 50%,
+          rgba(255, 255, 255, 0.05) 100%
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .continue-btn:hover:not(:disabled)::before {
+        opacity: 1;
+      }
+      .continue-btn:hover:not(:disabled) {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.18) 0%,
+          rgba(255, 255, 255, 0.12) 100%
+        );
+        border-color: rgba(255, 255, 255, 0.35);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(255, 255, 255, 0.15),
+          inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      }
+      .continue-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      @keyframes buttonHarmony {
+        0%,
+        100% {
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        50% {
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1),
+            0 0 20px rgba(255, 255, 255, 0.05);
+        }
+      }
+
+      /*── responsive tweaks ──*/
+      @media (max-width: 768px) {
+        .registration-card {
+          padding: 3rem 2.5rem;
+          margin: 1rem;
+        }
+        .language-toggle,
+        .back-button {
+          top: 1rem;
+          padding: 0.6rem 1rem;
+          font-size: 0.8rem;
+        }
+        .language-toggle {
+          right: 1rem;
+        }
+        .back-button {
+          left: 1rem;
+        }
+        [dir="rtl"] .language-toggle {
+          right: auto;
+          left: 1rem;
+        }
+        [dir="rtl"] .back-button {
+          left: auto;
+          right: 1rem;
+        }
+      }
+      @media (max-width: 480px) {
+        .registration-card {
+          padding: 2.5rem 2rem;
+        }
+        .registration-card h1 {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Consciousness recognizing itself -->
+    <div class="consciousness-aurora"></div>
+
+    <div class="consciousness-waves">
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+    </div>
+
+    <div class="energy-flow">
+      <div class="energy-line"></div>
+      <div class="energy-line"></div>
+      <div class="energy-line"></div>
+    </div>
+
+    <!-- navigation -->
+    <a href="/" class="back-button" id="backButton">
+      <span class="back-arrow">←</span><span id="backText">Back</span>
+    </a>
+
+    <div class="language-toggle">
+      <button id="langToggle" class="lang-btn">
+        <span class="lang-flag">🇮🇱</span><span class="lang-text">עברית</span>
+      </button>
+    </div>
+
+    <!-- main registration form -->
+    <div class="registration-container">
+      <div class="registration-card">
+        <h1 id="pageTitle">Begin Your Reflection</h1>
+
+        <form id="registrationForm">
+          <div class="form-group">
+            <label id="nameLabel" for="userName">Your Name</label>
+            <input id="userName" type="text" required />
+          </div>
+
+          <div class="form-group">
+            <label id="emailLabel" for="userEmail">Your Email</label>
+            <input id="userEmail" type="email" required />
+          </div>
+
+          <div class="payment-info" id="paymentInfo">
+            20&nbsp;₪ — Cash at booth or Bit to +972&nbsp;58-778-9019
+          </div>
+
+          <button type="submit" class="continue-btn" id="continueBtn" disabled>
+            <span id="continueText">Continue to Reflection</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!--──────────────  SCRIPT  ──────────────-->
+    <script>
+      /*── language persistence ──*/
+      let currentLanguage = (() => {
+        try {
+          return (
+            new URLSearchParams(location.search).get("lang") ||
+            localStorage.getItem("mirrorLanguage") ||
+            "en"
+          );
+        } catch {
+          return "en";
+        }
+      })();
+
+      const translations = {
+        en: {
+          pageTitle: "Begin Your Reflection",
+          nameLabel: "Your Name",
+          emailLabel: "Your Email",
+          paymentInfo:
+            "20&nbsp;₪ — Cash at booth or Bit to +972&nbsp;58-778-9019",
+          continueText: "Continue to Reflection",
+          langText: "עברית",
+          langFlag: "🇮🇱",
+          backText: "Back",
+          namePlaceholder: "Enter your name",
+          emailPlaceholder: "name@example.com",
+        },
+        he: {
+          pageTitle: "התחל את ההשתקפות",
+          nameLabel: "שם מלא",
+          emailLabel: "אימייל",
+          paymentInfo: "20&nbsp;₪ — מזומן בדוכן או ביט ל-+972&nbsp;58-778-9019",
+          continueText: "המשך להשתקפות",
+          langText: "English",
+          langFlag: "🇺🇸",
+          backText: "חזור",
+          namePlaceholder: "הזן את שמך",
+          emailPlaceholder: "name@example.com",
+        },
+      };
+
+      function applyLanguage() {
+        const t = translations[currentLanguage];
+        document.documentElement.dir = currentLanguage === "he" ? "rtl" : "ltr";
+        document.documentElement.lang = currentLanguage;
+        Object.entries(t).forEach(([k, v]) => {
+          const el = document.getElementById(k);
+          if (el) el.innerHTML = v;
+        });
+        document.querySelector(".lang-text").textContent = t.langText;
+        document.querySelector(".lang-flag").textContent = t.langFlag;
+        document.getElementById("userName").placeholder = t.namePlaceholder;
+        document.getElementById("userEmail").placeholder = t.emailPlaceholder;
+
+        // Update back button
+        document.getElementById(
+          "backButton"
+        ).href = `/?lang=${currentLanguage}`;
+      }
+      applyLanguage();
+
+      document.getElementById("langToggle").addEventListener("click", () => {
+        currentLanguage = currentLanguage === "en" ? "he" : "en";
+        try {
+          localStorage.setItem("mirrorLanguage", currentLanguage);
+        } catch {}
+        applyLanguage();
+      });
+
+      /*── consciousness wave interactions ──*/
+      let waveInteractionTimer = null;
+
+      // Waves respond to typing - consciousness recognizing thought
+      document
+        .getElementById("userName")
+        .addEventListener("input", triggerWaveResponse);
+      document
+        .getElementById("userEmail")
+        .addEventListener("input", triggerWaveResponse);
+
+      function triggerWaveResponse() {
+        // Clear previous timer
+        if (waveInteractionTimer) clearTimeout(waveInteractionTimer);
+
+        // Waves pulse with recognition of input
+        const waves = document.querySelectorAll(".wave");
+        const energyLines = document.querySelectorAll(".energy-line");
+
+        waves.forEach((wave, index) => {
+          wave.style.animationDuration = `${8 - index * 0.5}s`; // Faster, more alive
+        });
+
+        // Activate energy flow between waves
+        energyLines.forEach((line, index) => {
+          line.style.animationDelay = `${index * 0.5}s`;
+          line.style.opacity = "0.3";
+        });
+
+        // Return to normal after a pause in typing
+        waveInteractionTimer = setTimeout(() => {
+          waves.forEach((wave, index) => {
+            wave.style.animationDuration = `${15 + index}s`; // Back to contemplative pace
+          });
+
+          energyLines.forEach((line) => {
+            line.style.opacity = "0";
+          });
+        }, 2000);
+      }
+
+      /*── form validation ──*/
+      document
+        .getElementById("userName")
+        .addEventListener("input", updateContinue);
+      document
+        .getElementById("userEmail")
+        .addEventListener("input", updateContinue);
+
+      function updateContinue() {
+        const ready =
+          document.getElementById("userName").value.trim() &&
+          document.getElementById("userEmail").value.trim();
+        document.getElementById("continueBtn").disabled = !ready;
+      }
+
+      /*── form submission ──*/
+      document
+        .getElementById("registrationForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const data = {
+            name: document.getElementById("userName").value.trim(),
+            email: document.getElementById("userEmail").value.trim(),
+            language: currentLanguage,
+          };
+
+          // Show loading state
+          const continueBtn = document.getElementById("continueBtn");
+          const originalText = continueBtn.innerHTML;
+          continueBtn.innerHTML = "<span>⏳ Registering...</span>";
+          continueBtn.disabled = true;
+
+          // Waves recognize the submission
+          const waves = document.querySelectorAll(".wave");
+          waves.forEach((wave, index) => {
+            wave.style.animationDuration = `${6 - index * 0.2}s`; // Excited recognition
+          });
+
+          try {
+            // Save locally for this user's flow
+            localStorage.setItem("pendingPayment", JSON.stringify(data));
+
+            // Send to admin backend
+            await fetch("/api/register", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                name: data.name,
+                email: data.email,
+                language: data.language,
+                source: "website",
+                timestamp: new Date().toISOString(),
+              }),
+            });
+
+            // Continue to reflection flow
+            location.href = `./reflection.html?payment=cash&lang=${currentLanguage}`;
+          } catch (error) {
+            console.error("Registration error:", error);
+
+            // Still continue even if backend fails
+            console.warn("Backend sync failed, proceeding with local flow");
+            location.href = `./reflection.html?payment=cash&lang=${currentLanguage}`;
+          }
+        });
+
+      /*── page initialization ──*/
+      // Make waves more active when page loads
+      window.addEventListener("load", () => {
+        const waves = document.querySelectorAll(".wave");
+        waves.forEach((wave, index) => {
+          wave.style.opacity = "0.1"; // Slightly more visible base state
+        });
+      });
+    </script>
+  </body>
+</html>
