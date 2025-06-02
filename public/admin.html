@@ -478,6 +478,20 @@
         box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
       }
 
+      /* Delete button for completed entries */
+      .delete-btn {
+        background: linear-gradient(135deg, #6b7280, #4b5563);
+        color: white;
+        flex: 0 0 48px;
+        box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3);
+      }
+
+      .delete-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(107, 114, 128, 0.4);
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+      }
+
       /* Empty State */
       .empty-state {
         text-align: center;
@@ -609,7 +623,8 @@
           gap: 0.8rem;
         }
 
-        .remove-btn {
+        .remove-btn,
+        .delete-btn {
           flex: 1;
         }
       }
@@ -852,7 +867,7 @@
         ).textContent = `${stats.pending} pending`;
       }
 
-      // Render registrations
+      // FIXED: Render registrations with delete buttons for all entries
       function renderRegistrations() {
         if (!adminData || !adminData.registrations) return;
 
@@ -871,8 +886,31 @@
         }
 
         container.innerHTML = registrations
-          .map(
-            (reg) => `
+          .map((reg) => {
+            // FIXED: Show different actions based on status
+            let actionsHtml = "";
+            if (reg.status === "pending") {
+              actionsHtml = `
+                <div class="reg-actions">
+                    <button class="action-btn approve-btn" onclick="approveRegistration('${reg.id}')">
+                        💰 Approve & Send
+                    </button>
+                    <button class="action-btn remove-btn" onclick="removeRegistration('${reg.id}')">
+                        ✕
+                    </button>
+                </div>
+              `;
+            } else if (reg.status === "completed") {
+              actionsHtml = `
+                <div class="reg-actions">
+                    <button class="action-btn delete-btn" onclick="removeRegistration('${reg.id}')" title="Delete completed entry">
+                        🗑️
+                    </button>
+                </div>
+              `;
+            }
+
+            return `
                 <div class="registration-card ${reg.status}" data-id="${
               reg.id
             }">
@@ -883,23 +921,10 @@
                         </div>
                         <div class="reg-time">${reg.timeAgo || "Now"}</div>
                     </div>
-                    ${
-                      reg.status === "pending"
-                        ? `
-                        <div class="reg-actions">
-                            <button class="action-btn approve-btn" onclick="approveRegistration('${reg.id}')">
-                                💰 Approve & Send
-                            </button>
-                            <button class="action-btn remove-btn" onclick="removeRegistration('${reg.id}')">
-                                ✕
-                            </button>
-                        </div>
-                    `
-                        : ""
-                    }
+                    ${actionsHtml}
                 </div>
-            `
-          )
+            `;
+          })
           .join("");
       }
 
@@ -958,26 +983,44 @@
         }
       }
 
-      // FIXED: Remove registration with backend sync
+      // FIXED: Remove registration with proper auth and error handling
       async function removeRegistration(id) {
         if (!confirm("Are you sure you want to remove this registration?"))
           return;
 
+        const registrationCard = document.querySelector(`[data-id="${id}"]`);
+        if (registrationCard) {
+          registrationCard.style.opacity = "0.5";
+          registrationCard.style.pointerEvents = "none";
+        }
+
         try {
-          const response = await fetch(
-            `/api/admin-data?id=${id}&key=${encodeURIComponent(authKey)}`,
-            {
-              method: "DELETE",
-            }
-          );
+          // FIXED: Use proper auth header format
+          const response = await fetch(`/api/admin-data?id=${id}`, {
+            method: "DELETE",
+            headers: {
+              Authorization: authKey, // This matches what the backend expects
+              "Content-Type": "application/json",
+            },
+          });
 
           const result = await response.json();
-          if (!result.success) throw new Error(result.error);
+
+          if (!result.success) {
+            throw new Error(result.error || "Failed to remove registration");
+          }
 
           notify("Soul released from queue");
-          await loadAdminData(); // Refresh data
+          await loadAdminData(); // Refresh the entire view
         } catch (error) {
           console.error("Error removing registration:", error);
+
+          // Restore the card if there was an error
+          if (registrationCard) {
+            registrationCard.style.opacity = "1";
+            registrationCard.style.pointerEvents = "auto";
+          }
+
           notify("Sacred process interrupted - try again", true);
         }
       }

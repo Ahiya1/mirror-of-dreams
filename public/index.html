@@ -258,7 +258,7 @@
         margin-inline: auto;
       }
 
-      /*── enhanced sacred modal ──*/
+      /*── enhanced sacred modal with breathing stars ──*/
       .modal {
         position: fixed;
         inset: 0;
@@ -277,88 +277,124 @@
         opacity: 1;
       }
 
-      /* subtle sparkling stars */
-      .modal-stars {
+      /* breathing starfield background */
+      .modal-starfield {
         position: absolute;
         inset: 0;
         pointer-events: none;
         overflow: hidden;
       }
-      .star {
+      .breath-star {
         position: absolute;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.6);
-        box-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
-        animation: starSparkle 6s ease-in-out infinite;
+        background: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+        animation: starBreathe 8s ease-in-out infinite;
       }
 
-      /* uniform subtle sparkles */
-      .star:nth-child(1) {
+      /* distributed breathing stars */
+      .breath-star:nth-child(1) {
         width: 2px;
         height: 2px;
-        left: 12%;
-        top: 15%;
+        left: 8%;
+        top: 12%;
         animation-delay: 0s;
       }
-      .star:nth-child(2) {
+      .breath-star:nth-child(2) {
         width: 1.5px;
         height: 1.5px;
-        left: 78%;
-        top: 25%;
-        animation-delay: 1s;
+        left: 92%;
+        top: 18%;
+        animation-delay: 1.5s;
       }
-      .star:nth-child(3) {
-        width: 1px;
-        height: 1px;
-        left: 35%;
-        top: 65%;
-        animation-delay: 2s;
-      }
-      .star:nth-child(4) {
-        width: 2px;
-        height: 2px;
-        left: 85%;
-        top: 80%;
-        animation-delay: 3s;
-      }
-      .star:nth-child(5) {
-        width: 1px;
-        height: 1px;
-        left: 25%;
-        top: 45%;
-        animation-delay: 4s;
-      }
-      .star:nth-child(6) {
-        width: 1.5px;
-        height: 1.5px;
-        left: 65%;
-        top: 10%;
-        animation-delay: 5s;
-      }
-      .star:nth-child(7) {
+      .breath-star:nth-child(3) {
         width: 1px;
         height: 1px;
         left: 15%;
-        top: 75%;
-        animation-delay: 2.5s;
+        top: 85%;
+        animation-delay: 3s;
       }
-      .star:nth-child(8) {
+      .breath-star:nth-child(4) {
+        width: 2px;
+        height: 2px;
+        left: 88%;
+        top: 75%;
+        animation-delay: 4.5s;
+      }
+      .breath-star:nth-child(5) {
+        width: 1px;
+        height: 1px;
+        left: 5%;
+        top: 45%;
+        animation-delay: 6s;
+      }
+      .breath-star:nth-child(6) {
         width: 1.5px;
         height: 1.5px;
-        left: 55%;
-        top: 35%;
+        left: 95%;
+        top: 55%;
+        animation-delay: 7.5s;
+      }
+      .breath-star:nth-child(7) {
+        width: 1px;
+        height: 1px;
+        left: 25%;
+        top: 8%;
+        animation-delay: 2s;
+      }
+      .breath-star:nth-child(8) {
+        width: 1.5px;
+        height: 1.5px;
+        left: 75%;
+        top: 92%;
         animation-delay: 3.5s;
       }
+      .breath-star:nth-child(9) {
+        width: 1px;
+        height: 1px;
+        left: 45%;
+        top: 5%;
+        animation-delay: 5s;
+      }
+      .breath-star:nth-child(10) {
+        width: 2px;
+        height: 2px;
+        left: 55%;
+        top: 95%;
+        animation-delay: 6.5s;
+      }
+      .breath-star:nth-child(11) {
+        width: 1px;
+        height: 1px;
+        left: 12%;
+        top: 65%;
+        animation-delay: 1s;
+      }
+      .breath-star:nth-child(12) {
+        width: 1.5px;
+        height: 1.5px;
+        left: 82%;
+        top: 35%;
+        animation-delay: 4s;
+      }
 
-      @keyframes starSparkle {
+      @keyframes starBreathe {
         0%,
         100% {
-          opacity: 0.3;
+          opacity: 0.2;
           transform: scale(1);
         }
+        25% {
+          opacity: 0.7;
+          transform: scale(1.2);
+        }
         50% {
-          opacity: 1;
-          transform: scale(1.4);
+          opacity: 0.4;
+          transform: scale(0.8);
+        }
+        75% {
+          opacity: 0.9;
+          transform: scale(1.1);
         }
       }
 
@@ -713,15 +749,19 @@
     <!-- enhanced sacred modal -->
     <div class="modal" id="paymentModal">
       <div class="modal-aurora"></div>
-      <div class="modal-stars">
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
+      <div class="modal-starfield">
+        <div class="breath-star"></div>
+        <div class="breath-star"></div>
+        <div class="breath-star"></div>
+        <div class="breath-star"></div>
+        <div class="breath-star"></div>
+        <div class="breath-star"></div>
+        <div class="breath-star"></div>
+        <div class="breath-star"></div>
+        <div class="breath-star"></div>
+        <div class="breath-star"></div>
+        <div class="breath-star"></div>
+        <div class="breath-star"></div>
       </div>
       <div class="modal-content">
         <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -844,6 +884,7 @@
         }
       }
 
+      // FIXED: Creator bypass with proper data flow
       function showSecretBypass() {
         const password = prompt("🪞 Creator Access\nEnter the sacred key:");
         if (password) {
@@ -862,32 +903,32 @@
             .then((r) => r.json())
             .then((data) => {
               if (data.success && data.isCreator) {
-                // FIXED: Store complete creator data in localStorage
+                // FIXED: Store complete creator data properly
                 const creatorData = {
                   name: "Ahiya",
                   email: "ahiya.butman@gmail.com",
                   language: currentLanguage,
                   isCreator: true,
+                  accessCode: data.accessCode,
                   creatorContext: data.creatorContext,
                 };
 
-                try {
+                // Store the verified user data
+                localStorage.setItem(
+                  "mirrorVerifiedUser",
+                  JSON.stringify(creatorData)
+                );
+
+                // Store creator context separately for the AI prompt
+                if (data.creatorContext) {
                   localStorage.setItem(
-                    "mirrorVerifiedUser",
-                    JSON.stringify(creatorData)
+                    "mirrorCreatorContext",
+                    JSON.stringify(data.creatorContext)
                   );
-                  if (data.creatorContext) {
-                    localStorage.setItem(
-                      "mirrorCreatorContext",
-                      JSON.stringify(data.creatorContext)
-                    );
-                  }
-                } catch (error) {
-                  console.warn("Could not save to localStorage:", error);
                 }
 
-                // Navigate with creator data properly stored
-                location.href = `./reflection.html?admin=true&verified=true&lang=${currentLanguage}`;
+                // Navigate directly to breathing (skip code verification)
+                location.href = `./breathing.html?payment=creator&verified=true&lang=${currentLanguage}`;
               } else {
                 alert("🪞 Invalid sacred key");
               }
