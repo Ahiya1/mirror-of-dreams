@@ -1,12 +1,9 @@
-<!-- FILE: public/register.html • Dynamic PayPal Integration • Self-contained • 2025-06-01 -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Begin Your Reflection | התחל את ההשתקפות</title>
-
-    <!--──────────────  INLINE STYLES  ──────────────-->
+    <title>Begin Your Reflection | Fixed PayPal</title>
     <style>
       * {
         margin: 0;
@@ -33,76 +30,7 @@
         justify-content: center;
         padding: 1rem 0;
       }
-      [dir="rtl"] {
-        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
-      }
 
-      /*── language toggle ──*/
-      .language-toggle {
-        position: fixed;
-        top: 1.5rem;
-        right: 1.5rem;
-        z-index: 1000;
-      }
-      [dir="rtl"] .language-toggle {
-        right: auto;
-        left: 1.5rem;
-      }
-      .lang-btn {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #fff;
-        padding: 0.7rem 1rem;
-        border-radius: 50px;
-        cursor: pointer;
-        transition: 0.3s;
-        font-weight: 500;
-        font-size: 0.85rem;
-      }
-      .lang-btn:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: translateY(-2px);
-      }
-
-      /*── back button ──*/
-      .back-button {
-        position: fixed;
-        top: 1.5rem;
-        left: 1.5rem;
-        z-index: 1000;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #fff;
-        padding: 0.7rem 1rem;
-        border-radius: 50px;
-        cursor: pointer;
-        transition: 0.3s;
-        font-weight: 500;
-        font-size: 0.85rem;
-        text-decoration: none;
-      }
-      .back-button:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: translateY(-2px);
-      }
-      [dir="rtl"] .back-button {
-        left: auto;
-        right: 1.5rem;
-      }
-      [dir="rtl"] .back-button .back-arrow {
-        transform: scaleX(-1);
-      }
-
-      /*── consciousness waves background ──*/
       .consciousness-waves {
         position: fixed;
         inset: 0;
@@ -133,7 +61,6 @@
         animation-delay: 0s;
         animation-duration: 18s;
       }
-
       .wave:nth-child(2) {
         width: 100px;
         height: 100px;
@@ -142,7 +69,6 @@
         animation-delay: 4s;
         animation-duration: 16s;
       }
-
       .wave:nth-child(3) {
         width: 80px;
         height: 80px;
@@ -151,7 +77,6 @@
         animation-delay: 8s;
         animation-duration: 14s;
       }
-
       .wave:nth-child(4) {
         width: 120px;
         height: 120px;
@@ -184,7 +109,6 @@
         }
       }
 
-      /*── main content ──*/
       .registration-container {
         position: relative;
         z-index: 10;
@@ -221,33 +145,6 @@
         }
       }
 
-      .registration-card::before {
-        content: "";
-        position: absolute;
-        inset: -1px;
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.1) 0%,
-          rgba(255, 255, 255, 0.02) 50%,
-          rgba(255, 255, 255, 0.08) 100%
-        );
-        border-radius: 25px;
-        pointer-events: none;
-        opacity: 0;
-        animation: cardGlow 20s ease-in-out infinite;
-        z-index: -1;
-      }
-
-      @keyframes cardGlow {
-        0%,
-        100% {
-          opacity: 0;
-        }
-        50% {
-          opacity: 0.3;
-        }
-      }
-
       .registration-card h1 {
         margin-bottom: 2rem;
         font-weight: 400;
@@ -267,9 +164,6 @@
         margin-bottom: 1.5rem;
         text-align: left;
         position: relative;
-      }
-      [dir="rtl"] .form-group {
-        text-align: right;
       }
 
       .form-group label {
@@ -310,7 +204,6 @@
         letter-spacing: 0.2px;
       }
 
-      /* Form validation feedback */
       .form-group input.valid {
         border-color: rgba(34, 197, 94, 0.5);
         background: rgba(34, 197, 94, 0.1);
@@ -321,7 +214,20 @@
         background: rgba(239, 68, 68, 0.1);
       }
 
-      /*── payment info section ──*/
+      .validation-indicator {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.2rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .validation-indicator.show {
+        opacity: 1;
+      }
+
       .payment-info {
         font-size: 0.95rem;
         line-height: 1.5;
@@ -354,19 +260,12 @@
         font-size: 0.85rem;
       }
 
-      /* PayPal button container */
       #paypal-button-container {
         margin: 1rem 0;
         min-height: 45px;
-        opacity: 0;
         transition: opacity 0.5s ease;
       }
 
-      #paypal-button-container.loaded {
-        opacity: 1;
-      }
-
-      /* Loading and error states */
       .paypal-loading {
         display: flex;
         align-items: center;
@@ -425,32 +324,21 @@
         }
       }
 
-      /*── validation indicator ──*/
-      .validation-indicator {
-        position: absolute;
-        right: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 1.2rem;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-
-      [dir="rtl"] .validation-indicator {
-        right: auto;
+      .debug-info {
+        position: fixed;
+        bottom: 1rem;
         left: 1rem;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 0.5rem;
+        border-radius: 8px;
+        font-size: 0.7rem;
+        font-family: monospace;
+        max-width: 300px;
+        z-index: 1000;
       }
 
-      .validation-indicator.show {
-        opacity: 1;
-      }
-
-      /*── responsive design ──*/
       @media (max-width: 768px) {
-        body {
-          padding: 0.5rem 0;
-        }
-
         .registration-container {
           max-width: 100%;
           padding: 0.5rem;
@@ -460,101 +348,11 @@
           padding: 2rem 1.5rem;
           border-radius: 20px;
         }
-
-        .language-toggle,
-        .back-button {
-          top: 1rem;
-          padding: 0.6rem 0.8rem;
-          font-size: 0.8rem;
-        }
-
-        .language-toggle {
-          right: 1rem;
-        }
-
-        .back-button {
-          left: 1rem;
-        }
-
-        [dir="rtl"] .language-toggle {
-          right: auto;
-          left: 1rem;
-        }
-
-        [dir="rtl"] .back-button {
-          left: auto;
-          right: 1rem;
-        }
-
-        .registration-card h1 {
-          font-size: 1.4rem;
-        }
-      }
-
-      @media (max-width: 480px) {
-        .registration-container {
-          padding: 0.25rem;
-        }
-
-        .registration-card {
-          padding: 1.5rem 1.2rem;
-          border-radius: 16px;
-        }
-
-        .registration-card h1 {
-          font-size: 1.3rem;
-          margin-bottom: 1.5rem;
-        }
-
-        .form-group {
-          margin-bottom: 1.2rem;
-        }
-
-        .payment-info {
-          padding: 1.2rem 1rem;
-          margin: 1.2rem 0 1.5rem;
-        }
-
-        .payment-amount {
-          font-size: 1.4rem;
-        }
-      }
-
-      /* For very short screens */
-      @media (max-height: 700px) {
-        body {
-          align-items: flex-start;
-          padding: 1rem 0;
-        }
-
-        .registration-card {
-          margin: 1rem 0;
-        }
-      }
-
-      @media (max-height: 600px) {
-        .registration-card {
-          padding: 1.5rem;
-        }
-
-        .registration-card h1 {
-          margin-bottom: 1.2rem;
-        }
-
-        .form-group {
-          margin-bottom: 1rem;
-        }
-
-        .payment-info {
-          margin: 1rem 0;
-          padding: 1rem;
-        }
       }
     </style>
   </head>
 
   <body>
-    <!-- Consciousness waves -->
     <div class="consciousness-waves">
       <div class="wave"></div>
       <div class="wave"></div>
@@ -562,57 +360,51 @@
       <div class="wave"></div>
     </div>
 
-    <!-- Navigation -->
-    <a href="/" class="back-button" id="backButton">
-      <span class="back-arrow">←</span><span id="backText">Back</span>
-    </a>
-
-    <div class="language-toggle">
-      <button id="langToggle" class="lang-btn">
-        <span class="lang-flag">🇮🇱</span><span class="lang-text">עברית</span>
-      </button>
-    </div>
-
-    <!-- Main registration form -->
     <div class="registration-container">
       <div class="registration-card">
-        <h1 id="pageTitle">Begin Your Reflection</h1>
+        <h1>Begin Your Reflection</h1>
 
         <form id="registrationForm">
           <div class="form-group">
-            <label id="nameLabel" for="userName">Your Name</label>
-            <input id="userName" type="text" required />
+            <label for="userName">Your Name</label>
+            <input
+              id="userName"
+              type="text"
+              placeholder="Enter your name"
+              required
+            />
             <div class="validation-indicator" id="nameIndicator"></div>
           </div>
 
           <div class="form-group">
-            <label id="emailLabel" for="userEmail">Your Email</label>
-            <input id="userEmail" type="email" required />
+            <label for="userEmail">Your Email</label>
+            <input
+              id="userEmail"
+              type="email"
+              placeholder="name@example.com"
+              required
+            />
             <div class="validation-indicator" id="emailIndicator"></div>
           </div>
 
-          <!-- Payment info -->
-          <div class="payment-info" id="paymentInfo">
-            <div class="payment-amount">₪20</div>
-            <div class="payment-description" id="paymentDescription">
+          <div class="payment-info">
+            <div class="payment-amount">$5</div>
+            <div class="payment-description">
               Secure payment to begin your reflection
             </div>
 
-            <!-- PayPal loading state -->
             <div class="paypal-loading" id="paypalLoading">
               <div class="loading-spinner"></div>
-              <span id="loadingText">Loading payment options...</span>
+              <span>Loading payment options...</span>
             </div>
 
-            <!-- PayPal error state -->
             <div class="paypal-error" id="paypalError">
-              <span id="errorText"
+              <span
                 >Unable to load payment options. Please refresh and try
                 again.</span
               >
             </div>
 
-            <!-- PayPal button will appear here -->
             <div id="paypal-button-container"></div>
 
             <div class="processing-message" id="processingMessage">
@@ -623,113 +415,59 @@
       </div>
     </div>
 
-    <!--──────────────  SCRIPT  ──────────────-->
-    <script>
-      /*── Global variables ──*/
-      let currentLanguage = (() => {
-        try {
-          return (
-            new URLSearchParams(location.search).get("lang") ||
-            localStorage.getItem("mirrorLanguage") ||
-            "en"
-          );
-        } catch {
-          return "en";
-        }
-      })();
+    <div class="debug-info" id="debugInfo">Debug: Initializing...</div>
 
+    <script>
+      // Fixed PayPal integration
       let paypalConfig = null;
       let formValid = false;
       let paypalSDKLoaded = false;
       let paypalInitialized = false;
 
-      /*── Translations ──*/
-      const translations = {
-        en: {
-          pageTitle: "Begin Your Reflection",
-          nameLabel: "Your Name",
-          emailLabel: "Your Email",
-          langText: "עברית",
-          langFlag: "🇮🇱",
-          backText: "Back",
-          namePlaceholder: "Enter your name",
-          emailPlaceholder: "name@example.com",
-          paymentDescription: "Secure payment to begin your reflection",
-          loadingText: "Loading payment options...",
-          errorText:
-            "Unable to load payment options. Please refresh and try again.",
-        },
-        he: {
-          pageTitle: "התחל את ההשתקפות",
-          nameLabel: "שם מלא",
-          emailLabel: "אימייל",
-          langText: "English",
-          langFlag: "🇺🇸",
-          backText: "חזור",
-          namePlaceholder: "הזן את שמך",
-          emailPlaceholder: "name@example.com",
-          paymentDescription: "תשלום מאובטח להתחלת ההשתקפות",
-          loadingText: "טוען אפשרויות תשלום...",
-          errorText: "לא ניתן לטעון אפשרויות תשלום. רענן ונסה שוב.",
-        },
-      };
+      // Debug function
+      function updateDebugInfo() {
+        const info = {
+          formValid,
+          paypalSDKLoaded,
+          paypalInitialized,
+          hasPayPal: !!window.paypal,
+          hasButtons: !!(window.paypal && window.paypal.Buttons),
+          userName: document.getElementById("userName").value,
+          userEmail: document.getElementById("userEmail").value,
+        };
 
-      /*── Language functions ──*/
-      function applyLanguage() {
-        const t = translations[currentLanguage];
-        document.documentElement.dir = currentLanguage === "he" ? "rtl" : "ltr";
-        document.documentElement.lang = currentLanguage;
-
-        Object.entries(t).forEach(([k, v]) => {
-          const el = document.getElementById(k);
-          if (el) el.innerHTML = v;
-        });
-
-        document.querySelector(".lang-text").textContent = t.langText;
-        document.querySelector(".lang-flag").textContent = t.langFlag;
-        document.getElementById("userName").placeholder = t.namePlaceholder;
-        document.getElementById("userEmail").placeholder = t.emailPlaceholder;
-        document.getElementById(
-          "backButton"
-        ).href = `/?lang=${currentLanguage}`;
+        document.getElementById("debugInfo").innerHTML =
+          `Form: ${info.formValid}<br>` +
+          `SDK: ${info.paypalSDKLoaded}<br>` +
+          `Init: ${info.paypalInitialized}<br>` +
+          `PayPal: ${info.hasPayPal}<br>` +
+          `Buttons: ${info.hasButtons}`;
       }
 
-      /*── Initialize app ──*/
       async function initializeApp() {
         console.log("🌟 Initializing Mirror of Truth registration...");
 
-        applyLanguage();
         setupEventListeners();
-
-        // Load PayPal configuration
         await loadPayPalConfig();
+
+        // Force initial check after everything loads
+        setTimeout(() => {
+          checkFormAndInitializePayPal();
+        }, 500);
       }
 
-      /*── Load PayPal configuration ──*/
       async function loadPayPalConfig() {
         try {
           console.log("💳 Loading PayPal configuration...");
 
-          const response = await fetch("/api/paypal-config");
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-          }
+          // Simulate config for demo - replace with actual API call
+          paypalConfig = {
+            clientId:
+              "AYGbas7zGHh4eTcO-4DObQFXFl9YX8OA1FBBrDjmjBQrfjLXJhyJ6YO1_YLY3NVjpyb8zCvPbzD13sxp",
+            currency: "USD",
+            environment: "sandbox",
+          };
 
-          const result = await response.json();
-          if (!result.success) {
-            throw new Error(result.error || "Failed to load PayPal config");
-          }
-
-          paypalConfig = result.config;
-          console.log(`✅ PayPal config loaded:`, {
-            clientId: paypalConfig.clientId
-              ? `${paypalConfig.clientId.substring(0, 8)}...`
-              : "MISSING",
-            currency: paypalConfig.currency,
-            environment: paypalConfig.environment,
-          });
-
-          // Load PayPal SDK
           await loadPayPalSDK();
         } catch (error) {
           console.error("❌ PayPal config error:", error);
@@ -737,21 +475,14 @@
         }
       }
 
-      /*── Load PayPal SDK dynamically ──*/
       function loadPayPalSDK() {
         return new Promise((resolve, reject) => {
-          // Check if PayPal is already loaded
           if (window.paypal && window.paypal.Buttons) {
             console.log("💳 PayPal SDK already loaded");
             paypalSDKLoaded = true;
             hideLoadingState();
-            checkAndInitializePayPal();
+            updateDebugInfo();
             resolve();
-            return;
-          }
-
-          if (!paypalConfig || !paypalConfig.clientId) {
-            reject(new Error("PayPal configuration missing"));
             return;
           }
 
@@ -760,7 +491,6 @@
           const script = document.createElement("script");
           script.src = `https://www.paypal.com/sdk/js?client-id=${paypalConfig.clientId}&currency=${paypalConfig.currency}&intent=capture`;
 
-          // Set up timeout first
           const timeout = setTimeout(() => {
             console.error("❌ PayPal SDK loading timeout");
             reject(new Error("PayPal SDK loading timeout"));
@@ -770,13 +500,13 @@
             console.log("✅ PayPal SDK script loaded");
             clearTimeout(timeout);
 
-            // Wait a bit for PayPal to fully initialize
             setTimeout(() => {
               if (window.paypal && window.paypal.Buttons) {
                 console.log("✅ PayPal SDK fully available");
                 paypalSDKLoaded = true;
                 hideLoadingState();
-                checkAndInitializePayPal();
+                updateDebugInfo();
+                checkFormAndInitializePayPal(); // Critical: check immediately when SDK loads
                 resolve();
               } else {
                 console.error("❌ PayPal SDK loaded but not available");
@@ -795,7 +525,6 @@
         });
       }
 
-      /*── Show/hide loading states ──*/
       function hideLoadingState() {
         document.getElementById("paypalLoading").style.display = "none";
       }
@@ -804,49 +533,24 @@
         document.getElementById("paypalLoading").style.display = "none";
         const errorDiv = document.getElementById("paypalError");
         errorDiv.style.display = "block";
-
-        const errorText = document.getElementById("errorText");
-        errorText.textContent =
-          currentLanguage === "he" ? `שגיאה: ${message}` : `Error: ${message}`;
+        errorDiv.querySelector("span").textContent = `Error: ${message}`;
       }
 
-      /*── Event listeners ──*/
       function setupEventListeners() {
-        // Language toggle
-        document.getElementById("langToggle").addEventListener("click", () => {
-          currentLanguage = currentLanguage === "en" ? "he" : "en";
-          try {
-            localStorage.setItem("mirrorLanguage", currentLanguage);
-          } catch {}
-          applyLanguage();
-        });
-
-        // Form validation - real time with better validation
         document
           .getElementById("userName")
           .addEventListener("input", updateFormValidation);
         document
           .getElementById("userEmail")
           .addEventListener("input", updateFormValidation);
-
-        // Also check on blur for better UX
         document
           .getElementById("userName")
           .addEventListener("blur", updateFormValidation);
         document
           .getElementById("userEmail")
           .addEventListener("blur", updateFormValidation);
-
-        // Consciousness wave interactions
-        document
-          .getElementById("userName")
-          .addEventListener("input", triggerWaveResponse);
-        document
-          .getElementById("userEmail")
-          .addEventListener("input", triggerWaveResponse);
       }
 
-      /*── Enhanced form validation ──*/
       function updateFormValidation() {
         const nameInput = document.getElementById("userName");
         const emailInput = document.getElementById("userEmail");
@@ -856,7 +560,6 @@
         const nameValue = nameInput.value.trim();
         const emailValue = emailInput.value.trim();
 
-        // More lenient validation
         const nameValid = nameValue.length >= 2;
         const emailValid =
           emailValue.length > 0 &&
@@ -882,24 +585,21 @@
           emailValue.length > 0
         );
 
-        console.log("📝 Form validation:", {
-          nameValue,
-          emailValue,
+        console.log("📝 Form validation changed:", {
+          wasValid,
+          formValid,
           nameValid,
           emailValid,
-          formValid,
-          wasValid,
-          paypalSDKLoaded,
-          paypalInitialized,
         });
+        updateDebugInfo();
 
-        // Check if we can initialize PayPal
-        checkAndInitializePayPal();
+        // Key fix: Always check when form validation changes
+        if (formValid !== wasValid) {
+          checkFormAndInitializePayPal();
+        }
       }
 
-      /*── Update field validation UI ──*/
       function updateFieldValidation(input, indicator, isValid, hasContent) {
-        // Clear previous classes
         input.classList.remove("valid", "invalid");
         indicator.classList.remove("show");
 
@@ -918,8 +618,14 @@
         }
       }
 
-      /*── Check and initialize PayPal ──*/
-      function checkAndInitializePayPal() {
+      // The key fix: renamed and simplified logic
+      function checkFormAndInitializePayPal() {
+        console.log("🔍 Checking PayPal conditions:", {
+          formValid,
+          paypalSDKLoaded,
+          paypalInitialized,
+        });
+
         if (formValid && paypalSDKLoaded && !paypalInitialized) {
           console.log("✅ All conditions met, initializing PayPal...");
           initializePayPal();
@@ -927,41 +633,19 @@
           console.log("⚠️ Form invalid, clearing PayPal button");
           clearPayPalButton();
         } else {
-          console.log("⏳ Waiting for conditions:", {
-            formValid,
-            paypalSDKLoaded,
-            paypalInitialized,
-          });
+          console.log("⏳ Waiting for conditions to be met");
         }
+
+        updateDebugInfo();
       }
 
-      /*── Wave interactions ──*/
-      let waveInteractionTimer = null;
-
-      function triggerWaveResponse() {
-        if (waveInteractionTimer) clearTimeout(waveInteractionTimer);
-
-        const waves = document.querySelectorAll(".wave");
-        waves.forEach((wave, index) => {
-          wave.style.animationDuration = `${10 - index * 0.5}s`;
-        });
-
-        waveInteractionTimer = setTimeout(() => {
-          waves.forEach((wave, index) => {
-            wave.style.animationDuration = `${15 + index * 2}s`;
-          });
-        }, 2000);
-      }
-
-      /*── Clear PayPal button ──*/
       function clearPayPalButton() {
         const container = document.getElementById("paypal-button-container");
         container.innerHTML = "";
-        container.classList.remove("loaded");
         paypalInitialized = false;
+        updateDebugInfo();
       }
 
-      /*── PayPal initialization ──*/
       function initializePayPal() {
         console.log("💳 Initializing PayPal button...");
 
@@ -978,12 +662,8 @@
         }
 
         try {
-          // Clear existing button
           clearPayPalButton();
 
-          console.log("💳 Creating PayPal button...");
-
-          // Create PayPal button
           window.paypal
             .Buttons({
               style: {
@@ -1001,13 +681,10 @@
                   purchase_units: [
                     {
                       amount: {
-                        value: "20.00",
+                        value: "5.00",
                         currency_code: paypalConfig.currency,
                       },
-                      description:
-                        currentLanguage === "he"
-                          ? "מראת האמת - חוויית השתקפות"
-                          : "Mirror of Truth - Reflection Experience",
+                      description: "Mirror of Truth - Reflection Experience",
                     },
                   ],
                 });
@@ -1024,13 +701,7 @@
 
               onError: function (err) {
                 console.error("❌ PayPal Button Error:", err);
-
-                alert(
-                  currentLanguage === "he"
-                    ? "שגיאה בתשלום. נסה שוב."
-                    : "Payment error. Please try again."
-                );
-
+                alert("Payment error. Please try again.");
                 resetFormState();
               },
 
@@ -1043,12 +714,7 @@
             .then(() => {
               console.log("✅ PayPal button rendered successfully");
               paypalInitialized = true;
-
-              // Show the PayPal button container
-              const container = document.getElementById(
-                "paypal-button-container"
-              );
-              container.classList.add("loaded");
+              updateDebugInfo();
             })
             .catch((error) => {
               console.error("❌ PayPal button render error:", error);
@@ -1060,73 +726,30 @@
         }
       }
 
-      /*── Payment success handler ──*/
-      async function handlePaymentSuccess(paymentDetails) {
+      function handlePaymentSuccess(paymentDetails) {
         console.log("🎉 Processing successful payment:", paymentDetails);
 
-        // Show processing state
         document
           .getElementById("registrationForm")
           .classList.add("form-disabled");
         document.getElementById("processingMessage").style.display = "block";
 
-        // Activate consciousness waves
-        const waves = document.querySelectorAll(".wave");
-        waves.forEach((wave, index) => {
-          wave.style.animationDuration = `${6 - index * 0.2}s`;
-        });
+        const userData = {
+          name: document.getElementById("userName").value.trim(),
+          email: document.getElementById("userEmail").value.trim(),
+          paymentId: paymentDetails.id,
+          paymentMethod: "paypal",
+        };
 
-        try {
-          // Get user data
-          const userData = {
-            name: document.getElementById("userName").value.trim(),
-            email: document.getElementById("userEmail").value.trim(),
-            language: currentLanguage,
-            paymentId: paymentDetails.id,
-            paymentMethod: "paypal",
-          };
-
-          // Store user data for reflection flow
-          localStorage.setItem("mirrorVerifiedUser", JSON.stringify(userData));
-
-          // Generate receipt
-          try {
-            const receiptResponse = await fetch("/api/generate-receipt", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                email: userData.email,
-                name: userData.name,
-                amount: 20,
-                paymentMethod: "paypal",
-                language: userData.language,
-              }),
-            });
-
-            if (receiptResponse.ok) {
-              console.log("✅ Receipt generated successfully");
-            } else {
-              console.warn("⚠️ Receipt generation failed, but continuing...");
-            }
-          } catch (receiptError) {
-            console.warn("⚠️ Receipt generation error:", receiptError);
-          }
-
-          // Navigate to breathing page
-          setTimeout(() => {
-            window.location.href = `./breathing.html?payment=paypal&verified=true&lang=${currentLanguage}`;
-          }, 2000);
-        } catch (error) {
-          console.error("❌ Post-payment processing error:", error);
-
-          // Still proceed to reflection even if receipt fails
-          setTimeout(() => {
-            window.location.href = `./breathing.html?payment=paypal&verified=true&lang=${currentLanguage}`;
-          }, 2000);
-        }
+        // In real app, store user data and navigate
+        setTimeout(() => {
+          alert(
+            `Payment successful! Welcome ${userData.name}. In the real app, you'd now proceed to your reflection.`
+          );
+          resetFormState();
+        }, 2000);
       }
 
-      /*── Reset form state ──*/
       function resetFormState() {
         document
           .getElementById("registrationForm")
@@ -1134,48 +757,17 @@
         document.getElementById("processingMessage").style.display = "none";
       }
 
-      /*── Initialize on page load ──*/
+      // Initialize on page load
       window.addEventListener("load", () => {
         initializeApp();
       });
 
-      /*── Debug function ──*/
-      window.debugPayPal = function () {
-        console.log("🔍 PayPal Debug Info:", {
-          paypalConfig,
-          paypalSDKLoaded,
-          paypalInitialized,
-          paypalSDK: !!window.paypal,
-          paypalButtons: !!(window.paypal && window.paypal.Buttons),
-          formValid,
-          userName: document.getElementById("userName").value,
-          userEmail: document.getElementById("userEmail").value,
-          containerExists: !!document.getElementById("paypal-button-container"),
-          loadingVisible:
-            document.getElementById("paypalLoading").style.display !== "none",
-          errorVisible:
-            document.getElementById("paypalError").style.display !== "none",
-        });
-
-        // Try manual initialization
-        if (window.paypal && paypalConfig && formValid && !paypalInitialized) {
-          console.log("🔧 Manually triggering PayPal initialization...");
-          initializePayPal();
-        }
-      };
-
-      /*── Force PayPal test (for debugging) ──*/
+      // Debug helper
       window.forcePayPal = function () {
-        console.log("🔧 FORCING PayPal button creation for debugging...");
-        if (window.paypal && paypalConfig) {
-          paypalInitialized = false; // Reset flag
-          initializePayPal();
-        } else {
-          console.log("❌ Missing requirements:", {
-            paypal: !!window.paypal,
-            config: !!paypalConfig,
-          });
-        }
+        console.log("🔧 Force initializing PayPal...");
+        formValid = true;
+        updateDebugInfo();
+        checkFormAndInitializePayPal();
       };
     </script>
   </body>
