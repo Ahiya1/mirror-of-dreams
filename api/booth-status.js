@@ -32,9 +32,32 @@ module.exports = async function handler(req, res) {
     const now = new Date();
     const currentHour = now.getHours();
 
-    // Default booth hours: 10 AM - 10 PM (can be made configurable later)
-    const isWithinHours = currentHour >= 10 && currentHour < 22;
+    // Use configurable booth hours (with fallbacks)
+    const openHour = boothSettings.openHour || 10;
+    const closeHour = boothSettings.closeHour || 22;
+    const isWithinHours = currentHour >= openHour && currentHour < closeHour;
     const isWeekend = now.getDay() === 0 || now.getDay() === 6; // Sunday or Saturday
+
+    // Format hours for display (12-hour format for English, 24-hour for Hebrew)
+    const formatHour = (hour, lang) => {
+      if (lang === "he") {
+        return `${hour.toString().padStart(2, "0")}:00`;
+      } else {
+        const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+        const ampm = hour >= 12 ? "PM" : "AM";
+        return `${hour12} ${ampm}`;
+      }
+    };
+
+    const openTime = {
+      en: formatHour(openHour, "en"),
+      he: formatHour(openHour, "he"),
+    };
+
+    const closeTime = {
+      en: formatHour(closeHour, "en"),
+      he: formatHour(closeHour, "he"),
+    };
 
     // Determine operational status
     let operationalStatus = "closed";
@@ -44,14 +67,14 @@ module.exports = async function handler(req, res) {
       if (isWithinHours) {
         operationalStatus = "open";
         statusMessage = isWeekend
-          ? "Open today until 10 PM"
-          : "Open until 10 PM";
-      } else if (currentHour < 10) {
+          ? `Open today until ${closeTime.en}`
+          : `Open until ${closeTime.en}`;
+      } else if (currentHour < openHour) {
         operationalStatus = "opening_later";
-        statusMessage = "Opens at 10 AM";
+        statusMessage = `Opens at ${openTime.en}`;
       } else {
         operationalStatus = "closed_for_day";
-        statusMessage = "Closed for today • Opens 10 AM tomorrow";
+        statusMessage = `Closed for today • Opens ${openTime.en} tomorrow`;
       }
     } else if (boothSettings.status === "maintenance") {
       operationalStatus = "maintenance";
@@ -86,13 +109,19 @@ module.exports = async function handler(req, res) {
       lastUpdated: new Date().toISOString(),
 
       // Additional helpful info
-      generalHours: "10 AM - 10 PM daily",
+      generalHours: `${openTime.en} - ${closeTime.en} daily`,
       paymentMethods: ["cash", "bit"],
 
       // Localized status messages
       statusMessages: {
         en: statusMessage,
-        he: getHebrewStatusMessage(operationalStatus, currentHour, isWeekend),
+        he: getHebrewStatusMessage(
+          operationalStatus,
+          currentHour,
+          isWeekend,
+          openTime.he,
+          closeTime.he
+        ),
       },
     };
 
@@ -116,7 +145,7 @@ module.exports = async function handler(req, res) {
         statusMessage: "Status currently unavailable",
         isOpen: false,
         lastUpdated: new Date().toISOString(),
-        generalHours: "10 AM - 10 PM daily",
+        generalHours: "10 AM - 10 PM daily", // Fallback hours
         paymentMethods: ["cash", "bit"],
         statusMessages: {
           en: "Status currently unavailable",
@@ -129,14 +158,20 @@ module.exports = async function handler(req, res) {
   }
 };
 
-function getHebrewStatusMessage(operationalStatus, currentHour, isWeekend) {
+function getHebrewStatusMessage(
+  operationalStatus,
+  currentHour,
+  isWeekend,
+  openTime,
+  closeTime
+) {
   switch (operationalStatus) {
     case "open":
-      return isWeekend ? "פתוח היום עד 22:00" : "פתוח עד 22:00";
+      return isWeekend ? `פתוח היום עד ${closeTime}` : `פתוח עד ${closeTime}`;
     case "opening_later":
-      return "נפתח ב-10:00";
+      return `נפתח ב-${openTime}`;
     case "closed_for_day":
-      return "סגור להיום • נפתח מחר ב-10:00";
+      return `סגור להיום • נפתח מחר ב-${openTime}`;
     case "maintenance":
       return "סגור זמנית לתחזוקה";
     case "inactive":
