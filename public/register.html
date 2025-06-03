@@ -905,6 +905,7 @@
           nameLabel: "Your Name",
           emailLabel: "Your Email",
           continueText: "Continue to Reflection",
+          registeringText: "⏳ Registering...", // NEW: Loading text
           langText: "עברית",
           langFlag: "🇮🇱",
           backText: "Back",
@@ -921,6 +922,7 @@
           nameLabel: "שם מלא",
           emailLabel: "אימייל",
           continueText: "המשך להשתקפות",
+          registeringText: "⏳ נרשם...", // NEW: Loading text in Hebrew
           langText: "English",
           langFlag: "🇺🇸",
           backText: "חזור",
@@ -1093,7 +1095,8 @@
           // Show loading state
           const continueBtn = document.getElementById("continueBtn");
           const originalText = continueBtn.innerHTML;
-          continueBtn.innerHTML = "<span>⏳ Registering...</span>";
+          const t = translations[currentLanguage]; // Get current translations
+          continueBtn.innerHTML = `<span>${t.registeringText}</span>`; // Use translated loading text
           continueBtn.disabled = true;
 
           // Waves recognize the submission
