@@ -1,7 +1,7 @@
 {
-  "name": "mirror-of-truth",
+  "name": "mirror-of-truth-online",
   "version": "1.0.0",
-  "description": "The Mirror of Truth - A sacred bilingual space to see yourself clearly | מראת האמת - מקום קדוש דו-לשוני לראות את עצמך בבהירות",
+  "description": "The Mirror of Truth - Online reflection experience | מראת האמת - חוויית השתקפות מקוונת",
   "main": "index.html",
   "scripts": {
     "dev": "vercel dev",
@@ -26,9 +26,11 @@
     "anthropic",
     "claude",
     "spiritual",
-    "booth",
-    "bit-payment",
-    "cash"
+    "online",
+    "paypal",
+    "meditation",
+    "consciousness",
+    "personal-growth"
   ],
   "author": {
     "name": "Ahiya",
@@ -48,11 +50,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ahiya1/mirror-of-truth.git"
+    "url": "https://github.com/Ahiya1/mirror-of-truth-online.git"
   },
-  "homepage": "https://mirror-of-truth.vercel.app",
+  "homepage": "https://mirror-of-truth-online.vercel.app",
   "bugs": {
-    "url": "https://github.com/ahiya1/mirror-of-truth/issues"
+    "url": "https://github.com/Ahiya1/mirror-of-truth-online/issues"
   },
   "funding": {
     "type": "individual",

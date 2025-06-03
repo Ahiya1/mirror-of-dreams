@@ -2,7 +2,7 @@
 
 **A sacred bilingual space to see yourself clearly**
 
-A reflection experience that helps people connect with their dreams through AI-powered insights. Built with love, truth, and quiet certainty.
+An online reflection experience that helps people connect with their dreams through AI-powered insights. Built with love, truth, and quiet certainty.
 
 ---
 
@@ -34,27 +34,24 @@ The Mirror of Truth is not a productivity tool. It's a sacred space where people
 - Culturally appropriate content and design
 - Language preference saved across sessions
 
-### 💰 **Payment System**
+### 💰 **PayPal Integration**
 
-- **Cash payments** at booth locations with access codes via email
-- **Bit payments** (Israeli mobile payment system)
+- Secure online payments via PayPal
+- $20 USD for reflection experience
 - Automatic receipt generation in both languages
-- Admin panel for booth management
+- Instant access after payment
 
 ### ✉️ **Email Integration**
 
 - Beautiful HTML emails with reflections
-- Professional receipts for business compliance
-- Access codes for cash payments
+- Professional receipts for record keeping
 - Personal messages from Ahiya
 
 ### 🎛️ **Admin Panel**
 
-- Real-time booth management
-- Send access codes for cash payments
-- Generate and send receipts
-- Track daily statistics and revenue
-- Export session data
+- Receipt management and tracking
+- Revenue analytics
+- Export payment data
 - Admin testing mode with unlimited reflections
 
 ---
@@ -66,22 +63,23 @@ The Mirror of Truth is not a productivity tool. It's a sacred space where people
 - Node.js 18.x or higher
 - Gmail account with 2FA enabled
 - Anthropic API key
+- PayPal Developer Account
 
 ### 1. Create Project Structure
 
 ```bash
-mkdir mirror-of-truth && cd mirror-of-truth
+mkdir mirror-of-truth-online && cd mirror-of-truth-online
 mkdir -p api
 touch .env package.json vercel.json .gitignore README.md
-touch index.html reflection.html admin.html
-touch api/mirror-reflection.js api/send-mirror-email.js api/send-access-code.js api/verify-payment.js api/generate-receipt.js
+touch index.html reflection.html admin.html breathing.html register.html
+touch api/mirror-reflection.js api/send-mirror-email.js api/generate-receipt.js api/admin-auth.js api/admin-data.js
 ```
 
 ### 2. Install Dependencies
 
 ```bash
 npm init -y
-npm install @anthropic-ai/sdk nodemailer
+npm install @anthropic-ai/sdk nodemailer @upstash/redis @vercel/edge-config openai
 ```
 
 ### 3. Environment Setup
@@ -96,13 +94,24 @@ cp .env.example .env
 ```env
 # Essential - Required for core functionality
 ANTHROPIC_API_KEY=sk-ant-api03-...
+OPENAI_API_KEY=sk-...
 GMAIL_USER=your-email@gmail.com
 GMAIL_APP_PASSWORD=your-gmail-app-password
 
-# Business Info (Ahiya's details)
-BUSINESS_NUMBER=325761682
-BIT_PHONE=+972587789019
-BUSINESS_NAME=AhIya
+# Business Info
+BUSINESS_NUMBER=your-business-number
+BUSINESS_NAME=Your Business Name
+
+# Admin Access
+CREATOR_SECRET_KEY=your-admin-secret
+
+# PayPal (add when implementing)
+PAYPAL_CLIENT_ID=your-paypal-client-id
+PAYPAL_CLIENT_SECRET=your-paypal-client-secret
+
+# Redis for receipt storage
+UPSTASH_REDIS_REST_URL=your-redis-url
+UPSTASH_REDIS_REST_TOKEN=your-redis-token
 ```
 
 ### 5. Gmail Setup
@@ -118,6 +127,13 @@ BUSINESS_NAME=AhIya
 2. Add billing information
 3. Create API key
 4. Add to `ANTHROPIC_API_KEY`
+
+### 7. OpenAI API Setup (for Hebrew)
+
+1. Sign up at [platform.openai.com](https://platform.openai.com)
+2. Add billing information
+3. Create API key
+4. Add to `OPENAI_API_KEY`
 
 ---
 
@@ -138,7 +154,7 @@ vercel
 ### Environment Variables in Vercel
 
 1. Go to Vercel Dashboard → Your Project → Settings → Environment Variables
-2. Add all variables from `.env.example`
+2. Add all variables from `.env`
 3. Deploy again: `vercel --prod`
 
 ### Custom Domain (Optional)
@@ -152,16 +168,20 @@ vercel
 ## 📁 Project Structure
 
 ```
-mirror-of-truth/
+mirror-of-truth-online/
 ├── 📄 index.html              # Bilingual homepage with floating mirrors
+├── 📄 register.html           # Registration and PayPal payment
+├── 📄 breathing.html          # Meditation transition
 ├── 📄 reflection.html         # Sacred reflection experience
-├── 📄 admin.html             # Booth management panel
+├── 📄 admin.html             # Receipt management panel
 ├── 📁 api/
 │   ├── 🤖 mirror-reflection.js    # AI reflection generation (bilingual)
 │   ├── ✉️ send-mirror-email.js    # Email reflections (bilingual)
-│   ├── 🔑 send-access-code.js     # Cash payment access codes
-│   ├── 💳 verify-payment.js       # Bit payment verification
-│   └── 🧾 generate-receipt.js     # Receipt generation (bilingual)
+│   ├── 🧾 generate-receipt.js     # Receipt generation (bilingual)
+│   ├── 🔐 admin-auth.js           # Admin authentication
+│   └── 📊 admin-data.js           # Receipt management API
+├── 📁 lib/
+│   └── 💾 redis-storage.js        # Receipt storage functions
 ├── ⚙️ package.json
 ├── 🚀 vercel.json
 ├── 🙈 .gitignore
@@ -178,27 +198,25 @@ mirror-of-truth/
 1. Visit the homepage
 2. Click "Reflect Me" (תראה לי in Hebrew)
 3. Enter name and email
-4. Choose payment: Cash (booth only) or Bit
-5. Answer 5 sacred questions about your dream
-6. Receive personalized AI reflection
-7. Get reflection emailed for future reference
+4. Pay via PayPal ($20)
+5. Experience breathing meditation
+6. Answer 5 sacred questions about your dream
+7. Receive personalized AI reflection
+8. Get reflection emailed for future reference
 
-### For Booth Operation
+### For Admin
 
 1. Access admin panel at `/admin`
-2. Set booth location and status
-3. For cash payments:
-   - Enter customer email and name
-   - Send access code via email
-   - Customer uses code to access reflection
-4. Track daily stats and revenue
-5. Generate receipts as needed
+2. Enter admin secret key
+3. View receipt analytics and revenue
+4. Export payment data
+5. Resend receipts if needed
 
 ### Admin Testing
 
-- Access `/reflection?admin=true` for unlimited reflections
-- No payment required for testing
-- Full functionality available
+- Use creator secret key to access unlimited reflections
+- No payment required for admin testing
+- Full functionality available for testing
 
 ---
 
@@ -236,19 +254,6 @@ Content-Type: application/json
 }
 ```
 
-### Access Codes (Cash Payments)
-
-```http
-POST /api/send-access-code
-Content-Type: application/json
-
-{
-  "email": "user@example.com",
-  "name": "Sarah",
-  "language": "en"
-}
-```
-
 ### Generate Receipt
 
 ```http
@@ -259,7 +264,7 @@ Content-Type: application/json
   "email": "user@example.com",
   "name": "Sarah",
   "amount": 20,
-  "paymentMethod": "cash",
+  "paymentMethod": "paypal",
   "language": "en"
 }
 ```
@@ -287,9 +292,29 @@ Content-Type: application/json
 ### Cultural Sensitivity
 
 - **Hebrew RTL layout**: Proper right-to-left design
-- **Israeli payment methods**: Bit integration for local users
-- **Business compliance**: Proper receipts with business number
+- **Israeli payment methods**: PayPal for global reach
+- **Business compliance**: Proper receipts with business info
 - **Cultural language**: Hebrew that feels natural, not translated
+
+---
+
+## 💳 PayPal Integration
+
+### Setup PayPal
+
+1. Create PayPal Developer Account
+2. Create new app in PayPal Developer Dashboard
+3. Get Client ID and Client Secret
+4. Add to environment variables
+5. Configure webhook endpoints for payment verification
+
+### PayPal Flow
+
+1. User enters details on registration page
+2. PayPal button processes $20 payment
+3. On successful payment, user is redirected to breathing page
+4. Receipt is automatically generated and emailed
+5. User proceeds to reflection experience
 
 ---
 
@@ -322,11 +347,10 @@ Edit `getMirrorPrompt()` in `api/mirror-reflection.js`:
 
 ### Built-in Analytics
 
-- Daily reflection count
-- Revenue tracking
+- Total revenue tracking
+- Daily payment count
 - Payment method breakdown
-- Session completion rates
-- Access code usage
+- Receipt management
 
 ### External Analytics (Optional)
 
@@ -340,10 +364,10 @@ Edit `getMirrorPrompt()` in `api/mirror-reflection.js`:
 
 ### Data Handling
 
-- **No persistent storage**: Sessions stored in memory only
-- **Email only**: No personal data stored long-term
-- **Secure emails**: All communications via encrypted email
-- **Access codes**: 24-hour expiration, single-use
+- **Receipt storage**: Secure Redis storage for payment records
+- **Email only**: No personal data stored long-term beyond receipts
+- **Secure payments**: All payments via PayPal's secure infrastructure
+- **Admin access**: Protected by secret key authentication
 
 ### Security Headers
 
@@ -370,11 +394,11 @@ Edit `getMirrorPrompt()` in `api/mirror-reflection.js`:
 - Ensure 2FA is enabled on Gmail account
 - Test with your own email first
 
-**Access Codes Not Working:**
+**PayPal Issues:**
 
-- Check code generation in admin panel
-- Verify email delivery
-- Ensure codes aren't expired (24hr limit)
+- Verify PayPal credentials are correct
+- Check PayPal Developer Dashboard for errors
+- Ensure webhook URLs are configured properly
 
 **Hebrew Layout Issues:**
 
@@ -398,30 +422,20 @@ Set `NODE_ENV=development` for:
 
 - [ ] Test complete reflection flow in both languages
 - [ ] Verify email delivery and formatting
-- [ ] Test access code system end-to-end
-- [ ] Confirm Bit payment URL generation
+- [ ] Test PayPal payment flow end-to-end
+- [ ] Confirm receipt generation
 - [ ] Test admin panel functionality
-- [ ] Verify receipt generation
+- [ ] Verify all translations
 - [ ] Test on mobile devices
-- [ ] Check all translations
+- [ ] Set up custom domain
 
-### Booth Setup
+### Marketing Ready
 
-- [ ] Laptop with good wifi connection
-- [ ] Power bank for extended operation
-- [ ] Receipt book for cash payments (חשבונית)
-- [ ] Clear signage with pricing (20 NIS)
-- [ ] Backup internet (mobile hotspot)
-- [ ] Admin panel bookmarked
-
-### Operational Flow
-
-1. Customer sees sign and approaches
-2. Brief explanation of the experience
-3. Payment: cash (receipt + access code) or Bit
-4. Customer completes reflection
-5. Reflection emailed automatically
-6. Admin marks session complete
+- [ ] Social media graphics prepared
+- [ ] About page content finalized
+- [ ] Testimonials collected
+- [ ] Analytics tracking set up
+- [ ] Customer support process defined
 
 ---
 
@@ -429,23 +443,23 @@ Set `NODE_ENV=development` for:
 
 ### Immediate Opportunities
 
-- **Multiple locations**: Tel Aviv, Jerusalem, Haifa
-- **Events**: Festivals, conferences, markets
-- **Partnerships**: Wellness centers, cafes
-- **Corporate**: Team building, workshops
+- **Global reach**: PayPal enables worldwide access
+- **Social sharing**: Users can gift reflections to friends
+- **Subscription model**: Monthly reflection packages
+- **Corporate wellness**: Team reflection experiences
 
 ### Technical Improvements
 
-- **Database integration**: PostgreSQL or MongoDB
-- **User accounts**: Save multiple reflections
-- **Advanced analytics**: Deeper insights
+- **Advanced analytics**: Deeper user insights
 - **Mobile app**: Native iOS/Android experience
+- **API for partners**: White-label reflection services
+- **AI improvements**: More personalized prompts
 
 ### Content Expansion
 
 - **Question variations**: Different reflection themes
 - **Seasonal content**: Holiday-specific experiences
-- **Community features**: Share anonymous insights
+- **Community features**: Anonymous wisdom sharing
 - **Mentor matching**: Connect with guides
 
 ---
@@ -504,22 +518,22 @@ _"Your dream chose you as carefully as you're choosing it."_
 
 ```bash
 # Clone and setup
-git clone <your-repo> mirror-of-truth
-cd mirror-of-truth
+git clone <your-repo> mirror-of-truth-online
+cd mirror-of-truth-online
 npm install
 cp .env.example .env
 # Edit .env with your values
 
 # Run locally
-npm run dev
+vercel dev
 
 # Deploy to Vercel
-npm run deploy
+vercel --prod
 
 # Access points
-# Homepage: http://localhost:3000
-# Admin: http://localhost:3000/admin
-# Reflection: http://localhost:3000/reflection
+# Homepage: https://your-domain.com
+# Admin: https://your-domain.com/admin
+# Reflection: https://your-domain.com/reflection
 ```
 
-Ready to create sacred spaces for truth? Let's begin. ✨
+Ready to create sacred spaces for truth online? Let's begin. ✨

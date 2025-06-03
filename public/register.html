@@ -1,4 +1,4 @@
-<!-- FILE: public/register.html • Enhanced with booth status integration • 2025-06-01 -->
+<!-- FILE: public/register.html • PayPal Integration Complete • 2025-06-01 -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -362,7 +362,7 @@
         width: 100%;
         max-width: 500px;
         padding: 1rem;
-        min-height: calc(100vh - 4rem); /* Account for body padding */
+        min-height: calc(100vh - 4rem);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -518,7 +518,7 @@
         width: 100%;
       }
 
-      /*── enhanced payment info with booth status ──*/
+      /*── payment info section ──*/
       .payment-info {
         font-size: 1rem;
         line-height: 1.6;
@@ -576,140 +576,34 @@
         color: transparent;
       }
 
-      .payment-methods {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        font-size: 0.95rem;
+      .payment-description {
+        opacity: 0.8;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
       }
 
-      .payment-method {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0.8rem 1rem;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+      /* PayPal button container */
+      #paypal-button-container {
+        margin: 1.5rem 0;
+        min-height: 45px;
+      }
+
+      /* Loading state for form */
+      .form-disabled {
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      .processing-message {
+        display: none;
+        text-align: center;
+        padding: 1rem;
+        background: rgba(59, 130, 246, 0.2);
+        border: 1px solid rgba(59, 130, 246, 0.4);
         border-radius: 12px;
-        transition: all 0.3s ease;
-      }
-
-      .payment-method:hover {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.2);
-      }
-
-      .payment-method .method-name {
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      .payment-method .method-detail {
-        opacity: 0.7;
-        font-size: 0.85rem;
-        font-weight: 400;
-      }
-
-      /*── booth status in payment ──*/
-      .booth-status-inline {
-        opacity: 0;
-        transition: all 0.5s ease;
-        font-size: 0.8rem;
-        margin-top: 0.3rem;
-        padding: 0.4rem 0.8rem;
-        background: rgba(255, 255, 255, 0.06);
-        border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-      }
-      .booth-status-inline.loaded {
-        opacity: 1;
-      }
-      .booth-status-inline.unknown {
-        opacity: 0.5;
-        font-style: italic;
-      }
-      .booth-status-inline.open {
-        background: rgba(34, 197, 94, 0.1);
-        border-color: rgba(34, 197, 94, 0.2);
-        color: rgba(34, 197, 94, 0.9);
-      }
-      .booth-status-inline.closed {
-        background: rgba(239, 68, 68, 0.1);
-        border-color: rgba(239, 68, 68, 0.2);
-        color: rgba(239, 68, 68, 0.9);
-      }
-
-      .continue-btn {
-        width: 100%;
-        padding: 1.4rem 2rem;
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.12) 0%,
-          rgba(255, 255, 255, 0.08) 100%
-        );
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 20px;
-        color: #fff;
-        font-size: 1.1rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        letter-spacing: 0.3px;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2),
-          inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        animation: buttonHarmony 16s ease-in-out infinite;
-      }
-
-      .continue-btn::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.1) 0%,
-          transparent 50%,
-          rgba(255, 255, 255, 0.05) 100%
-        );
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-      .continue-btn:hover:not(:disabled)::before {
-        opacity: 1;
-      }
-      .continue-btn:hover:not(:disabled) {
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.18) 0%,
-          rgba(255, 255, 255, 0.12) 100%
-        );
-        border-color: rgba(255, 255, 255, 0.35);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 30px rgba(255, 255, 255, 0.15),
-          inset 0 1px 0 rgba(255, 255, 255, 0.15);
-      }
-      .continue-btn:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-        transform: none;
-      }
-
-      @keyframes buttonHarmony {
-        0%,
-        100% {
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        }
-
-        50% {
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1),
-            0 0 20px rgba(255, 255, 255, 0.05);
-        }
+        color: #93c5fd;
+        margin-top: 1rem;
+        font-size: 0.9rem;
       }
 
       /*── responsive tweaks ──*/
@@ -757,14 +651,6 @@
         }
         .registration-card h1 {
           font-size: 1.5rem;
-        }
-        .payment-methods {
-          gap: 0.8rem;
-        }
-        .payment-method {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 0.5rem;
         }
       }
 
@@ -854,35 +740,26 @@
             <input id="userEmail" type="email" required />
           </div>
 
+          <!-- Payment info -->
           <div class="payment-info" id="paymentInfo">
-            <div class="payment-amount">20₪</div>
-            <div class="payment-methods">
-              <!-- FIXED: Remove phone number from cash method -->
-              <div class="payment-method">
-                <div class="method-name" id="cashMethod">
-                  💵 <span id="cashMethodText">Cash at booth</span>
-                </div>
-                <!-- Booth status now properly under cash method -->
-                <div class="booth-status-inline loading" id="boothStatusInline">
-                  <span id="boothStatusText">Loading booth status...</span>
-                </div>
-              </div>
-              <div class="payment-method">
-                <div class="method-name" id="bitMethod">
-                  📱 <span id="bitMethodText">Bit Payment</span>
-                </div>
-                <!-- Phone number properly under bit method -->
-                <div class="method-detail">+972 58-778-9019</div>
-              </div>
+            <div class="payment-amount">₪20</div>
+            <div class="payment-description" id="paymentDescription">
+              Secure payment to begin your reflection
+            </div>
+
+            <!-- PayPal button will appear here -->
+            <div id="paypal-button-container"></div>
+
+            <div class="processing-message" id="processingMessage">
+              ⏳ Processing your payment and preparing your sacred space...
             </div>
           </div>
-
-          <button type="submit" class="continue-btn" id="continueBtn" disabled>
-            <span id="continueText">Continue to Reflection</span>
-          </button>
         </form>
       </div>
     </div>
+
+    <!-- PayPal SDK -->
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_SANDBOX_CLIENT_ID&currency=ILS"></script>
 
     <!--──────────────  SCRIPT  ──────────────-->
     <script>
@@ -904,35 +781,23 @@
           pageTitle: "Begin Your Reflection",
           nameLabel: "Your Name",
           emailLabel: "Your Email",
-          continueText: "Continue to Reflection",
-          registeringText: "⏳ Registering...", // NEW: Loading text
           langText: "עברית",
           langFlag: "🇮🇱",
           backText: "Back",
           namePlaceholder: "Enter your name",
           emailPlaceholder: "name@example.com",
-          cashMethodText: "Cash at booth",
-          bitMethodText: "Bit Payment",
-          loadingBoothStatus: "Loading booth status...",
-          boothLocationFallback: "Location TBA",
-          unknownStatus: "Status unavailable",
+          paymentDescription: "Secure payment to begin your reflection",
         },
         he: {
           pageTitle: "התחל את ההשתקפות",
           nameLabel: "שם מלא",
           emailLabel: "אימייל",
-          continueText: "המשך להשתקפות",
-          registeringText: "⏳ נרשם...", // NEW: Loading text in Hebrew
           langText: "English",
           langFlag: "🇺🇸",
           backText: "חזור",
           namePlaceholder: "הזן את שמך",
           emailPlaceholder: "name@example.com",
-          cashMethodText: "מזומן בדוכן",
-          bitMethodText: "תשלום בביט",
-          loadingBoothStatus: "טוען סטטוס דוכן...",
-          boothLocationFallback: "מיקום יעודכן",
-          unknownStatus: "סטטוס לא זמין",
+          paymentDescription: "תשלום מאובטח להתחלת ההשתקפות",
         },
       };
 
@@ -962,67 +827,10 @@
           localStorage.setItem("mirrorLanguage", currentLanguage);
         } catch {}
         applyLanguage();
-        updateBoothStatus(); // Update booth status with new language
+
+        // Reinitialize PayPal button with new language
+        initializePayPal();
       });
-
-      /*── booth status integration ──*/
-      let boothData = null;
-
-      async function loadBoothStatus() {
-        try {
-          const response = await fetch("/api/booth-status");
-          const result = await response.json();
-
-          if (result.success && result.booth) {
-            boothData = result.booth;
-            updateBoothStatus();
-          } else {
-            throw new Error("Failed to load booth status");
-          }
-        } catch (error) {
-          console.error("Error loading booth status:", error);
-          showBoothError();
-        }
-      }
-
-      // FIXED: Handle bilingual location properly
-      function updateBoothStatus() {
-        if (!boothData) return;
-
-        const boothStatusInline = document.getElementById("boothStatusInline");
-        const boothStatusText = document.getElementById("boothStatusText");
-
-        const t = translations[currentLanguage];
-        const statusText =
-          boothData.statusMessages[currentLanguage] || boothData.statusMessage;
-
-        // FIXED: Get location based on current language
-        let locationText;
-        if (typeof boothData.location === "object") {
-          // New bilingual format
-          locationText =
-            boothData.location[currentLanguage] ||
-            boothData.location.en ||
-            t.boothLocationFallback;
-        } else {
-          // Legacy single-language format
-          locationText = boothData.location || t.boothLocationFallback;
-        }
-
-        // Update status text and class
-        boothStatusText.textContent = `${locationText} • ${statusText}`;
-        boothStatusInline.className = `booth-status-inline ${boothData.status} loaded`;
-      }
-
-      function showBoothError() {
-        const boothStatusInline = document.getElementById("boothStatusInline");
-        const boothStatusText = document.getElementById("boothStatusText");
-
-        const t = translations[currentLanguage];
-
-        boothStatusText.textContent = `${t.boothLocationFallback} • ${t.unknownStatus}`;
-        boothStatusInline.className = "booth-status-inline unknown loaded";
-      }
 
       /*── consciousness wave interactions ──*/
       let waveInteractionTimer = null;
@@ -1065,89 +873,173 @@
         }, 2000);
       }
 
-      /*── form validation ──*/
+      /*── form validation for PayPal ──*/
+      let formValid = false;
+
       document
         .getElementById("userName")
-        .addEventListener("input", updateContinue);
+        .addEventListener("input", updateFormValidation);
       document
         .getElementById("userEmail")
-        .addEventListener("input", updateContinue);
+        .addEventListener("input", updateFormValidation);
 
-      function updateContinue() {
-        const ready =
-          document.getElementById("userName").value.trim() &&
-          document.getElementById("userEmail").value.trim();
-        document.getElementById("continueBtn").disabled = !ready;
+      function updateFormValidation() {
+        const nameValid =
+          document.getElementById("userName").value.trim().length > 0;
+        const emailValid = document
+          .getElementById("userEmail")
+          .value.trim()
+          .includes("@");
+
+        formValid = nameValid && emailValid;
+
+        // Reinitialize PayPal button when form becomes valid
+        if (formValid) {
+          initializePayPal();
+        } else {
+          // Clear PayPal button if form is invalid
+          document.getElementById("paypal-button-container").innerHTML = "";
+        }
       }
 
-      /*── form submission ──*/
-      document
-        .getElementById("registrationForm")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
+      /*── PayPal Integration ──*/
+      function initializePayPal() {
+        if (!formValid) return;
 
-          const data = {
+        // Clear existing button
+        document.getElementById("paypal-button-container").innerHTML = "";
+
+        // Create PayPal button
+        paypal
+          .Buttons({
+            style: {
+              color: "gold",
+              shape: "rect",
+              label: "pay",
+              height: 45,
+              tagline: false,
+            },
+
+            createOrder: function (data, actions) {
+              return actions.order.create({
+                purchase_units: [
+                  {
+                    amount: {
+                      value: "20.00",
+                      currency_code: "ILS",
+                    },
+                    description:
+                      currentLanguage === "he"
+                        ? "מראת האמת - חוויית השתקפות"
+                        : "Mirror of Truth - Reflection Experience",
+                  },
+                ],
+              });
+            },
+
+            onApprove: function (data, actions) {
+              return actions.order.capture().then(function (details) {
+                // Payment successful!
+                handlePaymentSuccess(details);
+              });
+            },
+
+            onError: function (err) {
+              console.error("PayPal Error:", err);
+              alert(
+                currentLanguage === "he"
+                  ? "שגיאה בתשלום. נסה שוב."
+                  : "Payment error. Please try again."
+              );
+
+              // Reset form
+              document
+                .getElementById("registrationForm")
+                .classList.remove("form-disabled");
+              document.getElementById("processingMessage").style.display =
+                "none";
+            },
+
+            onCancel: function (data) {
+              // User cancelled payment
+              console.log("Payment cancelled");
+
+              // Reset form
+              document
+                .getElementById("registrationForm")
+                .classList.remove("form-disabled");
+              document.getElementById("processingMessage").style.display =
+                "none";
+            },
+          })
+          .render("#paypal-button-container");
+      }
+
+      /*── Payment Success Handler ──*/
+      async function handlePaymentSuccess(paymentDetails) {
+        console.log("Payment successful:", paymentDetails);
+
+        // Show processing message
+        document
+          .getElementById("registrationForm")
+          .classList.add("form-disabled");
+        document.getElementById("processingMessage").style.display = "block";
+
+        // Activate consciousness waves for successful payment
+        const waves = document.querySelectorAll(".wave");
+        waves.forEach((wave, index) => {
+          wave.style.animationDuration = `${6 - index * 0.2}s`; // Excited recognition
+        });
+
+        try {
+          // Get user data
+          const userData = {
             name: document.getElementById("userName").value.trim(),
             email: document.getElementById("userEmail").value.trim(),
             language: currentLanguage,
+            paymentId: paymentDetails.id,
+            paymentMethod: "paypal",
           };
 
-          // Show loading state
-          const continueBtn = document.getElementById("continueBtn");
-          const originalText = continueBtn.innerHTML;
-          const t = translations[currentLanguage]; // Get current translations
-          continueBtn.innerHTML = `<span>${t.registeringText}</span>`; // Use translated loading text
-          continueBtn.disabled = true;
+          // Store user data for reflection flow
+          localStorage.setItem("mirrorVerifiedUser", JSON.stringify(userData));
 
-          // Waves recognize the submission
-          const waves = document.querySelectorAll(".wave");
-          waves.forEach((wave, index) => {
-            wave.style.animationDuration = `${6 - index * 0.2}s`; // Excited recognition
+          // Generate receipt
+          await fetch("/api/generate-receipt", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: userData.email,
+              name: userData.name,
+              amount: 20,
+              paymentMethod: "paypal",
+              language: userData.language,
+            }),
           });
 
-          try {
-            // Save locally for this user's flow
-            localStorage.setItem("pendingPayment", JSON.stringify(data));
+          // Navigate to breathing page
+          setTimeout(() => {
+            location.href = `./breathing.html?payment=paypal&verified=true&lang=${currentLanguage}`;
+          }, 2000);
+        } catch (error) {
+          console.error("Post-payment processing error:", error);
 
-            // Send to admin backend
-            await fetch("/api/register", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                name: data.name,
-                email: data.email,
-                language: data.language,
-                source: "website",
-                timestamp: new Date().toISOString(),
-              }),
-            });
-
-            // Continue to reflection flow
-            location.href = `./reflection.html?payment=cash&lang=${currentLanguage}`;
-          } catch (error) {
-            console.error("Registration error:", error);
-
-            // Still continue even if backend fails
-            console.warn("Backend sync failed, proceeding with local flow");
-            location.href = `./reflection.html?payment=cash&lang=${currentLanguage}`;
-          }
-        });
+          // Still proceed to reflection even if receipt fails
+          setTimeout(() => {
+            location.href = `./breathing.html?payment=paypal&verified=true&lang=${currentLanguage}`;
+          }, 2000);
+        }
+      }
 
       /*── page initialization ──*/
-      // Make waves more active when page loads
       window.addEventListener("load", () => {
         const waves = document.querySelectorAll(".wave");
         waves.forEach((wave, index) => {
           wave.style.opacity = "0.1"; // Slightly more visible base state
         });
 
-        // Load booth status
-        loadBoothStatus();
-
-        // Refresh booth status every 5 minutes
-        setInterval(loadBoothStatus, 5 * 60 * 1000);
+        // Initialize PayPal when page loads (if form is valid)
+        setTimeout(updateFormValidation, 500);
       });
     </script>
   </body>

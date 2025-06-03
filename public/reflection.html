@@ -1,4 +1,4 @@
-<!-- FILE: public/reflection.html • enhanced with creator context support • 2025-06-01 -->
+<!-- FILE: public/reflection.html • Clean online version without access codes • 2025-06-01 -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -56,52 +56,6 @@
       .experience-section.active {
         opacity: 1;
         transform: translateY(0);
-      }
-
-      /*–— access code –—*/
-      .access-code-text {
-        font-size: 1.1rem;
-        font-weight: 300;
-        opacity: 0.9;
-        line-height: 1.6;
-        margin-bottom: 2rem;
-      }
-      .code-input-container {
-        max-width: 300px;
-        margin: 2rem auto;
-      }
-      .code-input {
-        width: 100%;
-        padding: 1.2rem;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
-        color: #fff;
-        font-size: 1.5rem;
-        text-align: center;
-        letter-spacing: 0.3em;
-        font-family: "Courier New", monospace;
-        font-weight: 600;
-        transition: 0.3s;
-      }
-      .code-input:focus {
-        outline: none;
-        border-color: rgba(255, 255, 255, 0.4);
-        background: rgba(255, 255, 255, 0.12);
-      }
-      .code-input::placeholder {
-        color: rgba(255, 255, 255, 0.5);
-        letter-spacing: 0.2em;
-      }
-      .error-message {
-        background: rgba(239, 68, 68, 0.2);
-        border: 1px solid rgba(239, 68, 68, 0.4);
-        color: #fecaca;
-        padding: 1rem;
-        border-radius: 12px;
-        margin-top: 1rem;
-        font-size: 0.9rem;
-        text-align: center;
       }
 
       /*–— common button –—*/
@@ -339,38 +293,8 @@
 
   <body>
     <div class="container">
-      <!-- 1️⃣  ACCESS-CODE -->
-      <div class="experience-section active" id="accessCode">
-        <div class="access-code-section">
-          <div class="access-code-text" id="accessCodeText">
-            Please enter your verification code from the email
-          </div>
-          <div class="code-input-container">
-            <input
-              type="text"
-              id="codeInput"
-              class="code-input"
-              maxlength="6"
-              placeholder="000000"
-            />
-          </div>
-          <button
-            class="continue-btn"
-            id="verifyCodeBtn"
-            onclick="verifyAccessCode()"
-          >
-            Verify Code
-          </button>
-          <div
-            class="error-message"
-            id="errorMessage"
-            style="display: none"
-          ></div>
-        </div>
-      </div>
-
-      <!-- 2️⃣  QUESTIONS -->
-      <div class="experience-section hidden" id="questions">
+      <!-- 1️⃣  QUESTIONS (Direct Entry) -->
+      <div class="experience-section active" id="questions">
         <form id="reflectionForm" class="questions-form">
           <div class="question-group">
             <div class="question-number" id="q1Number">Question&nbsp;1</div>
@@ -462,7 +386,7 @@
         </form>
       </div>
 
-      <!-- 3️⃣  LOADING -->
+      <!-- 2️⃣  LOADING -->
       <div class="experience-section hidden" id="loading">
         <div>
           <div class="loading-circle"></div>
@@ -472,7 +396,7 @@
         </div>
       </div>
 
-      <!-- 4️⃣  RESULTS -->
+      <!-- 3️⃣  RESULTS -->
       <div class="experience-section hidden" id="results">
         <div class="results">
           <div class="admin-notice" id="adminNotice" style="display: none">
@@ -503,10 +427,6 @@
       /* 1. i18n table */
       const translations = {
         en: {
-          accessCodeText: "Please enter your verification code from the email",
-          verifyCodeBtn: "Verify Code",
-          codePlaceholder: "000000",
-          invalidCode: "Invalid or expired code. Please try again.",
           q1Number: "Question 1",
           q1Text: "What is your dream?",
           q1Subtitle:
@@ -538,10 +458,6 @@
           reflectAgainText: "Reflect Again",
         },
         he: {
-          accessCodeText: "הכנס את קוד האימות שנשלח אליך במייל",
-          verifyCodeBtn: "אמת קוד",
-          codePlaceholder: "000000",
-          invalidCode: "קוד שגוי או פג תוקף. נסה שוב.",
           q1Number: "שאלה 1",
           q1Text: "מה החלום שלך?",
           q1Subtitle: "(בחר חלום אחד — זה שקורא לך כרגע.)",
@@ -589,7 +505,6 @@
         planInput.placeholder = t.planPlaceholder;
         relationshipInput.placeholder = t.relationshipPlaceholder;
         offeringInput.placeholder = t.offeringPlaceholder;
-        codeInput.placeholder = t.codePlaceholder;
       }
       applyLanguage();
 
@@ -614,61 +529,39 @@
         }, 300);
       }
 
-      /* 5. initial routing */
+      /* 5. initial routing - check for verified user */
       const url = new URLSearchParams(location.search);
       if (url.get("admin") === "true") {
         isAdminMode = true;
         adminNotice.style.display = "block";
-        startQuestions();
-      } else if (url.get("verified") === "true") {
-        const stored = localStorage.getItem("mirrorVerifiedUser");
-        if (stored) userData = JSON.parse(stored);
-        startQuestions();
       }
 
-      /* 6. access-code logic */
-      function showError(msg) {
-        errorMessage.textContent = msg;
-        errorMessage.style.display = "block";
-        codeInput.value = "";
-      }
-      async function verifyAccessCode() {
-        const code = codeInput.value.trim();
-        if (code.length !== 6)
-          return showError(translations[currentLanguage].invalidCode);
-        errorMessage.style.display = "none";
+      // Check for verified user (from PayPal payment)
+      const stored = localStorage.getItem("mirrorVerifiedUser");
+      if (stored) {
         try {
-          const r = await fetch(`/api/send-access-code?code=${code}`);
-          const d = await r.json();
-          if (!d.success) throw new Error("bad");
-          userData = d.userData;
-          localStorage.setItem("mirrorVerifiedUser", JSON.stringify(userData));
-
-          // Store creator context if available
-          if (userData.isCreator && userData.creatorContext) {
-            localStorage.setItem(
-              "mirrorCreatorContext",
-              JSON.stringify(userData.creatorContext)
-            );
-          }
-
-          location.href = `/breathing.html?payment=cash&verified=true&lang=${currentLanguage}`;
+          userData = JSON.parse(stored);
         } catch (e) {
-          showError(translations[currentLanguage].invalidCode);
+          console.error("Error parsing user data:", e);
+          // Redirect back to registration if data is corrupted
+          location.href = `./register.html?lang=${currentLanguage}`;
         }
+      } else if (!isAdminMode) {
+        // No verified user and not admin mode - redirect to registration
+        location.href = `./register.html?lang=${currentLanguage}`;
       }
 
-      /* 7. questions sequence */
-      function startQuestions() {
-        showSection("questions");
-        setTimeout(animateQuestions, 300);
-        setupInteractions();
-      }
+      // Start questions immediately (no access code verification)
+      setTimeout(animateQuestions, 300);
+      setupInteractions();
+
+      /* 6. questions sequence */
       function animateQuestions() {
         document.querySelectorAll(".question-group").forEach((q, i) => {
           setTimeout(() => q.classList.add("visible"), i * 200);
         });
       }
+
       function setupInteractions() {
         document.querySelectorAll(".yes-no-btn").forEach((btn) => {
           btn.addEventListener("click", function () {
@@ -690,20 +583,19 @@
           });
         });
 
-        // FIXED: Form submission with proper creator context flow
+        // Form submission with proper creator context flow
         reflectionForm.addEventListener("submit", async (e) => {
           e.preventDefault();
           showSection("loading");
           const f = new FormData(reflectionForm);
 
-          // FIXED: Properly check and use creator context
+          // Check if user is creator and get context
           let creatorContext = null;
           let isCreatorMode = false;
 
-          // Check if user is creator and get context
           if (userData?.isCreator) {
             isCreatorMode = true;
-            // Try to get creator context from multiple sources
+            // Try to get creator context from localStorage
             const storedContext = localStorage.getItem("mirrorCreatorContext");
             if (storedContext) {
               try {
@@ -711,11 +603,6 @@
               } catch (e) {
                 console.warn("Failed to parse creator context:", e);
               }
-            }
-
-            // Fallback: use context from userData if available
-            if (!creatorContext && userData.creatorContext) {
-              creatorContext = userData.creatorContext;
             }
           }
 
@@ -771,7 +658,7 @@
         });
       }
 
-      /* 8. email reflection */
+      /* 7. email reflection */
       function emailReflection() {
         if (!userData?.email) {
           const mail = prompt(

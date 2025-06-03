@@ -488,7 +488,7 @@
         box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
       }
 
-      /* Receipt/Registration Cards */
+      /* Receipt Cards */
       .item-card {
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -503,21 +503,6 @@
         background: rgba(255, 255, 255, 0.08);
         border-color: rgba(255, 255, 255, 0.2);
         transform: translateX(5px);
-      }
-
-      .item-card.completed {
-        background: rgba(34, 197, 94, 0.06);
-        border-color: rgba(34, 197, 94, 0.2);
-      }
-
-      .item-card.completed::after {
-        content: "✓";
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        color: #22c55e;
-        font-size: 1.2rem;
-        font-weight: bold;
       }
 
       .item-header {
@@ -675,25 +660,6 @@
         color: #fff;
       }
 
-      /* FIXED: Bilingual location inputs */
-      .location-group {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-      }
-
-      .location-input-wrapper {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .location-label {
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
-        opacity: 0.8;
-      }
-
       /* Badges */
       .badge {
         padding: 0.3rem 0.8rem;
@@ -704,28 +670,22 @@
         letter-spacing: 0.5px;
       }
 
-      .badge.pending {
-        background: rgba(245, 158, 11, 0.2);
-        border: 1px solid rgba(245, 158, 11, 0.4);
-        color: #fbbf24;
-      }
-
-      .badge.completed {
-        background: rgba(34, 197, 94, 0.2);
-        border: 1px solid rgba(34, 197, 94, 0.4);
-        color: #22c55e;
-      }
-
       .badge.cash {
         background: rgba(34, 197, 94, 0.2);
         border: 1px solid rgba(34, 197, 94, 0.4);
         color: #22c55e;
       }
 
-      .badge.bit {
+      .badge.paypal {
         background: rgba(59, 130, 246, 0.2);
         border: 1px solid rgba(59, 130, 246, 0.4);
         color: #3b82f6;
+      }
+
+      .badge.creator {
+        background: rgba(168, 85, 247, 0.2);
+        border: 1px solid rgba(168, 85, 247, 0.4);
+        color: #a855f7;
       }
 
       /* Empty State */
@@ -877,10 +837,6 @@
         .date-input {
           min-width: auto;
         }
-
-        .location-group {
-          grid-template-columns: 1fr;
-        }
       }
 
       @media (max-width: 480px) {
@@ -938,7 +894,7 @@
       <!-- Header -->
       <div class="admin-header">
         <h1 class="admin-title">Mirror of Truth</h1>
-        <p class="admin-subtitle">Sacred Admin Portal</p>
+        <p class="admin-subtitle">Receipt Management Portal</p>
       </div>
 
       <!-- Tab Navigation -->
@@ -946,14 +902,8 @@
         <button class="tab-btn active" onclick="switchTab('overview')">
           📊 Overview
         </button>
-        <button class="tab-btn" onclick="switchTab('registrations')">
-          👥 Registrations
-        </button>
         <button class="tab-btn" onclick="switchTab('receipts')">
           🧾 Receipts
-        </button>
-        <button class="tab-btn" onclick="switchTab('settings')">
-          ⚙️ Settings
         </button>
       </div>
 
@@ -962,69 +912,30 @@
         <!-- Enhanced Stats -->
         <div class="stats-grid">
           <div class="stat-card">
-            <div class="stat-number" id="statPending">-</div>
-            <div class="stat-label">Pending</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number" id="statToday">-</div>
-            <div class="stat-label">Today</div>
-          </div>
-          <div class="stat-card">
             <div class="stat-number" id="statTotalRevenue">-</div>
-            <div class="stat-label">Total Revenue ₪</div>
+            <div class="stat-label">Total Revenue $</div>
           </div>
           <div class="stat-card">
             <div class="stat-number" id="statTodayRevenue">-</div>
-            <div class="stat-label">Today Revenue ₪</div>
+            <div class="stat-label">Today Revenue $</div>
           </div>
           <div class="stat-card">
             <div class="stat-number" id="statTotalReceipts">-</div>
             <div class="stat-label">Total Receipts</div>
           </div>
           <div class="stat-card">
-            <div class="stat-number" id="statTotal">-</div>
-            <div class="stat-label">Total Sessions</div>
+            <div class="stat-number" id="statTodayReceipts">-</div>
+            <div class="stat-label">Today Receipts</div>
           </div>
         </div>
 
         <!-- Recent Activity -->
         <div class="section-card">
           <div class="section-header">
-            <h2 class="section-title">Recent Activity</h2>
+            <h2 class="section-title">Recent Payments</h2>
           </div>
           <div id="recentActivity">
             <!-- Recent items will be populated here -->
-          </div>
-        </div>
-      </div>
-
-      <!-- Registrations Tab -->
-      <div class="tab-content" id="registrationsTab">
-        <div class="section-card">
-          <div class="section-header">
-            <h2 class="section-title">Sacred Queue</h2>
-            <div class="badge pending" id="pendingBadge">0 pending</div>
-          </div>
-
-          <div class="controls-row">
-            <input
-              type="text"
-              class="search-input"
-              id="regSearch"
-              placeholder="Search registrations..."
-            />
-            <select class="filter-select" id="regFilter">
-              <option value="all">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="completed">Completed</option>
-            </select>
-            <button class="action-btn primary-btn" onclick="addRegistration()">
-              ➕ Add Registration
-            </button>
-          </div>
-
-          <div id="registrationsList">
-            <!-- Registration cards will be populated here -->
           </div>
         </div>
       </div>
@@ -1034,7 +945,7 @@
         <div class="section-card">
           <div class="section-header">
             <h2 class="section-title">Receipt Management</h2>
-            <div class="badge completed" id="receiptsBadge">0 receipts</div>
+            <div class="badge cash" id="receiptsBadge">0 receipts</div>
           </div>
 
           <div class="controls-row">
@@ -1046,8 +957,7 @@
             />
             <select class="filter-select" id="receiptPaymentFilter">
               <option value="all">All Payment Methods</option>
-              <option value="cash">Cash</option>
-              <option value="bit">Bit</option>
+              <option value="paypal">PayPal</option>
               <option value="creator">Creator</option>
             </select>
             <input type="date" class="date-input" id="receiptStartDate" />
@@ -1063,90 +973,6 @@
           <div id="receiptsList">
             <!-- Receipt cards will be populated here -->
           </div>
-        </div>
-      </div>
-
-      <!-- Settings Tab -->
-      <div class="tab-content" id="settingsTab">
-        <div class="section-card">
-          <div class="section-header">
-            <h2 class="section-title">Booth Settings</h2>
-          </div>
-
-          <!-- FIXED: Bilingual location inputs -->
-          <div class="location-group">
-            <div class="location-input-wrapper">
-              <label class="location-label">Booth Location (English)</label>
-              <input
-                type="text"
-                class="form-input"
-                id="boothLocationEn"
-                placeholder="Rothschild Boulevard, Tel Aviv"
-              />
-            </div>
-            <div class="location-input-wrapper">
-              <label class="location-label">מיקום דוכן (עברית)</label>
-              <input
-                type="text"
-                class="form-input"
-                id="boothLocationHe"
-                placeholder="שדרות רוטשילד, תל אביב"
-              />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Status</label>
-            <select class="form-select" id="boothStatus">
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-              <option value="maintenance">Maintenance</option>
-            </select>
-          </div>
-
-          <!-- NEW: Configurable booth hours -->
-          <div class="location-group">
-            <div class="location-input-wrapper">
-              <label class="location-label">Opening Hour</label>
-              <select class="form-select" id="openHour">
-                <option value="6">6:00 AM</option>
-                <option value="7">7:00 AM</option>
-                <option value="8">8:00 AM</option>
-                <option value="9">9:00 AM</option>
-                <option value="10">10:00 AM</option>
-                <option value="11">11:00 AM</option>
-                <option value="12">12:00 PM</option>
-                <option value="13">1:00 PM</option>
-                <option value="14">2:00 PM</option>
-              </select>
-            </div>
-            <div class="location-input-wrapper">
-              <label class="location-label">Closing Hour</label>
-              <select class="form-select" id="closeHour">
-                <option value="18">6:00 PM</option>
-                <option value="19">7:00 PM</option>
-                <option value="20">8:00 PM</option>
-                <option value="21">9:00 PM</option>
-                <option value="22">10:00 PM</option>
-                <option value="23">11:00 PM</option>
-                <option value="24">12:00 AM</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Daily Goal</label>
-            <input
-              type="number"
-              class="form-input"
-              id="dailyGoal"
-              placeholder="100"
-            />
-          </div>
-
-          <button class="action-btn primary-btn" onclick="saveBoothSettings()">
-            💾 Save Settings
-          </button>
         </div>
       </div>
     </div>
@@ -1183,7 +1009,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Amount (₪)</label>
+            <label class="form-label">Amount ($)</label>
             <input
               type="number"
               class="form-input"
@@ -1195,12 +1021,10 @@
             />
           </div>
 
-          <!-- FIXED: Payment method without phone number for cash -->
           <div class="form-group">
             <label class="form-label">Payment Method</label>
             <select class="form-select" id="receiptPaymentMethod" required>
-              <option value="cash">Cash</option>
-              <option value="bit">Bit (+972 58-778-9019)</option>
+              <option value="paypal">PayPal</option>
               <option value="creator">Creator</option>
             </select>
           </div>
@@ -1229,51 +1053,6 @@
       </div>
     </div>
 
-    <!-- Registration Modal -->
-    <div class="modal" id="registrationModal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title">Add Registration</h2>
-          <button class="close-btn" onclick="closeModal('registrationModal')">
-            &times;
-          </button>
-        </div>
-
-        <form id="registrationForm">
-          <div class="form-group">
-            <label class="form-label">Name</label>
-            <input type="text" class="form-input" id="regName" required />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-input" id="regEmail" required />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Language</label>
-            <select class="form-select" id="regLanguage" required>
-              <option value="en">English</option>
-              <option value="he">Hebrew</option>
-            </select>
-          </div>
-
-          <div class="item-actions">
-            <button
-              type="button"
-              class="action-btn"
-              onclick="closeModal('registrationModal')"
-            >
-              Cancel
-            </button>
-            <button type="submit" class="action-btn primary-btn">
-              Add Registration
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
     <!-- Notification -->
     <div id="notification" class="notification"></div>
 
@@ -1281,7 +1060,6 @@
       let adminData = null;
       let authKey = null;
       let currentTab = "overview";
-      let filteredRegistrations = [];
       let filteredReceipts = [];
 
       // Authentication with backend
@@ -1375,13 +1153,13 @@
         }
       });
 
-      // Load admin data from backend API
+      // Load admin data from backend API - receipts only
       async function loadAdminData() {
         if (!authKey) return;
 
         try {
           const response = await fetch(
-            `/api/admin-data?key=${encodeURIComponent(authKey)}`
+            `/api/admin-data?key=${encodeURIComponent(authKey)}&filter=receipts`
           );
 
           if (!response.ok) {
@@ -1399,10 +1177,8 @@
           if (result.success) {
             adminData = result.data;
             updateStats();
-            renderRegistrations();
             renderReceipts();
             renderRecentActivity();
-            updateBoothSettingsForm();
             updateConnectionStatus(true);
           } else {
             throw new Error(result.error || "Failed to load admin data");
@@ -1414,23 +1190,26 @@
         }
       }
 
-      // Update statistics
+      // Update statistics - receipts only
       function updateStats() {
         if (!adminData || !adminData.stats) return;
 
         const stats = adminData.stats;
-        document.getElementById("statPending").textContent = stats.pending;
-        document.getElementById("statToday").textContent = stats.today;
         document.getElementById("statTotalRevenue").textContent =
-          stats.totalRevenue || stats.revenue;
+          stats.totalRevenue || 0;
         document.getElementById("statTodayRevenue").textContent =
           stats.todayRevenue || 0;
         document.getElementById("statTotalReceipts").textContent =
           stats.totalReceipts || 0;
-        document.getElementById("statTotal").textContent = stats.total;
-        document.getElementById(
-          "pendingBadge"
-        ).textContent = `${stats.pending} pending`;
+
+        // Calculate today's receipts count
+        const today = new Date().toDateString();
+        const todayReceipts = (adminData.receipts || []).filter(
+          (r) => new Date(r.timestamp).toDateString() === today
+        ).length;
+        document.getElementById("statTodayReceipts").textContent =
+          todayReceipts;
+
         document.getElementById("receiptsBadge").textContent = `${
           stats.totalReceipts || 0
         } receipts`;
@@ -1451,91 +1230,6 @@
           content.classList.remove("active");
         });
         document.getElementById(tabName + "Tab").classList.add("active");
-      }
-
-      // Render registrations
-      function renderRegistrations() {
-        if (!adminData || !adminData.registrations) return;
-
-        const container = document.getElementById("registrationsList");
-        let registrations = adminData.registrations;
-
-        // Apply search filter
-        const searchTerm =
-          document.getElementById("regSearch")?.value.toLowerCase() || "";
-        const statusFilter =
-          document.getElementById("regFilter")?.value || "all";
-
-        if (searchTerm) {
-          registrations = registrations.filter(
-            (reg) =>
-              reg.name.toLowerCase().includes(searchTerm) ||
-              reg.email.toLowerCase().includes(searchTerm)
-          );
-        }
-
-        if (statusFilter !== "all") {
-          registrations = registrations.filter(
-            (reg) => reg.status === statusFilter
-          );
-        }
-
-        filteredRegistrations = registrations;
-
-        if (registrations.length === 0) {
-          container.innerHTML = `
-            <div class="empty-state">
-              <div class="empty-icon">🪞</div>
-              <div class="empty-title">No registrations found</div>
-              <div class="empty-subtitle">Sacred reflections will appear when souls are ready</div>
-            </div>
-          `;
-          return;
-        }
-
-        container.innerHTML = registrations
-          .map((reg) => {
-            let actionsHtml = "";
-            if (reg.status === "pending") {
-              actionsHtml = `
-                <div class="item-actions">
-                  <button class="action-btn primary-btn" onclick="approveRegistration('${reg.id}')">
-                    💰 Approve & Send
-                  </button>
-                  <button class="action-btn danger-btn" onclick="removeRegistration('${reg.id}')">
-                    🗑️ Remove
-                  </button>
-                </div>
-              `;
-            } else if (reg.status === "completed") {
-              actionsHtml = `
-                <div class="item-actions">
-                  <button class="action-btn danger-btn" onclick="removeRegistration('${reg.id}')" title="Delete completed entry">
-                    🗑️ Delete
-                  </button>
-                </div>
-              `;
-            }
-
-            return `
-              <div class="item-card ${reg.status}" data-id="${reg.id}">
-                <div class="item-header">
-                  <div class="item-info">
-                    <h3>${reg.name}</h3>
-                    <p>${reg.email}</p>
-                    <p><span class="badge ${reg.status}">${
-              reg.status
-            }</span> • ${reg.language === "he" ? "עברית" : "English"}</p>
-                  </div>
-                  <div class="item-meta">
-                    <div>${reg.timeAgo || "Now"}</div>
-                  </div>
-                </div>
-                ${actionsHtml}
-              </div>
-            `;
-          })
-          .join("");
       }
 
       // Render receipts
@@ -1603,7 +1297,7 @@
                   <h3>Receipt #${receipt.receiptNumber}</h3>
                   <p>${receipt.customerName} • ${receipt.customerEmail}</p>
                   <p>
-                    <span class="badge ${receipt.paymentMethod}">₪${
+                    <span class="badge ${receipt.paymentMethod}">$${
               receipt.amount
             } • ${receipt.paymentMethod}</span> • 
                     ${receipt.language === "he" ? "עברית" : "English"}
@@ -1631,40 +1325,14 @@
           .join("");
       }
 
-      // Render recent activity
+      // Render recent activity - receipts only
       function renderRecentActivity() {
-        if (!adminData) return;
+        if (!adminData || !adminData.receipts) return;
 
         const container = document.getElementById("recentActivity");
-        const allItems = [];
+        const recentReceipts = adminData.receipts.slice(0, 10);
 
-        // Combine recent registrations and receipts
-        if (adminData.registrations) {
-          adminData.registrations.slice(0, 5).forEach((reg) => {
-            allItems.push({
-              type: "registration",
-              timestamp: reg.timestamp,
-              text: `New registration: ${reg.name}`,
-              status: reg.status,
-            });
-          });
-        }
-
-        if (adminData.receipts) {
-          adminData.receipts.slice(0, 5).forEach((receipt) => {
-            allItems.push({
-              type: "receipt",
-              timestamp: receipt.timestamp,
-              text: `Receipt #${receipt.receiptNumber} - ₪${receipt.amount}`,
-              status: "completed",
-            });
-          });
-        }
-
-        // Sort by timestamp
-        allItems.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-        if (allItems.length === 0) {
+        if (recentReceipts.length === 0) {
           container.innerHTML = `
             <div class="empty-state">
               <div class="empty-icon">📊</div>
@@ -1674,119 +1342,23 @@
           return;
         }
 
-        container.innerHTML = allItems
-          .slice(0, 10)
+        container.innerHTML = recentReceipts
           .map(
-            (item) => `
+            (receipt) => `
           <div class="item-card">
             <div class="item-header">
               <div class="item-info">
-                <p>${item.text}</p>
+                <p>Receipt #${receipt.receiptNumber} - $${receipt.amount} (${receipt.paymentMethod})</p>
+                <p>${receipt.customerName} • ${receipt.customerEmail}</p>
               </div>
               <div class="item-meta">
-                <span class="badge ${item.status}">${item.type}</span>
+                <span class="badge ${receipt.paymentMethod}">receipt</span>
               </div>
             </div>
           </div>
         `
           )
           .join("");
-      }
-
-      // Approve registration
-      async function approveRegistration(id) {
-        const registration = adminData.registrations.find((r) => r.id === id);
-        if (!registration) return;
-
-        const button = document.querySelector(`[data-id="${id}"] .primary-btn`);
-        if (button.disabled) return;
-
-        button.disabled = true;
-        button.innerHTML = "⏳ Sending...";
-        button.classList.add("loading");
-
-        try {
-          // Send access code
-          const response = await fetch("/api/send-access-code", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              email: registration.email,
-              name: registration.name,
-              language: registration.language,
-              paymentMethod: "cash",
-            }),
-          });
-
-          const result = await response.json();
-          if (!result.success) throw new Error("Failed to send access code");
-
-          // Update registration status in backend
-          await fetch("/api/admin-data", {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: authKey,
-            },
-            body: JSON.stringify({
-              id: id,
-              updates: {
-                status: "completed",
-                completedAt: new Date().toISOString(),
-              },
-            }),
-          });
-
-          notify("Sacred package sent ✨");
-          await loadAdminData(); // Refresh data
-        } catch (error) {
-          console.error("Error approving registration:", error);
-          button.disabled = false;
-          button.innerHTML = "💰 Approve & Send";
-          button.classList.remove("loading");
-          notify("Sacred process interrupted - try again", true);
-        }
-      }
-
-      // Remove registration
-      async function removeRegistration(id) {
-        if (!confirm("Are you sure you want to remove this registration?"))
-          return;
-
-        const registrationCard = document.querySelector(`[data-id="${id}"]`);
-        if (registrationCard) {
-          registrationCard.style.opacity = "0.5";
-          registrationCard.style.pointerEvents = "none";
-        }
-
-        try {
-          const response = await fetch(`/api/admin-data?id=${id}`, {
-            method: "DELETE",
-            headers: {
-              Authorization: authKey,
-              "Content-Type": "application/json",
-            },
-          });
-
-          const result = await response.json();
-
-          if (!result.success) {
-            throw new Error(result.error || "Failed to remove registration");
-          }
-
-          notify("Soul released from queue");
-          await loadAdminData(); // Refresh the entire view
-        } catch (error) {
-          console.error("Error removing registration:", error);
-
-          // Restore the card if there was an error
-          if (registrationCard) {
-            registrationCard.style.opacity = "1";
-            registrationCard.style.pointerEvents = "auto";
-          }
-
-          notify("Sacred process interrupted - try again", true);
-        }
       }
 
       // Receipt management functions
@@ -1935,132 +1507,8 @@
           }
         });
 
-      document
-        .getElementById("registrationForm")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-
-          const formData = {
-            name: document.getElementById("regName").value,
-            email: document.getElementById("regEmail").value,
-            language: document.getElementById("regLanguage").value,
-          };
-
-          try {
-            const response = await fetch("/api/admin-data", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: authKey,
-              },
-              body: JSON.stringify({
-                action: "addRegistration",
-                ...formData,
-              }),
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-              notify("Registration added successfully");
-              closeModal("registrationModal");
-              await loadAdminData();
-            } else {
-              throw new Error(result.error || "Failed to add registration");
-            }
-          } catch (error) {
-            console.error("Error adding registration:", error);
-            notify("Failed to add registration", true);
-          }
-        });
-
-      function addRegistration() {
-        document.getElementById("registrationForm").reset();
-        showModal("registrationModal");
-      }
-
-      // FIXED: Update booth settings form to handle bilingual location AND hours
-      function updateBoothSettingsForm() {
-        if (!adminData || !adminData.boothSettings) return;
-
-        const settings = adminData.boothSettings;
-
-        // Handle both old and new location formats
-        if (typeof settings.location === "object") {
-          // New bilingual format
-          document.getElementById("boothLocationEn").value =
-            settings.location.en || "";
-          document.getElementById("boothLocationHe").value =
-            settings.location.he || "";
-        } else {
-          // Legacy single-language format
-          document.getElementById("boothLocationEn").value =
-            settings.location || "";
-          document.getElementById("boothLocationHe").value =
-            settings.location || "";
-        }
-
-        document.getElementById("boothStatus").value =
-          settings.status || "active";
-
-        // NEW: Set booth hours (with fallbacks)
-        document.getElementById("openHour").value = settings.openHour || 10;
-        document.getElementById("closeHour").value = settings.closeHour || 22;
-
-        document.getElementById("dailyGoal").value = settings.dailyGoal || 100;
-      }
-
-      // FIXED: Save booth settings with bilingual location AND hours
-      async function saveBoothSettings() {
-        const settings = {
-          location: {
-            en: document.getElementById("boothLocationEn").value,
-            he: document.getElementById("boothLocationHe").value,
-          },
-          status: document.getElementById("boothStatus").value,
-          openHour: parseInt(document.getElementById("openHour").value) || 10,
-          closeHour: parseInt(document.getElementById("closeHour").value) || 22,
-          dailyGoal:
-            parseInt(document.getElementById("dailyGoal").value) || 100,
-          lastUpdated: new Date().toISOString(),
-        };
-
-        try {
-          const response = await fetch("/api/admin-data", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: authKey,
-            },
-            body: JSON.stringify({
-              action: "updateBoothSettings",
-              settings: settings,
-            }),
-          });
-
-          const result = await response.json();
-
-          if (result.success) {
-            notify("Booth settings saved successfully");
-            await loadAdminData();
-          } else {
-            throw new Error(result.error || "Failed to save settings");
-          }
-        } catch (error) {
-          console.error("Error saving booth settings:", error);
-          notify("Failed to save settings", true);
-        }
-      }
-
       // Search and filter event listeners
       document.addEventListener("DOMContentLoaded", () => {
-        // Registration filters
-        const regSearch = document.getElementById("regSearch");
-        const regFilter = document.getElementById("regFilter");
-        if (regSearch) regSearch.addEventListener("input", renderRegistrations);
-        if (regFilter)
-          regFilter.addEventListener("change", renderRegistrations);
-
         // Receipt filters
         const receiptSearch = document.getElementById("receiptSearch");
         const receiptPaymentFilter = document.getElementById(

@@ -1,4 +1,4 @@
-<!-- FILE: public/index.html • Clean with subtle booth status • 2025-06-01 -->
+<!-- FILE: public/index.html • Clean online version without booth features • 2025-06-01 -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -259,32 +259,6 @@
         margin-inline: auto;
       }
 
-      /*── subtle booth status at bottom ──*/
-      .booth-status-footer {
-        position: fixed;
-        bottom: 2rem;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 100;
-        font-size: 0.75rem;
-        opacity: 0;
-        transition: all 0.8s ease;
-        color: rgba(255, 255, 255, 0.4);
-        text-align: center;
-        letter-spacing: 0.3px;
-        pointer-events: none;
-        font-weight: 300;
-      }
-      .booth-status-footer.loaded {
-        opacity: 1;
-      }
-      .booth-status-footer.open {
-        color: rgba(34, 197, 94, 0.6);
-      }
-      .booth-status-footer.closed {
-        color: rgba(255, 255, 255, 0.25);
-      }
-
       /*── responsive tweaks ──*/
       @media (max-width: 768px) {
         .reflect-button {
@@ -303,19 +277,10 @@
           right: auto;
           left: 1rem;
         }
-        .booth-status-footer {
-          bottom: 1.5rem;
-          font-size: 0.7rem;
-        }
       }
       @media (max-width: 480px) {
         .title {
           font-size: 2rem;
-        }
-        .booth-status-footer {
-          bottom: 1rem;
-          font-size: 0.65rem;
-          padding: 0 1rem;
         }
       }
     </style>
@@ -355,11 +320,6 @@
       </section>
     </main>
 
-    <!-- subtle booth status at bottom -->
-    <div class="booth-status-footer" id="boothStatusFooter">
-      <span id="boothStatusText">Loading...</span>
-    </div>
-
     <!--──────────────  SCRIPT  ──────────────-->
     <script>
       /*── language persistence ──*/
@@ -382,8 +342,6 @@
           tagline: "A space to see yourself clearly.<br>No fixing. Only truth.",
           langText: "עברית",
           langFlag: "🇮🇱",
-          boothLocationFallback: "Location TBA",
-          unknownStatus: "Status unavailable",
         },
         he: {
           mainTitle: "מראת האמת",
@@ -391,8 +349,6 @@
           tagline: "מרחב לראות את עצמך בבירור.<br>בלי תיקונים. רק אמת.",
           langText: "English",
           langFlag: "🇺🇸",
-          boothLocationFallback: "מיקום יעודכן",
-          unknownStatus: "סטטוס לא זמין",
         },
       };
 
@@ -413,69 +369,6 @@
         ).href = `./register.html?lang=${currentLanguage}`;
       }
       applyLanguage();
-
-      /*── booth status management ──*/
-      let boothData = null;
-
-      async function loadBoothStatus() {
-        try {
-          const response = await fetch("/api/booth-status");
-          const result = await response.json();
-
-          if (result.success && result.booth) {
-            boothData = result.booth;
-            updateBoothDisplay();
-          } else {
-            throw new Error("Failed to load booth status");
-          }
-        } catch (error) {
-          console.error("Error loading booth status:", error);
-          showBoothError();
-        }
-      }
-
-      // FIXED: Handle bilingual location properly
-      function updateBoothDisplay() {
-        if (!boothData) return;
-
-        const boothStatusFooter = document.getElementById("boothStatusFooter");
-        const boothStatusText = document.getElementById("boothStatusText");
-
-        // Create simple, minimal text with price
-        const t = translations[currentLanguage];
-
-        // FIXED: Get location based on current language
-        let location;
-        if (typeof boothData.location === "object") {
-          // New bilingual format
-          location =
-            boothData.location[currentLanguage] ||
-            boothData.location.en ||
-            t.boothLocationFallback;
-        } else {
-          // Legacy single-language format
-          location = boothData.location || t.boothLocationFallback;
-        }
-
-        const status =
-          boothData.statusMessages[currentLanguage] || boothData.statusMessage;
-
-        // Format: "20₪ • Location • Status"
-        boothStatusText.textContent = `20₪ • ${location} • ${status}`;
-
-        // Update class for styling
-        boothStatusFooter.className = `booth-status-footer ${boothData.status} loaded`;
-      }
-
-      function showBoothError() {
-        const boothStatusFooter = document.getElementById("boothStatusFooter");
-        const boothStatusText = document.getElementById("boothStatusText");
-
-        const t = translations[currentLanguage];
-
-        boothStatusText.textContent = `20₪ • ${t.boothLocationFallback} • ${t.unknownStatus}`;
-        boothStatusFooter.className = "booth-status-footer closed loaded";
-      }
 
       /*── UI interactions ──*/
       const mirrorsCont = document.getElementById("mirrorsContainer");
@@ -518,55 +411,25 @@
       function showSecretBypass() {
         const password = prompt("🪞 Creator Access\nEnter the sacred key:");
         if (password) {
-          // Verify with backend
-          fetch("/api/send-access-code", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              email: "ahiya.butman@gmail.com",
-              name: "Ahiya",
-              language: currentLanguage,
-              creatorBypass: true,
-              secretKey: password,
-            }),
-          })
-            .then((r) => r.json())
-            .then((data) => {
-              if (data.success && data.isCreator) {
-                // Store complete creator data properly
-                const creatorData = {
-                  name: "Ahiya",
-                  email: "ahiya.butman@gmail.com",
-                  language: currentLanguage,
-                  isCreator: true,
-                  accessCode: data.accessCode,
-                  creatorContext: data.creatorContext,
-                };
+          // For online version, we'll implement this differently
+          // Store creator data and go directly to reflection
+          if (password === "CREATOR_SECRET_HERE") {
+            // You'll set your own secret
+            localStorage.setItem(
+              "mirrorVerifiedUser",
+              JSON.stringify({
+                name: "Ahiya",
+                email: "ahiya.butman@gmail.com",
+                language: currentLanguage,
+                isCreator: true,
+              })
+            );
 
-                // Store the verified user data
-                localStorage.setItem(
-                  "mirrorVerifiedUser",
-                  JSON.stringify(creatorData)
-                );
-
-                // Store creator context separately for the AI prompt
-                if (data.creatorContext) {
-                  localStorage.setItem(
-                    "mirrorCreatorContext",
-                    JSON.stringify(data.creatorContext)
-                  );
-                }
-
-                // Navigate directly to breathing (skip code verification)
-                location.href = `./breathing.html?payment=creator&verified=true&lang=${currentLanguage}`;
-              } else {
-                alert("🪞 Invalid sacred key");
-              }
-            })
-            .catch((error) => {
-              console.error("Creator bypass error:", error);
-              alert("🪞 Connection error");
-            });
+            // Navigate directly to breathing
+            location.href = `./breathing.html?payment=creator&verified=true&lang=${currentLanguage}`;
+          } else {
+            alert("🪞 Invalid sacred key");
+          }
         }
       }
 
@@ -583,16 +446,6 @@
           localStorage.setItem("mirrorLanguage", currentLanguage);
         } catch {}
         applyLanguage();
-        updateBoothDisplay(); // Update booth display with new language
-      });
-
-      /*── initialization ──*/
-      window.addEventListener("load", () => {
-        // Load booth status on page load
-        loadBoothStatus();
-
-        // Refresh booth status every 5 minutes
-        setInterval(loadBoothStatus, 5 * 60 * 1000);
       });
     </script>
   </body>

@@ -1,10 +1,6 @@
 const {
-  addRegistration,
   getAllData,
-  updateRegistration,
-  removeRegistration,
-  updateBoothSettings,
-  // NEW: Receipt functions
+  // NEW: Receipt functions only
   addReceipt,
   updateReceipt,
   removeReceipt,
@@ -49,47 +45,28 @@ module.exports = async function handler(req, res) {
   try {
     console.log(`📡 Admin request: ${req.method} to /api/admin-data`);
 
-    // GET - Fetch all admin data (includes receipts now)
+    // GET - Fetch receipt data only
     if (req.method === "GET") {
       const { filter } = req.query;
 
-      if (filter === "receipts") {
-        // Filter to return only receipt data
-        const data = await getAllData();
-        return res.json({
-          success: true,
-          data: {
-            receipts: data.receipts,
-            stats: data.stats,
-            lastUpdated: data.lastUpdated,
-          },
-        });
-      }
-
       const data = await getAllData();
-      console.log(
-        `📊 Returning ${data.registrations.length} registrations and ${data.receipts.length} receipts to admin`
-      );
+
+      // Always return receipts-focused data for online version
       return res.json({
         success: true,
-        data,
+        data: {
+          receipts: data.receipts,
+          stats: data.stats,
+          lastUpdated: data.lastUpdated,
+        },
       });
     }
 
-    // POST - Add new registration, receipt, or update settings
+    // POST - Add receipt or search receipts
     if (req.method === "POST") {
       const { action, ...data } = req.body;
 
       switch (action) {
-        case "addRegistration":
-          const newRegistration = await addRegistration(data);
-          const allData = await getAllData();
-          return res.json({
-            success: true,
-            data: allData,
-            message: "Registration added successfully",
-          });
-
         // NEW: Add receipt
         case "addReceipt":
           const newReceipt = await addReceipt(data);
@@ -122,15 +99,6 @@ module.exports = async function handler(req, res) {
             message: `Found ${searchResults.length} receipts`,
           });
 
-        case "updateBoothSettings":
-          await updateBoothSettings(data.settings);
-          const updatedData = await getAllData();
-          return res.json({
-            success: true,
-            data: updatedData,
-            message: "Booth settings updated successfully",
-          });
-
         default:
           return res.status(400).json({
             success: false,
@@ -139,24 +107,25 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    // PUT - Update existing registration or receipt
+    // PUT - Update existing receipt
     if (req.method === "PUT") {
       const { type, id, updates } = req.body;
 
       try {
         if (type === "receipt") {
-          // NEW: Update receipt
           await updateReceipt(id, updates);
         } else {
-          // Default to registration
-          await updateRegistration(id, updates);
+          return res.status(400).json({
+            success: false,
+            error: "Only receipt updates supported in online version",
+          });
         }
 
         const data = await getAllData();
         return res.json({
           success: true,
           data: data,
-          message: `${type || "Registration"} updated successfully`,
+          message: "Receipt updated successfully",
         });
       } catch (error) {
         return res.status(404).json({
@@ -166,24 +135,26 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    // DELETE - Remove registration or receipt
+    // DELETE - Remove receipt
     if (req.method === "DELETE") {
       const { id, type } = req.query;
 
       try {
-        if (type === "receipt") {
-          // NEW: Remove receipt
+        if (type === "receipt" || !type) {
+          // Default to receipt for online version
           await removeReceipt(id);
         } else {
-          // Default to registration
-          await removeRegistration(id);
+          return res.status(400).json({
+            success: false,
+            error: "Only receipt deletion supported in online version",
+          });
         }
 
         const data = await getAllData();
         return res.json({
           success: true,
           data: data,
-          message: `${type || "Registration"} removed successfully`,
+          message: "Receipt removed successfully",
         });
       } catch (error) {
         return res.status(404).json({
