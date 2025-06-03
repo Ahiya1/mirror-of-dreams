@@ -32,27 +32,29 @@ function endPress(e) {
   }
 }
 
-function showSecretBypass() {
+async function showSecretBypass() {
   const password = prompt("🪞 Creator Access\nEnter the sacred key:");
   if (password) {
-    // Check against environment or fallback
-    if (
-      password === process.env.CREATOR_SECRET_KEY ||
-      password === "mirror123"
-    ) {
-      localStorage.setItem(
-        "mirrorVerifiedUser",
-        JSON.stringify({
-          name: "Ahiya",
-          email: "ahiya.butman@gmail.com",
-          language: "en",
-          isCreator: true,
-        })
-      );
+    try {
+      const response = await fetch("/api/creator-auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password }),
+      });
 
-      location.href = `../transition/breathing.html?payment=creator&verified=true&lang=en`;
-    } else {
-      alert("🪞 Invalid sacred key");
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        localStorage.setItem("mirrorVerifiedUser", JSON.stringify(data.user));
+        location.href = `../transition/breathing.html?payment=creator&verified=true&lang=en`;
+      } else {
+        alert("🪞 Invalid sacred key");
+      }
+    } catch (error) {
+      console.error("Authentication error:", error);
+      alert("🪞 Authentication failed");
     }
   }
 }
