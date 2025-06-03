@@ -1,12 +1,11 @@
-<!-- FILE: public/breathing.html • enhanced living breathing meditation space • multiple rhythms, organic particles, aurora shifts • 2025-06-01 -->
+<!-- FILE: public/breathing.html • English-only enhanced breathing meditation space • 2025-06-01 -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Breathing | נשימה</title>
+    <title>Breathing</title>
 
-    <!--──────────  INLINE STYLES  ──────────-->
     <style>
       * {
         margin: 0;
@@ -24,10 +23,6 @@
         justify-content: center;
         overflow: hidden;
         position: relative;
-      }
-      [dir="rtl"] {
-        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
       }
 
       /* living background aurora */
@@ -103,7 +98,6 @@
         animation: particleFloat 40s linear infinite;
       }
 
-      /* large drifting orbs */
       .particle.orb {
         width: 3px;
         height: 3px;
@@ -131,7 +125,6 @@
         animation-duration: 50s;
       }
 
-      /* tiny sparkles */
       .particle.sparkle {
         width: 1px;
         height: 1px;
@@ -159,7 +152,6 @@
         animation-duration: 48s;
       }
 
-      /* subtle stars */
       .particle.star {
         width: 0.5px;
         height: 0.5px;
@@ -570,7 +562,7 @@
 
     <!-- main breathing experience -->
     <div class="breathing-container">
-      <div id="completeText" class="complete-text">You are complete.</div>
+      <div class="complete-text">You are complete.</div>
 
       <div class="breathing-circles">
         <div class="breathing-circle primary"></div>
@@ -578,45 +570,14 @@
         <div class="breathing-circle tertiary"></div>
       </div>
 
-      <div id="whatNow" class="what-now-text">what now?</div>
+      <div class="what-now-text">what now?</div>
 
-      <div
-        id="continueIndicator"
-        class="continue-indicator"
-        onclick="proceed()"
-      >
-        <span id="continueText">Click to continue</span>
+      <div class="continue-indicator" onclick="proceed()">
+        <span>Click to continue</span>
       </div>
     </div>
 
-    <!--──────────  SCRIPT  ──────────-->
     <script>
-      /* language selection */
-      const lang =
-        new URLSearchParams(location.search).get("lang") ||
-        localStorage.getItem("mirrorLanguage") ||
-        "en";
-
-      const T = {
-        en: {
-          completeText: "You are complete.",
-          whatNow: "what now?",
-          continueText: "Click to continue",
-        },
-        he: {
-          completeText: "אתה שלם.",
-          whatNow: "מה עכשיו?",
-          continueText: "לחצו להמשך",
-        },
-      };
-      const L = T[lang];
-
-      document.documentElement.dir = lang === "he" ? "rtl" : "ltr";
-      document.documentElement.lang = lang;
-      completeText.textContent = L.completeText;
-      whatNow.textContent = L.whatNow;
-      continueText.textContent = L.continueText;
-
       /* activate click-anywhere once indicator shows */
       setTimeout(() => {
         document.body.addEventListener("click", proceed);
@@ -628,8 +589,8 @@
 
       function proceed() {
         const qs = new URLSearchParams(location.search);
-        const payment = qs.get("payment") || "cash";
-        window.location.href = `/reflection.html?payment=${payment}&verified=true&lang=${lang}`;
+        const payment = qs.get("payment") || "paypal";
+        window.location.href = `/reflection.html?payment=${payment}&verified=true&lang=en`;
       }
 
       /* subtle interaction feedback */

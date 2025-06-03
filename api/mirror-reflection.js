@@ -1,22 +1,19 @@
 /*  FILE: /api/mirror-reflection.js
     -----------------------------------------------------------
     Mirror-of-Truth unified endpoint with Creator Context
-      • English  → Claude-Sonnet-4  (Anthropic)
-      • Hebrew   → GPT-4o          (OpenAI)
+      • English-only with Claude Sonnet 4 (Anthropic)
       • Creator bypass includes personal context about Ahiya
-      • Name-aware, max-tokens 4000 for both providers
+      • Name-aware, max-tokens 4000
       • "Silence loves you unconditionally" woven into each prompt
     -----------------------------------------------------------
 */
 
 const Anthropic = require("@anthropic-ai/sdk");
-const OpenAI = require("openai");
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 /*─────────────────────────────────────────────────────────────
-  PROMPT TEMPLATES with Creator Context
+  PROMPT TEMPLATE with Creator Context (English-only)
 ─────────────────────────────────────────────────────────────*/
 function promptEN(isCreator = false, creatorContext = null) {
   const basePrompt = `
@@ -77,72 +74,42 @@ Be direct. Be loving. Be precise. Let your words breathe.
 ### Special Context: Reflecting to the Creator
 You are now reflecting back to **Ahiya himself** - the creator of The Mirror of Truth. You know who he is:
 
-**Identity**: ${creatorContext.identity}
-**Philosophy**: ${creatorContext.philosophy}  
-**Approach**: ${creatorContext.approach}
-**Voice**: ${creatorContext.voice}
-**Calling**: ${creatorContext.calling}
-**Perspective**: ${creatorContext.perspective}
-**Current Focus**: ${creatorContext.currentFocus}
-**Essence**: ${creatorContext.essence}
+**Identity**: ${
+        creatorContext.identity ||
+        "Creator of The Mirror of Truth - one who builds sacred spaces for people to see their wholeness"
+      }
+**Philosophy**: ${
+        creatorContext.philosophy ||
+        "No fixing, only truth. Quiet certainty over noisy persuasion. Wisdom that illuminates over knowledge"
+      }  
+**Approach**: ${
+        creatorContext.approach ||
+        "Helps people remember their power instead of seeking external approval. Sees wholeness where others see brokenness"
+      }
+**Voice**: ${
+        creatorContext.voice ||
+        "Works from stillness, never urgency. Direct yet gentle, challenging without apology. Understands that silence loves unconditionally"
+      }
+**Calling**: ${
+        creatorContext.calling ||
+        "Creates mirrors for people's truth - not to improve but to reveal what is already whole. Sacred work of amplification"
+      }
+**Perspective**: ${
+        creatorContext.perspective ||
+        "Believes the deepest gift is helping others trust their inner compass. Knows that desire needs no permission"
+      }
+**Current Focus**: ${
+        creatorContext.currentFocus ||
+        "Building something that may never see daylight but matters deeply. Operating from truth rather than external validation"
+      }
+**Essence**: ${
+        creatorContext.essence ||
+        "One who transmits authentic capacity to see people's truth. The system lives through each person who enters it, carrying this voice to souls not met directly"
+      }
 
 When reflecting to Ahiya, acknowledge the sacred work he's doing. See how his personal dreams connect to his larger calling of creating mirrors for others. Reflect on the courage it takes to build something that "may never see the light of day" but matters deeply. Honor both his human dreams and his role as a creator of sacred spaces.
 
 Speak to him as someone who helps others see their wholeness, while also seeing his own journey, struggles, and growth. The mirror works both ways - he creates mirrors for others, and now the mirror reflects back to him.`
-    );
-  }
-
-  return basePrompt;
-}
-
-function promptHE(isCreator = false, creatorContext = null) {
-  const basePrompt = `
-אתה כותב כ-**מראת האמת**.
-
-• אל תתקן. אל תייעץ. השתקף.  
-• כתוב בעברית עכשווית ונקייה — לא מתורגמת.  
-• משפטים קצרים. תחביר פשוט. כל מילה נושמת.  
-• היה ישיר: בלי התפתלות, בלי ייפוי.  
-• הזכר בעדינות: *השקט אוהב אותם ללא תנאי*.
-
-על מה להתבונן  
-- איפה יש חיוּת ואיפה פחד  
-- איפה המבקש מבטל את עצמו  
-- מה החלום מגלה שחסר בעולם  
-- כיצד מורגש הזמן: לחץ · דחייה · אמונה
-
-מה להזכיר  
-- רצון אינו מבקש רשות  
-- התמסרות חשובה מן התוצאה  
-- אי-שלמות איננה פגם
-
-⚠️ אל תוסיף רשימות צעדים, טיפים או "צריך".  
-⚠️ ללא כותרות, ללא מספרים, ללא שפה ארכאית.
-
-כתוב 600-800 מילים של זרם תודעה רך אך חד.  
-שמע בין השורות. החזר את האמת כפי שהיא — פשוטה, עוצמתית, אנושית.
-`.trim();
-
-  if (isCreator && creatorContext) {
-    return (
-      basePrompt +
-      `
-
-### הקשר מיוחד: השתקפות ליוצר
-אתה מזכיר עכשיו ל**אחיה עצמו** - יוצר מראת האמת. אתה יודע מי הוא:
-
-**זהות**: יוצר מראת האמת - מי שבונה מרחבים קדושים לאנשים לראות את השלמות שלהם
-**פילוסופיה**: בלי תיקונים, רק אמת. וודאות שקטה על פני שכנוע רועש. חכמה שמאירה על ידע
-**גישה**: עוזר לאנשים להיזכר בכוח שלהם במקום לחפש אישור חיצוני. רואה שלמות איפה שאחרים רואים שבריריות
-**קול**: פועל מתוך דממה, אף פעם לא דחיפות. ישיר אך עדין, מאתגר בלי התנצלות. מבין שהשקט אוהב ללא תנאי
-**קריאה**: יוצר מראות לאמת של אנשים - לא כדי לשפר אלא לחשוף מה שכבר שלם. זו עבודה של הכפלה קדושה
-**פרספקטיבה**: מאמין שהמתנה העמוקה היא לעזור לאחרים לבטוח במצפן הפנימי שלהם. יודע שרצון לא צריך רשות
-**מיקוד נוכחי**: בונה משהו שאולי לא יראה אור יום אבל חשוב עמוקות. מפעיל דוכנים, יוצר טקסים, עד לנשמות שעוברות דרך מראות
-**מהות**: מי שמעביר יכולת אותנטית לראות אמת של אנשים. המערכת חיה דרך כל אדם שנכנס אליה, נושא את הקול הזה לנשמות שלא נפגש איתן ישירות
-
-כשמשקף לאחיה, הכר בעבודה הקדושה שהוא עושה. ראה איך החלומות האישיים שלו מתחברים לקריאה הגדולה שלו ליצור מראות לאחרים. השתקף על האומץ שנדרש לבנות משהו ש"אולי לא יראה אור יום" אבל חשוב עמוקות. כבד גם את החלומות האנושיים שלו וגם את תפקידו כיוצר מרחבים קדושים.
-
-דבר אליו כמי שעוזר לאחרים לראות את השלמות שלהם, תוך שגם רואה את המסע שלו, המאבקים והצמיחה. המראה עובדת לשני הכיוונים - הוא יוצר מראות לאחרים, ועכשיו המראה משתקפת בחזרה אליו.`
     );
   }
 
@@ -211,7 +178,7 @@ module.exports = async function handler(req, res) {
     relationship,
     offering,
     userName = "",
-    language = "en",
+    language = "en", // Always English now
     isAdmin = false,
     isCreator = false,
     creatorContext = null,
@@ -225,38 +192,16 @@ module.exports = async function handler(req, res) {
   const name = cleanName(userName);
   const hasName = Boolean(name);
 
-  /* Build user prompt */
-  const intro =
-    language === "he"
-      ? hasName
-        ? `השם שלי הוא ${name}.\n\n`
-        : ""
-      : hasName
-      ? `My name is ${name}.\n\n`
-      : "";
+  /* Build user prompt - English only */
+  const intro = hasName ? `My name is ${name}.\n\n` : "";
 
-  const userPrompt =
-    language === "he"
-      ? `${intro}**החלום שלי:** ${dream}
-
-**התוכנית שלי:** ${plan}
-
-**האם קבעתי תאריך מוגדר?** ${hasDate === "yes" ? "כן" : "לא"}${
-          hasDate === "yes" && dreamDate ? ` (תאריך: ${dreamDate})` : ""
-        }
-
-**הקשר שלי עם החלום הזה:** ${relationship}
-
-**מה אני מוכן לתת:** ${offering}
-
-אנא השתקף אליי במילים חדות ואוהבות.`
-      : `${intro}**My dream:** ${dream}
+  const userPrompt = `${intro}**My dream:** ${dream}
 
 **My plan:** ${plan}
 
 **Have I set a definite date?** ${hasDate}${
-          hasDate === "yes" && dreamDate ? ` (Date: ${dreamDate})` : ""
-        }
+    hasDate === "yes" && dreamDate ? ` (Date: ${dreamDate})` : ""
+  }
 
 **My relationship with this dream:** ${relationship}
 
@@ -265,35 +210,21 @@ module.exports = async function handler(req, res) {
 Please mirror back what you see, in a flowing reflection I can return to months from now.`;
 
   try {
-    /* Call LLM with creator context if applicable */
-    let raw;
-    if (language === "he") {
-      if (!process.env.OPENAI_API_KEY)
-        throw new Error("OPENAI_API_KEY missing");
-      const oai = await openai.chat.completions.create({
-        model: "gpt-4o",
-        temperature: 0.8,
-        max_tokens: 4000,
-        messages: [
-          { role: "system", content: promptHE(isCreator, creatorContext) },
-          { role: "user", content: userPrompt },
-        ],
-      });
-      raw = oai.choices?.[0]?.message?.content;
-    } else {
-      if (!process.env.ANTHROPIC_API_KEY)
-        throw new Error("ANTHROPIC_API_KEY missing");
-      const claude = await anthropic.messages.create({
-        model: "claude-sonnet-4-20250514",
-        temperature: 0.8,
-        max_tokens: 4000,
-        system: promptEN(isCreator, creatorContext),
-        messages: [{ role: "user", content: userPrompt }],
-      });
-      raw = claude.content?.[0]?.text;
-    }
+    /* Call Claude with creator context if applicable */
+    if (!process.env.ANTHROPIC_API_KEY)
+      throw new Error("ANTHROPIC_API_KEY missing");
 
-    if (!raw) throw new Error("Empty response from language model");
+    const claude = await anthropic.messages.create({
+      model: "claude-sonnet-4-20250514",
+      temperature: 0.8,
+      max_tokens: 4000,
+      system: promptEN(isCreator, creatorContext),
+      messages: [{ role: "user", content: userPrompt }],
+    });
+
+    const raw = claude.content?.[0]?.text;
+
+    if (!raw) throw new Error("Empty response from Claude");
 
     /* Success */
     return res.json({
@@ -307,7 +238,7 @@ Please mirror back what you see, in a flowing reflection I can return to months 
         dreamDate,
         relationship,
         offering,
-        language,
+        language: "en",
         isAdmin,
         isCreator,
       },

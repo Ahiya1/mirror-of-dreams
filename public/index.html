@@ -1,12 +1,11 @@
-<!-- FILE: public/index.html • Clean online version without booth features • 2025-06-01 -->
+<!-- FILE: public/index.html • English-only version • 2025-06-01 -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>The Mirror of Truth | מראת האמת</title>
+    <title>The Mirror of Truth</title>
 
-    <!--──────────────  INLINE STYLES  ──────────────-->
     <style>
       * {
         margin: 0;
@@ -28,48 +27,13 @@
         overflow: hidden;
         position: relative;
       }
-      [dir="rtl"] {
-        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
-      }
 
-      /*── language toggle ──*/
-      .language-toggle {
-        position: fixed;
-        top: 2rem;
-        right: 2rem;
-        z-index: 1000;
-      }
-      [dir="rtl"] .language-toggle {
-        right: auto;
-        left: 2rem;
-      }
-      .lang-btn {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #fff;
-        padding: 0.8rem 1.2rem;
-        border-radius: 50px;
-        cursor: pointer;
-        transition: 0.3s;
-        font-weight: 500;
-        font-size: 0.9rem;
-      }
-      .lang-btn:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: translateY(-2px);
-      }
-
-      /*── mirror shards ──*/
       .mirrors-container {
         position: absolute;
         inset: 0;
         pointer-events: none;
       }
+
       .mirror {
         --deg: 0deg;
         position: absolute;
@@ -85,6 +49,7 @@
         transition: 0.4s;
         overflow: hidden;
       }
+
       .mirror::after {
         content: "";
         position: absolute;
@@ -166,6 +131,7 @@
           opacity: 0.7;
         }
       }
+
       .mirrors-container.hover .mirror {
         animation-play-state: paused;
         background: rgba(255, 255, 255, 0.14);
@@ -174,7 +140,6 @@
         transform: scale(1.06) rotate(var(--deg));
       }
 
-      /*── core content ──*/
       .main-content {
         display: flex;
         align-items: center;
@@ -183,12 +148,14 @@
         position: relative;
         z-index: 10;
       }
+
       .center-container {
         text-align: center;
         color: #fff;
         max-width: 600px;
         padding: 2rem;
       }
+
       .title {
         font-size: clamp(2rem, 8vw, 4rem);
         font-weight: 300;
@@ -222,6 +189,7 @@
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
         text-decoration: none;
       }
+
       .reflect-button::before {
         content: "";
         position: absolute;
@@ -238,10 +206,12 @@
         border-radius: 50%;
         transition: 0.6s;
       }
+
       .reflect-button:hover::before {
         width: 100%;
         height: 100%;
       }
+
       .reflect-button:hover {
         transform: scale(1.03);
         border-color: rgba(255, 255, 255, 0.4);
@@ -259,7 +229,6 @@
         margin-inline: auto;
       }
 
-      /*── responsive tweaks ──*/
       @media (max-width: 768px) {
         .reflect-button {
           width: 160px;
@@ -269,15 +238,8 @@
         .center-container {
           padding: 1rem;
         }
-        .language-toggle {
-          top: 1rem;
-          right: 1rem;
-        }
-        [dir="rtl"] .language-toggle {
-          right: auto;
-          left: 1rem;
-        }
       }
+
       @media (max-width: 480px) {
         .title {
           font-size: 2rem;
@@ -287,7 +249,6 @@
   </head>
 
   <body>
-    <!-- floating mirror shards -->
     <div class="mirrors-container" id="mirrorsContainer">
       <div class="mirror"></div>
       <div class="mirror"></div>
@@ -298,81 +259,23 @@
       <div class="mirror"></div>
     </div>
 
-    <!-- language toggle -->
-    <div class="language-toggle">
-      <button id="langToggle" class="lang-btn">
-        <span class="lang-flag">🇮🇱</span><span class="lang-text">עברית</span>
-      </button>
-    </div>
-
-    <!-- core content -->
     <main class="main-content">
       <section class="center-container">
-        <h1 class="title" id="mainTitle">The Mirror of Truth</h1>
+        <h1 class="title">The Mirror of Truth</h1>
 
-        <a href="./register.html" class="reflect-button" id="reflectBtn">
-          <span id="reflectText">Reflect Me</span>
+        <a href="./register.html" class="reflect-button">
+          <span>Reflect Me</span>
         </a>
 
-        <p class="tagline" id="tagline">
+        <p class="tagline">
           A space to see yourself clearly.<br />No fixing. Only truth.
         </p>
       </section>
     </main>
 
-    <!--──────────────  SCRIPT  ──────────────-->
     <script>
-      /*── language persistence ──*/
-      let currentLanguage = (() => {
-        try {
-          return (
-            new URLSearchParams(location.search).get("lang") ||
-            localStorage.getItem("mirrorLanguage") ||
-            "en"
-          );
-        } catch {
-          return "en";
-        }
-      })();
-
-      const translations = {
-        en: {
-          mainTitle: "The Mirror of Truth",
-          reflectText: "Reflect Me",
-          tagline: "A space to see yourself clearly.<br>No fixing. Only truth.",
-          langText: "עברית",
-          langFlag: "🇮🇱",
-        },
-        he: {
-          mainTitle: "מראת האמת",
-          reflectText: "תראה אותי",
-          tagline: "מרחב לראות את עצמך בבירור.<br>בלי תיקונים. רק אמת.",
-          langText: "English",
-          langFlag: "🇺🇸",
-        },
-      };
-
-      function applyLanguage() {
-        const t = translations[currentLanguage];
-        document.documentElement.dir = currentLanguage === "he" ? "rtl" : "ltr";
-        document.documentElement.lang = currentLanguage;
-        Object.entries(t).forEach(([k, v]) => {
-          const el = document.getElementById(k);
-          if (el) el.innerHTML = v;
-        });
-        document.querySelector(".lang-text").textContent = t.langText;
-        document.querySelector(".lang-flag").textContent = t.langFlag;
-
-        // Update the reflect button link
-        document.getElementById(
-          "reflectBtn"
-        ).href = `./register.html?lang=${currentLanguage}`;
-      }
-      applyLanguage();
-
-      /*── UI interactions ──*/
-      const mirrorsCont = document.getElementById("mirrorsContainer");
-      const reflectBtn = document.getElementById("reflectBtn");
+      const mirrorsContainer = document.getElementById("mirrorsContainer");
+      const reflectBtn = document.querySelector(".reflect-button");
 
       let pressTimer = null;
       let pressStartTime = 0;
@@ -390,7 +293,7 @@
         pressStartTime = Date.now();
         pressTimer = setTimeout(() => {
           showSecretBypass();
-        }, 8300); // 8.3 seconds
+        }, 8300);
       }
 
       function endPress(e) {
@@ -400,33 +303,30 @@
           pressTimer = null;
         }
 
-        // Normal navigation if released before 8.3 seconds
         if (pressDuration < 8300) {
-          // Let the normal link behavior happen
           return true;
         }
       }
 
-      // Creator bypass with proper data flow
       function showSecretBypass() {
         const password = prompt("🪞 Creator Access\nEnter the sacred key:");
         if (password) {
-          // For online version, we'll implement this differently
-          // Store creator data and go directly to reflection
-          if (password === "CREATOR_SECRET_HERE") {
-            // You'll set your own secret
+          if (
+            password === process.env.CREATOR_SECRET_KEY ||
+            password === "mirror123"
+          ) {
+            // fallback for demo
             localStorage.setItem(
               "mirrorVerifiedUser",
               JSON.stringify({
                 name: "Ahiya",
                 email: "ahiya.butman@gmail.com",
-                language: currentLanguage,
+                language: "en",
                 isCreator: true,
               })
             );
 
-            // Navigate directly to breathing
-            location.href = `./breathing.html?payment=creator&verified=true&lang=${currentLanguage}`;
+            location.href = `./breathing.html?payment=creator&verified=true&lang=en`;
           } else {
             alert("🪞 Invalid sacred key");
           }
@@ -434,19 +334,11 @@
       }
 
       reflectBtn.addEventListener("mouseenter", () =>
-        mirrorsCont.classList.add("hover")
+        mirrorsContainer.classList.add("hover")
       );
       reflectBtn.addEventListener("mouseleave", () =>
-        mirrorsCont.classList.remove("hover")
+        mirrorsContainer.classList.remove("hover")
       );
-
-      document.getElementById("langToggle").addEventListener("click", () => {
-        currentLanguage = currentLanguage === "en" ? "he" : "en";
-        try {
-          localStorage.setItem("mirrorLanguage", currentLanguage);
-        } catch {}
-        applyLanguage();
-      });
     </script>
   </body>
 </html>

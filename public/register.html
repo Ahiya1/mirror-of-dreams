@@ -1,9 +1,11 @@
+<!-- FILE: public/register.html • English-only, $5 USD, Fixed PayPal • 2025-06-01 -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Begin Your Reflection | Fixed PayPal</title>
+    <title>Begin Your Reflection</title>
+
     <style>
       * {
         margin: 0;
@@ -29,6 +31,31 @@
         align-items: center;
         justify-content: center;
         padding: 1rem 0;
+      }
+
+      .back-button {
+        position: fixed;
+        top: 1.5rem;
+        left: 1.5rem;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        padding: 0.7rem 1rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: 0.3s;
+        font-weight: 500;
+        font-size: 0.85rem;
+        text-decoration: none;
+      }
+      .back-button:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
       }
 
       .consciousness-waves {
@@ -324,29 +351,50 @@
         }
       }
 
-      .debug-info {
-        position: fixed;
-        bottom: 1rem;
-        left: 1rem;
-        background: rgba(0, 0, 0, 0.8);
-        color: #fff;
-        padding: 0.5rem;
-        border-radius: 8px;
-        font-size: 0.7rem;
-        font-family: monospace;
-        max-width: 300px;
-        z-index: 1000;
-      }
-
       @media (max-width: 768px) {
+        body {
+          padding: 0.5rem 0;
+        }
         .registration-container {
           max-width: 100%;
           padding: 0.5rem;
         }
-
         .registration-card {
           padding: 2rem 1.5rem;
           border-radius: 20px;
+        }
+        .back-button {
+          top: 1rem;
+          left: 1rem;
+          padding: 0.6rem 0.8rem;
+          font-size: 0.8rem;
+        }
+        .registration-card h1 {
+          font-size: 1.4rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .registration-container {
+          padding: 0.25rem;
+        }
+        .registration-card {
+          padding: 1.5rem 1.2rem;
+          border-radius: 16px;
+        }
+        .registration-card h1 {
+          font-size: 1.3rem;
+          margin-bottom: 1.5rem;
+        }
+        .form-group {
+          margin-bottom: 1.2rem;
+        }
+        .payment-info {
+          padding: 1.2rem 1rem;
+          margin: 1.2rem 0 1.5rem;
+        }
+        .payment-amount {
+          font-size: 1.4rem;
         }
       }
     </style>
@@ -359,6 +407,8 @@
       <div class="wave"></div>
       <div class="wave"></div>
     </div>
+
+    <a href="/" class="back-button"> <span>←</span><span>Back</span> </a>
 
     <div class="registration-container">
       <div class="registration-card">
@@ -415,42 +465,18 @@
       </div>
     </div>
 
-    <div class="debug-info" id="debugInfo">Debug: Initializing...</div>
-
     <script>
-      // Fixed PayPal integration
       let paypalConfig = null;
       let formValid = false;
       let paypalSDKLoaded = false;
       let paypalInitialized = false;
 
-      // Debug function
-      function updateDebugInfo() {
-        const info = {
-          formValid,
-          paypalSDKLoaded,
-          paypalInitialized,
-          hasPayPal: !!window.paypal,
-          hasButtons: !!(window.paypal && window.paypal.Buttons),
-          userName: document.getElementById("userName").value,
-          userEmail: document.getElementById("userEmail").value,
-        };
-
-        document.getElementById("debugInfo").innerHTML =
-          `Form: ${info.formValid}<br>` +
-          `SDK: ${info.paypalSDKLoaded}<br>` +
-          `Init: ${info.paypalInitialized}<br>` +
-          `PayPal: ${info.hasPayPal}<br>` +
-          `Buttons: ${info.hasButtons}`;
-      }
-
       async function initializeApp() {
         console.log("🌟 Initializing Mirror of Truth registration...");
-
         setupEventListeners();
         await loadPayPalConfig();
 
-        // Force initial check after everything loads
+        // Critical: Force check after initial load
         setTimeout(() => {
           checkFormAndInitializePayPal();
         }, 500);
@@ -460,13 +486,20 @@
         try {
           console.log("💳 Loading PayPal configuration...");
 
-          // Simulate config for demo - replace with actual API call
-          paypalConfig = {
-            clientId:
-              "AYGbas7zGHh4eTcO-4DObQFXFl9YX8OA1FBBrDjmjBQrfjLXJhyJ6YO1_YLY3NVjpyb8zCvPbzD13sxp",
-            currency: "USD",
-            environment: "sandbox",
-          };
+          const response = await fetch("/api/paypal-config");
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const result = await response.json();
+          if (!result.success) {
+            throw new Error(result.error || "Failed to load PayPal config");
+          }
+
+          paypalConfig = result.config;
+          console.log(
+            `✅ PayPal config loaded for ${paypalConfig.environment}`
+          );
 
           await loadPayPalSDK();
         } catch (error) {
@@ -481,7 +514,7 @@
             console.log("💳 PayPal SDK already loaded");
             paypalSDKLoaded = true;
             hideLoadingState();
-            updateDebugInfo();
+            checkFormAndInitializePayPal(); // Key fix: check immediately when available
             resolve();
             return;
           }
@@ -505,8 +538,7 @@
                 console.log("✅ PayPal SDK fully available");
                 paypalSDKLoaded = true;
                 hideLoadingState();
-                updateDebugInfo();
-                checkFormAndInitializePayPal(); // Critical: check immediately when SDK loads
+                checkFormAndInitializePayPal(); // Key fix: check when SDK loads
                 resolve();
               } else {
                 console.error("❌ PayPal SDK loaded but not available");
@@ -571,7 +603,6 @@
         const wasValid = formValid;
         formValid = nameValid && emailValid;
 
-        // Update visual feedback
         updateFieldValidation(
           nameInput,
           nameIndicator,
@@ -585,13 +616,12 @@
           emailValue.length > 0
         );
 
-        console.log("📝 Form validation changed:", {
+        console.log("📝 Form validation:", {
           wasValid,
           formValid,
           nameValid,
           emailValid,
         });
-        updateDebugInfo();
 
         // Key fix: Always check when form validation changes
         if (formValid !== wasValid) {
@@ -618,7 +648,7 @@
         }
       }
 
-      // The key fix: renamed and simplified logic
+      // Key fix: Renamed and simplified
       function checkFormAndInitializePayPal() {
         console.log("🔍 Checking PayPal conditions:", {
           formValid,
@@ -632,18 +662,13 @@
         } else if (!formValid && paypalInitialized) {
           console.log("⚠️ Form invalid, clearing PayPal button");
           clearPayPalButton();
-        } else {
-          console.log("⏳ Waiting for conditions to be met");
         }
-
-        updateDebugInfo();
       }
 
       function clearPayPalButton() {
         const container = document.getElementById("paypal-button-container");
         container.innerHTML = "";
         paypalInitialized = false;
-        updateDebugInfo();
       }
 
       function initializePayPal() {
@@ -714,7 +739,6 @@
             .then(() => {
               console.log("✅ PayPal button rendered successfully");
               paypalInitialized = true;
-              updateDebugInfo();
             })
             .catch((error) => {
               console.error("❌ PayPal button render error:", error);
@@ -726,7 +750,7 @@
         }
       }
 
-      function handlePaymentSuccess(paymentDetails) {
+      async function handlePaymentSuccess(paymentDetails) {
         console.log("🎉 Processing successful payment:", paymentDetails);
 
         document
@@ -734,20 +758,51 @@
           .classList.add("form-disabled");
         document.getElementById("processingMessage").style.display = "block";
 
-        const userData = {
-          name: document.getElementById("userName").value.trim(),
-          email: document.getElementById("userEmail").value.trim(),
-          paymentId: paymentDetails.id,
-          paymentMethod: "paypal",
-        };
+        try {
+          const userData = {
+            name: document.getElementById("userName").value.trim(),
+            email: document.getElementById("userEmail").value.trim(),
+            language: "en", // English only
+            paymentId: paymentDetails.id,
+            paymentMethod: "paypal",
+          };
 
-        // In real app, store user data and navigate
-        setTimeout(() => {
-          alert(
-            `Payment successful! Welcome ${userData.name}. In the real app, you'd now proceed to your reflection.`
-          );
-          resetFormState();
-        }, 2000);
+          localStorage.setItem("mirrorVerifiedUser", JSON.stringify(userData));
+
+          // Generate receipt
+          try {
+            const receiptResponse = await fetch("/api/generate-receipt", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                email: userData.email,
+                name: userData.name,
+                amount: 5, // $5 USD
+                paymentMethod: "paypal",
+                language: "en",
+              }),
+            });
+
+            if (receiptResponse.ok) {
+              console.log("✅ Receipt generated successfully");
+            } else {
+              console.warn("⚠️ Receipt generation failed, but continuing...");
+            }
+          } catch (receiptError) {
+            console.warn("⚠️ Receipt generation error:", receiptError);
+          }
+
+          // Navigate to breathing page
+          setTimeout(() => {
+            window.location.href = `./breathing.html?payment=paypal&verified=true&lang=en`;
+          }, 2000);
+        } catch (error) {
+          console.error("❌ Post-payment processing error:", error);
+
+          setTimeout(() => {
+            window.location.href = `./breathing.html?payment=paypal&verified=true&lang=en`;
+          }, 2000);
+        }
       }
 
       function resetFormState() {
@@ -761,14 +816,6 @@
       window.addEventListener("load", () => {
         initializeApp();
       });
-
-      // Debug helper
-      window.forcePayPal = function () {
-        console.log("🔧 Force initializing PayPal...");
-        formValid = true;
-        updateDebugInfo();
-        checkFormAndInitializePayPal();
-      };
     </script>
   </body>
 </html>

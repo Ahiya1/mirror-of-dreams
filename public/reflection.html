@@ -1,14 +1,12 @@
-<!-- FILE: public/reflection.html • Clean online version without access codes • 2025-06-01 -->
+<!-- FILE: public/reflection.html • English-only version • 2025-06-01 -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>Your Reflection | ההשתקפות שלך</title>
+    <title>Your Reflection</title>
 
-    <!--────────────  INLINE STYLES  ────────────-->
     <style>
-      /*–— base –—*/
       * {
         margin: 0;
         padding: 0;
@@ -28,12 +26,7 @@
         color: #fff;
         overflow-x: hidden;
       }
-      [dir="rtl"] {
-        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
-      }
 
-      /*–— layout –—*/
       .container {
         max-width: 700px;
         margin: 0 auto;
@@ -43,6 +36,7 @@
         align-items: center;
         justify-content: center;
       }
+
       .experience-section {
         width: 100%;
         text-align: center;
@@ -50,15 +44,16 @@
         transform: translateY(30px);
         transition: 0.8s ease;
       }
+
       .experience-section.hidden {
         display: none;
       }
+
       .experience-section.active {
         opacity: 1;
         transform: translateY(0);
       }
 
-      /*–— common button –—*/
       .continue-btn {
         width: 100%;
         padding: 1.2rem 2rem;
@@ -71,49 +66,53 @@
         transition: 0.3s;
         margin-top: 3rem;
       }
+
       .continue-btn:hover {
         background: rgba(255, 255, 255, 0.25);
         border-color: rgba(255, 255, 255, 0.5);
       }
+
       .continue-btn:disabled {
         opacity: 0.5;
         cursor: not-allowed;
       }
 
-      /*–— questions –—*/
       .questions-form {
         text-align: left;
       }
-      [dir="rtl"] .questions-form {
-        text-align: right;
-      }
+
       .question-group {
         margin-bottom: 3rem;
         opacity: 0;
         transform: translateY(20px);
         transition: 0.6s ease;
       }
+
       .question-group.visible {
         opacity: 1;
         transform: translateY(0);
       }
+
       .question-number {
         font-size: 0.9rem;
         opacity: 0.6;
         margin-bottom: 0.5rem;
       }
+
       .question-text {
         font-size: 1.2rem;
         font-weight: 400;
         margin-bottom: 1rem;
         line-height: 1.4;
       }
+
       .question-subtitle {
         font-size: 0.9rem;
         opacity: 0.7;
         margin-bottom: 1rem;
         font-style: italic;
       }
+
       .question-input,
       .question-textarea {
         width: 100%;
@@ -127,25 +126,30 @@
         transition: 0.3s;
         font-family: inherit;
       }
+
       .question-textarea {
         min-height: 120px;
         resize: vertical;
       }
+
       .question-input:focus,
       .question-textarea:focus {
         outline: none;
         border-color: rgba(255, 255, 255, 0.4);
         background: rgba(255, 255, 255, 0.12);
       }
+
       .question-input::placeholder,
       .question-textarea::placeholder {
         color: rgba(255, 255, 255, 0.5);
       }
+
       .yes-no-buttons {
         display: flex;
         gap: 1rem;
         margin-top: 0.5rem;
       }
+
       .yes-no-btn {
         flex: 1;
         padding: 1rem;
@@ -157,22 +161,20 @@
         transition: 0.3s;
         text-align: center;
       }
+
       .yes-no-btn:hover,
       .yes-no-btn.selected {
         background: rgba(255, 255, 255, 0.2);
         border-color: rgba(255, 255, 255, 0.4);
       }
+
       .date-container {
         display: flex;
         align-items: center;
         gap: 1rem;
         margin-top: 1rem;
       }
-      [dir="rtl"] .date-container {
-        flex-direction: row-reverse;
-      }
 
-      /*–— loading –—*/
       .loading-circle {
         width: 100px;
         height: 100px;
@@ -185,6 +187,7 @@
         margin: 0 auto 2rem;
         animation: pulse 2s ease-in-out infinite;
       }
+
       @keyframes pulse {
         0%,
         100% {
@@ -196,6 +199,7 @@
           opacity: 1;
         }
       }
+
       .loading-text {
         font-size: 1.1rem;
         font-weight: 300;
@@ -203,13 +207,10 @@
         text-align: center;
       }
 
-      /*–— results –—*/
       .results {
         text-align: left;
       }
-      [dir="rtl"] .results {
-        text-align: right;
-      }
+
       .results-content {
         background: rgba(255, 255, 255, 0.95);
         color: #333;
@@ -220,23 +221,28 @@
         line-height: 1.8;
         font-size: 1.05rem;
       }
+
       .results-content strong {
         color: #16213e;
         font-weight: 600;
       }
+
       .results-content em {
         color: #666;
         font-style: italic;
       }
+
       .results-content p {
         margin-bottom: 1.5rem;
       }
+
       .results-actions {
         display: flex;
         gap: 1rem;
         justify-content: center;
         flex-wrap: wrap;
       }
+
       .action-btn {
         padding: 1rem 2rem;
         background: rgba(255, 255, 255, 0.15);
@@ -251,11 +257,13 @@
         gap: 0.5rem;
         font-size: 0.95rem;
       }
+
       .action-btn:hover {
         background: rgba(255, 255, 255, 0.25);
         border-color: rgba(255, 255, 255, 0.5);
         transform: translateY(-2px);
       }
+
       .admin-notice {
         background: rgba(59, 130, 246, 0.2);
         border: 1px solid rgba(59, 130, 246, 0.4);
@@ -266,7 +274,6 @@
         font-size: 0.9rem;
       }
 
-      /*–— media tweaks –—*/
       @media (max-width: 768px) {
         .container {
           padding: 1rem;
@@ -284,51 +291,50 @@
           flex-direction: column;
           align-items: stretch;
         }
-        [dir="rtl"] .date-container {
-          flex-direction: column;
-        }
       }
     </style>
   </head>
 
   <body>
     <div class="container">
-      <!-- 1️⃣  QUESTIONS (Direct Entry) -->
+      <!-- Questions Section -->
       <div class="experience-section active" id="questions">
         <form id="reflectionForm" class="questions-form">
           <div class="question-group">
-            <div class="question-number" id="q1Number">Question&nbsp;1</div>
-            <div class="question-text" id="q1Text">What is your dream?</div>
-            <div class="question-subtitle" id="q1Subtitle">
+            <div class="question-number">Question 1</div>
+            <div class="question-text">What is your dream?</div>
+            <div class="question-subtitle">
               (Choose just one — the one that calls you most right now.)
             </div>
             <textarea
               id="dreamInput"
               name="dream"
               class="question-textarea"
+              placeholder="Write the dream that calls you"
               required
             ></textarea>
           </div>
 
           <div class="question-group">
-            <div class="question-number" id="q2Number">Question&nbsp;2</div>
-            <div class="question-text" id="q2Text">
+            <div class="question-number">Question 2</div>
+            <div class="question-text">
               What is your plan for achieving this dream?
             </div>
-            <div class="question-subtitle" id="q2Subtitle">
+            <div class="question-subtitle">
               (Write what you already know. It's okay if it's unclear.)
             </div>
             <textarea
               id="planInput"
               name="plan"
               class="question-textarea"
+              placeholder="Describe any plan (or absence of plan)"
               required
             ></textarea>
           </div>
 
           <div class="question-group">
-            <div class="question-number" id="q3Number">Question&nbsp;3</div>
-            <div class="question-text" id="q3Text">
+            <div class="question-number">Question 3</div>
+            <div class="question-text">
               Have you set a definite date for fulfilling your dream?
             </div>
             <div class="yes-no-buttons">
@@ -341,41 +347,41 @@
               id="dateContainer"
               style="display: none"
             >
-              <label id="dateLabel" style="opacity: 0.8"
-                >What is the date?</label
-              >
+              <label style="opacity: 0.8">What is the date?</label>
               <input type="date" class="question-input" name="dreamDate" />
             </div>
           </div>
 
           <div class="question-group">
-            <div class="question-number" id="q4Number">Question&nbsp;4</div>
-            <div class="question-text" id="q4Text">
+            <div class="question-number">Question 4</div>
+            <div class="question-text">
               What is your current relationship with this dream?
             </div>
-            <div class="question-subtitle" id="q4Subtitle">
+            <div class="question-subtitle">
               (Do you believe you'll achieve it? Why or why not?)
             </div>
             <textarea
               id="relationshipInput"
               name="relationship"
               class="question-textarea"
+              placeholder="How do you relate to this dream now?"
               required
             ></textarea>
           </div>
 
           <div class="question-group">
-            <div class="question-number" id="q5Number">Question&nbsp;5</div>
-            <div class="question-text" id="q5Text">
+            <div class="question-number">Question 5</div>
+            <div class="question-text">
               What are you willing to give in return?
             </div>
-            <div class="question-subtitle" id="q5Subtitle">
+            <div class="question-subtitle">
               (Energy, focus, love, time — what will you offer to this dream?)
             </div>
             <textarea
               id="offeringInput"
               name="offering"
               class="question-textarea"
+              placeholder="What will you offer in return?"
               required
             ></textarea>
           </div>
@@ -386,23 +392,19 @@
         </form>
       </div>
 
-      <!-- 2️⃣  LOADING -->
+      <!-- Loading Section -->
       <div class="experience-section hidden" id="loading">
         <div>
           <div class="loading-circle"></div>
-          <div class="loading-text" id="loadingText">
-            Reflecting your truth…
-          </div>
+          <div class="loading-text">Reflecting your truth…</div>
         </div>
       </div>
 
-      <!-- 3️⃣  RESULTS -->
+      <!-- Results Section -->
       <div class="experience-section hidden" id="results">
         <div class="results">
           <div class="admin-notice" id="adminNotice" style="display: none">
-            <span id="adminNoticeText"
-              >✨ Admin session — unlimited reflections</span
-            >
+            <span>✨ Admin session — unlimited reflections</span>
           </div>
           <div class="results-content" id="reflectionContent"></div>
           <div class="results-actions">
@@ -411,109 +413,21 @@
               id="emailBtn"
               onclick="emailReflection()"
             >
-              <span>📧</span><span id="emailText">Email This Reflection</span>
+              <span>📧</span><span>Email This Reflection</span>
             </button>
-            <a href="/" class="action-btn" id="reflectAgainBtn"
-              ><span>🪞</span
-              ><span id="reflectAgainText">Reflect Again</span></a
-            >
+            <a href="/" class="action-btn">
+              <span>🪞</span><span>Reflect Again</span>
+            </a>
           </div>
         </div>
       </div>
     </div>
 
-    <!--────────────  SCRIPT  ────────────-->
     <script>
-      /* 1. i18n table */
-      const translations = {
-        en: {
-          q1Number: "Question 1",
-          q1Text: "What is your dream?",
-          q1Subtitle:
-            "(Choose just one — the one that calls you most right now.)",
-          q2Number: "Question 2",
-          q2Text: "What is your plan for achieving this dream?",
-          q2Subtitle:
-            "(Write what you already know. It's okay if it's unclear.)",
-          q3Number: "Question 3",
-          q3Text: "Have you set a definite date for fulfilling your dream?",
-          dateLabel: "What is the date?",
-          yesBtn: "Yes",
-          noBtn: "No",
-          q4Number: "Question 4",
-          q4Text: "What is your current relationship with this dream?",
-          q4Subtitle: "(Do you believe you'll achieve it? Why or why not?)",
-          q5Number: "Question 5",
-          q5Text: "What are you willing to give in return?",
-          q5Subtitle:
-            "(Energy, focus, love, time — what will you offer to this dream?)",
-          submitBtn: "Receive Your Reflection",
-          dreamPlaceholder: "Write the dream that calls you",
-          planPlaceholder: "Describe any plan (or absence of plan)",
-          relationshipPlaceholder: "How do you relate to this dream now?",
-          offeringPlaceholder: "What will you offer in return?",
-          loadingText: "Reflecting your truth…",
-          adminNoticeText: "✨ Admin session — unlimited reflections",
-          emailText: "Email This Reflection",
-          reflectAgainText: "Reflect Again",
-        },
-        he: {
-          q1Number: "שאלה 1",
-          q1Text: "מה החלום שלך?",
-          q1Subtitle: "(בחר חלום אחד — זה שקורא לך כרגע.)",
-          q2Number: "שאלה 2",
-          q2Text: "מה התכנית שלך להשגת החלום הזה?",
-          q2Subtitle: "(כתוב את מה שאתה כבר יודע, גם אם זה לא ברור.)",
-          q3Number: "שאלה 3",
-          q3Text: "האם קבעת תאריך מוגדר להגשמת החלום?",
-          dateLabel: "מהו התאריך?",
-          yesBtn: "כן",
-          noBtn: "לא",
-          q4Number: "שאלה 4",
-          q4Text: "מה היחסים שלך עם החלום הזה?",
-          q4Subtitle: "(האם אתה מאמין שתשיג אותו? למה כן / לא?)",
-          q5Number: "שאלה 5",
-          q5Text: "מה אתה מוכן לתת בתמורה?",
-          q5Subtitle: "(אנרגיה, תשומת לב, אהבה, זמן — מה תציע לחלום?)",
-          submitBtn: "קבל את ההשתקפות",
-          dreamPlaceholder: "כתוב את החלום שקורא לך",
-          planPlaceholder: "תאר כל תכנית (או היעדר תכנית)",
-          relationshipPlaceholder: "איך אתה מתייחס לחלום כעת?",
-          offeringPlaceholder: "מה תיתן בתמורה?",
-          loadingText: "משקף את האמת שלך…",
-          adminNoticeText: "✨ מצב מנהל — השתקפויות ללא הגבלה",
-          emailText: "שלח את ההשתקפות במייל",
-          reflectAgainText: "השתקפות נוספת",
-        },
-      };
-
-      /* 2. language apply */
-      const currentLanguage =
-        new URLSearchParams(location.search).get("lang") ||
-        localStorage.getItem("mirrorLanguage") ||
-        "en";
-      function applyLanguage() {
-        const t = translations[currentLanguage];
-        const html = document.documentElement;
-        html.dir = currentLanguage === "he" ? "rtl" : "ltr";
-        html.lang = currentLanguage;
-        Object.entries(t).forEach(([id, txt]) => {
-          const el = document.getElementById(id);
-          if (el) el.textContent = txt;
-        });
-        dreamInput.placeholder = t.dreamPlaceholder;
-        planInput.placeholder = t.planPlaceholder;
-        relationshipInput.placeholder = t.relationshipPlaceholder;
-        offeringInput.placeholder = t.offeringPlaceholder;
-      }
-      applyLanguage();
-
-      /* 3. runtime flags */
       let userData = null,
         hasDateSet = null,
         isAdminMode = false;
 
-      /* 4. show / hide sections */
       function showSection(id) {
         document.querySelectorAll(".experience-section").forEach((sec) => {
           sec.classList.remove("active");
@@ -529,11 +443,11 @@
         }, 300);
       }
 
-      /* 5. initial routing - check for verified user */
+      // Check for admin mode
       const url = new URLSearchParams(location.search);
       if (url.get("admin") === "true") {
         isAdminMode = true;
-        adminNotice.style.display = "block";
+        document.getElementById("adminNotice").style.display = "block";
       }
 
       // Check for verified user (from PayPal payment)
@@ -543,19 +457,16 @@
           userData = JSON.parse(stored);
         } catch (e) {
           console.error("Error parsing user data:", e);
-          // Redirect back to registration if data is corrupted
-          location.href = `./register.html?lang=${currentLanguage}`;
+          location.href = "./register.html";
         }
       } else if (!isAdminMode) {
-        // No verified user and not admin mode - redirect to registration
-        location.href = `./register.html?lang=${currentLanguage}`;
+        location.href = "./register.html";
       }
 
-      // Start questions immediately (no access code verification)
+      // Start questions immediately
       setTimeout(animateQuestions, 300);
       setupInteractions();
 
-      /* 6. questions sequence */
       function animateQuestions() {
         document.querySelectorAll(".question-group").forEach((q, i) => {
           setTimeout(() => q.classList.add("visible"), i * 200);
@@ -572,100 +483,89 @@
             hasDateSet = this.dataset.value;
             document.querySelector('input[name="hasDate"]').value = hasDateSet;
             if (hasDateSet === "yes") {
-              dateContainer.style.display = "flex";
-              dateContainer.querySelector("input").required = true;
+              document.getElementById("dateContainer").style.display = "flex";
+              document
+                .getElementById("dateContainer")
+                .querySelector("input").required = true;
             } else {
-              dateContainer.style.display = "none";
-              const inp = dateContainer.querySelector("input");
+              document.getElementById("dateContainer").style.display = "none";
+              const inp = document
+                .getElementById("dateContainer")
+                .querySelector("input");
               inp.required = false;
               inp.value = "";
             }
           });
         });
 
-        // Form submission with proper creator context flow
-        reflectionForm.addEventListener("submit", async (e) => {
-          e.preventDefault();
-          showSection("loading");
-          const f = new FormData(reflectionForm);
+        // Form submission
+        document
+          .getElementById("reflectionForm")
+          .addEventListener("submit", async (e) => {
+            e.preventDefault();
+            showSection("loading");
+            const f = new FormData(e.target);
 
-          // Check if user is creator and get context
-          let creatorContext = null;
-          let isCreatorMode = false;
+            // Check if user is creator
+            let creatorContext = null;
+            let isCreatorMode = false;
 
-          if (userData?.isCreator) {
-            isCreatorMode = true;
-            // Try to get creator context from localStorage
-            const storedContext = localStorage.getItem("mirrorCreatorContext");
-            if (storedContext) {
-              try {
-                creatorContext = JSON.parse(storedContext);
-              } catch (e) {
-                console.warn("Failed to parse creator context:", e);
+            if (userData?.isCreator) {
+              isCreatorMode = true;
+              const storedContext = localStorage.getItem(
+                "mirrorCreatorContext"
+              );
+              if (storedContext) {
+                try {
+                  creatorContext = JSON.parse(storedContext);
+                } catch (e) {
+                  console.warn("Failed to parse creator context:", e);
+                }
               }
             }
-          }
 
-          const payload = {
-            dream: f.get("dream"),
-            plan: f.get("plan"),
-            hasDate: f.get("hasDate"),
-            dreamDate: f.get("dreamDate"),
-            relationship: f.get("relationship"),
-            offering: f.get("offering"),
-            userName: userData?.name || "Friend",
-            userEmail: userData?.email || "",
-            language: currentLanguage,
-            isAdmin: isAdminMode,
-            isCreator: isCreatorMode,
-            creatorContext: creatorContext,
-          };
+            const payload = {
+              dream: f.get("dream"),
+              plan: f.get("plan"),
+              hasDate: f.get("hasDate"),
+              dreamDate: f.get("dreamDate"),
+              relationship: f.get("relationship"),
+              offering: f.get("offering"),
+              userName: userData?.name || "Friend",
+              userEmail: userData?.email || "",
+              language: "en", // Always English
+              isAdmin: isAdminMode,
+              isCreator: isCreatorMode,
+              creatorContext: creatorContext,
+            };
 
-          console.log("Sending payload:", {
-            isCreator: isCreatorMode,
-            hasContext: !!creatorContext,
-            userName: payload.userName,
+            try {
+              const r = await fetch("/api/mirror-reflection", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+              });
+              const j = await r.json();
+              if (!j.success) throw new Error(j.error || "Reflection failed");
+
+              document.getElementById("reflectionContent").innerHTML =
+                j.reflection;
+              showSection("results");
+            } catch (err) {
+              console.error("Reflection error:", err);
+              document.getElementById("reflectionContent").innerHTML = `
+              <h2>A moment of silence…</h2>
+              <p>Your reflection is being prepared. Please try again in a moment.</p>
+              <p style="opacity:.7;font-style:italic;">Sometimes the deepest truth needs space to emerge.</p>
+            `;
+              showSection("results");
+            }
           });
-
-          try {
-            const r = await fetch("/api/mirror-reflection", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-            });
-            const j = await r.json();
-            if (!j.success) throw new Error(j.error || "Reflection failed");
-
-            reflectionContent.innerHTML = j.reflection;
-            showSection("results");
-          } catch (err) {
-            console.error("Reflection error:", err);
-            reflectionContent.innerHTML = `<h2>${
-              currentLanguage === "he" ? "רגע של שקט…" : "A moment of silence…"
-            }</h2>
-        <p>${
-          currentLanguage === "he"
-            ? "ההשתקפות שלך מוכנה. נסה שוב בעוד רגע."
-            : "Your reflection is being prepared. Please try again in a moment."
-        }</p>
-        <p style="opacity:.7;font-style:italic;">${
-          currentLanguage === "he"
-            ? "לפעמים האמת העמוקה צריכה מרחב כדי להופיע."
-            : "Sometimes the deepest truth needs space to emerge."
-        }</p>`;
-            showSection("results");
-          }
-        });
       }
 
-      /* 7. email reflection */
       function emailReflection() {
         if (!userData?.email) {
-          const mail = prompt(
-            currentLanguage === "he"
-              ? "הכנס מייל לקבלת ההשתקפות:"
-              : "Enter your email to receive this reflection:"
-          );
+          const mail = prompt("Enter your email to receive this reflection:");
           if (!mail) return;
           userData = { ...userData, email: mail };
         }
@@ -674,26 +574,20 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             email: userData.email,
-            content: reflectionContent.innerHTML,
+            content: document.getElementById("reflectionContent").innerHTML,
             userName: userData.name || "Friend",
-            language: currentLanguage,
+            language: "en",
           }),
         })
           .then((r) => r.json())
           .then((d) => {
             alert(
               d.success
-                ? currentLanguage === "he"
-                  ? "ההשתקפות נשלחה למייל."
-                  : "Reflection sent to your email."
-                : currentLanguage === "he"
-                ? "הייתה בעיה בשליחה."
+                ? "Reflection sent to your email."
                 : "There was an issue sending."
             );
           })
-          .catch(() =>
-            alert(currentLanguage === "he" ? "שגיאה בשליחה." : "Error sending.")
-          );
+          .catch(() => alert("Error sending."));
       }
     </script>
   </body>
