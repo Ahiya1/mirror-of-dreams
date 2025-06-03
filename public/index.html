@@ -1,4 +1,4 @@
-<!-- FILE: public/index.html • Clean main page without modal • 2025-06-01 -->
+<!-- FILE: public/index.html • Clean with subtle booth status • 2025-06-01 -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -259,6 +259,32 @@
         margin-inline: auto;
       }
 
+      /*── subtle booth status at bottom ──*/
+      .booth-status-footer {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 100;
+        font-size: 0.75rem;
+        opacity: 0;
+        transition: all 0.8s ease;
+        color: rgba(255, 255, 255, 0.4);
+        text-align: center;
+        letter-spacing: 0.3px;
+        pointer-events: none;
+        font-weight: 300;
+      }
+      .booth-status-footer.loaded {
+        opacity: 1;
+      }
+      .booth-status-footer.open {
+        color: rgba(34, 197, 94, 0.6);
+      }
+      .booth-status-footer.closed {
+        color: rgba(255, 255, 255, 0.25);
+      }
+
       /*── responsive tweaks ──*/
       @media (max-width: 768px) {
         .reflect-button {
@@ -277,10 +303,19 @@
           right: auto;
           left: 1rem;
         }
+        .booth-status-footer {
+          bottom: 1.5rem;
+          font-size: 0.7rem;
+        }
       }
       @media (max-width: 480px) {
         .title {
           font-size: 2rem;
+        }
+        .booth-status-footer {
+          bottom: 1rem;
+          font-size: 0.65rem;
+          padding: 0 1rem;
         }
       }
     </style>
@@ -309,14 +344,21 @@
     <main class="main-content">
       <section class="center-container">
         <h1 class="title" id="mainTitle">The Mirror of Truth</h1>
+
         <a href="./register.html" class="reflect-button" id="reflectBtn">
           <span id="reflectText">Reflect Me</span>
         </a>
+
         <p class="tagline" id="tagline">
           A space to see yourself clearly.<br />No fixing. Only truth.
         </p>
       </section>
     </main>
+
+    <!-- subtle booth status at bottom -->
+    <div class="booth-status-footer" id="boothStatusFooter">
+      <span id="boothStatusText">Loading...</span>
+    </div>
 
     <!--──────────────  SCRIPT  ──────────────-->
     <script>
@@ -340,6 +382,8 @@
           tagline: "A space to see yourself clearly.<br>No fixing. Only truth.",
           langText: "עברית",
           langFlag: "🇮🇱",
+          boothLocationFallback: "Location TBA",
+          unknownStatus: "Status unavailable",
         },
         he: {
           mainTitle: "מראת האמת",
@@ -347,6 +391,8 @@
           tagline: "מרחב לראות את עצמך בבירור.<br>בלי תיקונים. רק אמת.",
           langText: "English",
           langFlag: "🇺🇸",
+          boothLocationFallback: "מיקום יעודכן",
+          unknownStatus: "סטטוס לא זמין",
         },
       };
 
@@ -367,6 +413,55 @@
         ).href = `./register.html?lang=${currentLanguage}`;
       }
       applyLanguage();
+
+      /*── booth status management ──*/
+      let boothData = null;
+
+      async function loadBoothStatus() {
+        try {
+          const response = await fetch("/api/booth-status");
+          const result = await response.json();
+
+          if (result.success && result.booth) {
+            boothData = result.booth;
+            updateBoothDisplay();
+          } else {
+            throw new Error("Failed to load booth status");
+          }
+        } catch (error) {
+          console.error("Error loading booth status:", error);
+          showBoothError();
+        }
+      }
+
+      function updateBoothDisplay() {
+        if (!boothData) return;
+
+        const boothStatusFooter = document.getElementById("boothStatusFooter");
+        const boothStatusText = document.getElementById("boothStatusText");
+
+        // Create simple, minimal text with price
+        const t = translations[currentLanguage];
+        const location = boothData.location || t.boothLocationFallback;
+        const status =
+          boothData.statusMessages[currentLanguage] || boothData.statusMessage;
+
+        // Format: "20₪ • Location • Status"
+        boothStatusText.textContent = `20₪ • ${location} • ${status}`;
+
+        // Update class for styling
+        boothStatusFooter.className = `booth-status-footer ${boothData.status} loaded`;
+      }
+
+      function showBoothError() {
+        const boothStatusFooter = document.getElementById("boothStatusFooter");
+        const boothStatusText = document.getElementById("boothStatusText");
+
+        const t = translations[currentLanguage];
+
+        boothStatusText.textContent = `20₪ • ${t.boothLocationFallback} • ${t.unknownStatus}`;
+        boothStatusFooter.className = "booth-status-footer closed loaded";
+      }
 
       /*── UI interactions ──*/
       const mirrorsCont = document.getElementById("mirrorsContainer");
@@ -405,7 +500,7 @@
         }
       }
 
-      // FIXED: Creator bypass with proper data flow
+      // Creator bypass with proper data flow
       function showSecretBypass() {
         const password = prompt("🪞 Creator Access\nEnter the sacred key:");
         if (password) {
@@ -474,6 +569,16 @@
           localStorage.setItem("mirrorLanguage", currentLanguage);
         } catch {}
         applyLanguage();
+        updateBoothDisplay(); // Update booth display with new language
+      });
+
+      /*── initialization ──*/
+      window.addEventListener("load", () => {
+        // Load booth status on page load
+        loadBoothStatus();
+
+        // Refresh booth status every 5 minutes
+        setInterval(loadBoothStatus, 5 * 60 * 1000);
       });
     </script>
   </body>
