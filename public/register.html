@@ -683,21 +683,37 @@
           }
 
           paypalConfig = result.config;
-          console.log(
-            `✅ PayPal config loaded - Environment: ${paypalConfig.environment}`
-          );
+          console.log(`✅ PayPal config loaded:`, {
+            clientId: paypalConfig.clientId
+              ? `${paypalConfig.clientId.substring(0, 8)}...`
+              : "MISSING",
+            currency: paypalConfig.currency,
+            environment: paypalConfig.environment,
+          });
 
           // Load PayPal SDK dynamically
           await loadPayPalSDK();
 
-          // Hide loading state
+          // Hide loading state and check if form is ready
           document.getElementById("paypalLoading").style.display = "none";
+          console.log("💳 PayPal SDK ready, checking form validation...");
+
+          // Force check form validation
+          updateFormValidation();
         } catch (error) {
           console.error("❌ PayPal config error:", error);
 
           // Show error state
           document.getElementById("paypalLoading").style.display = "none";
-          document.getElementById("paypalError").style.display = "block";
+          const errorDiv = document.getElementById("paypalError");
+          errorDiv.style.display = "block";
+
+          // Update error message
+          const errorText = document.getElementById("errorText");
+          errorText.textContent =
+            currentLanguage === "he"
+              ? `שגיאה בטעינת PayPal: ${error.message}`
+              : `PayPal loading error: ${error.message}`;
         }
       }
 
@@ -706,20 +722,45 @@
         return new Promise((resolve, reject) => {
           // Check if PayPal is already loaded
           if (window.paypal) {
+            console.log("💳 PayPal SDK already loaded");
             resolve();
             return;
           }
 
+          console.log(
+            `💳 Loading PayPal SDK for client ID: ${paypalConfig.clientId.substring(
+              0,
+              8
+            )}...`
+          );
+
           const script = document.createElement("script");
-          script.src = `https://www.paypal.com/sdk/js?client-id=${paypalConfig.clientId}&currency=${paypalConfig.currency}`;
+          script.src = `https://www.paypal.com/sdk/js?client-id=${paypalConfig.clientId}&currency=${paypalConfig.currency}&intent=capture`;
+
           script.onload = () => {
             console.log("✅ PayPal SDK loaded successfully");
-            resolve();
+            console.log("💳 PayPal object available:", !!window.paypal);
+
+            // Double check PayPal is actually available
+            if (window.paypal && window.paypal.Buttons) {
+              resolve();
+            } else {
+              reject(new Error("PayPal SDK loaded but Buttons not available"));
+            }
           };
-          script.onerror = () => {
-            console.error("❌ Failed to load PayPal SDK");
-            reject(new Error("Failed to load PayPal SDK"));
+
+          script.onerror = (error) => {
+            console.error("❌ Failed to load PayPal SDK:", error);
+            reject(new Error("Failed to load PayPal SDK script"));
           };
+
+          // Add timeout for SDK loading
+          setTimeout(() => {
+            if (!window.paypal || !window.paypal.Buttons) {
+              console.error("❌ PayPal SDK loading timeout");
+              reject(new Error("PayPal SDK loading timeout (10s)"));
+            }
+          }, 10000);
 
           document.head.appendChild(script);
         });
@@ -755,19 +796,44 @@
 
       /*── Form validation ──*/
       function updateFormValidation() {
-        const nameValid =
-          document.getElementById("userName").value.trim().length > 0;
-        const emailValid = document
-          .getElementById("userEmail")
-          .value.trim()
-          .includes("@");
+        const nameValue = document.getElementById("userName").value.trim();
+        const emailValue = document.getElementById("userEmail").value.trim();
+
+        const nameValid = nameValue.length > 0;
+        const emailValid = emailValue.includes("@") && emailValue.includes(".");
 
         const wasValid = formValid;
         formValid = nameValid && emailValid;
 
+        console.log("📝 Form validation:", {
+          nameValid,
+          emailValid,
+          formValid,
+          wasValid,
+          paypalConfigReady: !!paypalConfig,
+          paypalSDKReady: !!window.paypal,
+        });
+
         // Initialize PayPal button when form becomes valid
-        if (formValid && !wasValid && paypalConfig) {
-          initializePayPal();
+        if (formValid && !wasValid) {
+          console.log(
+            "✅ Form became valid, attempting PayPal initialization..."
+          );
+
+          if (paypalConfig && window.paypal) {
+            initializePayPal();
+          } else {
+            console.log("⚠️ PayPal not ready yet:", {
+              config: !!paypalConfig,
+              sdk: !!window.paypal,
+            });
+          }
+        } else if (!formValid && wasValid) {
+          console.log("⚠️ Form became invalid, clearing PayPal button");
+          document.getElementById("paypal-button-container").innerHTML = "";
+          document
+            .getElementById("paypal-button-container")
+            .classList.remove("loaded");
         }
       }
 
@@ -791,82 +857,123 @@
 
       /*── PayPal initialization ──*/
       function initializePayPal() {
-        if (!formValid || !paypalConfig || !window.paypal) {
-          console.log("⚠️ Cannot initialize PayPal - missing requirements");
+        console.log("💳 Attempting to initialize PayPal...", {
+          formValid,
+          paypalConfig: !!paypalConfig,
+          paypalSDK: !!window.paypal,
+          container: !!document.getElementById("paypal-button-container"),
+        });
+
+        if (!formValid) {
+          console.log("❌ Cannot initialize PayPal - form not valid");
           return;
         }
 
-        console.log("💳 Initializing PayPal button...");
+        if (!paypalConfig) {
+          console.log("❌ Cannot initialize PayPal - config not loaded");
+          return;
+        }
 
-        // Clear existing button
-        document.getElementById("paypal-button-container").innerHTML = "";
+        if (!window.paypal) {
+          console.log("❌ Cannot initialize PayPal - SDK not loaded");
+          return;
+        }
 
-        // Create PayPal button
-        window.paypal
-          .Buttons({
-            style: {
-              color: "gold",
-              shape: "rect",
-              label: "pay",
-              height: 45,
-              tagline: false,
-            },
+        console.log("💳 All requirements met, creating PayPal button...");
 
-            createOrder: function (data, actions) {
-              console.log("💳 Creating PayPal order...");
+        try {
+          // Clear existing button
+          const container = document.getElementById("paypal-button-container");
+          container.innerHTML = "";
+          container.classList.remove("loaded");
 
-              return actions.order.create({
-                purchase_units: [
-                  {
-                    amount: {
-                      value: "20.00",
-                      currency_code: paypalConfig.currency,
+          // Create PayPal button
+          window.paypal
+            .Buttons({
+              style: {
+                color: "gold",
+                shape: "rect",
+                label: "pay",
+                height: 45,
+                tagline: false,
+              },
+
+              createOrder: function (data, actions) {
+                console.log("💳 Creating PayPal order...");
+
+                return actions.order.create({
+                  purchase_units: [
+                    {
+                      amount: {
+                        value: "20.00",
+                        currency_code: paypalConfig.currency,
+                      },
+                      description:
+                        currentLanguage === "he"
+                          ? "מראת האמת - חוויית השתקפות"
+                          : "Mirror of Truth - Reflection Experience",
                     },
-                    description:
-                      currentLanguage === "he"
-                        ? "מראת האמת - חוויית השתקפות"
-                        : "Mirror of Truth - Reflection Experience",
-                  },
-                ],
-              });
-            },
+                  ],
+                });
+              },
 
-            onApprove: function (data, actions) {
-              console.log("✅ PayPal payment approved, capturing...");
+              onApprove: function (data, actions) {
+                console.log("✅ PayPal payment approved, capturing...");
 
-              return actions.order.capture().then(function (details) {
-                console.log("✅ Payment captured successfully:", details);
-                handlePaymentSuccess(details);
-              });
-            },
+                return actions.order.capture().then(function (details) {
+                  console.log("✅ Payment captured successfully:", details);
+                  handlePaymentSuccess(details);
+                });
+              },
 
-            onError: function (err) {
-              console.error("❌ PayPal Error:", err);
+              onError: function (err) {
+                console.error("❌ PayPal Button Error:", err);
 
-              alert(
-                currentLanguage === "he"
-                  ? "שגיאה בתשלום. נסה שוב."
-                  : "Payment error. Please try again."
+                // Show error to user
+                alert(
+                  currentLanguage === "he"
+                    ? "שגיאה בתשלום. נסה שוב."
+                    : "Payment error. Please try again."
+                );
+
+                resetFormState();
+              },
+
+              onCancel: function (data) {
+                console.log("⚠️ Payment cancelled by user");
+                resetFormState();
+              },
+            })
+            .render("#paypal-button-container")
+            .then(() => {
+              console.log("✅ PayPal button rendered successfully");
+
+              // Show the PayPal button container
+              const container = document.getElementById(
+                "paypal-button-container"
               );
+              container.classList.add("loaded");
+            })
+            .catch((error) => {
+              console.error("❌ PayPal button render error:", error);
 
-              resetFormState();
-            },
+              // Show error state
+              document.getElementById("paypalError").style.display = "block";
+              document.getElementById("errorText").textContent =
+                currentLanguage === "he"
+                  ? "שגיאה בטעינת אפשרויות התשלום"
+                  : "Error loading payment options";
+            });
+        } catch (error) {
+          console.error("❌ PayPal initialization error:", error);
 
-            onCancel: function (data) {
-              console.log("⚠️ Payment cancelled by user");
-              resetFormState();
-            },
-          })
-          .render("#paypal-button-container")
-          .then(() => {
-            console.log("✅ PayPal button rendered successfully");
-
-            // Show the PayPal button container
-            const container = document.getElementById(
-              "paypal-button-container"
-            );
-            container.classList.add("loaded");
-          });
+          // Show error state
+          document.getElementById("paypalError").style.display = "block";
+          document.getElementById("errorText").textContent =
+            currentLanguage === "he"
+              ? "שגיאה בהכנת התשלום"
+              : "Error preparing payment";
+        }
       }
 
       /*── Payment success handler ──*/
@@ -943,6 +1050,27 @@
       window.addEventListener("load", () => {
         initializeApp();
       });
+
+      /*── Debug function (temporary) ──*/
+      window.debugPayPal = function () {
+        console.log("🔍 PayPal Debug Info:", {
+          paypalConfig,
+          paypalSDK: !!window.paypal,
+          formValid,
+          userName: document.getElementById("userName").value,
+          userEmail: document.getElementById("userEmail").value,
+          containerExists: !!document.getElementById("paypal-button-container"),
+          loadingVisible:
+            document.getElementById("paypalLoading").style.display !== "none",
+          errorVisible:
+            document.getElementById("paypalError").style.display !== "none",
+        });
+
+        if (window.paypal && paypalConfig && formValid) {
+          console.log("🔧 Manually triggering PayPal initialization...");
+          initializePayPal();
+        }
+      };
 
       /*── Handle page visibility for debugging ──*/
       document.addEventListener("visibilitychange", () => {

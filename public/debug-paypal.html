@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PayPal Debug Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        background: #1a1a2e;
+        color: white;
+      }
+      .debug-box {
+        background: #2a2a4e;
+        padding: 20px;
+        border-radius: 10px;
+        margin: 10px 0;
+      }
+      .status {
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 5px;
+      }
+      .success {
+        background: #10b981;
+      }
+      .error {
+        background: #ef4444;
+      }
+      .info {
+        background: #3b82f6;
+      }
+      button {
+        padding: 10px 20px;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .primary {
+        background: #10b981;
+        color: white;
+      }
+      #paypal-button-container {
+        margin: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>PayPal Integration Debug Test</h1>
+
+    <div class="debug-box">
+      <h3>Step 1: Load PayPal Config</h3>
+      <button class="primary" onclick="testConfig()">Test Config API</button>
+      <div id="config-status"></div>
+    </div>
+
+    <div class="debug-box">
+      <h3>Step 2: Load PayPal SDK</h3>
+      <button class="primary" onclick="testSDK()">Load PayPal SDK</button>
+      <div id="sdk-status"></div>
+    </div>
+
+    <div class="debug-box">
+      <h3>Step 3: Create PayPal Button</h3>
+      <button class="primary" onclick="testButton()">Create Button</button>
+      <div id="button-status"></div>
+      <div id="paypal-button-container"></div>
+    </div>
+
+    <div class="debug-box">
+      <h3>Debug Info</h3>
+      <pre id="debug-info">Waiting for tests...</pre>
+    </div>
+
+    <script>
+      let config = null;
+
+      function updateStatus(elementId, message, type = "info") {
+        const el = document.getElementById(elementId);
+        el.innerHTML = `<div class="status ${type}">${message}</div>`;
+      }
+
+      function updateDebug() {
+        const debugInfo = {
+          paypalConfig: config,
+          paypalSDK: !!window.paypal,
+          paypalButtons: !!(window.paypal && window.paypal.Buttons),
+          userAgent: navigator.userAgent,
+          currentURL: window.location.href,
+          timestamp: new Date().toISOString(),
+        };
+
+        document.getElementById("debug-info").textContent = JSON.stringify(
+          debugInfo,
+          null,
+          2
+        );
+      }
+
+      async function testConfig() {
+        updateStatus(
+          "config-status",
+          "Loading PayPal configuration...",
+          "info"
+        );
+
+        try {
+          const response = await fetch("/api/paypal-config");
+          const result = await response.json();
+
+          if (result.success) {
+            config = result.config;
+            updateStatus(
+              "config-status",
+              `✅ Config loaded: ${config.clientId.substring(0, 8)}... (${
+                config.environment
+              })`,
+              "success"
+            );
+          } else {
+            updateStatus(
+              "config-status",
+              `❌ Config failed: ${result.error}`,
+              "error"
+            );
+          }
+        } catch (error) {
+          updateStatus(
+            "config-status",
+            `❌ Config error: ${error.message}`,
+            "error"
+          );
+        }
+
+        updateDebug();
+      }
+
+      async function testSDK() {
+        if (!config) {
+          updateStatus("sdk-status", "❌ Load config first", "error");
+          return;
+        }
+
+        updateStatus("sdk-status", "Loading PayPal SDK...", "info");
+
+        try {
+          const script = document.createElement("script");
+          script.src = `https://www.paypal.com/sdk/js?client-id=${config.clientId}&currency=${config.currency}&intent=capture`;
+
+          script.onload = () => {
+            if (window.paypal && window.paypal.Buttons) {
+              updateStatus(
+                "sdk-status",
+                "✅ PayPal SDK loaded successfully",
+                "success"
+              );
+            } else {
+              updateStatus(
+                "sdk-status",
+                "❌ PayPal SDK loaded but Buttons not available",
+                "error"
+              );
+            }
+            updateDebug();
+          };
+
+          script.onerror = () => {
+            updateStatus(
+              "sdk-status",
+              "❌ Failed to load PayPal SDK script",
+              "error"
+            );
+            updateDebug();
+          };
+
+          document.head.appendChild(script);
+
+          // Timeout
+          setTimeout(() => {
+            if (!window.paypal) {
+              updateStatus(
+                "sdk-status",
+                "❌ PayPal SDK loading timeout (10s)",
+                "error"
+              );
+              updateDebug();
+            }
+          }, 10000);
+        } catch (error) {
+          updateStatus("sdk-status", `❌ SDK error: ${error.message}`, "error");
+          updateDebug();
+        }
+      }
+
+      function testButton() {
+        if (!config || !window.paypal) {
+          updateStatus(
+            "button-status",
+            "❌ Load config and SDK first",
+            "error"
+          );
+          return;
+        }
+
+        updateStatus("button-status", "Creating PayPal button...", "info");
+
+        try {
+          document.getElementById("paypal-button-container").innerHTML = "";
+
+          window.paypal
+            .Buttons({
+              style: {
+                color: "gold",
+                shape: "rect",
+                label: "pay",
+                height: 45,
+                tagline: false,
+              },
+
+              createOrder: function (data, actions) {
+                console.log("🔥 Creating test order...");
+                return actions.order.create({
+                  purchase_units: [
+                    {
+                      amount: {
+                        value: "20.00",
+                        currency_code: config.currency,
+                      },
+                      description: "Test Payment - Mirror of Truth",
+                    },
+                  ],
+                });
+              },
+
+              onApprove: function (data, actions) {
+                console.log("✅ Payment approved! (This is just a test)");
+                updateStatus(
+                  "button-status",
+                  "✅ Payment approved! (Test successful)",
+                  "success"
+                );
+                return actions.order.capture().then(function (details) {
+                  console.log("✅ Payment captured:", details);
+                });
+              },
+
+              onError: function (err) {
+                console.error("❌ PayPal error:", err);
+                updateStatus(
+                  "button-status",
+                  `❌ PayPal error: ${err.message || "Unknown error"}`,
+                  "error"
+                );
+              },
+
+              onCancel: function (data) {
+                console.log("⚠️ Payment cancelled");
+                updateStatus(
+                  "button-status",
+                  "⚠️ Payment cancelled by user",
+                  "info"
+                );
+              },
+            })
+            .render("#paypal-button-container")
+            .then(() => {
+              updateStatus(
+                "button-status",
+                "✅ PayPal button created successfully!",
+                "success"
+              );
+              updateDebug();
+            })
+            .catch((error) => {
+              updateStatus(
+                "button-status",
+                `❌ Button render error: ${error.message}`,
+                "error"
+              );
+              updateDebug();
+            });
+        } catch (error) {
+          updateStatus(
+            "button-status",
+            `❌ Button creation error: ${error.message}`,
+            "error"
+          );
+          updateDebug();
+        }
+      }
+
+      // Auto-run first test
+      setTimeout(testConfig, 500);
+    </script>
+  </body>
+</html>
