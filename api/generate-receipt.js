@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
-const { addReceipt } = require("../lib/redis-storage.js"); // NEW: Import receipt storage
+const { addReceipt } = require("../lib/redis-storage.js");
 
-const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransporter({
   service: "gmail",
   auth: {
     user: process.env.GMAIL_USER,
@@ -17,64 +17,18 @@ function generateReceiptNumber() {
   return `MR${timestamp.slice(-6)}${random}`;
 }
 
-function getReceiptContent(language, receiptData) {
-  const isHebrew = language === "he";
-  const direction = isHebrew ? "rtl" : "ltr";
-
-  const texts = {
-    en: {
-      subject: `Receipt - Mirror of Truth Service`,
-      receiptTitle: "Payment Receipt",
-      businessName: "AhIya",
-      businessNumber: "Business #325761682",
-      receiptNumber: "Receipt #",
-      paymentReceived: "Payment Received",
-      serviceDescription: "Mirror of Truth - Personal Reflection Session",
-      customerInfo: "Customer Information:",
-      paymentInfo: "Payment Information:",
-      amount: "Amount:",
-      method: "Payment Method:",
-      date: "Date:",
-      thankYou: "Thank you for choosing The Mirror of Truth",
-      footerNote:
-        "This receipt serves as proof of payment for the Mirror of Truth reflection experience.",
-      contactInfo:
-        "For questions about this receipt, please reply to this email.",
-      vatNote: "This service is provided by a registered business in Israel.",
-      cashMethod: "Cash",
-      bitMethod: "Bit Payment",
-    },
-    he: {
-      subject: `קבלה - שירות מראת האמת`,
-      receiptTitle: "קבלת תשלום",
-      businessName: "אחיה",
-      businessNumber: "עוסק מורשה #325761682",
-      receiptNumber: "קבלה מס׳",
-      paymentReceived: "תשלום התקבל",
-      serviceDescription: "מראת האמת - סשן השתקפות אישי",
-      customerInfo: "פרטי לקוח:",
-      paymentInfo: "פרטי תשלום:",
-      amount: "סכום:",
-      method: "אמצעי תשלום:",
-      date: "תאריך:",
-      thankYou: "תודה שבחרת במראת האמת",
-      footerNote: "קבלה זו משמשת כהוכחת תשלום עבור חוויית ההשתקפות מראת האמת.",
-      contactInfo: "לשאלות לגבי קבלה זו, אנא הגב למייל זה.",
-      vatNote: "השירות ניתן על ידי עוסק מורשה בישראל.",
-      cashMethod: "מזומן",
-      bitMethod: "תשלום בביט",
-    },
-  };
-
-  const t = texts[language];
-
+function getReceiptContent(receiptData) {
+  // English-only receipt template
   return `
 <!DOCTYPE html>
-<html lang="${language}" dir="${direction}">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${t.subject}</title>
+    <title>Receipt - Mirror of Truth Service</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    </style>
 </head>
 <body style="
     margin: 0; 
@@ -82,7 +36,6 @@ function getReceiptContent(language, receiptData) {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
     background: #f8fafc;
     line-height: 1.6;
-    direction: ${direction};
 ">
     <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
         
@@ -106,12 +59,12 @@ function getReceiptContent(language, receiptData) {
                     color: #1f2937;
                     margin: 0 0 10px 0;
                     font-weight: 700;
-                ">${t.receiptTitle}</h1>
+                ">Payment Receipt</h1>
                 <p style="
                     color: #6b7280;
                     margin: 0;
                     font-size: 1rem;
-                ">${t.paymentReceived}</p>
+                ">Payment Received</p>
             </div>
 
             <!-- Business Info -->
@@ -128,19 +81,21 @@ function getReceiptContent(language, receiptData) {
                         color: #374151;
                         margin: 0 0 10px 0;
                         font-size: 1.1rem;
-                    ">${t.businessName}</h3>
+                    ">AhIya</h3>
                     <p style="
                         color: #6b7280;
                         margin: 0;
                         font-size: 0.9rem;
-                    ">${t.businessNumber}</p>
+                    ">Business #${
+                      process.env.BUSINESS_NUMBER || "325761682"
+                    }</p>
                 </div>
-                <div style="text-align: ${isHebrew ? "left" : "right"};">
+                <div style="text-align: right;">
                     <p style="
                         color: #6b7280;
                         margin: 0;
                         font-size: 0.9rem;
-                    ">${t.receiptNumber}</p>
+                    ">Receipt #</p>
                     <p style="
                         color: #374151;
                         margin: 5px 0 0 0;
@@ -162,17 +117,13 @@ function getReceiptContent(language, receiptData) {
                     color: #374151;
                     margin: 0 0 10px 0;
                     font-size: 1rem;
-                ">${t.serviceDescription}</h4>
+                ">Mirror of Truth - Personal Reflection Session</h4>
                 <p style="
                     color: #6b7280;
                     margin: 0;
                     font-size: 0.9rem;
                     line-height: 1.5;
-                ">${
-                  isHebrew
-                    ? "סשן השתקפות אישי המיועד לעזור לך לראות את עצמך בבהירות ולהתחבר לכוח הפנימי שלך."
-                    : "Personal reflection session designed to help you see yourself clearly and connect with your inner power."
-                }</p>
+                ">Personal reflection session designed to help you see yourself clearly and connect with your inner power.</p>
             </div>
 
             <!-- Customer Info -->
@@ -181,7 +132,7 @@ function getReceiptContent(language, receiptData) {
                     color: #374151;
                     margin: 0 0 15px 0;
                     font-size: 1rem;
-                ">${t.customerInfo}</h4>
+                ">Customer Information:</h4>
                 <div style="
                     background: #f9fafb;
                     padding: 15px;
@@ -192,16 +143,12 @@ function getReceiptContent(language, receiptData) {
                         color: #374151;
                         margin: 0 0 5px 0;
                         font-size: 0.95rem;
-                    "><strong>${isHebrew ? "שם:" : "Name:"}</strong> ${
-    receiptData.customerName
-  }</p>
+                    "><strong>Name:</strong> ${receiptData.customerName}</p>
                     <p style="
                         color: #374151;
                         margin: 0;
                         font-size: 0.95rem;
-                    "><strong>${isHebrew ? "מייל:" : "Email:"}</strong> ${
-    receiptData.customerEmail
-  }</p>
+                    "><strong>Email:</strong> ${receiptData.customerEmail}</p>
                 </div>
             </div>
 
@@ -211,7 +158,7 @@ function getReceiptContent(language, receiptData) {
                     color: #374151;
                     margin: 0 0 15px 0;
                     font-size: 1rem;
-                ">${t.paymentInfo}</h4>
+                ">Payment Information:</h4>
                 <div style="
                     display: grid;
                     grid-template-columns: 1fr 1fr;
@@ -228,13 +175,13 @@ function getReceiptContent(language, receiptData) {
                             margin: 0 0 5px 0;
                             font-size: 0.9rem;
                             font-weight: 600;
-                        ">${t.amount}</p>
+                        ">Amount:</p>
                         <p style="
                             color: #0369a1;
                             margin: 0;
                             font-size: 1.2rem;
                             font-weight: 700;
-                        ">₪${receiptData.amount}</p>
+                        ">$${receiptData.amount}</p>
                     </div>
                     <div style="
                         background: #f0fdf4;
@@ -247,7 +194,7 @@ function getReceiptContent(language, receiptData) {
                             margin: 0 0 5px 0;
                             font-size: 0.9rem;
                             font-weight: 600;
-                        ">${t.method}</p>
+                        ">Payment Method:</p>
                         <p style="
                             color: #166534;
                             margin: 0;
@@ -255,8 +202,8 @@ function getReceiptContent(language, receiptData) {
                             font-weight: 600;
                         ">${
                           receiptData.paymentMethod === "cash"
-                            ? t.cashMethod
-                            : t.bitMethod
+                            ? "Cash"
+                            : "PayPal"
                         }</p>
                     </div>
                 </div>
@@ -272,7 +219,7 @@ function getReceiptContent(language, receiptData) {
                         margin: 0 0 5px 0;
                         font-size: 0.9rem;
                         font-weight: 600;
-                    ">${t.date}</p>
+                    ">Date:</p>
                     <p style="
                         color: #a16207;
                         margin: 0;
@@ -294,16 +241,12 @@ function getReceiptContent(language, receiptData) {
                 <h3 style="
                     margin: 0 0 10px 0;
                     font-size: 1.2rem;
-                ">${t.thankYou}</h3>
+                ">Thank you for choosing The Mirror of Truth</h3>
                 <p style="
                     margin: 0;
                     font-size: 0.9rem;
                     opacity: 0.9;
-                ">${
-                  isHebrew
-                    ? "אנו מודים לך על הבחירה להשקיע בשיחה עם האמת שלך."
-                    : "We appreciate you choosing to invest in a conversation with your truth."
-                }</p>
+                ">We appreciate you choosing to invest in a conversation with your truth.</p>
             </div>
 
             <!-- Footer -->
@@ -317,18 +260,18 @@ function getReceiptContent(language, receiptData) {
                     margin: 0 0 10px 0;
                     font-size: 0.85rem;
                     line-height: 1.5;
-                ">${t.footerNote}</p>
+                ">This receipt serves as proof of payment for the Mirror of Truth reflection experience.</p>
                 <p style="
                     color: #6b7280;
                     margin: 0 0 10px 0;
                     font-size: 0.85rem;
-                ">${t.contactInfo}</p>
+                ">For questions about this receipt, please reply to this email.</p>
                 <p style="
                     color: #9ca3af;
                     margin: 0;
                     font-size: 0.8rem;
                     font-style: italic;
-                ">${t.vatNote}</p>
+                ">This service is provided by a registered business.</p>
             </div>
         </div>
     </div>
@@ -364,10 +307,10 @@ module.exports = async function handler(req, res) {
     const {
       email,
       name,
-      amount = 20,
-      paymentMethod = "cash",
-      language = "en",
-      registrationId = null, // NEW: Optional link to registration
+      amount = 5, // Changed from 20 to 5
+      paymentMethod = "paypal",
+      language = "en", // Always English now
+      registrationId = null,
     } = req.body;
 
     if (!email || !name) {
@@ -384,37 +327,28 @@ module.exports = async function handler(req, res) {
       customerEmail: email,
       amount: amount,
       paymentMethod: paymentMethod,
-      date: new Date().toLocaleDateString(
-        language === "he" ? "he-IL" : "en-US",
-        {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        }
-      ),
+      date: new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
       timestamp: new Date().toISOString(),
     };
 
-    const isHebrew = language === "he";
-    const subject = isHebrew
-      ? `קבלה - שירות מראת האמת`
-      : `Receipt - Mirror of Truth Service`;
-
-    const htmlContent = getReceiptContent(language, receiptData);
+    const subject = `Receipt - Mirror of Truth Service`;
+    const htmlContent = getReceiptContent(receiptData);
 
     // Send email
     await transporter.sendMail({
-      from: `"${
-        isHebrew ? "אחיה - מראת האמת" : "Ahiya - The Mirror of Truth"
-      }" <${process.env.GMAIL_USER}>`,
+      from: `"Ahiya - The Mirror of Truth" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: subject,
       html: htmlContent,
     });
 
-    // NEW: Store receipt in Redis
+    // Store receipt in Redis
     try {
       const storedReceipt = await addReceipt({
         receiptNumber: receiptData.receiptNumber,
@@ -422,7 +356,7 @@ module.exports = async function handler(req, res) {
         customerEmail: email,
         amount: amount,
         paymentMethod: paymentMethod,
-        language: language,
+        language: "en",
         registrationId: registrationId,
         date: receiptData.date,
       });

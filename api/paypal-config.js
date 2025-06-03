@@ -1,6 +1,6 @@
 /* =========================================================================
    FILE: api/paypal-config.js
-   PayPal configuration endpoint for Mirror of Truth
+   PayPal configuration endpoint for Mirror of Truth - $5 USD
    ========================================================================= */
 
 module.exports = async function handler(req, res) {
@@ -22,10 +22,10 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    // Return PayPal configuration
+    // Return PayPal configuration for $5 USD
     const config = {
       clientId: process.env.PAYPAL_CLIENT_ID,
-      currency: "ILS",
+      currency: "USD", // Changed from ILS to USD
       environment:
         process.env.NODE_ENV === "production" ? "production" : "sandbox",
     };
@@ -40,7 +40,7 @@ module.exports = async function handler(req, res) {
     }
 
     console.log(
-      `💳 PayPal config requested - Environment: ${config.environment}`
+      `💳 PayPal config requested - Environment: ${config.environment}, Currency: ${config.currency}`
     );
 
     res.json({
