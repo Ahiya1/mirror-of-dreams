@@ -857,11 +857,12 @@
           <div class="payment-info" id="paymentInfo">
             <div class="payment-amount">20₪</div>
             <div class="payment-methods">
+              <!-- FIXED: Remove phone number from cash method -->
               <div class="payment-method">
                 <div class="method-name" id="cashMethod">
                   💵 <span id="cashMethodText">Cash at booth</span>
                 </div>
-                <div class="method-detail" id="bitPhone">+972 58-778-9019</div>
+                <!-- Booth status now properly under cash method -->
                 <div class="booth-status-inline loading" id="boothStatusInline">
                   <span id="boothStatusText">Loading booth status...</span>
                 </div>
@@ -870,6 +871,7 @@
                 <div class="method-name" id="bitMethod">
                   📱 <span id="bitMethodText">Bit Payment</span>
                 </div>
+                <!-- Phone number properly under bit method -->
                 <div class="method-detail">+972 58-778-9019</div>
               </div>
             </div>
@@ -981,6 +983,7 @@
         }
       }
 
+      // FIXED: Handle bilingual location properly
       function updateBoothStatus() {
         if (!boothData) return;
 
@@ -990,7 +993,19 @@
         const t = translations[currentLanguage];
         const statusText =
           boothData.statusMessages[currentLanguage] || boothData.statusMessage;
-        const locationText = boothData.location || t.boothLocationFallback;
+
+        // FIXED: Get location based on current language
+        let locationText;
+        if (typeof boothData.location === "object") {
+          // New bilingual format
+          locationText =
+            boothData.location[currentLanguage] ||
+            boothData.location.en ||
+            t.boothLocationFallback;
+        } else {
+          // Legacy single-language format
+          locationText = boothData.location || t.boothLocationFallback;
+        }
 
         // Update status text and class
         boothStatusText.textContent = `${locationText} • ${statusText}`;
