@@ -668,7 +668,7 @@
         applyLanguage();
         setupEventListeners();
 
-        // Load PayPal configuration first
+        // Load PayPal configuration
         await loadPayPalConfig();
       }
 
@@ -725,10 +725,17 @@
           console.log(`💳 Loading PayPal SDK...`);
 
           const script = document.createElement("script");
-          script.src = `https://www.paypal.com/sdk/js?client-id=${paypalConfig.clientId}&currency=${paypalConfig.currency}&intent=capture&debug=true`;
+          script.src = `https://www.paypal.com/sdk/js?client-id=${paypalConfig.clientId}&currency=${paypalConfig.currency}&intent=capture`;
+
+          // Set up timeout first
+          const timeout = setTimeout(() => {
+            console.error("❌ PayPal SDK loading timeout");
+            reject(new Error("PayPal SDK loading timeout"));
+          }, 15000);
 
           script.onload = () => {
             console.log("✅ PayPal SDK script loaded");
+            clearTimeout(timeout);
 
             // Wait a bit for PayPal to fully initialize
             setTimeout(() => {
@@ -747,18 +754,8 @@
 
           script.onerror = (error) => {
             console.error("❌ Failed to load PayPal SDK:", error);
-            reject(new Error("Failed to load PayPal SDK script"));
-          };
-
-          // Add timeout for SDK loading
-          const timeout = setTimeout(() => {
-            console.error("❌ PayPal SDK loading timeout");
-            reject(new Error("PayPal SDK loading timeout"));
-          }, 15000);
-
-          script.onload = () => {
             clearTimeout(timeout);
-            script.onload(); // Call the original onload
+            reject(new Error("Failed to load PayPal SDK script"));
           };
 
           document.head.appendChild(script);
