@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Begin Your Reflection</title>
+    <link rel="stylesheet" href="../shared/foundation.css" />
+    <link rel="stylesheet" href="register.css" />
+  </head>
+
+  <body>
+    <div class="consciousness-waves">
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+    </div>
+
+    <a href="../portal/" class="back-button">
+      <span>←</span><span>Back</span>
+    </a>
+
+    <div class="registration-container">
+      <div class="registration-card">
+        <h1>Begin Your Reflection</h1>
+
+        <form id="registrationForm">
+          <div class="form-group">
+            <label for="userName">Your Name</label>
+            <input
+              id="userName"
+              type="text"
+              placeholder="Enter your name"
+              class="sacred-input"
+              required
+            />
+            <div class="validation-indicator" id="nameIndicator"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="userEmail">Your Email</label>
+            <input
+              id="userEmail"
+              type="email"
+              placeholder="name@example.com"
+              class="sacred-input"
+              required
+            />
+            <div class="validation-indicator" id="emailIndicator"></div>
+          </div>
+
+          <div class="payment-info">
+            <div class="payment-amount">$5</div>
+            <div class="payment-description">
+              Secure payment to begin your reflection
+            </div>
+
+            <div class="paypal-loading" id="paypalLoading">
+              <div class="loading-spinner"></div>
+              <span>Loading payment options...</span>
+            </div>
+
+            <div class="paypal-error" id="paypalError">
+              <span
+                >Unable to load payment options. Please refresh and try
+                again.</span
+              >
+            </div>
+
+            <div id="paypal-button-container"></div>
+
+            <div class="processing-message" id="processingMessage">
+              ⏳ Processing your payment and preparing your sacred space...
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="register.js"></script>
+  </body>
+</html>

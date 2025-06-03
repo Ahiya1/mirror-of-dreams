@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Your Reflection</title>
+    <link rel="stylesheet" href="../shared/foundation.css" />
+    <link rel="stylesheet" href="reflection.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <!-- Questions Section -->
+      <div class="experience-section active" id="questions">
+        <form id="reflectionForm" class="questions-form">
+          <div class="question-group">
+            <div class="question-number">Question 1</div>
+            <div class="question-text">What is your dream?</div>
+            <div class="question-subtitle">
+              (Choose just one — the one that calls you most right now.)
+            </div>
+            <textarea
+              id="dreamInput"
+              name="dream"
+              class="question-textarea sacred-input"
+              placeholder="Write the dream that calls you"
+              required
+            ></textarea>
+          </div>
+
+          <div class="question-group">
+            <div class="question-number">Question 2</div>
+            <div class="question-text">
+              What is your plan for achieving this dream?
+            </div>
+            <div class="question-subtitle">
+              (Write what you already know. It's okay if it's unclear.)
+            </div>
+            <textarea
+              id="planInput"
+              name="plan"
+              class="question-textarea sacred-input"
+              placeholder="Describe any plan (or absence of plan)"
+              required
+            ></textarea>
+          </div>
+
+          <div class="question-group">
+            <div class="question-number">Question 3</div>
+            <div class="question-text">
+              Have you set a definite date for fulfilling your dream?
+            </div>
+            <div class="yes-no-buttons">
+              <div class="yes-no-btn" id="yesBtn" data-value="yes">Yes</div>
+              <div class="yes-no-btn" id="noBtn" data-value="no">No</div>
+            </div>
+            <input type="hidden" name="hasDate" required />
+            <div
+              class="date-container"
+              id="dateContainer"
+              style="display: none"
+            >
+              <label style="opacity: 0.8">What is the date?</label>
+              <input type="date" class="sacred-input" name="dreamDate" />
+            </div>
+          </div>
+
+          <div class="question-group">
+            <div class="question-number">Question 4</div>
+            <div class="question-text">
+              What is your current relationship with this dream?
+            </div>
+            <div class="question-subtitle">
+              (Do you believe you'll achieve it? Why or why not?)
+            </div>
+            <textarea
+              id="relationshipInput"
+              name="relationship"
+              class="question-textarea sacred-input"
+              placeholder="How do you relate to this dream now?"
+              required
+            ></textarea>
+          </div>
+
+          <div class="question-group">
+            <div class="question-number">Question 5</div>
+            <div class="question-text">
+              What are you willing to give in return?
+            </div>
+            <div class="question-subtitle">
+              (Energy, focus, love, time — what will you offer to this dream?)
+            </div>
+            <textarea
+              id="offeringInput"
+              name="offering"
+              class="question-textarea sacred-input"
+              placeholder="What will you offer in return?"
+              required
+            ></textarea>
+          </div>
+
+          <button type="submit" class="sacred-button submit-btn" id="submitBtn">
+            Receive Your Reflection
+          </button>
+        </form>
+      </div>
+
+      <!-- Loading Section -->
+      <div class="experience-section hidden" id="loading">
+        <div>
+          <div class="loading-circle"></div>
+          <div class="loading-text">Reflecting your truth…</div>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <div class="experience-section hidden" id="results">
+        <div class="results">
+          <div class="admin-notice" id="adminNotice" style="display: none">
+            <span>✨ Admin session — unlimited reflections</span>
+          </div>
+          <div class="results-content" id="reflectionContent"></div>
+          <div class="results-actions">
+            <button
+              class="sacred-button"
+              id="emailBtn"
+              onclick="emailReflection()"
+            >
+              <span>📧</span><span>Email This Reflection</span>
+            </button>
+            <a href="../portal/" class="sacred-button">
+              <span>🪞</span><span>Reflect Again</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="reflection.js"></script>
+  </body>
+</html>

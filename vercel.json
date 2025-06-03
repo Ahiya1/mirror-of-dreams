@@ -7,31 +7,31 @@
   "rewrites": [
     {
       "source": "/",
-      "destination": "/index.html"
+      "destination": "/portal/index.html"
     },
     {
       "source": "/register",
-      "destination": "/register.html"
+      "destination": "/commitment/register.html"
     },
     {
       "source": "/breathing",
-      "destination": "/breathing.html"
+      "destination": "/transition/breathing.html"
     },
     {
       "source": "/reflection",
-      "destination": "/reflection.html"
+      "destination": "/mirror/reflection.html"
     },
     {
       "source": "/admin",
-      "destination": "/admin.html"
+      "destination": "/stewardship/admin.html"
     },
     {
       "source": "/he",
-      "destination": "/index.html"
+      "destination": "/portal/index.html"
     },
     {
       "source": "/en",
-      "destination": "/index.html"
+      "destination": "/portal/index.html"
     },
     {
       "source": "/receipts",
