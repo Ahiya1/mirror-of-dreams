@@ -434,6 +434,7 @@
         }
       }
 
+      // FIXED: Handle bilingual location properly
       function updateBoothDisplay() {
         if (!boothData) return;
 
@@ -442,7 +443,20 @@
 
         // Create simple, minimal text with price
         const t = translations[currentLanguage];
-        const location = boothData.location || t.boothLocationFallback;
+
+        // FIXED: Get location based on current language
+        let location;
+        if (typeof boothData.location === "object") {
+          // New bilingual format
+          location =
+            boothData.location[currentLanguage] ||
+            boothData.location.en ||
+            t.boothLocationFallback;
+        } else {
+          // Legacy single-language format
+          location = boothData.location || t.boothLocationFallback;
+        }
+
         const status =
           boothData.statusMessages[currentLanguage] || boothData.statusMessage;
 
