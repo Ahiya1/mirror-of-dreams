@@ -1,4 +1,3 @@
-<!-- FILE: public/register.html • Complete Fixed Version with PayPal Email Pre-population • 2025-06-01 -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -351,20 +350,6 @@
         }
       }
 
-      .debug-info {
-        position: fixed;
-        bottom: 1rem;
-        left: 1rem;
-        background: rgba(0, 0, 0, 0.8);
-        color: #fff;
-        padding: 0.5rem;
-        border-radius: 8px;
-        font-size: 0.7rem;
-        font-family: monospace;
-        max-width: 300px;
-        z-index: 1000;
-      }
-
       @media (max-width: 768px) {
         body {
           padding: 0.5rem 0;
@@ -479,68 +464,15 @@
       </div>
     </div>
 
-    <div class="debug-info" id="debugInfo">Debug: Initializing...</div>
-
     <script>
       let paypalConfig = null;
-      let formValid = false;
       let paypalSDKLoaded = false;
       let paypalInitialized = false;
-
-      // Debug function
-      function updateDebugInfo() {
-        const nameValue = document.getElementById("userName")?.value || "";
-        const emailValue = document.getElementById("userEmail")?.value || "";
-
-        const info = {
-          formValid,
-          paypalSDKLoaded,
-          paypalInitialized,
-          hasPayPal: !!window.paypal,
-          hasButtons: !!(window.paypal && window.paypal.Buttons),
-          nameValid: nameValue.length >= 2,
-          emailValid: isValidEmail(emailValue),
-          nameValue: nameValue.substring(0, 10),
-          emailValue: emailValue.substring(0, 15),
-        };
-
-        document.getElementById("debugInfo").innerHTML =
-          `Form: ${info.formValid}<br>` +
-          `SDK: ${info.paypalSDKLoaded}<br>` +
-          `Init: ${info.paypalInitialized}<br>` +
-          `PayPal: ${info.hasPayPal}<br>` +
-          `Name: ${info.nameValid} (${info.nameValue})<br>` +
-          `Email: ${info.emailValid} (${info.emailValue})`;
-      }
-
-      // FIXED: Robust email validation function
-      function isValidEmail(email) {
-        if (!email || typeof email !== "string") {
-          return false;
-        }
-
-        const emailStr = email.trim();
-        if (emailStr.length === 0) {
-          return false;
-        }
-
-        // Basic email validation
-        const atIndex = emailStr.indexOf("@");
-        const lastDotIndex = emailStr.lastIndexOf(".");
-
-        return (
-          atIndex > 0 &&
-          lastDotIndex > atIndex + 1 &&
-          lastDotIndex < emailStr.length - 1 &&
-          emailStr.indexOf("@", atIndex + 1) === -1
-        ); // Only one @
-      }
 
       async function initializeApp() {
         console.log("🌟 Initializing Mirror of Truth registration...");
         setupEventListeners();
         await loadPayPalConfig();
-        updateDebugInfo();
       }
 
       async function loadPayPalConfig() {
@@ -575,8 +507,7 @@
             console.log("💳 PayPal SDK already loaded");
             paypalSDKLoaded = true;
             hideLoadingState();
-            initializePayPal(); // Initialize immediately when SDK is available
-            updateDebugInfo();
+            initializePayPal(); // IMMEDIATE initialization
             resolve();
             return;
           }
@@ -600,8 +531,7 @@
                 console.log("✅ PayPal SDK fully available");
                 paypalSDKLoaded = true;
                 hideLoadingState();
-                initializePayPal(); // CRITICAL: Initialize when SDK loads
-                updateDebugInfo();
+                initializePayPal(); // IMMEDIATE initialization - no form check
                 resolve();
               } else {
                 console.error("❌ PayPal SDK loaded but not available");
@@ -638,12 +568,6 @@
         document
           .getElementById("userEmail")
           .addEventListener("input", updateFormValidation);
-        document
-          .getElementById("userName")
-          .addEventListener("blur", updateFormValidation);
-        document
-          .getElementById("userEmail")
-          .addEventListener("blur", updateFormValidation);
       }
 
       function updateFormValidation() {
@@ -655,12 +579,9 @@
         const nameValue = nameInput?.value?.trim() || "";
         const emailValue = emailInput?.value?.trim() || "";
 
-        // FIXED: Safe validation with null checks
-        const nameValid = nameValue.length >= 2;
-        const emailValid = isValidEmail(emailValue);
-
-        const wasValid = formValid;
-        formValid = nameValid && emailValid;
+        // SUPER SIMPLE validation
+        const nameValid = nameValue.length > 0;
+        const emailValid = emailValue.length > 3 && emailValue.includes("@");
 
         updateFieldValidation(
           nameInput,
@@ -676,14 +597,11 @@
         );
 
         console.log("📝 Form validation:", {
-          wasValid,
-          formValid,
           nameValid,
           emailValid,
-          nameValue,
-          emailValue,
+          nameValue: nameValue.substring(0, 10),
+          emailValue: emailValue.substring(0, 15),
         });
-        updateDebugInfo();
       }
 
       function updateFieldValidation(input, indicator, isValid, hasContent) {
@@ -738,14 +656,22 @@
                 tagline: false,
               },
 
-              // Validate on click
+              // Validate on click instead of blocking render
               onClick: function (data, actions) {
                 console.log("💳 PayPal button clicked, checking form...");
 
-                updateFormValidation(); // Update validation state
+                const nameValue =
+                  document.getElementById("userName")?.value?.trim() || "";
+                const emailValue =
+                  document.getElementById("userEmail")?.value?.trim() || "";
 
-                if (!formValid) {
-                  alert("Please complete your name and email first.");
+                if (!nameValue || nameValue.length < 1) {
+                  alert("Please enter your name first.");
+                  return actions.reject();
+                }
+
+                if (!emailValue || !emailValue.includes("@")) {
+                  alert("Please enter a valid email address first.");
                   return actions.reject();
                 }
 
@@ -756,21 +682,11 @@
               createOrder: function (data, actions) {
                 console.log("💳 Creating PayPal order...");
 
-                // Double-check form validation
-                if (!formValid) {
-                  throw new Error("Form validation failed");
-                }
-
                 // Get user data for PayPal pre-population
                 const userEmail =
                   document.getElementById("userEmail")?.value?.trim() || "";
                 const userName =
                   document.getElementById("userName")?.value?.trim() || "";
-
-                console.log("📧 Pre-populating PayPal with:", {
-                  userEmail,
-                  userName,
-                });
 
                 const orderData = {
                   purchase_units: [
@@ -784,8 +700,8 @@
                   ],
                 };
 
-                // FEATURE: Pre-populate PayPal with user's email
-                if (userEmail && isValidEmail(userEmail)) {
+                // Pre-populate PayPal with user's email
+                if (userEmail && userEmail.includes("@")) {
                   orderData.payer = {
                     email_address: userEmail,
                     name: {
@@ -823,7 +739,6 @@
             .then(() => {
               console.log("✅ PayPal button rendered successfully");
               paypalInitialized = true;
-              updateDebugInfo();
             })
             .catch((error) => {
               console.error("❌ PayPal button render error:", error);
@@ -901,9 +816,6 @@
       window.addEventListener("load", () => {
         initializeApp();
       });
-
-      // Auto-update debug info every 2 seconds
-      setInterval(updateDebugInfo, 2000);
     </script>
   </body>
 </html>
