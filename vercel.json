@@ -32,6 +32,14 @@
     {
       "source": "/en",
       "destination": "/index.html"
+    },
+    {
+      "source": "/receipts",
+      "destination": "/api/receipts"
+    },
+    {
+      "source": "/booth-status",
+      "destination": "/api/booth-status"
     }
   ],
   "redirects": [
