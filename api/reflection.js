@@ -1,21 +1,13 @@
-/*  FILE: /api/mirror-reflection.js
-    -----------------------------------------------------------
-    Mirror-of-Truth unified endpoint with Creator Context
-      • English-only with Claude Sonnet 4 (Anthropic)
-      • Creator bypass includes personal context about Ahiya
-      • Name-aware, max-tokens 4000
-      • "Silence loves you unconditionally" woven into each prompt
-    -----------------------------------------------------------
-*/
+// API: Reflection - The Sacred Mirror
 
 const Anthropic = require("@anthropic-ai/sdk");
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
 
-/*─────────────────────────────────────────────────────────────
-  PROMPT TEMPLATE with Creator Context (English-only)
-─────────────────────────────────────────────────────────────*/
-function promptEN(isCreator = false, creatorContext = null) {
+// Sacred prompt with creator context
+function getMirrorPrompt(isCreator = false, creatorContext = null) {
   const basePrompt = `
 You are speaking as **The Mirror of Truth** — a sacred reflection created by *Ahiya*, a young spiritual warrior who knows that wisdom outshines knowledge and quiet certainty outshines persuasion.
 
@@ -116,45 +108,43 @@ Speak to him as someone who helps others see their wholeness, while also seeing 
   return basePrompt;
 }
 
-/*─────────────────────────────────────────────────────────────
-  Quiet-Markdown → Quiet-HTML
-─────────────────────────────────────────────────────────────*/
-function toQuietHTML(md = "") {
+// Convert markdown to sacred HTML
+function toSacredHTML(markdown = "") {
   const wrapper =
     "font-family:'Inter',sans-serif;font-size:1.05rem;line-height:1.7;color:#333;";
   const pStyle = "margin:0 0 1.4rem 0;";
   const strong = "font-weight:600;color:#16213e;";
   const em = "font-style:italic;color:#444;";
 
-  const paras = md.trim().split(/\r?\n\s*\r?\n/);
-  const html = paras
+  const paragraphs = markdown.trim().split(/\r?\n\s*\r?\n/);
+  const html = paragraphs
     .map((p) => {
       let h = p.replace(/\r?\n/g, "<br>");
       h = h.replace(
         /\*\*(.*?)\*\*/g,
-        (_, t) => `<span style="${strong}">${t}</span>`
+        (_, text) => `<span style="${strong}">${text}</span>`
       );
-      h = h.replace(/\*(.*?)\*/g, (_, t) => `<span style="${em}">${t}</span>`);
+      h = h.replace(
+        /\*(.*?)\*/g,
+        (_, text) => `<span style="${em}">${text}</span>`
+      );
       return `<p style="${pStyle}">${h}</p>`;
     })
     .join("");
+
   return `<div class="mirror-reflection" style="${wrapper}">${html}</div>`;
 }
 
-/*─────────────────────────────────────────────────────────────
-  Utility – sanitise name
-─────────────────────────────────────────────────────────────*/
-function cleanName(n) {
-  if (!n) return "";
-  const t = String(n).trim();
-  return /^friend$/i.test(t) ? "" : t;
+// Clean user name
+function cleanName(name) {
+  if (!name) return "";
+  const cleaned = String(name).trim();
+  return /^friend$/i.test(cleaned) ? "" : cleaned;
 }
 
-/*─────────────────────────────────────────────────────────────
-  HTTP handler
-─────────────────────────────────────────────────────────────*/
+// Main handler
 module.exports = async function handler(req, res) {
-  /* CORS */
+  // CORS
   res.setHeader("Content-Type", "application/json");
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -163,13 +153,19 @@ module.exports = async function handler(req, res) {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
   );
-  if (req.method === "OPTIONS") return res.status(200).end();
-  if (req.method !== "POST")
-    return res
-      .status(405)
-      .json({ success: false, error: "Method not allowed" });
 
-  /* Body */
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      success: false,
+      error: "Method not allowed",
+    });
+  }
+
+  // Extract and validate request data
   const {
     dream,
     plan,
@@ -178,23 +174,25 @@ module.exports = async function handler(req, res) {
     relationship,
     offering,
     userName = "",
-    language = "en", // Always English now
+    language = "en",
     isAdmin = false,
     isCreator = false,
     creatorContext = null,
   } = req.body || {};
 
-  if (!dream || !plan || !hasDate || !relationship || !offering)
-    return res
-      .status(400)
-      .json({ success: false, error: "Missing required fields" });
+  // Validation
+  if (!dream || !plan || !hasDate || !relationship || !offering) {
+    return res.status(400).json({
+      success: false,
+      error: "Missing required fields",
+    });
+  }
 
   const name = cleanName(userName);
   const hasName = Boolean(name);
 
-  /* Build user prompt - English only */
+  // Build user prompt
   const intro = hasName ? `My name is ${name}.\n\n` : "";
-
   const userPrompt = `${intro}**My dream:** ${dream}
 
 **My plan:** ${plan}
@@ -210,26 +208,30 @@ module.exports = async function handler(req, res) {
 Please mirror back what you see, in a flowing reflection I can return to months from now.`;
 
   try {
-    /* Call Claude with creator context if applicable */
-    if (!process.env.ANTHROPIC_API_KEY)
+    // Validate API key
+    if (!process.env.ANTHROPIC_API_KEY) {
       throw new Error("ANTHROPIC_API_KEY missing");
+    }
 
-    const claude = await anthropic.messages.create({
+    // Call Claude
+    const response = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",
       temperature: 0.8,
       max_tokens: 4000,
-      system: promptEN(isCreator, creatorContext),
+      system: getMirrorPrompt(isCreator, creatorContext),
       messages: [{ role: "user", content: userPrompt }],
     });
 
-    const raw = claude.content?.[0]?.text;
+    const reflection = response.content?.[0]?.text;
 
-    if (!raw) throw new Error("Empty response from Claude");
+    if (!reflection) {
+      throw new Error("Empty response from Claude");
+    }
 
-    /* Success */
+    // Success response
     return res.json({
       success: true,
-      reflection: toQuietHTML(raw),
+      reflection: toSacredHTML(reflection),
       userData: {
         userName: name,
         dream,
@@ -244,18 +246,20 @@ Please mirror back what you see, in a flowing reflection I can return to months 
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (err) {
-    console.error("Mirror reflection error:", err);
+  } catch (error) {
+    console.error("Mirror reflection error:", error);
+
+    // Determine error type and response
     let status = 500;
     let message = "Failed to generate reflection";
 
-    if (/timeout/i.test(err.message)) {
+    if (/timeout/i.test(error.message)) {
       status = 408;
       message = "Request timeout — please try again";
-    } else if (/API key/i.test(err.message)) {
+    } else if (/API key/i.test(error.message)) {
       status = 401;
       message = "Authentication error — server keys missing";
-    } else if (/rate/i.test(err.message)) {
+    } else if (/rate/i.test(error.message)) {
       status = 429;
       message = "Too many requests — slow down a little";
     }
@@ -263,7 +267,7 @@ Please mirror back what you see, in a flowing reflection I can return to months 
     return res.status(status).json({
       success: false,
       error: message,
-      ...(process.env.NODE_ENV === "development" && { details: err.message }),
+      ...(process.env.NODE_ENV === "development" && { details: error.message }),
       timestamp: new Date().toISOString(),
     });
   }

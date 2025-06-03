@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sacred Admin | Mirror of Truth</title>
+    <link rel="stylesheet" href="../shared/foundation.css" />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+
+  <body>
+    <!-- Sacred Background -->
+    <div class="sacred-bg">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+
+    <!-- Connection Status -->
+    <div class="connection-status connected" id="connectionStatus">
+      🔗 Connected
+    </div>
+
+    <!-- Authentication Screen -->
+    <div class="auth-screen" id="authScreen">
+      <div class="auth-card">
+        <h1 class="auth-title">Sacred Admin</h1>
+        <p class="auth-subtitle">Enter the realm of consciousness</p>
+        <input
+          type="password"
+          id="authPassword"
+          class="auth-input"
+          placeholder="Sacred key..."
+          autocomplete="off"
+        />
+        <button class="auth-button" onclick="authenticate()">
+          Enter Sacred Space
+        </button>
+        <div class="auth-error" id="authError"></div>
+      </div>
+    </div>
+
+    <!-- Main Admin Interface -->
+    <div class="admin-interface" id="adminInterface">
+      <!-- Header -->
+      <div class="admin-header">
+        <h1 class="admin-title">Mirror of Truth</h1>
+        <p class="admin-subtitle">Receipt Management Portal</p>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="tab-navigation">
+        <button class="tab-btn active" onclick="switchTab('overview')">
+          📊 Overview
+        </button>
+        <button class="tab-btn" onclick="switchTab('receipts')">
+          🧾 Receipts
+        </button>
+      </div>
+
+      <!-- Overview Tab -->
+      <div class="tab-content active" id="overviewTab">
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number" id="statTotalRevenue">-</div>
+            <div class="stat-label">Total Revenue $</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="statTodayRevenue">-</div>
+            <div class="stat-label">Today Revenue $</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="statTotalReceipts">-</div>
+            <div class="stat-label">Total Receipts</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="statTodayReceipts">-</div>
+            <div class="stat-label">Today Receipts</div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="section-card">
+          <div class="section-header">
+            <h2 class="section-title">Recent Payments</h2>
+          </div>
+          <div id="recentActivity"></div>
+        </div>
+      </div>
+
+      <!-- Receipts Tab -->
+      <div class="tab-content" id="receiptsTab">
+        <div class="section-card">
+          <div class="section-header">
+            <h2 class="section-title">Receipt Management</h2>
+            <div class="badge cash" id="receiptsBadge">0 receipts</div>
+          </div>
+
+          <div class="controls-row">
+            <input
+              type="text"
+              class="search-input"
+              id="receiptSearch"
+              placeholder="Search by receipt #, name, or email..."
+            />
+            <select class="filter-select" id="receiptPaymentFilter">
+              <option value="all">All Payment Methods</option>
+              <option value="paypal">PayPal</option>
+              <option value="creator">Creator</option>
+            </select>
+            <input type="date" class="date-input" id="receiptStartDate" />
+            <input type="date" class="date-input" id="receiptEndDate" />
+            <button class="action-btn primary-btn" onclick="addReceipt()">
+              ➕ Create Receipt
+            </button>
+            <button class="action-btn secondary-btn" onclick="exportReceipts()">
+              📁 Export
+            </button>
+          </div>
+
+          <div id="receiptsList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div class="modal" id="receiptModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="receiptModalTitle">Create Receipt</h2>
+          <button class="close-btn" onclick="closeModal('receiptModal')">
+            &times;
+          </button>
+        </div>
+
+        <form id="receiptForm">
+          <div class="form-group">
+            <label class="form-label">Customer Name</label>
+            <input
+              type="text"
+              class="form-input"
+              id="receiptCustomerName"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Customer Email</label>
+            <input
+              type="email"
+              class="form-input"
+              id="receiptCustomerEmail"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Amount ($)</label>
+            <input
+              type="number"
+              class="form-input"
+              id="receiptAmount"
+              value="5"
+              min="0"
+              step="0.01"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Payment Method</label>
+            <select class="form-select" id="receiptPaymentMethod" required>
+              <option value="paypal">PayPal</option>
+              <option value="creator">Creator</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Language</label>
+            <select class="form-select" id="receiptLanguage" required>
+              <option value="en">English</option>
+              <option value="he">Hebrew</option>
+            </select>
+          </div>
+
+          <div class="item-actions">
+            <button
+              type="button"
+              class="action-btn"
+              onclick="closeModal('receiptModal')"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="action-btn primary-btn">
+              Create & Send Receipt
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script src="admin.js"></script>
+  </body>
+</html>
