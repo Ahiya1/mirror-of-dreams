@@ -218,7 +218,7 @@
         position: relative;
         z-index: 10;
         padding: 1.5rem;
-        max-width: 1200px;
+        max-width: 1400px;
         margin: 0 auto;
         opacity: 0;
         transition: opacity 0.8s ease;
@@ -255,7 +255,63 @@
         letter-spacing: 0.5px;
       }
 
-      /* Sacred Stats Grid */
+      /* Tab Navigation */
+      .tab-navigation {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .tab-btn {
+        padding: 1rem 2rem;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .tab-btn.active {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+        color: #fff;
+        box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+      }
+
+      .tab-btn:hover:not(.active) {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      /* Tab Content */
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+        animation: fadeIn 0.6s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Enhanced Stats Grid */
       .stats-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -315,8 +371,8 @@
         font-weight: 500;
       }
 
-      /* Registrations Section */
-      .registrations-section {
+      /* Section Cards */
+      .section-card {
         background: rgba(255, 255, 255, 0.04);
         backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -324,6 +380,7 @@
         padding: 2rem;
         position: relative;
         overflow: hidden;
+        margin-bottom: 2rem;
       }
 
       .section-header {
@@ -331,6 +388,8 @@
         align-items: center;
         justify-content: space-between;
         margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
       }
 
       .section-title {
@@ -339,84 +398,48 @@
         opacity: 0.95;
       }
 
-      .pending-badge {
-        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-        padding: 0.4rem 1rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-      }
-
-      /* Registration Cards */
-      .registration-card {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-        position: relative;
-        transition: all 0.3s ease;
-      }
-
-      .registration-card:hover {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.2);
-        transform: translateX(5px);
-      }
-
-      .registration-card.completed {
-        background: rgba(34, 197, 94, 0.06);
-        border-color: rgba(34, 197, 94, 0.2);
-      }
-
-      .registration-card.completed::after {
-        content: "✓";
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        color: #22c55e;
-        font-size: 1.2rem;
-        font-weight: bold;
-      }
-
-      .reg-header {
+      /* Search and Filter Controls */
+      .controls-row {
         display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 1rem;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
       }
 
-      .reg-info h3 {
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin-bottom: 0.3rem;
+      .search-input,
+      .filter-select,
+      .date-input {
+        padding: 0.8rem 1rem;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        color: #fff;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        min-width: 200px;
+      }
+
+      .search-input:focus,
+      .filter-select:focus,
+      .date-input:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .search-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .filter-select option {
+        background: #1a1a2e;
         color: #fff;
       }
 
-      .reg-info p {
-        font-size: 0.9rem;
-        opacity: 0.7;
-        word-break: break-all;
-      }
-
-      .reg-time {
-        font-size: 0.8rem;
-        opacity: 0.6;
-        text-align: right;
-        white-space: nowrap;
-      }
-
-      .reg-actions {
-        display: flex;
-        gap: 1rem;
-        margin-top: 1rem;
-      }
-
-      /* Sacred Action Buttons */
+      /* Action Buttons */
       .action-btn {
-        flex: 1;
-        padding: 1rem 1.5rem;
+        padding: 0.8rem 1.5rem;
         border: none;
         border-radius: 12px;
         font-size: 0.9rem;
@@ -427,69 +450,263 @@
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
-        min-height: 48px;
+        min-height: 44px;
         position: relative;
         overflow: hidden;
       }
 
-      .action-btn::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.1),
-          transparent
-        );
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-
-      .action-btn:hover::before {
-        opacity: 1;
-      }
-
-      .approve-btn {
+      .primary-btn {
         background: linear-gradient(135deg, #10b981, #059669);
         color: white;
         box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
       }
 
-      .approve-btn:hover {
+      .primary-btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
       }
 
-      .approve-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        transform: none;
+      .secondary-btn {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
       }
 
-      .remove-btn {
+      .secondary-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+      }
+
+      .danger-btn {
         background: linear-gradient(135deg, #ef4444, #dc2626);
         color: white;
-        flex: 0 0 48px;
         box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
       }
 
-      .remove-btn:hover {
+      .danger-btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
       }
 
-      /* Delete button for completed entries */
-      .delete-btn {
-        background: linear-gradient(135deg, #6b7280, #4b5563);
-        color: white;
-        flex: 0 0 48px;
-        box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3);
+      /* Receipt/Registration Cards */
+      .item-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        position: relative;
+        transition: all 0.3s ease;
       }
 
-      .delete-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(107, 114, 128, 0.4);
-        background: linear-gradient(135deg, #ef4444, #dc2626);
+      .item-card:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(5px);
+      }
+
+      .item-card.completed {
+        background: rgba(34, 197, 94, 0.06);
+        border-color: rgba(34, 197, 94, 0.2);
+      }
+
+      .item-card.completed::after {
+        content: "✓";
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        color: #22c55e;
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+
+      .item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .item-info h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+        color: #fff;
+      }
+
+      .item-info p {
+        font-size: 0.9rem;
+        opacity: 0.7;
+        word-break: break-all;
+        margin-bottom: 0.2rem;
+      }
+
+      .item-meta {
+        font-size: 0.8rem;
+        opacity: 0.6;
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      .item-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .item-actions .action-btn {
+        flex: 1;
+        min-width: 120px;
+      }
+
+      /* Modal */
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .modal.show {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .modal-content {
+        background: rgba(15, 15, 35, 0.95);
+        backdrop-filter: blur(30px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 24px;
+        padding: 2rem;
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+      }
+
+      .modal.show .modal-content {
+        transform: scale(1);
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .modal-title {
+        font-size: 1.5rem;
+        font-weight: 500;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1.5rem;
+        cursor: pointer;
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+      }
+
+      .close-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+
+      /* Form Elements */
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        opacity: 0.9;
+      }
+
+      .form-input,
+      .form-select,
+      .form-textarea {
+        width: 100%;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        color: #fff;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-input:focus,
+      .form-select:focus,
+      .form-textarea:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .form-textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .form-select option {
+        background: #1a1a2e;
+        color: #fff;
+      }
+
+      /* Badges */
+      .badge {
+        padding: 0.3rem 0.8rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .badge.pending {
+        background: rgba(245, 158, 11, 0.2);
+        border: 1px solid rgba(245, 158, 11, 0.4);
+        color: #fbbf24;
+      }
+
+      .badge.completed {
+        background: rgba(34, 197, 94, 0.2);
+        border: 1px solid rgba(34, 197, 94, 0.4);
+        color: #22c55e;
+      }
+
+      .badge.cash {
+        background: rgba(34, 197, 94, 0.2);
+        border: 1px solid rgba(34, 197, 94, 0.4);
+        color: #22c55e;
+      }
+
+      .badge.bit {
+        background: rgba(59, 130, 246, 0.2);
+        border: 1px solid rgba(59, 130, 246, 0.4);
+        color: #3b82f6;
       }
 
       /* Empty State */
@@ -515,7 +732,7 @@
         opacity: 0.7;
       }
 
-      /* Sacred Notifications */
+      /* Notifications */
       .notification {
         position: fixed;
         top: 2rem;
@@ -527,7 +744,7 @@
         border-radius: 16px;
         font-weight: 500;
         transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        z-index: 2000;
+        z-index: 3000;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         border: 1px solid rgba(255, 255, 255, 0.2);
         opacity: 0;
@@ -544,12 +761,29 @@
         background: rgba(239, 68, 68, 0.9);
       }
 
-      /* Ensure notification completely disappears */
-      .notification:not(.show) {
-        pointer-events: none;
-        opacity: 0 !important;
-        visibility: hidden !important;
-        transform: translateX(-50%) translateY(-120%) !important;
+      /* Connection status */
+      .connection-status {
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        z-index: 100;
+        transition: all 0.3s ease;
+      }
+
+      .connection-status.connected {
+        background: rgba(34, 197, 94, 0.2);
+        border: 1px solid rgba(34, 197, 94, 0.4);
+        color: #22c55e;
+      }
+
+      .connection-status.disconnected {
+        background: rgba(239, 68, 68, 0.2);
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        color: #ef4444;
       }
 
       /* Loading States */
@@ -578,31 +812,6 @@
         }
       }
 
-      /* Connection status indicator */
-      .connection-status {
-        position: fixed;
-        top: 1rem;
-        left: 1rem;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 500;
-        z-index: 100;
-        transition: all 0.3s ease;
-      }
-
-      .connection-status.connected {
-        background: rgba(34, 197, 94, 0.2);
-        border: 1px solid rgba(34, 197, 94, 0.4);
-        color: #22c55e;
-      }
-
-      .connection-status.disconnected {
-        background: rgba(239, 68, 68, 0.2);
-        border: 1px solid rgba(239, 68, 68, 0.4);
-        color: #ef4444;
-      }
-
       /* Responsive Design */
       @media (max-width: 768px) {
         .admin-interface {
@@ -622,22 +831,32 @@
           font-size: 2rem;
         }
 
-        .registrations-section {
+        .section-card {
           padding: 1.5rem;
         }
 
-        .registration-card {
+        .item-card {
           padding: 1.2rem;
         }
 
-        .reg-actions {
+        .item-actions {
           flex-direction: column;
           gap: 0.8rem;
         }
 
-        .remove-btn,
-        .delete-btn {
-          flex: 1;
+        .tab-navigation {
+          flex-direction: column;
+        }
+
+        .controls-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .search-input,
+        .filter-select,
+        .date-input {
+          min-width: auto;
         }
       }
 
@@ -646,12 +865,12 @@
           grid-template-columns: 1fr;
         }
 
-        .reg-header {
+        .item-header {
           flex-direction: column;
           gap: 0.5rem;
         }
 
-        .reg-time {
+        .item-meta {
           text-align: left;
         }
       }
@@ -699,35 +918,293 @@
         <p class="admin-subtitle">Sacred Admin Portal</p>
       </div>
 
-      <!-- Sacred Stats -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-number" id="statPending">-</div>
-          <div class="stat-label">Pending</div>
+      <!-- Tab Navigation -->
+      <div class="tab-navigation">
+        <button class="tab-btn active" onclick="switchTab('overview')">
+          📊 Overview
+        </button>
+        <button class="tab-btn" onclick="switchTab('registrations')">
+          👥 Registrations
+        </button>
+        <button class="tab-btn" onclick="switchTab('receipts')">
+          🧾 Receipts
+        </button>
+        <button class="tab-btn" onclick="switchTab('settings')">
+          ⚙️ Settings
+        </button>
+      </div>
+
+      <!-- Overview Tab -->
+      <div class="tab-content active" id="overviewTab">
+        <!-- Enhanced Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number" id="statPending">-</div>
+            <div class="stat-label">Pending</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="statToday">-</div>
+            <div class="stat-label">Today</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="statTotalRevenue">-</div>
+            <div class="stat-label">Total Revenue ₪</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="statTodayRevenue">-</div>
+            <div class="stat-label">Today Revenue ₪</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="statTotalReceipts">-</div>
+            <div class="stat-label">Total Receipts</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="statTotal">-</div>
+            <div class="stat-label">Total Sessions</div>
+          </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-number" id="statToday">-</div>
-          <div class="stat-label">Today</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="statRevenue">-</div>
-          <div class="stat-label">Revenue ₪</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="statTotal">-</div>
-          <div class="stat-label">Total</div>
+
+        <!-- Recent Activity -->
+        <div class="section-card">
+          <div class="section-header">
+            <h2 class="section-title">Recent Activity</h2>
+          </div>
+          <div id="recentActivity">
+            <!-- Recent items will be populated here -->
+          </div>
         </div>
       </div>
 
-      <!-- Registrations Section -->
-      <div class="registrations-section">
-        <div class="section-header">
-          <h2 class="section-title">Sacred Queue</h2>
-          <div class="pending-badge" id="pendingBadge">0 pending</div>
+      <!-- Registrations Tab -->
+      <div class="tab-content" id="registrationsTab">
+        <div class="section-card">
+          <div class="section-header">
+            <h2 class="section-title">Sacred Queue</h2>
+            <div class="badge pending" id="pendingBadge">0 pending</div>
+          </div>
+
+          <div class="controls-row">
+            <input
+              type="text"
+              class="search-input"
+              id="regSearch"
+              placeholder="Search registrations..."
+            />
+            <select class="filter-select" id="regFilter">
+              <option value="all">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+            </select>
+            <button class="action-btn primary-btn" onclick="addRegistration()">
+              ➕ Add Registration
+            </button>
+          </div>
+
+          <div id="registrationsList">
+            <!-- Registration cards will be populated here -->
+          </div>
         </div>
-        <div id="registrationsList">
-          <!-- Registration cards will be populated here -->
+      </div>
+
+      <!-- Receipts Tab -->
+      <div class="tab-content" id="receiptsTab">
+        <div class="section-card">
+          <div class="section-header">
+            <h2 class="section-title">Receipt Management</h2>
+            <div class="badge completed" id="receiptsBadge">0 receipts</div>
+          </div>
+
+          <div class="controls-row">
+            <input
+              type="text"
+              class="search-input"
+              id="receiptSearch"
+              placeholder="Search by receipt #, name, or email..."
+            />
+            <select class="filter-select" id="receiptPaymentFilter">
+              <option value="all">All Payment Methods</option>
+              <option value="cash">Cash</option>
+              <option value="bit">Bit</option>
+              <option value="creator">Creator</option>
+            </select>
+            <input type="date" class="date-input" id="receiptStartDate" />
+            <input type="date" class="date-input" id="receiptEndDate" />
+            <button class="action-btn primary-btn" onclick="addReceipt()">
+              ➕ Create Receipt
+            </button>
+            <button class="action-btn secondary-btn" onclick="exportReceipts()">
+              📁 Export
+            </button>
+          </div>
+
+          <div id="receiptsList">
+            <!-- Receipt cards will be populated here -->
+          </div>
         </div>
+      </div>
+
+      <!-- Settings Tab -->
+      <div class="tab-content" id="settingsTab">
+        <div class="section-card">
+          <div class="section-header">
+            <h2 class="section-title">Booth Settings</h2>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Booth Location</label>
+            <input
+              type="text"
+              class="form-input"
+              id="boothLocation"
+              placeholder="Rothschild Boulevard"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select class="form-select" id="boothStatus">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+              <option value="maintenance">Maintenance</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Daily Goal</label>
+            <input
+              type="number"
+              class="form-input"
+              id="dailyGoal"
+              placeholder="100"
+            />
+          </div>
+
+          <button class="action-btn primary-btn" onclick="saveBoothSettings()">
+            💾 Save Settings
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div class="modal" id="receiptModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="receiptModalTitle">Create Receipt</h2>
+          <button class="close-btn" onclick="closeModal('receiptModal')">
+            &times;
+          </button>
+        </div>
+
+        <form id="receiptForm">
+          <div class="form-group">
+            <label class="form-label">Customer Name</label>
+            <input
+              type="text"
+              class="form-input"
+              id="receiptCustomerName"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Customer Email</label>
+            <input
+              type="email"
+              class="form-input"
+              id="receiptCustomerEmail"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Amount (₪)</label>
+            <input
+              type="number"
+              class="form-input"
+              id="receiptAmount"
+              value="20"
+              min="0"
+              step="0.01"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Payment Method</label>
+            <select class="form-select" id="receiptPaymentMethod" required>
+              <option value="cash">Cash</option>
+              <option value="bit">Bit</option>
+              <option value="creator">Creator</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Language</label>
+            <select class="form-select" id="receiptLanguage" required>
+              <option value="en">English</option>
+              <option value="he">Hebrew</option>
+            </select>
+          </div>
+
+          <div class="item-actions">
+            <button
+              type="button"
+              class="action-btn"
+              onclick="closeModal('receiptModal')"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="action-btn primary-btn">
+              Create & Send Receipt
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div class="modal" id="registrationModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Add Registration</h2>
+          <button class="close-btn" onclick="closeModal('registrationModal')">
+            &times;
+          </button>
+        </div>
+
+        <form id="registrationForm">
+          <div class="form-group">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-input" id="regName" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="regEmail" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Language</label>
+            <select class="form-select" id="regLanguage" required>
+              <option value="en">English</option>
+              <option value="he">Hebrew</option>
+            </select>
+          </div>
+
+          <div class="item-actions">
+            <button
+              type="button"
+              class="action-btn"
+              onclick="closeModal('registrationModal')"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="action-btn primary-btn">
+              Add Registration
+            </button>
+          </div>
+        </form>
       </div>
     </div>
 
@@ -737,6 +1214,9 @@
     <script>
       let adminData = null;
       let authKey = null;
+      let currentTab = "overview";
+      let filteredRegistrations = [];
+      let filteredReceipts = [];
 
       // Authentication with backend
       async function authenticate() {
@@ -770,7 +1250,7 @@
             await loadAdminData();
 
             // Start auto-refresh
-            setInterval(loadAdminData, 5000); // Refresh every 5 seconds
+            setInterval(loadAdminData, 10000); // Refresh every 10 seconds
           } else {
             showAuthError("Invalid sacred key");
           }
@@ -817,7 +1297,7 @@
                 .classList.add("visible");
               updateConnectionStatus(true);
               loadAdminData();
-              setInterval(loadAdminData, 5000);
+              setInterval(loadAdminData, 10000);
             } else {
               sessionStorage.removeItem("mirrorAuthKey");
             }
@@ -829,7 +1309,7 @@
         }
       });
 
-      // FIXED: Load admin data from backend API
+      // Load admin data from backend API
       async function loadAdminData() {
         if (!authKey) return;
 
@@ -854,6 +1334,9 @@
             adminData = result.data;
             updateStats();
             renderRegistrations();
+            renderReceipts();
+            renderRecentActivity();
+            updateBoothSettingsForm();
             updateConnectionStatus(true);
           } else {
             throw new Error(result.error || "Failed to load admin data");
@@ -872,80 +1355,284 @@
         const stats = adminData.stats;
         document.getElementById("statPending").textContent = stats.pending;
         document.getElementById("statToday").textContent = stats.today;
-        document.getElementById("statRevenue").textContent = stats.revenue;
+        document.getElementById("statTotalRevenue").textContent =
+          stats.totalRevenue || stats.revenue;
+        document.getElementById("statTodayRevenue").textContent =
+          stats.todayRevenue || 0;
+        document.getElementById("statTotalReceipts").textContent =
+          stats.totalReceipts || 0;
         document.getElementById("statTotal").textContent = stats.total;
         document.getElementById(
           "pendingBadge"
         ).textContent = `${stats.pending} pending`;
+        document.getElementById("receiptsBadge").textContent = `${
+          stats.totalReceipts || 0
+        } receipts`;
       }
 
-      // FIXED: Render registrations with delete buttons for all entries
+      // Tab switching
+      function switchTab(tabName) {
+        currentTab = tabName;
+
+        // Update tab buttons
+        document.querySelectorAll(".tab-btn").forEach((btn) => {
+          btn.classList.remove("active");
+        });
+        event.target.classList.add("active");
+
+        // Update tab content
+        document.querySelectorAll(".tab-content").forEach((content) => {
+          content.classList.remove("active");
+        });
+        document.getElementById(tabName + "Tab").classList.add("active");
+      }
+
+      // Render registrations
       function renderRegistrations() {
         if (!adminData || !adminData.registrations) return;
 
         const container = document.getElementById("registrationsList");
-        const registrations = adminData.registrations;
+        let registrations = adminData.registrations;
+
+        // Apply search filter
+        const searchTerm =
+          document.getElementById("regSearch")?.value.toLowerCase() || "";
+        const statusFilter =
+          document.getElementById("regFilter")?.value || "all";
+
+        if (searchTerm) {
+          registrations = registrations.filter(
+            (reg) =>
+              reg.name.toLowerCase().includes(searchTerm) ||
+              reg.email.toLowerCase().includes(searchTerm)
+          );
+        }
+
+        if (statusFilter !== "all") {
+          registrations = registrations.filter(
+            (reg) => reg.status === statusFilter
+          );
+        }
+
+        filteredRegistrations = registrations;
 
         if (registrations.length === 0) {
           container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">🪞</div>
-                        <div class="empty-title">No souls in queue</div>
-                        <div class="empty-subtitle">Sacred reflections will appear when souls are ready</div>
-                    </div>
-                `;
+            <div class="empty-state">
+              <div class="empty-icon">🪞</div>
+              <div class="empty-title">No registrations found</div>
+              <div class="empty-subtitle">Sacred reflections will appear when souls are ready</div>
+            </div>
+          `;
           return;
         }
 
         container.innerHTML = registrations
           .map((reg) => {
-            // FIXED: Show different actions based on status
             let actionsHtml = "";
             if (reg.status === "pending") {
               actionsHtml = `
-                <div class="reg-actions">
-                    <button class="action-btn approve-btn" onclick="approveRegistration('${reg.id}')">
-                        💰 Approve & Send
-                    </button>
-                    <button class="action-btn remove-btn" onclick="removeRegistration('${reg.id}')">
-                        ✕
-                    </button>
+                <div class="item-actions">
+                  <button class="action-btn primary-btn" onclick="approveRegistration('${reg.id}')">
+                    💰 Approve & Send
+                  </button>
+                  <button class="action-btn danger-btn" onclick="removeRegistration('${reg.id}')">
+                    🗑️ Remove
+                  </button>
                 </div>
               `;
             } else if (reg.status === "completed") {
               actionsHtml = `
-                <div class="reg-actions">
-                    <button class="action-btn delete-btn" onclick="removeRegistration('${reg.id}')" title="Delete completed entry">
-                        🗑️
-                    </button>
+                <div class="item-actions">
+                  <button class="action-btn danger-btn" onclick="removeRegistration('${reg.id}')" title="Delete completed entry">
+                    🗑️ Delete
+                  </button>
                 </div>
               `;
             }
 
             return `
-                <div class="registration-card ${reg.status}" data-id="${
-              reg.id
-            }">
-                    <div class="reg-header">
-                        <div class="reg-info">
-                            <h3>${reg.name}</h3>
-                            <p>${reg.email}</p>
-                        </div>
-                        <div class="reg-time">${reg.timeAgo || "Now"}</div>
-                    </div>
-                    ${actionsHtml}
+              <div class="item-card ${reg.status}" data-id="${reg.id}">
+                <div class="item-header">
+                  <div class="item-info">
+                    <h3>${reg.name}</h3>
+                    <p>${reg.email}</p>
+                    <p><span class="badge ${reg.status}">${
+              reg.status
+            }</span> • ${reg.language === "he" ? "עברית" : "English"}</p>
+                  </div>
+                  <div class="item-meta">
+                    <div>${reg.timeAgo || "Now"}</div>
+                  </div>
                 </div>
+                ${actionsHtml}
+              </div>
             `;
           })
           .join("");
       }
 
-      // FIXED: Approve registration with backend sync
+      // Render receipts
+      function renderReceipts() {
+        if (!adminData || !adminData.receipts) return;
+
+        const container = document.getElementById("receiptsList");
+        let receipts = adminData.receipts;
+
+        // Apply filters
+        const searchTerm =
+          document.getElementById("receiptSearch")?.value.toLowerCase() || "";
+        const paymentFilter =
+          document.getElementById("receiptPaymentFilter")?.value || "all";
+        const startDate = document.getElementById("receiptStartDate")?.value;
+        const endDate = document.getElementById("receiptEndDate")?.value;
+
+        if (searchTerm) {
+          receipts = receipts.filter(
+            (receipt) =>
+              receipt.receiptNumber.toLowerCase().includes(searchTerm) ||
+              receipt.customerName.toLowerCase().includes(searchTerm) ||
+              receipt.customerEmail.toLowerCase().includes(searchTerm)
+          );
+        }
+
+        if (paymentFilter !== "all") {
+          receipts = receipts.filter(
+            (receipt) => receipt.paymentMethod === paymentFilter
+          );
+        }
+
+        if (startDate) {
+          receipts = receipts.filter(
+            (receipt) => new Date(receipt.timestamp) >= new Date(startDate)
+          );
+        }
+
+        if (endDate) {
+          receipts = receipts.filter(
+            (receipt) =>
+              new Date(receipt.timestamp) <= new Date(endDate + "T23:59:59")
+          );
+        }
+
+        filteredReceipts = receipts;
+
+        if (receipts.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">🧾</div>
+              <div class="empty-title">No receipts found</div>
+              <div class="empty-subtitle">Receipts will appear as payments are processed</div>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = receipts
+          .map(
+            (receipt) => `
+            <div class="item-card" data-id="${receipt.id}">
+              <div class="item-header">
+                <div class="item-info">
+                  <h3>Receipt #${receipt.receiptNumber}</h3>
+                  <p>${receipt.customerName} • ${receipt.customerEmail}</p>
+                  <p>
+                    <span class="badge ${receipt.paymentMethod}">₪${
+              receipt.amount
+            } • ${receipt.paymentMethod}</span> • 
+                    ${receipt.language === "he" ? "עברית" : "English"}
+                  </p>
+                </div>
+                <div class="item-meta">
+                  <div>${receipt.timeAgo || "Now"}</div>
+                </div>
+              </div>
+              <div class="item-actions">
+                <button class="action-btn secondary-btn" onclick="resendReceipt('${
+                  receipt.id
+                }')">
+                  📧 Resend
+                </button>
+                <button class="action-btn danger-btn" onclick="removeReceipt('${
+                  receipt.id
+                }')">
+                  🗑️ Delete
+                </button>
+              </div>
+            </div>
+          `
+          )
+          .join("");
+      }
+
+      // Render recent activity
+      function renderRecentActivity() {
+        if (!adminData) return;
+
+        const container = document.getElementById("recentActivity");
+        const allItems = [];
+
+        // Combine recent registrations and receipts
+        if (adminData.registrations) {
+          adminData.registrations.slice(0, 5).forEach((reg) => {
+            allItems.push({
+              type: "registration",
+              timestamp: reg.timestamp,
+              text: `New registration: ${reg.name}`,
+              status: reg.status,
+            });
+          });
+        }
+
+        if (adminData.receipts) {
+          adminData.receipts.slice(0, 5).forEach((receipt) => {
+            allItems.push({
+              type: "receipt",
+              timestamp: receipt.timestamp,
+              text: `Receipt #${receipt.receiptNumber} - ₪${receipt.amount}`,
+              status: "completed",
+            });
+          });
+        }
+
+        // Sort by timestamp
+        allItems.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        if (allItems.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">📊</div>
+              <div class="empty-title">No recent activity</div>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = allItems
+          .slice(0, 10)
+          .map(
+            (item) => `
+          <div class="item-card">
+            <div class="item-header">
+              <div class="item-info">
+                <p>${item.text}</p>
+              </div>
+              <div class="item-meta">
+                <span class="badge ${item.status}">${item.type}</span>
+              </div>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+      }
+
+      // Approve registration
       async function approveRegistration(id) {
         const registration = adminData.registrations.find((r) => r.id === id);
         if (!registration) return;
 
-        const button = document.querySelector(`[data-id="${id}"] .approve-btn`);
+        const button = document.querySelector(`[data-id="${id}"] .primary-btn`);
         if (button.disabled) return;
 
         button.disabled = true;
@@ -995,7 +1682,7 @@
         }
       }
 
-      // FIXED: Remove registration with proper auth and error handling
+      // Remove registration
       async function removeRegistration(id) {
         if (!confirm("Are you sure you want to remove this registration?"))
           return;
@@ -1007,11 +1694,10 @@
         }
 
         try {
-          // FIXED: Use proper auth header format
           const response = await fetch(`/api/admin-data?id=${id}`, {
             method: "DELETE",
             headers: {
-              Authorization: authKey, // This matches what the backend expects
+              Authorization: authKey,
               "Content-Type": "application/json",
             },
           });
@@ -1036,6 +1722,270 @@
           notify("Sacred process interrupted - try again", true);
         }
       }
+
+      // Receipt management functions
+      async function addReceipt() {
+        document.getElementById("receiptModalTitle").textContent =
+          "Create Receipt";
+        document.getElementById("receiptForm").reset();
+        document.getElementById("receiptAmount").value = "20";
+        showModal("receiptModal");
+      }
+
+      async function removeReceipt(id) {
+        if (!confirm("Are you sure you want to delete this receipt?")) return;
+
+        try {
+          const response = await fetch(
+            `/api/admin-data?id=${id}&type=receipt`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: authKey,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          const result = await response.json();
+
+          if (!result.success) {
+            throw new Error(result.error || "Failed to remove receipt");
+          }
+
+          notify("Receipt deleted");
+          await loadAdminData();
+        } catch (error) {
+          console.error("Error removing receipt:", error);
+          notify("Failed to delete receipt", true);
+        }
+      }
+
+      async function resendReceipt(id) {
+        const receipt = adminData.receipts.find((r) => r.id === id);
+        if (!receipt) return;
+
+        try {
+          const response = await fetch("/api/generate-receipt", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: receipt.customerEmail,
+              name: receipt.customerName,
+              amount: receipt.amount,
+              paymentMethod: receipt.paymentMethod,
+              language: receipt.language,
+            }),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            notify("Receipt resent successfully");
+          } else {
+            throw new Error("Failed to resend receipt");
+          }
+        } catch (error) {
+          console.error("Error resending receipt:", error);
+          notify("Failed to resend receipt", true);
+        }
+      }
+
+      function exportReceipts() {
+        if (!filteredReceipts.length) {
+          notify("No receipts to export", true);
+          return;
+        }
+
+        const csvContent =
+          "data:text/csv;charset=utf-8," +
+          "Receipt Number,Customer Name,Customer Email,Amount,Payment Method,Language,Date,Timestamp\n" +
+          filteredReceipts
+            .map(
+              (receipt) =>
+                `${receipt.receiptNumber},"${receipt.customerName}","${receipt.customerEmail}",${receipt.amount},${receipt.paymentMethod},${receipt.language},"${receipt.date}","${receipt.timestamp}"`
+            )
+            .join("\n");
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute(
+          "download",
+          `receipts_${new Date().toISOString().split("T")[0]}.csv`
+        );
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        notify("Receipts exported successfully");
+      }
+
+      // Modal functions
+      function showModal(modalId) {
+        document.getElementById(modalId).classList.add("show");
+      }
+
+      function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove("show");
+      }
+
+      // Form submissions
+      document
+        .getElementById("receiptForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const formData = {
+            customerName: document.getElementById("receiptCustomerName").value,
+            customerEmail: document.getElementById("receiptCustomerEmail")
+              .value,
+            amount: parseFloat(document.getElementById("receiptAmount").value),
+            paymentMethod: document.getElementById("receiptPaymentMethod")
+              .value,
+            language: document.getElementById("receiptLanguage").value,
+          };
+
+          try {
+            // Generate and send receipt
+            const response = await fetch("/api/generate-receipt", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              notify("Receipt created and sent successfully");
+              closeModal("receiptModal");
+              await loadAdminData();
+            } else {
+              throw new Error(result.error || "Failed to create receipt");
+            }
+          } catch (error) {
+            console.error("Error creating receipt:", error);
+            notify("Failed to create receipt", true);
+          }
+        });
+
+      document
+        .getElementById("registrationForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const formData = {
+            name: document.getElementById("regName").value,
+            email: document.getElementById("regEmail").value,
+            language: document.getElementById("regLanguage").value,
+          };
+
+          try {
+            const response = await fetch("/api/admin-data", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: authKey,
+              },
+              body: JSON.stringify({
+                action: "addRegistration",
+                ...formData,
+              }),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              notify("Registration added successfully");
+              closeModal("registrationModal");
+              await loadAdminData();
+            } else {
+              throw new Error(result.error || "Failed to add registration");
+            }
+          } catch (error) {
+            console.error("Error adding registration:", error);
+            notify("Failed to add registration", true);
+          }
+        });
+
+      function addRegistration() {
+        document.getElementById("registrationForm").reset();
+        showModal("registrationModal");
+      }
+
+      // Update booth settings form
+      function updateBoothSettingsForm() {
+        if (!adminData || !adminData.boothSettings) return;
+
+        const settings = adminData.boothSettings;
+        document.getElementById("boothLocation").value =
+          settings.location || "";
+        document.getElementById("boothStatus").value =
+          settings.status || "active";
+        document.getElementById("dailyGoal").value = settings.dailyGoal || 100;
+      }
+
+      async function saveBoothSettings() {
+        const settings = {
+          location: document.getElementById("boothLocation").value,
+          status: document.getElementById("boothStatus").value,
+          dailyGoal:
+            parseInt(document.getElementById("dailyGoal").value) || 100,
+        };
+
+        try {
+          const response = await fetch("/api/admin-data", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: authKey,
+            },
+            body: JSON.stringify({
+              action: "updateBoothSettings",
+              settings: settings,
+            }),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            notify("Booth settings saved successfully");
+            await loadAdminData();
+          } else {
+            throw new Error(result.error || "Failed to save settings");
+          }
+        } catch (error) {
+          console.error("Error saving booth settings:", error);
+          notify("Failed to save settings", true);
+        }
+      }
+
+      // Search and filter event listeners
+      document.addEventListener("DOMContentLoaded", () => {
+        // Registration filters
+        const regSearch = document.getElementById("regSearch");
+        const regFilter = document.getElementById("regFilter");
+        if (regSearch) regSearch.addEventListener("input", renderRegistrations);
+        if (regFilter)
+          regFilter.addEventListener("change", renderRegistrations);
+
+        // Receipt filters
+        const receiptSearch = document.getElementById("receiptSearch");
+        const receiptPaymentFilter = document.getElementById(
+          "receiptPaymentFilter"
+        );
+        const receiptStartDate = document.getElementById("receiptStartDate");
+        const receiptEndDate = document.getElementById("receiptEndDate");
+
+        if (receiptSearch)
+          receiptSearch.addEventListener("input", renderReceipts);
+        if (receiptPaymentFilter)
+          receiptPaymentFilter.addEventListener("change", renderReceipts);
+        if (receiptStartDate)
+          receiptStartDate.addEventListener("change", renderReceipts);
+        if (receiptEndDate)
+          receiptEndDate.addEventListener("change", renderReceipts);
+      });
 
       // Show notification
       function notify(message, isError = false) {
@@ -1084,6 +2034,24 @@
       setTimeout(() => {
         document.getElementById("authPassword").focus();
       }, 500);
+
+      // Close modals on escape key
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          document.querySelectorAll(".modal.show").forEach((modal) => {
+            modal.classList.remove("show");
+          });
+        }
+      });
+
+      // Close modals on backdrop click
+      document.querySelectorAll(".modal").forEach((modal) => {
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) {
+            modal.classList.remove("show");
+          }
+        });
+      });
     </script>
   </body>
 </html>

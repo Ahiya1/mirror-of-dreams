@@ -4,6 +4,13 @@ const {
   updateRegistration,
   removeRegistration,
   updateBoothSettings,
+  // NEW: Receipt functions
+  addReceipt,
+  updateReceipt,
+  removeReceipt,
+  getReceiptByNumber,
+  getReceiptsByEmail,
+  getReceiptsByDateRange,
 } = require("../lib/redis-storage.js");
 
 module.exports = async function handler(req, res) {
@@ -42,11 +49,26 @@ module.exports = async function handler(req, res) {
   try {
     console.log(`📡 Admin request: ${req.method} to /api/admin-data`);
 
-    // GET - Fetch all admin data (FIXED: properly await)
+    // GET - Fetch all admin data (includes receipts now)
     if (req.method === "GET") {
-      const data = await getAllData(); // Added await!
+      const { filter } = req.query;
+
+      if (filter === "receipts") {
+        // Filter to return only receipt data
+        const data = await getAllData();
+        return res.json({
+          success: true,
+          data: {
+            receipts: data.receipts,
+            stats: data.stats,
+            lastUpdated: data.lastUpdated,
+          },
+        });
+      }
+
+      const data = await getAllData();
       console.log(
-        `📊 Returning ${data.registrations.length} registrations to admin`
+        `📊 Returning ${data.registrations.length} registrations and ${data.receipts.length} receipts to admin`
       );
       return res.json({
         success: true,
@@ -54,23 +76,55 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // POST - Add new registration or update settings (FIXED: properly await)
+    // POST - Add new registration, receipt, or update settings
     if (req.method === "POST") {
       const { action, ...data } = req.body;
 
       switch (action) {
         case "addRegistration":
-          const newRegistration = await addRegistration(data); // Added await!
-          const allData = await getAllData(); // Added await!
+          const newRegistration = await addRegistration(data);
+          const allData = await getAllData();
           return res.json({
             success: true,
             data: allData,
             message: "Registration added successfully",
           });
 
+        // NEW: Add receipt
+        case "addReceipt":
+          const newReceipt = await addReceipt(data);
+          const receiptData = await getAllData();
+          return res.json({
+            success: true,
+            data: receiptData,
+            message: "Receipt added successfully",
+            receipt: newReceipt,
+          });
+
+        // NEW: Search receipts
+        case "searchReceipts":
+          let searchResults = [];
+          if (data.receiptNumber) {
+            const receipt = await getReceiptByNumber(data.receiptNumber);
+            searchResults = receipt ? [receipt] : [];
+          } else if (data.email) {
+            searchResults = await getReceiptsByEmail(data.email);
+          } else if (data.startDate && data.endDate) {
+            searchResults = await getReceiptsByDateRange(
+              data.startDate,
+              data.endDate
+            );
+          }
+
+          return res.json({
+            success: true,
+            receipts: searchResults,
+            message: `Found ${searchResults.length} receipts`,
+          });
+
         case "updateBoothSettings":
-          await updateBoothSettings(data.settings); // Added await!
-          const updatedData = await getAllData(); // Added await!
+          await updateBoothSettings(data.settings);
+          const updatedData = await getAllData();
           return res.json({
             success: true,
             data: updatedData,
@@ -85,17 +139,24 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    // PUT - Update existing registration (FIXED: properly await)
+    // PUT - Update existing registration or receipt
     if (req.method === "PUT") {
-      const { id, updates } = req.body;
+      const { type, id, updates } = req.body;
 
       try {
-        await updateRegistration(id, updates); // Added await!
-        const data = await getAllData(); // Added await!
+        if (type === "receipt") {
+          // NEW: Update receipt
+          await updateReceipt(id, updates);
+        } else {
+          // Default to registration
+          await updateRegistration(id, updates);
+        }
+
+        const data = await getAllData();
         return res.json({
           success: true,
-          data: { registrations: data.registrations, stats: data.stats },
-          message: "Registration updated successfully",
+          data: data,
+          message: `${type || "Registration"} updated successfully`,
         });
       } catch (error) {
         return res.status(404).json({
@@ -105,17 +166,24 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    // DELETE - Remove registration (FIXED: properly await)
+    // DELETE - Remove registration or receipt
     if (req.method === "DELETE") {
-      const { id } = req.query;
+      const { id, type } = req.query;
 
       try {
-        await removeRegistration(id); // Added await!
-        const data = await getAllData(); // Added await!
+        if (type === "receipt") {
+          // NEW: Remove receipt
+          await removeReceipt(id);
+        } else {
+          // Default to registration
+          await removeRegistration(id);
+        }
+
+        const data = await getAllData();
         return res.json({
           success: true,
-          data: { registrations: data.registrations, stats: data.stats },
-          message: "Registration removed successfully",
+          data: data,
+          message: `${type || "Registration"} removed successfully`,
         });
       } catch (error) {
         return res.status(404).json({

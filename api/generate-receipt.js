@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
+const { addReceipt } = require("../lib/redis-storage.js"); // NEW: Import receipt storage
 
-const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransporter({
   service: "gmail",
   auth: {
     user: process.env.GMAIL_USER,
@@ -366,6 +367,7 @@ module.exports = async function handler(req, res) {
       amount = 20,
       paymentMethod = "cash",
       language = "en",
+      registrationId = null, // NEW: Optional link to registration
     } = req.body;
 
     if (!email || !name) {
@@ -402,6 +404,7 @@ module.exports = async function handler(req, res) {
 
     const htmlContent = getReceiptContent(language, receiptData);
 
+    // Send email
     await transporter.sendMail({
       from: `"${
         isHebrew ? "אחיה - מראת האמת" : "Ahiya - The Mirror of Truth"
@@ -410,6 +413,25 @@ module.exports = async function handler(req, res) {
       subject: subject,
       html: htmlContent,
     });
+
+    // NEW: Store receipt in Redis
+    try {
+      const storedReceipt = await addReceipt({
+        receiptNumber: receiptData.receiptNumber,
+        customerName: name,
+        customerEmail: email,
+        amount: amount,
+        paymentMethod: paymentMethod,
+        language: language,
+        registrationId: registrationId,
+        date: receiptData.date,
+      });
+
+      console.log(`✅ Receipt stored in Redis: ${storedReceipt.receiptNumber}`);
+    } catch (storageError) {
+      console.error("Error storing receipt in Redis:", storageError);
+      // Don't fail the request if storage fails, just log it
+    }
 
     res.json({
       success: true,
