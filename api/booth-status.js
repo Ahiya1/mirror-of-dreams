@@ -61,9 +61,25 @@ module.exports = async function handler(req, res) {
       statusMessage = "Currently inactive";
     }
 
+    // Handle bilingual location
+    let location;
+    if (typeof boothSettings.location === "object") {
+      // New bilingual format
+      location = {
+        en: boothSettings.location.en || "Location TBA",
+        he: boothSettings.location.he || "מיקום יעודכן",
+      };
+    } else {
+      // Legacy single-language format - convert to bilingual
+      location = {
+        en: boothSettings.location || "Location TBA",
+        he: boothSettings.location || "מיקום יעודכן",
+      };
+    }
+
     // Public booth information (safe to expose)
     const publicBoothInfo = {
-      location: boothSettings.location || "Location TBA",
+      location: location,
       status: operationalStatus,
       statusMessage: statusMessage,
       isOpen: operationalStatus === "open",
@@ -92,7 +108,10 @@ module.exports = async function handler(req, res) {
     return res.json({
       success: true,
       booth: {
-        location: "Rothschild Boulevard, Tel Aviv",
+        location: {
+          en: "Rothschild Boulevard, Tel Aviv",
+          he: "שדרות רוטשילד, תל אביב",
+        },
         status: "unknown",
         statusMessage: "Status currently unavailable",
         isOpen: false,

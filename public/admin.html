@@ -675,6 +675,25 @@
         color: #fff;
       }
 
+      /* FIXED: Bilingual location inputs */
+      .location-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .location-input-wrapper {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .location-label {
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
       /* Badges */
       .badge {
         padding: 0.3rem 0.8rem;
@@ -857,6 +876,10 @@
         .filter-select,
         .date-input {
           min-width: auto;
+        }
+
+        .location-group {
+          grid-template-columns: 1fr;
         }
       }
 
@@ -1050,14 +1073,26 @@
             <h2 class="section-title">Booth Settings</h2>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Booth Location</label>
-            <input
-              type="text"
-              class="form-input"
-              id="boothLocation"
-              placeholder="Rothschild Boulevard"
-            />
+          <!-- FIXED: Bilingual location inputs -->
+          <div class="location-group">
+            <div class="location-input-wrapper">
+              <label class="location-label">Booth Location (English)</label>
+              <input
+                type="text"
+                class="form-input"
+                id="boothLocationEn"
+                placeholder="Rothschild Boulevard, Tel Aviv"
+              />
+            </div>
+            <div class="location-input-wrapper">
+              <label class="location-label">מיקום דוכן (עברית)</label>
+              <input
+                type="text"
+                class="form-input"
+                id="boothLocationHe"
+                placeholder="שדרות רוטשילד, תל אביב"
+              />
+            </div>
           </div>
 
           <div class="form-group">
@@ -1130,11 +1165,12 @@
             />
           </div>
 
+          <!-- FIXED: Payment method without phone number for cash -->
           <div class="form-group">
             <label class="form-label">Payment Method</label>
             <select class="form-select" id="receiptPaymentMethod" required>
               <option value="cash">Cash</option>
-              <option value="bit">Bit</option>
+              <option value="bit">Bit (+972 58-778-9019)</option>
               <option value="creator">Creator</option>
             </select>
           </div>
@@ -1913,21 +1949,39 @@
         showModal("registrationModal");
       }
 
-      // Update booth settings form
+      // FIXED: Update booth settings form to handle bilingual location
       function updateBoothSettingsForm() {
         if (!adminData || !adminData.boothSettings) return;
 
         const settings = adminData.boothSettings;
-        document.getElementById("boothLocation").value =
-          settings.location || "";
+
+        // Handle both old and new location formats
+        if (typeof settings.location === "object") {
+          // New bilingual format
+          document.getElementById("boothLocationEn").value =
+            settings.location.en || "";
+          document.getElementById("boothLocationHe").value =
+            settings.location.he || "";
+        } else {
+          // Legacy single-language format
+          document.getElementById("boothLocationEn").value =
+            settings.location || "";
+          document.getElementById("boothLocationHe").value =
+            settings.location || "";
+        }
+
         document.getElementById("boothStatus").value =
           settings.status || "active";
         document.getElementById("dailyGoal").value = settings.dailyGoal || 100;
       }
 
+      // FIXED: Save booth settings with bilingual location
       async function saveBoothSettings() {
         const settings = {
-          location: document.getElementById("boothLocation").value,
+          location: {
+            en: document.getElementById("boothLocationEn").value,
+            he: document.getElementById("boothLocationHe").value,
+          },
           status: document.getElementById("boothStatus").value,
           dailyGoal:
             parseInt(document.getElementById("dailyGoal").value) || 100,
