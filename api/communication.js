@@ -4,7 +4,7 @@ const nodemailer = require("nodemailer");
 const { addReceipt } = require("../lib/storage.js");
 
 // Email transporter
-const transporter = nodemailer.createTransporter({
+const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: process.env.GMAIL_USER,

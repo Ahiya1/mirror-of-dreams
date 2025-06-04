@@ -29,40 +29,40 @@ function createToneElements(tone) {
   backgroundElements = [];
 
   if (tone === "fusion") {
-    // Create golden breathing circles
-    for (let i = 0; i < 3; i++) {
+    // Create golden breathing circles - more visible
+    for (let i = 0; i < 5; i++) {
       const breath = document.createElement("div");
       breath.className = "fusion-breath";
-      breath.style.width = `${150 + Math.random() * 100}px`;
+      breath.style.width = `${180 + Math.random() * 120}px`;
       breath.style.height = breath.style.width;
       breath.style.left = `${Math.random() * 100}%`;
       breath.style.top = `${Math.random() * 100}%`;
-      breath.style.animationDelay = `${i * 7}s`;
-      breath.style.animationDuration = `${18 + Math.random() * 6}s`;
+      breath.style.animationDelay = `${i * 4}s`;
+      breath.style.animationDuration = `${15 + Math.random() * 8}s`;
       document.body.appendChild(breath);
       backgroundElements.push(breath);
     }
   } else if (tone === "gentle") {
-    // Create twinkling stars
-    for (let i = 0; i < 20; i++) {
+    // Create twinkling stars - more visible
+    for (let i = 0; i < 30; i++) {
       const star = document.createElement("div");
       star.className = "gentle-star";
       star.style.left = `${Math.random() * 100}%`;
       star.style.top = `${Math.random() * 100}%`;
       star.style.animationDelay = `${Math.random() * 8}s`;
-      star.style.animationDuration = `${6 + Math.random() * 4}s`;
+      star.style.animationDuration = `${5 + Math.random() * 5}s`;
       document.body.appendChild(star);
       backgroundElements.push(star);
     }
   } else if (tone === "intense") {
-    // Create purple fire swirls
-    for (let i = 0; i < 4; i++) {
+    // Create purple fire swirls - more visible
+    for (let i = 0; i < 6; i++) {
       const swirl = document.createElement("div");
       swirl.className = "intense-swirl";
       swirl.style.left = `${Math.random() * 100}%`;
       swirl.style.top = `${Math.random() * 100}%`;
-      swirl.style.animationDelay = `${i * 4}s`;
-      swirl.style.animationDuration = `${12 + Math.random() * 6}s`;
+      swirl.style.animationDelay = `${i * 3}s`;
+      swirl.style.animationDuration = `${10 + Math.random() * 8}s`;
       document.body.appendChild(swirl);
       backgroundElements.push(swirl);
     }
@@ -94,12 +94,9 @@ function animateQuestions() {
   const questions = document.querySelectorAll(".question-group");
   questions.forEach((q, i) => {
     q.style.opacity = "0";
-    q.style.transform = "translateY(20px)";
     setTimeout(() => {
-      q.style.transition = "all 0.8s cubic-bezier(0.4, 0.0, 0.2, 1)";
-      q.style.opacity = "1";
-      q.style.transform = "translateY(0)";
-    }, 300 + i * 150);
+      q.classList.add("appear");
+    }, 400 + i * 200);
   });
 }
 
@@ -230,15 +227,15 @@ function createSubtleBreath(element) {
     position: fixed;
     left: ${rect.left + rect.width / 2}px;
     top: ${rect.top + rect.height / 2}px;
-    width: 100px;
-    height: 100px;
-    margin-left: -50px;
-    margin-top: -50px;
+    width: 150px;
+    height: 150px;
+    margin-left: -75px;
+    margin-top: -75px;
     border-radius: 50%;
     background: radial-gradient(
       circle,
-      rgba(251, 191, 36, 0.1) 0%,
-      rgba(245, 158, 11, 0.05) 40%,
+      rgba(251, 191, 36, 0.15) 0%,
+      rgba(245, 158, 11, 0.08) 40%,
       transparent 70%
     );
     pointer-events: none;
@@ -251,26 +248,27 @@ function createSubtleBreath(element) {
 
 function createSubtleTwinkle(element) {
   const rect = element.getBoundingClientRect();
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 5; i++) {
     setTimeout(() => {
       const star = document.createElement("div");
-      const offsetX = (Math.random() - 0.5) * 100;
-      const offsetY = (Math.random() - 0.5) * 100;
+      const offsetX = (Math.random() - 0.5) * 150;
+      const offsetY = (Math.random() - 0.5) * 150;
       star.style.cssText = `
         position: fixed;
         left: ${rect.left + rect.width / 2 + offsetX}px;
         top: ${rect.top + rect.height / 2 + offsetY}px;
-        width: 2px;
-        height: 2px;
-        background: rgba(255, 255, 255, 0.8);
+        width: 3px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.9);
         border-radius: 50%;
+        box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
         pointer-events: none;
         z-index: 5;
         animation: subtleTwinkle 2s ease-out forwards;
       `;
       document.body.appendChild(star);
       setTimeout(() => star.remove(), 2000);
-    }, i * 200);
+    }, i * 150);
   }
 }
 
@@ -281,15 +279,15 @@ function createSubtleSwirl(element) {
     position: fixed;
     left: ${rect.left + rect.width / 2}px;
     top: ${rect.top + rect.height / 2}px;
-    width: 80px;
-    height: 80px;
-    margin-left: -40px;
-    margin-top: -40px;
+    width: 120px;
+    height: 120px;
+    margin-left: -60px;
+    margin-top: -60px;
     border-radius: 50%;
     background: radial-gradient(
       circle,
-      rgba(147, 51, 234, 0.15) 0%,
-      rgba(168, 85, 247, 0.08) 40%,
+      rgba(147, 51, 234, 0.2) 0%,
+      rgba(168, 85, 247, 0.1) 40%,
       transparent 70%
     );
     pointer-events: none;
@@ -384,26 +382,26 @@ style.textContent = `
       transform: scale(0.5);
     }
     50% {
-      opacity: 0.3;
+      opacity: 0.4;
     }
     100% {
       opacity: 0;
-      transform: scale(2);
+      transform: scale(2.5);
     }
   }
   
   @keyframes subtleTwinkle {
     0% {
       opacity: 0;
-      transform: scale(0);
+      transform: scale(0) rotate(0deg);
     }
     50% {
       opacity: 1;
-      transform: scale(1);
+      transform: scale(1.2) rotate(180deg);
     }
     100% {
       opacity: 0;
-      transform: scale(0);
+      transform: scale(0) rotate(360deg);
     }
   }
   
@@ -413,12 +411,12 @@ style.textContent = `
       transform: scale(0.5) rotate(0deg);
     }
     50% {
-      opacity: 0.4;
-      transform: scale(1) rotate(180deg);
+      opacity: 0.5;
+      transform: scale(1.2) rotate(180deg);
     }
     100% {
       opacity: 0;
-      transform: scale(1.5) rotate(360deg);
+      transform: scale(1.8) rotate(360deg);
     }
   }
 `;
