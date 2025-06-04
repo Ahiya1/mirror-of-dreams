@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About | Mirror of Truth</title>
+    <link rel="stylesheet" href="/shared/foundation.css" />
+    <style>
+      body {
+        background: linear-gradient(
+          135deg,
+          #0f0f23 0%,
+          #1a1a2e 25%,
+          #16213e 50%,
+          #0f0f23 100%
+        );
+        color: #fff;
+        overflow-x: hidden;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+        line-height: 1.9;
+      }
+
+      .about-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+        text-align: center;
+        position: relative;
+        z-index: 10;
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        margin-bottom: 4rem;
+        padding: 0.8rem 1.2rem;
+        border-radius: 50px;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+        font-weight: 400;
+      }
+
+      .back-link:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.9);
+        transform: translateY(-2px);
+      }
+
+      .breath-text {
+        font-size: clamp(1.2rem, 3vw, 1.6rem);
+        font-weight: 300;
+        line-height: 2.2;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 2rem;
+        opacity: 0;
+        animation: breatheIn 0.8s ease-out forwards;
+      }
+
+      .breath-text:nth-child(2) {
+        animation-delay: 0.3s;
+      }
+      .breath-text:nth-child(3) {
+        animation-delay: 0.6s;
+      }
+      .breath-text:nth-child(4) {
+        animation-delay: 0.9s;
+      }
+      .breath-text:nth-child(5) {
+        animation-delay: 1.2s;
+      }
+      .breath-text:nth-child(6) {
+        animation-delay: 1.5s;
+      }
+      .breath-text:nth-child(7) {
+        animation-delay: 1.8s;
+      }
+      .breath-text:nth-child(8) {
+        animation-delay: 2.1s;
+      }
+      .breath-text:nth-child(9) {
+        animation-delay: 2.4s;
+      }
+
+      @keyframes breatheIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .final-breath {
+        margin-top: 4rem;
+        animation-delay: 3s;
+      }
+
+      .begin-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        margin-top: 4rem;
+        padding: 1.2rem 2rem;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        font-weight: 400;
+        font-size: 1.1rem;
+        opacity: 0;
+        animation: breatheIn 0.8s ease-out 3.5s forwards;
+      }
+
+      .begin-link:hover {
+        background: rgba(255, 255, 255, 0.12);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .about-container {
+          padding: 3rem 1.5rem;
+        }
+
+        .breath-text {
+          font-size: 1.1rem;
+          line-height: 2;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="about-container">
+      <a href="/" class="back-link">
+        <span>←</span>
+        <span>Return</span>
+      </a>
+
+      <div class="breath-text">Five questions about your dream.</div>
+
+      <div class="breath-text">An AI reflection.</div>
+
+      <div class="breath-text">No advice.</div>
+
+      <div class="breath-text">No strategy.</div>
+
+      <div class="breath-text">No fixing.</div>
+
+      <div class="breath-text">Only truth.</div>
+
+      <div class="breath-text">What you are is complete.</div>
+
+      <div class="breath-text final-breath">What now?</div>
+
+      <a href="/register" class="begin-link">
+        <span>🪞</span>
+        <span>Begin Your Reflection</span>
+      </a>
+    </div>
+  </body>
+</html>
