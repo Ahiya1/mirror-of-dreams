@@ -1,46 +1,51 @@
 /* Mirror – Reflection Experience
-   Velvet grid • twinkling stars • impulse particles • tone fade
-   ================================================================= */
+   Black velvet • grain • stars • impulses • tone-fade
+   ============================================================ */
 
-/* ╭─ 0. GLOBAL BACKDROP – deep night gradient ─────────────────────╮ */
+/* ╭─ 0. DEEP-NAVY BASE (radial vignette) ───────────────────────╮ */
 body {
   background: radial-gradient(
-    circle at 50% -20%,
-    #0d0d1d 0%,
-    #050515 40%,
-    #030310 100%
+    circle at 50% -15%,
+    #101024 0%,
+    #06061a 50%,
+    #03030d 100%
   );
   color: #fff;
   overflow-x: hidden;
   font-family: Inter, Segoe UI, Helvetica, Arial, sans-serif;
+  scroll-behavior: smooth;
 }
 
-/* ╭─ 1. VELVET GRID TEXTURE (z-4) ─────────────────────────────────╮ */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -4;
-  pointer-events: none;
-  background-image: repeating-linear-gradient(
-      0deg,
-      rgba(255, 255, 255, 0.03) 0 1px,
-      transparent 1px 3px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.03) 0 1px,
-      transparent 1px 3px
-    );
-  opacity: 0.12; /* tweak  .08-.15  to taste */
-}
-
-/* ╭─ 2. Faint starfield (z-3) ─────────────────────────────────────╮ */
+/* ╭─ 1. VELVET GRID  +  FILM GRAIN  (layer -3) ─────────────────╮ */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -3;
+  pointer-events: none;
+  /* 1a. woven 2 px grid */
+  background-image: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.045) 0 1px,
+      transparent 1px 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.045) 0 1px,
+      transparent 1px 4px
+    ),
+    /* 1b. subtle noise (tiny base64 PNG) */
+      url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=");
+  background-size: 4px 4px, 4px 4px, 200px 200px;
+  opacity: 0.1; /* tweak 0.08-0.14 for more/less plush */
+}
+
+/* ╭─ 2. STARFIELD (layer -2) ───────────────────────────────────╮ */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
   pointer-events: none;
   background: radial-gradient(
     circle,
@@ -49,9 +54,9 @@ body::before {
   );
   background-size: 3px 3px;
   opacity: 0.1;
-  animation: starTwinkle 7s ease-in-out infinite alternate;
+  animation: twinkle 9s ease-in-out infinite alternate;
 }
-@keyframes starTwinkle {
+@keyframes twinkle {
   from {
     opacity: 0.05;
   }
@@ -60,23 +65,22 @@ body::before {
   }
 }
 
-/* ╭─ 3. IMPULSE PARTICLES (z-2) ───────────────────────────────────╮ */
+/* ╭─ 3. IMPULSE PARTICLES (layer -1) ───────────────────────────╮ */
 .particle {
   position: fixed;
-  z-index: -2;
+  z-index: -1;
   pointer-events: none;
 }
 
-/* Breath halo */
 .particle-breath {
   width: 0;
   height: 0;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.22);
-  transform: translate(-50%, -50%) scale(0.06);
-  animation: breathExpand 5s ease-out forwards;
+  transform: translate(-50%, -50%) scale(0.05);
+  animation: breath 5s ease-out forwards;
 }
-@keyframes breathExpand {
+@keyframes breath {
   0% {
     opacity: 0;
   }
@@ -88,24 +92,23 @@ body::before {
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(3.5);
+    transform: translate(-50%, -50%) scale(3.6);
   }
 }
 
-/* Tiny star blink */
 .particle-star {
   width: 2px;
   height: 2px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.9);
-  animation: starBlink 3.8s ease-in-out forwards;
+  animation: blink 3.8s ease-in-out forwards;
 }
-@keyframes starBlink {
+@keyframes blink {
   0% {
     opacity: 0;
     transform: scale(0.4);
   }
-  10% {
+  12% {
     opacity: 1;
     transform: scale(1);
   }
@@ -118,20 +121,19 @@ body::before {
   }
 }
 
-/* Ember spark */
 .particle-ember {
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: rgba(255, 120, 0, 0.85);
-  animation: emberDrift 6.5s linear forwards;
+  background: rgba(255, 125, 0, 0.9);
+  animation: ember 6.5s linear forwards;
 }
-@keyframes emberDrift {
+@keyframes ember {
   0% {
     opacity: 0;
     transform: translate3d(0, 0, 0) scale(0.6);
   }
-  10% {
+  12% {
     opacity: 1;
   }
   90% {
@@ -144,21 +146,21 @@ body::before {
   }
 }
 
-/* ╭─ 4. FADE UTILITY for tone switch ─────────────────────────────╮ */
-body.fade-transition::before,
-body.fade-transition::after {
+/* ╭─ 4. TONE-FADE UTILITY ──────────────────────────────────────╮ */
+body.fade-transition::after,
+body.fade-transition::before {
   transition: opacity 0.8s ease;
 }
-body.fade-out::before,
-body.fade-out::after {
+body.fade-out::after,
+body.fade-out::before {
   opacity: 0 !important;
 }
-body.fade-in::before,
-body.fade-in::after {
+body.fade-in::after,
+body.fade-in::before {
   opacity: 1 !important;
 }
 
-/* ╭─ 5. TONE PICKER BUTTONS ──────────────────────────────────────╮ */
+/* ╭─ 5. TONE PICKER BUTTONS (understated) ──────────────────────╮ */
 .tone-group {
   display: flex;
   gap: 1rem;
@@ -175,24 +177,24 @@ body.fade-in::after {
   flex: 1;
   padding: 1rem;
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 12px;
   color: #fff;
   text-align: center;
   user-select: none;
   cursor: pointer;
-  transition: 0.28s ease;
+  transition: all 0.28s ease;
 }
 .tone-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.1);
 }
 .tone-btn.selected {
   background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.38);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.22);
 }
 
-/* ╭─ 6. FORM & RESULTS (original untouched styles) ──────────────╮ */
+/* ╭─ 6. FORM, RESULTS, ANIMATIONS – ORIGINAL STYLES ────────────╮ */
 .container {
   max-width: 700px;
   margin: 0 auto;
@@ -210,12 +212,12 @@ body.fade-in::after {
   transform: translateY(30px);
   transition: 0.8s ease;
 }
-.experience-section.hidden {
-  display: none;
-}
 .experience-section.active {
   opacity: 1;
   transform: translateY(0);
+}
+.experience-section.hidden {
+  display: none;
 }
 
 .questions-form {
@@ -226,7 +228,7 @@ body.fade-in::after {
   margin-bottom: 3rem;
   opacity: 0;
   transform: translateY(20px);
-  transition: 0.6s ease;
+  transition: 0.6s;
 }
 .question-group.visible {
   opacity: 1;
@@ -265,15 +267,15 @@ body.fade-in::after {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
-  cursor: pointer;
-  text-align: center;
-  transition: 0.3s;
   color: #fff;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
 }
 .yes-no-btn:hover,
 .yes-no-btn.selected {
   background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.38);
 }
 
 .date-container {
@@ -315,13 +317,14 @@ body.fade-in::after {
 @keyframes pulse {
   0%,
   100% {
-    transform: scale(0.95);
+    transform: scale(0.94);
   }
   50% {
-    transform: scale(1.05);
+    transform: scale(1.06);
   }
 }
 
+/* Results box */
 .results {
   text-align: left;
 }
@@ -335,14 +338,14 @@ body.fade-in::after {
   font-size: 0.9rem;
 }
 .results-content {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.97);
   color: #333;
   padding: 3rem;
   border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
   margin-bottom: 2rem;
-  line-height: 1.8;
   font-size: 1.05rem;
+  line-height: 1.8;
 }
 .results-content strong {
   color: #16213e;
