@@ -1,31 +1,14 @@
-// Commitment - Registration & PayPal Integration
+// Commitment - Registration & PayPal Integration (Production)
 
 let paypalConfig = null;
 let paypalInitialized = false;
-
-// Check if we're in test mode
-const urlParams = new URLSearchParams(window.location.search);
-const isTestMode =
-  urlParams.get("test") === "true" || urlParams.get("creator") === "true";
 
 // Initialize
 window.addEventListener("load", initializeApp);
 
 async function initializeApp() {
   setupEventListeners();
-  showTestModeIndicator();
-
-  if (isTestMode) {
-    setupTestMode();
-  } else {
-    await loadPayPalConfig();
-  }
-}
-
-function showTestModeIndicator() {
-  if (isTestMode) {
-    document.getElementById("testModeIndicator").style.display = "block";
-  }
+  await loadPayPalConfig();
 }
 
 function setupEventListeners() {
@@ -35,92 +18,6 @@ function setupEventListeners() {
   document
     .getElementById("userEmail")
     .addEventListener("input", updateFormValidation);
-}
-
-function setupTestMode() {
-  console.log("🧪 Test mode enabled - PayPal simulation");
-
-  // Hide PayPal loading
-  document.getElementById("paypalLoading").style.display = "none";
-
-  // Create test button
-  const container = document.getElementById("paypal-button-container");
-  container.innerHTML = `
-    <button id="testPaymentBtn" type="button" class="test-payment-btn" onclick="handleTestPayment()">
-      🧪 Test Payment ($5)
-    </button>
-  `;
-
-  // Add test button styles
-  const style = document.createElement("style");
-  style.textContent = `
-    .test-payment-btn {
-      width: 100%;
-      padding: 1rem 2rem;
-      background: linear-gradient(135deg, #10b981, #059669);
-      border: none;
-      border-radius: 12px;
-      color: white;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-    }
-    
-    .test-payment-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
-    }
-    
-    .test-payment-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-  `;
-  document.head.appendChild(style);
-}
-
-function handleTestPayment() {
-  const nameValue = document.getElementById("userName")?.value?.trim() || "";
-  const emailValue = document.getElementById("userEmail")?.value?.trim() || "";
-
-  if (!nameValue || nameValue.length < 1) {
-    alert("Please enter your name first.");
-    return;
-  }
-
-  if (!emailValue || !emailValue.includes("@")) {
-    alert("Please enter a valid email address first.");
-    return;
-  }
-
-  // Simulate PayPal payment details
-  const mockPaymentDetails = {
-    id: `TEST_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-    status: "COMPLETED",
-    purchase_units: [
-      {
-        amount: {
-          value: "5.00",
-          currency_code: "USD",
-        },
-      },
-    ],
-    payer: {
-      email_address: emailValue,
-      name: {
-        given_name: nameValue.split(" ")[0] || nameValue,
-        surname: nameValue.split(" ").slice(1).join(" ") || "",
-      },
-    },
-    create_time: new Date().toISOString(),
-    intent: "CAPTURE",
-  };
-
-  console.log("🧪 Simulating PayPal success with:", mockPaymentDetails);
-  handlePaymentSuccess(mockPaymentDetails);
 }
 
 async function loadPayPalConfig() {
@@ -353,12 +250,12 @@ async function handlePaymentSuccess(paymentDetails) {
       email: document.getElementById("userEmail").value.trim(),
       language: "en",
       paymentId: paymentDetails.id,
-      paymentMethod: isTestMode ? "test" : "paypal",
+      paymentMethod: "paypal",
     };
 
     localStorage.setItem("mirrorVerifiedUser", JSON.stringify(userData));
 
-    // Generate receipt (always generate for testing purposes)
+    // Generate receipt
     try {
       await fetch("/api/communication", {
         method: "POST",
@@ -368,29 +265,21 @@ async function handlePaymentSuccess(paymentDetails) {
           email: userData.email,
           name: userData.name,
           amount: 5,
-          paymentMethod: isTestMode ? "test" : "paypal",
+          paymentMethod: "paypal",
           language: "en",
         }),
       });
-      console.log(isTestMode ? "🧪 Test receipt sent" : "✅ Receipt sent");
     } catch (receiptError) {
       console.warn("Receipt generation error:", receiptError);
     }
 
     // Navigate to breathing
-    const paymentMethod = isTestMode ? "test" : "paypal";
-    console.log("🧪 Redirecting to breathing page...", {
-      paymentMethod,
-      isTestMode,
-    });
     setTimeout(() => {
-      window.location.href = `/transition/breathing.html?payment=${paymentMethod}&verified=true&lang=en`;
+      window.location.href = `/transition/breathing.html?payment=paypal&verified=true&lang=en`;
     }, 2000);
   } catch (error) {
-    console.error("Error in payment success flow:", error);
-    const paymentMethod = isTestMode ? "test" : "paypal";
     setTimeout(() => {
-      window.location.href = `/transition/breathing.html?payment=${paymentMethod}&verified=true&lang=en`;
+      window.location.href = `/transition/breathing.html?payment=paypal&verified=true&lang=en`;
     }, 2000);
   }
 }
