@@ -1,8 +1,8 @@
 /* Mirror – Reflection Experience
-   Velvet night • starfield • impulse particles • tone fade
-   ======================================================= */
+   Velvet grid • twinkling stars • impulse particles • tone fade
+   ================================================================= */
 
-/* ╭─ 0. GLOBAL BACKDROP ───────────────────────────────────╮ */
+/* ╭─ 0. GLOBAL BACKDROP – deep night gradient ─────────────────────╮ */
 body {
   background: radial-gradient(
     circle at 50% -20%,
@@ -11,11 +11,31 @@ body {
     #030310 100%
   );
   color: #fff;
-  overflow-x: hidden; /* keep drifting sparks off-screen */
+  overflow-x: hidden;
   font-family: Inter, Segoe UI, Helvetica, Arial, sans-serif;
 }
 
-/* faint star grid (permanent) */
+/* ╭─ 1. VELVET GRID TEXTURE (z-4) ─────────────────────────────────╮ */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -4;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.03) 0 1px,
+      transparent 1px 3px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.03) 0 1px,
+      transparent 1px 3px
+    );
+  opacity: 0.12; /* tweak  .08-.15  to taste */
+}
+
+/* ╭─ 2. Faint starfield (z-3) ─────────────────────────────────────╮ */
 body::before {
   content: "";
   position: fixed;
@@ -40,13 +60,14 @@ body::before {
   }
 }
 
-/* ╭─ 1. PARTICLE CLASSES ──────────────────────────────────╮ */
+/* ╭─ 3. IMPULSE PARTICLES (z-2) ───────────────────────────────────╮ */
 .particle {
   position: fixed;
   z-index: -2;
   pointer-events: none;
 }
 
+/* Breath halo */
 .particle-breath {
   width: 0;
   height: 0;
@@ -71,6 +92,7 @@ body::before {
   }
 }
 
+/* Tiny star blink */
 .particle-star {
   width: 2px;
   height: 2px;
@@ -96,6 +118,7 @@ body::before {
   }
 }
 
+/* Ember spark */
 .particle-ember {
   width: 3px;
   height: 3px;
@@ -121,7 +144,7 @@ body::before {
   }
 }
 
-/* ╭─ 2. FADE UTILITY FOR TONE SWITCH ──────────────────────╮ */
+/* ╭─ 4. FADE UTILITY for tone switch ─────────────────────────────╮ */
 body.fade-transition::before,
 body.fade-transition::after {
   transition: opacity 0.8s ease;
@@ -135,7 +158,41 @@ body.fade-in::after {
   opacity: 1 !important;
 }
 
-/* ╭─ 3. LAYOUT & FORM (unchanged originals) ───────────────╮ */
+/* ╭─ 5. TONE PICKER BUTTONS ──────────────────────────────────────╮ */
+.tone-group {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+.tone-label {
+  flex-basis: 100%;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  opacity: 0.8;
+}
+.tone-btn {
+  flex: 1;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  color: #fff;
+  text-align: center;
+  user-select: none;
+  cursor: pointer;
+  transition: 0.28s ease;
+}
+.tone-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.tone-btn.selected {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.25);
+}
+
+/* ╭─ 6. FORM & RESULTS (original untouched styles) ──────────────╮ */
 .container {
   max-width: 700px;
   margin: 0 auto;
@@ -265,7 +322,6 @@ body.fade-in::after {
   }
 }
 
-/* Results */
 .results {
   text-align: left;
 }
@@ -313,41 +369,7 @@ body.fade-in::after {
   font-size: 0.95rem;
 }
 
-/* ╭─ 4. TONE PICKER BUTTONS ────────────────────────────────╮ */
-.tone-group {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-}
-.tone-label {
-  flex-basis: 100%;
-  margin-bottom: 0.5rem;
-  font-size: 0.95rem;
-  opacity: 0.8;
-}
-.tone-btn {
-  flex: 1;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
-  color: #fff;
-  text-align: center;
-  user-select: none;
-  cursor: pointer;
-  transition: 0.28s ease;
-}
-.tone-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-.tone-btn.selected {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.25);
-}
-
-/* ╭─ 5. RESPONSIVE TWEAKS ──────────────────────────────────╮ */
+/* ╭─ 7. RESPONSIVE TWEAKS ───────────────────────────────────────╮ */
 @media (max-width: 768px) {
   .container {
     padding: 1rem;
