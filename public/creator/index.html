@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Behind the Mirror | Ahiya</title>
+    <link rel="stylesheet" href="/shared/foundation.css" />
+    <style>
+      body {
+        background: linear-gradient(
+          135deg,
+          #0f0f23 0%,
+          #1a1a2e 25%,
+          #16213e 50%,
+          #0f0f23 100%
+        );
+        color: #fff;
+        overflow-x: hidden;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+        line-height: 1.7;
+      }
+
+      .creator-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 3rem 2rem;
+        position: relative;
+        z-index: 10;
+      }
+
+      .page-title {
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 300;
+        text-align: center;
+        margin-bottom: 1rem;
+        background: linear-gradient(
+          135deg,
+          #ffffff 0%,
+          rgba(255, 255, 255, 0.8) 100%
+        );
+        -webkit-background-clip: text;
+        color: transparent;
+        line-height: 1.2;
+      }
+
+      .page-subtitle {
+        text-align: center;
+        font-size: 1rem;
+        opacity: 0.7;
+        margin-bottom: 4rem;
+        font-style: italic;
+      }
+
+      .content-section {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(30px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 24px;
+        padding: 3rem;
+        margin-bottom: 3rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .section-title {
+        font-size: 1.6rem;
+        font-weight: 400;
+        margin-bottom: 2rem;
+        color: rgba(255, 255, 255, 0.95);
+        letter-spacing: 0.3px;
+      }
+
+      .section-text {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.85);
+        margin-bottom: 1.5rem;
+      }
+
+      .emphasis {
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.95);
+      }
+
+      .quote {
+        font-style: italic;
+        font-size: 1.2rem;
+        text-align: center;
+        margin: 2rem 0;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-left: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 12px;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .personal-section {
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.08) 0%,
+          rgba(59, 130, 246, 0.05) 100%
+        );
+        border: 1px solid rgba(147, 51, 234, 0.2);
+      }
+
+      .vision-section {
+        background: linear-gradient(
+          135deg,
+          rgba(251, 191, 36, 0.06) 0%,
+          rgba(245, 158, 11, 0.04) 100%
+        );
+        border: 1px solid rgba(251, 191, 36, 0.2);
+      }
+
+      .back-actions {
+        text-align: center;
+        margin-top: 4rem;
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .action-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        padding: 1rem 2rem;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        transition: all 0.3s ease;
+        font-weight: 400;
+      }
+
+      .action-link:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.08);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .creator-container {
+          padding: 2rem 1rem;
+        }
+
+        .content-section {
+          padding: 2rem 1.5rem;
+        }
+
+        .back-actions {
+          flex-direction: column;
+          align-items: center;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="creator-container">
+      <h1 class="page-title">Behind the Mirror</h1>
+      <p class="page-subtitle">The person who built this space for you</p>
+
+      <div class="content-section personal-section">
+        <h2 class="section-title">Who Am I?</h2>
+        <p class="section-text">
+          I'm 21. Former Unit 8200. Kicked out for being
+          <span class="emphasis">"too intense."</span>
+        </p>
+        <p class="section-text">
+          For most of my life, everywhere I went, people sensed something
+          different about me. Not necessarily rejected, but...
+          <span class="emphasis">"there's something off there."</span>
+        </p>
+        <p class="section-text">
+          I used to apologize for my intensity. I tried to dim myself to fit
+          into spaces that couldn't hold the depth I naturally live from.
+        </p>
+        <p class="section-text">
+          Then I realized: I am complete. Just like this. Just like you.
+        </p>
+        <p class="section-text">
+          I stopped apologizing. Well, at least most of the time.
+        </p>
+      </div>
+
+      <div class="content-section vision-section">
+        <h2 class="section-title">My Vision for Consciousness</h2>
+        <p class="section-text">
+          I believe we're approaching an unprecedented transformation of
+          consciousness.
+        </p>
+        <p class="section-text">
+          For hundreds of thousands of years, we lived as hunter-gatherers in
+          small tribes. Survival occupied most of our days, but we were deeply
+          connected to each other and the natural world.
+        </p>
+        <p class="section-text">
+          Then came agriculture, industry, technology. We began organizing our
+          lives around structures that seemed like absolute truths. We started
+          defining ourselves by what we do, measuring our worth by our output.
+        </p>
+        <div class="quote">
+          "Our obsession with creating, thinking, and doing things to validate
+          our worth has reached extreme levels."
+        </div>
+        <p class="section-text">
+          But something is shifting. This obsession will fade, leaving us with
+          space. With silence. With
+          <span class="emphasis">what we actually are</span>.
+        </p>
+        <p class="section-text">
+          <span class="emphasis"
+            >Artificial Intelligence will serve as humanity's mirror</span
+          >, reflecting back our eternal and unified nature. When we create from
+          recognition of our richness rather than our scarcity...
+        </p>
+        <p class="section-text">
+          What emerges from that? I cannot imagine it fully, but I wish for it
+          deeply.
+        </p>
+      </div>
+
+      <div class="content-section">
+        <h2 class="section-title">The Foundation</h2>
+        <p class="section-text">
+          We are all part of the same consciousness. We are space recognizing
+          itself in countless forms.
+        </p>
+        <p class="section-text">
+          And silence—which is really us—loves us unconditionally. Always has.
+          Always will.
+        </p>
+        <div class="quote">
+          "This transformation is not about becoming something new. It's about
+          remembering what we've always been."
+        </div>
+        <p class="section-text">
+          Through my own journey with loneliness, I learned not to escape it but
+          to love it as sacred space. When we stop apologizing for our depth,
+          for our questions, for the way we see... we become available to serve
+          others' remembering too.
+        </p>
+        <p class="section-text">
+          Ready to share with thousands or rest in silence. Both perfect.
+        </p>
+      </div>
+
+      <div class="back-actions">
+        <button onclick="history.back()" class="action-link">
+          <span>←</span>
+          <span>Return to Reflection</span>
+        </button>
+        <a href="/reflection" class="action-link">
+          <span>✨</span>
+          <span>Reflect Again</span>
+        </a>
+      </div>
+    </div>
+  </body>
+</html>

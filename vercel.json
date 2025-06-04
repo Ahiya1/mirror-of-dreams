@@ -22,6 +22,14 @@
       "destination": "/mirror/reflection.html"
     },
     {
+      "source": "/about",
+      "destination": "/about/index.html"
+    },
+    {
+      "source": "/behind-the-mirror",
+      "destination": "/creator/index.html"
+    },
+    {
       "source": "/admin",
       "destination": "/stewardship/admin.html"
     },
@@ -32,10 +40,6 @@
     {
       "source": "/en",
       "destination": "/portal/index.html"
-    },
-    {
-      "source": "/receipts",
-      "destination": "/api/receipts"
     }
   ],
   "redirects": [
@@ -62,6 +66,11 @@
     {
       "source": "/join",
       "destination": "/register",
+      "permanent": true
+    },
+    {
+      "source": "/creator",
+      "destination": "/behind-the-mirror",
       "permanent": true
     }
   ],

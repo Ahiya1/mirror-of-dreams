@@ -143,6 +143,9 @@
             >
               <span>📧</span><span>Mail me this reflection</span>
             </button>
+            <a href="/behind-the-mirror" class="sacred-button creator-button">
+              <span>🤲</span><span>Who created this?</span>
+            </a>
             <a href="/" class="sacred-button">
               <span>🪞</span><span>Return to Portal</span>
             </a>
@@ -152,5 +155,42 @@
     </div>
 
     <script src="/mirror/reflection.js"></script>
+
+    <style>
+      /* Creator button special styling */
+      .creator-button {
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.15),
+          rgba(59, 130, 246, 0.1)
+        ) !important;
+        border-color: rgba(147, 51, 234, 0.3) !important;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .creator-button::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.1),
+          rgba(59, 130, 246, 0.05)
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .creator-button:hover::before {
+        opacity: 1;
+      }
+
+      .creator-button:hover {
+        border-color: rgba(147, 51, 234, 0.5) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(147, 51, 234, 0.2) !important;
+      }
+    </style>
   </body>
 </html>
