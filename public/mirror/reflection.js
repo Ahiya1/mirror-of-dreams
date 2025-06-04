@@ -237,39 +237,13 @@ function setupInteractions() {
     });
 }
 
-/* — COSMIC TONE TRANSITION — */
+/* — SUBTLE TONE TRANSITION — */
 function transitionToTone(newTone) {
-  // Fade out current patterns
-  document.body.style.transition = "filter 0.6s ease";
-  document.body.style.filter = "blur(1px) brightness(0.7)";
+  // Simply switch tone classes - let the space shift naturally
+  document.body.classList.remove("tone-gentle", "tone-intense", "tone-fusion");
+  document.body.classList.add(`tone-${newTone}`);
 
-  setTimeout(() => {
-    // Switch tone classes
-    document.body.classList.remove(
-      "tone-gentle",
-      "tone-intense",
-      "tone-fusion"
-    );
-    document.body.classList.add(`tone-${newTone}`);
-
-    // Fade back in with new patterns
-    document.body.style.filter = "";
-
-    // Add cosmic shimmer effect during transition
-    const shimmer = document.createElement("div");
-    shimmer.style.cssText = `
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
-      background-size: 200% 200%;
-      animation: cosmicShimmer 1s ease-out;
-      pointer-events: none;
-      z-index: 100;
-    `;
-    document.body.appendChild(shimmer);
-
-    setTimeout(() => shimmer.remove(), 1000);
-  }, 300);
+  // No visual flash - just let the patterns appear and disappear organically
 }
 
 /* — ENHANCED SECTION TRANSITIONS — */
