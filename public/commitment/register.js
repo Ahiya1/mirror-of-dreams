@@ -358,26 +358,23 @@ async function handlePaymentSuccess(paymentDetails) {
 
     localStorage.setItem("mirrorVerifiedUser", JSON.stringify(userData));
 
-    // Generate receipt (skip in test mode to avoid sending test emails)
-    if (!isTestMode) {
-      try {
-        await fetch("/api/communication", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "generate-receipt",
-            email: userData.email,
-            name: userData.name,
-            amount: 5,
-            paymentMethod: "paypal",
-            language: "en",
-          }),
-        });
-      } catch (receiptError) {
-        console.warn("Receipt generation error:", receiptError);
-      }
-    } else {
-      console.log("🧪 Test mode - skipping receipt generation");
+    // Generate receipt (always generate for testing purposes)
+    try {
+      await fetch("/api/communication", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "generate-receipt",
+          email: userData.email,
+          name: userData.name,
+          amount: 5,
+          paymentMethod: isTestMode ? "test" : "paypal",
+          language: "en",
+        }),
+      });
+      console.log(isTestMode ? "🧪 Test receipt sent" : "✅ Receipt sent");
+    } catch (receiptError) {
+      console.warn("Receipt generation error:", receiptError);
     }
 
     // Navigate to breathing
