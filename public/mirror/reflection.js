@@ -1,10 +1,10 @@
-// Mirror – Luminous Reflection Logic
-// Spacious, still, arising from silence
-// ---------------------------------------------------------
+// Mirror – Luminous Reflection Logic with Creator Modes
+// Complete replacement for public/mirror/reflection.js
 
 let userData = null;
 let hasDateSet = null;
-let isAdminMode = false;
+let isCreatorMode = false;
+let isTestMode = false;
 let selectedTone = "fusion"; // default
 let backgroundElements = [];
 
@@ -69,23 +69,44 @@ function createToneElements(tone) {
   }
 }
 
-/* — AUTH CHECK — */
+/* — AUTH CHECK WITH MODE DETECTION — */
 function checkAuthAndSetup() {
   const url = new URLSearchParams(location.search);
-  if (url.get("admin") === "true") {
-    isAdminMode = true;
+  const mode = url.get("mode");
+
+  // Check for creator bypass modes
+  if (mode === "creator") {
+    isCreatorMode = true;
     document.getElementById("adminNotice").style.display = "block";
+    document.getElementById("adminNotice").innerHTML =
+      "<span>✨ Creator mode — experiencing as Ahiya</span>";
+  } else if (mode === "user") {
+    isTestMode = true;
+    document.getElementById("adminNotice").style.display = "block";
+    document.getElementById("adminNotice").innerHTML =
+      "<span>🌟 Test mode — experiencing as another soul</span>";
   }
+
   const stored = localStorage.getItem("mirrorVerifiedUser");
   if (stored) {
     try {
       userData = JSON.parse(stored);
+
+      // Override creator status based on mode
+      if (isCreatorMode) {
+        userData.isCreator = true;
+        userData.name = "Ahiya";
+        userData.email = "ahiya.butman@gmail.com";
+      } else if (isTestMode) {
+        userData.isCreator = false;
+        // Keep the test name/email they entered
+      }
     } catch (e) {
       console.error("User parse", e);
-      location.href = "../commitment/register.html";
+      location.href = "/register";
     }
-  } else if (!isAdminMode) {
-    location.href = "../commitment/register.html";
+  } else if (!isCreatorMode && !isTestMode) {
+    location.href = "/register";
   }
 }
 
@@ -170,17 +191,6 @@ function setupInteractions() {
 
       const fd = new FormData(e.target);
 
-      let creatorContext = null,
-        isCreatorMode = false;
-      if (userData?.isCreator) {
-        isCreatorMode = true;
-        const storedCtx = localStorage.getItem("mirrorCreatorContext");
-        if (storedCtx)
-          try {
-            creatorContext = JSON.parse(storedCtx);
-          } catch {}
-      }
-
       const payload = {
         dream: fd.get("dream"),
         plan: fd.get("plan"),
@@ -191,9 +201,8 @@ function setupInteractions() {
         userName: userData?.name || "Friend",
         userEmail: userData?.email || "",
         language: "en",
-        isAdmin: isAdminMode,
-        isCreator: isCreatorMode,
-        creatorContext,
+        isAdmin: isCreatorMode || isTestMode, // Allow unlimited reflections
+        isCreator: isCreatorMode, // Only true if in creator mode
         tone: selectedTone,
       };
 
@@ -342,6 +351,9 @@ function emailReflection() {
   btn.innerHTML = "<span>✨</span><span>Sending...</span>";
   btn.disabled = true;
 
+  // Use the correct user name for the email
+  const emailName = isCreatorMode ? "Ahiya" : userData.name || "Friend";
+
   fetch("/api/communication", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -349,7 +361,7 @@ function emailReflection() {
       action: "send-reflection",
       email: userData.email,
       content: document.getElementById("reflectionContent").innerHTML,
-      userName: userData.name || "Friend",
+      userName: emailName,
       language: "en",
     }),
   })
@@ -417,6 +429,22 @@ style.textContent = `
     100% {
       opacity: 0;
       transform: scale(1.8) rotate(360deg);
+    }
+  }
+  
+  /* Mode indicator styling */
+  #adminNotice {
+    animation: gentleGlow 3s ease-in-out infinite;
+  }
+  
+  @keyframes gentleGlow {
+    0%, 100% { 
+      background: rgba(168, 85, 247, 0.08);
+      border-color: rgba(168, 85, 247, 0.2);
+    }
+    50% { 
+      background: rgba(168, 85, 247, 0.12);
+      border-color: rgba(168, 85, 247, 0.3);
     }
   }
 `;
