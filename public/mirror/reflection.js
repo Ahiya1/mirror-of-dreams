@@ -1,25 +1,26 @@
-// Mirror - Reflection Experience
+// Mirror – Reflection Logic (multi-tone, fade transitions)
+// -------------------------------------------------------
 
 let userData = null;
 let hasDateSet = null;
 let isAdminMode = false;
+let selectedTone = "fusion"; // default → Let the Mirror Breathe
 
-// Initialize
+// ─── Initialisation ───────────────────────────────────────────
 window.addEventListener("load", () => {
   checkAuthAndSetup();
   setTimeout(animateQuestions, 300);
   setupInteractions();
 });
 
+// ─── Auth / stored user check ─────────────────────────────────
 function checkAuthAndSetup() {
-  // Check for admin mode
   const url = new URLSearchParams(location.search);
   if (url.get("admin") === "true") {
     isAdminMode = true;
     document.getElementById("adminNotice").style.display = "block";
   }
 
-  // Check for verified user
   const stored = localStorage.getItem("mirrorVerifiedUser");
   if (stored) {
     try {
@@ -33,6 +34,7 @@ function checkAuthAndSetup() {
   }
 }
 
+// ─── Section transitions ─────────────────────────────────────
 function showSection(id) {
   document.querySelectorAll(".experience-section").forEach((sec) => {
     sec.classList.remove("active");
@@ -55,14 +57,54 @@ function animateQuestions() {
   });
 }
 
+// ─── UI interactions (tone, yes/no, form) ─────────────────────
 function setupInteractions() {
-  // Yes/No buttons
+  /* Tone picker – adds a gentle fade-over when switching background */
+  document.querySelectorAll(".tone-btn").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      // visual toggle
+      this.parentNode
+        .querySelectorAll(".tone-btn")
+        .forEach((b) => b.classList.remove("selected"));
+      this.classList.add("selected");
+
+      const newTone = this.dataset.tone || "fusion";
+      if (newTone === selectedTone) return; // no change
+
+      selectedTone = newTone;
+
+      // Begin fade-out
+      document.body.classList.add("fade-transition", "fade-out");
+
+      setTimeout(() => {
+        // swap tone classes
+        document.body.classList.remove(
+          "tone-gentle",
+          "tone-intense",
+          "tone-fusion"
+        );
+        document.body.classList.add(`tone-${selectedTone}`);
+
+        // fade back in
+        document.body.classList.remove("fade-out");
+        document.body.classList.add("fade-in");
+
+        // clean up after animation completes
+        setTimeout(() => {
+          document.body.classList.remove("fade-transition", "fade-in");
+        }, 800);
+      }, 60); // slight delay so fade-out class takes effect
+    });
+  });
+
+  /* Yes / No picker */
   document.querySelectorAll(".yes-no-btn").forEach((btn) => {
     btn.addEventListener("click", function () {
       this.parentNode
         .querySelectorAll(".yes-no-btn")
         .forEach((b) => b.classList.remove("selected"));
       this.classList.add("selected");
+
       hasDateSet = this.dataset.value;
       document.querySelector('input[name="hasDate"]').value = hasDateSet;
 
@@ -80,7 +122,7 @@ function setupInteractions() {
     });
   });
 
-  // Form submission
+  /* Form submission */
   document
     .getElementById("reflectionForm")
     .addEventListener("submit", async (e) => {
@@ -89,18 +131,17 @@ function setupInteractions() {
 
       const formData = new FormData(e.target);
 
-      // Check if user is creator
+      // Creator mode?
       let creatorContext = null;
       let isCreatorMode = false;
-
       if (userData?.isCreator) {
         isCreatorMode = true;
-        const storedContext = localStorage.getItem("mirrorCreatorContext");
-        if (storedContext) {
+        const storedCtx = localStorage.getItem("mirrorCreatorContext");
+        if (storedCtx) {
           try {
-            creatorContext = JSON.parse(storedContext);
-          } catch (e) {
-            console.warn("Failed to parse creator context:", e);
+            creatorContext = JSON.parse(storedCtx);
+          } catch (err) {
+            console.warn("Creator context parse error:", err);
           }
         }
       }
@@ -117,21 +158,20 @@ function setupInteractions() {
         language: "en",
         isAdmin: isAdminMode,
         isCreator: isCreatorMode,
-        creatorContext: creatorContext,
+        creatorContext,
+        tone: selectedTone || "fusion",
       };
 
       try {
-        const response = await fetch("/api/reflection", {
+        const res = await fetch("/api/reflection", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
+        const result = await res.json();
 
-        const result = await response.json();
-
-        if (!result.success) {
+        if (!result.success)
           throw new Error(result.error || "Reflection failed");
-        }
 
         document.getElementById("reflectionContent").innerHTML =
           result.reflection;
@@ -139,15 +179,16 @@ function setupInteractions() {
       } catch (err) {
         console.error("Reflection error:", err);
         document.getElementById("reflectionContent").innerHTML = `
-        <h2>A moment of silence…</h2>
-        <p>Your reflection is being prepared. Please try again in a moment.</p>
-        <p style="opacity:.7;font-style:italic;">Sometimes the deepest truth needs space to emerge.</p>
-      `;
+          <h2>A moment of silence…</h2>
+          <p>Your reflection is being prepared. Please try again in a moment.</p>
+          <p style="opacity:.7;font-style:italic;">Sometimes the deepest truth needs space to emerge.</p>
+        `;
         showSection("results");
       }
     });
 }
 
+// ─── Email reflection helper ─────────────────────────────────¬
 function emailReflection() {
   if (!userData?.email) {
     const email = prompt("Enter your email to receive this reflection:");
@@ -166,7 +207,7 @@ function emailReflection() {
       language: "en",
     }),
   })
-    .then((response) => response.json())
+    .then((r) => r.json())
     .then((data) => {
       alert(
         data.success

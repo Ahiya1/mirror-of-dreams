@@ -8,11 +8,24 @@
     <link rel="stylesheet" href="/mirror/reflection.css" />
   </head>
 
-  <body>
+  <!-- default body class gives the “Let the Mirror Breathe” visuals -->
+  <body class="tone-fusion">
     <div class="container">
       <!-- Questions Section -->
       <div class="experience-section active" id="questions">
         <form id="reflectionForm" class="questions-form">
+          <!-- ── Tone Picker ───────────────────────────────────── -->
+          <div class="tone-group">
+            <div class="tone-label">Choose a voice for your reflection:</div>
+
+            <div class="tone-btn selected" data-tone="fusion">
+              Let the Mirror Breathe
+            </div>
+            <div class="tone-btn" data-tone="gentle">Gentle Clarity</div>
+            <div class="tone-btn" data-tone="intense">Luminous Fire</div>
+          </div>
+          <!-- ─────────────────────────────────────────────────── -->
+
           <div class="question-group">
             <div class="question-number">Question 1</div>
             <div class="question-text">What is your dream?</div>
