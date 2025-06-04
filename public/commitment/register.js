@@ -382,13 +382,18 @@ async function handlePaymentSuccess(paymentDetails) {
 
     // Navigate to breathing
     const paymentMethod = isTestMode ? "test" : "paypal";
+    console.log("🧪 Redirecting to breathing page...", {
+      paymentMethod,
+      isTestMode,
+    });
     setTimeout(() => {
-      window.location.href = `../transition/breathing.html?payment=${paymentMethod}&verified=true&lang=en`;
+      window.location.href = `/transition/breathing.html?payment=${paymentMethod}&verified=true&lang=en`;
     }, 2000);
   } catch (error) {
+    console.error("Error in payment success flow:", error);
     const paymentMethod = isTestMode ? "test" : "paypal";
     setTimeout(() => {
-      window.location.href = `../transition/breathing.html?payment=${paymentMethod}&verified=true&lang=en`;
+      window.location.href = `/transition/breathing.html?payment=${paymentMethod}&verified=true&lang=en`;
     }, 2000);
   }
 }
