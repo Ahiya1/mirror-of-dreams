@@ -13,11 +13,18 @@ window.addEventListener("load", initializeApp);
 
 async function initializeApp() {
   setupEventListeners();
+  showTestModeIndicator();
 
   if (isTestMode) {
     setupTestMode();
   } else {
     await loadPayPalConfig();
+  }
+}
+
+function showTestModeIndicator() {
+  if (isTestMode) {
+    document.getElementById("testModeIndicator").style.display = "block";
   }
 }
 

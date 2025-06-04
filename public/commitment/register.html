@@ -84,16 +84,6 @@
       </div>
     </div>
 
-    <script>
-      // Show test mode indicator if in test mode
-      const urlParams = new URLSearchParams(window.location.search);
-      const isTestMode =
-        urlParams.get("test") === "true" || urlParams.get("creator") === "true";
-
-      if (isTestMode) {
-        document.getElementById("testModeIndicator").style.display = "block";
-      }
-    </script>
     <script src="/commitment/register.js"></script>
   </body>
 </html>
