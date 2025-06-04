@@ -1,10 +1,141 @@
 /* Mirror – Reflection Experience
-   --------------------------------------------------------------
-   Added: tone-picker, background animations, and
-   smooth fade-over when changing tone (fade-out / fade-in classes)
-*/
+   Velvet night • starfield • impulse particles • tone fade
+   ======================================================= */
 
-/* ─── Layout container ──────────────────────────────────────── */
+/* ╭─ 0. GLOBAL BACKDROP ───────────────────────────────────╮ */
+body {
+  background: radial-gradient(
+    circle at 50% -20%,
+    #0d0d1d 0%,
+    #050515 40%,
+    #030310 100%
+  );
+  color: #fff;
+  overflow-x: hidden; /* keep drifting sparks off-screen */
+  font-family: Inter, Segoe UI, Helvetica, Arial, sans-serif;
+}
+
+/* faint star grid (permanent) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.35) 0 1px,
+    transparent 2px
+  );
+  background-size: 3px 3px;
+  opacity: 0.1;
+  animation: starTwinkle 7s ease-in-out infinite alternate;
+}
+@keyframes starTwinkle {
+  from {
+    opacity: 0.05;
+  }
+  to {
+    opacity: 0.18;
+  }
+}
+
+/* ╭─ 1. PARTICLE CLASSES ──────────────────────────────────╮ */
+.particle {
+  position: fixed;
+  z-index: -2;
+  pointer-events: none;
+}
+
+.particle-breath {
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  transform: translate(-50%, -50%) scale(0.06);
+  animation: breathExpand 5s ease-out forwards;
+}
+@keyframes breathExpand {
+  0% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.35;
+  }
+  80% {
+    opacity: 0.12;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(3.5);
+  }
+}
+
+.particle-star {
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  animation: starBlink 3.8s ease-in-out forwards;
+}
+@keyframes starBlink {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  10% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+.particle-ember {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(255, 120, 0, 0.85);
+  animation: emberDrift 6.5s linear forwards;
+}
+@keyframes emberDrift {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.6);
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+    transform: translate3d(calc(var(--dx) * 1px), calc(var(--dy) * 1px), 0)
+      scale(0.15);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ╭─ 2. FADE UTILITY FOR TONE SWITCH ──────────────────────╮ */
+body.fade-transition::before,
+body.fade-transition::after {
+  transition: opacity 0.8s ease;
+}
+body.fade-out::before,
+body.fade-out::after {
+  opacity: 0 !important;
+}
+body.fade-in::before,
+body.fade-in::after {
+  opacity: 1 !important;
+}
+
+/* ╭─ 3. LAYOUT & FORM (unchanged originals) ───────────────╮ */
 .container {
   max-width: 700px;
   margin: 0 auto;
@@ -15,7 +146,6 @@
   justify-content: center;
 }
 
-/* ─── Section fade / rise transitions ───────────────────────── */
 .experience-section {
   width: 100%;
   text-align: center;
@@ -31,10 +161,10 @@
   transform: translateY(0);
 }
 
-/* ─── Questions form ────────────────────────────────────────── */
 .questions-form {
   text-align: left;
 }
+
 .question-group {
   margin-bottom: 3rem;
   opacity: 0;
@@ -45,6 +175,7 @@
   opacity: 1;
   transform: translateY(0);
 }
+
 .question-number {
   font-size: 0.9rem;
   opacity: 0.6;
@@ -66,7 +197,6 @@
   resize: vertical;
 }
 
-/* ─── Yes / No pills ───────────────────────────────────────── */
 .yes-no-buttons {
   display: flex;
   gap: 1rem;
@@ -75,21 +205,20 @@
 .yes-no-btn {
   flex: 1;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
-  color: #fff;
   cursor: pointer;
-  transition: 0.3s;
   text-align: center;
+  transition: 0.3s;
+  color: #fff;
 }
 .yes-no-btn:hover,
 .yes-no-btn.selected {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.4);
 }
 
-/* ─── Date input row ───────────────────────────────────────── */
 .date-container {
   display: flex;
   align-items: center;
@@ -97,7 +226,6 @@
   margin-top: 1rem;
 }
 
-/* ─── Submit button ─────────────────────────────────────────── */
 .submit-btn {
   width: 100%;
   margin-top: 3rem;
@@ -109,7 +237,6 @@
   cursor: not-allowed;
 }
 
-/* ─── Loading pulse ─────────────────────────────────────────── */
 .loading-circle {
   width: 100px;
   height: 100px;
@@ -138,7 +265,7 @@
   }
 }
 
-/* ─── Results area ─────────────────────────────────────────── */
+/* Results */
 .results {
   text-align: left;
 }
@@ -172,6 +299,7 @@
 .results-content p {
   margin-bottom: 1.5rem;
 }
+
 .results-actions {
   display: flex;
   gap: 1rem;
@@ -185,7 +313,7 @@
   font-size: 0.95rem;
 }
 
-/* ─── Tone picker pills ─────────────────────────────────────── */
+/* ╭─ 4. TONE PICKER BUTTONS ────────────────────────────────╮ */
 .tone-group {
   display: flex;
   gap: 1rem;
@@ -201,108 +329,25 @@
 .tone-btn {
   flex: 1;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   color: #fff;
-  cursor: pointer;
-  transition: 0.3s;
   text-align: center;
   user-select: none;
+  cursor: pointer;
+  transition: 0.28s ease;
 }
-.tone-btn:hover,
+.tone-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
 .tone-btn.selected {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.25);
 }
 
-/* ─── Background animations for each tone ───────────────────── */
-body.tone-gentle::before,
-body.tone-intense::before,
-body.tone-fusion::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  animation-duration: 18s;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-}
-
-/* Gentle – drifting star-sparks */
-body.tone-gentle::before {
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.6) 0 2px,
-    transparent 3px
-  );
-  background-size: 4px 4px;
-  animation-name: gentle-stars;
-}
-@keyframes gentle-stars {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-200px);
-  }
-}
-
-/* Intense – ember flicker */
-body.tone-intense::before {
-  background: radial-gradient(
-    circle,
-    rgba(255, 140, 0, 0.5) 0 3px,
-    transparent 4px
-  );
-  background-size: 6px 6px;
-  animation-name: intense-embers;
-}
-@keyframes intense-embers {
-  0%,
-  100% {
-    opacity: 0.2;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.7;
-    transform: scale(1.3);
-  }
-}
-
-/* Fusion – slow breathing glow */
-body.tone-fusion::before {
-  background: radial-gradient(
-    circle at 50% 50%,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 140, 0, 0.25) 40%,
-    transparent 70%
-  );
-  animation-name: fusion-breathe;
-}
-@keyframes fusion-breathe {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.15);
-  }
-}
-
-/* ── Tone-switch fade utility ───────────────────────────────── */
-body.fade-transition::before {
-  transition: opacity 0.8s ease;
-}
-body.fade-out::before {
-  opacity: 0;
-}
-body.fade-in::before {
-  opacity: 1;
-}
-
-/* ─── Responsive tweaks ─────────────────────────────────────── */
+/* ╭─ 5. RESPONSIVE TWEAKS ──────────────────────────────────╮ */
 @media (max-width: 768px) {
   .container {
     padding: 1rem;
