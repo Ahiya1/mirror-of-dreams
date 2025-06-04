@@ -190,25 +190,53 @@ body.tone-fusion .pattern-right::after {
     transform: scale(1.05);
     opacity: 0.5;
   }
+  70% {
+    transform: scale(0.9);
+    opacity: 0.45;
+  }
   75% {
     transform: scale(0.8);
     opacity: 0.4;
   }
-  85% {
+  80% {
+    transform: scale(0.7);
+    opacity: 0.35;
+  }
+  83% {
+    transform: scale(0.6);
+    opacity: 0.3;
+  }
+  86% {
     transform: scale(0.5);
     opacity: 0.25;
   }
-  92% {
-    transform: scale(0.25);
-    opacity: 0.1;
+  89% {
+    transform: scale(0.4);
+    opacity: 0.2;
   }
-  96% {
-    transform: scale(0.1);
+  91% {
+    transform: scale(0.35);
+    opacity: 0.15;
+  }
+  93% {
+    transform: scale(0.3);
+    opacity: 0.12;
+  }
+  95% {
+    transform: scale(0.2);
+    opacity: 0.08;
+  }
+  97% {
+    transform: scale(0.15);
     opacity: 0.05;
   }
   98% {
+    transform: scale(0.1);
+    opacity: 0.03;
+  }
+  99% {
     transform: scale(0.05);
-    opacity: 0.02;
+    opacity: 0.01;
   }
   100% {
     transform: scale(0);
@@ -221,12 +249,12 @@ body.tone-gentle .pattern-left::before,
 body.tone-gentle .pattern-left::after {
   content: "";
   position: absolute;
-  width: 1.5px;
-  height: 1.5px;
+  width: 2px;
+  height: 2px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.5),
-    0 0 12px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6),
+    0 0 16px rgba(255, 255, 255, 0.3);
   animation: gentleStarTwinkle 12s ease-in-out infinite;
 }
 
@@ -234,12 +262,12 @@ body.tone-gentle .pattern-right::before,
 body.tone-gentle .pattern-right::after {
   content: "";
   position: absolute;
-  width: 1.5px;
-  height: 1.5px;
+  width: 2px;
+  height: 2px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.5),
-    0 0 12px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6),
+    0 0 16px rgba(255, 255, 255, 0.3);
   animation: gentleStarTwinkle 12s ease-in-out infinite;
 }
 
@@ -273,60 +301,11 @@ body.tone-gentle .pattern-right::after {
   animation-duration: 14s;
 }
 
-/* Additional gentle star fields using multiple backgrounds */
-body.tone-gentle .pattern-left {
-  background: radial-gradient(
-      circle at 80px 180px,
-      rgba(255, 255, 255, 0.7) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 40px 350px,
-      rgba(255, 255, 255, 0.5) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 120px 480px,
-      rgba(255, 255, 255, 0.6) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 60px 120px,
-      rgba(255, 255, 255, 0.4) 0 1px,
-      transparent 2px
-    );
-  animation: gentleFieldLeft 22s ease-in-out infinite;
-}
-
-body.tone-gentle .pattern-right {
-  background: radial-gradient(
-      circle at 40px 220px,
-      rgba(255, 255, 255, 0.6) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 100px 380px,
-      rgba(255, 255, 255, 0.8) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 20px 150px,
-      rgba(255, 255, 255, 0.4) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 80px 520px,
-      rgba(255, 255, 255, 0.7) 0 1px,
-      transparent 2px
-    );
-  animation: gentleFieldRight 25s ease-in-out infinite;
-}
-
 @keyframes gentleStarTwinkle {
   0%,
   100% {
     opacity: 0;
-    transform: scale(0.3);
+    transform: scale(0.2);
   }
   15% {
     opacity: 0.6;
@@ -334,7 +313,7 @@ body.tone-gentle .pattern-right {
   }
   35% {
     opacity: 1;
-    transform: scale(1.2);
+    transform: scale(1.3);
   }
   60% {
     opacity: 0.4;
@@ -342,227 +321,219 @@ body.tone-gentle .pattern-right {
   }
   85% {
     opacity: 0.8;
-    transform: scale(1);
+    transform: scale(1.1);
   }
 }
 
-@keyframes gentleFieldLeft {
-  0%,
-  100% {
-    opacity: 0.2;
-  }
-  40% {
-    opacity: 0.7;
-  }
-  70% {
-    opacity: 0.4;
-  }
-}
-
-@keyframes gentleFieldRight {
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-  30% {
-    opacity: 0.6;
-  }
-  80% {
-    opacity: 0.8;
-  }
-}
-
-/* ╭─ INTENSE TONE: CHAOTIC PURPLE LIGHTNING ─────────────────╮ */
+/* ╭─ INTENSE TONE: BLAZING LUMINOUS FIRE ─────────────────────╮ */
 body.tone-intense .pattern-left::before,
 body.tone-intense .pattern-right::before {
   content: "";
   position: absolute;
-  width: 0.5px;
-  height: 150px;
+  width: 3px;
+  height: 250px;
   background: linear-gradient(
     0deg,
     transparent 0%,
-    rgba(147, 51, 234, 0.3) 20%,
-    rgba(168, 85, 247, 0.8) 45%,
-    rgba(147, 51, 234, 0.6) 55%,
-    rgba(168, 85, 247, 0.4) 80%,
+    rgba(147, 51, 234, 0.6) 15%,
+    rgba(168, 85, 247, 0.9) 35%,
+    rgba(139, 92, 246, 1) 50%,
+    rgba(168, 85, 247, 0.8) 65%,
+    rgba(147, 51, 234, 0.5) 85%,
     transparent 100%
   );
-  filter: blur(0.5px);
+  filter: blur(1px);
   transform-origin: center;
-  animation: chaoticLightning 8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+  animation: blazingFire 7s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.6), 0 0 40px rgba(147, 51, 234, 0.4);
 }
 
 body.tone-intense .pattern-left::after,
 body.tone-intense .pattern-right::after {
   content: "";
   position: absolute;
-  width: 0.5px;
-  height: 100px;
+  width: 2px;
+  height: 180px;
   background: linear-gradient(
     0deg,
     transparent 0%,
-    rgba(168, 85, 247, 0.5) 30%,
-    rgba(147, 51, 234, 0.9) 50%,
-    rgba(168, 85, 247, 0.3) 70%,
+    rgba(168, 85, 247, 0.7) 20%,
+    rgba(147, 51, 234, 1) 40%,
+    rgba(139, 92, 246, 0.9) 60%,
+    rgba(168, 85, 247, 0.6) 80%,
     transparent 100%
   );
-  filter: blur(0.3px);
+  filter: blur(0.5px);
   transform-origin: center;
-  animation: chaoticLightning 6s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+  animation: blazingFire 5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.5), 0 0 30px rgba(147, 51, 234, 0.3);
 }
 
-/* Position the lightning bolts */
+/* Position the blazing fire */
 body.tone-intense .pattern-left::before {
-  top: 15%;
-  left: 70px;
+  top: 10%;
+  left: 60px;
   animation-delay: 0s;
 }
 
 body.tone-intense .pattern-left::after {
-  top: 60%;
-  left: 40px;
-  animation-delay: 2s;
-  animation-duration: 7s;
+  top: 55%;
+  left: 30px;
+  animation-delay: 1.5s;
+  animation-duration: 6s;
 }
 
 body.tone-intense .pattern-right::before {
-  top: 35%;
-  right: 50px;
-  animation-delay: 3s;
-  animation-duration: 9s;
+  top: 30%;
+  right: 40px;
+  animation-delay: 2.5s;
+  animation-duration: 8s;
 }
 
 body.tone-intense .pattern-right::after {
-  top: 80%;
-  right: 30px;
-  animation-delay: 5s;
+  top: 75%;
+  right: 20px;
+  animation-delay: 4s;
 }
 
-/* Add crackling energy effects */
+/* Add blazing energy auras */
 body.tone-intense .pattern-left {
   background: radial-gradient(
-      ellipse at 60px 200px,
-      rgba(168, 85, 247, 0.2) 0 2px,
-      transparent 4px
+      ellipse at 50px 160px,
+      rgba(168, 85, 247, 0.4) 0 8px,
+      transparent 16px
     ),
     radial-gradient(
-      ellipse at 80px 400px,
-      rgba(147, 51, 234, 0.3) 0 1px,
-      transparent 3px
+      ellipse at 80px 350px,
+      rgba(147, 51, 234, 0.5) 0 6px,
+      transparent 12px
     ),
     radial-gradient(
-      ellipse at 40px 320px,
-      rgba(168, 85, 247, 0.15) 0 2px,
-      transparent 5px
+      ellipse at 30px 280px,
+      rgba(139, 92, 246, 0.3) 0 10px,
+      transparent 20px
+    ),
+    radial-gradient(
+      ellipse at 100px 120px,
+      rgba(168, 85, 247, 0.35) 0 5px,
+      transparent 10px
     );
-  animation: energyCrackle 12s ease-in-out infinite;
+  animation: fireAura 10s ease-in-out infinite;
 }
 
 body.tone-intense .pattern-right {
   background: radial-gradient(
-      ellipse at 50px 180px,
-      rgba(147, 51, 234, 0.25) 0 1px,
-      transparent 3px
+      ellipse at 40px 200px,
+      rgba(147, 51, 234, 0.45) 0 7px,
+      transparent 14px
     ),
     radial-gradient(
-      ellipse at 30px 380px,
-      rgba(168, 85, 247, 0.2) 0 2px,
-      transparent 4px
+      ellipse at 20px 380px,
+      rgba(168, 85, 247, 0.4) 0 9px,
+      transparent 18px
     ),
     radial-gradient(
-      ellipse at 70px 280px,
-      rgba(147, 51, 234, 0.18) 0 1px,
-      transparent 3px
+      ellipse at 70px 300px,
+      rgba(139, 92, 246, 0.3) 0 6px,
+      transparent 12px
+    ),
+    radial-gradient(
+      ellipse at 60px 150px,
+      rgba(147, 51, 234, 0.35) 0 8px,
+      transparent 16px
     );
-  animation: energyCrackle 15s ease-in-out infinite;
-  animation-delay: 6s;
+  animation: fireAura 12s ease-in-out infinite;
+  animation-delay: 4s;
 }
 
-@keyframes chaoticLightning {
+@keyframes blazingFire {
   0% {
     opacity: 0;
     transform: scaleY(0) rotate(0deg) translateX(0) skewX(0deg);
   }
-  5% {
-    opacity: 0.3;
-    transform: scaleY(0.2) rotate(15deg) translateX(3px) skewX(5deg);
-  }
-  12% {
-    opacity: 0.8;
-    transform: scaleY(0.6) rotate(-8deg) translateX(-5px) skewX(-12deg);
-  }
-  18% {
-    opacity: 0.4;
-    transform: scaleY(0.9) rotate(25deg) translateX(8px) skewX(18deg);
-  }
-  25% {
-    opacity: 0.9;
-    transform: scaleY(1.1) rotate(-15deg) translateX(-12px) skewX(-8deg);
-  }
-  32% {
-    opacity: 0.2;
-    transform: scaleY(0.7) rotate(35deg) translateX(15px) skewX(25deg);
-  }
-  40% {
-    opacity: 0.7;
-    transform: scaleY(1.3) rotate(-20deg) translateX(-8px) skewX(-15deg);
-  }
-  48% {
-    opacity: 0.1;
-    transform: scaleY(0.3) rotate(45deg) translateX(20px) skewX(30deg);
-  }
-  55% {
+  8% {
     opacity: 0.6;
-    transform: scaleY(0.8) rotate(-35deg) translateX(-18px) skewX(-20deg);
+    transform: scaleY(0.3) rotate(25deg) translateX(8px) skewX(15deg);
   }
-  65% {
+  15% {
+    opacity: 0.9;
+    transform: scaleY(0.7) rotate(-15deg) translateX(-12px) skewX(-20deg);
+  }
+  22% {
+    opacity: 0.4;
+    transform: scaleY(1.1) rotate(40deg) translateX(18px) skewX(30deg);
+  }
+  30% {
+    opacity: 1;
+    transform: scaleY(1.4) rotate(-25deg) translateX(-20px) skewX(-18deg);
+  }
+  38% {
     opacity: 0.3;
-    transform: scaleY(0.5) rotate(60deg) translateX(25px) skewX(40deg);
+    transform: scaleY(0.9) rotate(55deg) translateX(25px) skewX(45deg);
+  }
+  45% {
+    opacity: 0.8;
+    transform: scaleY(1.6) rotate(-35deg) translateX(-15px) skewX(-25deg);
+  }
+  52% {
+    opacity: 0.2;
+    transform: scaleY(0.6) rotate(70deg) translateX(35px) skewX(60deg);
+  }
+  60% {
+    opacity: 0.7;
+    transform: scaleY(1.2) rotate(-50deg) translateX(-30px) skewX(-40deg);
+  }
+  68% {
+    opacity: 0.4;
+    transform: scaleY(0.8) rotate(85deg) translateX(40px) skewX(70deg);
   }
   75% {
-    opacity: 0.5;
-    transform: scaleY(0.4) rotate(-45deg) translateX(-30px) skewX(-35deg);
+    opacity: 0.6;
+    transform: scaleY(0.5) rotate(-65deg) translateX(-45px) skewX(-55deg);
   }
-  85% {
+  83% {
+    opacity: 0.3;
+    transform: scaleY(0.3) rotate(100deg) translateX(50px) skewX(80deg);
+  }
+  90% {
     opacity: 0.2;
-    transform: scaleY(0.2) rotate(70deg) translateX(35px) skewX(50deg);
+    transform: scaleY(0.2) rotate(-80deg) translateX(-55px) skewX(-70deg);
   }
-  92% {
+  96% {
     opacity: 0.1;
-    transform: scaleY(0.1) rotate(-60deg) translateX(-40px) skewX(-45deg);
+    transform: scaleY(0.1) rotate(120deg) translateX(60px) skewX(90deg);
   }
   100% {
     opacity: 0;
-    transform: scaleY(0) rotate(90deg) translateX(50px) skewX(60deg);
+    transform: scaleY(0) rotate(-100deg) translateX(-70px) skewX(-80deg);
   }
 }
 
-@keyframes energyCrackle {
+@keyframes fireAura {
   0%,
   100% {
-    opacity: 0.1;
+    opacity: 0.2;
     transform: scale(1);
   }
-  15% {
-    opacity: 0.4;
-    transform: scale(1.2);
-  }
-  30% {
-    opacity: 0.2;
-    transform: scale(0.8);
-  }
-  45% {
+  20% {
     opacity: 0.6;
     transform: scale(1.4);
   }
-  60% {
+  35% {
     opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.6);
+  }
+  65% {
+    opacity: 0.4;
     transform: scale(0.9);
   }
   80% {
-    opacity: 0.5;
-    transform: scale(1.1);
+    opacity: 0.7;
+    transform: scale(1.3);
   }
 }
 
