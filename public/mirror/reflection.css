@@ -1,200 +1,421 @@
-/* Mirror – Reflection Experience
-   Black velvet • grain • stars • impulses • tone-fade
-   ============================================================ */
+/* Mirror – Luminous Reflection Experience
+   Deep space • illuminating blue • tone-responsive patterns
+   ========================================================== */
 
-/* ╭─ 0. DEEP-NAVY BASE (radial vignette) ───────────────────────╮ */
+/* ╭─ COSMIC FOUNDATION ──────────────────────────────────────╮ */
 body {
-  background: radial-gradient(
-    circle at 50% -15%,
-    #101024 0%,
-    #06061a 50%,
-    #03030d 100%
-  );
+  background: 
+      /* Deep blue illumination rays */ linear-gradient(
+      127deg,
+      transparent 0%,
+      rgba(30, 64, 175, 0.03) 20%,
+      transparent 25%
+    ),
+    linear-gradient(
+      233deg,
+      transparent 0%,
+      rgba(59, 130, 246, 0.02) 15%,
+      transparent 20%
+    ),
+    linear-gradient(
+      45deg,
+      transparent 0%,
+      rgba(29, 78, 216, 0.025) 30%,
+      transparent 35%
+    ),
+    /* Core deep space */
+      radial-gradient(
+        circle at 30% 20%,
+        rgba(15, 23, 42, 0.4) 0%,
+        transparent 50%
+      ),
+    radial-gradient(
+      circle at 70% 80%,
+      rgba(30, 41, 59, 0.3) 0%,
+      transparent 60%
+    ),
+    /* Foundation */ #020617;
+
   color: #fff;
   overflow-x: hidden;
-  font-family: Inter, Segoe UI, Helvetica, Arial, sans-serif;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
   scroll-behavior: smooth;
+  min-height: 100vh;
 }
 
-/* ╭─ 1. VELVET GRID  +  FILM GRAIN  (layer -3) ─────────────────╮ */
+/* ╭─ SUBTLE COSMIC TEXTURE ──────────────────────────────────╮ */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: -3;
+  z-index: 1;
   pointer-events: none;
-  /* 1a. woven 2 px grid */
-  background-image: repeating-linear-gradient(
-      0deg,
-      rgba(255, 255, 255, 0.045) 0 1px,
-      transparent 1px 4px
+  background: 
+      /* Fine starfield */ radial-gradient(
+      circle at 20% 30%,
+      rgba(255, 255, 255, 0.4) 0 1px,
+      transparent 2px
     ),
-    repeating-linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.045) 0 1px,
-      transparent 1px 4px
+    radial-gradient(
+      circle at 60% 70%,
+      rgba(255, 255, 255, 0.3) 0 1px,
+      transparent 2px
     ),
-    /* 1b. subtle noise (tiny base64 PNG) */
-      url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=");
-  background-size: 4px 4px, 4px 4px, 200px 200px;
-  opacity: 0.1; /* tweak 0.08-0.14 for more/less plush */
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(255, 255, 255, 0.35) 0 1px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 30% 80%,
+      rgba(255, 255, 255, 0.25) 0 1px,
+      transparent 2px
+    );
+  background-size: 800px 600px, 1200px 800px, 600px 900px, 1000px 700px;
+  opacity: 0.1;
+  animation: starShimmer 60s ease-in-out infinite;
 }
 
-/* ╭─ 2. STARFIELD (layer -2) ───────────────────────────────────╮ */
-body::after {
-  content: "";
+@keyframes starShimmer {
+  0%,
+  100% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.15;
+  }
+}
+
+/* ╭─ TONE PATTERN CONTAINERS ────────────────────────────────╮ */
+.pattern-left,
+.pattern-right {
   position: fixed;
-  inset: 0;
-  z-index: -2;
+  top: 0;
+  width: 200px;
+  height: 100vh;
   pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.pattern-left {
+  left: 0;
+}
+.pattern-right {
+  right: 0;
+}
+
+/* ╭─ FUSION TONE: GOLDEN BREATHING ──────────────────────────╮ */
+body.tone-fusion .pattern-left::before,
+body.tone-fusion .pattern-right::before {
+  content: "";
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.35) 0 1px,
-    transparent 2px
+    rgba(251, 191, 36, 0.4) 0%,
+    rgba(245, 158, 11, 0.2) 40%,
+    rgba(217, 119, 6, 0.1) 70%,
+    transparent 100%
   );
-  background-size: 3px 3px;
-  opacity: 0.1;
-  animation: twinkle 9s ease-in-out infinite alternate;
-}
-@keyframes twinkle {
-  from {
-    opacity: 0.05;
-  }
-  to {
-    opacity: 0.18;
-  }
+  filter: blur(2px);
+  animation: goldenBreathe 8s ease-in-out infinite;
 }
 
-/* ╭─ 3. IMPULSE PARTICLES (layer -1) ───────────────────────────╮ */
-.particle {
-  position: fixed;
-  z-index: -1;
-  pointer-events: none;
+body.tone-fusion .pattern-left::before {
+  top: 20%;
+  left: 50px;
+  animation-delay: 0s;
 }
 
-.particle-breath {
-  width: 0;
-  height: 0;
+body.tone-fusion .pattern-right::before {
+  top: 60%;
+  right: 50px;
+  animation-delay: 4s;
+}
+
+body.tone-fusion .pattern-left::after,
+body.tone-fusion .pattern-right::after {
+  content: "";
+  position: absolute;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.22);
-  transform: translate(-50%, -50%) scale(0.05);
-  animation: breath 5s ease-out forwards;
+  background: radial-gradient(
+    circle,
+    rgba(254, 215, 102, 0.3) 0%,
+    rgba(251, 191, 36, 0.15) 50%,
+    transparent 80%
+  );
+  filter: blur(1px);
+  animation: goldenBreathe 12s ease-in-out infinite;
 }
-@keyframes breath {
-  0% {
+
+body.tone-fusion .pattern-left::after {
+  top: 70%;
+  left: 20px;
+  animation-delay: 2s;
+}
+
+body.tone-fusion .pattern-right::after {
+  top: 30%;
+  right: 30px;
+  animation-delay: 6s;
+}
+
+@keyframes goldenBreathe {
+  0%,
+  100% {
+    transform: scale(0.3);
     opacity: 0;
+  }
+  25% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.4;
+  }
+  75% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+}
+
+/* ╭─ GENTLE TONE: STAR FIELD ────────────────────────────────╮ */
+body.tone-gentle .pattern-left,
+body.tone-gentle .pattern-right {
+  background: radial-gradient(
+      circle at 30px 150px,
+      rgba(255, 255, 255, 0.8) 0 1px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 120px 300px,
+      rgba(255, 255, 255, 0.6) 0 1px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 80px 450px,
+      rgba(255, 255, 255, 0.7) 0 1px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 40px 600px,
+      rgba(255, 255, 255, 0.5) 0 1px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 150px 200px,
+      rgba(255, 255, 255, 0.4) 0 1px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 60px 350px,
+      rgba(255, 255, 255, 0.9) 0 1px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 100px 500px,
+      rgba(255, 255, 255, 0.3) 0 1px,
+      transparent 2px
+    );
+  background-size: 200px 100px;
+  animation: gentleStars 25s ease-in-out infinite;
+}
+
+body.tone-gentle .pattern-right {
+  animation-delay: 12s;
+}
+
+@keyframes gentleStars {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: translateY(0);
+  }
+  25% {
+    opacity: 0.8;
+    transform: translateY(-20px);
+  }
+  50% {
+    opacity: 0.4;
+    transform: translateY(-10px);
+  }
+  75% {
+    opacity: 0.9;
+    transform: translateY(-30px);
+  }
+}
+
+/* ╭─ INTENSE TONE: PURPLE LIGHTNING ─────────────────────────╮ */
+body.tone-intense .pattern-left::before,
+body.tone-intense .pattern-right::before {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 300px;
+  background: linear-gradient(
+    0deg,
+    transparent 0%,
+    rgba(147, 51, 234, 0.6) 20%,
+    rgba(168, 85, 247, 0.8) 50%,
+    rgba(147, 51, 234, 0.4) 80%,
+    transparent 100%
+  );
+  filter: blur(1px);
+  transform-origin: center;
+  animation: purpleLightning 6s ease-in-out infinite;
+}
+
+body.tone-intense .pattern-left::before {
+  top: 100px;
+  left: 80px;
+  animation-delay: 0s;
+}
+
+body.tone-intense .pattern-right::before {
+  top: 200px;
+  right: 60px;
+  animation-delay: 3s;
+}
+
+body.tone-intense .pattern-left::after,
+body.tone-intense .pattern-right::after {
+  content: "";
+  position: absolute;
+  width: 150px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(168, 85, 247, 0.3) 30%,
+    rgba(147, 51, 234, 0.6) 50%,
+    rgba(168, 85, 247, 0.3) 70%,
+    transparent 100%
+  );
+  filter: blur(0.5px);
+  animation: purpleSwirl 4s ease-in-out infinite;
+}
+
+body.tone-intense .pattern-left::after {
+  top: 400px;
+  left: 0px;
+  animation-delay: 1.5s;
+}
+
+body.tone-intense .pattern-right::after {
+  top: 500px;
+  right: 0px;
+  animation-delay: 4.5s;
+}
+
+@keyframes purpleLightning {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scaleY(0.1) rotate(-10deg);
   }
   15% {
-    opacity: 0.35;
+    opacity: 0.8;
+    transform: scaleY(1) rotate(-5deg);
   }
-  80% {
-    opacity: 0.12;
+  30% {
+    opacity: 0.4;
+    transform: scaleY(0.8) rotate(5deg);
   }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(3.6);
+  50% {
+    opacity: 0.9;
+    transform: scaleY(1.2) rotate(-3deg);
+  }
+  70% {
+    opacity: 0.2;
+    transform: scaleY(0.6) rotate(8deg);
   }
 }
 
-.particle-star {
-  width: 2px;
-  height: 2px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
-  animation: blink 3.8s ease-in-out forwards;
-}
-@keyframes blink {
-  0% {
+@keyframes purpleSwirl {
+  0%,
+  100% {
     opacity: 0;
-    transform: scale(0.4);
+    transform: scaleX(0) rotate(0deg);
   }
-  12% {
-    opacity: 1;
-    transform: scale(1);
+  25% {
+    opacity: 0.6;
+    transform: scaleX(0.8) rotate(90deg);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scaleX(1.2) rotate(180deg);
+  }
+  75% {
+    opacity: 0.8;
+    transform: scaleX(0.6) rotate(270deg);
+  }
+}
+
+/* ╭─ ADDITIONAL COSMIC PARTICLES ────────────────────────────╮ */
+.cosmic-particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cosmic-particle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  animation: cosmicDrift 40s linear infinite;
+}
+
+.cosmic-particle:nth-child(1) {
+  left: 10%;
+  animation-delay: 0s;
+  animation-duration: 45s;
+}
+
+.cosmic-particle:nth-child(2) {
+  left: 90%;
+  animation-delay: 15s;
+  animation-duration: 50s;
+}
+
+.cosmic-particle:nth-child(3) {
+  left: 5%;
+  animation-delay: 30s;
+  animation-duration: 55s;
+}
+
+.cosmic-particle:nth-child(4) {
+  left: 95%;
+  animation-delay: 20s;
+  animation-duration: 40s;
+}
+
+@keyframes cosmicDrift {
+  0% {
+    transform: translateY(100vh) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
   }
   90% {
-    opacity: 1;
+    opacity: 0.3;
   }
   100% {
-    opacity: 0;
-    transform: scale(0.4);
-  }
-}
-
-.particle-ember {
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: rgba(255, 125, 0, 0.9);
-  animation: ember 6.5s linear forwards;
-}
-@keyframes ember {
-  0% {
-    opacity: 0;
-    transform: translate3d(0, 0, 0) scale(0.6);
-  }
-  12% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-    transform: translate3d(calc(var(--dx) * 1px), calc(var(--dy) * 1px), 0)
-      scale(0.15);
-  }
-  100% {
+    transform: translateY(-20vh) translateX(50px);
     opacity: 0;
   }
 }
 
-/* ╭─ 4. TONE-FADE UTILITY ──────────────────────────────────────╮ */
-body.fade-transition::after,
-body.fade-transition::before {
-  transition: opacity 0.8s ease;
-}
-body.fade-out::after,
-body.fade-out::before {
-  opacity: 0 !important;
-}
-body.fade-in::after,
-body.fade-in::before {
-  opacity: 1 !important;
-}
-
-/* ╭─ 5. TONE PICKER BUTTONS (understated) ──────────────────────╮ */
-.tone-group {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-}
-.tone-label {
-  flex-basis: 100%;
-  margin-bottom: 0.5rem;
-  font-size: 0.95rem;
-  opacity: 0.8;
-}
-.tone-btn {
-  flex: 1;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 12px;
-  color: #fff;
-  text-align: center;
-  user-select: none;
-  cursor: pointer;
-  transition: all 0.28s ease;
-}
-.tone-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-.tone-btn.selected {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.38);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.22);
-}
-
-/* ╭─ 6. FORM, RESULTS, ANIMATIONS – ORIGINAL STYLES ────────────╮ */
+/* ╭─ CONTENT CONTAINER ──────────────────────────────────────╮ */
 .container {
   max-width: 700px;
   margin: 0 auto;
@@ -203,23 +424,101 @@ body.fade-in::before {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  z-index: 10;
 }
 
+/* ╭─ LUMINOUS FORM STYLING ──────────────────────────────────╮ */
 .experience-section {
   width: 100%;
   text-align: center;
   opacity: 0;
   transform: translateY(30px);
-  transition: 0.8s ease;
+  transition: all 0.8s ease;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 3rem 2rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
+
 .experience-section.active {
   opacity: 1;
   transform: translateY(0);
 }
+
 .experience-section.hidden {
   display: none;
 }
 
+/* ╭─ TONE SELECTOR ENHANCEMENT ──────────────────────────────╮ */
+.tone-group {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+.tone-label {
+  flex-basis: 100%;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  opacity: 0.9;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.tone-btn {
+  flex: 1;
+  padding: 1.2rem 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+
+.tone-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.tone-btn:hover::before {
+  opacity: 1;
+}
+
+.tone-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+}
+
+.tone-btn.selected {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+  box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
+  transform: translateY(-3px);
+}
+
+/* ╭─ QUESTION STYLING ────────────────────────────────────────╮ */
 .questions-form {
   text-align: left;
 }
@@ -228,135 +527,236 @@ body.fade-in::before {
   margin-bottom: 3rem;
   opacity: 0;
   transform: translateY(20px);
-  transition: 0.6s;
+  transition: all 0.6s ease;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
+
 .question-group.visible {
   opacity: 1;
   transform: translateY(0);
 }
 
 .question-number {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   opacity: 0.6;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.5);
 }
+
 .question-text {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   margin-bottom: 1rem;
   line-height: 1.4;
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 300;
+  letter-spacing: 0.3px;
 }
+
 .question-subtitle {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   opacity: 0.7;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   font-style: italic;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.5;
 }
-.question-textarea {
-  min-height: 120px;
+
+/* ╭─ ENHANCED INPUTS ─────────────────────────────────────────╮ */
+.sacred-input {
+  width: 100%;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.4s ease;
   resize: vertical;
 }
 
-.yes-no-buttons {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
-}
-.yes-no-btn {
-  flex: 1;
-  padding: 1rem;
+.sacred-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
-  color: #fff;
-  text-align: center;
-  cursor: pointer;
-  transition: 0.3s;
-}
-.yes-no-btn:hover,
-.yes-no-btn.selected {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.38);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
 }
 
-.date-container {
+.sacred-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+}
+
+.question-textarea {
+  min-height: 140px;
+  line-height: 1.6;
+}
+
+/* ╭─ YES/NO BUTTONS ──────────────────────────────────────────╮ */
+.yes-no-buttons {
   display: flex;
-  align-items: center;
   gap: 1rem;
   margin-top: 1rem;
 }
 
+.yes-no-btn {
+  flex: 1;
+  padding: 1.2rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+.yes-no-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.yes-no-btn.selected {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+}
+
+/* ╭─ DATE CONTAINER ──────────────────────────────────────────╮ */
+.date-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.date-container label {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 400;
+}
+
+/* ╭─ SUBMIT BUTTON ───────────────────────────────────────────╮ */
 .submit-btn {
   width: 100%;
   margin-top: 3rem;
-  padding: 1.2rem 2rem;
-  font-size: 1rem;
+  padding: 1.5rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  letter-spacing: 0.5px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
+
+.submit-btn:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.12) 100%
+  );
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(255, 255, 255, 0.1);
+}
+
 .submit-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
 }
 
+/* ╭─ LOADING STATES ──────────────────────────────────────────╮ */
 .loading-circle {
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   background: radial-gradient(
     circle,
     rgba(255, 255, 255, 0.2) 0%,
-    rgba(255, 255, 255, 0.05) 70%
+    rgba(255, 255, 255, 0.05) 70%,
+    transparent 100%
   );
   margin: 0 auto 2rem;
-  animation: pulse 2s ease-in-out infinite;
+  animation: cosmicPulse 3s ease-in-out infinite;
+  position: relative;
 }
-.loading-text {
-  font-size: 1.1rem;
-  font-weight: 300;
-  opacity: 0.8;
-  text-align: center;
+
+.loading-circle::after {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: cosmicSpin 6s linear infinite;
 }
-@keyframes pulse {
+
+@keyframes cosmicPulse {
   0%,
   100% {
-    transform: scale(0.94);
+    transform: scale(0.9);
+    opacity: 0.6;
   }
   50% {
-    transform: scale(1.06);
+    transform: scale(1.1);
+    opacity: 1;
   }
 }
 
-/* Results box */
+@keyframes cosmicSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  font-size: 1.2rem;
+  font-weight: 300;
+  opacity: 0.8;
+  text-align: center;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* ╭─ RESULTS SECTION ─────────────────────────────────────────╮ */
 .results {
   text-align: left;
 }
-.admin-notice {
-  background: rgba(59, 130, 246, 0.2);
-  border: 1px solid rgba(59, 130, 246, 0.4);
-  padding: 1rem;
-  border-radius: 12px;
-  margin-bottom: 2rem;
-  text-align: center;
-  font-size: 0.9rem;
-}
+
 .results-content {
   background: rgba(255, 255, 255, 0.97);
   color: #333;
   padding: 3rem;
   border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
   margin-bottom: 2rem;
   font-size: 1.05rem;
   line-height: 1.8;
-}
-.results-content strong {
-  color: #16213e;
-  font-weight: 600;
-}
-.results-content em {
-  color: #666;
-  font-style: italic;
-}
-.results-content p {
-  margin-bottom: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .results-actions {
@@ -365,29 +765,81 @@ body.fade-in::before {
   justify-content: center;
   flex-wrap: wrap;
 }
-.results-actions .sacred-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.95rem;
-}
 
-/* ╭─ 7. RESPONSIVE TWEAKS ───────────────────────────────────────╮ */
+/* ╭─ RESPONSIVE DESIGN ───────────────────────────────────────╮ */
 @media (max-width: 768px) {
+  .pattern-left,
+  .pattern-right {
+    width: 100px;
+  }
+
   .container {
     padding: 1rem;
   }
-  .question-text {
-    font-size: 1.1rem;
+
+  .experience-section {
+    padding: 2rem 1.5rem;
   }
-  .results-content {
-    padding: 2rem;
+
+  .question-group {
+    padding: 1.5rem;
   }
-  .results-actions {
+
+  .tone-group {
     flex-direction: column;
+    gap: 0.8rem;
   }
+
   .date-container {
     flex-direction: column;
     align-items: stretch;
   }
+}
+
+@media (max-width: 480px) {
+  .pattern-left,
+  .pattern-right {
+    width: 60px;
+  }
+
+  .experience-section {
+    padding: 1.5rem 1rem;
+    border-radius: 16px;
+  }
+}
+
+/* ╭─ ENHANCED FOCUS STATES ───────────────────────────────────╮ */
+.tone-btn:focus,
+.yes-no-btn:focus,
+.sacred-input:focus,
+.submit-btn:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 2px;
+}
+
+/* ╭─ SMOOTH TRANSITIONS ──────────────────────────────────────╮ */
+* {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* ╭─ COSMIC SHIMMER EFFECT ───────────────────────────────────╮ */
+@keyframes cosmicShimmer {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.tone-btn.selected {
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  background-size: 200% 200%;
+  animation: cosmicShimmer 3s ease-in-out infinite;
 }

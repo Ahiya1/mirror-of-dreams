@@ -1,21 +1,47 @@
-// Mirror – Reflection Logic (impulse particles + tone fade)
+// Mirror – Luminous Reflection Logic
+// Deep space • tone-responsive patterns • cosmic consciousness
 // ---------------------------------------------------------
 
 let userData = null;
 let hasDateSet = null;
 let isAdminMode = false;
 let selectedTone = "fusion"; // default
-let particleTimer = null; // interval id for particle spawning
 
-/* — Init — */
+/* — COSMIC INITIALIZATION — */
 window.addEventListener("load", () => {
   checkAuthAndSetup();
-  setTimeout(animateQuestions, 300);
+  initializeCosmicSpace();
+  setTimeout(animateQuestions, 500);
   setupInteractions();
-  startParticles(selectedTone); // initial field
 });
 
-/* — Auth check (unchanged) — */
+/* — COSMIC SPACE SETUP — */
+function initializeCosmicSpace() {
+  // Create pattern containers
+  const patternLeft = document.createElement("div");
+  const patternRight = document.createElement("div");
+  patternLeft.className = "pattern-left";
+  patternRight.className = "pattern-right";
+  document.body.appendChild(patternLeft);
+  document.body.appendChild(patternRight);
+
+  // Create cosmic particles
+  const particlesContainer = document.createElement("div");
+  particlesContainer.className = "cosmic-particles";
+
+  for (let i = 0; i < 4; i++) {
+    const particle = document.createElement("div");
+    particle.className = "cosmic-particle";
+    particlesContainer.appendChild(particle);
+  }
+
+  document.body.appendChild(particlesContainer);
+
+  // Set initial tone
+  document.body.classList.add(`tone-${selectedTone}`);
+}
+
+/* — AUTH CHECK (unchanged) — */
 function checkAuthAndSetup() {
   const url = new URLSearchParams(location.search);
   if (url.get("admin") === "true") {
@@ -35,39 +61,71 @@ function checkAuthAndSetup() {
   }
 }
 
-/* — Question rise animation — */
+/* — LUMINOUS QUESTION ANIMATION — */
 function animateQuestions() {
   document.querySelectorAll(".question-group").forEach((q, i) => {
-    setTimeout(() => q.classList.add("visible"), i * 200);
+    setTimeout(() => {
+      q.classList.add("visible");
+
+      // Add subtle glow effect on reveal
+      q.style.transition = "all 0.8s ease, box-shadow 0.8s ease";
+      q.style.boxShadow = "0 0 30px rgba(255, 255, 255, 0.05)";
+
+      setTimeout(() => {
+        q.style.boxShadow = "none";
+      }, 1000);
+    }, i * 300);
   });
 }
 
-/* — Tone / Yes-No / Form interactions — */
+/* — TONE & INTERACTION SETUP — */
 function setupInteractions() {
-  /* Tone picker */
+  /* Luminous Tone Picker */
   document.querySelectorAll(".tone-btn").forEach((btn) => {
     btn.addEventListener("click", function () {
+      // Remove selection from siblings
       this.parentNode
         .querySelectorAll(".tone-btn")
         .forEach((b) => b.classList.remove("selected"));
+
+      // Select current
       this.classList.add("selected");
 
       const newTone = this.dataset.tone || "fusion";
       if (newTone === selectedTone) return;
 
       selectedTone = newTone;
-      bodyToneSwap(newTone);
-      startParticles(newTone);
+      transitionToTone(newTone);
+    });
+
+    // Add hover cosmic effect
+    btn.addEventListener("mouseenter", function () {
+      this.style.transform = "translateY(-2px) scale(1.02)";
+      this.style.boxShadow = "0 8px 32px rgba(255, 255, 255, 0.1)";
+    });
+
+    btn.addEventListener("mouseleave", function () {
+      if (!this.classList.contains("selected")) {
+        this.style.transform = "";
+        this.style.boxShadow = "";
+      }
     });
   });
 
-  /* Yes/No */
+  /* Enhanced Yes/No Interactions */
   document.querySelectorAll(".yes-no-btn").forEach((btn) => {
     btn.addEventListener("click", function () {
+      // Cosmic selection animation
+      this.style.transform = "scale(0.95)";
+      setTimeout(() => {
+        this.style.transform = "translateY(-2px) scale(1)";
+      }, 100);
+
       this.parentNode
         .querySelectorAll(".yes-no-btn")
         .forEach((b) => b.classList.remove("selected"));
       this.classList.add("selected");
+
       hasDateSet = this.dataset.value;
       document.querySelector('input[name="hasDate"]').value = hasDateSet;
 
@@ -75,6 +133,7 @@ function setupInteractions() {
       const dateInp = box.querySelector("input");
       if (hasDateSet === "yes") {
         box.style.display = "flex";
+        box.style.animation = "fadeIn 0.6s ease forwards";
         dateInp.required = true;
       } else {
         box.style.display = "none";
@@ -82,14 +141,51 @@ function setupInteractions() {
         dateInp.value = "";
       }
     });
+
+    // Hover effects
+    btn.addEventListener("mouseenter", function () {
+      this.style.transform = "translateY(-2px)";
+      this.style.boxShadow = "0 4px 20px rgba(255, 255, 255, 0.1)";
+    });
+
+    btn.addEventListener("mouseleave", function () {
+      if (!this.classList.contains("selected")) {
+        this.style.transform = "";
+        this.style.boxShadow = "";
+      }
+    });
   });
 
-  /* Form submit (unchanged except payload tone) */
+  /* Enhanced Input Focus Effects */
+  document.querySelectorAll(".sacred-input").forEach((input) => {
+    input.addEventListener("focus", function () {
+      this.parentNode.style.transform = "scale(1.01)";
+      this.parentNode.style.transition = "transform 0.3s ease";
+    });
+
+    input.addEventListener("blur", function () {
+      this.parentNode.style.transform = "";
+    });
+
+    input.addEventListener("input", function () {
+      // Subtle typing glow
+      this.style.boxShadow = "0 0 20px rgba(255, 255, 255, 0.05)";
+      clearTimeout(this.glowTimeout);
+      this.glowTimeout = setTimeout(() => {
+        this.style.boxShadow = "";
+      }, 1000);
+    });
+  });
+
+  /* Form Submission with Cosmic Loading */
   document
     .getElementById("reflectionForm")
     .addEventListener("submit", async (e) => {
       e.preventDefault();
-      showSection("loading");
+
+      // Cosmic transition to loading
+      showSection("loading", true);
+
       const fd = new FormData(e.target);
 
       let creatorContext = null,
@@ -127,117 +223,104 @@ function setupInteractions() {
         });
         const data = await res.json();
         if (!data.success) throw new Error(data.error || "Reflection failed");
+
         document.getElementById("reflectionContent").innerHTML =
           data.reflection;
-        showSection("results");
+        showSection("results", true);
       } catch (err) {
         console.error(err);
         document.getElementById("reflectionContent").innerHTML = `
           <h2>A moment of silence…</h2>
           <p>Your reflection is being prepared. Please try again soon.</p>`;
-        showSection("results");
+        showSection("results", true);
       }
     });
 }
 
-/* — Fade-swap helper — */
-function bodyToneSwap(newTone) {
-  document.body.classList.add("fade-transition", "fade-out");
+/* — COSMIC TONE TRANSITION — */
+function transitionToTone(newTone) {
+  // Fade out current patterns
+  document.body.style.transition = "filter 0.6s ease";
+  document.body.style.filter = "blur(1px) brightness(0.7)";
+
   setTimeout(() => {
+    // Switch tone classes
     document.body.classList.remove(
       "tone-gentle",
       "tone-intense",
       "tone-fusion"
     );
     document.body.classList.add(`tone-${newTone}`);
-    document.body.classList.remove("fade-out");
-    document.body.classList.add("fade-in");
-    setTimeout(
-      () => document.body.classList.remove("fade-transition", "fade-in"),
-      800
-    );
-  }, 60);
+
+    // Fade back in with new patterns
+    document.body.style.filter = "";
+
+    // Add cosmic shimmer effect during transition
+    const shimmer = document.createElement("div");
+    shimmer.style.cssText = `
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+      background-size: 200% 200%;
+      animation: cosmicShimmer 1s ease-out;
+      pointer-events: none;
+      z-index: 100;
+    `;
+    document.body.appendChild(shimmer);
+
+    setTimeout(() => shimmer.remove(), 1000);
+  }, 300);
 }
 
-/* — Particle system — */
-function startParticles(mode) {
-  if (particleTimer) clearInterval(particleTimer);
-
-  const spawn = () => spawnParticle(mode);
-
-  /* gentle: slower, intense: quicker, fusion: medium */
-  let rate = 1800;
-  if (mode === "gentle") rate = 2200;
-  if (mode === "intense") rate = 900;
-
-  spawn(); // immediate first
-  particleTimer = setInterval(spawn, rate);
-}
-
-function spawnParticle(mode) {
-  /* decide type based on mode */
-  let type;
-  if (mode === "gentle") {
-    type = Math.random() < 0.35 ? "breath" : "star";
-  } else if (mode === "intense") {
-    type = "ember";
-  } else {
-    /* fusion */
-    type = Math.random() < 0.5 ? "ember" : "breath";
-  }
-
-  const el = document.createElement("div");
-  el.className = `particle particle-${type}`;
-
-  /* random position */
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-
-  if (type === "ember") {
-    /* start near bottom centre, drift up-right with random vector */
-    el.style.left = vw * 0.4 + Math.random() * vw * 0.2 + "px";
-    el.style.top = vh * 0.75 + Math.random() * vh * 0.15 + "px";
-    const dx = 50 + Math.random() * 120;
-    const dy = 150 + Math.random() * 180;
-    el.style.setProperty("--dx", dx);
-    el.style.setProperty("--dy", -dy);
-  } else if (type === "breath") {
-    /* breathe near centre-ish */
-    el.style.left = vw * 0.3 + Math.random() * vw * 0.4 + "px";
-    el.style.top = vh * 0.3 + Math.random() * vh * 0.4 + "px";
-  } else {
-    /* star */
-    el.style.left = Math.random() * vw + "px";
-    el.style.top = Math.random() * vh + "px";
-  }
-
-  document.body.appendChild(el);
-  el.addEventListener("animationend", () => el.remove());
-}
-
-/* — Simple section show utility (unchanged) — */
-function showSection(id) {
+/* — ENHANCED SECTION TRANSITIONS — */
+function showSection(id, cosmic = false) {
   document.querySelectorAll(".experience-section").forEach((sec) => {
     sec.classList.remove("active");
-    setTimeout(() => sec.classList.add("hidden"), 300);
+    sec.style.transform = "translateY(20px) scale(0.98)";
+    sec.style.opacity = "0";
+    setTimeout(() => sec.classList.add("hidden"), 400);
   });
+
   setTimeout(() => {
     document
       .querySelectorAll(".experience-section")
       .forEach((s) => s.classList.add("hidden"));
+
     const sec = document.getElementById(id);
     sec.classList.remove("hidden");
-    setTimeout(() => sec.classList.add("active"), 50);
-  }, 300);
+
+    if (cosmic) {
+      // Cosmic emergence animation
+      sec.style.transform = "translateY(30px) scale(0.95)";
+      sec.style.opacity = "0";
+      sec.style.filter = "blur(2px)";
+    }
+
+    setTimeout(() => {
+      sec.classList.add("active");
+      sec.style.transform = "translateY(0) scale(1)";
+      sec.style.opacity = "1";
+      sec.style.filter = "none";
+    }, 100);
+  }, 400);
 }
 
-/* — Email helper (unchanged) — */
+/* — COSMIC EMAIL HELPER — */
 function emailReflection() {
   if (!userData?.email) {
     const email = prompt("Enter your email to receive this reflection:");
     if (!email) return;
     userData = { ...userData, email };
   }
+
+  // Cosmic sending animation
+  const btn = event.target;
+  const originalText = btn.innerHTML;
+  btn.innerHTML = "<span>✨</span><span>Sending through the cosmos...</span>";
+  btn.style.background =
+    "linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2))";
+  btn.disabled = true;
+
   fetch("/api/communication", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -250,6 +333,77 @@ function emailReflection() {
     }),
   })
     .then((r) => r.json())
-    .then((d) => alert(d.success ? "Reflection sent." : "Issue sending."))
-    .catch(() => alert("Error sending."));
+    .then((d) => {
+      btn.innerHTML = d.success
+        ? "<span>🌟</span><span>Sent to the stars</span>"
+        : "<span>⚡</span><span>Cosmic interference</span>";
+
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.style.background = "";
+        btn.disabled = false;
+      }, 2000);
+    })
+    .catch(() => {
+      btn.innerHTML = "<span>🌙</span><span>Try again</span>";
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.style.background = "";
+        btn.disabled = false;
+      }, 2000);
+    });
 }
+
+/* — COSMIC CURSOR INTERACTION — */
+document.addEventListener("mousemove", (e) => {
+  const mouseX = e.clientX / window.innerWidth;
+  const mouseY = e.clientY / window.innerHeight;
+
+  // Subtle cosmic response to cursor
+  document.documentElement.style.setProperty("--mouse-x", mouseX);
+  document.documentElement.style.setProperty("--mouse-y", mouseY);
+
+  // Create occasional cosmic sparkles on movement
+  if (Math.random() < 0.02) {
+    createCosmicSparkle(e.clientX, e.clientY);
+  }
+});
+
+function createCosmicSparkle(x, y) {
+  const sparkle = document.createElement("div");
+  sparkle.style.cssText = `
+    position: fixed;
+    left: ${x}px;
+    top: ${y}px;
+    width: 2px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1000;
+    animation: sparkle 1s ease-out forwards;
+  `;
+
+  document.body.appendChild(sparkle);
+  setTimeout(() => sparkle.remove(), 1000);
+}
+
+/* — COSMIC SPARKLE ANIMATION — */
+const style = document.createElement("style");
+style.textContent = `
+  @keyframes sparkle {
+    0% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0) translateY(-20px);
+    }
+  }
+`;
+document.head.appendChild(style);

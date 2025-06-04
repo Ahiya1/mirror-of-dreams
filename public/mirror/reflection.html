@@ -3,20 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>Your Reflection</title>
+    <title>Your Reflection | Mirror of Truth</title>
     <link rel="stylesheet" href="/shared/foundation.css" />
     <link rel="stylesheet" href="/mirror/reflection.css" />
   </head>
 
-  <!-- default body class gives the “Let the Mirror Breathe” visuals -->
-  <body class="tone-fusion">
+  <!-- Cosmic body - tone will be applied via JS -->
+  <body>
+    <!-- Cosmic particles and patterns will be added via JS -->
+
     <div class="container">
       <!-- Questions Section -->
       <div class="experience-section active" id="questions">
         <form id="reflectionForm" class="questions-form">
-          <!-- ── Tone Picker ───────────────────────────────────── -->
+          <!-- ── Luminous Tone Picker ───────────────────────────── -->
           <div class="tone-group">
-            <div class="tone-label">Choose a voice for your reflection:</div>
+            <div class="tone-label">Choose the voice of your reflection</div>
 
             <div class="tone-btn selected" data-tone="fusion">
               Let the Mirror Breathe
@@ -30,13 +32,13 @@
             <div class="question-number">Question 1</div>
             <div class="question-text">What is your dream?</div>
             <div class="question-subtitle">
-              (Choose just one — the one that calls you most right now.)
+              Choose just one — the one that calls you most right now.
             </div>
             <textarea
               id="dreamInput"
               name="dream"
               class="question-textarea sacred-input"
-              placeholder="Write the dream that calls you"
+              placeholder="Write the dream that calls you..."
               required
             ></textarea>
           </div>
@@ -47,13 +49,13 @@
               What is your plan for achieving this dream?
             </div>
             <div class="question-subtitle">
-              (Write what you already know. It's okay if it's unclear.)
+              Write what you already know. It's okay if it's unclear.
             </div>
             <textarea
               id="planInput"
               name="plan"
               class="question-textarea sacred-input"
-              placeholder="Describe any plan (or absence of plan)"
+              placeholder="Describe any plan (or absence of plan)..."
               required
             ></textarea>
           </div>
@@ -73,7 +75,7 @@
               id="dateContainer"
               style="display: none"
             >
-              <label style="opacity: 0.8">What is the date?</label>
+              <label>What is the date?</label>
               <input type="date" class="sacred-input" name="dreamDate" />
             </div>
           </div>
@@ -84,7 +86,7 @@
               What is your current relationship with this dream?
             </div>
             <div class="question-subtitle">
-              (Do you believe you'll achieve it? Why or why not?)
+              Do you believe you'll achieve it? Why or why not?
             </div>
             <textarea
               id="relationshipInput"
@@ -101,7 +103,7 @@
               What are you willing to give in return?
             </div>
             <div class="question-subtitle">
-              (Energy, focus, love, time — what will you offer to this dream?)
+              Energy, focus, love, time — what will you offer to this dream?
             </div>
             <textarea
               id="offeringInput"
@@ -118,11 +120,13 @@
         </form>
       </div>
 
-      <!-- Loading Section -->
+      <!-- Cosmic Loading Section -->
       <div class="experience-section hidden" id="loading">
         <div>
           <div class="loading-circle"></div>
-          <div class="loading-text">Reflecting your truth…</div>
+          <div class="loading-text">
+            Reflecting your truth through the cosmos...
+          </div>
         </div>
       </div>
 
@@ -130,7 +134,7 @@
       <div class="experience-section hidden" id="results">
         <div class="results">
           <div class="admin-notice" id="adminNotice" style="display: none">
-            <span>✨ Admin session — unlimited reflections</span>
+            <span>✨ Admin session — unlimited cosmic reflections</span>
           </div>
           <div class="results-content" id="reflectionContent"></div>
           <div class="results-actions">
@@ -139,7 +143,7 @@
               id="emailBtn"
               onclick="emailReflection()"
             >
-              <span>📧</span><span>Email This Reflection</span>
+              <span>🌟</span><span>Send to the Stars</span>
             </button>
             <a href="/" class="sacred-button">
               <span>🪞</span><span>Reflect Again</span>
