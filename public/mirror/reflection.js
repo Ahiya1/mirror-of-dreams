@@ -1,49 +1,72 @@
 // Mirror – Luminous Reflection Logic
-// Aligned with the subtle elegance of registration
+// Spacious, still, arising from silence
 // ---------------------------------------------------------
 
 let userData = null;
 let hasDateSet = null;
 let isAdminMode = false;
 let selectedTone = "fusion"; // default
+let backgroundElements = [];
 
 /* — INITIALIZATION — */
 window.addEventListener("load", () => {
   checkAuthAndSetup();
-  initializeConsciousnessWaves();
-  setTimeout(animateQuestions, 500);
+  initializeToneBackground();
   setupInteractions();
+  animateQuestions();
 });
 
-/* — CONSCIOUSNESS WAVES (like registration) — */
-function initializeConsciousnessWaves() {
-  // Create waves container
-  const wavesContainer = document.createElement("div");
-  wavesContainer.className = "consciousness-waves";
-
-  // Create 2 waves for subtle movement
-  for (let i = 0; i < 2; i++) {
-    const wave = document.createElement("div");
-    wave.className = "wave";
-    wavesContainer.appendChild(wave);
-  }
-
-  document.body.appendChild(wavesContainer);
-
-  // Create particles
-  const particlesContainer = document.createElement("div");
-  particlesContainer.className = "cosmic-particles";
-
-  for (let i = 0; i < 3; i++) {
-    const particle = document.createElement("div");
-    particle.className = "cosmic-particle";
-    particlesContainer.appendChild(particle);
-  }
-
-  document.body.appendChild(particlesContainer);
-
+/* — TONE BACKGROUND SYSTEM — */
+function initializeToneBackground() {
   // Set initial tone
   document.body.classList.add(`tone-${selectedTone}`);
+  createToneElements(selectedTone);
+}
+
+function createToneElements(tone) {
+  // Clear existing elements
+  backgroundElements.forEach((el) => el.remove());
+  backgroundElements = [];
+
+  if (tone === "fusion") {
+    // Create golden breathing circles
+    for (let i = 0; i < 3; i++) {
+      const breath = document.createElement("div");
+      breath.className = "fusion-breath";
+      breath.style.width = `${150 + Math.random() * 100}px`;
+      breath.style.height = breath.style.width;
+      breath.style.left = `${Math.random() * 100}%`;
+      breath.style.top = `${Math.random() * 100}%`;
+      breath.style.animationDelay = `${i * 7}s`;
+      breath.style.animationDuration = `${18 + Math.random() * 6}s`;
+      document.body.appendChild(breath);
+      backgroundElements.push(breath);
+    }
+  } else if (tone === "gentle") {
+    // Create twinkling stars
+    for (let i = 0; i < 20; i++) {
+      const star = document.createElement("div");
+      star.className = "gentle-star";
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.animationDelay = `${Math.random() * 8}s`;
+      star.style.animationDuration = `${6 + Math.random() * 4}s`;
+      document.body.appendChild(star);
+      backgroundElements.push(star);
+    }
+  } else if (tone === "intense") {
+    // Create purple fire swirls
+    for (let i = 0; i < 4; i++) {
+      const swirl = document.createElement("div");
+      swirl.className = "intense-swirl";
+      swirl.style.left = `${Math.random() * 100}%`;
+      swirl.style.top = `${Math.random() * 100}%`;
+      swirl.style.animationDelay = `${i * 4}s`;
+      swirl.style.animationDuration = `${12 + Math.random() * 6}s`;
+      document.body.appendChild(swirl);
+      backgroundElements.push(swirl);
+    }
+  }
 }
 
 /* — AUTH CHECK — */
@@ -68,14 +91,19 @@ function checkAuthAndSetup() {
 
 /* — SUBTLE QUESTION ANIMATION — */
 function animateQuestions() {
-  document.querySelectorAll(".question-group").forEach((q, i) => {
+  const questions = document.querySelectorAll(".question-group");
+  questions.forEach((q, i) => {
+    q.style.opacity = "0";
+    q.style.transform = "translateY(20px)";
     setTimeout(() => {
-      q.classList.add("visible");
-    }, i * 200);
+      q.style.transition = "all 0.8s cubic-bezier(0.4, 0.0, 0.2, 1)";
+      q.style.opacity = "1";
+      q.style.transform = "translateY(0)";
+    }, 300 + i * 150);
   });
 }
 
-/* — TONE & INTERACTION SETUP — */
+/* — INTERACTIONS — */
 function setupInteractions() {
   /* Tone Picker */
   document.querySelectorAll(".tone-btn").forEach((btn) => {
@@ -116,6 +144,20 @@ function setupInteractions() {
         box.style.display = "none";
         dateInp.required = false;
         dateInp.value = "";
+      }
+    });
+  });
+
+  /* Subtle animations when typing */
+  document.querySelectorAll(".sacred-input").forEach((input) => {
+    input.addEventListener("focus", function () {
+      // Create subtle breath when focusing
+      if (selectedTone === "fusion") {
+        createSubtleBreath(this);
+      } else if (selectedTone === "gentle") {
+        createSubtleTwinkle(this);
+      } else if (selectedTone === "intense") {
+        createSubtleSwirl(this);
       }
     });
   });
@@ -180,11 +222,92 @@ function setupInteractions() {
     });
 }
 
-/* — SUBTLE TONE TRANSITION — */
+/* — SUBTLE INTERACTION EFFECTS — */
+function createSubtleBreath(element) {
+  const rect = element.getBoundingClientRect();
+  const breath = document.createElement("div");
+  breath.style.cssText = `
+    position: fixed;
+    left: ${rect.left + rect.width / 2}px;
+    top: ${rect.top + rect.height / 2}px;
+    width: 100px;
+    height: 100px;
+    margin-left: -50px;
+    margin-top: -50px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(251, 191, 36, 0.1) 0%,
+      rgba(245, 158, 11, 0.05) 40%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 5;
+    animation: subtleExpand 3s ease-out forwards;
+  `;
+  document.body.appendChild(breath);
+  setTimeout(() => breath.remove(), 3000);
+}
+
+function createSubtleTwinkle(element) {
+  const rect = element.getBoundingClientRect();
+  for (let i = 0; i < 3; i++) {
+    setTimeout(() => {
+      const star = document.createElement("div");
+      const offsetX = (Math.random() - 0.5) * 100;
+      const offsetY = (Math.random() - 0.5) * 100;
+      star.style.cssText = `
+        position: fixed;
+        left: ${rect.left + rect.width / 2 + offsetX}px;
+        top: ${rect.top + rect.height / 2 + offsetY}px;
+        width: 2px;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 5;
+        animation: subtleTwinkle 2s ease-out forwards;
+      `;
+      document.body.appendChild(star);
+      setTimeout(() => star.remove(), 2000);
+    }, i * 200);
+  }
+}
+
+function createSubtleSwirl(element) {
+  const rect = element.getBoundingClientRect();
+  const swirl = document.createElement("div");
+  swirl.style.cssText = `
+    position: fixed;
+    left: ${rect.left + rect.width / 2}px;
+    top: ${rect.top + rect.height / 2}px;
+    width: 80px;
+    height: 80px;
+    margin-left: -40px;
+    margin-top: -40px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(147, 51, 234, 0.15) 0%,
+      rgba(168, 85, 247, 0.08) 40%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 5;
+    animation: subtleSwirl 3s ease-out forwards;
+  `;
+  document.body.appendChild(swirl);
+  setTimeout(() => swirl.remove(), 3000);
+}
+
+/* — TONE TRANSITION — */
 function transitionToTone(newTone) {
   // Simply switch tone classes
   document.body.classList.remove("tone-gentle", "tone-intense", "tone-fusion");
   document.body.classList.add(`tone-${newTone}`);
+
+  // Recreate background elements
+  createToneElements(newTone);
 }
 
 /* — SECTION TRANSITIONS — */
@@ -235,7 +358,7 @@ function emailReflection() {
     .then((r) => r.json())
     .then((d) => {
       btn.innerHTML = d.success
-        ? "<span>🌟</span><span>Sent to the stars</span>"
+        ? "<span>✅</span><span>Reflection sent</span>"
         : "<span>⚡</span><span>Try again</span>";
 
       setTimeout(() => {
@@ -252,58 +375,51 @@ function emailReflection() {
     });
 }
 
-/* — SUBTLE CURSOR INTERACTION — */
-document.addEventListener("mousemove", (e) => {
-  const mouseX = e.clientX / window.innerWidth;
-  const mouseY = e.clientY / window.innerHeight;
-
-  // Update CSS variables for subtle following
-  document.documentElement.style.setProperty("--mouse-x", mouseX);
-  document.documentElement.style.setProperty("--mouse-y", mouseY);
-});
-
-/* — SUBTLE BREATHING FOR QUESTIONS — */
-window.addEventListener("load", () => {
-  // Add gentle breathing to questions after they appear
-  setTimeout(() => {
-    document.querySelectorAll(".question-group").forEach((q, i) => {
-      q.style.animation = `subtleBreathe ${8 + i * 2}s ease-in-out infinite`;
-      q.style.animationDelay = `${i * 0.5}s`;
-    });
-  }, 2000);
-});
-
-/* — BREATHING ANIMATION — */
-const breathingStyles = document.createElement("style");
-breathingStyles.textContent = `
-  @keyframes subtleBreathe {
-    0%, 100% {
-      transform: translateY(0) scale(1);
-      box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+/* — SUBTLE ANIMATIONS — */
+const style = document.createElement("style");
+style.textContent = `
+  @keyframes subtleExpand {
+    0% {
+      opacity: 0;
+      transform: scale(0.5);
     }
     50% {
-      transform: translateY(-2px) scale(1.005);
-      box-shadow: 0 5px 20px rgba(255, 255, 255, 0.03);
+      opacity: 0.3;
+    }
+    100% {
+      opacity: 0;
+      transform: scale(2);
     }
   }
   
-  /* Subtle hover states */
-  .question-group {
-    transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+  @keyframes subtleTwinkle {
+    0% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0);
+    }
   }
   
-  .question-group:hover {
-    background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(255, 255, 255, 0.12);
-  }
-  
-  /* Smooth tone transitions */
-  body {
-    transition: background 1.2s ease;
-  }
-  
-  .wave {
-    transition: all 1.5s ease;
+  @keyframes subtleSwirl {
+    0% {
+      opacity: 0;
+      transform: scale(0.5) rotate(0deg);
+    }
+    50% {
+      opacity: 0.4;
+      transform: scale(1) rotate(180deg);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1.5) rotate(360deg);
+    }
   }
 `;
-document.head.appendChild(breathingStyles);
+document.head.appendChild(style);

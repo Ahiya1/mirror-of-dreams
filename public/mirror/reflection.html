@@ -9,7 +9,7 @@
   </head>
 
   <body>
-    <!-- Consciousness waves and particles added via JS -->
+    <!-- Tone-specific background animations added via JS -->
 
     <div class="container">
       <!-- Questions Section -->
@@ -112,7 +112,7 @@
             ></textarea>
           </div>
 
-          <button type="submit" class="sacred-button submit-btn" id="submitBtn">
+          <button type="submit" class="submit-btn" id="submitBtn">
             Receive Your Reflection
           </button>
         </form>
@@ -120,11 +120,9 @@
 
       <!-- Loading Section -->
       <div class="experience-section hidden" id="loading">
-        <div>
+        <div class="loading-container">
           <div class="loading-circle"></div>
-          <div class="loading-text">
-            Reflecting your truth through the cosmos...
-          </div>
+          <div class="loading-text">Reflecting your truth...</div>
         </div>
       </div>
 
@@ -132,16 +130,18 @@
       <div class="experience-section hidden" id="results">
         <div class="results">
           <div class="admin-notice" id="adminNotice" style="display: none">
-            <span>✨ Admin session — unlimited cosmic reflections</span>
+            <span>✨ Admin session — unlimited reflections</span>
           </div>
-          <div class="results-content" id="reflectionContent"></div>
+          <div class="results-backdrop">
+            <div class="results-content" id="reflectionContent"></div>
+          </div>
           <div class="results-actions">
             <button
               class="sacred-button"
               id="emailBtn"
               onclick="emailReflection()"
             >
-              <span>🌟</span><span>Send to the Stars</span>
+              <span>📧</span><span>Mail me this reflection</span>
             </button>
             <a href="/" class="sacred-button">
               <span>🪞</span><span>Return to Portal</span>
