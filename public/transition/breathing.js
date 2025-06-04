@@ -22,7 +22,7 @@ document.addEventListener("mousemove", (e) => {
   const mouseY = e.clientY / window.innerHeight;
 
   circles.forEach((circle, i) => {
-    const offset = (i + 1) * 1.5; // More subtle movement
+    const offset = (i + 1) * 1.5; // Very subtle movement
     const moveX = (mouseX - 0.5) * offset;
     const moveY = (mouseY - 0.5) * offset;
     circle.style.transform = `translate(${moveX}px, ${moveY}px)`;
@@ -33,7 +33,7 @@ document.addEventListener("mousemove", (e) => {
 let breathPhase = 0;
 setInterval(() => {
   breathPhase = (breathPhase + 0.1) % (Math.PI * 2);
-  const scale = 1 + Math.sin(breathPhase) * 0.02;
+  const scale = 1 + Math.sin(breathPhase) * 0.015; // Very subtle
   document.querySelector(".geometry-layer").style.transform = `scale(${scale})`;
 }, 50);
 
@@ -49,7 +49,7 @@ setTimeout(() => {
       width: 300px;
       height: 300px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
       pointer-events: none;
       z-index: 5;
       animation: whatNowPulse 3s ease-out forwards;
@@ -69,7 +69,7 @@ style.textContent = `
         opacity: 0;
       }
       50% {
-        opacity: 0.5;
+        opacity: 0.3;
       }
       100% {
         transform: translate(-50%, -50%) scale(3);
