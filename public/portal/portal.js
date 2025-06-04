@@ -1,4 +1,4 @@
-// Portal - Simplified Sacred Access Logic
+// Portal - Mobile-Optimized Sacred Access Logic
 // Complete replacement for public/portal/portal.js
 
 const mirrorsContainer = document.getElementById("mirrorsContainer");
@@ -7,7 +7,7 @@ const reflectBtn = document.querySelector(".reflect-button");
 let pressTimer = null;
 let pressStartTime = 0;
 
-// Simple creator bypass: Hold for 8.3 seconds
+// Simple creator bypass: Hold for 8.3 seconds (no visual indicator)
 reflectBtn.addEventListener("mousedown", startPress);
 reflectBtn.addEventListener("touchstart", startPress, { passive: false });
 reflectBtn.addEventListener("mouseup", endPress);
@@ -15,17 +15,19 @@ reflectBtn.addEventListener("mouseleave", endPress);
 reflectBtn.addEventListener("touchend", endPress);
 reflectBtn.addEventListener("touchcancel", endPress);
 
+// Prevent context menu on long press for mobile
+reflectBtn.addEventListener("contextmenu", (e) => {
+  e.preventDefault();
+});
+
 function startPress(e) {
   e.preventDefault();
   pressStartTime = Date.now();
 
-  // Visual feedback during hold
+  // Set timer for creator access (no visual feedback)
   pressTimer = setTimeout(() => {
     showCreatorAccess();
   }, 8300); // 8.3 seconds
-
-  // Show progress indicator
-  showHoldProgress();
 }
 
 function endPress(e) {
@@ -36,80 +38,18 @@ function endPress(e) {
     pressTimer = null;
   }
 
-  hideHoldProgress();
-
   // If they didn't hold long enough, do nothing (let normal click through)
   if (pressDuration < 8300) {
     return;
   }
 }
 
-function showHoldProgress() {
-  let progressIndicator = document.getElementById("holdProgress");
-  if (!progressIndicator) {
-    progressIndicator = document.createElement("div");
-    progressIndicator.id = "holdProgress";
-    progressIndicator.style.cssText = `
-      position: fixed;
-      top: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(99, 102, 241, 0.2);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(99, 102, 241, 0.4);
-      color: #a5b4fc;
-      padding: 0.8rem 1.5rem;
-      border-radius: 50px;
-      font-size: 0.9rem;
-      z-index: 1000;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-    `;
-    progressIndicator.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 0.5rem;">
-        <div style="width: 100px; height: 2px; background: rgba(99, 102, 241, 0.3); border-radius: 1px; overflow: hidden;">
-          <div id="progressBar" style="width: 0%; height: 100%; background: #6366f1; transition: width 8.3s linear;"></div>
-        </div>
-        <span>Sacred access...</span>
-      </div>
-    `;
-    document.body.appendChild(progressIndicator);
-  }
-
-  progressIndicator.style.opacity = "1";
-
-  // Start progress bar animation
-  setTimeout(() => {
-    const progressBar = document.getElementById("progressBar");
-    if (progressBar) {
-      progressBar.style.width = "100%";
-    }
-  }, 50);
-}
-
-function hideHoldProgress() {
-  const progressIndicator = document.getElementById("holdProgress");
-  if (progressIndicator) {
-    progressIndicator.style.opacity = "0";
-    setTimeout(() => {
-      const progressBar = document.getElementById("progressBar");
-      if (progressBar) {
-        progressBar.style.width = "0%";
-        progressBar.style.transition = "none";
-      }
-    }, 300);
-  }
-}
-
 function showCreatorAccess() {
-  hideHoldProgress();
-
   const modal = document.createElement("div");
   modal.style.cssText = `
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(20px);
     display: flex;
     align-items: center;
@@ -117,6 +57,7 @@ function showCreatorAccess() {
     z-index: 10000;
     opacity: 0;
     transition: opacity 0.5s ease;
+    padding: 1rem;
   `;
 
   const content = document.createElement("div");
@@ -125,9 +66,9 @@ function showCreatorAccess() {
     backdrop-filter: blur(30px);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 24px;
-    padding: 3rem 2.5rem;
-    max-width: 450px;
-    width: 90%;
+    padding: 2rem 1.5rem;
+    max-width: 400px;
+    width: 100%;
     text-align: center;
     color: white;
     font-family: Inter, sans-serif;
@@ -135,52 +76,58 @@ function showCreatorAccess() {
     transition: transform 0.5s ease;
     position: relative;
     overflow: hidden;
+    max-height: 90vh;
+    overflow-y: auto;
   `;
 
   content.innerHTML = `
     <div style="position: absolute; inset: 1px; background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%); border-radius: 23px; pointer-events: none;"></div>
     
-    <h2 style="font-size: 1.8rem; font-weight: 300; margin-bottom: 0.5rem; 
+    <h2 style="font-size: clamp(1.4rem, 4vw, 1.8rem); font-weight: 300; margin-bottom: 0.5rem; 
                background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%);
                -webkit-background-clip: text; color: transparent; position: relative; z-index: 1;">
       Sacred Creator Access 🪞
     </h2>
-    <p style="margin-bottom: 2rem; opacity: 0.8; line-height: 1.6; position: relative; z-index: 1;">
+    <p style="margin-bottom: 2rem; opacity: 0.8; line-height: 1.6; position: relative; z-index: 1; font-size: clamp(0.9rem, 2.5vw, 1rem);">
       How would you like to experience the mirror?
     </p>
 
     <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; position: relative; z-index: 1;">
       <button onclick="selectMode('creator')" id="creatorBtn" style="
-        padding: 1.2rem 2rem; 
+        padding: 1.2rem 1.5rem; 
         background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(99, 102, 241, 0.15));
         border: 1px solid rgba(147, 51, 234, 0.4);
         border-radius: 16px; 
         color: #c4b5fd; 
         cursor: pointer; 
-        font-size: 1rem;
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
         font-weight: 500;
         transition: all 0.3s ease;
         letter-spacing: 0.3px;
         position: relative;
         overflow: hidden;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
       ">
         ✨ As the Creator<br>
         <small style="opacity: 0.7; font-size: 0.85rem;">Experience with creator context</small>
       </button>
 
       <button onclick="selectMode('user')" id="userBtn" style="
-        padding: 1.2rem 2rem; 
+        padding: 1.2rem 1.5rem; 
         background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.15));
         border: 1px solid rgba(16, 185, 129, 0.4);
         border-radius: 16px; 
         color: #6ee7b7; 
         cursor: pointer; 
-        font-size: 1rem;
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
         font-weight: 500;
         transition: all 0.3s ease;
         letter-spacing: 0.3px;
         position: relative;
         overflow: hidden;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
       ">
         🌟 As Another Soul<br>
         <small style="opacity: 0.7; font-size: 0.85rem;">Experience as a regular user</small>
@@ -196,38 +143,47 @@ function showCreatorAccess() {
         border-radius: 12px; 
         color: white; 
         text-align: center;
-        font-size: 1rem;
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
         transition: all 0.3s ease;
+        touch-action: manipulation;
+        -webkit-appearance: none;
+        box-sizing: border-box;
       " />
     </div>
 
-    <div style="display: flex; gap: 1rem; position: relative; z-index: 1;">
+    <div style="display: flex; gap: 1rem; position: relative; z-index: 1; flex-wrap: wrap;">
       <button onclick="closeCreatorModal()" style="
         flex: 1;
+        min-width: 100px;
         background: rgba(255, 255, 255, 0.1); 
         border: 1px solid rgba(255, 255, 255, 0.2); 
         border-radius: 12px; 
         color: rgba(255, 255, 255, 0.7); 
-        padding: 0.8rem 1.5rem; 
+        padding: 1rem 1.5rem; 
         cursor: pointer;
-        font-size: 0.9rem;
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
         transition: all 0.3s ease;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
       ">
         Cancel
       </button>
       
       <button onclick="proceedWithMode()" id="proceedBtn" style="
         flex: 2;
+        min-width: 120px;
         background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
         border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 12px;
         color: #fff;
-        padding: 0.8rem 1.5rem;
+        padding: 1rem 1.5rem;
         cursor: pointer;
-        font-size: 0.9rem;
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
         font-weight: 500;
         transition: all 0.3s ease;
         letter-spacing: 0.3px;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
       ">
         Enter Sacred Space
       </button>
@@ -243,9 +199,13 @@ function showCreatorAccess() {
     content.style.transform = "scale(1)";
   });
 
-  // Focus password input
+  // Focus password input (with delay for mobile)
   setTimeout(() => {
-    document.getElementById("creatorPassword")?.focus();
+    const passwordInput = document.getElementById("creatorPassword");
+    if (passwordInput && window.innerWidth > 768) {
+      // Only auto-focus on desktop
+      passwordInput.focus();
+    }
   }, 500);
 
   // Handle enter key
@@ -255,41 +215,62 @@ function showCreatorAccess() {
     }
   });
 
+  // Close on backdrop click
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      closeCreatorModal();
+    }
+  });
+
   // Store modal reference for global access
   window.creatorModal = modal;
   window.selectedCreatorMode = "creator"; // Default
 
-  // Add hover effects
-  addButtonHoverEffects();
+  // Add mobile-friendly button interactions
+  addMobileButtonEffects();
 }
 
-function addButtonHoverEffects() {
+function addMobileButtonEffects() {
   const creatorBtn = document.getElementById("creatorBtn");
   const userBtn = document.getElementById("userBtn");
 
-  creatorBtn.addEventListener("mouseenter", () => {
-    creatorBtn.style.background =
-      "linear-gradient(135deg, rgba(147, 51, 234, 0.3), rgba(99, 102, 241, 0.2))";
-    creatorBtn.style.transform = "translateY(-2px)";
+  // Touch-friendly interactions
+  [creatorBtn, userBtn].forEach((btn) => {
+    btn.addEventListener("touchstart", () => {
+      btn.style.transform = "scale(0.98)";
+    });
+
+    btn.addEventListener("touchend", () => {
+      btn.style.transform = "scale(1)";
+    });
   });
 
-  creatorBtn.addEventListener("mouseleave", () => {
-    creatorBtn.style.background =
-      "linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(99, 102, 241, 0.15))";
-    creatorBtn.style.transform = "translateY(0)";
-  });
+  // Hover effects (desktop only)
+  if (window.matchMedia("(hover: hover)").matches) {
+    creatorBtn.addEventListener("mouseenter", () => {
+      creatorBtn.style.background =
+        "linear-gradient(135deg, rgba(147, 51, 234, 0.3), rgba(99, 102, 241, 0.2))";
+      creatorBtn.style.transform = "translateY(-2px)";
+    });
 
-  userBtn.addEventListener("mouseenter", () => {
-    userBtn.style.background =
-      "linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(6, 182, 212, 0.2))";
-    userBtn.style.transform = "translateY(-2px)";
-  });
+    creatorBtn.addEventListener("mouseleave", () => {
+      creatorBtn.style.background =
+        "linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(99, 102, 241, 0.15))";
+      creatorBtn.style.transform = "translateY(0)";
+    });
 
-  userBtn.addEventListener("mouseleave", () => {
-    userBtn.style.background =
-      "linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.15))";
-    userBtn.style.transform = "translateY(0)";
-  });
+    userBtn.addEventListener("mouseenter", () => {
+      userBtn.style.background =
+        "linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(6, 182, 212, 0.2))";
+      userBtn.style.transform = "translateY(-2px)";
+    });
+
+    userBtn.addEventListener("mouseleave", () => {
+      userBtn.style.background =
+        "linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.15))";
+      userBtn.style.transform = "translateY(0)";
+    });
+  }
 }
 
 function selectMode(mode) {
@@ -385,7 +366,7 @@ function showCreatorError(message) {
       padding: 0.8rem;
       border-radius: 12px;
       margin-top: 1rem;
-      font-size: 0.9rem;
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
       text-align: center;
       position: relative;
       z-index: 1;
@@ -417,11 +398,13 @@ function closeCreatorModal() {
   }
 }
 
-// Mirror hover interaction (existing functionality)
-reflectBtn.addEventListener("mouseenter", () =>
-  mirrorsContainer.classList.add("hover")
-);
+// Mirror hover interaction (desktop only)
+if (window.matchMedia("(hover: hover)").matches) {
+  reflectBtn.addEventListener("mouseenter", () =>
+    mirrorsContainer.classList.add("hover")
+  );
 
-reflectBtn.addEventListener("mouseleave", () =>
-  mirrorsContainer.classList.remove("hover")
-);
+  reflectBtn.addEventListener("mouseleave", () =>
+    mirrorsContainer.classList.remove("hover")
+  );
+}

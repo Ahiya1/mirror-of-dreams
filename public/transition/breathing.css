@@ -1,7 +1,11 @@
-/* Transition - Breathing Meditation */
+/* Transition - Breathing Meditation - Mobile Optimized */
 
 body {
   overflow: hidden;
+  /* Mobile optimizations */
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  touch-action: manipulation;
 }
 
 /* Subtle aurora background */
@@ -197,8 +201,8 @@ body {
 
 .breathing-geometry {
   position: absolute;
-  width: 400px;
-  height: 400px;
+  width: clamp(200px, 40vw, 400px);
+  height: clamp(200px, 40vw, 400px);
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.015);
   animation: geometryBreathe 15s ease-in-out infinite;
@@ -206,21 +210,21 @@ body {
 
 .breathing-geometry:nth-child(1) {
   animation-delay: 0s;
-  width: 300px;
-  height: 300px;
+  width: clamp(150px, 30vw, 300px);
+  height: clamp(150px, 30vw, 300px);
 }
 
 .breathing-geometry:nth-child(2) {
   animation-delay: 3s;
-  width: 500px;
-  height: 500px;
+  width: clamp(250px, 50vw, 500px);
+  height: clamp(250px, 50vw, 500px);
   border-color: rgba(255, 255, 255, 0.01);
 }
 
 .breathing-geometry:nth-child(3) {
   animation-delay: 6s;
-  width: 200px;
-  height: 200px;
+  width: clamp(100px, 20vw, 200px);
+  height: clamp(100px, 20vw, 200px);
   border-color: rgba(255, 255, 255, 0.02);
 }
 
@@ -252,11 +256,12 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3rem;
+  gap: clamp(2rem, 6vw, 3rem);
   animation: containerIn 1.5s ease-out 0.5s forwards;
   z-index: 10;
   position: relative;
   height: 100vh;
+  padding: 1rem;
 }
 
 @keyframes containerIn {
@@ -273,8 +278,8 @@ body {
 /* Breathing circles */
 .breathing-circles {
   position: relative;
-  width: 200px;
-  height: 200px;
+  width: clamp(150px, 40vw, 200px);
+  height: clamp(150px, 40vw, 200px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -304,14 +309,14 @@ body {
 }
 
 .breathing-circle.primary {
-  width: 180px;
-  height: 180px;
+  width: clamp(120px, 36vw, 180px);
+  height: clamp(120px, 36vw, 180px);
   animation: breathePrimary 8s ease-in-out infinite;
 }
 
 .breathing-circle.secondary {
-  width: 120px;
-  height: 120px;
+  width: clamp(80px, 24vw, 120px);
+  height: clamp(80px, 24vw, 120px);
   animation: breatheSecondary 10s ease-in-out infinite;
   background: radial-gradient(
     circle,
@@ -322,8 +327,8 @@ body {
 }
 
 .breathing-circle.tertiary {
-  width: 60px;
-  height: 60px;
+  width: clamp(40px, 12vw, 60px);
+  height: clamp(40px, 12vw, 60px);
   animation: breatheTertiary 12s ease-in-out infinite;
   background: radial-gradient(
     circle,
@@ -376,7 +381,7 @@ body {
 /* Text container - all text appears in same place */
 .breath-text-container {
   position: relative;
-  height: 50px;
+  height: clamp(40px, 10vw, 50px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -385,13 +390,15 @@ body {
 /* Typography - All text in same position */
 .breath-text {
   position: absolute;
-  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-size: clamp(1.2rem, 4vw, 2rem);
   font-weight: 300;
   opacity: 0;
   letter-spacing: 0.8px;
   color: rgba(255, 255, 255, 0.9);
   text-shadow: 0 0 20px rgba(255, 255, 255, 0.08);
   white-space: nowrap;
+  text-align: center;
+  max-width: 90vw;
 }
 
 .first-text {
@@ -445,12 +452,14 @@ body {
   animation: whatNowReveal 3s ease-out 20s forwards;
   text-align: center;
   z-index: 100;
+  padding: 0 1rem;
+  width: 100%;
 }
 
 .what-now-text {
-  font-size: clamp(2.5rem, 7vw, 4rem);
+  font-size: clamp(2rem, 8vw, 4rem);
   font-weight: 300;
-  letter-spacing: 2px;
+  letter-spacing: clamp(1px, 0.5vw, 2px);
   background: linear-gradient(
     135deg,
     #ffffff 0%,
@@ -466,12 +475,14 @@ body {
   position: relative;
   padding-bottom: 1rem;
   animation: sacredGlow 4s ease-in-out infinite 20s;
+  max-width: 100%;
+  word-break: keep-all;
 }
 
 .what-now-text::before {
   content: "";
   position: absolute;
-  inset: -30px;
+  inset: clamp(-20px, -5vw, -30px);
   background: radial-gradient(
     circle,
     rgba(255, 255, 255, 0.05) 0%,
@@ -554,22 +565,32 @@ body {
 /* Continue indicator */
 .continue-indicator {
   position: absolute;
-  bottom: 8rem;
+  bottom: clamp(4rem, 12vw, 8rem);
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 2.5vw, 0.9rem);
   font-weight: 300;
   opacity: 0;
   color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   animation: indicatorReveal 2s ease-out 23s forwards;
-  padding: 1rem 2rem;
+  padding: clamp(0.8rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2rem);
   border-radius: 30px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(20px);
   background: rgba(255, 255, 255, 0.02);
   letter-spacing: 0.3px;
+
+  /* Mobile optimizations */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 90vw;
+  white-space: nowrap;
 }
 
 .continue-indicator:hover {
@@ -578,6 +599,11 @@ body {
   background: rgba(255, 255, 255, 0.06);
   transform: translate(-50%, -8px) scale(1.05);
   box-shadow: 0 10px 30px rgba(255, 255, 255, 0.08);
+}
+
+.continue-indicator:active {
+  transform: translate(-50%, -4px) scale(0.98);
+  transition: transform 0.1s ease;
 }
 
 @keyframes indicatorReveal {
@@ -613,44 +639,49 @@ body {
   }
 }
 
-/* Responsive */
+/* Mobile Responsive Design */
 @media (max-width: 768px) {
   .breathing-circles {
-    width: 160px;
-    height: 160px;
+    width: clamp(130px, 35vw, 160px);
+    height: clamp(130px, 35vw, 160px);
   }
 
   .breathing-circle.primary {
-    width: 140px;
-    height: 140px;
+    width: clamp(110px, 32vw, 140px);
+    height: clamp(110px, 32vw, 140px);
   }
 
   .breathing-circle.secondary {
-    width: 90px;
-    height: 90px;
+    width: clamp(70px, 20vw, 90px);
+    height: clamp(70px, 20vw, 90px);
   }
 
   .breathing-circle.tertiary {
-    width: 45px;
-    height: 45px;
+    width: clamp(35px, 10vw, 45px);
+    height: clamp(35px, 10vw, 45px);
   }
 
   .continue-indicator {
-    bottom: 6rem;
-    font-size: 0.85rem;
+    bottom: clamp(3rem, 8vw, 6rem);
+    font-size: clamp(0.75rem, 2.2vw, 0.85rem);
     padding: 0.8rem 1.5rem;
   }
 
   .breath-text {
-    font-size: clamp(1.2rem, 5vw, 1.6rem);
+    font-size: clamp(1rem, 4.5vw, 1.6rem);
   }
 
   .what-now-text {
-    font-size: clamp(2rem, 8vw, 3rem);
+    font-size: clamp(1.8rem, 7vw, 3rem);
   }
 }
 
 @media (max-width: 480px) {
+  .breathing-container {
+    gap: 1.5rem;
+    padding: 0.5rem;
+  }
+
   .breathing-circles {
     width: 120px;
     height: 120px;
@@ -661,12 +692,115 @@ body {
     height: 100px;
   }
 
+  .breathing-circle.secondary {
+    width: 65px;
+    height: 65px;
+  }
+
+  .breathing-circle.tertiary {
+    width: 32px;
+    height: 32px;
+  }
+
   .breath-text {
-    font-size: 1.1rem;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
   }
 
   .what-now-text {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     letter-spacing: 1px;
+  }
+
+  .continue-indicator {
+    bottom: 3rem;
+    font-size: 0.8rem;
+    padding: 0.7rem 1.2rem;
+  }
+}
+
+/* Landscape mobile optimization */
+@media (max-height: 500px) and (orientation: landscape) {
+  .breathing-container {
+    gap: 1rem;
+    padding-top: 0.5rem;
+  }
+
+  .breathing-circles {
+    width: 100px;
+    height: 100px;
+  }
+
+  .breathing-circle.primary {
+    width: 80px;
+    height: 80px;
+  }
+
+  .breathing-circle.secondary {
+    width: 50px;
+    height: 50px;
+  }
+
+  .breathing-circle.tertiary {
+    width: 25px;
+    height: 25px;
+  }
+
+  .breath-text {
+    font-size: 0.9rem;
+  }
+
+  .what-now-text {
+    font-size: 1.4rem;
+  }
+
+  .continue-indicator {
+    bottom: 1.5rem;
+    font-size: 0.75rem;
+    padding: 0.6rem 1rem;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .breathing-circle,
+  .continue-indicator {
+    border-width: 0.5px;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .aurora-layer,
+  .particle,
+  .breathing-geometry,
+  .breathing-circle,
+  .continue-indicator {
+    animation: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .breathing-circle {
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(255, 255, 255, 0.02) 40%,
+      transparent 70%
+    );
+  }
+
+  .continue-indicator {
+    background: rgba(255, 255, 255, 0.015);
+    border-color: rgba(255, 255, 255, 0.06);
   }
 }
