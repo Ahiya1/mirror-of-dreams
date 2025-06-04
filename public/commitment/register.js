@@ -46,7 +46,7 @@ function setupTestMode() {
   // Create test button
   const container = document.getElementById("paypal-button-container");
   container.innerHTML = `
-    <button id="testPaymentBtn" class="test-payment-btn" onclick="handleTestPayment()">
+    <button id="testPaymentBtn" type="button" class="test-payment-btn" onclick="handleTestPayment()">
       🧪 Test Payment ($5)
     </button>
   `;
