@@ -1,37 +1,31 @@
 /* Mirror – Luminous Reflection Experience
-   Deep space • illuminating blue • tone-responsive patterns
+   Aligned with the subtle elegance of index and registration
    ========================================================== */
 
 /* ╭─ COSMIC FOUNDATION ──────────────────────────────────────╮ */
 body {
   background: 
-      /* Deep blue illumination rays */ linear-gradient(
+        /* Subtle blue illumination */ linear-gradient(
       127deg,
       transparent 0%,
-      rgba(30, 64, 175, 0.03) 20%,
+      rgba(30, 64, 175, 0.02) 20%,
       transparent 25%
     ),
     linear-gradient(
       233deg,
       transparent 0%,
-      rgba(59, 130, 246, 0.02) 15%,
+      rgba(59, 130, 246, 0.015) 15%,
       transparent 20%
     ),
-    linear-gradient(
-      45deg,
-      transparent 0%,
-      rgba(29, 78, 216, 0.025) 30%,
-      transparent 35%
-    ),
-    /* Core deep space */
+    /* Core deep space - matching index/register */
       radial-gradient(
         circle at 30% 20%,
-        rgba(15, 23, 42, 0.4) 0%,
+        rgba(15, 23, 42, 0.3) 0%,
         transparent 50%
       ),
     radial-gradient(
       circle at 70% 80%,
-      rgba(30, 41, 59, 0.3) 0%,
+      rgba(30, 41, 59, 0.2) 0%,
       transparent 60%
     ),
     /* Foundation */ #020617;
@@ -51,493 +45,156 @@ body::before {
   z-index: 1;
   pointer-events: none;
   background: 
-      /* Fine starfield */ radial-gradient(
+        /* Fine starfield - very subtle */ radial-gradient(
       circle at 20% 30%,
-      rgba(255, 255, 255, 0.4) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 60% 70%,
       rgba(255, 255, 255, 0.3) 0 1px,
       transparent 2px
     ),
     radial-gradient(
-      circle at 80% 20%,
-      rgba(255, 255, 255, 0.35) 0 1px,
+      circle at 60% 70%,
+      rgba(255, 255, 255, 0.2) 0 1px,
       transparent 2px
     ),
     radial-gradient(
-      circle at 30% 80%,
+      circle at 80% 20%,
       rgba(255, 255, 255, 0.25) 0 1px,
       transparent 2px
     );
-  background-size: 800px 600px, 1200px 800px, 600px 900px, 1000px 700px;
-  opacity: 0.1;
-  animation: starShimmer 60s ease-in-out infinite;
+  background-size: 800px 600px, 1200px 800px, 600px 900px;
+  opacity: 0.08;
+  animation: starShimmer 80s ease-in-out infinite;
 }
 
 @keyframes starShimmer {
   0%,
   100% {
-    opacity: 0.1;
-  }
-  50% {
-    opacity: 0.15;
-  }
-}
-
-/* ╭─ TONE PATTERN CONTAINERS ────────────────────────────────╮ */
-.pattern-left,
-.pattern-right {
-  position: fixed;
-  top: 0;
-  width: 200px;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 2;
-  overflow: hidden;
-}
-
-.pattern-left {
-  left: 0;
-}
-.pattern-right {
-  right: 0;
-}
-
-/* ╭─ FUSION TONE: GOLDEN BREATHING ──────────────────────────╮ */
-body.tone-fusion .pattern-left::before,
-body.tone-fusion .pattern-right::before {
-  content: "";
-  position: absolute;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(251, 191, 36, 0.2) 0%,
-    rgba(245, 158, 11, 0.12) 40%,
-    rgba(217, 119, 6, 0.06) 70%,
-    transparent 100%
-  );
-  filter: blur(3px);
-  animation: goldenBreathe 16s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-body.tone-fusion .pattern-left::before {
-  top: 15%;
-  left: 30px;
-  animation-delay: 0s;
-}
-
-body.tone-fusion .pattern-right::before {
-  top: 55%;
-  right: 40px;
-  animation-delay: 8s;
-}
-
-body.tone-fusion .pattern-left::after,
-body.tone-fusion .pattern-right::after {
-  content: "";
-  position: absolute;
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(254, 215, 102, 0.15) 0%,
-    rgba(251, 191, 36, 0.08) 60%,
-    transparent 85%
-  );
-  filter: blur(2px);
-  animation: goldenBreathe 20s cubic-bezier(0.3, 0, 0.7, 1) infinite;
-}
-
-body.tone-fusion .pattern-left::after {
-  top: 75%;
-  left: 60px;
-  animation-delay: 4s;
-}
-
-body.tone-fusion .pattern-right::after {
-  top: 25%;
-  right: 20px;
-  animation-delay: 14s;
-}
-
-@keyframes goldenBreathe {
-  0% {
-    transform: scale(0);
-    opacity: 0;
-  }
-  5% {
-    transform: scale(0.1);
-    opacity: 0.1;
-  }
-  15% {
-    transform: scale(0.4);
-    opacity: 0.3;
-  }
-  30% {
-    transform: scale(0.7);
-    opacity: 0.6;
-  }
-  45% {
-    transform: scale(0.95);
-    opacity: 0.4;
-  }
-  60% {
-    transform: scale(1.05);
-    opacity: 0.5;
-  }
-  70% {
-    transform: scale(0.9);
-    opacity: 0.45;
-  }
-  75% {
-    transform: scale(0.8);
-    opacity: 0.4;
-  }
-  80% {
-    transform: scale(0.7);
-    opacity: 0.35;
-  }
-  83% {
-    transform: scale(0.6);
-    opacity: 0.3;
-  }
-  86% {
-    transform: scale(0.5);
-    opacity: 0.25;
-  }
-  89% {
-    transform: scale(0.4);
-    opacity: 0.2;
-  }
-  91% {
-    transform: scale(0.35);
-    opacity: 0.15;
-  }
-  93% {
-    transform: scale(0.3);
-    opacity: 0.12;
-  }
-  95% {
-    transform: scale(0.2);
     opacity: 0.08;
   }
-  97% {
-    transform: scale(0.15);
-    opacity: 0.05;
-  }
-  98% {
-    transform: scale(0.1);
-    opacity: 0.03;
-  }
-  99% {
-    transform: scale(0.05);
-    opacity: 0.01;
-  }
-  100% {
-    transform: scale(0);
-    opacity: 0;
+  50% {
+    opacity: 0.12;
   }
 }
 
-/* ╭─ GENTLE TONE: BALANCED STAR FIELD ──────────────────────╮ */
-body.tone-gentle .pattern-left::before,
-body.tone-gentle .pattern-left::after {
-  content: "";
+/* ╭─ CONSCIOUSNESS WAVES (like registration) ────────────────╮ */
+.consciousness-waves {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.wave {
   position: absolute;
-  width: 2px;
-  height: 2px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6),
-    0 0 16px rgba(255, 255, 255, 0.3);
-  animation: gentleStarTwinkle 12s ease-in-out infinite;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.015) 40%,
+    rgba(255, 255, 255, 0.005) 70%,
+    transparent 100%
+  );
+  animation: waveRecognition 20s ease-in-out infinite;
+  opacity: 0;
 }
 
-body.tone-gentle .pattern-right::before,
-body.tone-gentle .pattern-right::after {
-  content: "";
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6),
-    0 0 16px rgba(255, 255, 255, 0.3);
-  animation: gentleStarTwinkle 12s ease-in-out infinite;
-}
-
-/* Left side stars */
-body.tone-gentle .pattern-left::before {
-  top: 25%;
-  left: 60px;
+/* Position waves based on selected tone */
+body.tone-fusion .wave:nth-child(1) {
+  width: 150px;
+  height: 150px;
+  left: 15%;
+  top: 20%;
   animation-delay: 0s;
-  animation-duration: 15s;
+  background: radial-gradient(
+    circle,
+    rgba(251, 191, 36, 0.06) 0%,
+    rgba(245, 158, 11, 0.02) 40%,
+    transparent 70%
+  );
 }
 
-body.tone-gentle .pattern-left::after {
-  top: 65%;
-  left: 30px;
-  animation-delay: 7s;
-  animation-duration: 18s;
+body.tone-fusion .wave:nth-child(2) {
+  width: 100px;
+  height: 100px;
+  right: 20%;
+  bottom: 30%;
+  animation-delay: 8s;
+  background: radial-gradient(
+    circle,
+    rgba(254, 215, 102, 0.05) 0%,
+    rgba(251, 191, 36, 0.015) 50%,
+    transparent 80%
+  );
 }
 
-/* Right side stars */
-body.tone-gentle .pattern-right::before {
-  top: 35%;
-  right: 50px;
-  animation-delay: 3s;
-  animation-duration: 16s;
+body.tone-gentle .wave:nth-child(1) {
+  width: 120px;
+  height: 120px;
+  left: 20%;
+  top: 50%;
+  animation-delay: 0s;
 }
 
-body.tone-gentle .pattern-right::after {
-  top: 75%;
-  right: 25px;
+body.tone-gentle .wave:nth-child(2) {
+  width: 80px;
+  height: 80px;
+  right: 30%;
+  top: 20%;
   animation-delay: 10s;
-  animation-duration: 14s;
 }
 
-@keyframes gentleStarTwinkle {
-  0%,
-  100% {
-    opacity: 0;
-    transform: scale(0.2);
-  }
-  15% {
-    opacity: 0.6;
-    transform: scale(0.8);
-  }
-  35% {
-    opacity: 1;
-    transform: scale(1.3);
-  }
-  60% {
-    opacity: 0.4;
-    transform: scale(0.9);
-  }
-  85% {
-    opacity: 0.8;
-    transform: scale(1.1);
-  }
-}
-
-/* ╭─ INTENSE TONE: BLAZING LUMINOUS FIRE ─────────────────────╮ */
-body.tone-intense .pattern-left::before,
-body.tone-intense .pattern-right::before {
-  content: "";
-  position: absolute;
-  width: 3px;
-  height: 250px;
-  background: linear-gradient(
-    0deg,
-    transparent 0%,
-    rgba(147, 51, 234, 0.6) 15%,
-    rgba(168, 85, 247, 0.9) 35%,
-    rgba(139, 92, 246, 1) 50%,
-    rgba(168, 85, 247, 0.8) 65%,
-    rgba(147, 51, 234, 0.5) 85%,
-    transparent 100%
-  );
-  filter: blur(1px);
-  transform-origin: center;
-  animation: blazingFire 7s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.6), 0 0 40px rgba(147, 51, 234, 0.4);
-}
-
-body.tone-intense .pattern-left::after,
-body.tone-intense .pattern-right::after {
-  content: "";
-  position: absolute;
-  width: 2px;
-  height: 180px;
-  background: linear-gradient(
-    0deg,
-    transparent 0%,
-    rgba(168, 85, 247, 0.7) 20%,
-    rgba(147, 51, 234, 1) 40%,
-    rgba(139, 92, 246, 0.9) 60%,
-    rgba(168, 85, 247, 0.6) 80%,
-    transparent 100%
-  );
-  filter: blur(0.5px);
-  transform-origin: center;
-  animation: blazingFire 5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-  box-shadow: 0 0 15px rgba(168, 85, 247, 0.5), 0 0 30px rgba(147, 51, 234, 0.3);
-}
-
-/* Position the blazing fire */
-body.tone-intense .pattern-left::before {
-  top: 10%;
-  left: 60px;
+body.tone-intense .wave:nth-child(1) {
+  width: 100px;
+  height: 100px;
+  left: 10%;
+  bottom: 40%;
   animation-delay: 0s;
+  background: radial-gradient(
+    circle,
+    rgba(147, 51, 234, 0.08) 0%,
+    rgba(168, 85, 247, 0.03) 40%,
+    transparent 70%
+  );
 }
 
-body.tone-intense .pattern-left::after {
-  top: 55%;
-  left: 30px;
-  animation-delay: 1.5s;
-  animation-duration: 6s;
-}
-
-body.tone-intense .pattern-right::before {
+body.tone-intense .wave:nth-child(2) {
+  width: 130px;
+  height: 130px;
+  right: 15%;
   top: 30%;
-  right: 40px;
-  animation-delay: 2.5s;
-  animation-duration: 8s;
-}
-
-body.tone-intense .pattern-right::after {
-  top: 75%;
-  right: 20px;
-  animation-delay: 4s;
-}
-
-/* Add blazing energy auras */
-body.tone-intense .pattern-left {
+  animation-delay: 6s;
   background: radial-gradient(
-      ellipse at 50px 160px,
-      rgba(168, 85, 247, 0.4) 0 8px,
-      transparent 16px
-    ),
-    radial-gradient(
-      ellipse at 80px 350px,
-      rgba(147, 51, 234, 0.5) 0 6px,
-      transparent 12px
-    ),
-    radial-gradient(
-      ellipse at 30px 280px,
-      rgba(139, 92, 246, 0.3) 0 10px,
-      transparent 20px
-    ),
-    radial-gradient(
-      ellipse at 100px 120px,
-      rgba(168, 85, 247, 0.35) 0 5px,
-      transparent 10px
-    );
-  animation: fireAura 10s ease-in-out infinite;
+    circle,
+    rgba(139, 92, 246, 0.06) 0%,
+    rgba(147, 51, 234, 0.02) 50%,
+    transparent 80%
+  );
 }
 
-body.tone-intense .pattern-right {
-  background: radial-gradient(
-      ellipse at 40px 200px,
-      rgba(147, 51, 234, 0.45) 0 7px,
-      transparent 14px
-    ),
-    radial-gradient(
-      ellipse at 20px 380px,
-      rgba(168, 85, 247, 0.4) 0 9px,
-      transparent 18px
-    ),
-    radial-gradient(
-      ellipse at 70px 300px,
-      rgba(139, 92, 246, 0.3) 0 6px,
-      transparent 12px
-    ),
-    radial-gradient(
-      ellipse at 60px 150px,
-      rgba(147, 51, 234, 0.35) 0 8px,
-      transparent 16px
-    );
-  animation: fireAura 12s ease-in-out infinite;
-  animation-delay: 4s;
-}
-
-@keyframes blazingFire {
+@keyframes waveRecognition {
   0% {
     opacity: 0;
-    transform: scaleY(0) rotate(0deg) translateX(0) skewX(0deg);
-  }
-  8% {
-    opacity: 0.6;
-    transform: scaleY(0.3) rotate(25deg) translateX(8px) skewX(15deg);
-  }
-  15% {
-    opacity: 0.9;
-    transform: scaleY(0.7) rotate(-15deg) translateX(-12px) skewX(-20deg);
-  }
-  22% {
-    opacity: 0.4;
-    transform: scaleY(1.1) rotate(40deg) translateX(18px) skewX(30deg);
+    transform: scale(0.8);
   }
   30% {
-    opacity: 1;
-    transform: scaleY(1.4) rotate(-25deg) translateX(-20px) skewX(-18deg);
-  }
-  38% {
     opacity: 0.3;
-    transform: scaleY(0.9) rotate(55deg) translateX(25px) skewX(45deg);
+    transform: scale(1);
   }
-  45% {
-    opacity: 0.8;
-    transform: scaleY(1.6) rotate(-35deg) translateX(-15px) skewX(-25deg);
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1);
   }
-  52% {
+  70% {
     opacity: 0.2;
-    transform: scaleY(0.6) rotate(70deg) translateX(35px) skewX(60deg);
-  }
-  60% {
-    opacity: 0.7;
-    transform: scaleY(1.2) rotate(-50deg) translateX(-30px) skewX(-40deg);
-  }
-  68% {
-    opacity: 0.4;
-    transform: scaleY(0.8) rotate(85deg) translateX(40px) skewX(70deg);
-  }
-  75% {
-    opacity: 0.6;
-    transform: scaleY(0.5) rotate(-65deg) translateX(-45px) skewX(-55deg);
-  }
-  83% {
-    opacity: 0.3;
-    transform: scaleY(0.3) rotate(100deg) translateX(50px) skewX(80deg);
-  }
-  90% {
-    opacity: 0.2;
-    transform: scaleY(0.2) rotate(-80deg) translateX(-55px) skewX(-70deg);
-  }
-  96% {
-    opacity: 0.1;
-    transform: scaleY(0.1) rotate(120deg) translateX(60px) skewX(90deg);
+    transform: scale(1.3);
   }
   100% {
     opacity: 0;
-    transform: scaleY(0) rotate(-100deg) translateX(-70px) skewX(-80deg);
+    transform: scale(1.8);
   }
 }
 
-@keyframes fireAura {
-  0%,
-  100% {
-    opacity: 0.2;
-    transform: scale(1);
-  }
-  20% {
-    opacity: 0.6;
-    transform: scale(1.4);
-  }
-  35% {
-    opacity: 0.3;
-    transform: scale(0.8);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.6);
-  }
-  65% {
-    opacity: 0.4;
-    transform: scale(0.9);
-  }
-  80% {
-    opacity: 0.7;
-    transform: scale(1.3);
-  }
-}
-
-/* ╭─ ADDITIONAL COSMIC PARTICLES ────────────────────────────╮ */
+/* ╭─ SUBTLE FLOATING PARTICLES ───────────────────────────────╮ */
 .cosmic-particles {
   position: fixed;
   inset: 0;
@@ -549,33 +206,27 @@ body.tone-intense .pattern-right {
   position: absolute;
   width: 1px;
   height: 1px;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.4);
   border-radius: 50%;
-  animation: cosmicDrift 40s linear infinite;
+  animation: cosmicDrift 60s linear infinite;
 }
 
 .cosmic-particle:nth-child(1) {
   left: 10%;
   animation-delay: 0s;
-  animation-duration: 45s;
+  animation-duration: 65s;
 }
 
 .cosmic-particle:nth-child(2) {
   left: 90%;
-  animation-delay: 15s;
-  animation-duration: 50s;
+  animation-delay: 20s;
+  animation-duration: 70s;
 }
 
 .cosmic-particle:nth-child(3) {
-  left: 5%;
-  animation-delay: 30s;
-  animation-duration: 55s;
-}
-
-.cosmic-particle:nth-child(4) {
-  left: 95%;
-  animation-delay: 20s;
-  animation-duration: 40s;
+  left: 50%;
+  animation-delay: 40s;
+  animation-duration: 75s;
 }
 
 @keyframes cosmicDrift {
@@ -584,13 +235,13 @@ body.tone-intense .pattern-right {
     opacity: 0;
   }
   10% {
-    opacity: 0.8;
+    opacity: 0.6;
   }
   90% {
-    opacity: 0.3;
+    opacity: 0.2;
   }
   100% {
-    transform: translateY(-20vh) translateX(50px);
+    transform: translateY(-20vh) translateX(30px);
     opacity: 0;
   }
 }
@@ -608,19 +259,35 @@ body.tone-intense .pattern-right {
   z-index: 10;
 }
 
-/* ╭─ LUMINOUS FORM STYLING ──────────────────────────────────╮ */
+/* ╭─ LUMINOUS FORM STYLING (matching registration) ──────────╮ */
 .experience-section {
   width: 100%;
   text-align: center;
   opacity: 0;
   transform: translateY(30px);
   transition: all 0.8s ease;
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 15, 35, 0.9);
+  backdrop-filter: blur(40px) saturate(120%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
   padding: 3rem 2rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.experience-section::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  border-radius: 23px;
+  pointer-events: none;
 }
 
 .experience-section.active {
@@ -632,7 +299,7 @@ body.tone-intense .pattern-right {
   display: none;
 }
 
-/* ╭─ TONE SELECTOR ENHANCEMENT ──────────────────────────────╮ */
+/* ╭─ TONE SELECTOR (subtle like registration inputs) ────────╮ */
 .tone-group {
   display: flex;
   gap: 1rem;
@@ -643,75 +310,77 @@ body.tone-intense .pattern-right {
 .tone-label {
   flex-basis: 100%;
   margin-bottom: 1rem;
-  font-size: 1.1rem;
-  opacity: 0.9;
+  font-size: 1rem;
+  opacity: 0.85;
   color: rgba(255, 255, 255, 0.8);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   text-align: center;
+  font-weight: 400;
 }
 
 .tone-btn {
   flex: 1;
-  padding: 1.2rem 1.5rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  color: rgba(255, 255, 255, 0.7);
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  color: rgba(255, 255, 255, 0.85);
   text-align: center;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
   font-weight: 400;
-  letter-spacing: 0.3px;
-}
-
-.tone-btn::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    circle at center,
-    rgba(255, 255, 255, 0.08) 0%,
-    transparent 70%
-  );
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.tone-btn:hover::before {
-  opacity: 1;
+  letter-spacing: 0.2px;
+  font-size: 0.9rem;
 }
 
 .tone-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.95);
   transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.08);
 }
 
 .tone-btn.selected {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
   color: #fff;
-  box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
-  transform: translateY(-3px);
+  box-shadow: 0 6px 25px rgba(255, 255, 255, 0.1);
 }
 
-/* ╭─ QUESTION STYLING ────────────────────────────────────────╮ */
+/* Tone-specific accent colors */
+body.tone-fusion .tone-btn.selected {
+  border-color: rgba(251, 191, 36, 0.5);
+  background: rgba(251, 191, 36, 0.1);
+}
+
+body.tone-gentle .tone-btn.selected {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+body.tone-intense .tone-btn.selected {
+  border-color: rgba(147, 51, 234, 0.5);
+  background: rgba(147, 51, 234, 0.1);
+}
+
+/* ╭─ QUESTION STYLING (clean like registration) ─────────────╮ */
 .questions-form {
   text-align: left;
 }
 
 .question-group {
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
   opacity: 0;
   transform: translateY(20px);
   transition: all 0.6s ease;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 16px;
-  padding: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 14px;
+  padding: 1.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .question-group.visible {
@@ -720,8 +389,8 @@ body.tone-intense .pattern-right {
 }
 
 .question-number {
-  font-size: 0.85rem;
-  opacity: 0.6;
+  font-size: 0.8rem;
+  opacity: 0.5;
   margin-bottom: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -729,43 +398,43 @@ body.tone-intense .pattern-right {
 }
 
 .question-text {
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  margin-bottom: 0.8rem;
   line-height: 1.4;
   color: rgba(255, 255, 255, 0.95);
-  font-weight: 300;
-  letter-spacing: 0.3px;
+  font-weight: 400;
+  letter-spacing: 0.2px;
 }
 
 .question-subtitle {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   opacity: 0.7;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
   font-style: italic;
   color: rgba(255, 255, 255, 0.6);
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
-/* ╭─ ENHANCED INPUTS ─────────────────────────────────────────╮ */
+/* ╭─ INPUTS (matching registration style) ────────────────────╮ */
 .sacred-input {
   width: 100%;
-  padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.2rem;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
   color: #fff;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-family: inherit;
-  transition: all 0.4s ease;
+  transition: all 0.3s ease;
   resize: vertical;
 }
 
 .sacred-input:focus {
   outline: none;
-  border-color: rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
-  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.08);
 }
 
 .sacred-input::placeholder {
@@ -774,8 +443,8 @@ body.tone-intense .pattern-right {
 }
 
 .question-textarea {
-  min-height: 140px;
-  line-height: 1.6;
+  min-height: 120px;
+  line-height: 1.5;
 }
 
 /* ╭─ YES/NO BUTTONS ──────────────────────────────────────────╮ */
@@ -787,30 +456,31 @@ body.tone-intense .pattern-right {
 
 .yes-no-btn {
   flex: 1;
-  padding: 1.2rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.85);
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 400;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 .yes-no-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
   color: #fff;
   transform: translateY(-2px);
 }
 
 .yes-no-btn.selected {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(34, 197, 94, 0.15);
+  border-color: rgba(34, 197, 94, 0.5);
   color: #fff;
-  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2);
 }
 
 /* ╭─ DATE CONTAINER ──────────────────────────────────────────╮ */
@@ -818,37 +488,51 @@ body.tone-intense .pattern-right {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-top: 1.5rem;
+  margin-top: 1.2rem;
   padding: 1rem;
   background: rgba(255, 255, 255, 0.02);
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  animation: fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .date-container label {
   color: rgba(255, 255, 255, 0.8);
   font-weight: 400;
+  font-size: 0.9rem;
 }
 
 /* ╭─ SUBMIT BUTTON ───────────────────────────────────────────╮ */
 .submit-btn {
   width: 100%;
   margin-top: 3rem;
-  padding: 1.5rem 2rem;
-  font-size: 1.1rem;
+  padding: 1.3rem 2rem;
+  font-size: 1rem;
   font-weight: 500;
   background: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.15) 0%,
     rgba(255, 255, 255, 0.08) 100%
   );
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 14px;
   color: #fff;
   cursor: pointer;
-  transition: all 0.4s ease;
-  letter-spacing: 0.5px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  letter-spacing: 0.3px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
 .submit-btn:hover {
@@ -858,7 +542,7 @@ body.tone-intense .pattern-right {
     rgba(255, 255, 255, 0.12) 100%
   );
   transform: translateY(-3px);
-  box-shadow: 0 12px 40px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 35px rgba(255, 255, 255, 0.08);
 }
 
 .submit-btn:disabled {
@@ -869,13 +553,13 @@ body.tone-intense .pattern-right {
 
 /* ╭─ LOADING STATES ──────────────────────────────────────────╮ */
 .loading-circle {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.2) 0%,
-    rgba(255, 255, 255, 0.05) 70%,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
     transparent 100%
   );
   margin: 0 auto 2rem;
@@ -889,17 +573,18 @@ body.tone-intense .pattern-right {
   inset: 10px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  animation: cosmicSpin 6s linear infinite;
+  border-top-color: rgba(255, 255, 255, 0.3);
+  animation: cosmicSpin 2s linear infinite;
 }
 
 @keyframes cosmicPulse {
   0%,
   100% {
-    transform: scale(0.9);
+    transform: scale(0.95);
     opacity: 0.6;
   }
   50% {
-    transform: scale(1.1);
+    transform: scale(1.05);
     opacity: 1;
   }
 }
@@ -914,11 +599,11 @@ body.tone-intense .pattern-right {
 }
 
 .loading-text {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 300;
   opacity: 0.8;
   text-align: center;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   color: rgba(255, 255, 255, 0.9);
 }
 
@@ -946,13 +631,19 @@ body.tone-intense .pattern-right {
   flex-wrap: wrap;
 }
 
+.results-actions .sacred-button {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.results-actions .sacred-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
 /* ╭─ RESPONSIVE DESIGN ───────────────────────────────────────╮ */
 @media (max-width: 768px) {
-  .pattern-left,
-  .pattern-right {
-    width: 100px;
-  }
-
   .container {
     padding: 1rem;
   }
@@ -963,6 +654,7 @@ body.tone-intense .pattern-right {
 
   .question-group {
     padding: 1.5rem;
+    margin-bottom: 2rem;
   }
 
   .tone-group {
@@ -977,49 +669,35 @@ body.tone-intense .pattern-right {
 }
 
 @media (max-width: 480px) {
-  .pattern-left,
-  .pattern-right {
-    width: 60px;
-  }
-
   .experience-section {
     padding: 1.5rem 1rem;
     border-radius: 16px;
   }
-}
 
-/* ╭─ ENHANCED FOCUS STATES ───────────────────────────────────╮ */
-.tone-btn:focus,
-.yes-no-btn:focus,
-.sacred-input:focus,
-.submit-btn:focus {
-  outline: 2px solid rgba(255, 255, 255, 0.3);
-  outline-offset: 2px;
-}
-
-/* ╭─ SMOOTH TRANSITIONS ──────────────────────────────────────╮ */
-* {
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-/* ╭─ COSMIC SHIMMER EFFECT ───────────────────────────────────╮ */
-@keyframes cosmicShimmer {
-  0%,
-  100% {
-    background-position: 0% 50%;
+  .question-group {
+    padding: 1.2rem;
   }
-  50% {
-    background-position: 100% 50%;
+
+  .question-text {
+    font-size: 1.1rem;
+  }
+
+  .sacred-input {
+    padding: 1rem;
+    font-size: 0.9rem;
   }
 }
 
-.tone-btn.selected {
-  background: linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.15) 50%,
-    rgba(255, 255, 255, 0.1) 100%
-  );
-  background-size: 200% 200%;
-  animation: cosmicShimmer 3s ease-in-out infinite;
+/* ╭─ ADMIN NOTICE ────────────────────────────────────────────╮ */
+.admin-notice {
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  color: #c4b5fd;
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  text-align: center;
 }
