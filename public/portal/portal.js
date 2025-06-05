@@ -1,4 +1,4 @@
-// Portal - Mobile-Optimized Sacred Access Logic
+// Portal - Fixed Mobile Sacred Access Logic
 // Complete replacement for public/portal/portal.js
 
 const mirrorsContainer = document.getElementById("mirrorsContainer");
@@ -6,6 +6,7 @@ const reflectBtn = document.querySelector(".reflect-button");
 
 let pressTimer = null;
 let pressStartTime = 0;
+let isLongPressing = false;
 
 // Simple creator bypass: Hold for 8.3 seconds (no visual indicator)
 reflectBtn.addEventListener("mousedown", startPress);
@@ -14,6 +15,7 @@ reflectBtn.addEventListener("mouseup", endPress);
 reflectBtn.addEventListener("mouseleave", endPress);
 reflectBtn.addEventListener("touchend", endPress);
 reflectBtn.addEventListener("touchcancel", endPress);
+reflectBtn.addEventListener("click", handleClick);
 
 // Prevent context menu on long press for mobile
 reflectBtn.addEventListener("contextmenu", (e) => {
@@ -21,11 +23,13 @@ reflectBtn.addEventListener("contextmenu", (e) => {
 });
 
 function startPress(e) {
-  e.preventDefault();
+  // Don't prevent default here - let normal clicks work
   pressStartTime = Date.now();
+  isLongPressing = false;
 
   // Set timer for creator access (no visual feedback)
   pressTimer = setTimeout(() => {
+    isLongPressing = true;
     showCreatorAccess();
   }, 8300); // 8.3 seconds
 }
@@ -38,10 +42,22 @@ function endPress(e) {
     pressTimer = null;
   }
 
-  // If they didn't hold long enough, do nothing (let normal click through)
-  if (pressDuration < 8300) {
-    return;
+  // Reset long press flag after a short delay
+  setTimeout(() => {
+    isLongPressing = false;
+  }, 100);
+}
+
+function handleClick(e) {
+  // If this was a long press, prevent the normal click
+  if (isLongPressing) {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
   }
+
+  // Otherwise, let the normal navigation happen
+  // The href attribute will handle navigation
 }
 
 function showCreatorAccess() {
