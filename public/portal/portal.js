@@ -336,8 +336,8 @@ async function proceedWithMode() {
         // Store creator user data
         localStorage.setItem("mirrorVerifiedUser", JSON.stringify(data.user));
 
-        // Go directly to reflection with creator mode
-        window.location.href = `/mirror/reflection.html?payment=creator&verified=true&lang=en&mode=creator`;
+        // Go to breathing exercise first, then to reflection with creator mode
+        window.location.href = `/breathing?payment=creator&verified=true&lang=en&mode=creator`;
       } else {
         // Prompt for the name they want to use
         const testName = prompt("🌟 What name should the mirror know you by?");
@@ -358,8 +358,8 @@ async function proceedWithMode() {
 
         localStorage.setItem("mirrorVerifiedUser", JSON.stringify(testUser));
 
-        // Go to reflection as a regular user
-        window.location.href = `/mirror/reflection.html?payment=test&verified=true&lang=en&mode=user`;
+        // Go to breathing exercise first, then to reflection as a regular user
+        window.location.href = `/breathing?payment=test&verified=true&lang=en&mode=user`;
       }
     } else {
       showCreatorError("Invalid sacred password");

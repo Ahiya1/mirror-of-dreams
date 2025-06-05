@@ -1,4 +1,19 @@
 // Transition - Breathing to Reflection
+// Enhanced with Creator Mode Support
+
+// Get URL parameters for creator mode support
+function getUrlParams() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return {
+    payment: urlParams.get("payment"),
+    verified: urlParams.get("verified"),
+    lang: urlParams.get("lang"),
+    mode: urlParams.get("mode"),
+  };
+}
+
+// Store the parameters when the page loads
+const sessionParams = getUrlParams();
 
 // Activate click-anywhere once indicator shows (after 23 seconds)
 setTimeout(() => {
@@ -10,9 +25,29 @@ setTimeout(() => {
 setTimeout(proceed, 30000);
 
 function proceed() {
-  const qs = new URLSearchParams(location.search);
-  const payment = qs.get("payment") || "paypal";
-  window.location.href = `../mirror/reflection.html?payment=${payment}&verified=true&lang=en`;
+  const params = sessionParams;
+
+  // Build the reflection URL with the preserved parameters
+  let reflectionUrl = "/reflection";
+
+  if (params.payment || params.verified || params.lang || params.mode) {
+    const queryParams = new URLSearchParams();
+
+    if (params.payment) queryParams.set("payment", params.payment);
+    if (params.verified) queryParams.set("verified", params.verified);
+    if (params.lang) queryParams.set("lang", params.lang);
+    if (params.mode) queryParams.set("mode", params.mode);
+
+    reflectionUrl += "?" + queryParams.toString();
+  } else {
+    // Fallback to original behavior if no special parameters
+    const qs = new URLSearchParams(location.search);
+    const payment = qs.get("payment") || "paypal";
+    reflectionUrl = `/reflection?payment=${payment}&verified=true&lang=en`;
+  }
+
+  // Navigate to reflection with preserved parameters
+  window.location.href = reflectionUrl;
 }
 
 // Subtle interaction feedback with breathing circles
@@ -42,18 +77,18 @@ setTimeout(() => {
   // Create a subtle radial pulse
   const pulse = document.createElement("div");
   pulse.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 300px;
-      height: 300px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 5;
-      animation: whatNowPulse 3s ease-out forwards;
-    `;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+        pointer-events: none;
+        z-index: 5;
+        animation: whatNowPulse 3s ease-out forwards;
+      `;
   document.body.appendChild(pulse);
 
   // Remove after animation
@@ -63,18 +98,18 @@ setTimeout(() => {
 // Add the pulse animation
 const style = document.createElement("style");
 style.textContent = `
-    @keyframes whatNowPulse {
-      0% {
-        transform: translate(-50%, -50%) scale(0);
-        opacity: 0;
+      @keyframes whatNowPulse {
+        0% {
+          transform: translate(-50%, -50%) scale(0);
+          opacity: 0;
+        }
+        50% {
+          opacity: 0.3;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(3);
+          opacity: 0;
+        }
       }
-      50% {
-        opacity: 0.3;
-      }
-      100% {
-        transform: translate(-50%, -50%) scale(3);
-        opacity: 0;
-      }
-    }
-  `;
+    `;
 document.head.appendChild(style);
