@@ -524,9 +524,10 @@ body::after {
 }
 
 .yes-no-btn.selected {
-  background: rgba(34, 197, 94, 0.08);
-  border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
   color: #fff;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.08);
 }
 
 /* ╭─ DATE CONTAINER ──────────────────────────────────────────╮ */
