@@ -1,4 +1,4 @@
-/* Commitment - Registration Experience */
+/* Commitment - Registration Experience - Mobile Optimized */
 
 body {
   display: flex;
@@ -6,12 +6,18 @@ body {
   justify-content: center;
   padding: 1rem 0;
   overflow-y: auto;
+
+  /* Mobile optimizations */
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  touch-action: manipulation;
+  min-height: 100vh;
 }
 
 .back-button {
   position: fixed;
-  top: 1.5rem;
-  left: 1.5rem;
+  top: 1rem;
+  left: 1rem;
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -25,13 +31,55 @@ body {
   cursor: pointer;
   transition: 0.3s;
   font-weight: 500;
-  font-size: 0.85rem;
+  font-size: clamp(0.8rem, 2vw, 0.85rem);
   text-decoration: none;
+
+  /* Mobile optimizations */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+  min-width: 44px;
 }
 
 .back-button:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
+}
+
+.back-button:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+/* Test Mode Indicator */
+.test-mode-indicator {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  background: rgba(16, 185, 129, 0.2);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #10b981;
+  padding: 0.7rem 1rem;
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: clamp(0.8rem, 2vw, 0.85rem);
+  animation: testModeGlow 2s ease-in-out infinite;
+
+  /* Mobile optimizations */
+  max-width: calc(100vw - 8rem);
+  text-align: center;
+}
+
+@keyframes testModeGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+  }
 }
 
 .consciousness-waves {
@@ -57,8 +105,8 @@ body {
 }
 
 .wave:nth-child(1) {
-  width: 150px;
-  height: 150px;
+  width: clamp(100px, 30vw, 150px);
+  height: clamp(100px, 30vw, 150px);
   left: 20%;
   top: 15%;
   animation-delay: 0s;
@@ -66,8 +114,8 @@ body {
 }
 
 .wave:nth-child(2) {
-  width: 100px;
-  height: 100px;
+  width: clamp(80px, 25vw, 100px);
+  height: clamp(80px, 25vw, 100px);
   right: 25%;
   top: 70%;
   animation-delay: 4s;
@@ -75,8 +123,8 @@ body {
 }
 
 .wave:nth-child(3) {
-  width: 80px;
-  height: 80px;
+  width: clamp(60px, 20vw, 80px);
+  height: clamp(60px, 20vw, 80px);
   left: 70%;
   top: 20%;
   animation-delay: 8s;
@@ -84,8 +132,8 @@ body {
 }
 
 .wave:nth-child(4) {
-  width: 120px;
-  height: 120px;
+  width: clamp(90px, 28vw, 120px);
+  height: clamp(90px, 28vw, 120px);
   left: 30%;
   bottom: 30%;
   animation-delay: 12s;
@@ -129,7 +177,7 @@ body {
   backdrop-filter: blur(40px) saturate(120%);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 24px;
-  padding: 2.5rem 2rem;
+  padding: clamp(2rem, 5vw, 2.5rem) clamp(1.5rem, 4vw, 2rem);
   text-align: center;
   color: #fff;
   position: relative;
@@ -153,7 +201,7 @@ body {
 .registration-card h1 {
   margin-bottom: 2rem;
   font-weight: 400;
-  font-size: 1.6rem;
+  font-size: clamp(1.4rem, 4vw, 1.6rem);
   line-height: 1.3;
   letter-spacing: 0.3px;
   background: linear-gradient(
@@ -174,7 +222,7 @@ body {
 .form-group label {
   display: block;
   margin-bottom: 0.8rem;
-  font-size: 0.9rem;
+  font-size: clamp(0.85rem, 2.5vw, 0.9rem);
   opacity: 0.9;
   font-weight: 400;
   letter-spacing: 0.2px;
@@ -189,6 +237,7 @@ body {
   font-size: 1.2rem;
   opacity: 0;
   transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .validation-indicator.show {
@@ -205,14 +254,50 @@ body {
   background: rgba(239, 68, 68, 0.1);
 }
 
+/* Mobile-optimized sacred input */
+.sacred-input {
+  width: 100%;
+  padding: 1.2rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  color: #fff;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  font-family: inherit;
+  transition: all 0.3s ease;
+
+  /* Mobile optimizations */
+  -webkit-appearance: none;
+  appearance: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+  min-height: 48px;
+
+  /* Prevent zoom on iOS */
+  transform-origin: left top;
+  zoom: 1;
+}
+
+.sacred-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.sacred-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
 .payment-info {
-  font-size: 0.95rem;
+  font-size: clamp(0.9rem, 2.5vw, 0.95rem);
   line-height: 1.5;
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 14px;
-  padding: 1.5rem 1.2rem;
+  padding: clamp(1.2rem, 3vw, 1.5rem);
   margin: 1.5rem 0 2rem;
   color: rgba(255, 255, 255, 0.9);
   letter-spacing: 0.2px;
@@ -223,7 +308,7 @@ body {
 }
 
 .payment-amount {
-  font-size: 1.6rem;
+  font-size: clamp(1.4rem, 4vw, 1.6rem);
   font-weight: 700;
   margin-bottom: 1rem;
   background: linear-gradient(135deg, #10b981, #059669, #22c55e);
@@ -234,13 +319,19 @@ body {
 .payment-description {
   opacity: 0.8;
   margin-bottom: 1.2rem;
-  font-size: 0.85rem;
+  font-size: clamp(0.8rem, 2vw, 0.85rem);
 }
 
 #paypal-button-container {
   margin: 1rem 0;
   min-height: 45px;
   transition: opacity 0.5s ease;
+}
+
+/* PayPal button mobile optimization */
+#paypal-button-container .paypal-button {
+  min-height: 48px !important;
+  border-radius: 12px !important;
 }
 
 .paypal-loading {
@@ -253,7 +344,7 @@ body {
   border: 1px solid rgba(59, 130, 246, 0.3);
   border-radius: 12px;
   color: #93c5fd;
-  font-size: 0.85rem;
+  font-size: clamp(0.8rem, 2vw, 0.85rem);
   margin: 1rem 0;
 }
 
@@ -264,8 +355,9 @@ body {
   border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: 12px;
   color: #fca5a5;
-  font-size: 0.85rem;
+  font-size: clamp(0.8rem, 2vw, 0.85rem);
   margin: 1rem 0;
+  text-align: center;
 }
 
 .form-disabled {
@@ -282,7 +374,7 @@ body {
   border-radius: 12px;
   color: #93c5fd;
   margin-top: 1rem;
-  font-size: 0.85rem;
+  font-size: clamp(0.8rem, 2vw, 0.85rem);
 }
 
 .loading-spinner {
@@ -301,7 +393,7 @@ body {
   }
 }
 
-/* Responsive */
+/* Mobile Responsive Design */
 @media (max-width: 768px) {
   body {
     padding: 0.5rem 0;
@@ -318,8 +410,15 @@ body {
   }
 
   .back-button {
-    top: 1rem;
-    left: 1rem;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .test-mode-indicator {
+    top: 0.75rem;
+    right: 0.75rem;
     padding: 0.6rem 0.8rem;
     font-size: 0.8rem;
   }
@@ -327,9 +426,26 @@ body {
   .registration-card h1 {
     font-size: 1.4rem;
   }
+
+  .form-group {
+    margin-bottom: 1.2rem;
+  }
+
+  .payment-info {
+    padding: 1.2rem 1rem;
+    margin: 1.2rem 0 1.5rem;
+  }
+
+  .payment-amount {
+    font-size: 1.4rem;
+  }
 }
 
 @media (max-width: 480px) {
+  body {
+    padding: 0.25rem 0;
+  }
+
   .registration-container {
     padding: 0.25rem;
   }
@@ -345,15 +461,165 @@ body {
   }
 
   .form-group {
-    margin-bottom: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-group label {
+    font-size: 0.85rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .sacred-input {
+    padding: 1rem;
+    font-size: 0.9rem;
   }
 
   .payment-info {
-    padding: 1.2rem 1rem;
-    margin: 1.2rem 0 1.5rem;
+    padding: 1rem;
+    margin: 1rem 0 1.2rem;
+    border-radius: 12px;
   }
 
   .payment-amount {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .payment-description {
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .back-button {
+    top: 0.5rem;
+    left: 0.5rem;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.75rem;
+  }
+
+  .test-mode-indicator {
+    position: static;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 0.75rem;
+    padding: 0.5rem 0.8rem;
+  }
+
+  /* Adjust validation indicators for mobile */
+  .validation-indicator {
+    right: 0.8rem;
+    font-size: 1rem;
+  }
+}
+
+/* Landscape mobile optimization */
+@media (max-height: 600px) and (orientation: landscape) {
+  body {
+    align-items: flex-start;
+    padding-top: 1rem;
+  }
+
+  .registration-container {
+    margin-top: 0;
+  }
+
+  .registration-card {
+    padding: 1.5rem;
+  }
+
+  .registration-card h1 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .payment-info {
+    margin: 1rem 0;
+    padding: 1rem;
+  }
+
+  .back-button {
+    top: 0.5rem;
+    left: 0.5rem;
+  }
+
+  .test-mode-indicator {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .registration-card,
+  .sacred-input,
+  .payment-info {
+    border-width: 0.5px;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .registration-card,
+  .wave,
+  .test-mode-indicator,
+  .loading-spinner {
+    animation: none;
+  }
+
+  .back-button,
+  .sacred-input {
+    transition: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .registration-card {
+    background: rgba(10, 10, 25, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .sacred-input {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .payment-info {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* iOS specific optimizations */
+@supports (-webkit-touch-callout: none) {
+  .sacred-input {
+    /* Prevent zoom on focus in iOS */
+    font-size: 16px;
+  }
+
+  .sacred-input:focus {
+    font-size: 16px;
+  }
+}
+
+/* Fix for iOS safe area */
+@supports (padding: max(0px)) {
+  .back-button {
+    top: max(1rem, env(safe-area-inset-top) + 0.5rem);
+    left: max(1rem, env(safe-area-inset-left) + 0.5rem);
+  }
+
+  .test-mode-indicator {
+    top: max(1rem, env(safe-area-inset-top) + 0.5rem);
+    right: max(1rem, env(safe-area-inset-right) + 0.5rem);
+  }
+
+  .registration-container {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
   }
 }
