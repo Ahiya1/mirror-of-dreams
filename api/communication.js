@@ -4,7 +4,7 @@ const nodemailer = require("nodemailer");
 const { addReceipt } = require("../lib/storage.js");
 
 // Email transporter
-const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransporter({
   service: "gmail",
   auth: {
     user: process.env.GMAIL_USER,
@@ -586,7 +586,7 @@ async function handleGenerateReceipt(req, res) {
   const {
     email,
     name,
-    amount = 5,
+    amount = 2.99,
     paymentMethod = "paypal",
     language = "en",
     registrationId = null,

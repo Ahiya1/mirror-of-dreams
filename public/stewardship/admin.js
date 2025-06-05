@@ -303,7 +303,7 @@ function renderRecentActivity() {
 async function addReceipt() {
   document.getElementById("receiptModalTitle").textContent = "Create Receipt";
   document.getElementById("receiptForm").reset();
-  document.getElementById("receiptAmount").value = "5";
+  document.getElementById("receiptAmount").value = "2.99";
   showModal("receiptModal");
 }
 

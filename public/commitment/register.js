@@ -189,7 +189,7 @@ function initializePayPal() {
             purchase_units: [
               {
                 amount: {
-                  value: "5.00",
+                  value: "2.99",
                   currency_code: paypalConfig.currency,
                 },
                 description: "Mirror of Truth - Reflection Experience",
@@ -264,7 +264,7 @@ async function handlePaymentSuccess(paymentDetails) {
           action: "generate-receipt",
           email: userData.email,
           name: userData.name,
-          amount: 5,
+          amount: 2.99,
           paymentMethod: "paypal",
           language: "en",
         }),
