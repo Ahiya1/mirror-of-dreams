@@ -1,4 +1,4 @@
-// API: Gift - Sacred Gift Management
+// API: Gift - Sacred Gift Management with Premium Support
 
 const {
   addGift,
@@ -51,7 +51,7 @@ module.exports = async function handler(req, res) {
   }
 };
 
-// Create a gift
+// Create a gift with premium support
 async function handleCreateGift(req, res) {
   const {
     giverName,
@@ -63,6 +63,7 @@ async function handleCreateGift(req, res) {
     paymentMethod = "paypal",
     paymentId,
     language = "en",
+    isPremium = false,
   } = req.body;
 
   // Validation
@@ -80,22 +81,34 @@ async function handleCreateGift(req, res) {
     });
   }
 
+  // Validate premium pricing
+  const expectedAmount = isPremium ? 4.99 : 2.99;
+  if (Math.abs(parseFloat(amount) - expectedAmount) > 0.01) {
+    return res.status(400).json({
+      success: false,
+      error: "Invalid amount for selected gift type",
+    });
+  }
+
   try {
-    // Create the gift
+    // Create the gift with premium information
     const gift = await addGift({
       giverName,
       giverEmail,
       recipientName,
       recipientEmail,
       personalMessage: personalMessage || "",
-      amount,
+      amount: parseFloat(amount),
       paymentMethod,
       paymentId,
       language,
+      isPremium,
+      giftType: isPremium ? "premium" : "basic",
     });
 
+    const giftTypeText = isPremium ? "Premium" : "Essential";
     console.log(
-      `🎁 Gift created: ${gift.giftCode} from ${giverName} to ${recipientName}`
+      `🎁 ${giftTypeText} gift created: ${gift.giftCode} from ${giverName} to ${recipientName}`
     );
 
     // Send gift invitation email
@@ -109,6 +122,7 @@ async function handleCreateGift(req, res) {
       message: "Gift created and invitation sent",
       giftId: gift.id,
       giftCode: gift.giftCode,
+      isPremium: isPremium,
     });
   } catch (error) {
     console.error("Error creating gift:", error);
@@ -154,6 +168,8 @@ async function handleValidateGift(req, res) {
         giverName: gift.giverName,
         personalMessage: gift.personalMessage,
         createdAt: gift.createdAt,
+        isPremium: gift.isPremium || false,
+        giftType: gift.giftType || "basic",
       },
     });
   } catch (error) {
@@ -193,7 +209,10 @@ async function handleRedeemGift(req, res) {
     // Mark as redeemed
     const redeemedGift = await redeemGift(giftCode);
 
-    console.log(`🎁 Gift redeemed: ${giftCode} by ${gift.recipientName}`);
+    const giftTypeText = gift.isPremium ? "Premium" : "Essential";
+    console.log(
+      `🎁 ${giftTypeText} gift redeemed: ${giftCode} by ${gift.recipientName}`
+    );
 
     // Store recipient info for reflection session
     const userData = {
@@ -203,6 +222,8 @@ async function handleRedeemGift(req, res) {
       isGiftRecipient: true,
       giftedBy: gift.giverName,
       giftMessage: gift.personalMessage,
+      isPremium: gift.isPremium || false,
+      amount: gift.amount || (gift.isPremium ? 4.99 : 2.99),
     };
 
     return res.json({
@@ -213,6 +234,8 @@ async function handleRedeemGift(req, res) {
         recipientName: gift.recipientName,
         giverName: gift.giverName,
         personalMessage: gift.personalMessage,
+        isPremium: gift.isPremium || false,
+        giftType: gift.giftType || "basic",
       },
     });
   } catch (error) {
@@ -237,7 +260,10 @@ async function sendGiftInvitation(gift) {
       throw new Error(`Failed to send gift invitation: ${response.status}`);
     }
 
-    console.log(`📧 Gift invitation sent to ${gift.recipientEmail}`);
+    const giftTypeText = gift.isPremium ? "Premium" : "Essential";
+    console.log(
+      `📧 ${giftTypeText} gift invitation sent to ${gift.recipientEmail}`
+    );
   } catch (error) {
     console.error("Error sending gift invitation:", error);
     // Don't throw - gift creation should succeed even if email fails
@@ -260,7 +286,8 @@ async function generateGiftReceipt(gift) {
       throw new Error(`Failed to generate gift receipt: ${response.status}`);
     }
 
-    console.log(`🧾 Gift receipt sent to ${gift.giverEmail}`);
+    const giftTypeText = gift.isPremium ? "Premium" : "Essential";
+    console.log(`🧾 ${giftTypeText} gift receipt sent to ${gift.giverEmail}`);
   } catch (error) {
     console.error("Error generating gift receipt:", error);
     // Don't throw - gift creation should succeed even if receipt fails

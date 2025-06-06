@@ -1,4 +1,4 @@
-// API: Payment - Sacred Payment Processing
+// API: Payment - Sacred Payment Processing with Premium Support
 
 // Main handler
 module.exports = async function handler(req, res) {
@@ -53,7 +53,7 @@ module.exports = async function handler(req, res) {
   }
 };
 
-// Get PayPal configuration
+// Get PayPal configuration with pricing tiers
 async function handleGetConfig(req, res) {
   try {
     const config = {
@@ -61,6 +61,19 @@ async function handleGetConfig(req, res) {
       currency: "USD",
       environment:
         process.env.NODE_ENV === "production" ? "production" : "sandbox",
+      pricing: {
+        basic: {
+          amount: "2.99",
+          name: "Essential Reflection",
+          description: "Deep reflection using our core mirror technology",
+        },
+        premium: {
+          amount: "4.99",
+          name: "Premium Reflection",
+          description:
+            "Enhanced reflection with extended AI thinking and deeper insights",
+        },
+      },
     };
 
     // Validate configuration
@@ -91,7 +104,7 @@ async function handleGetConfig(req, res) {
   }
 }
 
-// Handle user registration
+// Handle user registration with premium option
 async function handleRegister(req, res) {
   // Check environment
   if (!process.env.CREATOR_SECRET_KEY) {
@@ -102,7 +115,7 @@ async function handleRegister(req, res) {
     });
   }
 
-  const { name, email, language = "en" } = req.body || {};
+  const { name, email, language = "en", isPremium = false } = req.body || {};
 
   if (!name || !email) {
     return res.status(400).json({
@@ -112,7 +125,11 @@ async function handleRegister(req, res) {
   }
 
   try {
-    console.log(`🚀 Processing registration for: ${name} (${email})`);
+    console.log(
+      `🚀 Processing registration for: ${name} (${email}) - ${
+        isPremium ? "Premium" : "Basic"
+      }`
+    );
 
     // For now, we'll just validate and return success
     // In the future, this could store registration data
@@ -121,6 +138,7 @@ async function handleRegister(req, res) {
       name,
       email,
       language,
+      isPremium,
       source: "website",
       timestamp: new Date().toISOString(),
     };
@@ -131,6 +149,7 @@ async function handleRegister(req, res) {
       success: true,
       message: "Registration recorded",
       id: registrationData.id,
+      isPremium: isPremium,
     });
   } catch (error) {
     console.error("Registration error:", error);

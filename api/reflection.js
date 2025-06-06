@@ -1,4 +1,4 @@
-// api/reflection.js  – Mirror of Truth (multi-tone, creator-aware)
+// api/reflection.js  – Mirror of Truth (multi-tone, creator-aware, premium thinking)
 // ---------------------------------------------------------------
 
 const fs = require("fs");
@@ -29,14 +29,49 @@ const PROMPTS = {
 };
 const CREATOR_CTX = loadPrompt("creator_context.txt");
 
+// ─── Premium instruction addition ───────────────────────────────
+const PREMIUM_INSTRUCTION = `
+
+PREMIUM REFLECTION ENHANCEMENT:
+This is a premium reflection experience. You have extended thinking capabilities to provide deeper, more nuanced insights. Please:
+
+1. Take time to deeply analyze what the user has written, looking for subtle patterns, hidden meanings, and unspoken truths
+2. Consider the philosophical and psychological dimensions of their responses 
+3. Reflect on the relationship between their dream, plan, timeline, current relationship, and offering - what does this constellation reveal?
+4. Pay special attention to their language choices, what they emphasize vs. what they minimize
+5. Look for signs of their authentic power and where they might be dimming themselves
+6. Consider what their dream represents beyond the surface level - what is it really asking of them?
+7. Provide insights that go beyond encouragement to true mirror-work - showing them something they couldn't see themselves
+
+This premium reflection should feel notably more insightful, personally accurate, and transformative than a standard reflection. You are working with the full depth of your capabilities.`;
+
 // ─── Prompt utilities ───────────────────────────────────────────
 function withCreatorContext(base, ctx) {
   return `${base.trim()}\n\n${ctx.trim()}`;
 }
 
-function getMirrorPrompt(tone = "fusion", isCreator = false) {
-  const base = PROMPTS[tone] || PROMPTS.fusion;
-  return isCreator ? withCreatorContext(base, CREATOR_CTX) : base;
+function withPremiumEnhancement(base, isPremium) {
+  return isPremium ? `${base.trim()}\n\n${PREMIUM_INSTRUCTION.trim()}` : base;
+}
+
+function getMirrorPrompt(
+  tone = "fusion",
+  isCreator = false,
+  isPremium = false
+) {
+  let base = PROMPTS[tone] || PROMPTS.fusion;
+
+  // Add creator context if needed
+  if (isCreator) {
+    base = withCreatorContext(base, CREATOR_CTX);
+  }
+
+  // Add premium enhancement if needed
+  if (isPremium) {
+    base = withPremiumEnhancement(base, true);
+  }
+
+  return base;
 }
 
 // ─── Markdown → sacred HTML formatter (unchanged) ───────────────
@@ -96,6 +131,7 @@ module.exports = async function handler(req, res) {
     language = "en",
     isAdmin = false,
     isCreator = false,
+    isPremium = false,
     tone = "fusion",
   } = req.body || {};
 
@@ -105,6 +141,9 @@ module.exports = async function handler(req, res) {
       .status(400)
       .json({ success: false, error: "Missing required fields" });
   }
+
+  // Creator reflections are always premium
+  const shouldUsePremium = isPremium || isCreator;
 
   const name = cleanName(userName);
   const intro = name ? `My name is ${name}.\n\n` : "";
@@ -123,26 +162,52 @@ module.exports = async function handler(req, res) {
 
 Please mirror back what you see, in a flowing reflection I can return to months from now.`;
 
-  // ── Call Anthropic ────────────────────────────────────────────
+  // ── Call Anthropic with premium thinking if needed ──────────────
   try {
     if (!process.env.ANTHROPIC_API_KEY)
       throw new Error("ANTHROPIC_API_KEY missing");
 
-    const systemPrompt = getMirrorPrompt(tone, isCreator);
-    const resp = await anthropic.messages.create({
+    const systemPrompt = getMirrorPrompt(tone, isCreator, shouldUsePremium);
+
+    // Configure request based on premium status
+    const requestConfig = {
       model: "claude-sonnet-4-20250514",
       temperature: 0.8,
-      max_tokens: 4000,
+      max_tokens: shouldUsePremium ? 6000 : 4000,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
-    });
+    };
 
-    const reflection = resp?.content?.[0]?.text;
+    // Add extended thinking for premium reflections
+    if (shouldUsePremium) {
+      requestConfig.thinking = {
+        type: "enabled",
+        budget_tokens: 5000,
+      };
+    }
+
+    const resp = await anthropic.messages.create(requestConfig);
+
+    const reflection = resp?.content?.find(
+      (block) => block.type === "text"
+    )?.text;
     if (!reflection) throw new Error("Empty response from Claude");
+
+    // Log thinking summary if available (for debugging)
+    const thinkingBlock = resp?.content?.find(
+      (block) => block.type === "thinking"
+    );
+    if (thinkingBlock && process.env.NODE_ENV === "development") {
+      console.log(
+        "Premium thinking applied:",
+        thinkingBlock.thinking?.substring(0, 200) + "..."
+      );
+    }
 
     return res.status(200).json({
       success: true,
       reflection: toSacredHTML(reflection),
+      isPremium: shouldUsePremium,
       userData: {
         userName: name,
         dream,
@@ -154,6 +219,7 @@ Please mirror back what you see, in a flowing reflection I can return to months 
         language,
         isAdmin,
         isCreator,
+        isPremium: shouldUsePremium,
         tone,
       },
       timestamp: new Date().toISOString(),

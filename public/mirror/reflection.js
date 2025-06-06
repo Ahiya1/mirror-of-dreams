@@ -1,12 +1,15 @@
-// Mirror – Luminous Reflection Logic with Creator Modes
+// Mirror – Luminous Reflection Logic with Premium Support & URL State Management
 // Complete replacement for public/mirror/reflection.js
 
 let userData = null;
 let hasDateSet = null;
 let isCreatorMode = false;
 let isTestMode = false;
+let isPremiumMode = false;
 let selectedTone = "fusion"; // default
 let backgroundElements = [];
+let formState = {};
+let currentReflection = null;
 
 /* — INITIALIZATION — */
 window.addEventListener("load", () => {
@@ -14,7 +17,139 @@ window.addEventListener("load", () => {
   initializeToneBackground();
   setupInteractions();
   animateQuestions();
+  handleURLState();
 });
+
+/* — URL STATE MANAGEMENT — */
+function handleURLState() {
+  const urlParams = new URLSearchParams(window.location.search);
+
+  // Check if we're returning to a reflection
+  if (urlParams.get("state") === "reflection" && urlParams.get("id")) {
+    const reflectionId = urlParams.get("id");
+    const storedReflection = localStorage.getItem(`reflection_${reflectionId}`);
+
+    if (storedReflection) {
+      try {
+        const reflectionData = JSON.parse(storedReflection);
+
+        // Restore the reflection state
+        document.getElementById("reflectionContent").innerHTML =
+          reflectionData.content;
+
+        // Show premium badge if it was premium
+        if (reflectionData.isPremium) {
+          showPremiumBadge();
+        }
+
+        showSection("results");
+        return;
+      } catch (e) {
+        console.error("Failed to restore reflection:", e);
+      }
+    }
+  }
+
+  // Check if we're returning to form with saved state
+  if (urlParams.get("state") === "form") {
+    const savedForm = localStorage.getItem("mirror_form_state");
+    if (savedForm) {
+      try {
+        formState = JSON.parse(savedForm);
+        restoreFormState();
+      } catch (e) {
+        console.error("Failed to restore form state:", e);
+      }
+    }
+  }
+}
+
+function saveFormState() {
+  const form = document.getElementById("reflectionForm");
+  const formData = new FormData(form);
+
+  formState = {
+    dream: formData.get("dream") || "",
+    plan: formData.get("plan") || "",
+    hasDate: formData.get("hasDate") || "",
+    dreamDate: formData.get("dreamDate") || "",
+    relationship: formData.get("relationship") || "",
+    offering: formData.get("offering") || "",
+    tone: selectedTone,
+    timestamp: Date.now(),
+  };
+
+  localStorage.setItem("mirror_form_state", JSON.stringify(formState));
+
+  // Update URL to reflect form state
+  const url = new URL(window.location);
+  url.searchParams.set("state", "form");
+  window.history.replaceState({}, "", url);
+}
+
+function restoreFormState() {
+  if (!formState || Object.keys(formState).length === 0) return;
+
+  // Restore form values
+  const form = document.getElementById("reflectionForm");
+  Object.entries(formState).forEach(([key, value]) => {
+    if (key === "tone") {
+      selectedTone = value;
+      selectTone(value);
+      return;
+    }
+
+    const field = form.querySelector(`[name="${key}"]`);
+    if (field) {
+      field.value = value;
+
+      // Special handling for hasDate
+      if (key === "hasDate" && value) {
+        hasDateSet = value;
+
+        // Update yes/no buttons
+        document.querySelectorAll(".yes-no-btn").forEach((btn) => {
+          btn.classList.remove("selected");
+          if (btn.dataset.value === value) {
+            btn.classList.add("selected");
+          }
+        });
+
+        // Show/hide date container
+        const dateContainer = document.getElementById("dateContainer");
+        const dateInput = dateContainer.querySelector("input");
+        if (value === "yes") {
+          dateContainer.style.display = "flex";
+          dateInput.required = true;
+        }
+      }
+    }
+  });
+}
+
+function saveReflection(content, isPremium) {
+  const reflectionId = Date.now().toString();
+  const reflectionData = {
+    content: content,
+    isPremium: isPremium,
+    timestamp: Date.now(),
+    userData: userData,
+  };
+
+  localStorage.setItem(
+    `reflection_${reflectionId}`,
+    JSON.stringify(reflectionData)
+  );
+
+  // Update URL to reflection state
+  const url = new URL(window.location);
+  url.searchParams.set("state", "reflection");
+  url.searchParams.set("id", reflectionId);
+  window.history.replaceState({}, "", url);
+
+  // Clean up form state
+  localStorage.removeItem("mirror_form_state");
+}
 
 /* — TONE BACKGROUND SYSTEM — */
 function initializeToneBackground() {
@@ -73,18 +208,22 @@ function createToneElements(tone) {
 function checkAuthAndSetup() {
   const url = new URLSearchParams(location.search);
   const mode = url.get("mode");
+  const premium = url.get("premium");
 
   // Check for creator bypass modes
   if (mode === "creator") {
     isCreatorMode = true;
+    isPremiumMode = true; // Creator reflections are always premium
     document.getElementById("adminNotice").style.display = "block";
     document.getElementById("adminNotice").innerHTML =
-      "<span>✨ Creator mode — experiencing as Ahiya</span>";
+      "<span>✨ Creator mode — premium reflection as Ahiya</span>";
   } else if (mode === "user") {
     isTestMode = true;
+    isPremiumMode = premium === "true"; // Respect premium setting for test mode
     document.getElementById("adminNotice").style.display = "block";
-    document.getElementById("adminNotice").innerHTML =
-      "<span>🌟 Test mode — experiencing as another soul</span>";
+    document.getElementById("adminNotice").innerHTML = `<span>🌟 Test mode — ${
+      isPremiumMode ? "premium" : "essential"
+    } reflection as another soul</span>`;
   }
 
   const stored = localStorage.getItem("mirrorVerifiedUser");
@@ -92,11 +231,17 @@ function checkAuthAndSetup() {
     try {
       userData = JSON.parse(stored);
 
+      // Set premium status from URL or user data
+      if (!isPremiumMode) {
+        isPremiumMode = userData.isPremium || premium === "true";
+      }
+
       // Override creator status based on mode
       if (isCreatorMode) {
         userData.isCreator = true;
         userData.name = "Ahiya";
         userData.email = "ahiya.butman@gmail.com";
+        isPremiumMode = true; // Always premium for creator
       } else if (isTestMode) {
         userData.isCreator = false;
         // Keep the test name/email they entered
@@ -107,6 +252,25 @@ function checkAuthAndSetup() {
     }
   } else if (!isCreatorMode && !isTestMode) {
     location.href = "/register";
+  }
+}
+
+/* — PREMIUM BADGE DISPLAY — */
+function showPremiumBadge() {
+  // Create premium badge in results section
+  const resultsBackdrop = document.querySelector(".results-backdrop");
+
+  // Remove existing badge if any
+  const existingBadge = document.querySelector(".premium-badge");
+  if (existingBadge) {
+    existingBadge.remove();
+  }
+
+  if (resultsBackdrop) {
+    const badge = document.createElement("div");
+    badge.className = "premium-badge";
+    badge.innerHTML = "✨ Premium Reflection";
+    resultsBackdrop.insertBefore(badge, resultsBackdrop.firstChild);
   }
 }
 
@@ -126,19 +290,7 @@ function setupInteractions() {
   /* Tone Picker */
   document.querySelectorAll(".tone-btn").forEach((btn) => {
     btn.addEventListener("click", function () {
-      // Remove selection from siblings
-      this.parentNode
-        .querySelectorAll(".tone-btn")
-        .forEach((b) => b.classList.remove("selected"));
-
-      // Select current
-      this.classList.add("selected");
-
-      const newTone = this.dataset.tone || "fusion";
-      if (newTone === selectedTone) return;
-
-      selectedTone = newTone;
-      transitionToTone(newTone);
+      selectTone(this.dataset.tone || "fusion");
     });
   });
 
@@ -163,7 +315,15 @@ function setupInteractions() {
         dateInp.required = false;
         dateInp.value = "";
       }
+
+      // Save form state when user makes changes
+      saveFormState();
     });
+  });
+
+  /* Save form state on input changes */
+  document.querySelectorAll(".sacred-input").forEach((input) => {
+    input.addEventListener("input", debounce(saveFormState, 1000));
   });
 
   /* Subtle animations when typing */
@@ -203,6 +363,7 @@ function setupInteractions() {
         language: "en",
         isAdmin: isCreatorMode || isTestMode, // Allow unlimited reflections
         isCreator: isCreatorMode, // Only true if in creator mode
+        isPremium: isPremiumMode, // Include premium status
         tone: selectedTone,
       };
 
@@ -217,6 +378,15 @@ function setupInteractions() {
 
         document.getElementById("reflectionContent").innerHTML =
           data.reflection;
+
+        // Show premium badge if this was a premium reflection
+        if (data.isPremium) {
+          showPremiumBadge();
+        }
+
+        // Save reflection with URL state
+        saveReflection(data.reflection, data.isPremium);
+
         showSection("results");
       } catch (err) {
         console.error(err);
@@ -226,6 +396,44 @@ function setupInteractions() {
         showSection("results");
       }
     });
+
+  // Handle back button to preserve state
+  window.addEventListener("popstate", (e) => {
+    // Handle browser back/forward buttons
+    handleURLState();
+  });
+}
+
+function selectTone(tone) {
+  selectedTone = tone;
+
+  // Remove selection from siblings
+  document
+    .querySelectorAll(".tone-btn")
+    .forEach((b) => b.classList.remove("selected"));
+
+  // Select current
+  document.querySelector(`[data-tone="${tone}"]`).classList.add("selected");
+
+  if (tone === selectedTone) return;
+
+  transitionToTone(tone);
+
+  // Save form state when tone changes
+  saveFormState();
+}
+
+// Debounce helper
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
 }
 
 /* — SUBTLE INTERACTION EFFECTS — */
@@ -363,6 +571,7 @@ function emailReflection() {
       content: document.getElementById("reflectionContent").innerHTML,
       userName: emailName,
       language: "en",
+      isPremium: isPremiumMode,
     }),
   })
     .then((r) => r.json())
@@ -430,6 +639,23 @@ style.textContent = `
       opacity: 0;
       transform: scale(1.8) rotate(360deg);
     }
+  }
+  
+  /* Premium badge styling */
+  .premium-badge {
+    position: absolute;
+    top: -1px;
+    right: 1.5rem;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 0 0 16px 16px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    z-index: 20;
   }
   
   /* Mode indicator styling */

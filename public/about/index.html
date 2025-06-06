@@ -142,6 +142,7 @@
         padding: 2rem 0;
       }
 
+      /* FIXED: Static opening quote - no breathing animation on mobile */
       .opening-quote {
         font-size: clamp(1.4rem, 4vw, 2.2rem);
         font-weight: 300;
@@ -160,45 +161,51 @@
         background-clip: text;
         color: transparent;
         position: relative;
-        animation: breatheText 4s ease-in-out infinite;
       }
 
-      .opening-quote::before {
-        content: "";
-        position: absolute;
-        inset: -20px;
-        background: radial-gradient(
-          circle,
-          rgba(255, 255, 255, 0.03) 0%,
-          rgba(255, 255, 255, 0.01) 40%,
-          transparent 70%
-        );
-        border-radius: 50%;
-        animation: quotePulse 6s ease-in-out infinite;
-        z-index: -1;
-      }
+      /* Only apply breathing animation on desktop/larger screens */
+      @media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
+        .opening-quote {
+          animation: breatheText 4s ease-in-out infinite;
+        }
 
-      @keyframes breatheText {
-        0%,
-        100% {
-          transform: scale(1);
-          text-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+        .opening-quote::before {
+          content: "";
+          position: absolute;
+          inset: -20px;
+          background: radial-gradient(
+            circle,
+            rgba(255, 255, 255, 0.03) 0%,
+            rgba(255, 255, 255, 0.01) 40%,
+            transparent 70%
+          );
+          border-radius: 50%;
+          animation: quotePulse 6s ease-in-out infinite;
+          z-index: -1;
         }
-        50% {
-          transform: scale(1.01);
-          text-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
-        }
-      }
 
-      @keyframes quotePulse {
-        0%,
-        100% {
-          transform: scale(1);
-          opacity: 0.5;
+        @keyframes breatheText {
+          0%,
+          100% {
+            transform: scale(1);
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+          }
+          50% {
+            transform: scale(1.01);
+            text-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+          }
         }
-        50% {
-          transform: scale(1.2);
-          opacity: 0.2;
+
+        @keyframes quotePulse {
+          0%,
+          100% {
+            transform: scale(1);
+            opacity: 0.5;
+          }
+          50% {
+            transform: scale(1.2);
+            opacity: 0.2;
+          }
         }
       }
 
@@ -660,12 +667,6 @@
           font-size: 1rem;
           margin-bottom: 1.2rem;
         }
-
-        /* Reduce motion intensity on mobile */
-        .opening-quote::before,
-        .cta-section::before {
-          animation-duration: 8s;
-        }
       }
 
       @media (max-width: 480px) {
@@ -1033,8 +1034,9 @@
       <div class="cta-section">
         <div class="cta-text">
           Ready to see yourself clearly?<br />
-          <span class="price-highlight">$2.99</span> • One profound reflection •
-          Yours to keep forever
+          Essential from <span class="price-highlight">$2.99</span> • Premium
+          for <span class="price-highlight">$4.99</span><br />
+          One profound reflection • Yours to keep forever
           <div
             style="
               font-size: 1rem;

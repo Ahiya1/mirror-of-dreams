@@ -1,10 +1,10 @@
-// API: Communication - Sacred Email & Receipts
+// API: Communication - Sacred Email & Receipts with Fixed Templates
 
 const nodemailer = require("nodemailer");
 const { addReceipt } = require("../lib/storage.js");
 
 // Email transporter
-const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransporter({
   service: "gmail",
   auth: {
     user: process.env.GMAIL_USER,
@@ -21,13 +21,21 @@ function generateReceiptNumber() {
   return `MR${timestamp.slice(-6)}${random}`;
 }
 
-// Enhanced reflection email template - clean, mobile-optimized, cosmic theme
-function getReflectionTemplate(userName, content) {
+// FIXED: Enhanced reflection email template - clean, single content block
+function getReflectionTemplate(userName, content, isPremium = false) {
   const currentDate = new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
+
+  const premiumBadge = isPremium
+    ? `
+    <div style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 0.4rem 1rem; border-radius: 0 0 16px 16px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 1rem; display: inline-block;">
+      ✨ Premium Reflection
+    </div>
+  `
+    : "";
 
   return `
 <!DOCTYPE html>
@@ -96,6 +104,7 @@ function getReflectionTemplate(userName, content) {
                     <!-- Header content -->
                     <tr>
                         <td style="padding: 40px 40px 30px 40px; text-align: center;" class="mobile-padding">
+                            ${premiumBadge}
                             <h1 style="margin: 0 0 10px 0; font-size: 28px; font-weight: 300; color: #1f2937; letter-spacing: 0.5px;" class="mobile-title">
                                 Your Mirror of Truth
                             </h1>
@@ -113,19 +122,21 @@ function getReflectionTemplate(userName, content) {
                                 ${userName},
                             </p>
                             <p style="margin: 0; font-size: 16px; color: #6b7280; line-height: 1.6;" class="mobile-font">
-                                Here is your reflection from The Mirror of Truth. This isn't just words on a screen — it's a reminder of who you are when you stop hiding from your own power.
+                                Here is your ${
+                                  isPremium ? "premium " : ""
+                                }reflection from The Mirror of Truth. This isn't just words on a screen — it's a reminder of who you are when you stop hiding from your own power.
                             </p>
                         </td>
                     </tr>
                     
-                    <!-- Reflection content -->
+                    <!-- FIXED: Single reflection content block -->
                     <tr>
                         <td style="padding: 0 40px 40px 40px;" class="mobile-padding">
                             <div style="background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%); border: 2px solid #e5e7eb; border-radius: 16px; padding: 32px; position: relative;" class="reflection-content force-light">
                                 <!-- Subtle accent -->
                                 <div style="position: absolute; top: 12px; left: 12px; width: 32px; height: 32px; background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%); border-radius: 50%;"></div>
                                 
-                                <!-- Reflection text -->
+                                <!-- Single reflection text -->
                                 <div style="font-size: 17px; line-height: 1.7; color: #374151;" class="mobile-font">
                                     ${content}
                                 </div>
@@ -152,7 +163,7 @@ function getReflectionTemplate(userName, content) {
                         <td style="padding: 0 40px 40px 40px;" class="mobile-padding">
                             <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; border: 2px solid #0ea5e9;">
                                 <p style="margin: 0; color: #0c4a6e; font-size: 15px; font-weight: 500;" class="mobile-font">
-                                    💾 <strong>Save this reflection:</strong> Print this email or copy the text above. Keep it somewhere you can find it when you need to remember your truth.
+                                    💾 <strong>Save this reflection:</strong> This email contains your complete reflection. Save or print this email to keep it forever.
                                 </p>
                             </div>
                         </td>
@@ -216,50 +227,6 @@ function getReflectionTemplate(userName, content) {
                     
                 </table>
                 
-                <!-- Printable reflection card -->
-                <div style="page-break-before: always; margin-top: 40px;">
-                    <table cellpadding="0" cellspacing="0" border="0" width="600" style="max-width: 600px; width: 100%; background: #ffffff; border: 3px solid #1f2937; border-radius: 16px; margin-top: 40px; font-family: Georgia, serif;" class="force-light">
-                        
-                        <!-- Printable header -->
-                        <tr>
-                            <td style="padding: 32px 32px 24px 32px; text-align: center; border-bottom: 2px solid #e5e7eb;" class="mobile-padding">
-                                <h2 style="margin: 0 0 8px 0; font-size: 24px; font-weight: normal; color: #1f2937; letter-spacing: 1px;">
-                                    MIRROR OF TRUTH
-                                </h2>
-                                <p style="margin: 0 0 8px 0; font-size: 14px; color: #6b7280; text-transform: uppercase; letter-spacing: 2px;">
-                                    AhIya
-                                </p>
-                                <p style="margin: 0; font-size: 12px; color: #9ca3af;">
-                                    ${currentDate}
-                                </p>
-                            </td>
-                        </tr>
-                        
-                        <!-- Printable reflection -->
-                        <tr>
-                            <td style="padding: 32px;" class="mobile-padding">
-                                <p style="margin: 0 0 24px 0; font-size: 16px; color: #1f2937; font-weight: 600;">
-                                    For ${userName}:
-                                </p>
-                                <div style="font-size: 15px; line-height: 1.8; color: #374151; font-family: Georgia, serif;" class="mobile-font">
-                                    ${content}
-                                </div>
-                            </td>
-                        </tr>
-                        
-                        <!-- Printable footer -->
-                        <tr>
-                            <td style="padding: 24px 32px 32px 32px; border-top: 1px solid #e5e7eb; text-align: center;" class="mobile-padding">
-                                <p style="margin: 0; font-size: 12px; color: #6b7280; line-height: 1.5;">
-                                    Return to this reflection when you need to remember your power.<br>
-                                    <strong>mirror-of-truth.vercel.app</strong>
-                                </p>
-                            </td>
-                        </tr>
-                        
-                    </table>
-                </div>
-                
             </td>
         </tr>
     </table>
@@ -267,9 +234,11 @@ function getReflectionTemplate(userName, content) {
 </html>`;
 }
 
-// Gift invitation email template
+// Gift invitation email template with premium support
 function getGiftInvitationTemplate(gift) {
   const giftUrl = `${getBaseUrl()}/breathing?gift=${gift.giftCode}`;
+  const giftType = gift.isPremium ? "Premium" : "Essential";
+  const giftAmount = gift.isPremium ? "$4.99" : "$2.99";
 
   return `
 <!DOCTYPE html>
@@ -292,10 +261,23 @@ function getGiftInvitationTemplate(gift) {
             <!-- Cosmic accent -->
             <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);"></div>
             
+            ${
+              gift.isPremium
+                ? `
+            <!-- Premium badge -->
+            <div style="position: absolute; top: -1px; right: 2rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 0.4rem 1rem; border-radius: 0 0 16px 16px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;">
+                ✨ Premium Gift
+            </div>
+            `
+                : ""
+            }
+            
             <!-- Gift icon -->
             <div style="text-align: center; margin-bottom: 30px;">
                 <div style="font-size: 4rem; margin-bottom: 20px;">🎁</div>
-                <h1 style="font-size: 2rem; font-weight: 300; margin: 0 0 10px 0; background: linear-gradient(135deg, #ffffff 0%, rgba(251, 191, 36, 0.9) 50%, #ffffff 100%); -webkit-background-clip: text; color: transparent;">A Sacred Gift Awaits You</h1>
+                <h1 style="font-size: 2rem; font-weight: 300; margin: 0 0 10px 0; background: linear-gradient(135deg, #ffffff 0%, rgba(251, 191, 36, 0.9) 50%, #ffffff 100%); -webkit-background-clip: text; color: transparent;">
+                    A Sacred ${giftType} Gift Awaits You
+                </h1>
                 <p style="margin: 0; opacity: 0.8; font-size: 1.1rem;">Someone sees your light</p>
             </div>
 
@@ -318,8 +300,20 @@ function getGiftInvitationTemplate(gift) {
                 <p style="margin: 20px 0; font-size: 1.1rem; color: rgba(255, 255, 255, 0.85); line-height: 1.7;">
                     ${
                       gift.giverName
-                    } has gifted you a reflection experience from <strong>The Mirror of Truth</strong> — a sacred space to connect with your dreams and remember your wholeness.
+                    } has gifted you a <strong>${giftType} reflection experience</strong> (${giftAmount} value) from <strong>The Mirror of Truth</strong> — a sacred space to connect with your dreams and remember your wholeness.
                 </p>
+                
+                ${
+                  gift.isPremium
+                    ? `
+                <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 12px; padding: 20px; margin: 20px 0;">
+                    <p style="margin: 0; font-size: 1rem; color: rgba(251, 191, 36, 0.9); font-weight: 500;">
+                        ✨ This Premium gift includes enhanced AI thinking for deeper, more personally accurate insights.
+                    </p>
+                </div>
+                `
+                    : ""
+                }
             </div>
 
             <!-- What they'll experience -->
@@ -336,12 +330,22 @@ function getGiftInvitationTemplate(gift) {
                     </div>
                     <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(255, 255, 255, 0.02); border-radius: 12px;">
                         <span style="font-size: 1.5rem;">✨</span>
-                        <span style="color: rgba(255, 255, 255, 0.8);">A personalized reflection showing your wholeness</span>
+                        <span style="color: rgba(255, 255, 255, 0.8);">A personalized ${giftType.toLowerCase()} reflection showing your wholeness</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(255, 255, 255, 0.02); border-radius: 12px;">
                         <span style="font-size: 1.5rem;">📧</span>
                         <span style="color: rgba(255, 255, 255, 0.8);">Your reflection emailed to keep forever</span>
                     </div>
+                    ${
+                      gift.isPremium
+                        ? `
+                    <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(251, 191, 36, 0.05); border: 1px solid rgba(251, 191, 36, 0.2); border-radius: 12px;">
+                        <span style="font-size: 1.5rem;">🧠</span>
+                        <span style="color: rgba(251, 191, 36, 0.9);">Enhanced AI thinking for deeper insights</span>
+                    </div>
+                    `
+                        : ""
+                    }
                 </div>
             </div>
 
@@ -351,14 +355,14 @@ function getGiftInvitationTemplate(gift) {
                     Ready to see yourself clearly?
                 </p>
                 <a href="${giftUrl}" style="display: inline-block; padding: 18px 40px; background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%); border: 2px solid rgba(255, 255, 255, 0.25); border-radius: 20px; color: #fff; text-decoration: none; font-size: 1.2rem; font-weight: 500; letter-spacing: 0.5px; transition: all 0.3s ease; box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);">
-                    ✨ Begin My Reflection ✨
+                    ✨ Begin My ${giftType} Reflection ✨
                 </a>
             </div>
 
             <!-- Gift note -->
             <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 20px; margin-top: 30px; text-align: center;">
                 <p style="margin: 0; font-size: 0.9rem; color: rgba(255, 255, 255, 0.7); line-height: 1.6;">
-                    This gift can only be redeemed once and is yours alone. When you're ready to explore the questions that matter most, your sacred space awaits.
+                    This ${giftType.toLowerCase()} gift can only be redeemed once and is yours alone. When you're ready to explore the questions that matter most, your sacred space awaits.
                 </p>
             </div>
 
@@ -379,7 +383,7 @@ function getGiftInvitationTemplate(gift) {
 </html>`;
 }
 
-// Gift receipt email template
+// Gift receipt email template with premium support
 function getGiftReceiptTemplate(gift) {
   const currentDate = new Date().toLocaleDateString("en-US", {
     year: "numeric",
@@ -388,6 +392,8 @@ function getGiftReceiptTemplate(gift) {
     hour: "2-digit",
     minute: "2-digit",
   });
+
+  const giftType = gift.isPremium ? "Premium" : "Essential";
 
   return `
 <!DOCTYPE html>
@@ -409,7 +415,7 @@ function getGiftReceiptTemplate(gift) {
             <div style="text-align: center; padding-bottom: 30px; border-bottom: 2px solid #e2e8f0; margin-bottom: 30px;">
                 <div style="font-size: 2rem; margin-bottom: 10px;">🎁</div>
                 <h1 style="font-size: 1.8rem; color: #1f2937; margin: 0 0 10px 0; font-weight: 700;">Gift Receipt</h1>
-                <p style="color: #6b7280; margin: 0; font-size: 1rem;">Sacred Reflection Gift</p>
+                <p style="color: #6b7280; margin: 0; font-size: 1rem;">Sacred ${giftType} Reflection Gift</p>
             </div>
 
             <!-- Gift Details -->
@@ -419,6 +425,7 @@ function getGiftReceiptTemplate(gift) {
                     <p style="margin: 0 0 10px 0; color: #374151;"><strong>Gift Code:</strong> ${
                       gift.giftCode
                     }</p>
+                    <p style="margin: 0 0 10px 0; color: #374151;"><strong>Gift Type:</strong> ${giftType} Reflection</p>
                     <p style="margin: 0 0 10px 0; color: #374151;"><strong>From:</strong> ${
                       gift.giverName
                     } (${gift.giverEmail})</p>
@@ -462,15 +469,15 @@ function getGiftReceiptTemplate(gift) {
             <!-- Status -->
             <div style="text-align: center; padding: 30px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px; margin-bottom: 30px;">
                 <h3 style="margin: 0 0 10px 0; font-size: 1.2rem;">Gift Status</h3>
-                <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">Invitation sent to ${
-                  gift.recipientName
-                }</p>
+                <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">${giftType} invitation sent to ${
+    gift.recipientName
+  }</p>
             </div>
 
             <!-- Footer -->
             <div style="border-top: 1px solid #e2e8f0; padding-top: 20px; text-align: center;">
                 <p style="color: #6b7280; margin: 0 0 10px 0; font-size: 0.85rem; line-height: 1.5;">Thank you for sharing the gift of reflection and truth.</p>
-                <p style="color: #6b7280; margin: 0 0 10px 0; font-size: 0.85rem;">Your recipient will receive their invitation shortly.</p>
+                <p style="color: #6b7280; margin: 0 0 10px 0; font-size: 0.85rem;">Your recipient will receive their ${giftType.toLowerCase()} invitation shortly.</p>
                 <p style="color: #9ca3af; margin: 0; font-size: 0.8rem; font-style: italic;">The Mirror of Truth - Helping others remember their wholeness</p>
             </div>
         </div>
@@ -479,8 +486,10 @@ function getGiftReceiptTemplate(gift) {
 </html>`;
 }
 
-// Receipt email template (keeping existing for now)
+// Receipt email template with premium support (keeping existing for now)
 function getReceiptTemplate(receiptData) {
+  const serviceType = receiptData.isPremium ? "Premium" : "Essential";
+
   return `
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
@@ -579,13 +588,13 @@ function getReceiptTemplate(receiptData) {
                     color: #374151;
                     margin: 0 0 10px 0;
                     font-size: 1rem;
-                ">Mirror of Truth - Personal Reflection Session</h4>
+                ">Mirror of Truth - ${serviceType} Reflection Session</h4>
                 <p style="
                     color: #6b7280;
                     margin: 0;
                     font-size: 0.9rem;
                     line-height: 1.5;
-                ">Personal reflection session designed to help you see yourself clearly and connect with your inner power.</p>
+                ">${serviceType} reflection session designed to help you see yourself clearly and connect with your inner power.</p>
             </div>
 
             <!-- Customer Info -->
@@ -722,7 +731,7 @@ function getReceiptTemplate(receiptData) {
                     margin: 0 0 10px 0;
                     font-size: 0.85rem;
                     line-height: 1.5;
-                ">This receipt serves as proof of payment for the Mirror of Truth reflection experience.</p>
+                ">This receipt serves as proof of payment for the Mirror of Truth ${serviceType.toLowerCase()} reflection experience.</p>
                 <p style="
                     color: #6b7280;
                     margin: 0 0 10px 0;
@@ -805,9 +814,15 @@ module.exports = async function handler(req, res) {
   }
 };
 
-// Send reflection email
+// Send reflection email with premium support
 async function handleSendReflection(req, res) {
-  const { email, content, userName = "Friend", language = "en" } = req.body;
+  const {
+    email,
+    content,
+    userName = "Friend",
+    language = "en",
+    isPremium = false,
+  } = req.body;
 
   if (!email || !content) {
     return res.status(400).json({
@@ -816,8 +831,9 @@ async function handleSendReflection(req, res) {
     });
   }
 
-  const subject = `${userName} - Your Mirror of Truth Reflection`;
-  const htmlContent = getReflectionTemplate(userName, content);
+  const serviceType = isPremium ? "Premium" : "Essential";
+  const subject = `${userName} - Your ${serviceType} Mirror of Truth Reflection`;
+  const htmlContent = getReflectionTemplate(userName, content, isPremium);
 
   await transporter.sendMail({
     from: `"Ahiya - The Mirror of Truth" <${process.env.GMAIL_USER}>`,
@@ -844,7 +860,10 @@ async function handleSendGiftInvitation(req, res) {
     });
   }
 
-  const subject = `🎁 A sacred gift awaits you from ${gift.giverName}`;
+  const giftType = gift.isPremium ? "Premium" : "Essential";
+  const subject = `🎁 A sacred ${giftType.toLowerCase()} gift awaits you from ${
+    gift.giverName
+  }`;
   const htmlContent = getGiftInvitationTemplate(gift);
 
   await transporter.sendMail({
@@ -872,7 +891,8 @@ async function handleGenerateGiftReceipt(req, res) {
     });
   }
 
-  const subject = `Gift Receipt - Mirror of Truth Reflection`;
+  const giftType = gift.isPremium ? "Premium" : "Essential";
+  const subject = `${giftType} Gift Receipt - Mirror of Truth Reflection`;
   const htmlContent = getGiftReceiptTemplate(gift);
 
   await transporter.sendMail({
@@ -889,7 +909,7 @@ async function handleGenerateGiftReceipt(req, res) {
   });
 }
 
-// Generate and send receipt
+// Generate and send receipt with premium support
 async function handleGenerateReceipt(req, res) {
   const {
     email,
@@ -898,6 +918,7 @@ async function handleGenerateReceipt(req, res) {
     paymentMethod = "paypal",
     language = "en",
     registrationId = null,
+    isPremium = false,
   } = req.body;
 
   if (!email || !name) {
@@ -914,6 +935,7 @@ async function handleGenerateReceipt(req, res) {
     customerEmail: email,
     amount: amount,
     paymentMethod: paymentMethod,
+    isPremium: isPremium,
     date: new Date().toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
@@ -924,7 +946,8 @@ async function handleGenerateReceipt(req, res) {
     timestamp: new Date().toISOString(),
   };
 
-  const subject = `Receipt - Mirror of Truth Service`;
+  const serviceType = isPremium ? "Premium" : "Essential";
+  const subject = `Receipt - Mirror of Truth ${serviceType} Service`;
   const htmlContent = getReceiptTemplate(receiptData);
 
   // Send email
@@ -945,10 +968,13 @@ async function handleGenerateReceipt(req, res) {
       paymentMethod: paymentMethod,
       language: "en",
       registrationId: registrationId,
+      isPremium: isPremium,
       date: receiptData.date,
     });
 
-    console.log(`✅ Receipt stored: ${storedReceipt.receiptNumber}`);
+    console.log(
+      `✅ ${serviceType} receipt stored: ${storedReceipt.receiptNumber}`
+    );
   } catch (storageError) {
     console.error("Error storing receipt:", storageError);
     // Don't fail the request if storage fails

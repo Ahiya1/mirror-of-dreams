@@ -1,7 +1,9 @@
-// Gifting - Sacred Gift Logic
+// Gifting - Sacred Gift Logic with Premium Support
 
 let paypalConfig = null;
 let paypalInitialized = false;
+let selectedGiftTier = "basic"; // default to basic
+let currentGiftAmount = "2.99";
 
 // Initialize
 window.addEventListener("load", initializeApp);
@@ -9,6 +11,7 @@ window.addEventListener("load", initializeApp);
 async function initializeApp() {
   setupEventListeners();
   await loadPayPalConfig();
+  initializeGiftTierSelection();
 }
 
 function setupEventListeners() {
@@ -42,6 +45,57 @@ function setupEventListeners() {
       messageCount.style.color = "rgba(255, 255, 255, 0.6)";
     }
   });
+}
+
+function initializeGiftTierSelection() {
+  // Set up gift tier card interactions
+  document.querySelectorAll(".gift-tier-card").forEach((card) => {
+    card.addEventListener("click", function () {
+      const tier = this.dataset.tier;
+      selectGiftTier(tier);
+    });
+  });
+
+  // Select basic by default
+  selectGiftTier("basic");
+}
+
+function selectGiftTier(tier) {
+  selectedGiftTier = tier;
+
+  // Update UI
+  document.querySelectorAll(".gift-tier-card").forEach((card) => {
+    card.classList.remove("selected");
+  });
+  document.querySelector(`[data-tier="${tier}"]`).classList.add("selected");
+
+  // Update pricing and description
+  if (tier === "premium") {
+    currentGiftAmount = "4.99";
+    document.getElementById("giftPaymentAmount").textContent = "$4.99";
+    document.getElementById("giftPaymentDescription").textContent =
+      "Sacred gift of Premium Reflection";
+
+    // Show premium features in preview
+    document.querySelectorAll(".premium-feature").forEach((el) => {
+      el.style.display = "flex";
+    });
+  } else {
+    currentGiftAmount = "2.99";
+    document.getElementById("giftPaymentAmount").textContent = "$2.99";
+    document.getElementById("giftPaymentDescription").textContent =
+      "Sacred gift of Essential Reflection";
+
+    // Hide premium features in preview
+    document.querySelectorAll(".premium-feature").forEach((el) => {
+      el.style.display = "none";
+    });
+  }
+
+  // Reinitialize PayPal with new amount
+  if (paypalInitialized && paypalConfig) {
+    reinitializePayPal();
+  }
 }
 
 async function loadPayPalConfig() {
@@ -133,6 +187,16 @@ function updateFormValidation() {
   }
 }
 
+function reinitializePayPal() {
+  // Clear existing PayPal button
+  const container = document.getElementById("paypal-button-container");
+  container.innerHTML = "";
+  paypalInitialized = false;
+
+  // Reinitialize with new amount
+  initializePayPal();
+}
+
 function initializePayPal() {
   if (!window.paypal || !window.paypal.Buttons) {
     showPayPalError("PayPal SDK not loaded");
@@ -194,14 +258,17 @@ function initializePayPal() {
           const giverName = document.getElementById("giverName").value.trim();
           const giverEmail = document.getElementById("giverEmail").value.trim();
 
+          const giftType =
+            selectedGiftTier === "premium" ? "Premium" : "Essential";
+
           const orderData = {
             purchase_units: [
               {
                 amount: {
-                  value: "2.99",
+                  value: currentGiftAmount,
                   currency_code: paypalConfig.currency,
                 },
-                description: "Mirror of Truth - Gift Reflection Experience",
+                description: `Mirror of Truth - Gift ${giftType} Reflection`,
               },
             ],
           };
@@ -261,10 +328,11 @@ async function handleGiftPaymentSuccess(paymentDetails) {
       recipientName: document.getElementById("recipientName").value.trim(),
       recipientEmail: document.getElementById("recipientEmail").value.trim(),
       personalMessage: document.getElementById("personalMessage").value.trim(),
-      amount: 2.99,
+      amount: parseFloat(currentGiftAmount),
       paymentMethod: "paypal",
       paymentId: paymentDetails.id,
       language: "en",
+      isPremium: selectedGiftTier === "premium",
     };
 
     // Create the gift
@@ -284,9 +352,10 @@ async function handleGiftPaymentSuccess(paymentDetails) {
     }
 
     // Show success and redirect
+    const giftType = selectedGiftTier === "premium" ? "Premium" : "Essential";
     setTimeout(() => {
       alert(
-        `🎁 Gift sent successfully! ${giftData.recipientName} will receive their sacred invitation shortly.`
+        `🎁 ${giftType} gift sent successfully! ${giftData.recipientName} will receive their sacred invitation shortly.`
       );
       window.location.href = "/";
     }, 2000);

@@ -1,4 +1,4 @@
-/* Gifting - Sacred Gift Experience - Mobile Optimized */
+/* Gifting - Sacred Gift Experience with Premium Support - Mobile Optimized */
 
 body {
   overflow-x: hidden;
@@ -154,7 +154,7 @@ body {
   }
 }
 
-/* Back Button */
+/* FIXED: Back Button - Proper Mobile Alignment */
 .back-button {
   position: fixed;
   top: 1rem;
@@ -179,6 +179,11 @@ body {
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   min-height: 44px;
+  min-width: 44px;
+
+  /* FIXED: Ensure proper alignment on all screen sizes */
+  box-sizing: border-box;
+  white-space: nowrap;
 }
 
 .back-button:hover {
@@ -202,6 +207,9 @@ body {
   padding: 2rem 1rem;
   position: relative;
   z-index: 10;
+
+  /* FIXED: Account for back button on mobile */
+  padding-top: max(2rem, 4rem);
 }
 
 .gifting-card {
@@ -381,6 +389,106 @@ body {
   opacity: 0.6;
 }
 
+/* Gift Tier Selection */
+.gift-tier-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.gift-tier-card {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  /* Mobile optimizations */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gift-tier-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.gift-tier-card:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+.gift-tier-card.selected {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.gift-tier-card.premium {
+  border-color: rgba(251, 191, 36, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(251, 191, 36, 0.08) 0%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+}
+
+.gift-tier-card.premium.selected {
+  border-color: rgba(251, 191, 36, 0.5);
+  background: linear-gradient(
+    135deg,
+    rgba(251, 191, 36, 0.15) 0%,
+    rgba(255, 255, 255, 0.12) 100%
+  );
+  box-shadow: 0 0 25px rgba(251, 191, 36, 0.2);
+}
+
+.gift-tier-badge {
+  position: absolute;
+  top: -1px;
+  right: 1rem;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 0 0 12px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.gift-tier-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.gift-tier-name {
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  font-weight: 600;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.gift-tier-price {
+  font-size: clamp(1.2rem, 4vw, 1.5rem);
+  font-weight: 700;
+  color: #10b981;
+}
+
+.gift-tier-description {
+  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+}
+
 /* Payment Section */
 .payment-section {
   background: linear-gradient(
@@ -404,6 +512,7 @@ body {
   background-clip: text;
   color: transparent;
   text-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+  transition: all 0.3s ease;
 }
 
 .payment-description {
@@ -411,6 +520,7 @@ body {
   margin-bottom: 1.5rem;
   font-size: clamp(0.9rem, 2.5vw, 1rem);
   font-style: italic;
+  transition: all 0.3s ease;
 }
 
 /* PayPal Elements */
@@ -516,16 +626,22 @@ body {
   text-align: center;
 }
 
+.premium-feature {
+  color: rgba(251, 191, 36, 0.9);
+}
+
 /* Form States */
 .form-disabled {
   opacity: 0.6;
   pointer-events: none;
 }
 
-/* Mobile Responsive Design */
+/* Mobile Responsive Design - FIXED */
 @media (max-width: 768px) {
   .gifting-container {
     padding: 1.5rem 0.5rem;
+    /* FIXED: Proper mobile spacing for back button */
+    padding-top: 5rem;
   }
 
   .gifting-card {
@@ -539,10 +655,25 @@ body {
   }
 
   .back-button {
-    top: 0.75rem;
-    left: 0.75rem;
+    /* FIXED: Better mobile positioning */
+    top: 1rem;
+    left: 1rem;
     padding: 0.7rem 1rem;
     font-size: 0.85rem;
+  }
+
+  .gift-tier-options {
+    gap: 0.8rem;
+  }
+
+  .gift-tier-card {
+    padding: 1.2rem;
+  }
+
+  .gift-tier-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 
   .preview-step {
@@ -559,6 +690,8 @@ body {
 @media (max-width: 480px) {
   .gifting-container {
     padding: 1rem 0.25rem;
+    /* FIXED: Even better mobile spacing */
+    padding-top: 4.5rem;
   }
 
   .gifting-card {
@@ -584,8 +717,9 @@ body {
   }
 
   .back-button {
-    top: 0.5rem;
-    left: 0.5rem;
+    /* FIXED: Smallest screen positioning */
+    top: 0.75rem;
+    left: 0.75rem;
     padding: 0.6rem 0.8rem;
     font-size: 0.8rem;
   }
@@ -593,12 +727,31 @@ body {
   .gift-preview {
     padding: 1.2rem;
   }
+
+  .gift-tier-card {
+    padding: 1rem;
+  }
+
+  .gift-tier-name {
+    font-size: 1rem;
+  }
+
+  .gift-tier-price {
+    font-size: 1.3rem;
+  }
+
+  .gift-tier-description {
+    font-size: 0.85rem;
+  }
 }
 
-/* Landscape mobile optimization */
+/* FIXED: Landscape mobile optimization */
 @media (max-height: 600px) and (orientation: landscape) {
   .gifting-container {
     padding: 1rem 0.5rem;
+    /* FIXED: Account for landscape back button */
+    padding-top: 3.5rem;
+    align-items: flex-start;
   }
 
   .gift-header {
@@ -613,13 +766,21 @@ body {
   .gift-preview {
     margin-top: 1rem;
   }
+
+  .back-button {
+    top: 0.5rem;
+    left: 0.5rem;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.75rem;
+  }
 }
 
 /* High DPI displays */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .gifting-card,
   .sacred-input,
-  .form-section {
+  .form-section,
+  .gift-tier-card {
     border-width: 0.5px;
   }
 }
@@ -652,7 +813,8 @@ body {
     border-color: rgba(255, 255, 255, 0.08);
   }
 
-  .sacred-input {
+  .sacred-input,
+  .gift-tier-card {
     background: linear-gradient(
       135deg,
       rgba(255, 255, 255, 0.06) 0%,
@@ -673,7 +835,7 @@ body {
   }
 }
 
-/* iOS safe area handling */
+/* FIXED: iOS safe area handling for back button */
 @supports (padding: max(0px)) {
   .back-button {
     top: max(1rem, env(safe-area-inset-top) + 0.5rem);
@@ -683,5 +845,18 @@ body {
   .gifting-container {
     padding-left: max(1rem, env(safe-area-inset-left));
     padding-right: max(1rem, env(safe-area-inset-right));
+    padding-top: max(5rem, env(safe-area-inset-top) + 4rem);
+  }
+
+  @media (max-width: 480px) {
+    .gifting-container {
+      padding-top: max(4.5rem, env(safe-area-inset-top) + 3.5rem);
+    }
+  }
+
+  @media (max-height: 600px) and (orientation: landscape) {
+    .gifting-container {
+      padding-top: max(3.5rem, env(safe-area-inset-top) + 2.5rem);
+    }
   }
 }

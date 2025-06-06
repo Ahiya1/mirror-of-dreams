@@ -96,6 +96,35 @@
             </div>
           </div>
 
+          <!-- Gift Type Selection -->
+          <div class="form-section">
+            <h3 class="section-title">Choose Gift Experience</h3>
+
+            <div class="gift-tier-options">
+              <div class="gift-tier-card" data-tier="basic">
+                <div class="gift-tier-header">
+                  <h4 class="gift-tier-name">Essential Reflection</h4>
+                  <div class="gift-tier-price">$2.99</div>
+                </div>
+                <div class="gift-tier-description">
+                  Deep reflection showing their wholeness and inner wisdom.
+                </div>
+              </div>
+
+              <div class="gift-tier-card premium" data-tier="premium">
+                <div class="gift-tier-badge">Most Insightful</div>
+                <div class="gift-tier-header">
+                  <h4 class="gift-tier-name">Premium Reflection</h4>
+                  <div class="gift-tier-price">$4.99</div>
+                </div>
+                <div class="gift-tier-description">
+                  Enhanced reflection with extended AI thinking for deeper
+                  insights.
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Personal Message Section -->
           <div class="form-section">
             <h3 class="section-title">Personal Message (Optional)</h3>
@@ -117,9 +146,9 @@
           <!-- Payment Section -->
           <div class="form-section payment-section">
             <div class="gift-payment-info">
-              <div class="payment-amount">$2.99</div>
-              <div class="payment-description">
-                Sacred gift of reflection and truth
+              <div class="payment-amount" id="giftPaymentAmount">$2.99</div>
+              <div class="payment-description" id="giftPaymentDescription">
+                Sacred gift of Essential Reflection
               </div>
 
               <div class="paypal-loading" id="paypalLoading">
@@ -162,6 +191,10 @@
             <div class="preview-step">
               <span class="step-icon">✨</span>
               <span>A personalized reflection showing their wholeness</span>
+            </div>
+            <div class="preview-step premium-feature" style="display: none">
+              <span class="step-icon">🧠</span>
+              <span>Enhanced AI thinking for deeper insights</span>
             </div>
           </div>
         </div>

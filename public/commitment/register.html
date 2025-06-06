@@ -23,6 +23,7 @@
         <h1>Begin Your Reflection</h1>
 
         <form id="registrationForm">
+          <!-- User Information -->
           <div class="form-group">
             <label for="userName">Your Name</label>
             <input
@@ -47,10 +48,65 @@
             <div class="validation-indicator" id="emailIndicator"></div>
           </div>
 
+          <!-- Premium Selection -->
+          <div class="premium-selection">
+            <h3 class="premium-title">Choose Your Reflection Experience</h3>
+
+            <div class="tier-options">
+              <div class="tier-card" data-tier="basic">
+                <div class="tier-header">
+                  <h4 class="tier-name">Essential Reflection</h4>
+                  <div class="tier-price">$2.99</div>
+                </div>
+                <div class="tier-description">
+                  Our signature reflection experience using advanced AI to
+                  mirror back your wholeness and inner wisdom.
+                </div>
+                <ul class="tier-features">
+                  <li>✨ Personalized reflection</li>
+                  <li>🪞 Sacred mirror technology</li>
+                  <li>📧 Emailed to keep forever</li>
+                  <li>🌟 Shows your wholeness</li>
+                </ul>
+              </div>
+
+              <div class="tier-card premium" data-tier="premium">
+                <div class="tier-badge">Most Insightful</div>
+                <div class="tier-header">
+                  <h4 class="tier-name">Premium Reflection</h4>
+                  <div class="tier-price">$4.99</div>
+                </div>
+                <div class="tier-description">
+                  Enhanced reflection with extended AI thinking for deeper
+                  insights and more personally accurate revelations.
+                </div>
+                <ul class="tier-features">
+                  <li>🧠 Extended AI thinking process</li>
+                  <li>🔍 Deeper pattern recognition</li>
+                  <li>💎 More nuanced insights</li>
+                  <li>🎯 Enhanced personal accuracy</li>
+                  <li>✨ Everything from Essential</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="premium-explanation">
+              <p>
+                <strong>Both reflections are profound and valuable.</strong> The
+                Essential reflection provides deep insights that have helped
+                hundreds remember their power. The Premium reflection uses
+                advanced AI thinking to analyze your responses more deeply,
+                offering enhanced personal accuracy and insights you might not
+                discover otherwise.
+              </p>
+            </div>
+          </div>
+
+          <!-- Payment Section -->
           <div class="payment-info">
-            <div class="payment-amount">$2.99</div>
-            <div class="payment-description">
-              Secure payment to begin your reflection
+            <div class="payment-amount" id="paymentAmount">$2.99</div>
+            <div class="payment-description" id="paymentDescription">
+              Secure payment for your Essential Reflection
             </div>
 
             <div class="paypal-loading" id="paypalLoading">

@@ -1,4 +1,4 @@
-/* Commitment - Registration Experience - Mobile Optimized */
+/* Commitment - Registration Experience with Premium Support - Mobile Optimized */
 
 body {
   display: flex;
@@ -167,7 +167,7 @@ body {
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 450px;
+  max-width: 500px;
   padding: 1rem;
   margin: 0 auto;
 }
@@ -290,6 +290,150 @@ body {
   color: rgba(255, 255, 255, 0.5);
 }
 
+/* Premium Selection Styles */
+.premium-selection {
+  margin: 2rem 0;
+  text-align: left;
+}
+
+.premium-title {
+  font-size: clamp(1.1rem, 3vw, 1.3rem);
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: 0.3px;
+}
+
+.tier-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.tier-card {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  /* Mobile optimizations */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tier-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.tier-card:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+.tier-card.selected {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.tier-card.premium {
+  border-color: rgba(251, 191, 36, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(251, 191, 36, 0.08) 0%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+}
+
+.tier-card.premium.selected {
+  border-color: rgba(251, 191, 36, 0.5);
+  background: linear-gradient(
+    135deg,
+    rgba(251, 191, 36, 0.15) 0%,
+    rgba(255, 255, 255, 0.12) 100%
+  );
+  box-shadow: 0 0 25px rgba(251, 191, 36, 0.2);
+}
+
+.tier-badge {
+  position: absolute;
+  top: -1px;
+  right: 1rem;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 0 0 12px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.tier-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.tier-name {
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  font-weight: 600;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.tier-price {
+  font-size: clamp(1.2rem, 4vw, 1.5rem);
+  font-weight: 700;
+  color: #10b981;
+}
+
+.tier-description {
+  margin-bottom: 1rem;
+  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.tier-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tier-features li {
+  padding: 0.3rem 0;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+  color: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.premium-explanation {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.premium-explanation strong {
+  color: rgba(255, 255, 255, 0.95);
+}
+
 .payment-info {
   font-size: clamp(0.9rem, 2.5vw, 0.95rem);
   line-height: 1.5;
@@ -314,12 +458,14 @@ body {
   background: linear-gradient(135deg, #10b981, #059669, #22c55e);
   -webkit-background-clip: text;
   color: transparent;
+  transition: all 0.3s ease;
 }
 
 .payment-description {
   opacity: 0.8;
   margin-bottom: 1.2rem;
   font-size: clamp(0.8rem, 2vw, 0.85rem);
+  transition: all 0.3s ease;
 }
 
 #paypal-button-container {
@@ -431,6 +577,18 @@ body {
     margin-bottom: 1.2rem;
   }
 
+  .tier-options {
+    gap: 0.8rem;
+  }
+
+  .tier-card {
+    padding: 1.2rem;
+  }
+
+  .premium-explanation {
+    padding: 0.8rem;
+  }
+
   .payment-info {
     padding: 1.2rem 1rem;
     margin: 1.2rem 0 1.5rem;
@@ -472,6 +630,42 @@ body {
   .sacred-input {
     padding: 1rem;
     font-size: 0.9rem;
+  }
+
+  .premium-title {
+    font-size: 1.1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .tier-card {
+    padding: 1rem;
+  }
+
+  .tier-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .tier-name {
+    font-size: 1rem;
+  }
+
+  .tier-price {
+    font-size: 1.3rem;
+  }
+
+  .tier-description {
+    font-size: 0.8rem;
+  }
+
+  .tier-features li {
+    font-size: 0.75rem;
+  }
+
+  .premium-explanation {
+    padding: 0.8rem;
+    font-size: 0.8rem;
   }
 
   .payment-info {
@@ -536,6 +730,18 @@ body {
     margin-bottom: 1rem;
   }
 
+  .tier-options {
+    gap: 0.8rem;
+  }
+
+  .tier-card {
+    padding: 1rem;
+  }
+
+  .premium-explanation {
+    padding: 0.8rem;
+  }
+
   .payment-info {
     margin: 1rem 0;
     padding: 1rem;
@@ -556,7 +762,8 @@ body {
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .registration-card,
   .sacred-input,
-  .payment-info {
+  .payment-info,
+  .tier-card {
     border-width: 0.5px;
   }
 }
@@ -566,12 +773,14 @@ body {
   .registration-card,
   .wave,
   .test-mode-indicator,
-  .loading-spinner {
+  .loading-spinner,
+  .tier-card {
     animation: none;
   }
 
   .back-button,
-  .sacred-input {
+  .sacred-input,
+  .tier-card {
     transition: none;
   }
 }
@@ -588,7 +797,8 @@ body {
     border-color: rgba(255, 255, 255, 0.1);
   }
 
-  .payment-info {
+  .payment-info,
+  .tier-card {
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.15);
   }

@@ -1,7 +1,9 @@
-// Commitment - Registration & PayPal Integration (Production)
+// Commitment - Registration & PayPal Integration with Premium Support
 
 let paypalConfig = null;
 let paypalInitialized = false;
+let selectedTier = "basic"; // default to basic
+let currentAmount = "2.99";
 
 // Initialize
 window.addEventListener("load", initializeApp);
@@ -9,6 +11,7 @@ window.addEventListener("load", initializeApp);
 async function initializeApp() {
   setupEventListeners();
   await loadPayPalConfig();
+  initializeTierSelection();
 }
 
 function setupEventListeners() {
@@ -18,6 +21,47 @@ function setupEventListeners() {
   document
     .getElementById("userEmail")
     .addEventListener("input", updateFormValidation);
+}
+
+function initializeTierSelection() {
+  // Set up tier card interactions
+  document.querySelectorAll(".tier-card").forEach((card) => {
+    card.addEventListener("click", function () {
+      const tier = this.dataset.tier;
+      selectTier(tier);
+    });
+  });
+
+  // Select basic by default
+  selectTier("basic");
+}
+
+function selectTier(tier) {
+  selectedTier = tier;
+
+  // Update UI
+  document.querySelectorAll(".tier-card").forEach((card) => {
+    card.classList.remove("selected");
+  });
+  document.querySelector(`[data-tier="${tier}"]`).classList.add("selected");
+
+  // Update pricing
+  if (tier === "premium") {
+    currentAmount = "4.99";
+    document.getElementById("paymentAmount").textContent = "$4.99";
+    document.getElementById("paymentDescription").textContent =
+      "Secure payment for your Premium Reflection";
+  } else {
+    currentAmount = "2.99";
+    document.getElementById("paymentAmount").textContent = "$2.99";
+    document.getElementById("paymentDescription").textContent =
+      "Secure payment for your Essential Reflection";
+  }
+
+  // Reinitialize PayPal with new amount
+  if (paypalInitialized && paypalConfig) {
+    reinitializePayPal();
+  }
 }
 
 async function loadPayPalConfig() {
@@ -136,6 +180,16 @@ function updateFieldValidation(input, indicator, isValid, hasContent) {
   }
 }
 
+function reinitializePayPal() {
+  // Clear existing PayPal button
+  const container = document.getElementById("paypal-button-container");
+  container.innerHTML = "";
+  paypalInitialized = false;
+
+  // Reinitialize with new amount
+  initializePayPal();
+}
+
 function initializePayPal() {
   if (!window.paypal || !window.paypal.Buttons) {
     showPayPalError("PayPal SDK not loaded");
@@ -185,14 +239,19 @@ function initializePayPal() {
           const userName =
             document.getElementById("userName")?.value?.trim() || "";
 
+          const tierName =
+            selectedTier === "premium"
+              ? "Premium Reflection"
+              : "Essential Reflection";
+
           const orderData = {
             purchase_units: [
               {
                 amount: {
-                  value: "2.99",
+                  value: currentAmount,
                   currency_code: paypalConfig.currency,
                 },
-                description: "Mirror of Truth - Reflection Experience",
+                description: `Mirror of Truth - ${tierName}`,
               },
             ],
           };
@@ -251,6 +310,8 @@ async function handlePaymentSuccess(paymentDetails) {
       language: "en",
       paymentId: paymentDetails.id,
       paymentMethod: "paypal",
+      isPremium: selectedTier === "premium",
+      amount: currentAmount,
     };
 
     localStorage.setItem("mirrorVerifiedUser", JSON.stringify(userData));
@@ -264,9 +325,10 @@ async function handlePaymentSuccess(paymentDetails) {
           action: "generate-receipt",
           email: userData.email,
           name: userData.name,
-          amount: 2.99,
+          amount: parseFloat(currentAmount),
           paymentMethod: "paypal",
           language: "en",
+          isPremium: userData.isPremium,
         }),
       });
     } catch (receiptError) {
@@ -274,12 +336,25 @@ async function handlePaymentSuccess(paymentDetails) {
     }
 
     // Navigate to breathing
+    const urlParams = new URLSearchParams({
+      payment: "paypal",
+      verified: "true",
+      lang: "en",
+      premium: userData.isPremium ? "true" : "false",
+    });
+
     setTimeout(() => {
-      window.location.href = `/transition/breathing.html?payment=paypal&verified=true&lang=en`;
+      window.location.href = `/transition/breathing.html?${urlParams.toString()}`;
     }, 2000);
   } catch (error) {
     setTimeout(() => {
-      window.location.href = `/transition/breathing.html?payment=paypal&verified=true&lang=en`;
+      const urlParams = new URLSearchParams({
+        payment: "paypal",
+        verified: "true",
+        lang: "en",
+        premium: selectedTier === "premium" ? "true" : "false",
+      });
+      window.location.href = `/transition/breathing.html?${urlParams.toString()}`;
     }, 2000);
   }
 }
