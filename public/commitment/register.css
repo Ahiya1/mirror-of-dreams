@@ -170,6 +170,8 @@ body {
   max-width: 500px;
   padding: 1rem;
   margin: 0 auto;
+  /* FIXED: Add top margin to avoid back button overlap */
+  margin-top: 4rem;
 }
 
 .registration-card {
@@ -552,6 +554,8 @@ body {
   .registration-container {
     max-width: 100%;
     padding: 0.5rem;
+    /* FIXED: Add top margin to avoid back button overlap */
+    margin-top: 4rem;
   }
 
   .registration-card {
@@ -620,6 +624,8 @@ body {
 
   .registration-container {
     padding: 0.25rem;
+    /* FIXED: Proper mobile spacing for small screens */
+    margin-top: 3.5rem;
   }
 
   .registration-card {
@@ -738,7 +744,7 @@ body {
   }
 
   .registration-container {
-    margin-top: 0;
+    margin-top: 3rem;
   }
 
   .registration-card {
