@@ -1,4 +1,4 @@
-/* Transition - Breathing Meditation - Mobile Optimized */
+/* Transition - Breathing Meditation - Mobile Optimized - FIXED */
 
 body {
   overflow: hidden;
@@ -206,6 +206,7 @@ body {
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.015);
   animation: geometryBreathe 15s ease-in-out infinite;
+  background: transparent; /* FIXED: Ensure no background */
 }
 
 .breathing-geometry:nth-child(1) {
@@ -275,7 +276,7 @@ body {
   }
 }
 
-/* Breathing circles */
+/* Breathing circles - FIXED */
 .breathing-circles {
   position: relative;
   width: clamp(150px, 40vw, 200px);
@@ -297,45 +298,51 @@ body {
 .breathing-circle {
   position: absolute;
   border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.12) 0%,
-    rgba(255, 255, 255, 0.04) 40%,
-    rgba(255, 255, 255, 0.01) 70%,
-    transparent 85%
-  );
-  box-shadow: 0 0 25px rgba(255, 255, 255, 0.06),
-    inset 0 0 12px rgba(255, 255, 255, 0.03);
+  /* FIXED: Remove default background, ensure transparent fallback */
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .breathing-circle.primary {
   width: clamp(120px, 36vw, 180px);
   height: clamp(120px, 36vw, 180px);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.03) 40%,
+    rgba(255, 255, 255, 0.008) 70%,
+    transparent 85%
+  );
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.04),
+    inset 0 0 8px rgba(255, 255, 255, 0.02);
   animation: breathePrimary 8s ease-in-out infinite;
 }
 
 .breathing-circle.secondary {
   width: clamp(80px, 24vw, 120px);
   height: clamp(80px, 24vw, 120px);
-  animation: breatheSecondary 10s ease-in-out infinite;
   background: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.08) 0%,
-    rgba(255, 255, 255, 0.02) 50%,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.015) 50%,
     transparent 75%
   );
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.03);
+  animation: breatheSecondary 10s ease-in-out infinite;
 }
 
 .breathing-circle.tertiary {
   width: clamp(40px, 12vw, 60px);
   height: clamp(40px, 12vw, 60px);
-  animation: breatheTertiary 12s ease-in-out infinite;
   background: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.15) 0%,
-    rgba(255, 255, 255, 0.04) 40%,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.025) 40%,
     transparent 70%
   );
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+  animation: breatheTertiary 12s ease-in-out infinite;
 }
 
 @keyframes breathePrimary {

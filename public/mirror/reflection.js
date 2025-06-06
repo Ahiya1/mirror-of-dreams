@@ -1,5 +1,5 @@
 // Mirror – Luminous Reflection Logic with Premium Support & URL State Management
-// Complete replacement for public/mirror/reflection.js
+// Complete replacement for public/mirror/reflection.js - FIXED VERSION
 
 let userData = null;
 let hasDateSet = null;
@@ -405,6 +405,9 @@ function setupInteractions() {
 }
 
 function selectTone(tone) {
+  // FIXED: Check if already selected BEFORE updating selectedTone
+  if (tone === selectedTone) return;
+
   selectedTone = tone;
 
   // Remove selection from siblings
@@ -415,8 +418,7 @@ function selectTone(tone) {
   // Select current
   document.querySelector(`[data-tone="${tone}"]`).classList.add("selected");
 
-  if (tone === selectedTone) return;
-
+  // Now call the transition (this was being blocked before)
   transitionToTone(tone);
 
   // Save form state when tone changes
