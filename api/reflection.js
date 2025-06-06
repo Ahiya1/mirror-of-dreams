@@ -200,7 +200,7 @@ Please mirror back what you see, in a flowing reflection I can return to months 
     // Configure request based on premium status
     const requestConfig = {
       model: "claude-sonnet-4-20250514",
-      temperature: 0.8,
+      temperature: 1,
       max_tokens: shouldUsePremium ? 6000 : 4000,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
