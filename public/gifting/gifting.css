@@ -159,7 +159,7 @@ body {
   position: fixed;
   top: 1rem;
   left: 1rem;
-  z-index: 1000;
+  z-index: 1001; /* Increased z-index */
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -430,6 +430,7 @@ body {
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
+/* FIXED: Premium gift tier card with proper padding for badge */
 .gift-tier-card.premium {
   border-color: rgba(251, 191, 36, 0.3);
   background: linear-gradient(
@@ -437,6 +438,8 @@ body {
     rgba(251, 191, 36, 0.08) 0%,
     rgba(255, 255, 255, 0.06) 100%
   );
+  /* FIXED: Add top padding to accommodate the badge */
+  padding-top: 2.5rem;
 }
 
 .gift-tier-card.premium.selected {
@@ -449,18 +452,21 @@ body {
   box-shadow: 0 0 25px rgba(251, 191, 36, 0.2);
 }
 
+/* FIXED: Better badge positioning */
 .gift-tier-badge {
   position: absolute;
-  top: -1px;
+  top: 0; /* Changed from -1px to 0 */
   right: 1rem;
   background: linear-gradient(135deg, #f59e0b, #d97706);
   color: white;
-  padding: 0.3rem 0.8rem;
+  padding: 0.4rem 0.8rem; /* Increased padding */
   border-radius: 0 0 12px 12px;
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.5px;
   text-transform: uppercase;
+  /* Ensure badge is above other content */
+  z-index: 10;
 }
 
 .gift-tier-header {
@@ -660,6 +666,7 @@ body {
     left: 1rem;
     padding: 0.7rem 1rem;
     font-size: 0.85rem;
+    z-index: 1001;
   }
 
   .gift-tier-options {
@@ -668,6 +675,16 @@ body {
 
   .gift-tier-card {
     padding: 1.2rem;
+  }
+
+  /* FIXED: Mobile responsive adjustments for premium cards */
+  .gift-tier-card.premium {
+    padding-top: 2.2rem;
+  }
+
+  .gift-tier-badge {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.7rem;
   }
 
   .gift-tier-header {
@@ -732,6 +749,16 @@ body {
     padding: 1rem;
   }
 
+  .gift-tier-card.premium {
+    padding-top: 2rem;
+  }
+
+  .gift-tier-badge {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.65rem;
+    right: 0.8rem;
+  }
+
   .gift-tier-name {
     font-size: 1rem;
   }
@@ -772,6 +799,15 @@ body {
     left: 0.5rem;
     padding: 0.5rem 0.7rem;
     font-size: 0.75rem;
+  }
+
+  .gift-tier-card.premium {
+    padding-top: 1.8rem;
+  }
+
+  .gift-tier-badge {
+    padding: 0.2rem 0.6rem;
+    font-size: 0.65rem;
   }
 }
 
