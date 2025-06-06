@@ -35,6 +35,38 @@
       <div class="particle star"></div>
     </div>
 
+    <!-- Gift validation screen -->
+    <div class="gift-validation" id="giftValidation" style="display: none">
+      <div class="gift-validation-content">
+        <div class="gift-icon">🎁</div>
+        <h2 class="gift-title">Validating Your Sacred Gift...</h2>
+        <div class="gift-loading">
+          <div class="loading-spinner"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gift welcome screen -->
+    <div class="gift-welcome" id="giftWelcome" style="display: none">
+      <div class="gift-welcome-content">
+        <div class="gift-icon">✨</div>
+        <h2 class="gift-title" id="giftWelcomeTitle">Welcome, [Name]</h2>
+        <p class="gift-message" id="giftWelcomeMessage">
+          [Giver Name] has gifted you this sacred reflection experience.
+        </p>
+        <div
+          class="gift-personal-message"
+          id="giftPersonalMessage"
+          style="display: none"
+        >
+          <div class="message-content" id="personalMessageContent"></div>
+        </div>
+        <button class="gift-continue-btn" onclick="proceedFromGift()">
+          Continue to Your Reflection
+        </button>
+      </div>
+    </div>
+
     <!-- Main breathing experience -->
     <div class="breathing-container">
       <div class="breathing-circles">

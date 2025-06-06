@@ -1,0 +1,687 @@
+/* Gifting - Sacred Gift Experience - Mobile Optimized */
+
+body {
+  overflow-x: hidden;
+  min-height: 100vh;
+
+  /* Mobile optimizations */
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+
+/* Sacred Aurora Background */
+.gift-aurora {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.aurora-stream {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  opacity: 0.4;
+  animation: auroraGift 40s ease-in-out infinite;
+}
+
+.aurora-stream:nth-child(1) {
+  background: linear-gradient(
+    45deg,
+    rgba(168, 85, 247, 0.03) 0%,
+    rgba(236, 72, 153, 0.02) 25%,
+    rgba(251, 191, 36, 0.015) 50%,
+    rgba(59, 130, 246, 0.02) 75%,
+    rgba(16, 185, 129, 0.015) 100%
+  );
+  animation-delay: 0s;
+  top: -50%;
+  left: -50%;
+}
+
+.aurora-stream:nth-child(2) {
+  background: radial-gradient(
+    circle at 30% 70%,
+    rgba(147, 51, 234, 0.025) 0%,
+    transparent 60%
+  );
+  animation-delay: 15s;
+  top: -25%;
+  left: -25%;
+}
+
+.aurora-stream:nth-child(3) {
+  background: radial-gradient(
+    ellipse at 70% 30%,
+    rgba(99, 102, 241, 0.02) 0%,
+    rgba(236, 72, 153, 0.015) 40%,
+    transparent 70%
+  );
+  animation-delay: 25s;
+  top: -75%;
+  left: -75%;
+}
+
+@keyframes auroraGift {
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.4;
+  }
+  25% {
+    transform: rotate(90deg) scale(1.1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: rotate(180deg) scale(0.9);
+    opacity: 0.3;
+  }
+  75% {
+    transform: rotate(270deg) scale(1.05);
+    opacity: 0.5;
+  }
+}
+
+/* Gift Particles */
+.gift-particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.gift-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: radial-gradient(
+    circle,
+    rgba(251, 191, 36, 0.6) 0%,
+    rgba(251, 191, 36, 0.2) 50%,
+    transparent 100%
+  );
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.3);
+  animation: giftFloat 60s linear infinite;
+}
+
+.gift-particle:nth-child(1) {
+  left: 20%;
+  animation-delay: 0s;
+  animation-duration: 65s;
+}
+
+.gift-particle:nth-child(2) {
+  left: 40%;
+  animation-delay: 12s;
+  animation-duration: 58s;
+}
+
+.gift-particle:nth-child(3) {
+  left: 60%;
+  animation-delay: 25s;
+  animation-duration: 70s;
+}
+
+.gift-particle:nth-child(4) {
+  left: 80%;
+  animation-delay: 35s;
+  animation-duration: 62s;
+}
+
+.gift-particle:nth-child(5) {
+  left: 10%;
+  animation-delay: 45s;
+  animation-duration: 68s;
+}
+
+@keyframes giftFloat {
+  0% {
+    transform: translateY(110vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.2;
+  }
+  100% {
+    transform: translateY(-20vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Back Button */
+.back-button {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0.8rem 1.2rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 400;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+  text-decoration: none;
+
+  /* Mobile optimizations */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.95);
+  transform: translateY(-2px);
+}
+
+.back-button:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+/* Main Container */
+.gifting-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  position: relative;
+  z-index: 10;
+}
+
+.gifting-card {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  backdrop-filter: blur(30px) saturate(120%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  padding: clamp(2rem, 5vw, 3rem);
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+  animation: cardAppear 1.2s ease-out;
+}
+
+@keyframes cardAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(30px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+.gifting-card::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  border-radius: 23px;
+  pointer-events: none;
+}
+
+/* Header */
+.gift-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.gift-title {
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 300;
+  margin-bottom: 0.8rem;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(251, 191, 36, 0.8) 50%,
+    rgba(255, 255, 255, 0.95) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: 0.5px;
+  line-height: 1.3;
+  text-shadow: 0 0 20px rgba(251, 191, 36, 0.2);
+}
+
+.gift-subtitle {
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  opacity: 0.8;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 300;
+  font-style: italic;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+/* Form Sections */
+.form-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  position: relative;
+}
+
+.section-title {
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  font-weight: 500;
+  margin-bottom: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-title::before {
+  content: "✨";
+  font-size: 0.9em;
+  opacity: 0.7;
+}
+
+/* Form Elements */
+.form-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.3px;
+}
+
+.sacred-input {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  color: #fff;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  font-family: inherit;
+  transition: all 0.3s ease;
+
+  /* Mobile optimizations */
+  -webkit-appearance: none;
+  appearance: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+  min-height: 44px;
+}
+
+.sacred-input:focus {
+  outline: none;
+  border-color: rgba(251, 191, 36, 0.4);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.sacred-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+}
+
+.message-textarea {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.character-count {
+  text-align: right;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  opacity: 0.6;
+}
+
+/* Payment Section */
+.payment-section {
+  background: linear-gradient(
+    135deg,
+    rgba(251, 191, 36, 0.06) 0%,
+    rgba(251, 191, 36, 0.02) 100%
+  );
+  border-color: rgba(251, 191, 36, 0.15);
+}
+
+.gift-payment-info {
+  text-align: center;
+}
+
+.payment-amount {
+  font-size: clamp(1.6rem, 4vw, 2rem);
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  background: linear-gradient(135deg, #10b981, #059669, #22c55e);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.payment-description {
+  opacity: 0.8;
+  margin-bottom: 1.5rem;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  font-style: italic;
+}
+
+/* PayPal Elements */
+.paypal-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 1.2rem;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 12px;
+  color: #93c5fd;
+  font-size: clamp(0.85rem, 2vw, 0.9rem);
+  margin: 1rem 0;
+}
+
+.paypal-error {
+  display: none;
+  padding: 1.2rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
+  color: #fca5a5;
+  font-size: clamp(0.85rem, 2vw, 0.9rem);
+  margin: 1rem 0;
+  text-align: center;
+}
+
+#paypal-button-container {
+  margin: 1.2rem 0;
+  min-height: 45px;
+  transition: opacity 0.5s ease;
+}
+
+.processing-message {
+  display: none;
+  text-align: center;
+  padding: 1.2rem;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 12px;
+  color: #93c5fd;
+  margin-top: 1rem;
+  font-size: clamp(0.85rem, 2vw, 0.9rem);
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #93c5fd;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Gift Preview */
+.gift-preview {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+}
+
+.preview-title {
+  font-size: clamp(1rem, 3vw, 1.1rem);
+  margin-bottom: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  text-align: center;
+}
+
+.preview-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.preview-step {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+}
+
+.step-icon {
+  font-size: 1.2em;
+  min-width: 1.5rem;
+  text-align: center;
+}
+
+/* Form States */
+.form-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+  .gifting-container {
+    padding: 1.5rem 0.5rem;
+  }
+
+  .gifting-card {
+    padding: 2rem 1.5rem;
+    border-radius: 20px;
+  }
+
+  .form-section {
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .back-button {
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .preview-step {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .step-icon {
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .gifting-container {
+    padding: 1rem 0.25rem;
+  }
+
+  .gifting-card {
+    padding: 1.5rem 1rem;
+    border-radius: 16px;
+  }
+
+  .gift-header {
+    margin-bottom: 2rem;
+  }
+
+  .form-section {
+    padding: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .sacred-input {
+    padding: 0.9rem;
+  }
+
+  .message-textarea {
+    min-height: 80px;
+  }
+
+  .back-button {
+    top: 0.5rem;
+    left: 0.5rem;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .gift-preview {
+    padding: 1.2rem;
+  }
+}
+
+/* Landscape mobile optimization */
+@media (max-height: 600px) and (orientation: landscape) {
+  .gifting-container {
+    padding: 1rem 0.5rem;
+  }
+
+  .gift-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-section {
+    margin-bottom: 1rem;
+    padding: 1rem;
+  }
+
+  .gift-preview {
+    margin-top: 1rem;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .gifting-card,
+  .sacred-input,
+  .form-section {
+    border-width: 0.5px;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .aurora-stream,
+  .gift-particle,
+  .gifting-card {
+    animation: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .gifting-card {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.04) 0%,
+      rgba(255, 255, 255, 0.02) 100%
+    );
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .sacred-input {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.06) 0%,
+      rgba(255, 255, 255, 0.03) 100%
+    );
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* iOS specific optimizations */
+@supports (-webkit-touch-callout: none) {
+  .sacred-input {
+    font-size: 16px;
+  }
+
+  .sacred-input:focus {
+    font-size: 16px;
+  }
+}
+
+/* iOS safe area handling */
+@supports (padding: max(0px)) {
+  .back-button {
+    top: max(1rem, env(safe-area-inset-top) + 0.5rem);
+    left: max(1rem, env(safe-area-inset-left) + 0.5rem);
+  }
+
+  .gifting-container {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}

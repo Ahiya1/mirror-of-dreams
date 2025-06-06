@@ -14,6 +14,10 @@
       "destination": "/commitment/register.html"
     },
     {
+      "source": "/gifting",
+      "destination": "/gifting/index.html"
+    },
+    {
       "source": "/breathing",
       "destination": "/transition/breathing.html"
     },
@@ -71,6 +75,11 @@
     {
       "source": "/creator",
       "destination": "/behind-the-mirror",
+      "permanent": true
+    },
+    {
+      "source": "/gift",
+      "destination": "/gifting",
       "permanent": true
     }
   ],

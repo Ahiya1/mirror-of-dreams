@@ -28,9 +28,16 @@
       <section class="center-container">
         <h1 class="title">The Mirror of Truth</h1>
 
-        <a href="/register" class="reflect-button">
-          <span>Reflect Me</span>
-        </a>
+        <div class="button-group">
+          <a href="/register" class="reflect-button">
+            <span>Reflect Me</span>
+          </a>
+
+          <a href="/gifting" class="gift-button">
+            <span>✨</span>
+            <span>Gift a Reflection</span>
+          </a>
+        </div>
 
         <p class="tagline">
           A space to see yourself clearly.<br />No fixing. Only truth.
@@ -39,50 +46,5 @@
     </main>
 
     <script src="/portal/portal.js"></script>
-
-    <style>
-      .nav-links {
-        position: fixed;
-        top: 2rem;
-        right: 2rem;
-        z-index: 100;
-      }
-
-      .about-link {
-        display: inline-flex;
-        align-items: center;
-        padding: 0.8rem 1.5rem;
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 50px;
-        color: rgba(255, 255, 255, 0.7);
-        text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: 400;
-        letter-spacing: 0.3px;
-        transition: all 0.3s ease;
-      }
-
-      .about-link:hover {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.2);
-        color: rgba(255, 255, 255, 0.9);
-        transform: translateY(-2px);
-      }
-
-      /* Responsive */
-      @media (max-width: 768px) {
-        .nav-links {
-          top: 1.5rem;
-          right: 1.5rem;
-        }
-
-        .about-link {
-          padding: 0.7rem 1.2rem;
-          font-size: 0.85rem;
-        }
-      }
-    </style>
   </body>
 </html>

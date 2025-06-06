@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gift a Reflection | Mirror of Truth</title>
+    <link rel="stylesheet" href="/shared/foundation.css" />
+    <link rel="stylesheet" href="/gifting/gifting.css" />
+  </head>
+
+  <body>
+    <!-- Sacred background patterns -->
+    <div class="gift-aurora">
+      <div class="aurora-stream"></div>
+      <div class="aurora-stream"></div>
+      <div class="aurora-stream"></div>
+    </div>
+
+    <!-- Floating gift particles -->
+    <div class="gift-particles">
+      <div class="gift-particle"></div>
+      <div class="gift-particle"></div>
+      <div class="gift-particle"></div>
+      <div class="gift-particle"></div>
+      <div class="gift-particle"></div>
+    </div>
+
+    <a href="/" class="back-button">
+      <span>←</span>
+      <span>Back to Portal</span>
+    </a>
+
+    <div class="gifting-container">
+      <div class="gifting-card">
+        <!-- Header -->
+        <div class="gift-header">
+          <h1 class="gift-title">Gift a Sacred Reflection</h1>
+          <p class="gift-subtitle">
+            Share the deepest gift: helping someone remember their own power
+          </p>
+        </div>
+
+        <!-- Gifting Form -->
+        <form id="giftingForm" class="gifting-form">
+          <!-- Giver Section -->
+          <div class="form-section">
+            <h3 class="section-title">Your Information</h3>
+
+            <div class="form-group">
+              <label for="giverName">Your Name</label>
+              <input
+                id="giverName"
+                type="text"
+                placeholder="Enter your name"
+                class="sacred-input"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="giverEmail">Your Email</label>
+              <input
+                id="giverEmail"
+                type="email"
+                placeholder="your@email.com"
+                class="sacred-input"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Recipient Section -->
+          <div class="form-section">
+            <h3 class="section-title">Gift Recipient</h3>
+
+            <div class="form-group">
+              <label for="recipientName">Recipient's Name</label>
+              <input
+                id="recipientName"
+                type="text"
+                placeholder="Who is this gift for?"
+                class="sacred-input"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="recipientEmail">Recipient's Email</label>
+              <input
+                id="recipientEmail"
+                type="email"
+                placeholder="recipient@email.com"
+                class="sacred-input"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Personal Message Section -->
+          <div class="form-section">
+            <h3 class="section-title">Personal Message (Optional)</h3>
+
+            <div class="form-group">
+              <label for="personalMessage">Your Message to Them</label>
+              <textarea
+                id="personalMessage"
+                class="sacred-input message-textarea"
+                placeholder="Share why you're gifting them this sacred space..."
+                maxlength="500"
+              ></textarea>
+              <div class="character-count">
+                <span id="messageCount">0</span>/500 characters
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Section -->
+          <div class="form-section payment-section">
+            <div class="gift-payment-info">
+              <div class="payment-amount">$2.99</div>
+              <div class="payment-description">
+                Sacred gift of reflection and truth
+              </div>
+
+              <div class="paypal-loading" id="paypalLoading">
+                <div class="loading-spinner"></div>
+                <span>Loading payment options...</span>
+              </div>
+
+              <div class="paypal-error" id="paypalError">
+                <span
+                  >Unable to load payment options. Please refresh and try
+                  again.</span
+                >
+              </div>
+
+              <div id="paypal-button-container"></div>
+
+              <div class="processing-message" id="processingMessage">
+                ⏳ Processing your gift and preparing their sacred invitation...
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <!-- Gift Preview -->
+        <div class="gift-preview">
+          <h4 class="preview-title">What they'll receive:</h4>
+          <div class="preview-content">
+            <div class="preview-step">
+              <span class="step-icon">📧</span>
+              <span>A beautiful email invitation to their sacred space</span>
+            </div>
+            <div class="preview-step">
+              <span class="step-icon">🌊</span>
+              <span>A breathing meditation to center and prepare</span>
+            </div>
+            <div class="preview-step">
+              <span class="step-icon">🪞</span>
+              <span>5 profound questions about their dreams</span>
+            </div>
+            <div class="preview-step">
+              <span class="step-icon">✨</span>
+              <span>A personalized reflection showing their wholeness</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/gifting/gifting.js"></script>
+  </body>
+</html>
