@@ -1,4 +1,4 @@
-// Stewardship - Admin Management Logic (Updated with Gift Support)
+// Stewardship - Admin Management Logic (Updated with Premium Support)
 
 let adminData = null;
 let authKey = null;
@@ -138,7 +138,31 @@ function updateStats() {
 
   const stats = adminData.stats;
 
-  // Receipt stats
+  // Calculate premium vs basic breakdown
+  const premiumReceipts = (adminData.receipts || []).filter((r) => r.isPremium);
+  const basicReceipts = (adminData.receipts || []).filter((r) => !r.isPremium);
+  const premiumRevenue = premiumReceipts.reduce(
+    (sum, r) => sum + (r.amount || 0),
+    0
+  );
+  const basicRevenue = basicReceipts.reduce(
+    (sum, r) => sum + (r.amount || 0),
+    0
+  );
+
+  // Premium gifts
+  const premiumGifts = (adminData.gifts || []).filter((g) => g.isPremium);
+  const basicGifts = (adminData.gifts || []).filter((g) => !g.isPremium);
+  const premiumGiftRevenue = premiumGifts.reduce(
+    (sum, g) => sum + (g.amount || 0),
+    0
+  );
+  const basicGiftRevenue = basicGifts.reduce(
+    (sum, g) => sum + (g.amount || 0),
+    0
+  );
+
+  // Update main stats
   document.getElementById("statTotalRevenue").textContent =
     stats.totalRevenue || 0;
   document.getElementById("statTodayRevenue").textContent =
@@ -166,13 +190,19 @@ function updateStats() {
   ).length;
   document.getElementById("statTodayGifts").textContent = todayGifts;
 
-  // Update badges
-  document.getElementById("receiptsBadge").textContent = `${
-    stats.totalReceipts || 0
-  } receipts`;
-  document.getElementById("giftsBadge").textContent = `${
-    stats.totalGifts || 0
-  } gifts`;
+  // Update badges with premium breakdown
+  document.getElementById("receiptsBadge").innerHTML = `
+    ${stats.totalReceipts || 0} receipts 
+    <small>(${premiumReceipts.length} premium, ${
+    basicReceipts.length
+  } essential)</small>
+  `;
+  document.getElementById("giftsBadge").innerHTML = `
+    ${stats.totalGifts || 0} gifts 
+    <small>(${premiumGifts.length} premium, ${
+    basicGifts.length
+  } essential)</small>
+  `;
 }
 
 // Tab Management
@@ -254,7 +284,11 @@ function renderReceipts() {
       <div class="item-card" data-id="${receipt.id}">
         <div class="item-header">
           <div class="item-info">
-            <h3>Receipt #${receipt.receiptNumber}</h3>
+            <h3>Receipt #${receipt.receiptNumber} ${
+        receipt.isPremium
+          ? '<span class="badge premium">✨ Premium</span>'
+          : '<span class="badge basic">📝 Essential</span>'
+      }</h3>
             <p>${receipt.customerName} • ${receipt.customerEmail}</p>
             <p>
               <span class="badge ${receipt.paymentMethod}">$${
@@ -354,7 +388,11 @@ function renderGifts() {
       <div class="item-card" data-id="${gift.id}">
         <div class="item-header">
           <div class="item-info">
-            <h3>Gift #${gift.giftCode}</h3>
+            <h3>Gift #${gift.giftCode} ${
+        gift.isPremium
+          ? '<span class="badge premium">✨ Premium</span>'
+          : '<span class="badge basic">📝 Essential</span>'
+      }</h3>
             <p><strong>From:</strong> ${gift.giverName} (${gift.giverEmail})</p>
             <p><strong>To:</strong> ${gift.recipientName} (${
         gift.recipientEmail
@@ -392,11 +430,7 @@ function renderGifts() {
           </button>
           ${
             !gift.isRedeemed
-              ? `
-            <button class="action-btn primary-btn" onclick="resendGiftInvitation('${gift.id}')">
-              📧 Resend Invitation
-            </button>
-          `
+              ? `<button class="action-btn primary-btn" onclick="resendGiftInvitation('${gift.id}')">📧 Resend Invitation</button>`
               : ""
           }
           <button class="action-btn danger-btn" onclick="removeGift('${
@@ -430,6 +464,7 @@ function renderRecentActivity() {
         email: receipt.customerEmail,
         timestamp: receipt.timestamp,
         timeAgo: receipt.timeAgo,
+        isPremium: receipt.isPremium,
       });
     });
   }
@@ -446,6 +481,7 @@ function renderRecentActivity() {
         timestamp: gift.createdAt,
         timeAgo: gift.timeAgo,
         isRedeemed: gift.isRedeemed,
+        isPremium: gift.isPremium,
       });
     });
   }
@@ -473,7 +509,11 @@ function renderRecentActivity() {
           <div class="item-info">
             <p>${activity.type === "receipt" ? "Receipt" : "Gift"} #${
         activity.id
-      } - $${activity.amount} (${activity.paymentMethod})</p>
+      } - $${activity.amount} (${activity.paymentMethod}) ${
+        activity.isPremium
+          ? '<span class="badge premium">✨</span>'
+          : '<span class="badge basic">📝</span>'
+      }</p>
             <p>${activity.customer} • ${activity.email}</p>
           </div>
           <div class="item-meta">
@@ -544,6 +584,7 @@ async function resendReceipt(id) {
         amount: receipt.amount,
         paymentMethod: receipt.paymentMethod,
         language: receipt.language,
+        isPremium: receipt.isPremium,
       }),
     });
 
@@ -576,6 +617,14 @@ function viewGiftDetails(id) {
           <div class="detail-item">
             <label>Gift Code:</label>
             <span>${gift.giftCode}</span>
+          </div>
+          <div class="detail-item">
+            <label>Type:</label>
+            <span>${
+              gift.isPremium
+                ? '<span class="badge premium">✨ Premium</span>'
+                : '<span class="badge basic">📝 Essential</span>'
+            }</span>
           </div>
           <div class="detail-item">
             <label>Amount:</label>
@@ -708,7 +757,6 @@ async function removeGift(id) {
   if (!confirm("Are you sure you want to delete this gift?")) return;
 
   try {
-    // Note: You'll need to add a delete endpoint for gifts in your API
     const response = await fetch(`/api/admin?id=${id}&type=gift`, {
       method: "DELETE",
       headers: {
@@ -740,11 +788,15 @@ function exportReceipts() {
 
   const csvContent =
     "data:text/csv;charset=utf-8," +
-    "Receipt Number,Customer Name,Customer Email,Amount,Payment Method,Language,Date,Timestamp\n" +
+    "Receipt Number,Customer Name,Customer Email,Amount,Payment Method,Type,Language,Date,Timestamp\n" +
     filteredReceipts
       .map(
         (receipt) =>
-          `${receipt.receiptNumber},"${receipt.customerName}","${receipt.customerEmail}",${receipt.amount},${receipt.paymentMethod},${receipt.language},"${receipt.date}","${receipt.timestamp}"`
+          `${receipt.receiptNumber},"${receipt.customerName}","${
+            receipt.customerEmail
+          }",${receipt.amount},${receipt.paymentMethod},${
+            receipt.isPremium ? "Premium" : "Essential"
+          },${receipt.language},"${receipt.date}","${receipt.timestamp}"`
       )
       .join("\n");
 
@@ -763,17 +815,17 @@ function exportGifts() {
 
   const csvContent =
     "data:text/csv;charset=utf-8," +
-    "Gift Code,Giver Name,Giver Email,Recipient Name,Recipient Email,Amount,Payment Method,Status,Personal Message,Created Date,Redeemed Date\n" +
+    "Gift Code,Giver Name,Giver Email,Recipient Name,Recipient Email,Amount,Payment Method,Type,Status,Personal Message,Created Date,Redeemed Date\n" +
     filteredGifts
       .map(
         (gift) =>
           `${gift.giftCode},"${gift.giverName}","${gift.giverEmail}","${
             gift.recipientName
           }","${gift.recipientEmail}",${gift.amount},${gift.paymentMethod},${
-            gift.isRedeemed ? "Redeemed" : "Pending"
-          },"${gift.personalMessage || ""}","${gift.createdAt}","${
-            gift.redeemedAt || ""
-          }"`
+            gift.isPremium ? "Premium" : "Essential"
+          },${gift.isRedeemed ? "Redeemed" : "Pending"},"${
+            gift.personalMessage || ""
+          }","${gift.createdAt}","${gift.redeemedAt || ""}"`
       )
       .join("\n");
 
@@ -817,6 +869,8 @@ document.addEventListener("DOMContentLoaded", () => {
         amount: parseFloat(document.getElementById("receiptAmount").value),
         paymentMethod: document.getElementById("receiptPaymentMethod").value,
         language: document.getElementById("receiptLanguage").value,
+        isPremium:
+          parseFloat(document.getElementById("receiptAmount").value) > 3.5, // Auto-detect premium based on amount
       };
 
       try {
