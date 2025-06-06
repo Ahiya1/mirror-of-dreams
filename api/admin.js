@@ -1,4 +1,4 @@
-// API: Admin - Sacred Administration
+// API: Admin - Sacred Administration (Updated with Gift Support)
 
 const {
   getAllData,
@@ -8,6 +8,8 @@ const {
   getReceiptByNumber,
   getReceiptsByEmail,
   getReceiptsByDateRange,
+  removeGift,
+  getGiftByCode,
 } = require("../lib/storage.js");
 
 // Main handler
@@ -140,11 +142,12 @@ async function handleGetData(req, res) {
 
     const data = await getAllData();
 
-    // Return receipts-focused data for online version
+    // Return complete data including both receipts and gifts
     return res.json({
       success: true,
       data: {
         receipts: data.receipts,
+        gifts: data.gifts,
         stats: data.stats,
         lastUpdated: data.lastUpdated,
       },
@@ -231,7 +234,7 @@ async function handleUpdateData(req, res) {
     } else {
       return res.status(400).json({
         success: false,
-        error: "Only receipt updates supported in online version",
+        error: "Only receipt updates supported currently",
       });
     }
 
@@ -267,12 +270,16 @@ async function handleDeleteData(req, res) {
 
   try {
     if (type === "receipt" || !type) {
-      // Default to receipt for online version
+      // Default to receipt for backward compatibility
       await removeReceipt(id);
+      console.log(`🗑️ Receipt deleted: ${id}`);
+    } else if (type === "gift") {
+      await removeGift(id);
+      console.log(`🗑️ Gift deleted: ${id}`);
     } else {
       return res.status(400).json({
         success: false,
-        error: "Only receipt deletion supported in online version",
+        error: "Invalid type. Supported types: receipt, gift",
       });
     }
 
@@ -280,10 +287,13 @@ async function handleDeleteData(req, res) {
     return res.json({
       success: true,
       data: data,
-      message: "Receipt removed successfully",
+      message: `${type || "receipt"} removed successfully`,
     });
   } catch (error) {
-    if (error.message === "Receipt not found") {
+    if (
+      error.message === "Receipt not found" ||
+      error.message === "Gift not found"
+    ) {
       return res.status(404).json({
         success: false,
         error: error.message,

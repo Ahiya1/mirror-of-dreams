@@ -1,9 +1,10 @@
-// Stewardship - Admin Management Logic
+// Stewardship - Admin Management Logic (Updated with Gift Support)
 
 let adminData = null;
 let authKey = null;
 let currentTab = "overview";
 let filteredReceipts = [];
+let filteredGifts = [];
 
 // Initialize
 window.addEventListener("load", checkExistingAuth);
@@ -101,7 +102,7 @@ async function loadAdminData() {
 
   try {
     const response = await fetch(
-      `/api/admin?key=${encodeURIComponent(authKey)}&filter=receipts`
+      `/api/admin?key=${encodeURIComponent(authKey)}`
     );
 
     if (!response.ok) {
@@ -119,6 +120,7 @@ async function loadAdminData() {
       adminData = result.data;
       updateStats();
       renderReceipts();
+      renderGifts();
       renderRecentActivity();
       updateConnectionStatus(true);
     } else {
@@ -135,6 +137,8 @@ function updateStats() {
   if (!adminData || !adminData.stats) return;
 
   const stats = adminData.stats;
+
+  // Receipt stats
   document.getElementById("statTotalRevenue").textContent =
     stats.totalRevenue || 0;
   document.getElementById("statTodayRevenue").textContent =
@@ -149,9 +153,26 @@ function updateStats() {
   ).length;
   document.getElementById("statTodayReceipts").textContent = todayReceipts;
 
+  // Gift stats
+  document.getElementById("statTotalGifts").textContent = stats.totalGifts || 0;
+  document.getElementById("statRedeemedGifts").textContent =
+    stats.redeemedGifts || 0;
+  document.getElementById("statPendingGifts").textContent =
+    stats.pendingGifts || 0;
+
+  // Calculate today's gifts count
+  const todayGifts = (adminData.gifts || []).filter(
+    (g) => new Date(g.createdAt).toDateString() === today
+  ).length;
+  document.getElementById("statTodayGifts").textContent = todayGifts;
+
+  // Update badges
   document.getElementById("receiptsBadge").textContent = `${
     stats.totalReceipts || 0
   } receipts`;
+  document.getElementById("giftsBadge").textContent = `${
+    stats.totalGifts || 0
+  } gifts`;
 }
 
 // Tab Management
@@ -264,13 +285,177 @@ function renderReceipts() {
     .join("");
 }
 
+// Gift Management
+function renderGifts() {
+  if (!adminData || !adminData.gifts) return;
+
+  const container = document.getElementById("giftsList");
+  let gifts = adminData.gifts;
+
+  // Apply filters
+  const searchTerm =
+    document.getElementById("giftSearch")?.value.toLowerCase() || "";
+  const statusFilter =
+    document.getElementById("giftStatusFilter")?.value || "all";
+  const paymentFilter =
+    document.getElementById("giftPaymentFilter")?.value || "all";
+  const startDate = document.getElementById("giftStartDate")?.value;
+  const endDate = document.getElementById("giftEndDate")?.value;
+
+  if (searchTerm) {
+    gifts = gifts.filter(
+      (gift) =>
+        gift.giftCode.toLowerCase().includes(searchTerm) ||
+        gift.giverName.toLowerCase().includes(searchTerm) ||
+        gift.giverEmail.toLowerCase().includes(searchTerm) ||
+        gift.recipientName.toLowerCase().includes(searchTerm) ||
+        gift.recipientEmail.toLowerCase().includes(searchTerm)
+    );
+  }
+
+  if (statusFilter !== "all") {
+    gifts = gifts.filter((gift) =>
+      statusFilter === "redeemed" ? gift.isRedeemed : !gift.isRedeemed
+    );
+  }
+
+  if (paymentFilter !== "all") {
+    gifts = gifts.filter((gift) => gift.paymentMethod === paymentFilter);
+  }
+
+  if (startDate) {
+    gifts = gifts.filter(
+      (gift) => new Date(gift.createdAt) >= new Date(startDate)
+    );
+  }
+
+  if (endDate) {
+    gifts = gifts.filter(
+      (gift) => new Date(gift.createdAt) <= new Date(endDate + "T23:59:59")
+    );
+  }
+
+  filteredGifts = gifts;
+
+  if (gifts.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🎁</div>
+        <div class="empty-title">No gifts found</div>
+        <div class="empty-subtitle">Gifts will appear as they are purchased</div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = gifts
+    .map(
+      (gift) => `
+      <div class="item-card" data-id="${gift.id}">
+        <div class="item-header">
+          <div class="item-info">
+            <h3>Gift #${gift.giftCode}</h3>
+            <p><strong>From:</strong> ${gift.giverName} (${gift.giverEmail})</p>
+            <p><strong>To:</strong> ${gift.recipientName} (${
+        gift.recipientEmail
+      })</p>
+            <p>
+              <span class="badge ${gift.paymentMethod}">$${gift.amount} • ${
+        gift.paymentMethod
+      }</span>
+              <span class="badge ${gift.isRedeemed ? "redeemed" : "pending"}">${
+        gift.isRedeemed ? "Redeemed" : "Pending"
+      }</span>
+            </p>
+            ${
+              gift.personalMessage
+                ? `<p class="gift-message">"${gift.personalMessage}"</p>`
+                : ""
+            }
+          </div>
+          <div class="item-meta">
+            <div>${gift.timeAgo || "Now"}</div>
+            ${
+              gift.isRedeemed && gift.redeemedAt
+                ? `<div class="redeemed-time">Redeemed: ${new Date(
+                    gift.redeemedAt
+                  ).toLocaleDateString()}</div>`
+                : ""
+            }
+          </div>
+        </div>
+        <div class="item-actions">
+          <button class="action-btn secondary-btn" onclick="viewGiftDetails('${
+            gift.id
+          }')">
+            👁️ Details
+          </button>
+          ${
+            !gift.isRedeemed
+              ? `
+            <button class="action-btn primary-btn" onclick="resendGiftInvitation('${gift.id}')">
+              📧 Resend Invitation
+            </button>
+          `
+              : ""
+          }
+          <button class="action-btn danger-btn" onclick="removeGift('${
+            gift.id
+          }')">
+            🗑️ Delete
+          </button>
+        </div>
+      </div>
+    `
+    )
+    .join("");
+}
+
 function renderRecentActivity() {
-  if (!adminData || !adminData.receipts) return;
+  if (!adminData) return;
 
   const container = document.getElementById("recentActivity");
-  const recentReceipts = adminData.receipts.slice(0, 10);
 
-  if (recentReceipts.length === 0) {
+  // Combine receipts and gifts, sort by date
+  const allActivity = [];
+
+  if (adminData.receipts) {
+    adminData.receipts.forEach((receipt) => {
+      allActivity.push({
+        type: "receipt",
+        id: receipt.receiptNumber,
+        amount: receipt.amount,
+        paymentMethod: receipt.paymentMethod,
+        customer: receipt.customerName,
+        email: receipt.customerEmail,
+        timestamp: receipt.timestamp,
+        timeAgo: receipt.timeAgo,
+      });
+    });
+  }
+
+  if (adminData.gifts) {
+    adminData.gifts.forEach((gift) => {
+      allActivity.push({
+        type: "gift",
+        id: gift.giftCode,
+        amount: gift.amount,
+        paymentMethod: gift.paymentMethod,
+        customer: `${gift.giverName} → ${gift.recipientName}`,
+        email: gift.giverEmail,
+        timestamp: gift.createdAt,
+        timeAgo: gift.timeAgo,
+        isRedeemed: gift.isRedeemed,
+      });
+    });
+  }
+
+  // Sort by timestamp, most recent first
+  allActivity.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+  const recentActivity = allActivity.slice(0, 15);
+
+  if (recentActivity.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">📊</div>
@@ -280,17 +465,28 @@ function renderRecentActivity() {
     return;
   }
 
-  container.innerHTML = recentReceipts
+  container.innerHTML = recentActivity
     .map(
-      (receipt) => `
+      (activity) => `
       <div class="item-card">
         <div class="item-header">
           <div class="item-info">
-            <p>Receipt #${receipt.receiptNumber} - $${receipt.amount} (${receipt.paymentMethod})</p>
-            <p>${receipt.customerName} • ${receipt.customerEmail}</p>
+            <p>${activity.type === "receipt" ? "Receipt" : "Gift"} #${
+        activity.id
+      } - $${activity.amount} (${activity.paymentMethod})</p>
+            <p>${activity.customer} • ${activity.email}</p>
           </div>
           <div class="item-meta">
-            <span class="badge ${receipt.paymentMethod}">receipt</span>
+            <span class="badge ${
+              activity.type === "receipt"
+                ? activity.paymentMethod
+                : activity.isRedeemed
+                ? "redeemed"
+                : "pending"
+            }">${activity.type}${
+        activity.type === "gift" && activity.isRedeemed ? " (redeemed)" : ""
+      }</span>
+            <div>${activity.timeAgo || "Now"}</div>
           </div>
         </div>
       </div>
@@ -364,6 +560,178 @@ async function resendReceipt(id) {
   }
 }
 
+// Gift Actions
+function viewGiftDetails(id) {
+  const gift = adminData.gifts.find((g) => g.id === id);
+  if (!gift) return;
+
+  const modal = document.getElementById("giftModal");
+  const detailsContainer = document.getElementById("giftDetails");
+
+  detailsContainer.innerHTML = `
+    <div class="gift-details">
+      <div class="detail-section">
+        <h3>Gift Information</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Gift Code:</label>
+            <span>${gift.giftCode}</span>
+          </div>
+          <div class="detail-item">
+            <label>Amount:</label>
+            <span>$${gift.amount}</span>
+          </div>
+          <div class="detail-item">
+            <label>Payment Method:</label>
+            <span>${gift.paymentMethod}</span>
+          </div>
+          <div class="detail-item">
+            <label>Status:</label>
+            <span class="badge ${gift.isRedeemed ? "redeemed" : "pending"}">${
+    gift.isRedeemed ? "Redeemed" : "Pending"
+  }</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="detail-section">
+        <h3>Giver Information</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Name:</label>
+            <span>${gift.giverName}</span>
+          </div>
+          <div class="detail-item">
+            <label>Email:</label>
+            <span>${gift.giverEmail}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="detail-section">
+        <h3>Recipient Information</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Name:</label>
+            <span>${gift.recipientName}</span>
+          </div>
+          <div class="detail-item">
+            <label>Email:</label>
+            <span>${gift.recipientEmail}</span>
+          </div>
+        </div>
+      </div>
+      
+      ${
+        gift.personalMessage
+          ? `
+        <div class="detail-section">
+          <h3>Personal Message</h3>
+          <div class="personal-message">
+            "${gift.personalMessage}"
+          </div>
+        </div>
+      `
+          : ""
+      }
+      
+      <div class="detail-section">
+        <h3>Timeline</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Created:</label>
+            <span>${new Date(gift.createdAt).toLocaleString()}</span>
+          </div>
+          ${
+            gift.isRedeemed && gift.redeemedAt
+              ? `
+            <div class="detail-item">
+              <label>Redeemed:</label>
+              <span>${new Date(gift.redeemedAt).toLocaleString()}</span>
+            </div>
+          `
+              : ""
+          }
+        </div>
+      </div>
+      
+      <div class="detail-actions">
+        ${
+          !gift.isRedeemed
+            ? `
+          <button class="action-btn primary-btn" onclick="resendGiftInvitation('${gift.id}'); closeModal('giftModal');">
+            📧 Resend Invitation
+          </button>
+        `
+            : ""
+        }
+        <button class="action-btn danger-btn" onclick="removeGift('${
+          gift.id
+        }'); closeModal('giftModal');">
+          🗑️ Delete Gift
+        </button>
+      </div>
+    </div>
+  `;
+
+  showModal("giftModal");
+}
+
+async function resendGiftInvitation(id) {
+  const gift = adminData.gifts.find((g) => g.id === id);
+  if (!gift || gift.isRedeemed) return;
+
+  try {
+    const response = await fetch("/api/communication", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "send-gift-invitation",
+        gift: gift,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      notify("Gift invitation resent successfully");
+    } else {
+      throw new Error("Failed to resend gift invitation");
+    }
+  } catch (error) {
+    console.error("Error resending gift invitation:", error);
+    notify("Failed to resend gift invitation", true);
+  }
+}
+
+async function removeGift(id) {
+  if (!confirm("Are you sure you want to delete this gift?")) return;
+
+  try {
+    // Note: You'll need to add a delete endpoint for gifts in your API
+    const response = await fetch(`/api/admin?id=${id}&type=gift`, {
+      method: "DELETE",
+      headers: {
+        Authorization: authKey,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.error || "Failed to remove gift");
+    }
+
+    notify("Gift deleted");
+    await loadAdminData();
+  } catch (error) {
+    console.error("Error removing gift:", error);
+    notify("Failed to delete gift", true);
+  }
+}
+
+// Export Functions
 function exportReceipts() {
   if (!filteredReceipts.length) {
     notify("No receipts to export", true);
@@ -380,18 +748,50 @@ function exportReceipts() {
       )
       .join("\n");
 
+  downloadCSV(
+    csvContent,
+    `receipts_${new Date().toISOString().split("T")[0]}.csv`
+  );
+  notify("Receipts exported successfully");
+}
+
+function exportGifts() {
+  if (!filteredGifts.length) {
+    notify("No gifts to export", true);
+    return;
+  }
+
+  const csvContent =
+    "data:text/csv;charset=utf-8," +
+    "Gift Code,Giver Name,Giver Email,Recipient Name,Recipient Email,Amount,Payment Method,Status,Personal Message,Created Date,Redeemed Date\n" +
+    filteredGifts
+      .map(
+        (gift) =>
+          `${gift.giftCode},"${gift.giverName}","${gift.giverEmail}","${
+            gift.recipientName
+          }","${gift.recipientEmail}",${gift.amount},${gift.paymentMethod},${
+            gift.isRedeemed ? "Redeemed" : "Pending"
+          },"${gift.personalMessage || ""}","${gift.createdAt}","${
+            gift.redeemedAt || ""
+          }"`
+      )
+      .join("\n");
+
+  downloadCSV(
+    csvContent,
+    `gifts_${new Date().toISOString().split("T")[0]}.csv`
+  );
+  notify("Gifts exported successfully");
+}
+
+function downloadCSV(csvContent, filename) {
   const encodedUri = encodeURI(csvContent);
   const link = document.createElement("a");
   link.setAttribute("href", encodedUri);
-  link.setAttribute(
-    "download",
-    `receipts_${new Date().toISOString().split("T")[0]}.csv`
-  );
+  link.setAttribute("download", filename);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-
-  notify("Receipts exported successfully");
 }
 
 // Modal Management
@@ -450,12 +850,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const receiptStartDate = document.getElementById("receiptStartDate");
   const receiptEndDate = document.getElementById("receiptEndDate");
 
+  const giftSearch = document.getElementById("giftSearch");
+  const giftStatusFilter = document.getElementById("giftStatusFilter");
+  const giftPaymentFilter = document.getElementById("giftPaymentFilter");
+  const giftStartDate = document.getElementById("giftStartDate");
+  const giftEndDate = document.getElementById("giftEndDate");
+
   if (receiptSearch) receiptSearch.addEventListener("input", renderReceipts);
   if (receiptPaymentFilter)
     receiptPaymentFilter.addEventListener("change", renderReceipts);
   if (receiptStartDate)
     receiptStartDate.addEventListener("change", renderReceipts);
   if (receiptEndDate) receiptEndDate.addEventListener("change", renderReceipts);
+
+  if (giftSearch) giftSearch.addEventListener("input", renderGifts);
+  if (giftStatusFilter)
+    giftStatusFilter.addEventListener("change", renderGifts);
+  if (giftPaymentFilter)
+    giftPaymentFilter.addEventListener("change", renderGifts);
+  if (giftStartDate) giftStartDate.addEventListener("change", renderGifts);
+  if (giftEndDate) giftEndDate.addEventListener("change", renderGifts);
 });
 
 // Utility Functions

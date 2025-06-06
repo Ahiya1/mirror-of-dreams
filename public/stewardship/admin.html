@@ -46,7 +46,7 @@
       <!-- Header -->
       <div class="admin-header">
         <h1 class="admin-title">Mirror of Truth</h1>
-        <p class="admin-subtitle">Receipt Management Portal</p>
+        <p class="admin-subtitle">Sacred Management Portal</p>
       </div>
 
       <!-- Tab Navigation -->
@@ -57,6 +57,7 @@
         <button class="tab-btn" onclick="switchTab('receipts')">
           🧾 Receipts
         </button>
+        <button class="tab-btn" onclick="switchTab('gifts')">🎁 Gifts</button>
       </div>
 
       <!-- Overview Tab -->
@@ -79,12 +80,28 @@
             <div class="stat-number" id="statTodayReceipts">-</div>
             <div class="stat-label">Today Receipts</div>
           </div>
+          <div class="stat-card">
+            <div class="stat-number" id="statTotalGifts">-</div>
+            <div class="stat-label">Total Gifts</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="statRedeemedGifts">-</div>
+            <div class="stat-label">Redeemed Gifts</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="statPendingGifts">-</div>
+            <div class="stat-label">Pending Gifts</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="statTodayGifts">-</div>
+            <div class="stat-label">Today Gifts</div>
+          </div>
         </div>
 
         <!-- Recent Activity -->
         <div class="section-card">
           <div class="section-header">
-            <h2 class="section-title">Recent Payments</h2>
+            <h2 class="section-title">Recent Activity</h2>
           </div>
           <div id="recentActivity"></div>
         </div>
@@ -121,6 +138,41 @@
           </div>
 
           <div id="receiptsList"></div>
+        </div>
+      </div>
+
+      <!-- Gifts Tab -->
+      <div class="tab-content" id="giftsTab">
+        <div class="section-card">
+          <div class="section-header">
+            <h2 class="section-title">Gift Management</h2>
+            <div class="badge gift" id="giftsBadge">0 gifts</div>
+          </div>
+
+          <div class="controls-row">
+            <input
+              type="text"
+              class="search-input"
+              id="giftSearch"
+              placeholder="Search by gift code, giver, or recipient..."
+            />
+            <select class="filter-select" id="giftStatusFilter">
+              <option value="all">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="redeemed">Redeemed</option>
+            </select>
+            <select class="filter-select" id="giftPaymentFilter">
+              <option value="all">All Payment Methods</option>
+              <option value="paypal">PayPal</option>
+            </select>
+            <input type="date" class="date-input" id="giftStartDate" />
+            <input type="date" class="date-input" id="giftEndDate" />
+            <button class="action-btn secondary-btn" onclick="exportGifts()">
+              📁 Export Gifts
+            </button>
+          </div>
+
+          <div id="giftsList"></div>
         </div>
       </div>
     </div>
@@ -198,6 +250,20 @@
             </button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- Gift Details Modal -->
+    <div class="modal" id="giftModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="giftModalTitle">Gift Details</h2>
+          <button class="close-btn" onclick="closeModal('giftModal')">
+            &times;
+          </button>
+        </div>
+
+        <div id="giftDetails"></div>
       </div>
     </div>
 
