@@ -21,7 +21,253 @@ function generateReceiptNumber() {
   return `MR${timestamp.slice(-6)}${random}`;
 }
 
-// Receipt email template
+// Enhanced reflection email template - clean, mobile-optimized, cosmic theme
+function getReflectionTemplate(userName, content) {
+  const currentDate = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  return `
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <title>Your Mirror of Truth Reflection</title>
+    <style>
+        /* Email client reset */
+        body, table, td, p, a, li, blockquote {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+        table, td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+        img {
+            -ms-interpolation-mode: bicubic;
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
+            text-decoration: none;
+        }
+        
+        /* Mobile optimization */
+        @media screen and (max-width: 600px) {
+            .mobile-center { text-align: center !important; }
+            .mobile-padding { padding: 20px !important; }
+            .mobile-font { font-size: 16px !important; line-height: 1.6 !important; }
+            .mobile-title { font-size: 24px !important; }
+            .mobile-button { 
+                display: block !important; 
+                width: 100% !important; 
+                padding: 16px !important;
+                font-size: 16px !important;
+            }
+            .mobile-spacer { height: 20px !important; }
+            .reflection-content { padding: 24px 20px !important; }
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            .force-light { background-color: #ffffff !important; color: #1a1a2e !important; }
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; width: 100% !important; min-width: 100%; background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #0f0f23 100%); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+    
+    <!-- Main container -->
+    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #0f0f23 100%); min-height: 100vh;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                
+                <!-- Email card -->
+                <table cellpadding="0" cellspacing="0" border="0" width="600" style="max-width: 600px; width: 100%; background: rgba(255, 255, 255, 0.98); border-radius: 24px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3); overflow: hidden;" class="force-light">
+                    
+                    <!-- Cosmic header -->
+                    <tr>
+                        <td style="height: 4px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></td>
+                    </tr>
+                    
+                    <!-- Header content -->
+                    <tr>
+                        <td style="padding: 40px 40px 30px 40px; text-align: center;" class="mobile-padding">
+                            <h1 style="margin: 0 0 10px 0; font-size: 28px; font-weight: 300; color: #1f2937; letter-spacing: 0.5px;" class="mobile-title">
+                                Your Mirror of Truth
+                            </h1>
+                            <div style="width: 60px; height: 2px; background: linear-gradient(135deg, #f59e0b, #ec4899); margin: 0 auto 20px auto; border-radius: 2px;"></div>
+                            <p style="margin: 0; color: #6b7280; font-size: 16px; font-style: italic;">
+                                A reflection to return to when you need to remember your power
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Greeting -->
+                    <tr>
+                        <td style="padding: 0 40px 30px 40px;" class="mobile-padding">
+                            <p style="margin: 0 0 20px 0; font-size: 18px; color: #374151; font-weight: 500;">
+                                ${userName},
+                            </p>
+                            <p style="margin: 0; font-size: 16px; color: #6b7280; line-height: 1.6;" class="mobile-font">
+                                Here is your reflection from The Mirror of Truth. This isn't just words on a screen — it's a reminder of who you are when you stop hiding from your own power.
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Reflection content -->
+                    <tr>
+                        <td style="padding: 0 40px 40px 40px;" class="mobile-padding">
+                            <div style="background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%); border: 2px solid #e5e7eb; border-radius: 16px; padding: 32px; position: relative;" class="reflection-content force-light">
+                                <!-- Subtle accent -->
+                                <div style="position: absolute; top: 12px; left: 12px; width: 32px; height: 32px; background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%); border-radius: 50%;"></div>
+                                
+                                <!-- Reflection text -->
+                                <div style="font-size: 17px; line-height: 1.7; color: #374151;" class="mobile-font">
+                                    ${content}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Instructions -->
+                    <tr>
+                        <td style="padding: 0 40px 40px 40px;" class="mobile-padding">
+                            <div style="background: linear-gradient(135deg, #fffbeb 0%, #fef7cd 100%); border-left: 4px solid #f59e0b; padding: 24px; border-radius: 12px;">
+                                <p style="margin: 0 0 12px 0; font-size: 16px; color: #92400e; font-weight: 600;">
+                                    How to work with this reflection:
+                                </p>
+                                <p style="margin: 0; font-size: 15px; color: #92400e; line-height: 1.6;" class="mobile-font">
+                                    Return to these words when doubt creeps in. When others question your path. When you forget that your desire arose for a reason. This reflection sees the truth of who you are — not who you think you should be, but who you already are when you stop apologizing for wanting what you want.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Save instructions -->
+                    <tr>
+                        <td style="padding: 0 40px 40px 40px;" class="mobile-padding">
+                            <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; border: 2px solid #0ea5e9;">
+                                <p style="margin: 0; color: #0c4a6e; font-size: 15px; font-weight: 500;" class="mobile-font">
+                                    💾 <strong>Save this reflection:</strong> Print this email or copy the text above. Keep it somewhere you can find it when you need to remember your truth.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Action button -->
+                    <tr>
+                        <td style="padding: 0 40px 40px 40px; text-align: center;" class="mobile-padding">
+                            <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
+                                <tr>
+                                    <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; text-align: center;">
+                                        <a href="https://mirror-of-truth.vercel.app" style="display: inline-block; padding: 16px 32px; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 500; letter-spacing: 0.3px;" class="mobile-button">
+                                            ✨ Visit The Mirror of Truth
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Personal message -->
+                    <tr>
+                        <td style="padding: 40px 40px 30px 40px; border-top: 2px solid #e5e7eb;" class="mobile-padding">
+                            <p style="margin: 0 0 16px 0; font-size: 16px; color: #374151; line-height: 1.6;" class="mobile-font">
+                                This work of creating mirrors for people's truth — helping them see their wholeness instead of their brokenness — it's what I'm here to do. If this reflection landed for you, if it helped you see something you hadn't seen before, I'd love to hear about it.
+                            </p>
+                            <p style="margin: 0 0 16px 0; font-size: 15px; color: #6b7280; font-style: italic;" class="mobile-font">
+                                Just reply to this email. I read every response personally.
+                            </p>
+                            <p style="margin: 0; font-size: 15px; color: #6b7280; line-height: 1.6;" class="mobile-font">
+                                And if you know someone who could use their own mirror — someone who's been waiting for permission to trust their dreams — send them to The Mirror of Truth. The deepest gift we can give is helping others remember their own power.
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Signature -->
+                    <tr>
+                        <td style="padding: 0 40px 40px 40px; text-align: right;" class="mobile-padding mobile-center">
+                            <p style="margin: 0 0 6px 0; font-size: 16px; color: #374151;">
+                                With quiet certainty,
+                            </p>
+                            <p style="margin: 0 0 6px 0; font-size: 20px; color: #1f2937; font-weight: 600;">
+                                Ahiya
+                            </p>
+                            <p style="margin: 0; font-size: 14px; color: #9ca3af; font-style: italic;">
+                                Creator, The Mirror of Truth
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer note -->
+                    <tr>
+                        <td style="padding: 0 40px 40px 40px;" class="mobile-padding">
+                            <div style="background: #f9fafb; border-left: 3px solid #d1d5db; padding: 20px; border-radius: 8px;">
+                                <p style="margin: 0; font-size: 14px; color: #6b7280; line-height: 1.5;" class="mobile-font">
+                                    <strong>P.S.</strong> This isn't a business email or a marketing funnel. It's one human being offering another human being a chance to see themselves clearly. If that's what you received, then the mirror worked exactly as intended.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                </table>
+                
+                <!-- Printable reflection card -->
+                <div style="page-break-before: always; margin-top: 40px;">
+                    <table cellpadding="0" cellspacing="0" border="0" width="600" style="max-width: 600px; width: 100%; background: #ffffff; border: 3px solid #1f2937; border-radius: 16px; margin-top: 40px; font-family: Georgia, serif;" class="force-light">
+                        
+                        <!-- Printable header -->
+                        <tr>
+                            <td style="padding: 32px 32px 24px 32px; text-align: center; border-bottom: 2px solid #e5e7eb;" class="mobile-padding">
+                                <h2 style="margin: 0 0 8px 0; font-size: 24px; font-weight: normal; color: #1f2937; letter-spacing: 1px;">
+                                    MIRROR OF TRUTH
+                                </h2>
+                                <p style="margin: 0 0 8px 0; font-size: 14px; color: #6b7280; text-transform: uppercase; letter-spacing: 2px;">
+                                    AhIya
+                                </p>
+                                <p style="margin: 0; font-size: 12px; color: #9ca3af;">
+                                    ${currentDate}
+                                </p>
+                            </td>
+                        </tr>
+                        
+                        <!-- Printable reflection -->
+                        <tr>
+                            <td style="padding: 32px;" class="mobile-padding">
+                                <p style="margin: 0 0 24px 0; font-size: 16px; color: #1f2937; font-weight: 600;">
+                                    For ${userName}:
+                                </p>
+                                <div style="font-size: 15px; line-height: 1.8; color: #374151; font-family: Georgia, serif;" class="mobile-font">
+                                    ${content}
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Printable footer -->
+                        <tr>
+                            <td style="padding: 24px 32px 32px 32px; border-top: 1px solid #e5e7eb; text-align: center;" class="mobile-padding">
+                                <p style="margin: 0; font-size: 12px; color: #6b7280; line-height: 1.5;">
+                                    Return to this reflection when you need to remember your power.<br>
+                                    <strong>mirror-of-truth.vercel.app</strong>
+                                </p>
+                            </td>
+                        </tr>
+                        
+                    </table>
+                </div>
+                
+            </td>
+        </tr>
+    </table>
+</body>
+</html>`;
+}
+
+// Receipt email template (keeping existing for now)
 function getReceiptTemplate(receiptData) {
   return `
 <!DOCTYPE html>
@@ -85,7 +331,7 @@ function getReceiptTemplate(receiptData) {
                         color: #374151;
                         margin: 0 0 10px 0;
                         font-size: 1.1rem;
-                    ">${process.env.BUSINESS_NAME || "AhIya"}</h3>
+                    ">AhIya</h3>
                     <p style="
                         color: #6b7280;
                         margin: 0;
@@ -275,228 +521,7 @@ function getReceiptTemplate(receiptData) {
                     margin: 0;
                     font-size: 0.8rem;
                     font-style: italic;
-                ">This service is provided by a registered business.</p>
-            </div>
-        </div>
-    </div>
-</body>
-</html>`;
-}
-
-// Reflection email template
-function getReflectionTemplate(userName, content) {
-  return `
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${userName} - Your Mirror of Truth Reflection</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    </style>
-</head>
-<body style="
-    margin: 0; 
-    padding: 0; 
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
-    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f0f23 100%);
-    min-height: 100vh;
-    line-height: 1.6;
-">
-    <div style="max-width: 700px; margin: 0 auto; padding: 40px 20px;">
-        
-        <!-- Main Card -->
-        <div style="
-            background: rgba(255, 255, 255, 0.98);
-            border-radius: 24px;
-            padding: 50px 40px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-            position: relative;
-            overflow: hidden;
-        ">
-            <!-- Top accent -->
-            <div style="
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                height: 4px;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            "></div>
-
-            <!-- Header -->
-            <div style="text-align: center; margin-bottom: 40px;">
-                <h1 style="
-                    font-family: 'Crimson Text', serif;
-                    font-size: 2.2rem;
-                    font-weight: 600;
-                    margin: 0 0 20px 0;
-                    color: #1f2937;
-                    line-height: 1.2;
-                ">Your Mirror of Truth</h1>
-                <div style="
-                    width: 80px;
-                    height: 3px;
-                    background: linear-gradient(135deg, #f59e0b, #ec4899);
-                    margin: 0 auto;
-                    border-radius: 2px;
-                "></div>
-                <p style="
-                    margin: 20px 0 0 0;
-                    color: #6b7280;
-                    font-style: italic;
-                    font-size: 1rem;
-                ">A reflection to return to when you need to remember your power</p>
-            </div>
-
-            <!-- Greeting -->
-            <div style="margin-bottom: 35px;">
-                <p style="
-                    font-size: 1.1rem;
-                    color: #374151;
-                    margin: 0 0 20px 0;
-                    font-weight: 500;
-                ">${userName},</p>
-                
-                <p style="
-                    font-size: 1rem;
-                    color: #6b7280;
-                    margin: 0;
-                    line-height: 1.7;
-                ">Here is your reflection from The Mirror of Truth. This isn't just words on a screen — it's a reminder of who you are when you stop hiding from your own power.</p>
-            </div>
-
-            <!-- Reflection Content -->
-            <div style="
-                border: 2px solid #e5e7eb;
-                padding: 40px;
-                border-radius: 16px;
-                margin-bottom: 40px;
-                background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
-                position: relative;
-            ">
-                <div style="
-                    position: absolute;
-                    top: 15px;
-                    left: 15px;
-                    width: 40px;
-                    height: 40px;
-                    background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
-                    border-radius: 50%;
-                "></div>
-                <div style="
-                    font-size: 1.1rem;
-                    line-height: 1.8;
-                    color: #374151;
-                ">
-                    ${content}
-                </div>
-            </div>
-
-            <!-- Sacred Instructions -->
-            <div style="
-                background: linear-gradient(135deg, #fffbeb 0%, #fef7cd 100%);
-                border-left: 4px solid #f59e0b;
-                padding: 30px;
-                border-radius: 12px;
-                margin-bottom: 40px;
-            ">
-                <p style="
-                    margin: 0 0 15px 0;
-                    font-size: 1rem;
-                    color: #92400e;
-                    font-weight: 600;
-                ">How to work with this reflection:</p>
-                <p style="
-                    margin: 0;
-                    font-size: 1rem;
-                    color: #92400e;
-                    line-height: 1.7;
-                ">Return to these words when doubt creeps in. When others question your path. When you forget that your desire arose for a reason. This reflection sees the truth of who you are — not who you think you should be, but who you already are when you stop apologizing for wanting what you want.</p>
-            </div>
-
-            <!-- Copy Instructions -->
-            <div style="
-                text-align: center;
-                margin-bottom: 40px;
-                padding: 25px;
-                background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-                border-radius: 12px;
-                border: 2px solid #0ea5e9;
-            ">
-                <p style="
-                    margin: 0;
-                    color: #0c4a6e;
-                    font-size: 0.95rem;
-                    font-weight: 500;
-                ">💾 Save this reflection: Copy the text above or print this email. Keep it somewhere you can find it when you need to remember your truth.</p>
-            </div>
-
-            <!-- Personal Note from Ahiya -->
-            <div style="
-                border-top: 2px solid #e5e7eb;
-                padding-top: 35px;
-                margin-bottom: 35px;
-            ">
-                <p style="
-                    font-size: 1rem;
-                    color: #374151;
-                    margin: 0 0 20px 0;
-                    line-height: 1.7;
-                ">This work of creating mirrors for people's truth — helping them see their wholeness instead of their brokenness — it's what I'm here to do. If this reflection landed for you, if it helped you see something you hadn't seen before, I'd love to hear about it.</p>
-                
-                <p style="
-                    font-size: 0.95rem;
-                    color: #6b7280;
-                    margin: 0 0 20px 0;
-                    font-style: italic;
-                ">Just reply to this email. I read every response personally.</p>
-
-                <p style="
-                    font-size: 0.95rem;
-                    color: #6b7280;
-                    margin: 0;
-                    line-height: 1.6;
-                ">And if you know someone who could use their own mirror — someone who's been waiting for permission to trust their dreams — send them to The Mirror of Truth. The deepest gift we can give is helping others remember their own power.</p>
-            </div>
-
-            <!-- Signature -->
-            <div style="text-align: right; margin-bottom: 30px;">
-                <p style="
-                    margin: 0 0 8px 0;
-                    font-size: 1rem;
-                    color: #374151;
-                ">With quiet certainty,</p>
-                <p style="
-                    margin: 0;
-                    font-size: 1.2rem;
-                    color: #1f2937;
-                    font-weight: 600;
-                ">Ahiya</p>
-                <p style="
-                    margin: 8px 0 0 0;
-                    font-size: 0.85rem;
-                    color: #9ca3af;
-                    font-style: italic;
-                ">Creator, The Mirror of Truth</p>
-            </div>
-
-            <!-- Footer -->
-            <div style="
-                background: #f9fafb;
-                border-left: 3px solid #d1d5db;
-                padding: 25px;
-                border-radius: 8px;
-            ">
-                <p style="
-                    margin: 0;
-                    font-size: 0.9rem;
-                    color: #6b7280;
-                    line-height: 1.6;
-                ">
-                    <strong>P.S.</strong> This isn't a business email or a marketing funnel. It's one human being offering another human being a chance to see themselves clearly. If that's what you received, then the mirror worked exactly as intended.
-                </p>
+                ">This service is provided by AhIya - a registered business.</p>
             </div>
         </div>
     </div>
