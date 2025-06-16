@@ -21,7 +21,7 @@
 
     <!-- About link in corner -->
     <div class="nav-links">
-      <a href="/about" class="about-link">About the Experience</a>
+      <a href="/about" class="about-link">See What Others Discovered</a>
     </div>
 
     <main class="main-content">
@@ -40,11 +40,35 @@
         </div>
 
         <p class="tagline">
-          A space to see yourself clearly.<br />No fixing. Only truth.
+          Stop asking what to do.<br />
+          See who you already are.
+        </p>
+
+        <p class="sub-tagline">
+          You don't need more advice. You need to be truly seen.
         </p>
       </section>
     </main>
 
     <script src="/portal/portal.js"></script>
+
+    <style>
+      .sub-tagline {
+        font-size: clamp(0.75rem, 2vw, 0.85rem);
+        opacity: 0.6;
+        font-weight: 300;
+        letter-spacing: 0.2px;
+        line-height: 1.4;
+        margin-top: 0.5rem;
+        max-width: 300px;
+        margin-inline: auto;
+      }
+
+      @media (max-width: 768px) {
+        .sub-tagline {
+          margin-top: 0.5rem;
+        }
+      }
+    </style>
   </body>
 </html>
