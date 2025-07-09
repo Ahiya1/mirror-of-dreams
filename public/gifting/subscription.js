@@ -1,9 +1,11 @@
-// Gifting - Sacred Gift Logic with Premium Support
+// Subscription Gifting - Sacred Subscription Gift Logic
 
 let paypalConfig = null;
 let paypalInitialized = false;
-let selectedGiftTier = "basic"; // default to basic
-let currentGiftAmount = "2.99";
+let selectedTier = "essential"; // default to essential
+let selectedDuration = "1mo"; // default to 1 month
+let currentGiftAmount = "4.99";
+let giftPricing = {};
 
 // Initialize
 window.addEventListener("load", initializeApp);
@@ -11,7 +13,8 @@ window.addEventListener("load", initializeApp);
 async function initializeApp() {
   setupEventListeners();
   await loadPayPalConfig();
-  initializeGiftTierSelection();
+  await loadGiftPricing();
+  initializeSelections();
 }
 
 function setupEventListeners() {
@@ -47,46 +50,103 @@ function setupEventListeners() {
   });
 }
 
-function initializeGiftTierSelection() {
-  // Set up gift tier card interactions
-  document.querySelectorAll(".gift-tier-card").forEach((card) => {
+async function loadGiftPricing() {
+  try {
+    const response = await fetch("/api/subscriptions?action=get-pricing");
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    if (!result.success) {
+      throw new Error(result.error || "Failed to load pricing");
+    }
+
+    giftPricing = result.pricing.gifts;
+    updatePricingDisplay();
+  } catch (error) {
+    console.error("Pricing load error:", error);
+    // Use fallback pricing
+    giftPricing = {
+      essential: {
+        "1mo": 4.99,
+        "3mo": 14.97,
+        "1yr": 49.99,
+      },
+      premium: {
+        "1mo": 9.99,
+        "3mo": 29.97,
+        "1yr": 99.99,
+      },
+    };
+    updatePricingDisplay();
+  }
+}
+
+function updatePricingDisplay() {
+  // Update duration card prices
+  document.getElementById(
+    "price1mo"
+  ).textContent = `$${giftPricing[selectedTier]["1mo"]}`;
+  document.getElementById(
+    "price3mo"
+  ).textContent = `$${giftPricing[selectedTier]["3mo"]}`;
+  document.getElementById(
+    "price1yr"
+  ).textContent = `$${giftPricing[selectedTier]["1yr"]}`;
+
+  // Update savings for 1yr
+  const monthlySavings =
+    giftPricing[selectedTier]["1mo"] * 12 - giftPricing[selectedTier]["1yr"];
+  document.getElementById(
+    "savings1yr"
+  ).textContent = `Save $${monthlySavings.toFixed(2)}`;
+
+  // Update current amount
+  currentGiftAmount = giftPricing[selectedTier][selectedDuration].toString();
+  updatePaymentSummary();
+}
+
+function initializeSelections() {
+  // Set up tier card interactions
+  document.querySelectorAll(".tier-card").forEach((card) => {
     card.addEventListener("click", function () {
       const tier = this.dataset.tier;
-      selectGiftTier(tier);
+      selectTier(tier);
     });
   });
 
-  // Select basic by default
-  selectGiftTier("basic");
+  // Set up duration card interactions
+  document.querySelectorAll(".duration-card").forEach((card) => {
+    card.addEventListener("click", function () {
+      const duration = this.dataset.duration;
+      selectDuration(duration);
+    });
+  });
+
+  // Select defaults
+  selectTier("essential");
+  selectDuration("1mo");
 }
 
-function selectGiftTier(tier) {
-  selectedGiftTier = tier;
+function selectTier(tier) {
+  selectedTier = tier;
 
   // Update UI
-  document.querySelectorAll(".gift-tier-card").forEach((card) => {
+  document.querySelectorAll(".tier-card").forEach((card) => {
     card.classList.remove("selected");
   });
   document.querySelector(`[data-tier="${tier}"]`).classList.add("selected");
 
-  // Update pricing and description
-  if (tier === "premium") {
-    currentGiftAmount = "4.99";
-    document.getElementById("giftPaymentAmount").textContent = "$4.99";
-    document.getElementById("giftPaymentDescription").textContent =
-      "Sacred gift of Premium Reflection";
+  // Update pricing
+  updatePricingDisplay();
 
-    // Show premium features in preview
+  // Show/hide premium features in preview
+  if (tier === "premium") {
     document.querySelectorAll(".premium-feature").forEach((el) => {
       el.style.display = "flex";
     });
   } else {
-    currentGiftAmount = "2.99";
-    document.getElementById("giftPaymentAmount").textContent = "$2.99";
-    document.getElementById("giftPaymentDescription").textContent =
-      "Sacred gift of Essential Reflection";
-
-    // Hide premium features in preview
     document.querySelectorAll(".premium-feature").forEach((el) => {
       el.style.display = "none";
     });
@@ -96,6 +156,47 @@ function selectGiftTier(tier) {
   if (paypalInitialized && paypalConfig) {
     reinitializePayPal();
   }
+}
+
+function selectDuration(duration) {
+  selectedDuration = duration;
+
+  // Update UI
+  document.querySelectorAll(".duration-card").forEach((card) => {
+    card.classList.remove("selected");
+  });
+  document
+    .querySelector(`[data-duration="${duration}"]`)
+    .classList.add("selected");
+
+  // Update pricing
+  currentGiftAmount = giftPricing[selectedTier][duration].toString();
+  updatePaymentSummary();
+
+  // Update duration display in preview
+  const durationText =
+    duration === "1mo" ? "1 month" : duration === "3mo" ? "3 months" : "1 year";
+  document.getElementById("subscriptionDuration").textContent = durationText;
+
+  // Reinitialize PayPal with new amount
+  if (paypalInitialized && paypalConfig) {
+    reinitializePayPal();
+  }
+}
+
+function updatePaymentSummary() {
+  const tierName = selectedTier.charAt(0).toUpperCase() + selectedTier.slice(1);
+  const durationText =
+    selectedDuration === "1mo"
+      ? "1 Month"
+      : selectedDuration === "3mo"
+      ? "3 Months"
+      : "1 Year";
+
+  document.getElementById(
+    "giftSummary"
+  ).textContent = `${tierName} • ${durationText}`;
+  document.getElementById("giftTotal").textContent = `$${currentGiftAmount}`;
 }
 
 async function loadPayPalConfig() {
@@ -258,8 +359,14 @@ function initializePayPal() {
           const giverName = document.getElementById("giverName").value.trim();
           const giverEmail = document.getElementById("giverEmail").value.trim();
 
-          const giftType =
-            selectedGiftTier === "premium" ? "Premium" : "Essential";
+          const tierName =
+            selectedTier.charAt(0).toUpperCase() + selectedTier.slice(1);
+          const durationText =
+            selectedDuration === "1mo"
+              ? "1 Month"
+              : selectedDuration === "3mo"
+              ? "3 Months"
+              : "1 Year";
 
           const orderData = {
             purchase_units: [
@@ -268,7 +375,7 @@ function initializePayPal() {
                   value: currentGiftAmount,
                   currency_code: paypalConfig.currency,
                 },
-                description: `Mirror of Truth - Gift ${giftType} Reflection`,
+                description: `Mirror of Truth - ${tierName} Subscription Gift (${durationText})`,
               },
             ],
           };
@@ -288,7 +395,7 @@ function initializePayPal() {
 
         onApprove: function (data, actions) {
           return actions.order.capture().then(function (details) {
-            handleGiftPaymentSuccess(details);
+            handleSubscriptionGiftPaymentSuccess(details);
           });
         },
 
@@ -317,8 +424,10 @@ function initializePayPal() {
   }
 }
 
-async function handleGiftPaymentSuccess(paymentDetails) {
-  document.getElementById("giftingForm").classList.add("form-disabled");
+async function handleSubscriptionGiftPaymentSuccess(paymentDetails) {
+  document
+    .getElementById("subscriptionGiftForm")
+    .classList.add("form-disabled");
   document.getElementById("processingMessage").style.display = "block";
 
   try {
@@ -328,19 +437,19 @@ async function handleGiftPaymentSuccess(paymentDetails) {
       recipientName: document.getElementById("recipientName").value.trim(),
       recipientEmail: document.getElementById("recipientEmail").value.trim(),
       personalMessage: document.getElementById("personalMessage").value.trim(),
+      subscriptionTier: selectedTier,
+      subscriptionDuration: selectedDuration,
       amount: parseFloat(currentGiftAmount),
       paymentMethod: "paypal",
       paymentId: paymentDetails.id,
-      language: "en",
-      isPremium: selectedGiftTier === "premium",
     };
 
-    // Create the gift
-    const giftResponse = await fetch("/api/gift", {
+    // Create the subscription gift
+    const giftResponse = await fetch("/api/subscriptions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        action: "create",
+        action: "gift-subscription",
         ...giftData,
       }),
     });
@@ -348,21 +457,29 @@ async function handleGiftPaymentSuccess(paymentDetails) {
     const giftResult = await giftResponse.json();
 
     if (!giftResult.success) {
-      throw new Error(giftResult.error || "Failed to create gift");
+      throw new Error(giftResult.error || "Failed to create subscription gift");
     }
 
     // Show success and redirect
-    const giftType = selectedGiftTier === "premium" ? "Premium" : "Essential";
+    const tierName =
+      selectedTier.charAt(0).toUpperCase() + selectedTier.slice(1);
+    const durationText =
+      selectedDuration === "1mo"
+        ? "1 month"
+        : selectedDuration === "3mo"
+        ? "3 months"
+        : "1 year";
+
     setTimeout(() => {
       alert(
-        `🎁 ${giftType} gift sent successfully! ${giftData.recipientName} will receive their sacred invitation shortly.`
+        `🎁 ${tierName} subscription gift sent successfully! ${giftData.recipientName} will receive ${durationText} of access to The Mirror of Truth.`
       );
       window.location.href = "/";
     }, 2000);
   } catch (error) {
-    console.error("Gift creation error:", error);
+    console.error("Subscription gift creation error:", error);
     alert(
-      "Gift created but there was an issue sending the invitation. Please contact support."
+      "Subscription gift created but there was an issue sending the invitation. Please contact support."
     );
 
     setTimeout(() => {
@@ -372,7 +489,9 @@ async function handleGiftPaymentSuccess(paymentDetails) {
 }
 
 function resetFormState() {
-  document.getElementById("giftingForm").classList.remove("form-disabled");
+  document
+    .getElementById("subscriptionGiftForm")
+    .classList.remove("form-disabled");
   document.getElementById("processingMessage").style.display = "none";
 }
 
@@ -406,6 +525,13 @@ document.querySelectorAll(".sacred-input").forEach((input) => {
   });
 });
 
+// Sacred selection feedback
+document.querySelectorAll(".tier-card, .duration-card").forEach((card) => {
+  card.addEventListener("click", function () {
+    createSelectionSparkle(this);
+  });
+});
+
 function createGiftSparkle(element) {
   const rect = element.getBoundingClientRect();
 
@@ -434,7 +560,35 @@ function createGiftSparkle(element) {
   }
 }
 
-// Add sparkle animation
+function createSelectionSparkle(element) {
+  const rect = element.getBoundingClientRect();
+
+  for (let i = 0; i < 5; i++) {
+    setTimeout(() => {
+      const sparkle = document.createElement("div");
+      const offsetX = (Math.random() - 0.5) * 120;
+      const offsetY = (Math.random() - 0.5) * 120;
+
+      sparkle.style.cssText = `
+        position: fixed;
+        left: ${rect.left + rect.width / 2 + offsetX}px;
+        top: ${rect.top + rect.height / 2 + offsetY}px;
+        width: 6px;
+        height: 6px;
+        background: radial-gradient(circle, rgba(16, 185, 129, 0.9) 0%, rgba(251, 191, 36, 0.7) 50%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 1000;
+        animation: selectionSparkle 2.5s ease-out forwards;
+      `;
+
+      document.body.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 2500);
+    }, i * 80);
+  }
+}
+
+// Add sparkle animations
 const style = document.createElement("style");
 style.textContent = `
   @keyframes giftSparkle {
@@ -451,5 +605,37 @@ style.textContent = `
       transform: scale(0) rotate(360deg);
     }
   }
+
+  @keyframes selectionSparkle {
+    0% {
+      opacity: 0;
+      transform: scale(0) rotate(0deg);
+    }
+    30% {
+      opacity: 1;
+      transform: scale(1.2) rotate(120deg);
+    }
+    60% {
+      opacity: 0.8;
+      transform: scale(1.8) rotate(240deg);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0) rotate(360deg);
+    }
+  }
 `;
 document.head.appendChild(style);
+
+// Debug logging (development only)
+if (window.location.hostname === "localhost") {
+  console.log("🎁 Subscription gifting system initialized");
+
+  window.giftDebug = {
+    selectedTier: () => selectedTier,
+    selectedDuration: () => selectedDuration,
+    currentAmount: () => currentGiftAmount,
+    pricing: () => giftPricing,
+    reinitializePayPal: () => reinitializePayPal(),
+  };
+}
