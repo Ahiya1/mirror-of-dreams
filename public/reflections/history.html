@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Journey | Mirror of Truth</title>
+    <link rel="stylesheet" href="/shared/foundation.css" />
+    <link rel="stylesheet" href="/reflections/history.css" />
+  </head>
+
+  <body>
+    <!-- Floating mirrors background -->
+    <div class="mirrors-container" id="mirrorsContainer">
+      <div class="mirror-shard"></div>
+      <div class="mirror-shard"></div>
+      <div class="mirror-shard"></div>
+      <div class="mirror-shard"></div>
+      <div class="mirror-shard"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sacred-nav">
+      <div class="nav-content">
+        <a href="/dashboard" class="nav-link back-link">
+          <span>←</span>
+          <span>Dashboard</span>
+        </a>
+        <h1 class="nav-title">Your Journey</h1>
+        <a href="/mirror/reflection" class="nav-link reflect-link">
+          <span>✨</span>
+          <span>Reflect Again</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+      <!-- Search & Filters Section -->
+      <section class="search-section">
+        <div class="search-container">
+          <div class="search-input-group">
+            <input
+              type="text"
+              id="searchInput"
+              class="sacred-input search-input"
+              placeholder="Search your reflections..."
+            />
+            <button class="search-btn" id="searchBtn">
+              <span>🔍</span>
+            </button>
+          </div>
+
+          <div class="filter-group">
+            <button class="filter-btn active" data-filter="all">
+              All Reflections
+            </button>
+            <button class="filter-btn" data-filter="fusion">Fusion</button>
+            <button class="filter-btn" data-filter="gentle">Gentle</button>
+            <button class="filter-btn" data-filter="intense">Intense</button>
+            <button class="filter-btn" data-filter="premium">✨ Premium</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats Overview -->
+      <section class="stats-section" id="statsSection">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number" id="totalReflections">—</div>
+            <div class="stat-label">Total Reflections</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="thisMonthCount">—</div>
+            <div class="stat-label">This Month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="totalWords">—</div>
+            <div class="stat-label">Words Reflected</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="averageDepth">—</div>
+            <div class="stat-label">Avg Depth</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Loading State -->
+      <section class="loading-section hidden" id="loadingSection">
+        <div class="loading-content">
+          <div class="cosmic-loader"></div>
+          <p class="loading-text">Gathering your reflections...</p>
+        </div>
+      </section>
+
+      <!-- Empty State -->
+      <section class="empty-section hidden" id="emptySection">
+        <div class="empty-content">
+          <div class="empty-icon">🪞</div>
+          <h2 class="empty-title">Your journey awaits</h2>
+          <p class="empty-subtitle">
+            Begin with your first reflection to see your evolution unfold
+          </p>
+          <a href="/mirror/reflection" class="sacred-button primary">
+            <span>✨</span>
+            <span>Start Your First Reflection</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Reflections Timeline -->
+      <section class="timeline-section" id="timelineSection">
+        <div class="timeline-container">
+          <div class="timeline-line"></div>
+          <div class="reflections-list" id="reflectionsList">
+            <!-- Reflections will be populated here -->
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-container" id="paginationContainer">
+          <button class="pagination-btn" id="prevBtn" disabled>
+            <span>←</span>
+            <span>Previous</span>
+          </button>
+          <div class="pagination-info" id="paginationInfo">Page 1 of 1</div>
+          <button class="pagination-btn" id="nextBtn" disabled>
+            <span>Next</span>
+            <span>→</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Quick Actions -->
+      <section class="actions-section">
+        <div class="actions-grid">
+          <a href="/evolution" class="action-card evolution-card">
+            <div class="action-icon">🦋</div>
+            <div class="action-content">
+              <h3 class="action-title">Evolution Reports</h3>
+              <p class="action-subtitle">See your growth patterns</p>
+            </div>
+          </a>
+          <a href="/mirror/reflection" class="action-card reflect-card">
+            <div class="action-icon">✨</div>
+            <div class="action-content">
+              <h3 class="action-title">New Reflection</h3>
+              <p class="action-subtitle">Continue your journey</p>
+            </div>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <script src="/reflections/history.js"></script>
+  </body>
+</html>
