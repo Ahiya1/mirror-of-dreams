@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Return to Your Journey | Mirror of Truth</title>
+    <link rel="stylesheet" href="/shared/foundation.css" />
+    <link rel="stylesheet" href="/auth/signin.css" />
+  </head>
+
+  <body>
+    <!-- Sacred Background -->
+    <div class="cosmic-background">
+      <div class="cosmic-particle"></div>
+      <div class="cosmic-particle"></div>
+      <div class="cosmic-particle"></div>
+      <div class="cosmic-particle"></div>
+      <div class="cosmic-particle"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav-header">
+      <a href="/" class="back-link">
+        <span>←</span>
+        <span>Return to Portal</span>
+      </a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="signin-container">
+      <div class="signin-card">
+        <!-- Header -->
+        <div class="signin-header">
+          <div class="mirror-icon">🪞</div>
+          <h1 class="signin-title">Welcome Back</h1>
+          <p class="signin-subtitle">
+            Return to your sacred journey of self-discovery
+          </p>
+        </div>
+
+        <!-- Sign In Form -->
+        <form id="signinForm" class="signin-form">
+          <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="sacred-input"
+              placeholder="your@email.com"
+              required
+              autocomplete="email"
+            />
+            <div class="validation-feedback" id="emailFeedback"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="sacred-input"
+              placeholder="Enter your password"
+              required
+              autocomplete="current-password"
+            />
+            <div class="validation-feedback" id="passwordFeedback"></div>
+          </div>
+
+          <!-- Remember & Forgot -->
+          <div class="form-options">
+            <label class="remember-checkbox">
+              <input type="checkbox" id="rememberMe" />
+              <span class="checkmark"></span>
+              <span class="checkbox-label">Remember me</span>
+            </label>
+            <a href="#" class="forgot-link" onclick="showForgotPassword()">
+              Forgot password?
+            </a>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="signin-button" id="signinButton">
+            <span class="button-text">Enter Your Sacred Space</span>
+            <span class="button-loader" style="display: none">
+              <div class="loading-spinner"></div>
+              <span>Signing in...</span>
+            </span>
+          </button>
+
+          <!-- Error Display -->
+          <div
+            class="error-message"
+            id="errorMessage"
+            style="display: none"
+          ></div>
+
+          <!-- Success Display -->
+          <div
+            class="success-message"
+            id="successMessage"
+            style="display: none"
+          ></div>
+        </form>
+
+        <!-- Divider -->
+        <div class="signin-divider">
+          <span>New to Mirror of Truth?</span>
+        </div>
+
+        <!-- Register Link -->
+        <div class="register-section">
+          <p class="register-text">
+            Begin your journey of self-discovery and consciousness evolution
+          </p>
+          <a href="/register" class="register-link">
+            <span>✨</span>
+            <span>Start Your Journey</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Testimonial Quotes -->
+      <div class="testimonial-float">
+        <div class="quote-bubble quote-1">
+          <p>
+            "It felt accurate to my situation, it's been weird to be seen so
+            deeply like that"
+          </p>
+          <cite>— David</cite>
+        </div>
+        <div class="quote-bubble quote-2">
+          <p>"I feel it truly saw me where I am"</p>
+          <cite>— Sarah</cite>
+        </div>
+        <div class="quote-bubble quote-3">
+          <p>"It's been a long time since I felt so seen"</p>
+          <cite>— Alex</cite>
+        </div>
+      </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none">
+      <div class="loading-content">
+        <div class="cosmic-loader"></div>
+        <p>Preparing your sacred space...</p>
+      </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal-overlay" id="forgotModal" style="display: none">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Reset Your Password</h3>
+          <button class="modal-close" onclick="closeForgotPassword()">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            Password reset functionality will be available soon. For now, please
+            contact support if you need help accessing your account.
+          </p>
+          <div class="modal-actions">
+            <button
+              class="modal-button secondary"
+              onclick="closeForgotPassword()"
+            >
+              Close
+            </button>
+            <a
+              href="mailto:support@mirror-of-truth.com"
+              class="modal-button primary"
+            >
+              Contact Support
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/auth/signin.js"></script>
+  </body>
+</html>

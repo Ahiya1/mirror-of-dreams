@@ -1,0 +1,922 @@
+/* Sign In Page - Sacred Authentication Experience */
+
+/* Cosmic Background */
+.cosmic-background {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    #0f0f23 0%,
+    #1a1a2e 25%,
+    #16213e 50%,
+    #0f0f23 100%
+  );
+  overflow: hidden;
+  z-index: 1;
+}
+
+.cosmic-particle {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  animation: cosmicFloat 20s linear infinite;
+  opacity: 0;
+}
+
+.cosmic-particle:nth-child(1) {
+  width: 2px;
+  height: 2px;
+  left: 10%;
+  animation-delay: 0s;
+  animation-duration: 25s;
+}
+
+.cosmic-particle:nth-child(2) {
+  width: 3px;
+  height: 3px;
+  left: 30%;
+  animation-delay: 5s;
+  animation-duration: 18s;
+}
+
+.cosmic-particle:nth-child(3) {
+  width: 1px;
+  height: 1px;
+  left: 60%;
+  animation-delay: 10s;
+  animation-duration: 22s;
+}
+
+.cosmic-particle:nth-child(4) {
+  width: 2px;
+  height: 2px;
+  left: 80%;
+  animation-delay: 15s;
+  animation-duration: 28s;
+}
+
+.cosmic-particle:nth-child(5) {
+  width: 4px;
+  height: 4px;
+  left: 50%;
+  animation-delay: 8s;
+  animation-duration: 15s;
+}
+
+@keyframes cosmicFloat {
+  0% {
+    transform: translateY(100vh) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Navigation */
+.nav-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem 2rem;
+  z-index: 100;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  padding: 0.8rem 1.2rem;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  font-weight: 400;
+  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+
+  /* Mobile optimizations */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+}
+
+.back-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+}
+
+/* Main Container */
+.signin-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 1rem 2rem;
+  position: relative;
+  z-index: 10;
+}
+
+/* Sign In Card */
+.signin-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(40px) saturate(120%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  padding: clamp(2rem, 5vw, 3rem);
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  animation: cardAppear 1s ease-out;
+}
+
+@keyframes cardAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.signin-card::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  border-radius: 23px;
+  pointer-events: none;
+}
+
+/* Header */
+.signin-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.mirror-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.9;
+  animation: gentleGlow 3s ease-in-out infinite;
+}
+
+@keyframes gentleGlow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+.signin-title {
+  font-size: clamp(1.8rem, 4vw, 2.2rem);
+  font-weight: 300;
+  margin-bottom: 0.8rem;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.8) 100%
+  );
+  -webkit-background-clip: text;
+  color: transparent;
+  letter-spacing: 0.5px;
+}
+
+.signin-subtitle {
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  opacity: 0.7;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+  font-weight: 300;
+}
+
+/* Form */
+.signin-form {
+  position: relative;
+  z-index: 2;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.8rem;
+  font-size: clamp(0.85rem, 2.5vw, 0.9rem);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.3px;
+}
+
+.sacred-input {
+  width: 100%;
+  padding: 1.2rem;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  color: #fff;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  font-family: inherit;
+  transition: all 0.3s ease;
+  position: relative;
+
+  /* Mobile optimizations */
+  -webkit-appearance: none;
+  appearance: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+  min-height: 48px;
+
+  /* Prevent zoom on iOS */
+  transform-origin: left top;
+  zoom: 1;
+}
+
+.sacred-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.25);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.sacred-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+}
+
+/* Validation Feedback */
+.validation-feedback {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.validation-feedback.show {
+  opacity: 1;
+}
+
+.sacred-input.valid {
+  border-color: rgba(34, 197, 94, 0.4);
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.1) 0%,
+    rgba(34, 197, 94, 0.05) 100%
+  );
+}
+
+.sacred-input.invalid {
+  border-color: rgba(239, 68, 68, 0.4);
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.1) 0%,
+    rgba(239, 68, 68, 0.05) 100%
+  );
+}
+
+/* Form Options */
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.remember-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.remember-checkbox input[type="checkbox"] {
+  display: none;
+}
+
+.checkmark {
+  width: 18px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.remember-checkbox input[type="checkbox"]:checked + .checkmark {
+  background: rgba(34, 197, 94, 0.2);
+  border-color: rgba(34, 197, 94, 0.5);
+}
+
+.remember-checkbox input[type="checkbox"]:checked + .checkmark::after {
+  content: "✓";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: #22c55e;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.forgot-link {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+  transition: color 0.3s ease;
+}
+
+.forgot-link:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Sign In Button */
+.signin-button {
+  width: 100%;
+  padding: 1.4rem 2rem;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  color: #fff;
+  font-size: clamp(1rem, 3vw, 1.1rem);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+
+  /* Mobile optimizations */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 52px;
+}
+
+.signin-button:hover:not(:disabled) {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.12) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(255, 255, 255, 0.1);
+}
+
+.signin-button:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+.signin-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Loading States */
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.button-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* Messages */
+.error-message,
+.success-message {
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: clamp(0.85rem, 2.5vw, 0.9rem);
+  text-align: center;
+  margin-bottom: 1rem;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+
+.error-message.show,
+.success-message.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.error-message {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.success-message {
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #6ee7b7;
+}
+
+/* Divider */
+.signin-divider {
+  text-align: center;
+  margin: 2rem 0;
+  position: relative;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+}
+
+.signin-divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  z-index: 1;
+}
+
+.signin-divider span {
+  background: rgba(15, 15, 35, 0.8);
+  padding: 0 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* Register Section */
+.register-section {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.register-text {
+  margin-bottom: 1.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+  line-height: 1.5;
+}
+
+.register-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  padding: 1rem 2rem;
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  font-weight: 400;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+
+  /* Mobile optimizations */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+}
+
+.register-link:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.95);
+  transform: translateY(-2px);
+}
+
+/* Floating Testimonials */
+.testimonial-float {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.quote-bubble {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 1rem 1.2rem;
+  max-width: 250px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  opacity: 0;
+  animation: floatTestimonial 12s ease-in-out infinite;
+}
+
+.quote-bubble p {
+  margin: 0 0 0.5rem 0;
+  font-style: italic;
+}
+
+.quote-bubble cite {
+  font-size: 0.7rem;
+  opacity: 0.7;
+  font-style: normal;
+}
+
+.quote-1 {
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.quote-2 {
+  top: 60%;
+  right: 15%;
+  animation-delay: 4s;
+}
+
+.quote-3 {
+  bottom: 25%;
+  left: 15%;
+  animation-delay: 8s;
+}
+
+@keyframes floatTestimonial {
+  0%,
+  15%,
+  85%,
+  100% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  25%,
+  75% {
+    opacity: 0.8;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Loading Overlay */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.loading-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.loading-content {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.cosmic-loader {
+  width: 60px;
+  height: 60px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1.5s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+.loading-content p {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-card {
+  background: rgba(15, 15, 35, 0.95);
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 90%;
+  color: #fff;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.show .modal-card {
+  transform: scale(1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.modal-body p {
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.modal-button {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.modal-button.primary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+}
+
+.modal-button.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-button:hover {
+  transform: translateY(-2px);
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+  .nav-header {
+    padding: 1rem;
+  }
+
+  .signin-container {
+    padding: 5rem 1rem 2rem;
+  }
+
+  .signin-card {
+    padding: 2rem 1.5rem;
+    border-radius: 20px;
+  }
+
+  .form-options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+
+  .testimonial-float {
+    display: none; /* Hide floating testimonials on mobile */
+  }
+
+  .modal-card {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .signin-container {
+    padding: 4rem 0.5rem 1rem;
+  }
+
+  .signin-card {
+    padding: 1.5rem 1rem;
+    border-radius: 16px;
+  }
+
+  .signin-header {
+    margin-bottom: 2rem;
+  }
+
+  .mirror-icon {
+    font-size: 2.5rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.2rem;
+  }
+
+  .sacred-input {
+    padding: 1rem;
+  }
+
+  .signin-button {
+    padding: 1.2rem 1.5rem;
+  }
+}
+
+/* Landscape mobile optimization */
+@media (max-height: 600px) and (orientation: landscape) {
+  .signin-container {
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+
+  .signin-card {
+    margin: 1rem auto;
+  }
+
+  .signin-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .mirror-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .signin-card,
+  .sacred-input,
+  .signin-button {
+    border-width: 0.5px;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .cosmic-particle,
+  .quote-bubble,
+  .mirror-icon {
+    animation: none;
+  }
+}
+
+/* iOS specific optimizations */
+@supports (-webkit-touch-callout: none) {
+  .sacred-input {
+    font-size: 16px; /* Prevent zoom on focus */
+  }
+
+  .sacred-input:focus {
+    font-size: 16px;
+  }
+}
+
+/* Fix for iOS safe area */
+@supports (padding: max(0px)) {
+  .nav-header {
+    padding-top: max(1rem, env(safe-area-inset-top) + 0.5rem);
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+
+  .signin-container {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}

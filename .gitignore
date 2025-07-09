@@ -122,3 +122,5 @@ debug.log
 build/
 dist/
 out/
+
+test
