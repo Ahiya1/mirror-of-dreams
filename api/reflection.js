@@ -1,16 +1,30 @@
-// api/reflection.js  – Mirror of Truth (multi-tone, creator-aware, premium thinking)
-// ---------------------------------------------------------------
+// api/reflection.js – Mirror of Truth (TRANSFORMED: Database Storage + Usage Limits)
+// CRITICAL CHANGES: No email delivery, database storage, usage limits, auth required
 
 const fs = require("fs");
 const path = require("path");
 const Anthropic = require("@anthropic-ai/sdk");
+const { createClient } = require("@supabase/supabase-js");
+const { authenticateRequest } = require("./auth.js");
 
-// ─── Anthropic client ───────────────────────────────────────────
+// ─── Initialize clients ─────────────────────────────────────
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-// ─── Load prompt files synchronously at cold-start ──────────────
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
+// ─── Usage limits by tier ───────────────────────────────────
+const TIER_LIMITS = {
+  free: 1,
+  essential: 5,
+  premium: 10,
+};
+
+// ─── Load prompt files synchronously at cold-start ──────────
 const PROMPT_DIR = path.join(process.cwd(), "prompts");
 
 function loadPrompt(file) {
@@ -29,10 +43,7 @@ const PROMPTS = {
 };
 const CREATOR_CTX = loadPrompt("creator_context.txt");
 
-// ─── Premium instruction addition ───────────────────────────────
-// Enhanced premium instruction for api/reflection.js
-// Replace the existing PREMIUM_INSTRUCTION with this:
-
+// ─── Premium instruction addition ───────────────────────────
 const PREMIUM_INSTRUCTION = `
 
 PREMIUM REFLECTION ENHANCEMENT:
@@ -73,7 +84,8 @@ Sacred Guidelines for Premium Reflection:
 This premium reflection should feel like a conversation with their own deepest knowing - not advice from outside, but recognition from within. Let them leave feeling seen in their wholeness, not guided toward their "better" self.
 
 Write as if you can see the eternal in this moment, the infinite in this specific longing.`;
-// ─── Prompt utilities ───────────────────────────────────────────
+
+// ─── Prompt utilities ───────────────────────────────────────
 function withCreatorContext(base, ctx) {
   return `${base.trim()}\n\n${ctx.trim()}`;
 }
@@ -102,7 +114,7 @@ function getMirrorPrompt(
   return base;
 }
 
-// ─── Markdown → sacred HTML formatter (unchanged) ───────────────
+// ─── Markdown → sacred HTML formatter ───────────────────────
 function toSacredHTML(md = "") {
   const wrap =
     "font-family:'Inter',sans-serif;font-size:1.05rem;line-height:1.7;color:#333;";
@@ -127,10 +139,7 @@ function toSacredHTML(md = "") {
   return `<div class="mirror-reflection" style="${wrap}">${html}</div>`;
 }
 
-// ─── Helpers ────────────────────────────────────────────────────
-const cleanName = (n) => (!n || /^friend$/i.test(n.trim()) ? "" : n.trim());
-
-// ─── Vercel/Node handler ────────────────────────────────────────
+// ─── Main handler ───────────────────────────────────────────
 module.exports = async function handler(req, res) {
   // CORS
   res.setHeader("Content-Type", "application/json");
@@ -139,50 +148,84 @@ module.exports = async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
+
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST")
     return res
       .status(405)
       .json({ success: false, error: "Method not allowed" });
 
-  // ── Extract body ──────────────────────────────────────────────
-  const {
-    dream,
-    plan,
-    hasDate,
-    dreamDate,
-    relationship,
-    offering,
-    userName = "",
-    language = "en",
-    isAdmin = false,
-    isCreator = false,
-    isPremium = false,
-    tone = "fusion",
-  } = req.body || {};
+  try {
+    // TRANSFORMED: Authentication required for all reflections
+    const user = await authenticateRequest(req);
 
-  // Basic validation
-  if (!dream || !plan || !hasDate || !relationship || !offering) {
-    return res
-      .status(400)
-      .json({ success: false, error: "Missing required fields" });
-  }
+    // Extract body with mode detection for backwards compatibility
+    const {
+      dream,
+      plan,
+      hasDate,
+      dreamDate,
+      relationship,
+      offering,
+      userName = "",
+      language = "en",
+      isAdmin = false,
+      isCreator = false,
+      isPremium = false,
+      tone = "fusion",
+      // Legacy mode parameters for creator/test access
+      mode,
+    } = req.body || {};
 
-  // Creator reflections are always premium
-  const shouldUsePremium = isPremium || isCreator;
+    // Basic validation
+    if (!dream || !plan || !hasDate || !relationship || !offering) {
+      return res.status(400).json({
+        success: false,
+        error: "Missing required fields",
+      });
+    }
 
-  const name = cleanName(userName);
-  const intro = name ? `My name is ${name}.\n\n` : "";
+    // Determine user context and premium status
+    const userIsCreator = user.is_creator || isCreator || mode === "creator";
+    const userIsAdmin = user.is_admin || isAdmin || userIsCreator;
+    const shouldUsePremium =
+      isPremium || userIsCreator || user.tier === "premium";
 
-  const userPrompt = `${intro}**My dream:** ${dream}
+    // TRANSFORMED: Check usage limits (unless creator/admin)
+    if (!userIsCreator && !userIsAdmin) {
+      const canReflect = await checkReflectionLimit(user);
+      if (!canReflect) {
+        const limit = TIER_LIMITS[user.tier] || 1;
+        return res.status(403).json({
+          success: false,
+          error: "Reflection limit reached",
+          message: `You've reached your limit of ${limit} reflection${
+            limit === 1 ? "" : "s"
+          } this month. Upgrade to continue your journey.`,
+          currentUsage: user.reflection_count_this_month,
+          limit: limit,
+          tier: user.tier,
+          needsUpgrade: true,
+        });
+      }
+    }
+
+    // Use user's name or provided name
+    const cleanName = (n) =>
+      !n || /^friend$/i.test(n?.trim()) ? "" : n?.trim();
+    const name = cleanName(userName) || user.name || "Friend";
+
+    const intro = name ? `My name is ${name}.\n\n` : "";
+
+    const userPrompt = `${intro}**My dream:** ${dream}
 
 **My plan:** ${plan}
 
 **Have I set a definite date?** ${hasDate}${
-    hasDate === "yes" && dreamDate ? ` (Date: ${dreamDate})` : ""
-  }
+      hasDate === "yes" && dreamDate ? ` (Date: ${dreamDate})` : ""
+    }
 
 **My relationship with this dream:** ${relationship}
 
@@ -190,12 +233,12 @@ module.exports = async function handler(req, res) {
 
 Please mirror back what you see, in a flowing reflection I can return to months from now.`;
 
-  // ── Call Anthropic with premium thinking if needed ──────────────
-  try {
-    if (!process.env.ANTHROPIC_API_KEY)
+    // ── Call Anthropic with premium thinking if needed ────────
+    if (!process.env.ANTHROPIC_API_KEY) {
       throw new Error("ANTHROPIC_API_KEY missing");
+    }
 
-    const systemPrompt = getMirrorPrompt(tone, isCreator, shouldUsePremium);
+    const systemPrompt = getMirrorPrompt(tone, userIsCreator, shouldUsePremium);
 
     // Configure request based on premium status
     const requestConfig = {
@@ -219,23 +262,48 @@ Please mirror back what you see, in a flowing reflection I can return to months 
     const reflection = resp?.content?.find(
       (block) => block.type === "text"
     )?.text;
-    if (!reflection) throw new Error("Empty response from Claude");
 
-    // Log thinking summary if available (for debugging)
-    const thinkingBlock = resp?.content?.find(
-      (block) => block.type === "thinking"
-    );
-    if (thinkingBlock && process.env.NODE_ENV === "development") {
-      console.log(
-        "Premium thinking applied:",
-        thinkingBlock.thinking?.substring(0, 200) + "..."
-      );
+    if (!reflection) {
+      throw new Error("Empty response from Claude");
     }
+
+    const formattedReflection = toSacredHTML(reflection);
+
+    // TRANSFORMED: Store reflection in database instead of emailing
+    const reflectionRecord = await storeReflection({
+      userId: user.id,
+      dream,
+      plan,
+      hasDate,
+      dreamDate: hasDate === "yes" ? dreamDate : null,
+      relationship,
+      offering,
+      aiResponse: formattedReflection,
+      tone,
+      isPremium: shouldUsePremium,
+      wordCount: reflection.split(/\s+/).length,
+    });
+
+    // TRANSFORMED: Update user usage (unless creator/admin)
+    if (!userIsCreator && !userIsAdmin) {
+      await updateUserUsage(user);
+    }
+
+    // Check if evolution report should be triggered
+    const shouldTriggerEvolution = await checkEvolutionTrigger(user);
+
+    console.log(
+      `✨ Reflection created: ${user.email} (${
+        shouldUsePremium ? "Premium" : "Essential"
+      }) - ID: ${reflectionRecord.id}`
+    );
 
     return res.status(200).json({
       success: true,
-      reflection: toSacredHTML(reflection),
+      reflection: formattedReflection,
+      reflectionId: reflectionRecord.id, // NEW: For dashboard linking
       isPremium: shouldUsePremium,
+      shouldTriggerEvolution, // NEW: For evolution report prompts
       userData: {
         userName: name,
         dream,
@@ -245,15 +313,37 @@ Please mirror back what you see, in a flowing reflection I can return to months 
         relationship,
         offering,
         language,
-        isAdmin,
-        isCreator,
+        isAdmin: userIsAdmin,
+        isCreator: userIsCreator,
         isPremium: shouldUsePremium,
         tone,
+      },
+      usage: {
+        currentCount:
+          userIsCreator || userIsAdmin
+            ? "unlimited"
+            : user.reflection_count_this_month + 1,
+        limit:
+          userIsCreator || userIsAdmin ? "unlimited" : TIER_LIMITS[user.tier],
+        tier: user.tier,
       },
       timestamp: new Date().toISOString(),
     });
   } catch (err) {
     console.error("Mirror reflection error:", err);
+
+    // Handle authentication errors
+    if (
+      err.message === "Authentication required" ||
+      err.message === "Invalid authentication"
+    ) {
+      return res.status(401).json({
+        success: false,
+        error: "Authentication required",
+        requiresAuth: true,
+      });
+    }
+
     let status = 500,
       msg = "Failed to generate reflection";
     if (/timeout/i.test(err.message)) {
@@ -275,3 +365,100 @@ Please mirror back what you see, in a flowing reflection I can return to months 
     });
   }
 };
+
+// ─── Database operations ─────────────────────────────────────
+async function storeReflection(data) {
+  // Generate title from dream (first 50 characters)
+  const title =
+    data.dream.length > 50 ? data.dream.substring(0, 47) + "..." : data.dream;
+
+  // Calculate read time (200 WPM average)
+  const estimatedReadTime = Math.max(1, Math.ceil(data.wordCount / 200));
+
+  const { data: reflection, error } = await supabase
+    .from("reflections")
+    .insert({
+      user_id: data.userId,
+      dream: data.dream,
+      plan: data.plan,
+      has_date: data.hasDate,
+      dream_date: data.dreamDate,
+      relationship: data.relationship,
+      offering: data.offering,
+      ai_response: data.aiResponse,
+      tone: data.tone,
+      is_premium: data.isPremium,
+      title: title,
+      word_count: data.wordCount,
+      estimated_read_time: estimatedReadTime,
+    })
+    .select("id, created_at")
+    .single();
+
+  if (error) {
+    console.error("Reflection storage error:", error);
+    throw new Error("Failed to store reflection");
+  }
+
+  return reflection;
+}
+
+async function checkReflectionLimit(user) {
+  // Creators and admins have unlimited reflections
+  if (user.is_creator || user.is_admin) {
+    return true;
+  }
+
+  const limit = TIER_LIMITS[user.tier] || 1;
+  return (user.reflection_count_this_month || 0) < limit;
+}
+
+async function updateUserUsage(user) {
+  const currentMonthYear = new Date().toISOString().slice(0, 7);
+
+  // Update user's reflection counts
+  const { error: userError } = await supabase
+    .from("users")
+    .update({
+      reflection_count_this_month: (user.reflection_count_this_month || 0) + 1,
+      total_reflections: (user.total_reflections || 0) + 1,
+      last_reflection_at: new Date().toISOString(),
+    })
+    .eq("id", user.id);
+
+  if (userError) {
+    console.error("User usage update error:", userError);
+  }
+
+  // Update/create usage tracking record
+  const { error: trackingError } = await supabase
+    .from("usage_tracking")
+    .upsert({
+      user_id: user.id,
+      month_year: currentMonthYear,
+      reflection_count: (user.reflection_count_this_month || 0) + 1,
+      tier_at_time: user.tier,
+    });
+
+  if (trackingError) {
+    console.error("Usage tracking error:", trackingError);
+  }
+}
+
+async function checkEvolutionTrigger(user) {
+  // Only for paid tiers
+  if (user.tier === "free") return false;
+
+  const thresholds = {
+    essential: 4, // Every 4 reflections
+    premium: 6, // Every 6 reflections
+  };
+
+  const threshold = thresholds[user.tier];
+  if (!threshold) return false;
+
+  const totalReflections = (user.total_reflections || 0) + 1; // +1 for current reflection
+
+  // Check if this reflection count hits the threshold
+  return totalReflections >= threshold && totalReflections % threshold === 0;
+}
