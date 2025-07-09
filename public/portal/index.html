@@ -19,54 +19,218 @@
       <div class="mirror"></div>
     </div>
 
-    <!-- About link in corner -->
+    <!-- Navigation - Context-Aware -->
     <div class="nav-links">
-      <a href="/about" class="about-link">See What Others Discovered</a>
+      <!-- Default for non-authenticated users -->
+      <div class="nav-default" id="navDefault">
+        <a href="/about" class="about-link">See What Others Discovered</a>
+      </div>
+
+      <!-- Authenticated user menu -->
+      <div
+        class="nav-authenticated"
+        id="navAuthenticated"
+        style="display: none"
+      >
+        <a href="/about" class="about-link">See What Others Discovered</a>
+        <div class="user-menu" id="userMenu">
+          <!-- User menu will be populated by JS -->
+        </div>
+      </div>
     </div>
 
     <main class="main-content">
       <section class="center-container">
         <h1 class="title">The Mirror of Truth</h1>
 
+        <!-- Context-Aware Button Group -->
         <div class="button-group">
-          <a href="/register" class="reflect-button">
-            <span>Reflect Me</span>
-          </a>
+          <!-- Default for new visitors -->
+          <div class="buttons-default" id="buttonsDefault">
+            <a href="/register" class="reflect-button" id="mainReflectButton">
+              <span>Reflect Me</span>
+            </a>
 
-          <a href="/gift/subscription" class="gift-button">
-            <span>✨</span>
-            <span>Gift a Reflection</span>
-          </a>
+            <a href="/gift/subscription" class="gift-button">
+              <span>✨</span>
+              <span>Gift a Reflection</span>
+            </a>
+          </div>
+
+          <!-- Authenticated user buttons (populated by JS) -->
+          <div
+            class="buttons-authenticated"
+            id="buttonsAuthenticated"
+            style="display: none"
+          >
+            <!-- Will be populated based on user state -->
+          </div>
         </div>
 
-        <p class="tagline">
-          Stop asking what to do.<br />
-          See who you already are.
-        </p>
+        <!-- Context-Aware Taglines -->
+        <div class="tagline-container">
+          <p class="tagline" id="mainTagline">
+            Stop asking what to do.<br />
+            See who you already are.
+          </p>
 
-        <p class="sub-tagline">
-          You don't need more advice. You need to be truly seen.
-        </p>
+          <p class="sub-tagline" id="subTagline">
+            You don't need more advice. You need to be truly seen.
+          </p>
+        </div>
+
+        <!-- Usage Status (for authenticated users) -->
+        <div class="usage-status" id="usageStatus" style="display: none">
+          <div class="usage-indicator">
+            <span class="usage-text" id="usageText"></span>
+            <div class="usage-bar" id="usageBar">
+              <div class="usage-fill" id="usageFill"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sign In Prompt (for non-authenticated users) -->
+        <div class="sign-in-prompt" id="signInPrompt" style="display: none">
+          <p class="prompt-text">
+            Already have an account?
+            <a href="/auth/signin" class="sign-in-link">Sign in</a>
+          </p>
+        </div>
       </section>
     </main>
 
     <script src="/portal/portal.js"></script>
 
     <style>
-      .sub-tagline {
-        font-size: clamp(0.75rem, 2vw, 0.85rem);
-        opacity: 0.6;
-        font-weight: 300;
-        letter-spacing: 0.2px;
-        line-height: 1.4;
-        margin-top: 0.5rem;
+      /* Additional styles for new elements */
+      .usage-status {
+        margin-top: 2rem;
+        padding: 1rem 1.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
         max-width: 300px;
-        margin-inline: auto;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .usage-indicator {
+        text-align: center;
+      }
+
+      .usage-text {
+        display: block;
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 0.8rem;
+        font-weight: 400;
+      }
+
+      .usage-bar {
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .usage-fill {
+        height: 100%;
+        background: linear-gradient(135deg, #10b981, #059669);
+        border-radius: 2px;
+        transition: width 0.8s ease;
+        width: 0%;
+      }
+
+      .usage-fill.warning {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+      }
+
+      .usage-fill.danger {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+      }
+
+      .sign-in-prompt {
+        margin-top: 2rem;
+        padding: 1rem;
+        text-align: center;
+      }
+
+      .prompt-text {
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0;
+      }
+
+      .sign-in-link {
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        font-weight: 500;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .sign-in-link:hover {
+        color: #fff;
+        border-bottom-color: rgba(255, 255, 255, 0.6);
+      }
+
+      .nav-authenticated {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .buttons-authenticated .reflect-button {
+        background: radial-gradient(
+          circle,
+          rgba(16, 185, 129, 0.15) 0%,
+          rgba(16, 185, 129, 0.05) 70%
+        );
+        border-color: rgba(16, 185, 129, 0.3);
+      }
+
+      .buttons-authenticated .reflect-button:hover {
+        background: radial-gradient(
+          circle,
+          rgba(16, 185, 129, 0.2) 0%,
+          rgba(16, 185, 129, 0.08) 70%
+        );
+        border-color: rgba(16, 185, 129, 0.5);
+      }
+
+      .upgrade-button {
+        background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+        border-color: transparent !important;
+      }
+
+      .upgrade-button:hover {
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4) !important;
       }
 
       @media (max-width: 768px) {
-        .sub-tagline {
-          margin-top: 0.5rem;
+        .nav-authenticated {
+          flex-direction: column;
+          gap: 0.8rem;
+          align-items: flex-end;
+        }
+
+        .usage-status {
+          margin-top: 1.5rem;
+          padding: 0.8rem 1.2rem;
+        }
+
+        .sign-in-prompt {
+          margin-top: 1.5rem;
+          padding: 0.8rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .usage-status {
+          margin-top: 1rem;
+          padding: 0.7rem 1rem;
         }
       }
     </style>

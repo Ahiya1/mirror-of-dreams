@@ -3,131 +3,368 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Begin Your Reflection</title>
+    <title>Begin Your Journey | Mirror of Truth</title>
     <link rel="stylesheet" href="/shared/foundation.css" />
     <link rel="stylesheet" href="/commitment/register.css" />
+
+    <!-- PayPal SDK -->
+    <script
+      src="https://www.paypal.com/sdk/js?client-id=Abfsgt6vhEeyqru9a2j9RNma-NEpNork_5DabXp2b70_g4HOHOUsUbBCIUwC2F-8eaUGR5dxgZUpj-3f&vault=true&intent=subscription"
+      data-sdk-integration-source="button-factory"
+    ></script>
   </head>
 
   <body>
-    <div class="consciousness-waves">
-      <div class="wave"></div>
-      <div class="wave"></div>
-      <div class="wave"></div>
-      <div class="wave"></div>
-    </div>
+    <div class="register-container">
+      <!-- Header -->
+      <header class="register-header">
+        <a href="/" class="back-link">
+          <span>←</span><span>Return to Portal</span>
+        </a>
+        <h1 class="register-title">Begin Your Journey</h1>
+        <p class="register-subtitle">
+          Choose how deeply you want to explore your truth
+        </p>
+      </header>
 
-    <a href="/" class="back-button"> <span>←</span><span>Back</span> </a>
-
-    <div class="registration-container">
-      <div class="registration-card">
-        <h1>Begin Your Reflection</h1>
-
-        <form id="registrationForm">
-          <!-- User Information -->
-          <div class="form-group">
-            <label for="userName">Your Name</label>
-            <input
-              id="userName"
-              type="text"
-              placeholder="Enter your name"
-              class="sacred-input"
-              required
-            />
-            <div class="validation-indicator" id="nameIndicator"></div>
+      <!-- Main Registration Form -->
+      <div class="registration-flow" id="registrationFlow">
+        <!-- Step 1: Tier Selection -->
+        <div class="step-container active" id="tierSelection">
+          <div class="step-header">
+            <h2>Choose Your Path</h2>
+            <p>
+              Start your reflection journey with the experience that calls to
+              you
+            </p>
           </div>
 
-          <div class="form-group">
-            <label for="userEmail">Your Email</label>
-            <input
-              id="userEmail"
-              type="email"
-              placeholder="name@example.com"
-              class="sacred-input"
-              required
-            />
-            <div class="validation-indicator" id="emailIndicator"></div>
-          </div>
-
-          <!-- Premium Selection -->
-          <div class="premium-selection">
-            <h3 class="premium-title">Choose Your Reflection Experience</h3>
-
-            <div class="tier-options">
-              <div class="tier-card" data-tier="basic">
-                <div class="tier-header">
-                  <h4 class="tier-name">Essential Reflection</h4>
-                  <div class="tier-price">$2.99</div>
+          <div class="tiers-container">
+            <!-- Free Tier -->
+            <div class="tier-card" data-tier="free">
+              <div class="tier-badge">Free</div>
+              <div class="tier-header">
+                <h3>Seeker</h3>
+                <div class="tier-price">
+                  <span class="price-amount">$0</span>
+                  <span class="price-period">/month</span>
                 </div>
-                <div class="tier-description">
-                  Our signature reflection experience using advanced AI to
-                  mirror back your wholeness and inner wisdom.
-                </div>
-                <ul class="tier-features">
-                  <li>✨ Personalized reflection</li>
-                  <li>🪞 Sacred mirror technology</li>
-                  <li>📧 Emailed to keep forever</li>
-                  <li>🌟 Shows your wholeness</li>
-                </ul>
               </div>
-
-              <div class="tier-card premium" data-tier="premium">
-                <div class="tier-badge">Most Insightful</div>
-                <div class="tier-header">
-                  <h4 class="tier-name">Premium Reflection</h4>
-                  <div class="tier-price">$4.99</div>
+              <div class="tier-features">
+                <div class="feature">
+                  <span class="feature-icon">🌙</span>
+                  <span>1 reflection per month</span>
                 </div>
-                <div class="tier-description">
-                  Enhanced reflection with extended AI thinking for deeper
-                  insights and more personally accurate revelations.
+                <div class="feature">
+                  <span class="feature-icon">💾</span>
+                  <span>Basic reflection storage</span>
                 </div>
-                <ul class="tier-features">
-                  <li>🧠 Extended AI thinking process</li>
-                  <li>🔍 Deeper pattern recognition</li>
-                  <li>💎 More nuanced insights</li>
-                  <li>🎯 Enhanced personal accuracy</li>
-                  <li>✨ Everything from Essential</li>
-                </ul>
+                <div class="feature">
+                  <span class="feature-icon">🤖</span>
+                  <span>Essential AI processing</span>
+                </div>
               </div>
+              <button class="tier-select-btn" data-tier="free">
+                Start Free Journey
+              </button>
             </div>
 
-            <div class="premium-explanation">
-              <p>
-                <strong>Both reflections are profound and valuable.</strong> The
-                Essential reflection provides deep insights that have helped
-                hundreds remember their power. The Premium reflection uses
-                advanced AI thinking to analyze your responses more deeply,
-                offering enhanced personal accuracy and insights you might not
-                discover otherwise.
+            <!-- Essential Tier -->
+            <div class="tier-card recommended" data-tier="essential">
+              <div class="tier-badge">Most Popular</div>
+              <div class="tier-header">
+                <h3>Essential Practitioner</h3>
+                <div class="tier-price">
+                  <span class="price-amount">$4.99</span>
+                  <span class="price-period">/month</span>
+                </div>
+                <div class="annual-option">
+                  <span class="annual-price">$49.99/year</span>
+                  <span class="annual-save">Save $9.89</span>
+                </div>
+              </div>
+              <div class="tier-features">
+                <div class="feature">
+                  <span class="feature-icon">✨</span>
+                  <span>5 reflections per month</span>
+                </div>
+                <div class="feature">
+                  <span class="feature-icon">📚</span>
+                  <span>Complete reflection history</span>
+                </div>
+                <div class="feature">
+                  <span class="feature-icon">🌱</span>
+                  <span>Evolution reports</span>
+                </div>
+                <div class="feature">
+                  <span class="feature-icon">🔍</span>
+                  <span>Search & organize</span>
+                </div>
+              </div>
+              <button class="tier-select-btn primary" data-tier="essential">
+                Begin Essential Journey
+              </button>
+            </div>
+
+            <!-- Premium Tier -->
+            <div class="tier-card" data-tier="premium">
+              <div class="tier-badge">Premium</div>
+              <div class="tier-header">
+                <h3>Premium Explorer</h3>
+                <div class="tier-price">
+                  <span class="price-amount">$9.99</span>
+                  <span class="price-period">/month</span>
+                </div>
+                <div class="annual-option">
+                  <span class="annual-price">$99.99/year</span>
+                  <span class="annual-save">Save $19.89</span>
+                </div>
+              </div>
+              <div class="tier-features">
+                <div class="feature">
+                  <span class="feature-icon">🔥</span>
+                  <span>10 reflections per month</span>
+                </div>
+                <div class="feature">
+                  <span class="feature-icon">🧠</span>
+                  <span>Enhanced AI thinking</span>
+                </div>
+                <div class="feature">
+                  <span class="feature-icon">🦋</span>
+                  <span>Advanced evolution reports</span>
+                </div>
+                <div class="feature">
+                  <span class="feature-icon">🎯</span>
+                  <span>Pattern recognition</span>
+                </div>
+                <div class="feature">
+                  <span class="feature-icon">⚡</span>
+                  <span>Priority support</span>
+                </div>
+              </div>
+              <button class="tier-select-btn" data-tier="premium">
+                Unlock Premium
+              </button>
+            </div>
+          </div>
+
+          <div class="billing-toggle" id="billingToggle" style="display: none">
+            <div class="toggle-container">
+              <span class="toggle-label">Monthly</span>
+              <div class="toggle-switch" id="billingSwitch">
+                <div class="toggle-slider"></div>
+              </div>
+              <span class="toggle-label">
+                Annual <span class="save-badge">Save up to $19.89</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Account Creation -->
+        <div class="step-container" id="accountCreation">
+          <div class="step-header">
+            <h2>Create Your Account</h2>
+            <p>Your details for this sacred journey</p>
+          </div>
+
+          <form class="account-form" id="accountForm">
+            <div class="form-group">
+              <label for="nameInput"
+                >What name should the mirror know you by?</label
+              >
+              <input
+                type="text"
+                id="nameInput"
+                name="name"
+                class="sacred-input"
+                placeholder="Enter your name"
+                required
+                autocomplete="name"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="emailInput">Your sacred email address</label>
+              <input
+                type="email"
+                id="emailInput"
+                name="email"
+                class="sacred-input"
+                placeholder="Enter your email"
+                required
+                autocomplete="email"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="passwordInput">Choose a password</label>
+              <input
+                type="password"
+                id="passwordInput"
+                name="password"
+                class="sacred-input"
+                placeholder="Create a secure password"
+                required
+                autocomplete="new-password"
+                minlength="6"
+              />
+              <div class="password-hint">Minimum 6 characters</div>
+            </div>
+
+            <div class="form-group">
+              <label for="confirmPasswordInput">Confirm your password</label>
+              <input
+                type="password"
+                id="confirmPasswordInput"
+                name="confirmPassword"
+                class="sacred-input"
+                placeholder="Confirm your password"
+                required
+                autocomplete="new-password"
+              />
+            </div>
+
+            <div class="selected-plan" id="selectedPlan">
+              <!-- Plan details will be populated by JS -->
+            </div>
+
+            <button type="button" class="step-btn" id="accountNextBtn">
+              Continue to Payment
+            </button>
+          </form>
+        </div>
+
+        <!-- Step 3: Payment -->
+        <div class="step-container" id="paymentStep">
+          <div class="step-header">
+            <h2>Complete Your Journey</h2>
+            <p>Secure payment to begin your reflections</p>
+          </div>
+
+          <div class="payment-summary" id="paymentSummary">
+            <!-- Payment summary will be populated by JS -->
+          </div>
+
+          <!-- PayPal Payment Container -->
+          <div class="payment-container">
+            <div class="paypal-container" id="paypalContainer">
+              <!-- PayPal buttons will be rendered here -->
+            </div>
+
+            <div class="payment-security">
+              <div class="security-icons">
+                <span>🔒</span>
+                <span>Secured by PayPal</span>
+              </div>
+              <p class="security-text">
+                Your payment information is encrypted and secure. You can cancel
+                your subscription at any time.
               </p>
             </div>
           </div>
 
-          <!-- Payment Section -->
-          <div class="payment-info">
-            <div class="payment-amount" id="paymentAmount">$2.99</div>
-            <div class="payment-description" id="paymentDescription">
-              Secure payment for your Essential Reflection
-            </div>
-
-            <div class="paypal-loading" id="paypalLoading">
-              <div class="loading-spinner"></div>
-              <span>Loading payment options...</span>
-            </div>
-
-            <div class="paypal-error" id="paypalError">
-              <span
-                >Unable to load payment options. Please refresh and try
-                again.</span
-              >
-            </div>
-
-            <div id="paypal-button-container"></div>
-
-            <div class="processing-message" id="processingMessage">
-              ⏳ Processing your payment and preparing your sacred space...
-            </div>
+          <div class="step-navigation">
+            <button
+              type="button"
+              class="step-btn secondary"
+              id="paymentBackBtn"
+            >
+              Back to Account
+            </button>
           </div>
-        </form>
+        </div>
+
+        <!-- Free Account Flow -->
+        <div class="step-container" id="freeAccountStep">
+          <div class="step-header">
+            <h2>Welcome to Your Free Journey</h2>
+            <p>Create your account to begin</p>
+          </div>
+
+          <form class="account-form" id="freeAccountForm">
+            <div class="form-group">
+              <label for="freeNameInput"
+                >What name should the mirror know you by?</label
+              >
+              <input
+                type="text"
+                id="freeNameInput"
+                name="name"
+                class="sacred-input"
+                placeholder="Enter your name"
+                required
+                autocomplete="name"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="freeEmailInput">Your email address</label>
+              <input
+                type="email"
+                id="freeEmailInput"
+                name="email"
+                class="sacred-input"
+                placeholder="Enter your email"
+                required
+                autocomplete="email"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="freePasswordInput">Choose a password</label>
+              <input
+                type="password"
+                id="freePasswordInput"
+                name="password"
+                class="sacred-input"
+                placeholder="Create a secure password"
+                required
+                autocomplete="new-password"
+                minlength="6"
+              />
+            </div>
+
+            <div class="free-benefits">
+              <h3>Your Free Journey Includes:</h3>
+              <div class="benefit-list">
+                <div class="benefit">
+                  <span class="benefit-icon">🌙</span>
+                  <span>1 reflection per month</span>
+                </div>
+                <div class="benefit">
+                  <span class="benefit-icon">💾</span>
+                  <span>Basic reflection storage</span>
+                </div>
+                <div class="benefit">
+                  <span class="benefit-icon">⬆️</span>
+                  <span>Upgrade anytime</span>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="step-btn primary" id="freeAccountBtn">
+              Create Free Account
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-overlay" id="loadingOverlay" style="display: none">
+        <div class="loading-content">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">Creating your sacred space...</div>
+        </div>
+      </div>
+
+      <!-- Error Display -->
+      <div class="error-display" id="errorDisplay" style="display: none">
+        <div class="error-content">
+          <div class="error-icon">⚠️</div>
+          <div class="error-message" id="errorMessage"></div>
+          <button class="error-dismiss" onclick="hideError()">Try Again</button>
+        </div>
       </div>
     </div>
 
