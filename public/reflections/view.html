@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reflection | Mirror of Truth</title>
+    <link rel="stylesheet" href="/shared/foundation.css" />
+    <link rel="stylesheet" href="/reflections/view.css" />
+  </head>
+
+  <body>
+    <!-- Floating cosmic elements -->
+    <div class="cosmic-background" id="cosmicBackground">
+      <div class="cosmic-orb"></div>
+      <div class="cosmic-orb"></div>
+      <div class="cosmic-orb"></div>
+      <div class="cosmic-dust"></div>
+      <div class="cosmic-dust"></div>
+      <div class="cosmic-dust"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sacred-nav">
+      <div class="nav-content">
+        <a href="/reflections/history" class="nav-link back-link">
+          <span>←</span>
+          <span>Your Journey</span>
+        </a>
+
+        <div class="nav-center">
+          <div class="reflection-nav" id="reflectionNav">
+            <button class="nav-arrow" id="prevReflection" disabled>
+              <span>←</span>
+            </button>
+            <div class="nav-indicator">
+              <span id="currentPosition">1</span>
+              <span class="nav-separator">of</span>
+              <span id="totalReflections">1</span>
+            </div>
+            <button class="nav-arrow" id="nextReflection" disabled>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+
+        <a href="/mirror/reflection" class="nav-link reflect-link">
+          <span>✨</span>
+          <span>Reflect Again</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+      <!-- Loading State -->
+      <section class="loading-section" id="loadingSection">
+        <div class="loading-content">
+          <div class="sacred-loader"></div>
+          <p class="loading-text">Preparing your reflection...</p>
+        </div>
+      </section>
+
+      <!-- Error State -->
+      <section class="error-section hidden" id="errorSection">
+        <div class="error-content">
+          <div class="error-icon">🌙</div>
+          <h2 class="error-title">Reflection not found</h2>
+          <p class="error-subtitle">
+            This reflection may have been moved or removed
+          </p>
+          <a href="/reflections/history" class="sacred-button">
+            <span>←</span>
+            <span>Return to Your Journey</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Reflection Content -->
+      <article class="reflection-article hidden" id="reflectionArticle">
+        <!-- Reflection Header -->
+        <header class="reflection-header">
+          <div class="reflection-meta">
+            <div class="meta-group">
+              <div class="reflection-date" id="reflectionDate">—</div>
+              <div class="reflection-tone" id="reflectionTone">—</div>
+            </div>
+            <div class="premium-indicator hidden" id="premiumIndicator">
+              <span class="premium-badge">✨ Premium Reflection</span>
+            </div>
+          </div>
+
+          <h1 class="reflection-title" id="reflectionTitle">
+            Your Mirror of Truth
+          </h1>
+
+          <div class="reflection-stats">
+            <span class="stat-item">
+              <span class="stat-icon">📝</span>
+              <span id="wordCount">— words</span>
+            </span>
+            <span class="stat-item">
+              <span class="stat-icon">⏱️</span>
+              <span id="readTime">— min read</span>
+            </span>
+            <span class="stat-item">
+              <span class="stat-icon">👁️</span>
+              <span id="viewCount">— views</span>
+            </span>
+          </div>
+        </header>
+
+        <!-- Original Questions -->
+        <section class="questions-section" id="questionsSection">
+          <h2 class="section-title">Your Sacred Questions</h2>
+          <div class="questions-grid">
+            <div class="question-card">
+              <h3 class="question-label">Dream</h3>
+              <div class="question-answer" id="dreamText">—</div>
+            </div>
+            <div class="question-card">
+              <h3 class="question-label">Plan</h3>
+              <div class="question-answer" id="planText">—</div>
+            </div>
+            <div class="question-card">
+              <h3 class="question-label">Date Set</h3>
+              <div class="question-answer" id="dateText">—</div>
+            </div>
+            <div class="question-card">
+              <h3 class="question-label">Relationship</h3>
+              <div class="question-answer" id="relationshipText">—</div>
+            </div>
+            <div class="question-card">
+              <h3 class="question-label">Offering</h3>
+              <div class="question-answer" id="offeringText">—</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Mirror's Response -->
+        <section class="response-section">
+          <h2 class="section-title">The Mirror's Truth</h2>
+          <div class="mirror-response" id="mirrorResponse">
+            <div class="response-content">
+              <!-- Reflection content will be loaded here -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Actions -->
+        <section class="actions-section">
+          <div class="actions-grid">
+            <button class="action-btn secondary" id="emailBtn">
+              <span class="action-icon">📧</span>
+              <span class="action-text">Email This Reflection</span>
+            </button>
+
+            <button class="action-btn secondary" id="shareBtn">
+              <span class="action-icon">🔗</span>
+              <span class="action-text">Copy Link</span>
+            </button>
+
+            <button class="action-btn secondary" id="downloadBtn">
+              <span class="action-icon">💾</span>
+              <span class="action-text">Save as PDF</span>
+            </button>
+
+            <a href="/mirror/reflection" class="action-btn primary">
+              <span class="action-icon">✨</span>
+              <span class="action-text">Reflect Again</span>
+            </a>
+          </div>
+        </section>
+
+        <!-- Related Actions -->
+        <section class="related-section">
+          <h2 class="section-title">Continue Your Journey</h2>
+          <div class="related-grid">
+            <a href="/evolution" class="related-card evolution-card">
+              <div class="related-icon">🦋</div>
+              <div class="related-content">
+                <h3 class="related-title">Evolution Reports</h3>
+                <p class="related-subtitle">See how you've grown over time</p>
+              </div>
+            </a>
+
+            <a href="/reflections/history" class="related-card history-card">
+              <div class="related-icon">📚</div>
+              <div class="related-content">
+                <h3 class="related-title">All Reflections</h3>
+                <p class="related-subtitle">Browse your complete journey</p>
+              </div>
+            </a>
+
+            <a href="/mirror/reflection" class="related-card reflect-card">
+              <div class="related-icon">🪞</div>
+              <div class="related-content">
+                <h3 class="related-title">New Reflection</h3>
+                <p class="related-subtitle">Add to your journey today</p>
+              </div>
+            </a>
+          </div>
+        </section>
+      </article>
+    </main>
+
+    <!-- Success Messages -->
+    <div class="toast hidden" id="successToast">
+      <div class="toast-content">
+        <span class="toast-icon">✅</span>
+        <span class="toast-message">—</span>
+      </div>
+    </div>
+
+    <script src="/reflections/view.js"></script>
+  </body>
+</html>
