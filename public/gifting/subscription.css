@@ -1,4 +1,4 @@
-/* Gifting - Sacred Gift Experience with Premium Support - Mobile Optimized */
+/* Subscription Gifting - Sacred Subscription Experience - Mobile Optimized */
 
 body {
   overflow-x: hidden;
@@ -154,12 +154,12 @@ body {
   }
 }
 
-/* FIXED: Back Button - Proper Mobile Alignment */
+/* Back Button */
 .back-button {
   position: fixed;
   top: 1rem;
   left: 1rem;
-  z-index: 1001; /* Increased z-index */
+  z-index: 1001;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -180,8 +180,6 @@ body {
   -webkit-tap-highlight-color: transparent;
   min-height: 44px;
   min-width: 44px;
-
-  /* FIXED: Ensure proper alignment on all screen sizes */
   box-sizing: border-box;
   white-space: nowrap;
 }
@@ -207,8 +205,6 @@ body {
   padding: 2rem 1rem;
   position: relative;
   z-index: 10;
-
-  /* FIXED: Account for back button on mobile */
   padding-top: max(2rem, 4rem);
 }
 
@@ -222,7 +218,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 24px;
   padding: clamp(2rem, 5vw, 3rem);
-  max-width: 600px;
+  max-width: 700px;
   width: 100%;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -320,6 +316,16 @@ body {
   opacity: 0.7;
 }
 
+.selection-subtitle {
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  font-weight: 500;
+  margin-bottom: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 /* Form Elements */
 .form-group {
   margin-bottom: 1.5rem;
@@ -389,20 +395,23 @@ body {
   opacity: 0.6;
 }
 
-/* Gift Tier Selection */
-.gift-tier-options {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1rem;
+/* Tier Selection */
+.tier-selection {
+  margin-bottom: 2rem;
 }
 
-.gift-tier-card {
+.tier-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.tier-card {
   background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 16px;
-  padding: 1.5rem;
+  padding: 1.5rem 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
@@ -413,36 +422,34 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-.gift-tier-card:hover {
+.tier-card:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
 }
 
-.gift-tier-card:active {
+.tier-card:active {
   transform: scale(0.98);
   transition: transform 0.1s ease;
 }
 
-.gift-tier-card.selected {
+.tier-card.selected {
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.25);
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
-/* FIXED: Premium gift tier card with proper padding for badge */
-.gift-tier-card.premium {
+.tier-card.premium {
   border-color: rgba(251, 191, 36, 0.3);
   background: linear-gradient(
     135deg,
     rgba(251, 191, 36, 0.08) 0%,
     rgba(255, 255, 255, 0.06) 100%
   );
-  /* FIXED: Add top padding to accommodate the badge */
   padding-top: 2.5rem;
 }
 
-.gift-tier-card.premium.selected {
+.tier-card.premium.selected {
   border-color: rgba(251, 191, 36, 0.5);
   background: linear-gradient(
     135deg,
@@ -452,47 +459,151 @@ body {
   box-shadow: 0 0 25px rgba(251, 191, 36, 0.2);
 }
 
-/* FIXED: Better badge positioning */
-.gift-tier-badge {
+.tier-badge {
   position: absolute;
-  top: 0; /* Changed from -1px to 0 */
+  top: 0;
   right: 1rem;
   background: linear-gradient(135deg, #f59e0b, #d97706);
   color: white;
-  padding: 0.4rem 0.8rem; /* Increased padding */
+  padding: 0.4rem 0.8rem;
   border-radius: 0 0 12px 12px;
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  /* Ensure badge is above other content */
   z-index: 10;
 }
 
-.gift-tier-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
+.tier-header {
+  text-align: center;
 }
 
-.gift-tier-name {
+.tier-name {
   font-size: clamp(1rem, 3vw, 1.2rem);
   font-weight: 600;
-  margin: 0;
+  margin: 0 0 0.8rem 0;
   color: rgba(255, 255, 255, 0.95);
 }
 
-.gift-tier-price {
-  font-size: clamp(1.2rem, 4vw, 1.5rem);
-  font-weight: 700;
-  color: #10b981;
+.tier-features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
 }
 
-.gift-tier-description {
-  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.8);
+.tier-features span {
+  font-size: clamp(0.8rem, 2vw, 0.85rem);
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.3;
+}
+
+/* Duration Selection */
+.duration-selection {
+  margin-bottom: 1.5rem;
+}
+
+.duration-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.duration-card {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1.2rem 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  text-align: center;
+
+  /* Mobile optimizations */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.duration-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.duration-card:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+.duration-card.selected {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.duration-card.popular {
+  border-color: rgba(16, 185, 129, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.08) 0%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  padding-top: 2rem;
+}
+
+.duration-card.popular.selected {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.15) 0%,
+    rgba(255, 255, 255, 0.12) 100%
+  );
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.2);
+}
+
+.duration-badge {
+  position: absolute;
+  top: 0;
+  right: 0.8rem;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0 0 10px 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.duration-header {
+  margin-bottom: 0.5rem;
+}
+
+.duration-name {
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  font-weight: 600;
+  margin: 0 0 0.3rem 0;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.duration-price {
+  font-size: clamp(1.2rem, 3vw, 1.4rem);
+  font-weight: 700;
+  color: #10b981;
+  line-height: 1;
+}
+
+.duration-savings {
+  font-size: 0.75rem;
+  color: rgba(16, 185, 129, 0.8);
+  font-weight: 500;
+  margin-top: 0.2rem;
+}
+
+.duration-description {
+  font-size: clamp(0.8rem, 2vw, 0.85rem);
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.3;
 }
 
 /* Payment Section */
@@ -509,24 +620,49 @@ body {
   text-align: center;
 }
 
-.payment-amount {
-  font-size: clamp(1.6rem, 4vw, 2rem);
-  font-weight: 700;
-  margin-bottom: 0.8rem;
-  background: linear-gradient(135deg, #10b981, #059669, #22c55e);
+.payment-summary {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+}
+
+.summary-line:last-child {
+  margin-bottom: 0;
+}
+
+.summary-line.total {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 0.8rem;
+  margin-top: 0.8rem;
+  font-weight: 600;
+  font-size: clamp(1rem, 3vw, 1.1rem);
+}
+
+.summary-label {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.summary-value {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 500;
+}
+
+.summary-line.total .summary-value {
+  background: linear-gradient(135deg, #10b981, #059669);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
-  transition: all 0.3s ease;
-}
-
-.payment-description {
-  opacity: 0.8;
-  margin-bottom: 1.5rem;
-  font-size: clamp(0.9rem, 2.5vw, 1rem);
-  font-style: italic;
-  transition: all 0.3s ease;
+  font-weight: 700;
 }
 
 /* PayPal Elements */
@@ -636,17 +772,52 @@ body {
   color: rgba(251, 191, 36, 0.9);
 }
 
+/* Subscription Notice */
+.subscription-notice {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.08) 0%,
+    rgba(59, 130, 246, 0.03) 100%
+  );
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 16px;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.notice-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+
+.notice-content h5 {
+  font-size: clamp(1rem, 3vw, 1.1rem);
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.notice-content p {
+  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+  line-height: 1.5;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+
 /* Form States */
 .form-disabled {
   opacity: 0.6;
   pointer-events: none;
 }
 
-/* Mobile Responsive Design - FIXED */
+/* Mobile Responsive Design */
 @media (max-width: 768px) {
   .gifting-container {
     padding: 1.5rem 0.5rem;
-    /* FIXED: Proper mobile spacing for back button */
     padding-top: 5rem;
   }
 
@@ -661,53 +832,58 @@ body {
   }
 
   .back-button {
-    /* FIXED: Better mobile positioning */
     top: 1rem;
     left: 1rem;
     padding: 0.7rem 1rem;
     font-size: 0.85rem;
-    z-index: 1001;
   }
 
-  .gift-tier-options {
+  .tier-options {
+    grid-template-columns: 1fr;
     gap: 0.8rem;
   }
 
-  .gift-tier-card {
+  .duration-options {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .duration-card {
+    padding: 1rem;
+  }
+
+  .duration-card.popular {
+    padding-top: 1.8rem;
+  }
+
+  .tier-card {
     padding: 1.2rem;
   }
 
-  /* FIXED: Mobile responsive adjustments for premium cards */
-  .gift-tier-card.premium {
+  .tier-card.premium {
     padding-top: 2.2rem;
   }
 
-  .gift-tier-badge {
+  .tier-badge,
+  .duration-badge {
     padding: 0.3rem 0.7rem;
     font-size: 0.7rem;
   }
 
-  .gift-tier-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .preview-step {
+  .subscription-notice {
     flex-direction: column;
     text-align: center;
-    gap: 0.5rem;
+    gap: 0.8rem;
   }
 
-  .step-icon {
-    min-width: auto;
+  .notice-icon {
+    margin-top: 0;
   }
 }
 
 @media (max-width: 480px) {
   .gifting-container {
     padding: 1rem 0.25rem;
-    /* FIXED: Even better mobile spacing */
     padding-top: 4.5rem;
   }
 
@@ -734,49 +910,47 @@ body {
   }
 
   .back-button {
-    /* FIXED: Smallest screen positioning */
     top: 0.75rem;
     left: 0.75rem;
     padding: 0.6rem 0.8rem;
     font-size: 0.8rem;
   }
 
-  .gift-preview {
-    padding: 1.2rem;
-  }
-
-  .gift-tier-card {
+  .tier-card {
     padding: 1rem;
   }
 
-  .gift-tier-card.premium {
+  .tier-card.premium {
     padding-top: 2rem;
   }
 
-  .gift-tier-badge {
+  .duration-card {
+    padding: 0.8rem;
+  }
+
+  .duration-card.popular {
+    padding-top: 1.6rem;
+  }
+
+  .tier-badge,
+  .duration-badge {
     padding: 0.25rem 0.6rem;
     font-size: 0.65rem;
-    right: 0.8rem;
   }
 
-  .gift-tier-name {
+  .summary-line {
+    font-size: 0.9rem;
+  }
+
+  .summary-line.total {
     font-size: 1rem;
-  }
-
-  .gift-tier-price {
-    font-size: 1.3rem;
-  }
-
-  .gift-tier-description {
-    font-size: 0.85rem;
   }
 }
 
-/* FIXED: Landscape mobile optimization */
+/* Landscape mobile optimization */
 @media (max-height: 600px) and (orientation: landscape) {
   .gifting-container {
     padding: 1rem 0.5rem;
-    /* FIXED: Account for landscape back button */
     padding-top: 3.5rem;
     align-items: flex-start;
   }
@@ -790,7 +964,8 @@ body {
     padding: 1rem;
   }
 
-  .gift-preview {
+  .gift-preview,
+  .subscription-notice {
     margin-top: 1rem;
   }
 
@@ -801,13 +976,9 @@ body {
     font-size: 0.75rem;
   }
 
-  .gift-tier-card.premium {
-    padding-top: 1.8rem;
-  }
-
-  .gift-tier-badge {
-    padding: 0.2rem 0.6rem;
-    font-size: 0.65rem;
+  .tier-options,
+  .duration-options {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
 }
 
@@ -816,7 +987,8 @@ body {
   .gifting-card,
   .sacred-input,
   .form-section,
-  .gift-tier-card {
+  .tier-card,
+  .duration-card {
     border-width: 0.5px;
   }
 }
@@ -838,40 +1010,7 @@ body {
   }
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .gifting-card {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.04) 0%,
-      rgba(255, 255, 255, 0.02) 100%
-    );
-    border-color: rgba(255, 255, 255, 0.08);
-  }
-
-  .sacred-input,
-  .gift-tier-card {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.06) 0%,
-      rgba(255, 255, 255, 0.03) 100%
-    );
-    border-color: rgba(255, 255, 255, 0.08);
-  }
-}
-
-/* iOS specific optimizations */
-@supports (-webkit-touch-callout: none) {
-  .sacred-input {
-    font-size: 16px;
-  }
-
-  .sacred-input:focus {
-    font-size: 16px;
-  }
-}
-
-/* FIXED: iOS safe area handling for back button */
+/* iOS safe area handling */
 @supports (padding: max(0px)) {
   .back-button {
     top: max(1rem, env(safe-area-inset-top) + 0.5rem);
