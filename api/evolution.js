@@ -462,8 +462,8 @@ Write 2-3 paragraphs in the contemplative, recognizing style of Mirror of Truth.
   try {
     const response = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",
-      max_tokens: tier === "premium" ? 3000 : 2000,
-      temperature: 0.9,
+      max_tokens: tier === "premium" ? 4000 : 3000,
+      temperature: 1,
       system: systemPrompt,
       messages: [
         {
@@ -474,7 +474,7 @@ Write 2-3 paragraphs in the contemplative, recognizing style of Mirror of Truth.
       ...(tier === "premium" && {
         thinking: {
           type: "enabled",
-          budget_tokens: 2000,
+          budget_tokens: 4000,
         },
       }),
     });
