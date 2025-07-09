@@ -1,4 +1,4 @@
-// api/subscriptions.js - Mirror of Truth Subscription Management with PayPal
+// api/subscriptions.js - Mirror of Truth Subscription gift Management with PayPal
 
 const { createClient } = require("@supabase/supabase-js");
 const { authenticateRequest } = require("./auth.js");

@@ -1,9 +1,11 @@
-// Commitment - Registration & PayPal Integration with Premium Support
+// Commitment - Registration & PayPal Subscription Integration
+// TRANSFORMED: From one-time payments to subscription billing with account creation
 
 let paypalConfig = null;
 let paypalInitialized = false;
-let selectedTier = "basic"; // default to basic
-let currentAmount = "2.99";
+let selectedTier = "essential"; // default to essential (was basic)
+let selectedPeriod = "monthly"; // monthly or yearly
+let currentAmount = "4.99";
 
 // Initialize
 window.addEventListener("load", initializeApp);
@@ -32,8 +34,17 @@ function initializeTierSelection() {
     });
   });
 
-  // Select basic by default
-  selectTier("basic");
+  // Set up period toggle interactions (if exists)
+  document.querySelectorAll(".period-toggle").forEach((toggle) => {
+    toggle.addEventListener("click", function () {
+      const period = this.dataset.period;
+      selectPeriod(period);
+    });
+  });
+
+  // Select essential by default
+  selectTier("essential");
+  selectPeriod("monthly");
 }
 
 function selectTier(tier) {
@@ -43,22 +54,61 @@ function selectTier(tier) {
   document.querySelectorAll(".tier-card").forEach((card) => {
     card.classList.remove("selected");
   });
-  document.querySelector(`[data-tier="${tier}"]`).classList.add("selected");
 
-  // Update pricing
-  if (tier === "premium") {
-    currentAmount = "4.99";
-    document.getElementById("paymentAmount").textContent = "$4.99";
-    document.getElementById("paymentDescription").textContent =
-      "Secure payment for your Premium Reflection";
-  } else {
-    currentAmount = "2.99";
-    document.getElementById("paymentAmount").textContent = "$2.99";
-    document.getElementById("paymentDescription").textContent =
-      "Secure payment for your Essential Reflection";
+  const tierCard = document.querySelector(`[data-tier="${tier}"]`);
+  if (tierCard) {
+    tierCard.classList.add("selected");
   }
 
-  // Reinitialize PayPal with new amount
+  updatePricing();
+}
+
+function selectPeriod(period) {
+  selectedPeriod = period;
+
+  // Update UI
+  document.querySelectorAll(".period-toggle").forEach((toggle) => {
+    toggle.classList.remove("selected");
+  });
+
+  const periodToggle = document.querySelector(`[data-period="${period}"]`);
+  if (periodToggle) {
+    periodToggle.classList.add("selected");
+  }
+
+  updatePricing();
+}
+
+function updatePricing() {
+  // Set pricing based on tier and period
+  const pricing = {
+    essential: {
+      monthly: "4.99",
+      yearly: "49.99",
+    },
+    premium: {
+      monthly: "9.99",
+      yearly: "99.99",
+    },
+  };
+
+  currentAmount = pricing[selectedTier][selectedPeriod];
+
+  const amountElement = document.getElementById("paymentAmount");
+  const descElement = document.getElementById("paymentDescription");
+
+  if (amountElement) {
+    amountElement.textContent = `$${currentAmount}`;
+  }
+
+  if (descElement) {
+    const tierName = selectedTier === "essential" ? "Essential" : "Premium";
+    const periodName = selectedPeriod === "monthly" ? "Monthly" : "Yearly";
+    const savings = selectedPeriod === "yearly" ? " (Save 17%)" : "";
+    descElement.textContent = `${tierName} Subscription - ${periodName}${savings}`;
+  }
+
+  // Reinitialize PayPal with new pricing
   if (paypalInitialized && paypalConfig) {
     reinitializePayPal();
   }
@@ -93,8 +143,9 @@ function loadPayPalSDK() {
       return;
     }
 
+    // TRANSFORMED: Load PayPal SDK with subscription support
     const script = document.createElement("script");
-    script.src = `https://www.paypal.com/sdk/js?client-id=${paypalConfig.clientId}&currency=${paypalConfig.currency}&intent=capture`;
+    script.src = `https://www.paypal.com/sdk/js?client-id=${paypalConfig.clientId}&vault=true&intent=subscription&currency=${paypalConfig.currency}`;
 
     const timeout = setTimeout(() => {
       reject(new Error("PayPal SDK loading timeout"));
@@ -123,14 +174,22 @@ function loadPayPalSDK() {
 }
 
 function hideLoadingState() {
-  document.getElementById("paypalLoading").style.display = "none";
+  const loadingEl = document.getElementById("paypalLoading");
+  if (loadingEl) {
+    loadingEl.style.display = "none";
+  }
 }
 
 function showPayPalError(message) {
-  document.getElementById("paypalLoading").style.display = "none";
+  hideLoadingState();
   const errorDiv = document.getElementById("paypalError");
-  errorDiv.style.display = "block";
-  errorDiv.querySelector("span").textContent = `Error: ${message}`;
+  if (errorDiv) {
+    errorDiv.style.display = "block";
+    const errorSpan = errorDiv.querySelector("span");
+    if (errorSpan) {
+      errorSpan.textContent = `Error: ${message}`;
+    }
+  }
 }
 
 function updateFormValidation() {
@@ -183,10 +242,12 @@ function updateFieldValidation(input, indicator, isValid, hasContent) {
 function reinitializePayPal() {
   // Clear existing PayPal button
   const container = document.getElementById("paypal-button-container");
-  container.innerHTML = "";
+  if (container) {
+    container.innerHTML = "";
+  }
   paypalInitialized = false;
 
-  // Reinitialize with new amount
+  // Reinitialize with new settings
   initializePayPal();
 }
 
@@ -204,12 +265,13 @@ function initializePayPal() {
   if (paypalInitialized) return;
 
   try {
+    // TRANSFORMED: Use PayPal subscription flow instead of one-time payments
     window.paypal
       .Buttons({
         style: {
           color: "gold",
           shape: "rect",
-          label: "pay",
+          label: "subscribe",
           height: 45,
           tagline: false,
         },
@@ -233,133 +295,171 @@ function initializePayPal() {
           return actions.resolve();
         },
 
-        createOrder: function (data, actions) {
-          const userEmail =
-            document.getElementById("userEmail")?.value?.trim() || "";
-          const userName =
-            document.getElementById("userName")?.value?.trim() || "";
+        // TRANSFORMED: Create subscription instead of one-time order
+        createSubscription: function (data, actions) {
+          const planId =
+            paypalConfig.subscriptions[selectedTier][selectedPeriod].planId;
 
-          const tierName =
-            selectedTier === "premium"
-              ? "Premium Reflection"
-              : "Essential Reflection";
-
-          const orderData = {
-            purchase_units: [
-              {
-                amount: {
-                  value: currentAmount,
-                  currency_code: paypalConfig.currency,
-                },
-                description: `Mirror of Truth - ${tierName}`,
-              },
-            ],
-          };
-
-          if (userEmail && userEmail.includes("@")) {
-            orderData.payer = {
-              email_address: userEmail,
-              name: {
-                given_name: userName.split(" ")[0] || userName,
-                surname: userName.split(" ").slice(1).join(" ") || "",
-              },
-            };
+          if (!planId) {
+            throw new Error("Subscription plan not configured");
           }
 
-          return actions.order.create(orderData);
-        },
-
-        onApprove: function (data, actions) {
-          return actions.order.capture().then(function (details) {
-            handlePaymentSuccess(details);
+          return actions.subscription.create({
+            plan_id: planId,
+            subscriber: {
+              name: {
+                given_name:
+                  document.getElementById("userName")?.value?.trim() || "",
+              },
+              email_address:
+                document.getElementById("userEmail")?.value?.trim() || "",
+            },
+            application_context: {
+              brand_name: "Mirror of Truth",
+              user_action: "SUBSCRIBE_NOW",
+              payment_method: {
+                payer_selected: "PAYPAL",
+                payee_preferred: "IMMEDIATE_PAYMENT_REQUIRED",
+              },
+              return_url: `${window.location.origin}/breathing?payment=subscription&verified=true`,
+              cancel_url: window.location.href,
+            },
           });
         },
 
+        // TRANSFORMED: Handle subscription approval
+        onApprove: function (data, actions) {
+          console.log("Subscription approved:", data.subscriptionID);
+          return handleSubscriptionSuccess(data.subscriptionID);
+        },
+
         onError: function (err) {
-          console.error("PayPal error:", err);
-          alert("Payment error. Please try again.");
+          console.error("PayPal subscription error:", err);
+          alert("Subscription error. Please try again.");
           resetFormState();
         },
 
         onCancel: function (data) {
+          console.log("Subscription cancelled:", data);
           resetFormState();
         },
       })
       .render("#paypal-button-container")
       .then(() => {
         paypalInitialized = true;
+        console.log("PayPal subscription buttons initialized");
       })
       .catch((error) => {
         console.error("PayPal render error:", error);
-        showPayPalError("Failed to render payment button");
+        showPayPalError("Failed to render subscription button");
       });
   } catch (error) {
     console.error("PayPal initialization error:", error);
-    showPayPalError("Failed to initialize payment");
+    showPayPalError("Failed to initialize subscription");
   }
 }
 
-async function handlePaymentSuccess(paymentDetails) {
-  document.getElementById("registrationForm").classList.add("form-disabled");
-  document.getElementById("processingMessage").style.display = "block";
+// TRANSFORMED: Handle subscription success and account creation
+async function handleSubscriptionSuccess(subscriptionId) {
+  const form = document.getElementById("registrationForm");
+  const processingMessage = document.getElementById("processingMessage");
+
+  if (form) {
+    form.classList.add("form-disabled");
+  }
+  if (processingMessage) {
+    processingMessage.style.display = "block";
+    processingMessage.innerHTML =
+      "⏳ Creating your sacred space and activating subscription...";
+  }
 
   try {
     const userData = {
       name: document.getElementById("userName").value.trim(),
       email: document.getElementById("userEmail").value.trim(),
+      tier: selectedTier,
+      period: selectedPeriod,
       language: "en",
-      paymentId: paymentDetails.id,
-      paymentMethod: "paypal",
-      isPremium: selectedTier === "premium",
-      amount: currentAmount,
+      subscriptionId: subscriptionId,
     };
 
-    localStorage.setItem("mirrorVerifiedUser", JSON.stringify(userData));
+    // TRANSFORMED: Create subscription and user account
+    const response = await fetch("/api/payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "create-subscription",
+        ...userData,
+      }),
+    });
 
-    // Generate receipt
-    try {
-      await fetch("/api/communication", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "generate-receipt",
-          email: userData.email,
-          name: userData.name,
-          amount: parseFloat(currentAmount),
-          paymentMethod: "paypal",
-          language: "en",
-          isPremium: userData.isPremium,
-        }),
-      });
-    } catch (receiptError) {
-      console.warn("Receipt generation error:", receiptError);
+    const result = await response.json();
+
+    if (!result.success) {
+      if (result.requiresSignin) {
+        // User already exists, redirect to sign in
+        alert(
+          "An account with this email already exists. Please sign in instead."
+        );
+        window.location.href = "/auth/signin";
+        return;
+      }
+      throw new Error(result.error || "Subscription creation failed");
     }
 
-    // Navigate to breathing
+    // Store user session data
+    localStorage.setItem("mirrorAuthToken", result.token);
+    localStorage.setItem("mirrorUserData", JSON.stringify(result.user));
+
+    console.log("✅ Subscription and account created successfully");
+
+    // Navigate to breathing experience
     const urlParams = new URLSearchParams({
-      payment: "paypal",
+      payment: "subscription",
       verified: "true",
       lang: "en",
-      premium: userData.isPremium ? "true" : "false",
+      tier: selectedTier,
+      period: selectedPeriod,
     });
 
     setTimeout(() => {
       window.location.href = `/transition/breathing.html?${urlParams.toString()}`;
     }, 2000);
   } catch (error) {
+    console.error("Subscription creation error:", error);
+
+    if (processingMessage) {
+      processingMessage.innerHTML =
+        "❌ Subscription creation failed. Please try again.";
+      processingMessage.style.background = "rgba(239, 68, 68, 0.15)";
+      processingMessage.style.borderColor = "rgba(239, 68, 68, 0.3)";
+      processingMessage.style.color = "#fca5a5";
+    }
+
     setTimeout(() => {
-      const urlParams = new URLSearchParams({
-        payment: "paypal",
-        verified: "true",
-        lang: "en",
-        premium: selectedTier === "premium" ? "true" : "false",
-      });
-      window.location.href = `/transition/breathing.html?${urlParams.toString()}`;
-    }, 2000);
+      resetFormState();
+    }, 3000);
   }
 }
 
 function resetFormState() {
-  document.getElementById("registrationForm").classList.remove("form-disabled");
-  document.getElementById("processingMessage").style.display = "none";
+  const form = document.getElementById("registrationForm");
+  const processingMessage = document.getElementById("processingMessage");
+
+  if (form) {
+    form.classList.remove("form-disabled");
+  }
+  if (processingMessage) {
+    processingMessage.style.display = "none";
+    // Reset styling
+    processingMessage.style.background = "";
+    processingMessage.style.borderColor = "";
+    processingMessage.style.color = "";
+  }
+}
+
+// Handle sign in redirect for existing users
+function redirectToSignIn() {
+  window.location.href =
+    "/auth/signin?returnTo=" + encodeURIComponent(window.location.pathname);
 }
