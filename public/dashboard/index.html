@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Sacred Journey | Mirror of Truth</title>
+    <link rel="stylesheet" href="/shared/foundation.css" />
+    <link rel="stylesheet" href="/dashboard/dashboard.css" />
+  </head>
+
+  <body>
+    <!-- Cosmic Background -->
+    <div class="cosmic-background">
+      <div class="cosmic-breath"></div>
+      <div class="cosmic-breath"></div>
+      <div class="cosmic-breath"></div>
+      <div class="cosmic-breath"></div>
+    </div>
+
+    <!-- Navigation Header -->
+    <nav class="dashboard-nav">
+      <div class="nav-container">
+        <div class="nav-left">
+          <a href="/" class="logo-link">
+            <span class="mirror-symbol">🪞</span>
+            <span class="logo-text">Mirror of Truth</span>
+          </a>
+        </div>
+
+        <div class="nav-center">
+          <a href="/dashboard" class="nav-link active">
+            <span>🏠</span>
+            <span>My Journey</span>
+          </a>
+          <a href="/reflection" class="nav-link reflect-nav">
+            <span>✨</span>
+            <span>Reflect Again</span>
+          </a>
+          <a href="/admin" class="nav-link admin-only" style="display: none">
+            <span>⚡</span>
+            <span>Admin</span>
+          </a>
+        </div>
+
+        <div class="nav-right">
+          <button class="upgrade-btn tier-upgrade" style="display: none">
+            <span>💎</span>
+            <span>Upgrade</span>
+          </button>
+
+          <div class="user-menu">
+            <button class="user-button" id="userMenuBtn">
+              <span class="user-avatar" id="userAvatar">👤</span>
+              <span class="user-name" id="userName">Loading...</span>
+              <span class="dropdown-arrow">▼</span>
+            </button>
+
+            <div class="user-dropdown" id="userDropdown">
+              <div class="dropdown-header">
+                <div class="user-info">
+                  <div class="user-display-name" id="userDisplayName">
+                    Loading...
+                  </div>
+                  <div class="user-tier-badge" id="userTierBadge">...</div>
+                </div>
+              </div>
+
+              <div class="dropdown-divider"></div>
+
+              <a href="/profile" class="dropdown-item">
+                <span>👤</span>
+                <span>Profile Settings</span>
+              </a>
+              <a href="/subscription" class="dropdown-item subscription-only">
+                <span>💳</span>
+                <span>Subscription</span>
+              </a>
+              <a
+                href="/evolution"
+                class="dropdown-item evolution-only"
+                style="display: none"
+              >
+                <span>📊</span>
+                <span>Evolution Reports</span>
+              </a>
+
+              <div class="dropdown-divider"></div>
+
+              <button
+                class="dropdown-item signout-btn"
+                onclick="handleSignOut()"
+              >
+                <span>🚪</span>
+                <span>Sign Out</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Dashboard -->
+    <main class="dashboard-main">
+      <div class="dashboard-container">
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+          <div class="welcome-content">
+            <h1 class="welcome-title">
+              <span class="greeting" id="welcomeGreeting">Welcome back,</span>
+              <span class="user-name-display" id="welcomeName"
+                >Sacred Soul</span
+              >
+            </h1>
+            <p class="welcome-subtitle" id="welcomeMessage">
+              Your journey of self-discovery continues...
+            </p>
+          </div>
+
+          <div class="quick-actions">
+            <button class="action-btn primary" id="reflectNowBtn">
+              <span class="btn-icon">✨</span>
+              <span class="btn-text">Reflect Now</span>
+            </button>
+            <button class="action-btn secondary" id="giftBtn">
+              <span class="btn-icon">🎁</span>
+              <span class="btn-text">Gift a Reflection</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+          <!-- Usage Overview Card -->
+          <div class="dashboard-card usage-card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <span class="card-icon">📊</span>
+                <span>This Month's Journey</span>
+              </h3>
+            </div>
+
+            <div class="card-content">
+              <div class="usage-display">
+                <div class="usage-chart" id="usageChart">
+                  <div class="usage-progress">
+                    <div class="progress-circle">
+                      <div class="progress-value" id="usagePercentage">0%</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="usage-stats">
+                  <div class="stat-item">
+                    <div class="stat-value" id="currentCount">0</div>
+                    <div class="stat-label">Reflections Used</div>
+                  </div>
+                  <div class="stat-divider">of</div>
+                  <div class="stat-item">
+                    <div class="stat-value" id="monthlyLimit">∞</div>
+                    <div class="stat-label">Monthly Limit</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="usage-actions">
+                <button class="usage-btn" id="usageActionBtn">
+                  <span>View All Reflections</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Reflections Card -->
+          <div class="dashboard-card reflections-card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <span class="card-icon">🌙</span>
+                <span>Recent Reflections</span>
+              </h3>
+              <button class="header-action" id="viewAllReflections">
+                <span>View All</span>
+                <span>→</span>
+              </button>
+            </div>
+
+            <div class="card-content">
+              <div class="reflections-list" id="recentReflectionsList">
+                <div class="loading-reflections">
+                  <div class="cosmic-spinner"></div>
+                  <span>Loading your sacred journey...</span>
+                </div>
+              </div>
+
+              <div
+                class="empty-state"
+                id="emptyReflections"
+                style="display: none"
+              >
+                <div class="empty-icon">🪞</div>
+                <h4>Your Journey Awaits</h4>
+                <p>
+                  Begin your first reflection to see your evolving wisdom here.
+                </p>
+                <button class="empty-action" onclick="startReflection()">
+                  <span>✨</span>
+                  <span>Create Your First Reflection</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Evolution Insights Card -->
+          <div class="dashboard-card evolution-card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <span class="card-icon">🦋</span>
+                <span>Evolution Insights</span>
+              </h3>
+              <div
+                class="evolution-badge"
+                id="evolutionBadge"
+                style="display: none"
+              >
+                <span>New!</span>
+              </div>
+            </div>
+
+            <div class="card-content">
+              <div class="evolution-content" id="evolutionContent">
+                <div class="evolution-preview">
+                  <div class="insight-item">
+                    <div class="insight-icon">📈</div>
+                    <div class="insight-text">
+                      <div class="insight-title">Total Reflections</div>
+                      <div class="insight-value" id="totalReflections">0</div>
+                    </div>
+                  </div>
+
+                  <div class="insight-item growth-locked" id="growthInsight">
+                    <div class="insight-icon">🌱</div>
+                    <div class="insight-text">
+                      <div class="insight-title">Growth Patterns</div>
+                      <div class="insight-value unlock-message">
+                        Unlock with
+                        <span class="required-count">5</span> reflections
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    class="insight-item evolution-locked"
+                    id="evolutionInsight"
+                  >
+                    <div class="insight-icon">🦋</div>
+                    <div class="insight-text">
+                      <div class="insight-title">Evolution Report</div>
+                      <div class="insight-value unlock-message">
+                        Available for Essential+ subscribers
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="evolution-actions">
+                  <button class="evolution-btn" id="evolutionActionBtn">
+                    <span>Upgrade for Evolution Reports</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subscription Status Card -->
+          <div class="dashboard-card subscription-card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <span class="card-icon">💎</span>
+                <span>Subscription</span>
+              </h3>
+            </div>
+
+            <div class="card-content">
+              <div class="subscription-status" id="subscriptionStatus">
+                <div class="tier-display">
+                  <div class="tier-badge" id="tierBadge">Free</div>
+                  <div class="tier-description" id="tierDescription">
+                    Limited to 1 reflection per month
+                  </div>
+                </div>
+
+                <div class="subscription-actions">
+                  <button
+                    class="subscription-btn upgrade-subscription"
+                    id="subscriptionActionBtn"
+                  >
+                    <span>✨</span>
+                    <span>Upgrade Your Journey</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-content">
+        <div class="cosmic-loader"></div>
+        <p>Preparing your sacred space...</p>
+      </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/dashboard/dashboard.js"></script>
+  </body>
+</html>
