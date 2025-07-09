@@ -1,14 +1,23 @@
-// Transition - Breathing to Reflection (Updated with Gift Support)
+// Transition - Breathing to Reflection TRANSFORMED: Auth-Aware Flow + Gift Support
+// MAJOR CHANGES: Handle authenticated users, preserve subscription context, maintain gift flow
 
 let isGiftFlow = false;
 let giftData = null;
 let sessionParams = null;
+let authToken = null;
+let userContext = null;
 
 // Initialize on load
 window.addEventListener("load", initializeBreathing);
 
 async function initializeBreathing() {
   sessionParams = getUrlParams();
+  authToken = localStorage.getItem("mirrorAuthToken");
+
+  // TRANSFORMED: Check for authenticated user context
+  if (authToken && !sessionParams.gift) {
+    await loadUserContext();
+  }
 
   // Check if this is a gift flow
   if (sessionParams.gift) {
@@ -27,10 +36,71 @@ function getUrlParams() {
     verified: urlParams.get("verified"),
     lang: urlParams.get("lang"),
     mode: urlParams.get("mode"),
+    tier: urlParams.get("tier"),
+    period: urlParams.get("period"),
     gift: urlParams.get("gift"),
   };
 }
 
+// TRANSFORMED: Load authenticated user context
+async function loadUserContext() {
+  try {
+    const response = await fetch("/api/auth", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+      body: JSON.stringify({ action: "verify-token" }),
+    });
+
+    const result = await response.json();
+    if (result.success && result.user) {
+      userContext = result.user;
+      console.log(
+        `✅ User context loaded: ${userContext.email} (${userContext.tier})`
+      );
+
+      // Customize breathing experience for returning users
+      customizeForUser();
+    } else {
+      // Invalid token, clear it
+      localStorage.removeItem("mirrorAuthToken");
+      localStorage.removeItem("mirrorUserData");
+    }
+  } catch (error) {
+    console.error("User context loading failed:", error);
+    // Continue with regular flow
+  }
+}
+
+function customizeForUser() {
+  if (!userContext) return;
+
+  // Customize text for returning users
+  const welcomeTexts = document.querySelectorAll(".breath-text");
+  if (welcomeTexts.length >= 4) {
+    // Personalize some of the breathing texts
+    welcomeTexts[0].textContent = `welcome back, ${
+      userContext.name.split(" ")[0]
+    }`;
+    welcomeTexts[1].textContent = "your truth deepens";
+    welcomeTexts[2].textContent = "with each return";
+    welcomeTexts[3].textContent = "ready for more clarity?";
+  }
+
+  // Update the "what now?" text for returning users
+  const whatNowText = document.querySelector(".what-now-text");
+  if (whatNowText) {
+    if (userContext.tier === "free") {
+      whatNowText.textContent = "ready to upgrade?";
+    } else {
+      whatNowText.textContent = "what calls you now?";
+    }
+  }
+}
+
+// PRESERVED: Gift flow handling
 async function handleGiftFlow(giftCode) {
   try {
     // Show validation screen
@@ -38,7 +108,9 @@ async function handleGiftFlow(giftCode) {
 
     // Validate the gift
     const response = await fetch(
-      `/api/gift?action=validate&giftCode=${encodeURIComponent(giftCode)}`
+      `/api/subscriptions?action=validate-gift&giftCode=${encodeURIComponent(
+        giftCode
+      )}`
     );
     const result = await response.json();
 
@@ -66,7 +138,17 @@ function showGiftWelcome() {
   const personalContentEl = document.getElementById("personalMessageContent");
 
   titleEl.textContent = `Welcome, ${giftData.recipientName}`;
-  messageEl.textContent = `${giftData.giverName} has gifted you this sacred reflection experience.`;
+
+  const tierName =
+    giftData.subscriptionTier === "essential" ? "Essential" : "Premium";
+  const duration =
+    giftData.subscriptionDuration === 1
+      ? "1 month"
+      : giftData.subscriptionDuration === 3
+      ? "3 months"
+      : "1 year";
+
+  messageEl.textContent = `${giftData.giverName} has gifted you a ${tierName} subscription for ${duration}.`;
 
   if (giftData.personalMessage && giftData.personalMessage.trim()) {
     personalMessageEl.style.display = "block";
@@ -99,11 +181,11 @@ function showGiftError(message) {
 async function proceedFromGift() {
   try {
     // Redeem the gift
-    const response = await fetch("/api/gift", {
+    const response = await fetch("/api/subscriptions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        action: "redeem",
+        action: "redeem-gift",
         giftCode: sessionParams.gift,
       }),
     });
@@ -114,8 +196,15 @@ async function proceedFromGift() {
       throw new Error(result.error || "Failed to redeem gift");
     }
 
-    // Store user data from gift
-    localStorage.setItem("mirrorVerifiedUser", JSON.stringify(result.userData));
+    // TRANSFORMED: Store auth token if user was created
+    if (result.token) {
+      localStorage.setItem("mirrorAuthToken", result.token);
+    }
+    if (result.user) {
+      localStorage.setItem("mirrorUserData", JSON.stringify(result.user));
+    }
+
+    console.log("🎁 Gift redeemed successfully");
 
     // Hide gift welcome and show breathing experience
     document.getElementById("giftWelcome").style.display = "none";
@@ -132,6 +221,16 @@ function showBreathingExperience() {
   const container = document.querySelector(".breathing-container");
   container.style.display = "flex";
 
+  // TRANSFORMED: Customize continue indicator based on user context
+  const continueIndicator = document.querySelector(".continue-indicator span");
+  if (continueIndicator && userContext) {
+    if (userContext.totalReflections > 0) {
+      continueIndicator.textContent = "breathe to continue your journey";
+    } else {
+      continueIndicator.textContent = "breathe to begin";
+    }
+  }
+
   // Activate click-anywhere once indicator shows (after 23 seconds)
   setTimeout(() => {
     document.body.addEventListener("click", proceed);
@@ -142,36 +241,49 @@ function showBreathingExperience() {
   setTimeout(proceed, 30000);
 }
 
+// TRANSFORMED: Enhanced proceed function with auth-aware routing
 function proceed() {
   const params = sessionParams;
 
-  // Build the reflection URL with the preserved parameters
+  // Build the reflection URL based on user context
   let reflectionUrl = "/reflection";
 
   if (isGiftFlow) {
-    // For gifts, we don't need special URL parameters since user data is stored
-    reflectionUrl = "/reflection?gift=redeemed";
+    // For gifts, user is now authenticated
+    reflectionUrl = "/reflection?source=gift";
+  } else if (userContext) {
+    // Authenticated user - direct to reflection
+    const urlParams = new URLSearchParams();
+    if (params.tier) urlParams.set("tier", params.tier);
+    if (params.mode) urlParams.set("mode", params.mode);
+
+    const queryString = urlParams.toString();
+    reflectionUrl = queryString ? `/reflection?${queryString}` : "/reflection";
   } else if (params.payment || params.verified || params.lang || params.mode) {
+    // Legacy flow support (creator/test modes)
     const queryParams = new URLSearchParams();
 
     if (params.payment) queryParams.set("payment", params.payment);
     if (params.verified) queryParams.set("verified", params.verified);
     if (params.lang) queryParams.set("lang", params.lang);
     if (params.mode) queryParams.set("mode", params.mode);
+    if (params.tier) queryParams.set("tier", params.tier);
 
     reflectionUrl += "?" + queryParams.toString();
   } else {
-    // Fallback to original behavior if no special parameters
-    const qs = new URLSearchParams(location.search);
-    const payment = qs.get("payment") || "paypal";
-    reflectionUrl = `/reflection?payment=${payment}&verified=true&lang=en`;
+    // No authentication - redirect to sign in
+    const returnUrl = encodeURIComponent("/reflection");
+    window.location.href = `/auth/signin?returnTo=${returnUrl}`;
+    return;
   }
+
+  console.log(`🔄 Proceeding to reflection: ${reflectionUrl}`);
 
   // Navigate to reflection with preserved parameters
   window.location.href = reflectionUrl;
 }
 
-// Subtle interaction feedback with breathing circles
+// PRESERVED: Subtle interaction feedback with breathing circles
 document.addEventListener("mousemove", (e) => {
   const circles = document.querySelectorAll(".breathing-circle");
   const mouseX = e.clientX / window.innerWidth;
@@ -185,7 +297,7 @@ document.addEventListener("mousemove", (e) => {
   });
 });
 
-// Gentle breathing sound visualization
+// PRESERVED: Gentle breathing sound visualization
 let breathPhase = 0;
 setInterval(() => {
   breathPhase = (breathPhase + 0.1) % (Math.PI * 2);
@@ -196,7 +308,7 @@ setInterval(() => {
   }
 }, 50);
 
-// Special effect when "what now?" appears
+// PRESERVED: Special effect when "what now?" appears
 setTimeout(() => {
   // Create a subtle radial pulse
   const pulse = document.createElement("div");
@@ -219,7 +331,29 @@ setTimeout(() => {
   setTimeout(() => pulse.remove(), 3000);
 }, 20000);
 
-// Add the pulse animation and gift styles
+// ENHANCED: Add user context awareness to the breathing experience
+setTimeout(() => {
+  if (userContext && userContext.tier !== "free") {
+    // Add subtle premium elements for paid users
+    const premiumGlow = document.createElement("div");
+    premiumGlow.style.cssText = `
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(
+        circle at 50% 50%,
+        rgba(251, 191, 36, 0.02) 0%,
+        transparent 50%
+      );
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      animation: premiumGlow 8s ease-in-out infinite;
+    `;
+    document.body.appendChild(premiumGlow);
+  }
+}, 15000); // Start after 15 seconds
+
+// Add enhanced animations and gift styles (preserved from original)
 const style = document.createElement("style");
 style.textContent = `
   @keyframes whatNowPulse {
@@ -233,6 +367,15 @@ style.textContent = `
     100% {
       transform: translate(-50%, -50%) scale(3);
       opacity: 0;
+    }
+  }
+  
+  @keyframes premiumGlow {
+    0%, 100% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 0.6;
     }
   }
   
@@ -383,6 +526,8 @@ style.textContent = `
     transition: all 0.3s ease;
     letter-spacing: 0.3px;
     background-color: transparent;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   
   .gift-continue-btn:hover {
@@ -447,11 +592,19 @@ style.textContent = `
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   
   .error-return-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+  }
+  
+  /* User context enhancements */
+  .user-welcome-text {
+    color: rgba(251, 191, 36, 0.9);
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
   }
   
   /* Mobile optimizations */
