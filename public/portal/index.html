@@ -12,8 +12,17 @@
     <link rel="stylesheet" href="/shared/foundation.css" />
 
     <style>
-      /* Portal - Beautiful Mirror Experience */
+      /* Portal - Perfect Contained Experience */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
       body {
+        height: 100vh;
+        overflow: hidden;
         background: linear-gradient(
           135deg,
           #0f0f23 0%,
@@ -21,14 +30,15 @@
           #16213e 50%,
           #0f0f23 100%
         );
-        min-height: 100vh;
-        overflow-x: hidden;
         color: #fff;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+        position: fixed;
+        width: 100vw;
       }
 
       /* Mirror Shards - Sacred Geometry */
       .mirrors-container {
-        position: fixed;
+        position: absolute;
         inset: 0;
         pointer-events: none;
         z-index: 1;
@@ -36,28 +46,28 @@
 
       .mirror {
         position: absolute;
-        width: clamp(30px, 6vw, 60px);
-        height: clamp(30px, 6vw, 60px);
+        width: clamp(25px, 5vw, 50px);
+        height: clamp(25px, 5vw, 50px);
         background: rgba(255, 255, 255, 0.06);
         backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.15);
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
         animation: float 12s ease-in-out infinite;
-        transition: 0.4s ease;
+        transition: all 0.4s ease;
       }
 
       .mirror:nth-child(1) {
         --rotation: 3deg;
-        top: 15%;
-        left: 18%;
+        top: 12%;
+        left: 15%;
         clip-path: polygon(20% 0%, 80% 10%, 100% 85%, 35% 100%, 0% 70%);
         animation-delay: 0s;
       }
 
       .mirror:nth-child(2) {
         --rotation: -6deg;
-        top: 25%;
-        right: 15%;
+        top: 20%;
+        right: 12%;
         clip-path: polygon(50% 0%, 90% 50%, 50% 100%, 10% 50%);
         animation-delay: 2s;
       }
@@ -65,7 +75,7 @@
       .mirror:nth-child(3) {
         --rotation: 8deg;
         top: 45%;
-        left: 12%;
+        left: 8%;
         clip-path: polygon(25% 0%, 100% 38%, 75% 100%, 0% 62%);
         animation-delay: 4s;
       }
@@ -73,17 +83,17 @@
       .mirror:nth-child(4) {
         --rotation: -4deg;
         top: 65%;
-        right: 20%;
-        width: clamp(40px, 8vw, 80px);
-        height: clamp(40px, 8vw, 80px);
+        right: 15%;
+        width: clamp(30px, 6vw, 60px);
+        height: clamp(30px, 6vw, 60px);
         clip-path: polygon(30% 0%, 85% 0%, 100% 70%, 45% 100%, 0% 65%);
         animation-delay: 6s;
       }
 
       .mirror:nth-child(5) {
         --rotation: 12deg;
-        bottom: 25%;
-        left: 35%;
+        bottom: 15%;
+        left: 30%;
         clip-path: polygon(15% 0%, 100% 25%, 85% 100%, 0% 75%);
         animation-delay: 8s;
       }
@@ -91,19 +101,20 @@
       @keyframes float {
         0%,
         100% {
-          transform: translateY(0) rotate(0deg);
+          transform: translateY(0) rotate(var(--rotation, 0deg));
           opacity: 0.6;
         }
         25% {
-          transform: translateY(-15px) rotate(2deg);
+          transform: translateY(-12px)
+            rotate(calc(var(--rotation, 0deg) + 2deg));
           opacity: 0.8;
         }
         50% {
-          transform: translateY(-8px) rotate(-1deg);
+          transform: translateY(-6px) rotate(calc(var(--rotation, 0deg) - 1deg));
           opacity: 1;
         }
         75% {
-          transform: translateY(-12px) rotate(1deg);
+          transform: translateY(-9px) rotate(calc(var(--rotation, 0deg) + 1deg));
           opacity: 0.7;
         }
       }
@@ -139,7 +150,7 @@
           background: rgba(255, 255, 255, 0.12);
           border-color: rgba(255, 255, 255, 0.3);
           box-shadow: 0 15px 45px rgba(255, 255, 255, 0.1);
-          transform: scale(1.04) rotate(var(--rotation, 0deg));
+          transform: scale(1.1) rotate(var(--rotation, 0deg));
         }
 
         .mirrors-container.hover .mirror::after {
@@ -148,37 +159,11 @@
         }
       }
 
-      /* Main Content */
-      .main-content {
-        position: relative;
-        z-index: 10;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        padding: 2rem 1rem;
-      }
-
-      .center-container {
-        text-align: center;
-        max-width: 600px;
-        width: 100%;
-      }
-
-      .title {
-        font-size: clamp(2.2rem, 7vw, 3.8rem);
-        font-weight: 300;
-        margin-bottom: 2rem;
-        line-height: 1.2;
-        opacity: 0.95;
-        letter-spacing: -0.02em;
-      }
-
-      /* Navigation */
+      /* Navigation - Top Right */
       .nav-container {
-        position: fixed;
-        top: 1.5rem;
-        right: 1.5rem;
+        position: absolute;
+        top: clamp(1rem, 3vh, 2rem);
+        right: clamp(1rem, 3vw, 2rem);
         z-index: 100;
         display: flex;
         align-items: center;
@@ -189,7 +174,7 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.8rem 1.5rem;
+        padding: clamp(0.6rem, 2vh, 0.8rem) clamp(1rem, 3vw, 1.5rem);
         background: linear-gradient(
           135deg,
           rgba(147, 51, 234, 0.12),
@@ -200,12 +185,13 @@
         border-radius: 50px;
         color: rgba(255, 255, 255, 0.9);
         text-decoration: none;
-        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        font-size: clamp(0.75rem, 2vw, 0.9rem);
         font-weight: 500;
         transition: all 0.3s ease;
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
         box-shadow: 0 8px 25px rgba(147, 51, 234, 0.15);
+        white-space: nowrap;
       }
 
       .about-link:hover {
@@ -229,17 +215,19 @@
         display: flex;
         align-items: center;
         gap: 0.8rem;
-        padding: 0.8rem 1.5rem;
+        padding: clamp(0.6rem, 2vh, 0.8rem) clamp(1rem, 3vw, 1.5rem);
         background: rgba(16, 185, 129, 0.1);
         border: 1px solid rgba(16, 185, 129, 0.3);
         border-radius: 50px;
         color: rgba(255, 255, 255, 0.9);
         cursor: pointer;
-        font-size: 0.9rem;
+        font-size: clamp(0.75rem, 2vw, 0.9rem);
         font-weight: 500;
         transition: all 0.3s ease;
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
+        border: none;
+        white-space: nowrap;
       }
 
       .user-button:hover {
@@ -252,7 +240,7 @@
         position: absolute;
         top: calc(100% + 0.5rem);
         right: 0;
-        min-width: 240px;
+        min-width: 200px;
         background: rgba(15, 15, 35, 0.95);
         backdrop-filter: blur(30px);
         border: 1px solid rgba(255, 255, 255, 0.15);
@@ -287,6 +275,8 @@
         background: none;
         width: 100%;
         text-align: left;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
       }
 
       .dropdown-item:hover {
@@ -294,18 +284,49 @@
         color: rgba(255, 255, 255, 0.95);
       }
 
+      /* Main Content - Perfect Centering */
+      .main-content {
+        position: relative;
+        z-index: 10;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: clamp(1rem, 5vh, 3rem) clamp(1rem, 5vw, 2rem);
+      }
+
+      .center-container {
+        text-align: center;
+        max-width: 90vw;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .title {
+        font-size: clamp(2rem, 6vw, 3.5rem);
+        font-weight: 300;
+        margin-bottom: clamp(1rem, 3vh, 2rem);
+        line-height: 1.2;
+        opacity: 0.95;
+        letter-spacing: -0.02em;
+      }
+
       /* Button Group */
       .button-group {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1.5rem;
-        margin: 2rem 0;
+        gap: clamp(0.8rem, 2vh, 1.2rem);
+        margin: clamp(1rem, 3vh, 2rem) 0;
+        width: 100%;
       }
 
       .reflect-button {
-        width: clamp(180px, 35vw, 240px);
-        height: clamp(180px, 35vw, 240px);
+        width: clamp(140px, 25vw, 200px);
+        height: clamp(140px, 25vw, 200px);
         border-radius: 50%;
         background: radial-gradient(
           circle,
@@ -315,7 +336,7 @@
         backdrop-filter: blur(30px);
         border: 2px solid rgba(255, 255, 255, 0.25);
         color: #fff;
-        font-size: clamp(1rem, 3vw, 1.4rem);
+        font-size: clamp(0.9rem, 2.5vw, 1.2rem);
         font-weight: 400;
         cursor: pointer;
         transition: all 0.4s ease;
@@ -328,6 +349,7 @@
         box-shadow: 0 15px 50px rgba(255, 255, 255, 0.08);
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
+        flex-shrink: 0;
       }
 
       .reflect-button::before {
@@ -385,51 +407,20 @@
         transition: transform 0.1s ease;
       }
 
-      .gift-button {
+      /* Secondary Buttons */
+      .secondary-buttons {
         display: flex;
+        gap: clamp(0.8rem, 2vw, 1rem);
+        flex-wrap: wrap;
+        justify-content: center;
         align-items: center;
-        gap: 0.8rem;
-        padding: 1rem 2rem;
-        background: linear-gradient(
-          135deg,
-          rgba(251, 146, 60, 0.08),
-          rgba(251, 146, 60, 0.04)
-        );
-        backdrop-filter: blur(25px);
-        border: 1px solid rgba(251, 146, 60, 0.2);
-        border-radius: 20px;
-        color: rgba(255, 255, 255, 0.9);
-        font-size: clamp(0.9rem, 2.5vw, 1rem);
-        font-weight: 400;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-        box-shadow: 0 6px 20px rgba(251, 146, 60, 0.1);
-      }
-
-      .gift-button:hover {
-        background: linear-gradient(
-          135deg,
-          rgba(251, 146, 60, 0.12),
-          rgba(251, 146, 60, 0.06)
-        );
-        border-color: rgba(251, 146, 60, 0.3);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(251, 146, 60, 0.15);
-      }
-
-      .gift-button:active {
-        transform: scale(0.98);
-        transition: transform 0.1s ease;
       }
 
       .start-free-button {
         display: flex;
         align-items: center;
-        gap: 0.8rem;
-        padding: 1rem 2rem;
+        gap: 0.6rem;
+        padding: clamp(0.7rem, 1.5vh, 0.9rem) clamp(1.2rem, 3vw, 1.8rem);
         background: linear-gradient(
           135deg,
           rgba(16, 185, 129, 0.12),
@@ -439,7 +430,7 @@
         border: 1px solid rgba(16, 185, 129, 0.25);
         border-radius: 20px;
         color: rgba(255, 255, 255, 0.95);
-        font-size: clamp(0.9rem, 2.5vw, 1rem);
+        font-size: clamp(0.8rem, 2vw, 0.95rem);
         font-weight: 500;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -447,6 +438,7 @@
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
         box-shadow: 0 6px 20px rgba(16, 185, 129, 0.12);
+        white-space: nowrap;
       }
 
       .start-free-button:hover {
@@ -465,20 +457,60 @@
         transition: transform 0.1s ease;
       }
 
+      .gift-button {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: clamp(0.7rem, 1.5vh, 0.9rem) clamp(1.2rem, 3vw, 1.8rem);
+        background: linear-gradient(
+          135deg,
+          rgba(251, 146, 60, 0.08),
+          rgba(251, 146, 60, 0.04)
+        );
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(251, 146, 60, 0.2);
+        border-radius: 20px;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: clamp(0.8rem, 2vw, 0.95rem);
+        font-weight: 400;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        box-shadow: 0 6px 20px rgba(251, 146, 60, 0.1);
+        white-space: nowrap;
+      }
+
+      .gift-button:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(251, 146, 60, 0.12),
+          rgba(251, 146, 60, 0.06)
+        );
+        border-color: rgba(251, 146, 60, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(251, 146, 60, 0.15);
+      }
+
+      .gift-button:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+      }
+
       /* Taglines */
       .taglines {
-        margin-top: 2rem;
+        margin-top: clamp(1rem, 3vh, 2rem);
         max-width: 500px;
-        margin-left: auto;
-        margin-right: auto;
+        width: 100%;
       }
 
       .tagline {
-        font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        font-size: clamp(0.85rem, 2.2vw, 1.1rem);
         opacity: 0.8;
         font-weight: 300;
         line-height: 1.6;
-        margin-bottom: 1rem;
+        margin-bottom: clamp(0.5rem, 1vh, 1rem);
         letter-spacing: 0.3px;
       }
 
@@ -488,10 +520,11 @@
       }
 
       .sub-tagline {
-        font-size: clamp(0.85rem, 2vw, 1rem);
+        font-size: clamp(0.8rem, 2vw, 1rem);
         opacity: 0.6;
         font-weight: 300;
         line-height: 1.5;
+        margin: 0;
       }
 
       .sub-tagline strong {
@@ -501,7 +534,7 @@
 
       /* Sign-in prompt */
       .sign-in-prompt {
-        margin-top: 2rem;
+        margin-top: clamp(1rem, 2vh, 1.5rem);
         opacity: 0;
         animation: fadeIn 0.8s ease 1.5s forwards;
       }
@@ -517,7 +550,7 @@
       }
 
       .prompt-text {
-        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        font-size: clamp(0.8rem, 2vw, 0.95rem);
         color: rgba(255, 255, 255, 0.7);
         margin: 0;
       }
@@ -537,15 +570,14 @@
 
       /* Usage status for authenticated users */
       .usage-status {
-        margin-top: 2rem;
-        padding: 1rem 1.5rem;
+        margin-top: clamp(1rem, 2vh, 1.5rem);
+        padding: clamp(0.8rem, 2vh, 1rem) clamp(1rem, 3vw, 1.5rem);
         background: rgba(255, 255, 255, 0.04);
         backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 16px;
-        max-width: 320px;
-        margin-left: auto;
-        margin-right: auto;
+        max-width: 300px;
+        width: 100%;
         display: none;
       }
 
@@ -554,7 +586,7 @@
       }
 
       .usage-text {
-        font-size: clamp(0.8rem, 2vw, 0.9rem);
+        font-size: clamp(0.75rem, 2vw, 0.9rem);
         color: rgba(255, 255, 255, 0.8);
         margin-bottom: 0.8rem;
         text-align: center;
@@ -585,8 +617,8 @@
 
       /* Loading spinner */
       .loading-spinner {
-        width: 20px;
-        height: 20px;
+        width: 16px;
+        height: 16px;
         border: 2px solid rgba(255, 255, 255, 0.2);
         border-radius: 50%;
         border-top-color: rgba(255, 255, 255, 0.8);
@@ -601,41 +633,24 @@
         }
       }
 
-      /* Mobile responsiveness */
+      /* Mobile Optimizations */
       @media (max-width: 768px) {
         .nav-container {
           top: 1rem;
           right: 1rem;
         }
 
-        .main-content {
-          padding: 1rem 0.5rem;
-          padding-top: 5rem; /* Extra space to avoid nav overlap */
+        .secondary-buttons {
+          flex-direction: column;
+          gap: 0.8rem;
+          width: 100%;
         }
 
-        .title {
-          margin-bottom: 1.5rem;
-        }
-
-        .button-group {
-          gap: 1.2rem;
-          margin: 1.5rem 0;
-        }
-
-        .reflect-button {
-          width: 160px;
-          height: 160px;
-          font-size: 1rem;
-        }
-
+        .start-free-button,
         .gift-button {
-          padding: 0.9rem 1.5rem;
-          font-size: 0.85rem;
-        }
-
-        .user-dropdown {
-          min-width: 200px;
-          right: -0.5rem;
+          width: 100%;
+          max-width: 280px;
+          justify-content: center;
         }
       }
 
@@ -645,30 +660,76 @@
           right: 0.5rem;
         }
 
-        .main-content {
-          padding: 0.5rem;
-          padding-top: 6rem; /* More space on very small screens */
+        .center-container {
+          max-width: 95vw;
         }
 
         .about-link {
-          padding: 0.7rem 1.2rem;
-          font-size: 0.8rem;
+          font-size: 0.75rem;
+          padding: 0.6rem 1rem;
         }
 
         .reflect-button {
-          width: 140px;
-          height: 140px;
-          font-size: 0.9rem;
+          width: 120px;
+          height: 120px;
+          font-size: 0.85rem;
+        }
+      }
+
+      /* Ultra small screens */
+      @media (max-height: 600px) {
+        .title {
+          margin-bottom: 1rem;
         }
 
-        .gift-button,
-        .start-free-button {
-          padding: 0.8rem 1.2rem;
+        .button-group {
+          margin: 1rem 0;
+          gap: 0.8rem;
+        }
+
+        .taglines {
+          margin-top: 1rem;
+        }
+
+        .reflect-button {
+          width: 100px;
+          height: 100px;
+        }
+      }
+
+      /* Landscape mobile */
+      @media (max-height: 500px) and (orientation: landscape) {
+        .main-content {
+          padding: 1rem;
+        }
+
+        .center-container {
+          gap: 0.5rem;
+        }
+
+        .title {
+          font-size: 1.8rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .button-group {
+          margin: 0.5rem 0;
+          gap: 0.6rem;
+        }
+
+        .reflect-button {
+          width: 80px;
+          height: 80px;
           font-size: 0.8rem;
         }
 
         .taglines {
-          margin-top: 1.5rem;
+          margin-top: 0.5rem;
+        }
+
+        .tagline,
+        .sub-tagline {
+          font-size: 0.8rem;
         }
       }
 
@@ -676,6 +737,7 @@
       @media (prefers-reduced-motion: reduce) {
         .mirror,
         .reflect-button,
+        .start-free-button,
         .gift-button {
           animation: none;
           transition: none;
@@ -688,6 +750,7 @@
 
       /* Focus styles for keyboard navigation */
       .reflect-button:focus,
+      .start-free-button:focus,
       .gift-button:focus,
       .about-link:focus,
       .user-button:focus {
@@ -774,15 +837,17 @@
             ></span>
           </a>
 
-          <a href="/register?tier=free" class="start-free-button">
-            <span>🌱</span>
-            <span>Start Free Forever</span>
-          </a>
+          <div class="secondary-buttons">
+            <a href="/register?tier=free" class="start-free-button">
+              <span>🌱</span>
+              <span>Start Free Forever</span>
+            </a>
 
-          <a href="/gifting" class="gift-button">
-            <span>🎁</span>
-            <span>Gift a Reflection</span>
-          </a>
+            <a href="/gifting" class="gift-button">
+              <span>🎁</span>
+              <span>Gift a Subscription</span>
+            </a>
+          </div>
         </div>
 
         <!-- Taglines -->
@@ -816,7 +881,7 @@
     </main>
 
     <script>
-      // Portal Logic - Consolidated
+      // Portal Logic - Perfect Contained Experience
       let userState = null;
 
       // Initialize portal on load
@@ -900,7 +965,7 @@
         const user = userState.user;
         const usage = userState.usage;
 
-        if (user.isCreator) {
+        if (user.isCreator || user.isAdmin) {
           buttonText.textContent = "✨ Creator Space";
           button.href = "/reflection?mode=creator";
         } else if (usage && usage.canReflect) {
@@ -932,7 +997,7 @@
         userName.textContent = firstName;
 
         // Update avatar based on tier
-        if (user.isCreator) {
+        if (user.isCreator || user.isAdmin) {
           userAvatar.textContent = "🌟";
         } else if (user.tier === "premium") {
           userAvatar.textContent = "💎";
@@ -957,19 +1022,22 @@
         const user = userState.user;
         const usage = userState.usage;
 
-        if (user.isCreator) {
+        if (user.isCreator || user.isAdmin) {
           mainTagline.innerHTML = "Sacred creator space<br/>awaits your truth.";
-          subTagline.textContent =
-            "Unlimited reflections for the mirror maker.";
+          subTagline.innerHTML =
+            "<strong>Unlimited reflections</strong> for the mirror maker.";
         } else if (usage && usage.canReflect) {
           mainTagline.innerHTML = "Ready for your next<br/>moment of truth?";
-          subTagline.textContent = "Your reflection awaits.";
+          subTagline.innerHTML =
+            "<strong>Your reflection awaits.</strong> Continue your journey.";
         } else if (usage && !usage.canReflect) {
           mainTagline.innerHTML = "Your journey continues<br/>beyond limits.";
-          subTagline.textContent = "Upgrade to reflect again this month.";
+          subTagline.innerHTML =
+            "<strong>Upgrade to reflect</strong> again this month.";
         } else {
           mainTagline.innerHTML = "See how far<br/>you've traveled.";
-          subTagline.textContent = "Your reflections hold your evolution.";
+          subTagline.innerHTML =
+            "<strong>Your reflections</strong> hold your evolution.";
         }
       }
 
@@ -1080,7 +1148,7 @@
 
       // Debug
       if (window.location.hostname === "localhost") {
-        console.log("🪞 Sacred Portal initialized");
+        console.log("🪞 Sacred Portal - Perfect No-Scroll Experience");
         window.portalDebug = {
           userState: () => userState,
           refreshState: detectUserState,
