@@ -1,4 +1,4 @@
-// api/auth.js - Mirror of Truth Authentication System (Clean Version)
+// api/auth.js - Mirror of Truth Authentication System (Fixed JSON Parsing)
 const { createClient } = require("@supabase/supabase-js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -18,6 +18,34 @@ if (!JWT_SECRET) {
 
 console.log("✅ JWT_SECRET is set, length:", JWT_SECRET.length);
 
+// Helper function to parse JSON body
+async function parseBody(req) {
+  if (req.body) {
+    // Body already parsed (form data or Vercel auto-parsing)
+    return req.body;
+  }
+
+  // Manual JSON parsing for edge cases
+  return new Promise((resolve, reject) => {
+    let body = "";
+    req.on("data", (chunk) => {
+      body += chunk.toString();
+    });
+    req.on("end", () => {
+      try {
+        if (body.trim() === "") {
+          resolve({});
+        } else {
+          resolve(JSON.parse(body));
+        }
+      } catch (error) {
+        reject(new Error("Invalid JSON body"));
+      }
+    });
+    req.on("error", reject);
+  });
+}
+
 module.exports = async function handler(req, res) {
   // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -33,7 +61,24 @@ module.exports = async function handler(req, res) {
     .substr(2, 9)}`;
 
   try {
-    const { action } = req.body;
+    // Parse request body
+    console.log(`🔍 [${requestId}] Raw body type:`, typeof req.body);
+    console.log(`🔍 [${requestId}] Content-Type:`, req.headers["content-type"]);
+
+    let body;
+    try {
+      body = await parseBody(req);
+      console.log(`🔍 [${requestId}] Parsed body:`, body);
+    } catch (parseError) {
+      console.log(`❌ [${requestId}] Body parsing failed:`, parseError.message);
+      return res.status(400).json({
+        success: false,
+        error: "Invalid request body",
+        debug: { requestId, parseError: parseError.message },
+      });
+    }
+
+    const { action } = body;
 
     console.log(
       `🔍 [${requestId}] Auth Request: ${req.method} ${
@@ -43,27 +88,43 @@ module.exports = async function handler(req, res) {
 
     switch (action) {
       case "signup":
-        return await handleSignup(req, res, requestId);
+        return await handleSignup({ ...req, body }, res, requestId);
       case "signup-with-subscription":
-        return await handleSignupWithSubscription(req, res, requestId);
+        return await handleSignupWithSubscription(
+          { ...req, body },
+          res,
+          requestId
+        );
       case "signin":
-        return await handleSignin(req, res, requestId);
+        return await handleSignin({ ...req, body }, res, requestId);
       case "signout":
-        return await handleSignout(req, res, requestId);
+        return await handleSignout({ ...req, body }, res, requestId);
       case "verify-token":
-        return await handleVerifyToken(req, res, requestId);
+        return await handleVerifyToken({ ...req, body }, res, requestId);
       case "get-user":
-        return await handleGetUser(req, res, requestId);
+        return await handleGetUser({ ...req, body }, res, requestId);
       case "update-profile":
-        return await handleUpdateProfile(req, res, requestId);
+        return await handleUpdateProfile({ ...req, body }, res, requestId);
       case "delete-account":
-        return await handleDeleteAccount(req, res, requestId);
+        return await handleDeleteAccount({ ...req, body }, res, requestId);
       default:
         console.log(`❌ [${requestId}] Invalid action: ${action}`);
         return res.status(400).json({
           success: false,
           error: "Invalid action",
-          debug: { action, requestId },
+          debug: {
+            action,
+            requestId,
+            availableActions: [
+              "signup",
+              "signin",
+              "verify-token",
+              "signout",
+              "get-user",
+              "update-profile",
+              "delete-account",
+            ],
+          },
         });
     }
   } catch (error) {
@@ -73,8 +134,8 @@ module.exports = async function handler(req, res) {
       error: "Authentication service error",
       debug: {
         requestId,
-        message:
-          process.env.NODE_ENV === "development" ? error.message : undefined,
+        message: error.message,
+        stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
       },
     });
   }
@@ -155,8 +216,7 @@ async function handleSignup(req, res, requestId) {
       error: "Failed to create account",
       debug: {
         requestId,
-        message:
-          process.env.NODE_ENV === "development" ? error.message : undefined,
+        message: error.message,
       },
     });
   }
@@ -240,8 +300,7 @@ async function handleSignupWithSubscription(req, res, requestId) {
       error: "Failed to create account with subscription",
       debug: {
         requestId,
-        message:
-          process.env.NODE_ENV === "development" ? error.message : undefined,
+        message: error.message,
       },
     });
   }
@@ -334,8 +393,7 @@ async function handleSignin(req, res, requestId) {
       error: "Failed to sign in",
       debug: {
         requestId,
-        message:
-          process.env.NODE_ENV === "development" ? error.message : undefined,
+        message: error.message,
       },
     });
   }
