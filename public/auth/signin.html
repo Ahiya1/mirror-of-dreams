@@ -3,26 +3,1198 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Return to Your Journey | Mirror of Truth</title>
-    <link rel="stylesheet" href="/shared/foundation.css" />
-    <link rel="stylesheet" href="/auth/signin.css" />
+    <title>The Mirror Remembers You | Mirror of Truth</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: linear-gradient(
+          135deg,
+          #0f0f23 0%,
+          #1a1a2e 25%,
+          #16213e 50%,
+          #0f0f23 100%
+        );
+        color: #fff;
+        overflow-x: hidden;
+        min-height: 100vh;
+        position: relative;
+        cursor: none;
+      }
+
+      /* Magical cursor */
+      .magical-cursor {
+        position: fixed;
+        width: 20px;
+        height: 20px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.8) 0%,
+          rgba(147, 51, 234, 0.6) 50%,
+          transparent 70%
+        );
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition: all 0.1s ease;
+        box-shadow: 0 0 20px rgba(147, 51, 234, 0.4);
+      }
+
+      .magical-cursor::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 40px;
+        height: 40px;
+        background: radial-gradient(
+          circle,
+          transparent 30%,
+          rgba(255, 255, 255, 0.1) 31%,
+          transparent 32%
+        );
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        animation: cursorPulse 2s ease-in-out infinite;
+      }
+
+      @keyframes cursorPulse {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 0.3;
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.5);
+          opacity: 0.1;
+        }
+      }
+
+      /* Enchanted aurora background */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(
+            circle at 20% 30%,
+            rgba(147, 51, 234, 0.08) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 70%,
+            rgba(59, 130, 246, 0.06) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 40% 80%,
+            rgba(16, 185, 129, 0.04) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 90% 20%,
+            rgba(245, 158, 11, 0.03) 0%,
+            transparent 50%
+          );
+        z-index: 1;
+        animation: enchantedFlow 25s ease-in-out infinite;
+      }
+
+      @keyframes enchantedFlow {
+        0%,
+        100% {
+          transform: scale(1) rotate(0deg);
+          opacity: 0.6;
+        }
+        25% {
+          transform: scale(1.1) rotate(90deg);
+          opacity: 0.8;
+        }
+        50% {
+          transform: scale(0.9) rotate(180deg);
+          opacity: 0.4;
+        }
+        75% {
+          transform: scale(1.05) rotate(270deg);
+          opacity: 0.7;
+        }
+      }
+
+      /* Floating magical orbs */
+      .magical-orbs {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      .orb {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.15) 0%,
+          rgba(147, 51, 234, 0.1) 50%,
+          transparent 70%
+        );
+        animation: orbFloat 20s ease-in-out infinite;
+        filter: blur(1px);
+      }
+
+      .orb:nth-child(1) {
+        width: 80px;
+        height: 80px;
+        top: 15%;
+        left: 10%;
+        animation-delay: 0s;
+        animation-duration: 25s;
+      }
+
+      .orb:nth-child(2) {
+        width: 60px;
+        height: 60px;
+        top: 70%;
+        right: 15%;
+        animation-delay: 8s;
+        animation-duration: 30s;
+      }
+
+      .orb:nth-child(3) {
+        width: 40px;
+        height: 40px;
+        bottom: 25%;
+        left: 20%;
+        animation-delay: 16s;
+        animation-duration: 22s;
+      }
+
+      .orb:nth-child(4) {
+        width: 50px;
+        height: 50px;
+        top: 40%;
+        right: 25%;
+        animation-delay: 5s;
+        animation-duration: 28s;
+      }
+
+      .orb:nth-child(5) {
+        width: 35px;
+        height: 35px;
+        top: 60%;
+        left: 60%;
+        animation-delay: 12s;
+        animation-duration: 26s;
+      }
+
+      @keyframes orbFloat {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+          opacity: 0.3;
+        }
+        25% {
+          transform: translate(-30px, -40px) scale(1.1);
+          opacity: 0.6;
+        }
+        50% {
+          transform: translate(40px, -20px) scale(0.9);
+          opacity: 0.8;
+        }
+        75% {
+          transform: translate(-20px, 30px) scale(1.05);
+          opacity: 0.4;
+        }
+      }
+
+      /* Constellation patterns */
+      .constellation {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      .star {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+        animation: starTwinkle 3s ease-in-out infinite;
+      }
+
+      .star::after {
+        content: "";
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        width: 4px;
+        height: 4px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.3) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+      }
+
+      @keyframes starTwinkle {
+        0%,
+        100% {
+          opacity: 0.3;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.2);
+        }
+      }
+
+      /* Navigation with magical enhancement */
+      .nav-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 2rem;
+        z-index: 100;
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        color: rgba(255, 255, 255, 0.6);
+        text-decoration: none;
+        padding: 1rem 1.5rem;
+        border-radius: 50px;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(30px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition: all 0.4s ease;
+        font-weight: 300;
+        font-size: 0.9rem;
+        letter-spacing: 0.3px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .back-link::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: conic-gradient(
+          from 0deg,
+          transparent,
+          rgba(147, 51, 234, 0.1),
+          transparent
+        );
+        animation: magicalBorder 4s linear infinite;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .back-link:hover::before {
+        opacity: 1;
+      }
+
+      @keyframes magicalBorder {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .back-link:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.9);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(147, 51, 234, 0.2);
+      }
+
+      /* Main container with entrance magic */
+      .signin-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        position: relative;
+        z-index: 10;
+      }
+
+      /* Enchanted signin card */
+      .signin-card {
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(40px) saturate(120%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 32px;
+        padding: 4rem 3rem;
+        max-width: 480px;
+        width: 100%;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4),
+          0 0 80px rgba(147, 51, 234, 0.1),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        position: relative;
+        overflow: hidden;
+        animation: cardMagicalEntrance 2s ease-out;
+      }
+
+      @keyframes cardMagicalEntrance {
+        0% {
+          opacity: 0;
+          transform: scale(0.8) translateY(60px) rotateX(20deg);
+          filter: blur(20px);
+        }
+        50% {
+          opacity: 0.8;
+          transform: scale(1.02) translateY(-10px) rotateX(-5deg);
+          filter: blur(5px);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1) translateY(0) rotateX(0deg);
+          filter: blur(0);
+        }
+      }
+
+      .signin-card::before {
+        content: "";
+        position: absolute;
+        inset: 1px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.08) 0%,
+          rgba(147, 51, 234, 0.03) 25%,
+          rgba(59, 130, 246, 0.02) 50%,
+          rgba(255, 255, 255, 0.01) 100%
+        );
+        border-radius: 31px;
+        pointer-events: none;
+        animation: cardShimmer 6s ease-in-out infinite;
+      }
+
+      @keyframes cardShimmer {
+        0%,
+        100% {
+          opacity: 0.5;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+
+      .signin-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: conic-gradient(
+          from 180deg at 50% 50%,
+          transparent 0deg,
+          rgba(147, 51, 234, 0.03) 60deg,
+          transparent 120deg
+        );
+        border-radius: 32px;
+        animation: cardAura 8s linear infinite;
+        opacity: 0.4;
+      }
+
+      @keyframes cardAura {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Magical header section */
+      .signin-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        position: relative;
+        z-index: 2;
+      }
+
+      .mirror-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        animation: mirrorEnchantment 6s ease-in-out infinite;
+        display: block;
+        position: relative;
+      }
+
+      .mirror-icon::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 120px;
+        height: 120px;
+        background: radial-gradient(
+          circle,
+          rgba(147, 51, 234, 0.1) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        animation: iconAura 4s ease-in-out infinite;
+        z-index: -1;
+      }
+
+      @keyframes mirrorEnchantment {
+        0%,
+        100% {
+          transform: scale(1) rotateY(0deg);
+          filter: drop-shadow(0 0 20px rgba(147, 51, 234, 0.3));
+        }
+        25% {
+          transform: scale(1.05) rotateY(10deg);
+          filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.4));
+        }
+        50% {
+          transform: scale(1.1) rotateY(0deg);
+          filter: drop-shadow(0 0 40px rgba(16, 185, 129, 0.3));
+        }
+        75% {
+          transform: scale(1.05) rotateY(-10deg);
+          filter: drop-shadow(0 0 30px rgba(245, 158, 11, 0.4));
+        }
+      }
+
+      @keyframes iconAura {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 0.3;
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.2);
+          opacity: 0.6;
+        }
+      }
+
+      .recognition-text {
+        font-size: clamp(1.8rem, 4vw, 2.4rem);
+        font-weight: 200;
+        margin-bottom: 1rem;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.95) 0%,
+          rgba(147, 51, 234, 0.8) 25%,
+          rgba(59, 130, 246, 0.9) 50%,
+          rgba(255, 255, 255, 0.95) 75%,
+          rgba(16, 185, 129, 0.8) 100%
+        );
+        -webkit-background-clip: text;
+        color: transparent;
+        letter-spacing: 1px;
+        line-height: 1.3;
+        animation: textEnchant 8s ease-in-out infinite;
+        background-size: 200% 200%;
+      }
+
+      @keyframes textEnchant {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+
+      .truth-awaits {
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+        opacity: 0.8;
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.6;
+        font-weight: 300;
+        font-style: italic;
+        margin-bottom: 0.5rem;
+        animation: gentle-glow 3s ease-in-out infinite;
+      }
+
+      @keyframes gentle-glow {
+        0%,
+        100% {
+          text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+        50% {
+          text-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
+        }
+      }
+
+      .gentle-invitation {
+        font-size: 0.9rem;
+        opacity: 0.6;
+        color: rgba(255, 255, 255, 0.6);
+        letter-spacing: 0.5px;
+        animation: invitation-pulse 4s ease-in-out infinite;
+      }
+
+      @keyframes invitation-pulse {
+        0%,
+        100% {
+          opacity: 0.6;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+
+      /* Enchanted form styling */
+      .signin-form {
+        position: relative;
+        z-index: 2;
+      }
+
+      .form-group {
+        margin-bottom: 2rem;
+        position: relative;
+      }
+
+      .sacred-input {
+        width: 100%;
+        padding: 1.5rem 1.2rem;
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        color: #fff;
+        font-size: 1rem;
+        font-family: inherit;
+        transition: all 0.4s ease;
+        position: relative;
+        font-weight: 300;
+      }
+
+      .sacred-input:focus {
+        outline: none;
+        border-color: rgba(147, 51, 234, 0.4);
+        background: rgba(255, 255, 255, 0.06);
+        box-shadow: 0 0 30px rgba(147, 51, 234, 0.2),
+          0 0 60px rgba(147, 51, 234, 0.1),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .sacred-input:focus + .input-label {
+        color: rgba(147, 51, 234, 0.8);
+        text-shadow: 0 0 10px rgba(147, 51, 234, 0.3);
+      }
+
+      .sacred-input::placeholder {
+        color: rgba(255, 255, 255, 0.3);
+        font-style: italic;
+        font-weight: 300;
+      }
+
+      /* Magical floating labels */
+      .input-label {
+        position: absolute;
+        left: 1.2rem;
+        top: 1.5rem;
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 1rem;
+        font-weight: 300;
+        pointer-events: none;
+        transition: all 0.3s ease;
+        transform-origin: left top;
+      }
+
+      .sacred-input:focus + .input-label,
+      .sacred-input:not(:placeholder-shown) + .input-label {
+        transform: translateY(-2.5rem) scale(0.85);
+        color: rgba(147, 51, 234, 0.8);
+        left: 0.8rem;
+      }
+
+      /* Enchanted remember essence */
+      .remember-essence {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-bottom: 2.5rem;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.9rem;
+        font-weight: 300;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .remember-essence:hover {
+        color: rgba(255, 255, 255, 0.8);
+        text-shadow: 0 0 10px rgba(147, 51, 234, 0.2);
+      }
+
+      .essence-checkbox {
+        width: 20px;
+        height: 20px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 6px;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .remember-essence input[type="checkbox"] {
+        display: none;
+      }
+
+      .remember-essence input[type="checkbox"]:checked + .essence-checkbox {
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.4),
+          rgba(99, 102, 241, 0.3)
+        );
+        border-color: rgba(147, 51, 234, 0.6);
+        box-shadow: 0 0 15px rgba(147, 51, 234, 0.3);
+      }
+
+      .remember-essence
+        input[type="checkbox"]:checked
+        + .essence-checkbox::after {
+        content: "✓";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 12px;
+        font-weight: bold;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+      }
+
+      /* Magical entry button */
+      .sacred-entry-button {
+        width: 100%;
+        padding: 1.8rem 2rem;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(147, 51, 234, 0.1) 25%,
+          rgba(59, 130, 246, 0.08) 50%,
+          rgba(255, 255, 255, 0.05) 100%
+        );
+        backdrop-filter: blur(30px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 24px;
+        color: #fff;
+        font-size: 1.1rem;
+        font-weight: 400;
+        cursor: pointer;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        letter-spacing: 0.8px;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 2rem;
+        text-transform: none;
+      }
+
+      .sacred-entry-button::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.1) 0%,
+          rgba(59, 130, 246, 0.08) 50%,
+          rgba(16, 185, 129, 0.06) 100%
+        );
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      .sacred-entry-button::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.2) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: all 0.6s ease;
+      }
+
+      .sacred-entry-button:hover:not(:disabled) {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.15) 0%,
+          rgba(147, 51, 234, 0.15) 25%,
+          rgba(59, 130, 246, 0.12) 50%,
+          rgba(255, 255, 255, 0.08) 100%
+        );
+        border-color: rgba(147, 51, 234, 0.3);
+        transform: translateY(-3px);
+        box-shadow: 0 20px 40px rgba(147, 51, 234, 0.2),
+          0 0 60px rgba(147, 51, 234, 0.1);
+      }
+
+      .sacred-entry-button:hover:not(:disabled)::before {
+        opacity: 1;
+      }
+
+      .sacred-entry-button:hover:not(:disabled)::after {
+        width: 300px;
+        height: 300px;
+      }
+
+      .sacred-entry-button:active:not(:disabled) {
+        transform: translateY(-1px) scale(0.98);
+      }
+
+      .sacred-entry-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* Magical loading state */
+      .button-loader {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+      }
+
+      .sacred-spinner {
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        border-top-color: rgba(147, 51, 234, 0.8);
+        border-right-color: rgba(59, 130, 246, 0.8);
+        animation: magicalSpin 1.5s linear infinite;
+      }
+
+      @keyframes magicalSpin {
+        0% {
+          transform: rotate(0deg);
+          box-shadow: 0 0 10px rgba(147, 51, 234, 0.3);
+        }
+        50% {
+          box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+        100% {
+          transform: rotate(360deg);
+          box-shadow: 0 0 10px rgba(147, 51, 234, 0.3);
+        }
+      }
+
+      /* Enchanted divider */
+      .sacred-divider {
+        text-align: center;
+        margin: 3rem 0;
+        position: relative;
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.9rem;
+        font-weight: 300;
+        font-style: italic;
+      }
+
+      .sacred-divider::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(147, 51, 234, 0.3) 25%,
+          rgba(59, 130, 246, 0.4) 50%,
+          rgba(147, 51, 234, 0.3) 75%,
+          transparent 100%
+        );
+        z-index: 1;
+        animation: dividerFlow 4s ease-in-out infinite;
+      }
+
+      @keyframes dividerFlow {
+        0%,
+        100% {
+          opacity: 0.3;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+
+      .sacred-divider span {
+        background: linear-gradient(
+          135deg,
+          rgba(15, 15, 35, 0.9),
+          rgba(26, 26, 46, 0.8)
+        );
+        padding: 0 1.5rem;
+        position: relative;
+        z-index: 2;
+      }
+
+      /* Magical first time invitation */
+      .first-time-invitation {
+        text-align: center;
+        position: relative;
+        z-index: 2;
+      }
+
+      .invitation-text {
+        margin-bottom: 2rem;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1rem;
+        line-height: 1.6;
+        font-weight: 300;
+      }
+
+      .gentle-note {
+        display: block;
+        font-size: 0.9rem;
+        opacity: 0.6;
+        margin-top: 0.5rem;
+        font-style: italic;
+      }
+
+      .begin-journey-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 1rem;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        padding: 1.5rem 2.5rem;
+        border-radius: 20px;
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.15) 0%,
+          rgba(99, 102, 241, 0.1) 50%,
+          rgba(59, 130, 246, 0.08) 100%
+        );
+        border: 1px solid rgba(147, 51, 234, 0.2);
+        transition: all 0.4s ease;
+        font-weight: 400;
+        font-size: 1rem;
+        letter-spacing: 0.3px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .begin-journey-link::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.1) 0%,
+          rgba(59, 130, 246, 0.08) 100%
+        );
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+
+      .begin-journey-link:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.25) 0%,
+          rgba(99, 102, 241, 0.15) 50%,
+          rgba(59, 130, 246, 0.12) 100%
+        );
+        border-color: rgba(147, 51, 234, 0.4);
+        color: rgba(255, 255, 255, 0.95);
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(147, 51, 234, 0.3),
+          0 0 50px rgba(147, 51, 234, 0.2);
+      }
+
+      .begin-journey-link:hover::before {
+        opacity: 1;
+      }
+
+      .begin-journey-link small {
+        display: block;
+        font-size: 0.8rem;
+        opacity: 0.7;
+        margin-top: 0.2rem;
+      }
+
+      /* Enchanted messages */
+      .sacred-message {
+        padding: 1.2rem;
+        border-radius: 16px;
+        font-size: 0.95rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.4s ease;
+        font-weight: 300;
+        letter-spacing: 0.3px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .sacred-message::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          45deg,
+          transparent 30%,
+          rgba(255, 255, 255, 0.05) 50%,
+          transparent 70%
+        );
+        animation: messageShimmer 3s ease-in-out infinite;
+      }
+
+      @keyframes messageShimmer {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+
+      .sacred-message.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .sacred-message.error {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        color: rgba(252, 165, 165, 0.9);
+        box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
+      }
+
+      .sacred-message.success {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+        color: rgba(110, 231, 183, 0.9);
+        box-shadow: 0 0 20px rgba(34, 197, 94, 0.1);
+      }
+
+      /* Floating magical whispers */
+      .truth-whispers {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 3;
+      }
+
+      .whisper {
+        position: absolute;
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.8rem;
+        font-style: italic;
+        font-weight: 300;
+        opacity: 0;
+        animation: whisperMagic 25s ease-in-out infinite;
+        max-width: 200px;
+        line-height: 1.4;
+        text-align: center;
+        text-shadow: 0 0 10px rgba(147, 51, 234, 0.2);
+      }
+
+      .whisper:nth-child(1) {
+        top: 20%;
+        left: 5%;
+        animation-delay: 0s;
+      }
+
+      .whisper:nth-child(2) {
+        top: 60%;
+        right: 8%;
+        animation-delay: 8s;
+      }
+
+      .whisper:nth-child(3) {
+        bottom: 25%;
+        left: 15%;
+        animation-delay: 16s;
+      }
+
+      .whisper:nth-child(4) {
+        top: 40%;
+        right: 30%;
+        animation-delay: 4s;
+      }
+
+      .whisper:nth-child(5) {
+        bottom: 45%;
+        left: 70%;
+        animation-delay: 12s;
+      }
+
+      @keyframes whisperMagic {
+        0%,
+        12%,
+        88%,
+        100% {
+          opacity: 0;
+          transform: translateY(30px) scale(0.9);
+          filter: blur(2px);
+        }
+        20%,
+        80% {
+          opacity: 0.7;
+          transform: translateY(0) scale(1);
+          filter: blur(0);
+        }
+        50% {
+          opacity: 0.9;
+          transform: translateY(-10px) scale(1.05);
+        }
+      }
+
+      /* Interactive magical particles on mouse move */
+      .magic-trail {
+        position: fixed;
+        width: 4px;
+        height: 4px;
+        background: radial-gradient(
+          circle,
+          rgba(147, 51, 234, 0.8) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9998;
+        animation: trailFade 2s ease-out forwards;
+      }
+
+      @keyframes trailFade {
+        0% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(0.3);
+        }
+      }
+
+      /* Mobile responsiveness with magic preserved */
+      @media (max-width: 768px) {
+        .nav-header {
+          padding: 1.5rem;
+        }
+
+        .signin-container {
+          padding: 1rem;
+        }
+
+        .signin-card {
+          padding: 3rem 2rem;
+          border-radius: 24px;
+        }
+
+        .magical-orbs .orb {
+          width: 60px !important;
+          height: 60px !important;
+        }
+
+        .magical-orbs .orb:nth-child(n + 4) {
+          display: none;
+        }
+
+        .truth-whispers .whisper:nth-child(n + 3) {
+          display: none;
+        }
+
+        .recognition-text {
+          font-size: 2rem;
+        }
+
+        .truth-awaits {
+          font-size: 1rem;
+        }
+
+        body {
+          cursor: auto;
+        }
+
+        .magical-cursor {
+          display: none;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .signin-card {
+          padding: 2.5rem 1.5rem;
+        }
+
+        .mirror-icon {
+          font-size: 3rem;
+          margin-bottom: 1rem;
+        }
+
+        .sacred-input {
+          padding: 1.3rem 1rem;
+        }
+
+        .sacred-entry-button {
+          padding: 1.5rem 1.5rem;
+        }
+
+        .magical-orbs .orb {
+          width: 40px !important;
+          height: 40px !important;
+        }
+      }
+
+      /* Reduce motion for accessibility */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
   </head>
 
   <body>
-    <!-- Sacred Background -->
-    <div class="cosmic-background">
-      <div class="cosmic-particle"></div>
-      <div class="cosmic-particle"></div>
-      <div class="cosmic-particle"></div>
-      <div class="cosmic-particle"></div>
-      <div class="cosmic-particle"></div>
+    <!-- Magical cursor -->
+    <div class="magical-cursor" id="magicalCursor"></div>
+
+    <!-- Floating magical orbs -->
+    <div class="magical-orbs">
+      <div class="orb"></div>
+      <div class="orb"></div>
+      <div class="orb"></div>
+      <div class="orb"></div>
+      <div class="orb"></div>
+    </div>
+
+    <!-- Constellation stars -->
+    <div class="constellation" id="constellation">
+      <!-- Stars will be generated by JavaScript -->
     </div>
 
     <!-- Navigation -->
     <nav class="nav-header">
       <a href="/" class="back-link">
         <span>←</span>
-        <span>Return to Portal</span>
+        <span>Return to the beginning</span>
       </a>
     </nav>
 
@@ -32,155 +1204,605 @@
         <!-- Header -->
         <div class="signin-header">
           <div class="mirror-icon">🪞</div>
-          <h1 class="signin-title">Welcome Back</h1>
-          <p class="signin-subtitle">
-            Return to your sacred journey of self-discovery
+          <h1 class="recognition-text">Welcome back, dear soul</h1>
+          <p class="truth-awaits">
+            Your reflections are waiting where you left them
           </p>
+          <p class="gentle-invitation">ready to see yourself again?</p>
         </div>
 
         <!-- Sign In Form -->
         <form id="signinForm" class="signin-form">
           <div class="form-group">
-            <label for="email" class="form-label">Email</label>
             <input
               type="email"
               id="email"
               name="email"
               class="sacred-input"
-              placeholder="your@email.com"
+              placeholder=" "
               required
               autocomplete="email"
             />
-            <div class="validation-feedback" id="emailFeedback"></div>
+            <label for="email" class="input-label">your sacred email</label>
           </div>
 
           <div class="form-group">
-            <label for="password" class="form-label">Password</label>
             <input
               type="password"
               id="password"
               name="password"
               class="sacred-input"
-              placeholder="Enter your password"
+              placeholder=" "
               required
               autocomplete="current-password"
             />
-            <div class="validation-feedback" id="passwordFeedback"></div>
+            <label for="password" class="input-label">your chosen words</label>
           </div>
 
-          <!-- Remember & Forgot -->
-          <div class="form-options">
-            <label class="remember-checkbox">
-              <input type="checkbox" id="rememberMe" />
-              <span class="checkmark"></span>
-              <span class="checkbox-label">Remember me</span>
-            </label>
-            <a href="#" class="forgot-link" onclick="showForgotPassword()">
-              Forgot password?
-            </a>
-          </div>
+          <!-- Remember essence -->
+          <label class="remember-essence">
+            <input type="checkbox" id="rememberMe" />
+            <span class="essence-checkbox"></span>
+            <span>remember my essence</span>
+          </label>
 
           <!-- Submit Button -->
-          <button type="submit" class="signin-button" id="signinButton">
-            <span class="button-text">Enter Your Sacred Space</span>
+          <button type="submit" class="sacred-entry-button" id="signinButton">
+            <span class="button-text">step through the mirror</span>
             <span class="button-loader" style="display: none">
-              <div class="loading-spinner"></div>
-              <span>Signing in...</span>
+              <div class="sacred-spinner"></div>
+              <span>the mirror opens...</span>
             </span>
           </button>
 
-          <!-- Error Display -->
+          <!-- Sacred messages -->
           <div
-            class="error-message"
+            class="sacred-message error"
             id="errorMessage"
             style="display: none"
           ></div>
-
-          <!-- Success Display -->
           <div
-            class="success-message"
+            class="sacred-message success"
             id="successMessage"
             style="display: none"
           ></div>
         </form>
 
         <!-- Divider -->
-        <div class="signin-divider">
-          <span>New to Mirror of Truth?</span>
+        <div class="sacred-divider">
+          <span>or perhaps this is your first time?</span>
         </div>
 
-        <!-- Register Link -->
-        <div class="register-section">
-          <p class="register-text">
-            Begin your journey of self-discovery and consciousness evolution
+        <!-- First time invitation -->
+        <div class="first-time-invitation">
+          <p class="invitation-text">
+            First time? We can learn who you are in moments
+            <span class="gentle-note">with Google, or the traditional way</span>
           </p>
-          <a href="/register" class="register-link">
-            <span>✨</span>
-            <span>Start Your Journey</span>
+          <a href="/register" class="begin-journey-link">
+            <span>🌟</span>
+            <div>
+              <span>begin your journey</span>
+              <small>Google signin available</small>
+            </div>
           </a>
         </div>
       </div>
 
-      <!-- Testimonial Quotes -->
-      <div class="testimonial-float">
-        <div class="quote-bubble quote-1">
-          <p>
-            "It felt accurate to my situation, it's been weird to be seen so
-            deeply like that"
-          </p>
-          <cite>— David</cite>
-        </div>
-        <div class="quote-bubble quote-2">
-          <p>"I feel it truly saw me where I am"</p>
-          <cite>— Sarah</cite>
-        </div>
-        <div class="quote-bubble quote-3">
-          <p>"It's been a long time since I felt so seen"</p>
-          <cite>— Alex</cite>
-        </div>
+      <!-- Truth whispers -->
+      <div class="truth-whispers">
+        <div class="whisper">"you are exactly<br />where you need to be"</div>
+        <div class="whisper">"your truth has been<br />patiently waiting"</div>
+        <div class="whisper">"welcome home<br />to yourself"</div>
+        <div class="whisper">"this moment<br />recognizes you"</div>
+        <div class="whisper">"your wisdom<br />never left you"</div>
       </div>
     </main>
 
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay" style="display: none">
-      <div class="loading-content">
-        <div class="cosmic-loader"></div>
-        <p>Preparing your sacred space...</p>
-      </div>
-    </div>
+    <script>
+      // Enhanced magical signin logic
+      let isLoading = false;
+      let mouseTrail = [];
 
-    <!-- Forgot Password Modal -->
-    <div class="modal-overlay" id="forgotModal" style="display: none">
-      <div class="modal-card">
-        <div class="modal-header">
-          <h3>Reset Your Password</h3>
-          <button class="modal-close" onclick="closeForgotPassword()">
-            &times;
-          </button>
-        </div>
-        <div class="modal-body">
-          <p>
-            Password reset functionality will be available soon. For now, please
-            contact support if you need help accessing your account.
-          </p>
-          <div class="modal-actions">
-            <button
-              class="modal-button secondary"
-              onclick="closeForgotPassword()"
-            >
-              Close
-            </button>
-            <a
-              href="mailto:support@mirror-of-truth.com"
-              class="modal-button primary"
-            >
-              Contact Support
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
+      // Initialize magical experience
+      window.addEventListener("load", initializeMagicalSignin);
 
-    <script src="/auth/signin.js"></script>
+      function initializeMagicalSignin() {
+        setupFormInteractions();
+        checkExistingEssence();
+        animateEntry();
+        createConstellation();
+        setupMagicalCursor();
+        setupMagicalInteractions();
+      }
+
+      function setupFormInteractions() {
+        const form = document.getElementById("signinForm");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+
+        // Form submission
+        form.addEventListener("submit", handleSacredEntry);
+
+        // Enter key handling
+        [emailInput, passwordInput].forEach((input) => {
+          input.addEventListener("keypress", function (e) {
+            if (e.key === "Enter" && !isLoading) {
+              handleSacredEntry(e);
+            }
+          });
+        });
+
+        // Enhanced input interactions
+        [emailInput, passwordInput].forEach((input) => {
+          input.addEventListener("focus", function () {
+            this.parentElement.style.transform = "scale(1.02)";
+            createMagicalSparkles(this);
+          });
+
+          input.addEventListener("blur", function () {
+            this.parentElement.style.transform = "scale(1)";
+          });
+
+          input.addEventListener("input", function () {
+            if (this.value.length > 0) {
+              createInputMagic(this);
+            }
+          });
+        });
+      }
+
+      async function handleSacredEntry(e) {
+        e.preventDefault();
+        if (isLoading) return;
+
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+
+        if (!email || !password) {
+          showSacredMessage(
+            "The mirror needs to recognize your essence first",
+            "error"
+          );
+          return;
+        }
+
+        if (!validateEmail(email)) {
+          showSacredMessage(
+            "The mirror cannot read this email pattern",
+            "error"
+          );
+          return;
+        }
+
+        setLoadingState(true);
+        hideMessages();
+        createSigninMagic();
+
+        try {
+          // API call to your authentication endpoint
+          const response = await fetch("/api/auth", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              action: "signin",
+              email: email,
+              password: password,
+            }),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            // Store auth token
+            localStorage.setItem("mirrorAuthToken", result.token);
+            localStorage.setItem("mirrorUserData", JSON.stringify(result.user));
+
+            // Remember email if checkbox is checked
+            if (document.getElementById("rememberMe").checked) {
+              localStorage.setItem("mirror_remember_email", email);
+            }
+
+            showSacredMessage(
+              "The mirror opens... your truth awaits within",
+              "success"
+            );
+
+            setTimeout(() => {
+              // Redirect to dashboard
+              window.location.href = "/dashboard";
+            }, 1500);
+          } else {
+            throw new Error(result.error || "Authentication failed");
+          }
+        } catch (error) {
+          console.error("Signin error:", error);
+          showSacredMessage(
+            "The mirror dims... check your sacred words and try again",
+            "error"
+          );
+          setLoadingState(false);
+        }
+      }
+
+      function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      }
+
+      function setLoadingState(loading) {
+        isLoading = loading;
+        const button = document.getElementById("signinButton");
+        const buttonText = button.querySelector(".button-text");
+        const buttonLoader = button.querySelector(".button-loader");
+
+        if (loading) {
+          buttonText.style.display = "none";
+          buttonLoader.style.display = "flex";
+          button.disabled = true;
+        } else {
+          buttonText.style.display = "block";
+          buttonLoader.style.display = "none";
+          button.disabled = false;
+        }
+      }
+
+      function showSacredMessage(message, type) {
+        const messageDiv = document.getElementById(
+          type === "error" ? "errorMessage" : "successMessage"
+        );
+        messageDiv.textContent = message;
+        messageDiv.style.display = "block";
+
+        requestAnimationFrame(() => {
+          messageDiv.classList.add("show");
+        });
+
+        if (type === "error") {
+          setTimeout(hideMessages, 5000);
+        }
+      }
+
+      function hideMessages() {
+        ["errorMessage", "successMessage"].forEach((id) => {
+          const div = document.getElementById(id);
+          div.classList.remove("show");
+          setTimeout(() => (div.style.display = "none"), 400);
+        });
+      }
+
+      function checkExistingEssence() {
+        // Check for remembered email
+        const rememberedEmail = localStorage.getItem("mirror_remember_email");
+        if (rememberedEmail) {
+          document.getElementById("email").value = rememberedEmail;
+          document.getElementById("rememberMe").checked = true;
+
+          // Focus password field
+          setTimeout(() => {
+            document.getElementById("password").focus();
+          }, 800);
+        } else {
+          // Focus email field
+          setTimeout(() => {
+            document.getElementById("email").focus();
+          }, 1200);
+        }
+      }
+
+      function animateEntry() {
+        // Enhanced animation sequence
+        const formGroups = document.querySelectorAll(".form-group");
+        const rememberEssence = document.querySelector(".remember-essence");
+        const submitButton = document.querySelector(".sacred-entry-button");
+        const invitation = document.querySelector(".first-time-invitation");
+
+        [
+          formGroups[0],
+          formGroups[1],
+          rememberEssence,
+          submitButton,
+          invitation,
+        ].forEach((element, index) => {
+          if (element) {
+            element.style.opacity = "0";
+            element.style.transform = "translateY(30px)";
+
+            setTimeout(() => {
+              element.style.transition = "all 1s cubic-bezier(0.4, 0, 0.2, 1)";
+              element.style.opacity = "1";
+              element.style.transform = "translateY(0)";
+            }, 400 + index * 300);
+          }
+        });
+      }
+
+      function createConstellation() {
+        const constellation = document.getElementById("constellation");
+        const starCount = window.innerWidth > 768 ? 30 : 15;
+
+        for (let i = 0; i < starCount; i++) {
+          const star = document.createElement("div");
+          star.className = "star";
+          star.style.left = Math.random() * 100 + "%";
+          star.style.top = Math.random() * 100 + "%";
+          star.style.animationDelay = Math.random() * 3 + "s";
+          constellation.appendChild(star);
+        }
+      }
+
+      function setupMagicalCursor() {
+        if (window.innerWidth <= 768) return; // Skip on mobile
+
+        const cursor = document.getElementById("magicalCursor");
+        let cursorTimeout;
+
+        document.addEventListener("mousemove", (e) => {
+          cursor.style.left = e.clientX + "px";
+          cursor.style.top = e.clientY + "px";
+          cursor.style.opacity = "1";
+
+          // Create magical trail
+          createMagicalTrail(e.clientX, e.clientY);
+
+          clearTimeout(cursorTimeout);
+          cursorTimeout = setTimeout(() => {
+            cursor.style.opacity = "0.3";
+          }, 100);
+        });
+
+        document.addEventListener("mouseleave", () => {
+          cursor.style.opacity = "0";
+        });
+      }
+
+      function createMagicalTrail(x, y) {
+        const trail = document.createElement("div");
+        trail.className = "magic-trail";
+        trail.style.left = x + "px";
+        trail.style.top = y + "px";
+        document.body.appendChild(trail);
+
+        setTimeout(() => {
+          trail.remove();
+        }, 2000);
+      }
+
+      function setupMagicalInteractions() {
+        // Enhanced button interactions
+        const buttons = document.querySelectorAll(
+          ".sacred-entry-button, .begin-journey-link, .back-link"
+        );
+
+        buttons.forEach((button) => {
+          button.addEventListener("mouseenter", function () {
+            createHoverMagic(this);
+          });
+
+          button.addEventListener("click", function () {
+            createClickMagic(this);
+          });
+        });
+
+        // Magical form interactions
+        const inputs = document.querySelectorAll(".sacred-input");
+        inputs.forEach((input) => {
+          input.addEventListener("focus", function () {
+            createFocusMagic(this);
+          });
+        });
+      }
+
+      function createMagicalSparkles(element) {
+        const rect = element.getBoundingClientRect();
+        const sparkleCount = 5;
+
+        for (let i = 0; i < sparkleCount; i++) {
+          setTimeout(() => {
+            const sparkle = document.createElement("div");
+            sparkle.style.cssText = `
+              position: fixed;
+              left: ${rect.left + Math.random() * rect.width}px;
+              top: ${rect.top + Math.random() * rect.height}px;
+              width: 3px;
+              height: 3px;
+              background: radial-gradient(circle, rgba(147, 51, 234, 0.8) 0%, transparent 70%);
+              border-radius: 50%;
+              pointer-events: none;
+              z-index: 9999;
+              animation: sparkleFloat 2s ease-out forwards;
+            `;
+            document.body.appendChild(sparkle);
+
+            setTimeout(() => sparkle.remove(), 2000);
+          }, i * 100);
+        }
+      }
+
+      function createInputMagic(element) {
+        if (Math.random() < 0.1) {
+          // Only occasionally create magic
+          const rect = element.getBoundingClientRect();
+          const magic = document.createElement("div");
+          magic.style.cssText = `
+            position: fixed;
+            left: ${rect.right - 20}px;
+            top: ${rect.top + rect.height / 2}px;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.9) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            animation: inputMagicFloat 1.5s ease-out forwards;
+          `;
+          document.body.appendChild(magic);
+
+          setTimeout(() => magic.remove(), 1500);
+        }
+      }
+
+      function createHoverMagic(element) {
+        const rect = element.getBoundingClientRect();
+        const magic = document.createElement("div");
+        magic.style.cssText = `
+          position: fixed;
+          left: ${rect.left + rect.width / 2}px;
+          top: ${rect.top + rect.height / 2}px;
+          width: 50px;
+          height: 50px;
+          background: radial-gradient(circle, rgba(147, 51, 234, 0.3) 0%, transparent 70%);
+          border-radius: 50%;
+          pointer-events: none;
+          z-index: 9999;
+          animation: hoverMagicExpand 1s ease-out forwards;
+          transform: translate(-50%, -50%);
+        `;
+        document.body.appendChild(magic);
+
+        setTimeout(() => magic.remove(), 1000);
+      }
+
+      function createClickMagic(element) {
+        const rect = element.getBoundingClientRect();
+        const magicCount = 8;
+
+        for (let i = 0; i < magicCount; i++) {
+          const magic = document.createElement("div");
+          const angle = (i / magicCount) * Math.PI * 2;
+          const distance = 50;
+
+          magic.style.cssText = `
+            position: fixed;
+            left: ${rect.left + rect.width / 2}px;
+            top: ${rect.top + rect.height / 2}px;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.9) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            animation: clickMagicBurst 1.2s ease-out forwards;
+            --angle: ${angle}rad;
+            --distance: ${distance}px;
+          `;
+          document.body.appendChild(magic);
+
+          setTimeout(() => magic.remove(), 1200);
+        }
+      }
+
+      function createFocusMagic(element) {
+        const rect = element.getBoundingClientRect();
+        const magic = document.createElement("div");
+        magic.style.cssText = `
+          position: fixed;
+          left: ${rect.left}px;
+          top: ${rect.top}px;
+          width: ${rect.width}px;
+          height: ${rect.height}px;
+          border: 2px solid rgba(147, 51, 234, 0.4);
+          border-radius: 20px;
+          pointer-events: none;
+          z-index: 9999;
+          animation: focusMagicGlow 2s ease-out forwards;
+        `;
+        document.body.appendChild(magic);
+
+        setTimeout(() => magic.remove(), 2000);
+      }
+
+      function createSigninMagic() {
+        const card = document.querySelector(".signin-card");
+        const rect = card.getBoundingClientRect();
+
+        for (let i = 0; i < 20; i++) {
+          setTimeout(() => {
+            const magic = document.createElement("div");
+            magic.style.cssText = `
+              position: fixed;
+              left: ${rect.left + Math.random() * rect.width}px;
+              top: ${rect.top + Math.random() * rect.height}px;
+              width: 6px;
+              height: 6px;
+              background: radial-gradient(circle, rgba(34, 197, 94, 0.8) 0%, transparent 70%);
+              border-radius: 50%;
+              pointer-events: none;
+              z-index: 9999;
+              animation: signinMagicRise 3s ease-out forwards;
+            `;
+            document.body.appendChild(magic);
+
+            setTimeout(() => magic.remove(), 3000);
+          }, i * 100);
+        }
+      }
+
+      // Add magical CSS animations
+      const magicStyles = document.createElement("style");
+      magicStyles.textContent = `
+        @keyframes sparkleFloat {
+          0% { opacity: 1; transform: translateY(0) scale(1); }
+          100% { opacity: 0; transform: translateY(-30px) scale(0.3); }
+        }
+        
+        @keyframes inputMagicFloat {
+          0% { opacity: 1; transform: translateX(0) scale(1); }
+          100% { opacity: 0; transform: translateX(20px) scale(0.3); }
+        }
+        
+        @keyframes hoverMagicExpand {
+          0% { opacity: 0.6; transform: translate(-50%, -50%) scale(0.5); }
+          100% { opacity: 0; transform: translate(-50%, -50%) scale(2); }
+        }
+        
+        @keyframes clickMagicBurst {
+          0% { 
+            opacity: 1; 
+            transform: translate(-50%, -50%) scale(1);
+          }
+          100% { 
+            opacity: 0; 
+            transform: translate(
+              calc(-50% + cos(var(--angle)) * var(--distance)), 
+              calc(-50% + sin(var(--angle)) * var(--distance))
+            ) scale(0.3);
+          }
+        }
+        
+        @keyframes focusMagicGlow {
+          0% { opacity: 0.8; box-shadow: 0 0 20px rgba(147, 51, 234, 0.4); }
+          100% { opacity: 0; box-shadow: 0 0 60px rgba(147, 51, 234, 0.1); }
+        }
+        
+        @keyframes signinMagicRise {
+          0% { opacity: 1; transform: translateY(0) scale(1); }
+          100% { opacity: 0; transform: translateY(-100px) scale(0.2); }
+        }
+      `;
+      document.head.appendChild(magicStyles);
+
+      // Sacred touch interactions for mobile
+      if ("ontouchstart" in window) {
+        document
+          .querySelectorAll(
+            ".sacred-entry-button, .begin-journey-link, .back-link"
+          )
+          .forEach((element) => {
+            element.addEventListener("touchstart", function () {
+              this.style.transform = this.style.transform + " scale(0.98)";
+              createClickMagic(this);
+            });
+
+            element.addEventListener("touchend", function () {
+              this.style.transform = this.style.transform.replace(
+                " scale(0.98)",
+                ""
+              );
+            });
+          });
+      }
+    </script>
   </body>
 </html>
