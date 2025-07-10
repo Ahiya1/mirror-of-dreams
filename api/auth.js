@@ -79,6 +79,12 @@ module.exports = async function handler(req, res) {
     }
 
     const { action } = body;
+    console.log(
+      `🔍 [${requestId}] Action value:`,
+      JSON.stringify(action),
+      "Type:",
+      typeof action
+    );
 
     console.log(
       `🔍 [${requestId}] Auth Request: ${req.method} ${
