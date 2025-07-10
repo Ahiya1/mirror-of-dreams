@@ -1,8 +1,7 @@
-// api/auth.js - Mirror of Truth Authentication System with Google OAuth
+// api/auth.js - Mirror of Truth Authentication System (Clean Version)
 const { createClient } = require("@supabase/supabase-js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { OAuth2Client } = require("google-auth-library");
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -10,11 +9,14 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// JWT secret for session tokens
-const JWT_SECRET = process.env.JWT_SECRET || "your-jwt-secret-here";
+// JWT secret - fail fast if missing
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.error("❌ CRITICAL: JWT_SECRET environment variable is not set!");
+  throw new Error("JWT_SECRET environment variable is required");
+}
 
-// Google OAuth client
-const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+console.log("✅ JWT_SECRET is set, length:", JWT_SECRET.length);
 
 module.exports = async function handler(req, res) {
   // CORS
@@ -26,125 +28,142 @@ module.exports = async function handler(req, res) {
     return res.status(200).end();
   }
 
+  const requestId = `req_${Date.now()}_${Math.random()
+    .toString(36)
+    .substr(2, 9)}`;
+
   try {
     const { action } = req.body;
 
+    console.log(
+      `🔍 [${requestId}] Auth Request: ${req.method} ${
+        action || "no-action"
+      } - ${new Date().toISOString()}`
+    );
+
     switch (action) {
       case "signup":
-        return await handleSignup(req, res);
+        return await handleSignup(req, res, requestId);
       case "signup-with-subscription":
-        return await handleSignupWithSubscription(req, res);
-      case "google-signup":
-        return await handleGoogleSignup(req, res);
-      case "google-signup-with-subscription":
-        return await handleGoogleSignupWithSubscription(req, res);
+        return await handleSignupWithSubscription(req, res, requestId);
       case "signin":
-        return await handleSignin(req, res);
-      case "google-signin":
-        return await handleGoogleSignin(req, res);
+        return await handleSignin(req, res, requestId);
       case "signout":
-        return await handleSignout(req, res);
+        return await handleSignout(req, res, requestId);
       case "verify-token":
-        return await handleVerifyToken(req, res);
+        return await handleVerifyToken(req, res, requestId);
       case "get-user":
-        return await handleGetUser(req, res);
+        return await handleGetUser(req, res, requestId);
       case "update-profile":
-        return await handleUpdateProfile(req, res);
+        return await handleUpdateProfile(req, res, requestId);
       case "delete-account":
-        return await handleDeleteAccount(req, res);
-      case "link-google":
-        return await handleLinkGoogle(req, res);
-      case "unlink-google":
-        return await handleUnlinkGoogle(req, res);
+        return await handleDeleteAccount(req, res, requestId);
       default:
+        console.log(`❌ [${requestId}] Invalid action: ${action}`);
         return res.status(400).json({
           success: false,
           error: "Invalid action",
+          debug: { action, requestId },
         });
     }
   } catch (error) {
-    console.error("Auth API Error:", error);
+    console.error(`❌ [${requestId}] Auth API Error:`, error);
     return res.status(500).json({
       success: false,
       error: "Authentication service error",
-      details:
-        process.env.NODE_ENV === "development" ? error.message : undefined,
+      debug: {
+        requestId,
+        message:
+          process.env.NODE_ENV === "development" ? error.message : undefined,
+      },
     });
   }
 };
 
 // Regular signup
-async function handleSignup(req, res) {
+async function handleSignup(req, res, requestId) {
   const { email, password, name, tier = "free", language = "en" } = req.body;
+
+  console.log(`🔍 [${requestId}] Signup attempt for: ${email}`);
 
   // Validation
   if (!email || !password || !name) {
+    console.log(`❌ [${requestId}] Missing required fields`);
     return res.status(400).json({
       success: false,
       error: "Email, password, and name are required",
+      debug: { requestId },
     });
   }
 
   if (password.length < 6) {
+    console.log(`❌ [${requestId}] Password too short`);
     return res.status(400).json({
       success: false,
       error: "Password must be at least 6 characters",
+      debug: { requestId },
     });
   }
 
   try {
     // Check if user already exists
+    console.log(`🔍 [${requestId}] Checking if user exists...`);
     const { data: existingUser } = await supabase
       .from("users")
-      .select("id, google_id")
+      .select("id, email")
       .eq("email", email.toLowerCase())
       .single();
 
     if (existingUser) {
-      if (existingUser.google_id) {
-        return res.status(400).json({
-          success: false,
-          error:
-            "An account with this email exists. Please sign in with Google.",
-          requiresGoogleSignin: true,
-        });
-      } else {
-        return res.status(400).json({
-          success: false,
-          error: "User already exists with this email",
-        });
-      }
+      console.log(`❌ [${requestId}] User already exists`);
+      return res.status(400).json({
+        success: false,
+        error: "User already exists with this email",
+        debug: { requestId },
+      });
     }
 
-    const user = await createUserAccount({
-      email: email.toLowerCase(),
-      password,
-      name,
-      tier,
-      language,
-    });
+    console.log(`🔍 [${requestId}] Creating user account...`);
+    const user = await createUserAccount(
+      {
+        email: email.toLowerCase(),
+        password,
+        name,
+        tier,
+        language,
+      },
+      requestId
+    );
 
-    const token = generateJWT(user);
+    const token = generateJWT(user, requestId);
 
-    console.log(`✅ New user created: ${user.email} (${user.tier})`);
+    console.log(
+      `✅ [${requestId}] New user created: ${user.email} (${user.tier})`
+    );
 
     return res.json({
       success: true,
       message: "Account created successfully",
       user: formatUserResponse(user),
       token,
+      debug: { requestId },
     });
   } catch (error) {
-    console.error("Signup error:", error);
+    console.error(`❌ [${requestId}] Signup error:`, error);
     return res.status(500).json({
       success: false,
       error: "Failed to create account",
+      debug: {
+        requestId,
+        message:
+          process.env.NODE_ENV === "development" ? error.message : undefined,
+      },
     });
   }
 }
 
 // Signup with subscription
-async function handleSignupWithSubscription(req, res) {
+async function handleSignupWithSubscription(req, res, requestId) {
   const {
     email,
     password,
@@ -154,10 +173,18 @@ async function handleSignupWithSubscription(req, res) {
     language = "en",
   } = req.body;
 
+  console.log(
+    `🔍 [${requestId}] Subscription signup attempt for: ${email}, tier: ${tier}`
+  );
+
   if (!email || !password || !name || !tier || !subscriptionId) {
+    console.log(
+      `❌ [${requestId}] Missing required fields for subscription signup`
+    );
     return res.status(400).json({
       success: false,
       error: "Missing required fields for subscription signup",
+      debug: { requestId },
     });
   }
 
@@ -170,202 +197,74 @@ async function handleSignupWithSubscription(req, res) {
       .single();
 
     if (existingUser) {
+      console.log(
+        `❌ [${requestId}] User already exists for subscription signup`
+      );
       return res.status(400).json({
         success: false,
         error: "User already exists with this email",
+        debug: { requestId },
       });
     }
 
-    const user = await createUserAccount({
-      email: email.toLowerCase(),
-      password,
-      name,
-      tier,
-      language,
-      subscriptionId,
-      subscriptionStatus: "active",
-    });
+    const user = await createUserAccount(
+      {
+        email: email.toLowerCase(),
+        password,
+        name,
+        tier,
+        language,
+        subscriptionId,
+        subscriptionStatus: "active",
+      },
+      requestId
+    );
 
-    const token = generateJWT(user);
+    const token = generateJWT(user, requestId);
 
-    console.log(`✅ New subscriber created: ${user.email} (${user.tier})`);
+    console.log(
+      `✅ [${requestId}] New subscriber created: ${user.email} (${user.tier})`
+    );
 
     return res.json({
       success: true,
       message: "Account created and subscription activated",
       user: formatUserResponse(user),
       token,
+      debug: { requestId },
     });
   } catch (error) {
-    console.error("Subscription signup error:", error);
+    console.error(`❌ [${requestId}] Subscription signup error:`, error);
     return res.status(500).json({
       success: false,
       error: "Failed to create account with subscription",
-    });
-  }
-}
-
-// Google signup
-async function handleGoogleSignup(req, res) {
-  const { googleToken, userInfo, tier = "free", language = "en" } = req.body;
-
-  if (!googleToken || !userInfo) {
-    return res.status(400).json({
-      success: false,
-      error: "Google authentication data required",
-    });
-  }
-
-  try {
-    // Verify Google token
-    const googleUser = await verifyGoogleToken(googleToken);
-    if (!googleUser || googleUser.email !== userInfo.email) {
-      throw new Error("Invalid Google token");
-    }
-
-    // Check if user already exists
-    const { data: existingUser } = await supabase
-      .from("users")
-      .select("id, google_id, password_hash")
-      .eq("email", userInfo.email.toLowerCase())
-      .single();
-
-    if (existingUser) {
-      if (!existingUser.google_id) {
-        // User exists with email/password, offer to link
-        return res.status(400).json({
-          success: false,
-          error:
-            "An account with this email already exists. Please sign in with your password first, then link your Google account in settings.",
-          requiresPasswordSignin: true,
-        });
-      } else {
-        // User already has Google linked, just sign them in
-        const token = generateJWT(existingUser);
-        return res.json({
-          success: true,
-          message: "Signed in successfully",
-          user: formatUserResponse(existingUser),
-          token,
-        });
-      }
-    }
-
-    // Create new user with Google
-    const user = await createUserAccount({
-      email: userInfo.email.toLowerCase(),
-      name: userInfo.name || userInfo.given_name || "User",
-      tier,
-      language,
-      googleId: googleUser.sub,
-      avatarUrl: userInfo.picture,
-      emailVerified: googleUser.email_verified,
-    });
-
-    const token = generateJWT(user);
-
-    console.log(`✅ New Google user created: ${user.email} (${user.tier})`);
-
-    return res.json({
-      success: true,
-      message: "Account created successfully with Google",
-      user: formatUserResponse(user),
-      token,
-    });
-  } catch (error) {
-    console.error("Google signup error:", error);
-    return res.status(500).json({
-      success: false,
-      error: "Failed to create account with Google",
-    });
-  }
-}
-
-// Google signup with subscription
-async function handleGoogleSignupWithSubscription(req, res) {
-  const {
-    googleToken,
-    userInfo,
-    tier,
-    subscriptionId,
-    language = "en",
-  } = req.body;
-
-  if (!googleToken || !userInfo || !tier || !subscriptionId) {
-    return res.status(400).json({
-      success: false,
-      error: "Missing required fields for Google subscription signup",
-    });
-  }
-
-  try {
-    // Verify Google token
-    const googleUser = await verifyGoogleToken(googleToken);
-    if (!googleUser || googleUser.email !== userInfo.email) {
-      throw new Error("Invalid Google token");
-    }
-
-    // Check if user already exists
-    const { data: existingUser } = await supabase
-      .from("users")
-      .select("id")
-      .eq("email", userInfo.email.toLowerCase())
-      .single();
-
-    if (existingUser) {
-      return res.status(400).json({
-        success: false,
-        error: "User already exists with this email",
-      });
-    }
-
-    // Create new user with Google and subscription
-    const user = await createUserAccount({
-      email: userInfo.email.toLowerCase(),
-      name: userInfo.name || userInfo.given_name || "User",
-      tier,
-      language,
-      googleId: googleUser.sub,
-      avatarUrl: userInfo.picture,
-      emailVerified: true,
-      subscriptionId,
-      subscriptionStatus: "active",
-    });
-
-    const token = generateJWT(user);
-
-    console.log(
-      `✅ New Google subscriber created: ${user.email} (${user.tier})`
-    );
-
-    return res.json({
-      success: true,
-      message: "Account created and subscription activated with Google",
-      user: formatUserResponse(user),
-      token,
-    });
-  } catch (error) {
-    console.error("Google subscription signup error:", error);
-    return res.status(500).json({
-      success: false,
-      error: "Failed to create account with Google subscription",
+      debug: {
+        requestId,
+        message:
+          process.env.NODE_ENV === "development" ? error.message : undefined,
+      },
     });
   }
 }
 
 // Regular signin
-async function handleSignin(req, res) {
+async function handleSignin(req, res, requestId) {
   const { email, password } = req.body;
 
+  console.log(`🔍 [${requestId}] Signin attempt for: ${email}`);
+
   if (!email || !password) {
+    console.log(`❌ [${requestId}] Missing email or password`);
     return res.status(400).json({
       success: false,
       error: "Email and password are required",
+      debug: { requestId },
     });
   }
 
   try {
     // Get user from database
+    console.log(`🔍 [${requestId}] Querying user from database...`);
     const { data: user, error } = await supabase
       .from("users")
       .select("*")
@@ -373,43 +272,48 @@ async function handleSignin(req, res) {
       .single();
 
     if (error || !user) {
+      console.log(`❌ [${requestId}] User not found or database error:`, error);
       return res.status(401).json({
         success: false,
         error: "Invalid email or password",
+        debug: { requestId },
       });
     }
 
-    // Check if user signed up with Google only
-    if (!user.password_hash && user.google_id) {
-      return res.status(401).json({
-        success: false,
-        error: "This account uses Google Sign-In. Please sign in with Google.",
-        requiresGoogleSignin: true,
-      });
-    }
+    console.log(`🔍 [${requestId}] User found, verifying password...`);
 
     // Verify password
     if (!user.password_hash) {
+      console.log(`❌ [${requestId}] No password hash found for user`);
       return res.status(401).json({
         success: false,
         error: "Invalid email or password",
+        debug: { requestId },
       });
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password_hash);
     if (!isValidPassword) {
+      console.log(`❌ [${requestId}] Invalid password`);
       return res.status(401).json({
         success: false,
         error: "Invalid email or password",
+        debug: { requestId },
       });
     }
 
+    console.log(
+      `🔍 [${requestId}] Password verified, updating sign-in data...`
+    );
+
     // Update last sign in and handle monthly usage reset
-    await updateUserSignin(user);
+    await updateUserSignin(user, requestId);
 
-    const token = generateJWT(user);
+    const token = generateJWT(user, requestId);
 
-    console.log(`✅ User signed in: ${user.email} (${user.tier})`);
+    console.log(
+      `✅ [${requestId}] User signed in: ${user.email} (${user.tier})`
+    );
 
     return res.json({
       success: true,
@@ -421,129 +325,72 @@ async function handleSignin(req, res) {
           : user.reflection_count_this_month,
       }),
       token,
+      debug: { requestId },
     });
   } catch (error) {
-    console.error("Signin error:", error);
+    console.error(`❌ [${requestId}] Signin error:`, error);
     return res.status(500).json({
       success: false,
       error: "Failed to sign in",
-    });
-  }
-}
-
-// Google signin
-async function handleGoogleSignin(req, res) {
-  const { googleToken, userInfo } = req.body;
-
-  if (!googleToken) {
-    return res.status(400).json({
-      success: false,
-      error: "Google token required",
-    });
-  }
-
-  try {
-    // Verify Google token
-    const googleUser = await verifyGoogleToken(googleToken);
-    if (!googleUser) {
-      throw new Error("Invalid Google token");
-    }
-
-    // Find user by email or Google ID
-    const { data: user, error } = await supabase
-      .from("users")
-      .select("*")
-      .or(
-        `email.eq.${googleUser.email.toLowerCase()},google_id.eq.${
-          googleUser.sub
-        }`
-      )
-      .single();
-
-    if (error || !user) {
-      return res.status(401).json({
-        success: false,
-        error: "No account found. Please sign up first.",
-        requiresSignup: true,
-      });
-    }
-
-    // If user exists but doesn't have Google linked, link it now
-    if (!user.google_id) {
-      await supabase
-        .from("users")
-        .update({
-          google_id: googleUser.sub,
-          avatar_url: userInfo?.picture || user.avatar_url,
-          email_verified: true,
-        })
-        .eq("id", user.id);
-
-      user.google_id = googleUser.sub;
-      user.avatar_url = userInfo?.picture || user.avatar_url;
-      user.email_verified = true;
-    }
-
-    // Update last sign in and handle monthly usage reset
-    await updateUserSignin(user);
-
-    const token = generateJWT(user);
-
-    console.log(`✅ Google user signed in: ${user.email} (${user.tier})`);
-
-    return res.json({
-      success: true,
-      message: "Signed in successfully with Google",
-      user: formatUserResponse({
-        ...user,
-        reflection_count_this_month: shouldResetUsage(user)
-          ? 0
-          : user.reflection_count_this_month,
-      }),
-      token,
-    });
-  } catch (error) {
-    console.error("Google signin error:", error);
-    return res.status(500).json({
-      success: false,
-      error: "Failed to sign in with Google",
+      debug: {
+        requestId,
+        message:
+          process.env.NODE_ENV === "development" ? error.message : undefined,
+      },
     });
   }
 }
 
 // Sign out
-async function handleSignout(req, res) {
+async function handleSignout(req, res, requestId) {
   const token = req.headers.authorization?.replace("Bearer ", "");
+
+  console.log(`🔍 [${requestId}] Signout request`);
+
   if (token) {
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
-      console.log(`📤 User signed out: ${decoded.email}`);
+      console.log(`✅ [${requestId}] User signed out: ${decoded.email}`);
     } catch (error) {
-      // Invalid token, but that's okay for signout
+      console.log(
+        `🔍 [${requestId}] Invalid token on signout, but that's okay`
+      );
     }
   }
 
   return res.json({
     success: true,
     message: "Signed out successfully",
+    debug: { requestId },
   });
 }
 
 // Verify JWT token
-async function handleVerifyToken(req, res) {
+async function handleVerifyToken(req, res, requestId) {
   const token = req.headers.authorization?.replace("Bearer ", "");
 
+  console.log(`🔍 [${requestId}] Token verification request`);
+  console.log(`🔍 [${requestId}] Token exists: ${!!token}`);
+  console.log(`🔍 [${requestId}] Token length: ${token?.length || 0}`);
+
   if (!token) {
+    console.log(`❌ [${requestId}] No token provided`);
     return res.status(401).json({
       success: false,
       error: "No token provided",
+      debug: { requestId, stage: "no_token" },
     });
   }
 
   try {
+    console.log(`🔍 [${requestId}] Attempting JWT verification...`);
     const decoded = jwt.verify(token, JWT_SECRET);
+    console.log(
+      `✅ [${requestId}] JWT verification successful, userId: ${decoded.userId}`
+    );
 
     // Get fresh user data
+    console.log(`🔍 [${requestId}] Querying Supabase for user...`);
     const { data: user, error } = await supabase
       .from("users")
       .select(
@@ -551,41 +398,79 @@ async function handleVerifyToken(req, res) {
         id, email, name, tier, subscription_status, subscription_period,
         reflection_count_this_month, total_reflections, 
         is_creator, is_admin, language, current_month_year,
-        google_id, avatar_url, email_verified
+        avatar_url, email_verified
       `
       )
       .eq("id", decoded.userId)
       .single();
 
-    if (error || !user) {
+    if (error) {
+      console.log(`❌ [${requestId}] Supabase query error:`, error);
       return res.status(401).json({
         success: false,
         error: "User not found",
+        debug: {
+          requestId,
+          stage: "supabase_query",
+          supabaseError: error.message,
+          userId: decoded.userId,
+        },
       });
     }
 
+    if (!user) {
+      console.log(`❌ [${requestId}] User not found in database`);
+      return res.status(401).json({
+        success: false,
+        error: "User not found",
+        debug: {
+          requestId,
+          stage: "user_not_found",
+          userId: decoded.userId,
+        },
+      });
+    }
+
+    console.log(`✅ [${requestId}] User found: ${user.email}`);
+
     // Check if monthly usage needs reset
     if (shouldResetUsage(user)) {
+      console.log(`🔍 [${requestId}] Resetting monthly usage for user`);
       await resetMonthlyUsage(user);
       user.reflection_count_this_month = 0;
     }
 
+    console.log(
+      `✅ [${requestId}] Token verification successful for: ${user.email}`
+    );
+
     return res.json({
       success: true,
       user: formatUserResponse(user),
+      debug: { requestId },
     });
   } catch (error) {
+    console.log(`❌ [${requestId}] JWT verification failed:`, error.message);
     return res.status(401).json({
       success: false,
       error: "Invalid token",
+      debug: {
+        requestId,
+        stage: "jwt_verification",
+        jwtError: error.message,
+        tokenPresent: !!token,
+        secretPresent: !!JWT_SECRET,
+      },
     });
   }
 }
 
 // Get user profile
-async function handleGetUser(req, res) {
+async function handleGetUser(req, res, requestId) {
+  console.log(`🔍 [${requestId}] Get user profile request`);
+
   try {
-    const user = await authenticateRequest(req);
+    const user = await authenticateRequest(req, requestId);
 
     const { data: fullUser, error } = await supabase
       .from("users")
@@ -596,31 +481,43 @@ async function handleGetUser(req, res) {
         reflection_count_this_month, total_reflections,
         is_creator, is_admin, language, timezone,
         last_reflection_at, created_at,
-        google_id, avatar_url, email_verified
+        avatar_url, email_verified
       `
       )
       .eq("id", user.id)
       .single();
 
     if (error || !fullUser) {
+      console.log(`❌ [${requestId}] User profile not found:`, error);
       return res.status(404).json({
         success: false,
         error: "User not found",
+        debug: { requestId },
       });
     }
+
+    console.log(
+      `✅ [${requestId}] User profile retrieved for: ${fullUser.email}`
+    );
 
     return res.json({
       success: true,
       user: fullUser,
+      debug: { requestId },
     });
   } catch (error) {
     if (
       error.message === "Authentication required" ||
       error.message === "Invalid authentication"
     ) {
+      console.log(
+        `❌ [${requestId}] Authentication failed for get-user:`,
+        error.message
+      );
       return res.status(401).json({
         success: false,
         error: error.message,
+        debug: { requestId },
       });
     }
     throw error;
@@ -628,9 +525,11 @@ async function handleGetUser(req, res) {
 }
 
 // Update user profile
-async function handleUpdateProfile(req, res) {
+async function handleUpdateProfile(req, res, requestId) {
+  console.log(`🔍 [${requestId}] Update profile request`);
+
   try {
-    const user = await authenticateRequest(req);
+    const user = await authenticateRequest(req, requestId);
     const { name, language, timezone } = req.body;
 
     const updates = {};
@@ -639,9 +538,11 @@ async function handleUpdateProfile(req, res) {
     if (timezone) updates.timezone = timezone;
 
     if (Object.keys(updates).length === 0) {
+      console.log(`❌ [${requestId}] No valid fields to update`);
       return res.status(400).json({
         success: false,
         error: "No valid fields to update",
+        debug: { requestId },
       });
     }
 
@@ -653,18 +554,21 @@ async function handleUpdateProfile(req, res) {
       .single();
 
     if (error) {
+      console.log(`❌ [${requestId}] Profile update failed:`, error);
       return res.status(500).json({
         success: false,
         error: "Failed to update profile",
+        debug: { requestId },
       });
     }
 
-    console.log(`📝 Profile updated: ${updatedUser.email}`);
+    console.log(`✅ [${requestId}] Profile updated: ${updatedUser.email}`);
 
     return res.json({
       success: true,
       message: "Profile updated successfully",
       user: updatedUser,
+      debug: { requestId },
     });
   } catch (error) {
     if (
@@ -674,6 +578,7 @@ async function handleUpdateProfile(req, res) {
       return res.status(401).json({
         success: false,
         error: error.message,
+        debug: { requestId },
       });
     }
     throw error;
@@ -681,17 +586,21 @@ async function handleUpdateProfile(req, res) {
 }
 
 // Delete user account
-async function handleDeleteAccount(req, res) {
+async function handleDeleteAccount(req, res, requestId) {
+  console.log(`🔍 [${requestId}] Delete account request`);
+
   try {
-    const user = await authenticateRequest(req);
+    const user = await authenticateRequest(req, requestId);
     const { password } = req.body;
 
     // If user has password, verify it
     if (user.password_hash) {
       if (!password) {
+        console.log(`❌ [${requestId}] Password confirmation required`);
         return res.status(400).json({
           success: false,
           error: "Password confirmation required",
+          debug: { requestId },
         });
       }
 
@@ -700,9 +609,11 @@ async function handleDeleteAccount(req, res) {
         user.password_hash
       );
       if (!isValidPassword) {
+        console.log(`❌ [${requestId}] Invalid password for account deletion`);
         return res.status(401).json({
           success: false,
           error: "Invalid password",
+          debug: { requestId },
         });
       }
     }
@@ -714,17 +625,20 @@ async function handleDeleteAccount(req, res) {
       .eq("id", user.id);
 
     if (deleteError) {
+      console.log(`❌ [${requestId}] Account deletion failed:`, deleteError);
       return res.status(500).json({
         success: false,
         error: "Failed to delete account",
+        debug: { requestId },
       });
     }
 
-    console.log(`🗑️ Account deleted: ${user.email}`);
+    console.log(`✅ [${requestId}] Account deleted: ${user.email}`);
 
     return res.json({
       success: true,
       message: "Account deleted successfully",
+      debug: { requestId },
     });
   } catch (error) {
     if (
@@ -734,126 +648,7 @@ async function handleDeleteAccount(req, res) {
       return res.status(401).json({
         success: false,
         error: error.message,
-      });
-    }
-    throw error;
-  }
-}
-
-// Link Google account to existing account
-async function handleLinkGoogle(req, res) {
-  try {
-    const user = await authenticateRequest(req);
-    const { googleToken, userInfo } = req.body;
-
-    if (!googleToken) {
-      return res.status(400).json({
-        success: false,
-        error: "Google token required",
-      });
-    }
-
-    // Verify Google token
-    const googleUser = await verifyGoogleToken(googleToken);
-    if (!googleUser) {
-      throw new Error("Invalid Google token");
-    }
-
-    // Check if Google account is already linked to another user
-    const { data: existingGoogleUser } = await supabase
-      .from("users")
-      .select("id, email")
-      .eq("google_id", googleUser.sub)
-      .neq("id", user.id)
-      .single();
-
-    if (existingGoogleUser) {
-      return res.status(400).json({
-        success: false,
-        error: "This Google account is already linked to another user",
-      });
-    }
-
-    // Link Google account
-    const { error } = await supabase
-      .from("users")
-      .update({
-        google_id: googleUser.sub,
-        avatar_url: userInfo?.picture || user.avatar_url,
-        email_verified: true,
-      })
-      .eq("id", user.id);
-
-    if (error) {
-      return res.status(500).json({
-        success: false,
-        error: "Failed to link Google account",
-      });
-    }
-
-    console.log(`🔗 Google account linked: ${user.email}`);
-
-    return res.json({
-      success: true,
-      message: "Google account linked successfully",
-    });
-  } catch (error) {
-    if (
-      error.message === "Authentication required" ||
-      error.message === "Invalid authentication"
-    ) {
-      return res.status(401).json({
-        success: false,
-        error: error.message,
-      });
-    }
-    throw error;
-  }
-}
-
-// Unlink Google account
-async function handleUnlinkGoogle(req, res) {
-  try {
-    const user = await authenticateRequest(req);
-
-    // Make sure user has a password before unlinking Google
-    if (!user.password_hash) {
-      return res.status(400).json({
-        success: false,
-        error: "Please set a password before unlinking your Google account",
-        requiresPasswordSetup: true,
-      });
-    }
-
-    // Unlink Google account
-    const { error } = await supabase
-      .from("users")
-      .update({
-        google_id: null,
-      })
-      .eq("id", user.id);
-
-    if (error) {
-      return res.status(500).json({
-        success: false,
-        error: "Failed to unlink Google account",
-      });
-    }
-
-    console.log(`🔗 Google account unlinked: ${user.email}`);
-
-    return res.json({
-      success: true,
-      message: "Google account unlinked successfully",
-    });
-  } catch (error) {
-    if (
-      error.message === "Authentication required" ||
-      error.message === "Invalid authentication"
-    ) {
-      return res.status(401).json({
-        success: false,
-        error: error.message,
+        debug: { requestId },
       });
     }
     throw error;
@@ -862,33 +657,18 @@ async function handleUnlinkGoogle(req, res) {
 
 // Helper functions
 
-async function verifyGoogleToken(token) {
-  try {
-    const ticket = await googleClient.verifyIdToken({
-      idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
-
-    return ticket.getPayload();
-  } catch (error) {
-    console.error("Google token verification error:", error);
-    return null;
-  }
-}
-
-async function createUserAccount(userData) {
+async function createUserAccount(userData, requestId) {
   const {
     email,
     password,
     name,
     tier,
     language,
-    googleId,
-    avatarUrl,
-    emailVerified = false,
     subscriptionId,
     subscriptionStatus = tier === "free" ? "active" : "trialing",
   } = userData;
+
+  console.log(`🔍 [${requestId}] Creating user account for: ${email}`);
 
   const userRecord = {
     email,
@@ -899,21 +679,13 @@ async function createUserAccount(userData) {
     subscription_started_at: new Date().toISOString(),
     current_month_year: new Date().toISOString().slice(0, 7),
     last_sign_in_at: new Date().toISOString(),
-    email_verified: emailVerified,
+    email_verified: false,
   };
 
-  // Add password hash if password provided
+  // Add password hash
   if (password) {
+    console.log(`🔍 [${requestId}] Hashing password...`);
     userRecord.password_hash = await bcrypt.hash(password, 12);
-  }
-
-  // Add Google-specific fields
-  if (googleId) {
-    userRecord.google_id = googleId;
-  }
-
-  if (avatarUrl) {
-    userRecord.avatar_url = avatarUrl;
   }
 
   // Add subscription fields
@@ -928,14 +700,17 @@ async function createUserAccount(userData) {
     .single();
 
   if (error) {
-    console.error("User creation error:", error);
+    console.error(`❌ [${requestId}] User creation error:`, error);
     throw new Error("Failed to create user account");
   }
 
+  console.log(`✅ [${requestId}] User account created successfully`);
   return user;
 }
 
-function generateJWT(user) {
+function generateJWT(user, requestId) {
+  console.log(`🔍 [${requestId}] Generating JWT for user: ${user.email}`);
+
   return jwt.sign(
     {
       userId: user.id,
@@ -961,7 +736,6 @@ function formatUserResponse(user) {
     isCreator: user.is_creator || false,
     isAdmin: user.is_admin || false,
     language: user.language || "en",
-    hasGoogle: !!user.google_id,
     avatarUrl: user.avatar_url,
     emailVerified: user.email_verified || false,
     createdAt: user.created_at,
@@ -985,7 +759,9 @@ async function resetMonthlyUsage(user) {
     .eq("id", user.id);
 }
 
-async function updateUserSignin(user) {
+async function updateUserSignin(user, requestId) {
+  console.log(`🔍 [${requestId}] Updating user sign-in data`);
+
   const updates = {
     last_sign_in_at: new Date().toISOString(),
   };
@@ -1000,8 +776,12 @@ async function updateUserSignin(user) {
 }
 
 // Utility function to authenticate requests (for other APIs)
-async function authenticateRequest(req) {
+async function authenticateRequest(req, requestId) {
   const token = req.headers.authorization?.replace("Bearer ", "");
+
+  console.log(
+    `🔍 [${requestId}] Authenticating request - token exists: ${!!token}`
+  );
 
   if (!token) {
     throw new Error("Authentication required");
@@ -1017,11 +797,16 @@ async function authenticateRequest(req) {
       .single();
 
     if (error || !user) {
+      console.log(
+        `❌ [${requestId}] User not found in authenticateRequest:`,
+        error
+      );
       throw new Error("User not found");
     }
 
     return user;
   } catch (error) {
+    console.log(`❌ [${requestId}] Authentication failed:`, error.message);
     throw new Error("Invalid authentication");
   }
 }
