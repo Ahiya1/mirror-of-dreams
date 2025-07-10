@@ -253,6 +253,7 @@
   letter-spacing: 0.3px;
   position: relative;
   overflow: hidden;
+  margin-top: 0.5rem; /* Added spacing */
 
   /* Mobile optimizations */
   touch-action: manipulation;
@@ -333,20 +334,26 @@
   z-index: 100;
 }
 
+/* Updated About Link - More Prominent */
 .about-link {
   display: inline-flex;
   align-items: center;
-  padding: 0.8rem 1.5rem;
-  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem 2rem;
+  background: linear-gradient(
+    135deg,
+    rgba(147, 51, 234, 0.15),
+    rgba(99, 102, 241, 0.1)
+  );
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(147, 51, 234, 0.3);
   border-radius: 50px;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
-  font-size: clamp(0.8rem, 2vw, 0.9rem);
-  font-weight: 400;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  font-weight: 500;
   letter-spacing: 0.3px;
   transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(147, 51, 234, 0.15);
 
   /* Mobile optimizations */
   touch-action: manipulation;
@@ -356,16 +363,65 @@
   align-items: center;
 }
 
+.about-link::before {
+  content: "✨ ";
+  margin-right: 0.3rem;
+}
+
 @media (hover: hover) {
   .about-link:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.9);
-    transform: translateY(-2px);
+    background: linear-gradient(
+      135deg,
+      rgba(147, 51, 234, 0.25),
+      rgba(99, 102, 241, 0.15)
+    );
+    border-color: rgba(147, 51, 234, 0.5);
+    color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(147, 51, 234, 0.25);
   }
 }
 
 .about-link:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+/* Sign In Button for Non-Authenticated Users */
+.sign-in-button {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.8rem 1.5rem;
+  background: rgba(16, 185, 129, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 50px;
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+}
+
+@media (hover: hover) {
+  .sign-in-button:hover {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.5);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
+  }
+}
+
+.sign-in-button:active {
   transform: scale(0.98);
   transition: transform 0.1s ease;
 }
@@ -397,6 +453,13 @@
   }
 
   .about-link {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.85rem;
+  }
+
+  .sign-in-button {
+    top: 0.75rem;
+    left: 0.75rem;
     padding: 0.7rem 1.2rem;
     font-size: 0.85rem;
   }
@@ -441,9 +504,16 @@
   }
 
   .about-link {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.85rem;
+    border-radius: 40px;
+  }
+
+  .sign-in-button {
+    top: 0.5rem;
+    left: 0.5rem;
     padding: 0.6rem 1rem;
     font-size: 0.8rem;
-    border-radius: 40px;
   }
 
   .title {

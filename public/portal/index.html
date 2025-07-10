@@ -90,7 +90,7 @@
         </div>
 
         <!-- Sign In Prompt (for non-authenticated users) -->
-        <div class="sign-in-prompt" id="signInPrompt" style="display: none">
+        <div class="sign-in-prompt" id="signInPrompt">
           <p class="prompt-text">
             Already have an account?
             <a href="/auth/signin" class="sign-in-link">Sign in</a>
@@ -155,25 +155,33 @@
         margin-top: 2rem;
         padding: 1rem;
         text-align: center;
+        opacity: 0;
+        animation: fadeIn 0.8s ease 1.5s forwards;
+      }
+
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+        }
       }
 
       .prompt-text {
-        font-size: clamp(0.8rem, 2vw, 0.9rem);
-        color: rgba(255, 255, 255, 0.7);
+        font-size: clamp(0.9rem, 2vw, 1rem);
+        color: rgba(255, 255, 255, 0.8);
         margin: 0;
       }
 
       .sign-in-link {
-        color: rgba(255, 255, 255, 0.9);
+        color: #10b981;
         text-decoration: none;
-        font-weight: 500;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        font-weight: 600;
+        border-bottom: 1px solid rgba(16, 185, 129, 0.3);
         transition: all 0.3s ease;
       }
 
       .sign-in-link:hover {
-        color: #fff;
-        border-bottom-color: rgba(255, 255, 255, 0.6);
+        color: #6ee7b7;
+        border-bottom-color: rgba(16, 185, 129, 0.6);
       }
 
       .nav-authenticated {
