@@ -1,5 +1,5 @@
-// Mirror – Luminous Reflection Logic TRANSFORMED: Auth Integration + Database Storage
-// MAJOR CHANGES: Authentication required, usage limits, database storage, dashboard redirect
+// Mirror – Luminous Reflection Logic TRANSFORMED: Auth Integration + Database Storage + FEEDBACK
+// MAJOR CHANGES: Authentication required, usage limits, database storage, dashboard redirect, feedback collection
 
 let userData = null;
 let hasDateSet = null;
@@ -10,6 +10,7 @@ let selectedTone = "fusion"; // default
 let backgroundElements = [];
 let formState = {};
 let currentReflection = null;
+let currentReflectionId = null;
 let authToken = null;
 
 /* — INITIALIZATION — */
@@ -28,7 +29,7 @@ async function checkAuthAndSetup() {
   const premium = url.get("premium");
 
   // Get authentication token
-  authToken = localStorage.getItem("mirrorAuthToken");
+  authToken = localStorage.getItem("mirror_auth_token");
 
   // Check for creator/test modes (legacy support)
   if (mode === "creator") {
@@ -130,7 +131,7 @@ async function verifyAuthToken() {
     throw new Error("Token verification failed");
   } catch (error) {
     // Clear invalid token
-    localStorage.removeItem("mirrorAuthToken");
+    localStorage.removeItem("mirror_auth_token");
     localStorage.removeItem("mirrorUserData");
     throw error;
   }
@@ -432,7 +433,7 @@ function animateQuestions() {
   });
 }
 
-/* — INTERACTIONS (ENHANCED) — */
+/* — INTERACTIONS (ENHANCED WITH FEEDBACK) — */
 function setupInteractions() {
   /* Tone Picker */
   document.querySelectorAll(".tone-btn").forEach((btn) => {
@@ -547,6 +548,9 @@ function setupInteractions() {
         document.getElementById("reflectionContent").innerHTML =
           data.reflection;
 
+        // Store reflection ID for feedback submission
+        currentReflectionId = data.reflectionId;
+
         // Show premium badge if this was a premium reflection
         if (data.isPremium) {
           showPremiumBadge();
@@ -565,6 +569,11 @@ function setupInteractions() {
         }
 
         showSection("results");
+
+        // NEW: Show feedback section after a delay
+        if (!isCreatorMode && !isTestMode && currentReflectionId) {
+          setTimeout(showFeedbackSection, 3000); // Show after 3 seconds
+        }
       } catch (err) {
         console.error(err);
         document.getElementById("reflectionContent").innerHTML = `
@@ -573,6 +582,150 @@ function setupInteractions() {
         showSection("results");
       }
     });
+}
+
+/* — NEW: FEEDBACK COLLECTION — */
+function showFeedbackSection() {
+  // Check if feedback already exists
+  if (document.getElementById("feedbackSection")) return;
+
+  const feedbackHtml = `
+    <div class="feedback-section" id="feedbackSection">
+      <div class="feedback-content">
+        <h3 class="feedback-title">How deeply did this help you access your truth?</h3>
+        <div class="rating-container">
+          ${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+            .map(
+              (n) =>
+                `<button class="rating-btn" data-rating="${n}">${n}</button>`
+            )
+            .join("")}
+        </div>
+        <div class="rating-labels">
+          <span>Not at all</span>
+          <span>Deeply</span>
+        </div>
+        <textarea 
+          class="feedback-insight sacred-input" 
+          id="feedbackInsight"
+          placeholder="What emerged for you? (optional)"
+          maxlength="500"
+          rows="3"
+        ></textarea>
+        <button class="submit-feedback-btn" id="submitFeedbackBtn">Submit & Continue</button>
+        <button class="skip-feedback-btn" id="skipFeedbackBtn">Skip</button>
+      </div>
+    </div>
+  `;
+
+  // Insert before action buttons
+  const actionsSection = document.querySelector(".results-actions");
+  actionsSection.insertAdjacentHTML("beforebegin", feedbackHtml);
+
+  // Animate in
+  const feedbackSection = document.getElementById("feedbackSection");
+  feedbackSection.style.opacity = "0";
+  feedbackSection.style.transform = "translateY(20px)";
+
+  setTimeout(() => {
+    feedbackSection.style.transition = "all 0.8s ease";
+    feedbackSection.style.opacity = "1";
+    feedbackSection.style.transform = "translateY(0)";
+  }, 100);
+
+  // Setup feedback interactions
+  setupFeedbackInteractions();
+}
+
+function setupFeedbackInteractions() {
+  let selectedRating = null;
+
+  // Rating buttons
+  document.querySelectorAll(".rating-btn").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      document
+        .querySelectorAll(".rating-btn")
+        .forEach((b) => b.classList.remove("selected"));
+      this.classList.add("selected");
+      selectedRating = parseInt(this.dataset.rating);
+
+      // Add visual feedback
+      this.style.transform = "scale(1.2)";
+      setTimeout(() => {
+        this.style.transform = "";
+      }, 200);
+    });
+  });
+
+  // Submit button
+  document
+    .getElementById("submitFeedbackBtn")
+    .addEventListener("click", async () => {
+      if (!selectedRating) {
+        alert("Please select a rating from 1-10");
+        return;
+      }
+
+      await submitFeedback(selectedRating);
+    });
+
+  // Skip button
+  document.getElementById("skipFeedbackBtn").addEventListener("click", () => {
+    hideFeedbackSection();
+  });
+}
+
+async function submitFeedback(rating) {
+  const feedbackText = document.getElementById("feedbackInsight").value.trim();
+
+  try {
+    const response = await fetch("/api/reflections", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+      body: JSON.stringify({
+        action: "submit-feedback",
+        reflectionId: currentReflectionId,
+        rating: rating,
+        feedback: feedbackText,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      // Show success feedback
+      const submitBtn = document.getElementById("submitFeedbackBtn");
+      submitBtn.textContent = "✓ Thank you!";
+      submitBtn.disabled = true;
+
+      // Hide feedback section after a moment
+      setTimeout(hideFeedbackSection, 1500);
+    } else {
+      console.error("Failed to submit feedback:", data.error);
+      // Continue anyway - don't block the user
+      hideFeedbackSection();
+    }
+  } catch (error) {
+    console.error("Feedback submission error:", error);
+    // Continue anyway
+    hideFeedbackSection();
+  }
+}
+
+function hideFeedbackSection() {
+  const feedbackSection = document.getElementById("feedbackSection");
+  if (feedbackSection) {
+    feedbackSection.style.transition = "all 0.5s ease";
+    feedbackSection.style.opacity = "0";
+    feedbackSection.style.transform = "translateY(-20px)";
+
+    setTimeout(() => {
+      feedbackSection.remove();
+    }, 500);
+  }
 }
 
 function selectTone(tone) {
@@ -952,6 +1105,124 @@ style.textContent = `
       background: rgba(168, 85, 247, 0.12);
       border-color: rgba(168, 85, 247, 0.3);
     }
+  }
+  
+  /* FEEDBACK SECTION STYLES */
+  .feedback-section {
+    margin: 3rem 0;
+    padding: 2.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+  }
+  
+  .feedback-content {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .feedback-title {
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 2rem;
+  }
+  
+  .rating-container {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .rating-btn {
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .rating-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+  }
+  
+  .rating-btn.selected {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-color: #10b981;
+    color: white;
+    font-weight: 600;
+  }
+  
+  .rating-labels {
+    display: flex;
+    justify-content: space-between;
+    max-width: 500px;
+    margin: 0 auto 2rem;
+    font-size: 0.9rem;
+    opacity: 0.6;
+  }
+  
+  .feedback-insight {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  .feedback-insight::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+  
+  .submit-feedback-btn, .skip-feedback-btn {
+    padding: 1rem 2rem;
+    border-radius: 16px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .submit-feedback-btn {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    margin-right: 1rem;
+  }
+  
+  .submit-feedback-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+  }
+  
+  .submit-feedback-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .skip-feedback-btn {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .skip-feedback-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.8);
   }
 `;
 document.head.appendChild(style);

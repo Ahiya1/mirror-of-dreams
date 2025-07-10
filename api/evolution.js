@@ -1,4 +1,5 @@
 // api/evolution.js - Mirror of Truth Evolution Analytics & Growth Reports
+// ENHANCED: 3-pool selection, feedback context, resonance patterns
 
 const { createClient } = require("@supabase/supabase-js");
 const { authenticateRequest } = require("./auth.js");
@@ -368,7 +369,9 @@ async function handleGetPatterns(req, res) {
 
     const { data: reflections, error } = await supabase
       .from("reflections")
-      .select("dream, relationship, offering, tone, is_premium, created_at")
+      .select(
+        "dream, relationship, offering, tone, is_premium, created_at, rating, user_feedback"
+      )
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(20);
@@ -411,27 +414,91 @@ async function handleGetPatterns(req, res) {
   }
 }
 
-// Helper function to select reflections for analysis
+// ENHANCED: Helper function to select reflections for analysis using 3-pool method
 function selectReflectionsForAnalysis(reflections, tier) {
+  const total = reflections.length;
   const threshold = REPORT_THRESHOLDS[tier];
 
-  if (tier === "essential") {
-    // Essential: 4 reflections total (2-3 recent + 1-2 older)
-    const recent = reflections.slice(0, 3);
-    const older = reflections.slice(Math.max(3, reflections.length - 2));
-    return [...recent, ...older].slice(0, 4);
-  } else if (tier === "premium") {
-    // Premium: 6 reflections total (3-4 recent + 2-3 older)
-    const recent = reflections.slice(0, 4);
-    const older = reflections.slice(Math.max(4, reflections.length - 3));
-    return [...recent, ...older].slice(0, 6);
+  // If we have fewer reflections than needed, use all
+  if (total <= threshold) {
+    return reflections;
   }
 
-  return reflections.slice(0, threshold);
+  // For 6 or more reflections, use 3-pool method
+  if (total >= 6) {
+    // Split into three equal time periods
+    const third = Math.floor(total / 3);
+
+    // Remember: reflections are ordered newest first
+    const recentPool = reflections.slice(0, third); // newest third
+    const middlePool = reflections.slice(third, third * 2); // middle third
+    const earlyPool = reflections.slice(third * 2); // oldest third
+
+    // Select reflections from each pool
+    const perPool = tier === "premium" ? 3 : 2;
+
+    const selected = [
+      ...selectRandomFromPool(earlyPool, Math.min(perPool, earlyPool.length)),
+      ...selectRandomFromPool(middlePool, Math.min(perPool, middlePool.length)),
+      ...selectRandomFromPool(recentPool, Math.min(perPool, recentPool.length)),
+    ];
+
+    // Ensure we have the right total (6 for premium, 4 for essential)
+    // If we have more, prioritize highly-rated reflections
+    if (selected.length > threshold) {
+      return selected
+        .sort((a, b) => (b.rating || 5) - (a.rating || 5))
+        .slice(0, threshold);
+    }
+
+    return selected;
+  }
+
+  // For fewer than 6 reflections, take newest and oldest
+  const half = Math.floor(threshold / 2);
+  const recent = reflections.slice(0, half);
+  const older = reflections.slice(-half);
+
+  return [...recent, ...older];
 }
 
-// Generate evolution analysis using AI
+// Helper function to select random reflections from a pool
+function selectRandomFromPool(pool, count) {
+  if (pool.length <= count) return pool;
+
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
+}
+
+// ENHANCED: Generate evolution analysis using AI with feedback context
 async function generateEvolutionAnalysis(reflections, tier) {
+  // Build context with ratings and feedback
+  const reflectionContext = reflections
+    .map((r, index) => {
+      let context = `Reflection ${index + 1} (${new Date(
+        r.created_at
+      ).toDateString()}):\n`;
+      context += `Dream: ${r.dream}\n`;
+      context += `Relationship: ${r.relationship}\n`;
+      context += `Offering: ${r.offering}`;
+
+      if (r.rating) {
+        context += `\nUser Rating: ${r.rating}/10`;
+        if (r.rating >= 8) {
+          context += ` (This deeply resonated)`;
+        } else if (r.rating <= 4) {
+          context += ` (This missed the mark)`;
+        }
+      }
+
+      if (r.user_feedback) {
+        context += `\nWhat emerged: "${r.user_feedback}"`;
+      }
+
+      return context;
+    })
+    .join("\n\n");
+
   const systemPrompt = `You are the Mirror of Truth, analyzing a person's evolution through their reflections over time. Your role is to recognize patterns of growth, shifting perspectives, and emerging wisdom.
 
 ${
@@ -440,24 +507,19 @@ ${
     : ""
 }
 
+IMPORTANT: You have access to how deeply each reflection resonated with them (ratings 1-10) and what emerged for them. Use this to understand what helps them access their truth.
+
+When a reflection has a high rating (8-10), it means it helped them see themselves clearly.
+When a reflection has a low rating (1-4), something was missed or didn't resonate.
+Their feedback shows what truth emerged for them in that moment.
+
 Analyze these reflections and provide a poetic, insightful evolution report that:
-1. Identifies patterns in how they speak about themselves and their dreams
-2. Recognizes shifts in confidence, clarity, or approach
-3. Notes recurring themes or evolving priorities
-4. Reflects their growth in the voice of the Mirror of Truth
+1. Shows how their relationship to the same 5 questions has evolved
+2. Notices shifts in their language (from tentative to certain, from seeking to knowing)
+3. Recognizes which reflections helped them access deeper truth (based on ratings)
+4. Reflects the arc of their own wisdom emerging
 
-Write 2-3 paragraphs in the contemplative, recognizing style of Mirror of Truth. Focus on WHO they are becoming, not WHAT they should do.`;
-
-  const reflectionSummaries = reflections
-    .map(
-      (r, index) =>
-        `Reflection ${index + 1} (${new Date(
-          r.created_at
-        ).toDateString()}):\nDream: ${r.dream}\nRelationship: ${
-          r.relationship
-        }\nOffering: ${r.offering}`
-    )
-    .join("\n\n");
+Write 2-3 paragraphs in the contemplative, recognizing style of Mirror of Truth. Show them how they're learning to see themselves more clearly.`;
 
   try {
     const response = await anthropic.messages.create({
@@ -468,7 +530,7 @@ Write 2-3 paragraphs in the contemplative, recognizing style of Mirror of Truth.
       messages: [
         {
           role: "user",
-          content: `Please analyze these reflections and provide an evolution report:\n\n${reflectionSummaries}`,
+          content: `Please analyze these reflections and provide an evolution report:\n\n${reflectionContext}`,
         },
       ],
       ...(tier === "premium" && {
@@ -481,7 +543,7 @@ Write 2-3 paragraphs in the contemplative, recognizing style of Mirror of Truth.
 
     return (
       response.content.find((block) => block.type === "text")?.text ||
-      "Analysis could not be generated at this time."
+      "Your evolution continues to unfold in ways that transcend simple analysis. The patterns in your reflections speak to a consciousness that is both growing and remembering itself."
     );
   } catch (error) {
     console.error("AI analysis error:", error);
@@ -489,14 +551,23 @@ Write 2-3 paragraphs in the contemplative, recognizing style of Mirror of Truth.
   }
 }
 
-// Extract patterns from reflections
+// ENHANCED: Extract patterns from reflections with emphasis on what resonated
 function extractPatterns(reflections) {
   const patterns = [];
 
-  // Theme extraction from dreams and relationships
+  // Separate highly-rated reflections (8+) to see what resonates
+  const resonantReflections = reflections.filter(
+    (r) => r.rating && r.rating >= 8
+  );
+  const strugglingReflections = reflections.filter(
+    (r) => r.rating && r.rating <= 4
+  );
+
+  // Theme extraction from all reflections
   const themes = {};
   reflections.forEach((r) => {
     const text = `${r.dream} ${r.relationship}`.toLowerCase();
+    const weight = r.rating ? r.rating / 10 : 0.5; // Weight by rating
 
     // Common growth themes
     if (
@@ -504,7 +575,7 @@ function extractPatterns(reflections) {
       text.includes("startup") ||
       text.includes("entrepreneur")
     ) {
-      themes.business = (themes.business || 0) + 1;
+      themes.business = (themes.business || 0) + weight;
     }
     if (
       text.includes("creative") ||
@@ -512,50 +583,55 @@ function extractPatterns(reflections) {
       text.includes("writing") ||
       text.includes("music")
     ) {
-      themes.creativity = (themes.creativity || 0) + 1;
+      themes.creativity = (themes.creativity || 0) + weight;
     }
     if (
       text.includes("relationship") ||
       text.includes("love") ||
       text.includes("partner")
     ) {
-      themes.relationships = (themes.relationships || 0) + 1;
+      themes.relationships = (themes.relationships || 0) + weight;
     }
     if (
       text.includes("freedom") ||
       text.includes("independent") ||
       text.includes("own")
     ) {
-      themes.independence = (themes.independence || 0) + 1;
+      themes.independence = (themes.independence || 0) + weight;
     }
     if (
       text.includes("fear") ||
       text.includes("scared") ||
       text.includes("worried")
     ) {
-      themes.uncertainty = (themes.uncertainty || 0) + 1;
+      themes.uncertainty = (themes.uncertainty || 0) + weight;
     }
     if (
       text.includes("confidence") ||
       text.includes("ready") ||
       text.includes("capable")
     ) {
-      themes.confidence = (themes.confidence || 0) + 1;
+      themes.confidence = (themes.confidence || 0) + weight;
     }
   });
 
   // Convert themes to patterns array
   Object.entries(themes)
-    .filter(([_, count]) => count >= 2)
+    .filter(([_, weight]) => weight >= 1)
     .sort(([, a], [, b]) => b - a)
-    .forEach(([theme, count]) => {
-      patterns.push(`${theme}_${count}`);
+    .forEach(([theme, weight]) => {
+      patterns.push(`${theme}_${Math.round(weight)}`);
     });
+
+  // Add special patterns for highly resonant reflections
+  if (resonantReflections.length >= 2) {
+    patterns.push("deep_resonance_found");
+  }
 
   return patterns;
 }
 
-// Generate structured insights
+// ENHANCED: Generate structured insights including feedback patterns
 function generateInsights(reflections, patterns) {
   const insights = {
     timeSpan: {
@@ -569,7 +645,23 @@ function generateInsights(reflections, patterns) {
     themes: patterns,
     progressionNotes: [],
     growthIndicators: [],
+    resonanceInsights: [],
   };
+
+  // Analyze what helps them access truth
+  const highlyRated = reflections.filter((r) => r.rating && r.rating >= 8);
+  const lowRated = reflections.filter((r) => r.rating && r.rating <= 4);
+
+  if (highlyRated.length > 0) {
+    insights.resonanceInsights.push({
+      type: "high_resonance",
+      count: highlyRated.length,
+      feedback: highlyRated
+        .filter((r) => r.user_feedback)
+        .map((r) => r.user_feedback)
+        .slice(0, 3), // Top 3 insights
+    });
+  }
 
   // Analyze confidence progression
   const early = reflections.slice(Math.floor(reflections.length / 2));
@@ -580,6 +672,14 @@ function generateInsights(reflections, patterns) {
 
   if (recentConfidence > earlyConfidence) {
     insights.growthIndicators.push("increasing_confidence");
+  }
+
+  // Check if ratings are improving over time
+  const earlyAvgRating = calculateAverageRating(early);
+  const recentAvgRating = calculateAverageRating(recent);
+
+  if (recentAvgRating > earlyAvgRating + 1) {
+    insights.growthIndicators.push("deepening_self_recognition");
   }
 
   return insights;
@@ -606,6 +706,11 @@ function calculateGrowthScore(reflections) {
     new Date(reflections[reflections.length - 1].created_at);
   const months = timeSpan / (1000 * 60 * 60 * 24 * 30);
   if (months > 1) score += 10;
+
+  // ENHANCED: Bonus for high ratings
+  const avgRating = calculateAverageRating(reflections);
+  if (avgRating > 7) score += 10;
+  if (avgRating > 8.5) score += 10;
 
   return Math.min(100, Math.max(1, Math.round(score)));
 }
@@ -667,6 +772,15 @@ function analyzeConfidence(reflections) {
   return confidenceScore / reflections.length;
 }
 
+// NEW: Helper function to calculate average rating
+function calculateAverageRating(reflections) {
+  const rated = reflections.filter((r) => r.rating);
+  if (rated.length === 0) return 5; // Default middle rating
+
+  const sum = rated.reduce((acc, r) => acc + r.rating, 0);
+  return sum / rated.length;
+}
+
 function getToneDistribution(reflections) {
   const distribution = {};
   reflections.forEach((r) => {
@@ -703,6 +817,17 @@ function generateQuickInsights(reflections) {
   const tones = new Set(reflections.map((r) => r.tone));
   if (tones.size >= 2) {
     insights.push("Exploring different voices of reflection");
+  }
+
+  // ENHANCED: Add insights based on ratings
+  const avgRating = calculateAverageRating(reflections);
+  if (avgRating > 8) {
+    insights.push("Finding deep resonance with your reflections");
+  }
+
+  const highlyRated = reflections.filter((r) => r.rating && r.rating >= 8);
+  if (highlyRated.length >= 3) {
+    insights.push("Consistently accessing deeper truth");
   }
 
   return insights;
