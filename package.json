@@ -40,6 +40,7 @@
   "license": "MIT",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.52.0",
+    "@supabase/supabase-js": "^2.50.4",
     "@upstash/redis": "^1.35.0",
     "@vercel/edge-config": "^1.4.0",
     "google-auth-library": "^10.1.0",
