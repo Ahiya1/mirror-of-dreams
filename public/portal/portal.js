@@ -209,7 +209,7 @@ function updateSignInVisibility() {
     // Add sign-in button to top-left
     if (!document.querySelector(".sign-in-button")) {
       const signInButton = document.createElement("a");
-      signInButton.href = "/auth/signin";
+      signInButton.href = "/auth";
       signInButton.className = "sign-in-button";
       signInButton.innerHTML = "<span>Sign In</span>";
       document.body.appendChild(signInButton);
