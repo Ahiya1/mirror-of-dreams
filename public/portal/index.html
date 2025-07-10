@@ -633,6 +633,12 @@
         }
       }
 
+      /* Remove all focus outlines - rely on hover states */
+      * {
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent;
+      }
+
       /* Mobile Optimizations */
       @media (max-width: 768px) {
         .nav-container {
@@ -747,16 +753,6 @@
           animation: none;
         }
       }
-
-      /* Focus styles for keyboard navigation */
-      .reflect-button:focus,
-      .start-free-button:focus,
-      .gift-button:focus,
-      .about-link:focus,
-      .user-button:focus {
-        outline: 2px solid rgba(16, 185, 129, 0.6);
-        outline-offset: 2px;
-      }
     </style>
   </head>
 
@@ -845,7 +841,7 @@
 
             <a href="/gifting" class="gift-button">
               <span>🎁</span>
-              <span>Gift a Subscription</span>
+              <span>Gift a Reflection</span>
             </a>
           </div>
         </div>
