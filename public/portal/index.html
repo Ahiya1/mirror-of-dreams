@@ -159,7 +159,7 @@
         }
       }
 
-      /* Navigation - Top Right */
+      /* Navigation - Updated with both buttons */
       .nav-container {
         position: absolute;
         top: clamp(1rem, 3vh, 2rem);
@@ -168,6 +168,46 @@
         display: flex;
         align-items: center;
         gap: 1rem;
+      }
+
+      /* Examples button - Top Left */
+      .examples-link {
+        position: absolute;
+        top: clamp(1rem, 3vh, 2rem);
+        left: clamp(1rem, 3vw, 2rem);
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: clamp(0.6rem, 2vh, 0.8rem) clamp(1rem, 3vw, 1.5rem);
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.12),
+          rgba(5, 150, 105, 0.08)
+        );
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(16, 185, 129, 0.25);
+        border-radius: 50px;
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        font-size: clamp(0.75rem, 2vw, 0.9rem);
+        font-weight: 500;
+        transition: all 0.3s ease;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.15);
+        white-space: nowrap;
+      }
+
+      .examples-link:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.18),
+          rgba(5, 150, 105, 0.12)
+        );
+        border-color: rgba(16, 185, 129, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 35px rgba(16, 185, 129, 0.2);
       }
 
       .about-link {
@@ -646,6 +686,11 @@
           right: 1rem;
         }
 
+        .examples-link {
+          top: 1rem;
+          left: 1rem;
+        }
+
         .secondary-buttons {
           flex-direction: column;
           gap: 0.8rem;
@@ -666,11 +711,17 @@
           right: 0.5rem;
         }
 
+        .examples-link {
+          top: 0.5rem;
+          left: 0.5rem;
+        }
+
         .center-container {
           max-width: 95vw;
         }
 
-        .about-link {
+        .about-link,
+        .examples-link {
           font-size: 0.75rem;
           padding: 0.6rem 1rem;
         }
@@ -766,7 +817,13 @@
       <div class="mirror"></div>
     </div>
 
-    <!-- Navigation -->
+    <!-- Examples Link - Top Left -->
+    <a href="/examples" class="examples-link">
+      <span>🪞</span>
+      <span>See Real Reflections</span>
+    </a>
+
+    <!-- Navigation - Top Right -->
     <div class="nav-container">
       <a href="/about" class="about-link">
         <span>✨</span>
