@@ -1,4 +1,5 @@
 // api/reflections.js - Mirror of Truth Reflection Management with Usage Limits
+// ENHANCED: Added feedback submission handler
 
 const { createClient } = require("@supabase/supabase-js");
 const { authenticateRequest } = require("./auth.js");
@@ -44,6 +45,8 @@ module.exports = async function handler(req, res) {
         return await handleCheckUsage(req, res);
       case "search":
         return await handleSearchReflections(req, res);
+      case "submit-feedback":
+        return await handleSubmitFeedback(req, res);
       default:
         return res.status(400).json({
           success: false,
@@ -229,7 +232,8 @@ async function handleGetHistory(req, res) {
         `
         id, created_at, updated_at, title, tone, is_premium,
         word_count, estimated_read_time, view_count, tags,
-        dream, plan, has_date, dream_date, relationship, offering
+        dream, plan, has_date, dream_date, relationship, offering,
+        rating, user_feedback, feedback_submitted_at
       `
       )
       .eq("user_id", user.id);
@@ -551,7 +555,7 @@ async function handleSearchReflections(req, res) {
 
     const { data: reflections, error } = await supabase
       .from("reflections")
-      .select("id, created_at, title, tone, is_premium, dream")
+      .select("id, created_at, title, tone, is_premium, dream, rating")
       .eq("user_id", user.id)
       .or(
         `title.ilike.%${searchQuery}%,dream.ilike.%${searchQuery}%,ai_response.ilike.%${searchQuery}%`
@@ -580,6 +584,83 @@ async function handleSearchReflections(req, res) {
       results: formattedResults,
       query: searchQuery,
       count: reflections.length,
+    });
+  } catch (error) {
+    if (
+      error.message === "Authentication required" ||
+      error.message === "Invalid authentication"
+    ) {
+      return res.status(401).json({
+        success: false,
+        error: error.message,
+      });
+    }
+    throw error;
+  }
+}
+
+// NEW: Submit feedback for a reflection
+async function handleSubmitFeedback(req, res) {
+  try {
+    const user = await authenticateRequest(req);
+    const { reflectionId, rating, feedback } = req.body;
+
+    // Validation
+    if (!reflectionId || !rating) {
+      return res.status(400).json({
+        success: false,
+        error: "Reflection ID and rating are required",
+      });
+    }
+
+    if (rating < 1 || rating > 10) {
+      return res.status(400).json({
+        success: false,
+        error: "Rating must be between 1 and 10",
+      });
+    }
+
+    // Verify the reflection belongs to the user
+    const { data: reflection, error: verifyError } = await supabase
+      .from("reflections")
+      .select("id")
+      .eq("id", reflectionId)
+      .eq("user_id", user.id)
+      .single();
+
+    if (verifyError || !reflection) {
+      return res.status(404).json({
+        success: false,
+        error: "Reflection not found or access denied",
+      });
+    }
+
+    // Update reflection with feedback
+    const { error: updateError } = await supabase
+      .from("reflections")
+      .update({
+        rating: rating,
+        user_feedback: feedback || null,
+        feedback_submitted_at: new Date().toISOString(),
+      })
+      .eq("id", reflectionId)
+      .eq("user_id", user.id);
+
+    if (updateError) {
+      console.error("Feedback update error:", updateError);
+      return res.status(500).json({
+        success: false,
+        error: "Failed to save feedback",
+      });
+    }
+
+    console.log(
+      `💫 Feedback submitted: ${user.email} rated ${rating}/10 for reflection ${reflectionId}`
+    );
+
+    return res.json({
+      success: true,
+      message: "Feedback saved successfully",
     });
   } catch (error) {
     if (
