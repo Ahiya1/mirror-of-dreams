@@ -1,4 +1,4 @@
-// api/auth.js - Mirror of Truth Authentication System (Fixed JSON Parsing)
+// api/auth.js - Mirror of Truth Authentication System (FIXED)
 const { createClient } = require("@supabase/supabase-js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -18,101 +18,90 @@ if (!JWT_SECRET) {
 
 console.log("✅ JWT_SECRET is set, length:", JWT_SECRET.length);
 
-// Helper function to parse JSON body
-async function parseBody(req) {
-  if (req.body) {
-    // Body already parsed (form data or Vercel auto-parsing)
-    return req.body;
-  }
-
-  // Manual JSON parsing for edge cases
-  return new Promise((resolve, reject) => {
-    let body = "";
-    req.on("data", (chunk) => {
-      body += chunk.toString();
-    });
-    req.on("end", () => {
-      try {
-        if (body.trim() === "") {
-          resolve({});
-        } else {
-          resolve(JSON.parse(body));
-        }
-      } catch (error) {
-        reject(new Error("Invalid JSON body"));
-      }
-    });
-    req.on("error", reject);
-  });
-}
-
 module.exports = async function handler(req, res) {
+  const requestId = `req_${Date.now()}_${Math.random()
+    .toString(36)
+    .substr(2, 9)}`;
+
+  console.log(`🔍 [${requestId}] === AUTH REQUEST START ===`);
+  console.log(`🔍 [${requestId}] Method: ${req.method}`);
+  console.log(`🔍 [${requestId}] URL: ${req.url}`);
+  console.log(`🔍 [${requestId}] Content-Type: ${req.headers["content-type"]}`);
+  console.log(
+    `🔍 [${requestId}] Authorization: ${
+      req.headers.authorization ? "Bearer [TOKEN]" : "None"
+    }`
+  );
+
   // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   if (req.method === "OPTIONS") {
+    console.log(`🔍 [${requestId}] OPTIONS request - sending CORS headers`);
     return res.status(200).end();
   }
 
-  const requestId = `req_${Date.now()}_${Math.random()
-    .toString(36)
-    .substr(2, 9)}`;
-
   try {
-    // Parse request body
-    console.log(`🔍 [${requestId}] Raw body type:`, typeof req.body);
-    console.log(`🔍 [${requestId}] Content-Type:`, req.headers["content-type"]);
+    // SIMPLE body handling - let Vercel handle JSON parsing
+    const body = req.body || {};
 
-    let body;
-    try {
-      body = await parseBody(req);
-      console.log(`🔍 [${requestId}] Parsed body:`, body);
-    } catch (parseError) {
-      console.log(`❌ [${requestId}] Body parsing failed:`, parseError.message);
+    console.log(`🔍 [${requestId}] Body type: ${typeof body}`);
+    console.log(
+      `🔍 [${requestId}] Body keys: [${Object.keys(body).join(", ")}]`
+    );
+    console.log(
+      `🔍 [${requestId}] Body content:`,
+      JSON.stringify(body, null, 2)
+    );
+
+    const { action } = body;
+
+    console.log(
+      `🔍 [${requestId}] Action: "${action}" (type: ${typeof action})`
+    );
+
+    if (!action) {
+      console.log(`❌ [${requestId}] No action provided in request body`);
       return res.status(400).json({
         success: false,
-        error: "Invalid request body",
-        debug: { requestId, parseError: parseError.message },
+        error: "No action specified",
+        debug: {
+          requestId,
+          bodyReceived: body,
+          availableActions: [
+            "signup",
+            "signin",
+            "verify-token",
+            "signout",
+            "get-user",
+            "update-profile",
+            "delete-account",
+          ],
+        },
       });
     }
 
-    const { action } = body;
-    console.log(
-      `🔍 [${requestId}] Action value:`,
-      JSON.stringify(action),
-      "Type:",
-      typeof action
-    );
-
-    console.log(
-      `🔍 [${requestId}] Auth Request: ${req.method} ${
-        action || "no-action"
-      } - ${new Date().toISOString()}`
-    );
+    console.log(`🔍 [${requestId}] Processing action: ${action}`);
 
     switch (action) {
       case "signup":
-        return await handleSignup({ ...req, body }, res, requestId);
+        return await handleSignup(req, res, requestId);
       case "signup-with-subscription":
-        return await handleSignupWithSubscription(
-          { ...req, body },
-          res,
-          requestId
-        );
+        return await handleSignupWithSubscription(req, res, requestId);
       case "signin":
-        return await handleSignin({ ...req, body }, res, requestId);
+        return await handleSignin(req, res, requestId);
       case "signout":
-        return await handleSignout({ ...req, body }, res, requestId);
+        return await handleSignout(req, res, requestId);
       case "verify-token":
-        return await handleVerifyToken({ ...req, body }, res, requestId);
+        return await handleVerifyToken(req, res, requestId);
       case "get-user":
-        return await handleGetUser({ ...req, body }, res, requestId);
+        return await handleGetUser(req, res, requestId);
       case "update-profile":
-        return await handleUpdateProfile({ ...req, body }, res, requestId);
+        return await handleUpdateProfile(req, res, requestId);
       case "delete-account":
-        return await handleDeleteAccount({ ...req, body }, res, requestId);
+        return await handleDeleteAccount(req, res, requestId);
       default:
         console.log(`❌ [${requestId}] Invalid action: ${action}`);
         return res.status(400).json({
@@ -121,6 +110,7 @@ module.exports = async function handler(req, res) {
           debug: {
             action,
             requestId,
+            actionType: typeof action,
             availableActions: [
               "signup",
               "signin",
@@ -134,7 +124,8 @@ module.exports = async function handler(req, res) {
         });
     }
   } catch (error) {
-    console.error(`❌ [${requestId}] Auth API Error:`, error);
+    console.error(`❌ [${requestId}] Auth API Critical Error:`, error);
+    console.error(`❌ [${requestId}] Error stack:`, error.stack);
     return res.status(500).json({
       success: false,
       error: "Authentication service error",
@@ -151,6 +142,7 @@ module.exports = async function handler(req, res) {
 async function handleSignup(req, res, requestId) {
   const { email, password, name, tier = "free", language = "en" } = req.body;
 
+  console.log(`🔍 [${requestId}] === SIGNUP START ===`);
   console.log(`🔍 [${requestId}] Signup attempt for: ${email}`);
 
   // Validation
@@ -239,6 +231,7 @@ async function handleSignupWithSubscription(req, res, requestId) {
     language = "en",
   } = req.body;
 
+  console.log(`🔍 [${requestId}] === SUBSCRIPTION SIGNUP START ===`);
   console.log(
     `🔍 [${requestId}] Subscription signup attempt for: ${email}, tier: ${tier}`
   );
@@ -316,6 +309,7 @@ async function handleSignupWithSubscription(req, res, requestId) {
 async function handleSignin(req, res, requestId) {
   const { email, password } = req.body;
 
+  console.log(`🔍 [${requestId}] === SIGNIN START ===`);
   console.log(`🔍 [${requestId}] Signin attempt for: ${email}`);
 
   if (!email || !password) {
@@ -409,6 +403,7 @@ async function handleSignin(req, res, requestId) {
 async function handleSignout(req, res, requestId) {
   const token = req.headers.authorization?.replace("Bearer ", "");
 
+  console.log(`🔍 [${requestId}] === SIGNOUT START ===`);
   console.log(`🔍 [${requestId}] Signout request`);
 
   if (token) {
@@ -433,9 +428,11 @@ async function handleSignout(req, res, requestId) {
 async function handleVerifyToken(req, res, requestId) {
   const token = req.headers.authorization?.replace("Bearer ", "");
 
+  console.log(`🔍 [${requestId}] === VERIFY TOKEN START ===`);
   console.log(`🔍 [${requestId}] Token verification request`);
   console.log(`🔍 [${requestId}] Token exists: ${!!token}`);
   console.log(`🔍 [${requestId}] Token length: ${token?.length || 0}`);
+  console.log(`🔍 [${requestId}] Token preview: ${token?.substring(0, 20)}...`);
 
   if (!token) {
     console.log(`❌ [${requestId}] No token provided`);
@@ -452,6 +449,7 @@ async function handleVerifyToken(req, res, requestId) {
     console.log(
       `✅ [${requestId}] JWT verification successful, userId: ${decoded.userId}`
     );
+    console.log(`🔍 [${requestId}] Decoded token:`, decoded);
 
     // Get fresh user data
     console.log(`🔍 [${requestId}] Querying Supabase for user...`);
@@ -515,6 +513,7 @@ async function handleVerifyToken(req, res, requestId) {
     });
   } catch (error) {
     console.log(`❌ [${requestId}] JWT verification failed:`, error.message);
+    console.log(`❌ [${requestId}] JWT error details:`, error);
     return res.status(401).json({
       success: false,
       error: "Invalid token",
@@ -524,6 +523,7 @@ async function handleVerifyToken(req, res, requestId) {
         jwtError: error.message,
         tokenPresent: !!token,
         secretPresent: !!JWT_SECRET,
+        secretLength: JWT_SECRET?.length,
       },
     });
   }
@@ -531,6 +531,7 @@ async function handleVerifyToken(req, res, requestId) {
 
 // Get user profile
 async function handleGetUser(req, res, requestId) {
+  console.log(`🔍 [${requestId}] === GET USER START ===`);
   console.log(`🔍 [${requestId}] Get user profile request`);
 
   try {
@@ -590,6 +591,7 @@ async function handleGetUser(req, res, requestId) {
 
 // Update user profile
 async function handleUpdateProfile(req, res, requestId) {
+  console.log(`🔍 [${requestId}] === UPDATE PROFILE START ===`);
   console.log(`🔍 [${requestId}] Update profile request`);
 
   try {
@@ -651,6 +653,7 @@ async function handleUpdateProfile(req, res, requestId) {
 
 // Delete user account
 async function handleDeleteAccount(req, res, requestId) {
+  console.log(`🔍 [${requestId}] === DELETE ACCOUNT START ===`);
   console.log(`🔍 [${requestId}] Delete account request`);
 
   try {
