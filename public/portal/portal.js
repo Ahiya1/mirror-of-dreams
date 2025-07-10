@@ -74,6 +74,7 @@ function updatePortalInterface() {
   updateReflectButton();
   updateNavigation();
   updateTaglines();
+  updateSignInVisibility();
 }
 
 function updateReflectButton() {
@@ -192,6 +193,37 @@ function updateTaglines() {
   }
   if (taglineSet && subTagline) {
     subTagline.textContent = taglineSet.sub;
+  }
+}
+
+// ╭─ NEW: Sign-In Visibility Management ──────────────────────╮
+function updateSignInVisibility() {
+  const signInPrompt = document.getElementById("signInPrompt");
+
+  if (!userState.authenticated) {
+    // Show inline sign-in prompt
+    if (signInPrompt) {
+      signInPrompt.style.display = "block";
+    }
+
+    // Add sign-in button to top-left
+    if (!document.querySelector(".sign-in-button")) {
+      const signInButton = document.createElement("a");
+      signInButton.href = "/auth/signin";
+      signInButton.className = "sign-in-button";
+      signInButton.innerHTML = "<span>Sign In</span>";
+      document.body.appendChild(signInButton);
+    }
+  } else {
+    // Hide sign-in elements for authenticated users
+    if (signInPrompt) {
+      signInPrompt.style.display = "none";
+    }
+
+    const signInButton = document.querySelector(".sign-in-button");
+    if (signInButton) {
+      signInButton.remove();
+    }
   }
 }
 
