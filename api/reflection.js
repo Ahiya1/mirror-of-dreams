@@ -1,5 +1,5 @@
-// api/reflection.js – Mirror of Truth (TRANSFORMED: Database Storage + Usage Limits)
-// CRITICAL CHANGES: No email delivery, database storage, usage limits, auth required
+// api/reflection.js – Mirror of Truth (ENHANCED: Modular Prompt Architecture)
+// NEW: Base instructions + style modifiers + context modules for consciousness technology
 
 const fs = require("fs");
 const path = require("path");
@@ -24,7 +24,7 @@ const TIER_LIMITS = {
   premium: 10,
 };
 
-// ─── Load prompt files synchronously at cold-start ──────────
+// ─── Enhanced Prompt Loading System ─────────────────────────
 const PROMPT_DIR = path.join(process.cwd(), "prompts");
 
 function loadPrompt(file) {
@@ -36,12 +36,20 @@ function loadPrompt(file) {
   }
 }
 
-const PROMPTS = {
+// Load all prompt modules at startup
+const PROMPT_MODULES = {
+  // Core system
+  base: loadPrompt("base_instructions.txt"),
+
+  // Style modifiers
   gentle: loadPrompt("gentle_clarity.txt"),
   intense: loadPrompt("luminous_intensity.txt"),
   fusion: loadPrompt("sacred_fusion.txt"),
+
+  // Context modules
+  creator: loadPrompt("creator_context.txt"),
+  evolution: loadPrompt("evolution_instructions.txt"),
 };
-const CREATOR_CTX = loadPrompt("creator_context.txt");
 
 // ─── Premium instruction addition ───────────────────────────
 const PREMIUM_INSTRUCTION = `
@@ -85,36 +93,40 @@ This premium reflection should feel like a conversation with their own deepest k
 
 Write as if you can see the eternal in this moment, the infinite in this specific longing.`;
 
-// ─── Prompt utilities ───────────────────────────────────────
-function withCreatorContext(base, ctx) {
-  return `${base.trim()}\n\n${ctx.trim()}`;
-}
-
-function withPremiumEnhancement(base, isPremium) {
-  return isPremium ? `${base.trim()}\n\n${PREMIUM_INSTRUCTION.trim()}` : base;
-}
-
-function getMirrorPrompt(
+// ─── ENHANCED: Modular Prompt Assembly ──────────────────────
+function assembleMirrorPrompt(
   tone = "fusion",
   isCreator = false,
   isPremium = false
 ) {
-  let base = PROMPTS[tone] || PROMPTS.fusion;
+  let promptParts = [];
 
-  // Add creator context if needed
-  if (isCreator) {
-    base = withCreatorContext(base, CREATOR_CTX);
+  // 1. Always start with base instructions
+  if (PROMPT_MODULES.base) {
+    promptParts.push(PROMPT_MODULES.base.trim());
   }
 
-  // Add premium enhancement if needed
+  // 2. Add style modifier
+  const styleModule = PROMPT_MODULES[tone] || PROMPT_MODULES.fusion;
+  if (styleModule) {
+    promptParts.push(styleModule.trim());
+  }
+
+  // 3. Add creator context if needed
+  if (isCreator && PROMPT_MODULES.creator) {
+    promptParts.push(PROMPT_MODULES.creator.trim());
+  }
+
+  // 4. Add premium enhancement if needed
   if (isPremium) {
-    base = withPremiumEnhancement(base, true);
+    promptParts.push(PREMIUM_INSTRUCTION.trim());
   }
 
-  return base;
+  // Join all parts with proper spacing
+  return promptParts.join("\n\n");
 }
 
-// ─── Markdown → sacred HTML formatter ───────────────────────
+// ─── Markdown → sacred HTML formatter (preserved) ──────────
 function toSacredHTML(md = "") {
   const wrap =
     "font-family:'Inter',sans-serif;font-size:1.05rem;line-height:1.7;color:#333;";
@@ -139,7 +151,7 @@ function toSacredHTML(md = "") {
   return `<div class="mirror-reflection" style="${wrap}">${html}</div>`;
 }
 
-// ─── Main handler ───────────────────────────────────────────
+// ─── Main handler (enhanced with modular prompts) ──────────
 module.exports = async function handler(req, res) {
   // CORS
   res.setHeader("Content-Type", "application/json");
@@ -158,7 +170,7 @@ module.exports = async function handler(req, res) {
       .json({ success: false, error: "Method not allowed" });
 
   try {
-    // TRANSFORMED: Authentication required for all reflections
+    // Authentication required for all reflections
     const user = await authenticateRequest(req);
 
     // Extract body with mode detection for backwards compatibility
@@ -193,7 +205,7 @@ module.exports = async function handler(req, res) {
     const shouldUsePremium =
       isPremium || userIsCreator || user.tier === "premium";
 
-    // TRANSFORMED: Check usage limits (unless creator/admin)
+    // Check usage limits (unless creator/admin)
     if (!userIsCreator && !userIsAdmin) {
       const canReflect = await checkReflectionLimit(user);
       if (!canReflect) {
@@ -233,12 +245,17 @@ module.exports = async function handler(req, res) {
 
 Please mirror back what you see, in a flowing reflection I can return to months from now.`;
 
-    // ── Call Anthropic with premium thinking if needed ────────
+    // ── ENHANCED: Call Anthropic with modular prompt system ──
     if (!process.env.ANTHROPIC_API_KEY) {
       throw new Error("ANTHROPIC_API_KEY missing");
     }
 
-    const systemPrompt = getMirrorPrompt(tone, userIsCreator, shouldUsePremium);
+    // Assemble the complete prompt using modular system
+    const systemPrompt = assembleMirrorPrompt(
+      tone,
+      userIsCreator,
+      shouldUsePremium
+    );
 
     // Configure request based on premium status
     const requestConfig = {
@@ -269,7 +286,7 @@ Please mirror back what you see, in a flowing reflection I can return to months 
 
     const formattedReflection = toSacredHTML(reflection);
 
-    // TRANSFORMED: Store reflection in database instead of emailing
+    // Store reflection in database
     const reflectionRecord = await storeReflection({
       userId: user.id,
       dream,
@@ -284,7 +301,7 @@ Please mirror back what you see, in a flowing reflection I can return to months 
       wordCount: reflection.split(/\s+/).length,
     });
 
-    // TRANSFORMED: Update user usage (unless creator/admin)
+    // Update user usage (unless creator/admin)
     if (!userIsCreator && !userIsAdmin) {
       await updateUserUsage(user);
     }
@@ -295,15 +312,15 @@ Please mirror back what you see, in a flowing reflection I can return to months 
     console.log(
       `✨ Reflection created: ${user.email} (${
         shouldUsePremium ? "Premium" : "Essential"
-      }) - ID: ${reflectionRecord.id}`
+      }) - ID: ${reflectionRecord.id} - Tone: ${tone}`
     );
 
     return res.status(200).json({
       success: true,
       reflection: formattedReflection,
-      reflectionId: reflectionRecord.id, // NEW: For dashboard linking
+      reflectionId: reflectionRecord.id,
       isPremium: shouldUsePremium,
-      shouldTriggerEvolution, // NEW: For evolution report prompts
+      shouldTriggerEvolution,
       userData: {
         userName: name,
         dream,
@@ -366,13 +383,10 @@ Please mirror back what you see, in a flowing reflection I can return to months 
   }
 };
 
-// ─── Database operations ─────────────────────────────────────
+// ─── Database operations (preserved) ─────────────────────────
 async function storeReflection(data) {
-  // Generate title from dream (first 50 characters)
   const title =
     data.dream.length > 50 ? data.dream.substring(0, 47) + "..." : data.dream;
-
-  // Calculate read time (200 WPM average)
   const estimatedReadTime = Math.max(1, Math.ceil(data.wordCount / 200));
 
   const { data: reflection, error } = await supabase
@@ -404,7 +418,6 @@ async function storeReflection(data) {
 }
 
 async function checkReflectionLimit(user) {
-  // Creators and admins have unlimited reflections
   if (user.is_creator || user.is_admin) {
     return true;
   }
@@ -416,7 +429,6 @@ async function checkReflectionLimit(user) {
 async function updateUserUsage(user) {
   const currentMonthYear = new Date().toISOString().slice(0, 7);
 
-  // Update user's reflection counts
   const { error: userError } = await supabase
     .from("users")
     .update({
@@ -430,7 +442,6 @@ async function updateUserUsage(user) {
     console.error("User usage update error:", userError);
   }
 
-  // Update/create usage tracking record
   const { error: trackingError } = await supabase
     .from("usage_tracking")
     .upsert({
@@ -446,19 +457,16 @@ async function updateUserUsage(user) {
 }
 
 async function checkEvolutionTrigger(user) {
-  // Only for paid tiers
   if (user.tier === "free") return false;
 
   const thresholds = {
-    essential: 4, // Every 4 reflections
-    premium: 6, // Every 6 reflections
+    essential: 4,
+    premium: 6,
   };
 
   const threshold = thresholds[user.tier];
   if (!threshold) return false;
 
-  const totalReflections = (user.total_reflections || 0) + 1; // +1 for current reflection
-
-  // Check if this reflection count hits the threshold
+  const totalReflections = (user.total_reflections || 0) + 1;
   return totalReflections >= threshold && totalReflections % threshold === 0;
 }
