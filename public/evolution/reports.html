@@ -10,7 +10,1465 @@
     <link rel="manifest" href="/site.webmanifest" />
     <title>Evolution Reports | Mirror of Truth</title>
     <link rel="stylesheet" href="/shared/foundation.css" />
-    <link rel="stylesheet" href="/evolution/reports.css" />
+
+    <style>
+      /* Evolution Reports - Sacred Consciousness Tracking Styles */
+
+      /* ╭─ COSMIC EVOLUTION FOUNDATION ────────────────────────────────╮ */
+      body {
+        background: linear-gradient(
+          135deg,
+          #0f0f23 0%,
+          #1a1a2e 25%,
+          #16213e 50%,
+          #0f0f23 100%
+        );
+        min-height: 100vh;
+        padding-top: 80px;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      /* Enhanced Cosmic Background for Evolution */
+      .cosmic-background {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        overflow: hidden;
+      }
+
+      .evolution-orb {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(99, 102, 241, 0.08) 0%,
+          rgba(147, 51, 234, 0.04) 40%,
+          rgba(139, 92, 246, 0.02) 70%,
+          transparent 100%
+        );
+        animation: evolutionFloat 25s ease-in-out infinite;
+        opacity: 0;
+      }
+
+      .evolution-orb:nth-child(1) {
+        width: clamp(300px, 50vw, 400px);
+        height: clamp(300px, 50vw, 400px);
+        left: 10%;
+        top: 15%;
+        animation-delay: 0s;
+        animation-duration: 28s;
+      }
+
+      .evolution-orb:nth-child(2) {
+        width: clamp(200px, 35vw, 250px);
+        height: clamp(200px, 35vw, 250px);
+        right: 15%;
+        top: 40%;
+        animation-delay: 8s;
+        animation-duration: 24s;
+      }
+
+      .evolution-orb:nth-child(3) {
+        width: clamp(250px, 40vw, 320px);
+        height: clamp(250px, 40vw, 320px);
+        left: 40%;
+        bottom: 20%;
+        animation-delay: 16s;
+        animation-duration: 30s;
+      }
+
+      .growth-particles {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: rgba(168, 85, 247, 0.6);
+        border-radius: 50%;
+        animation: particleRise 12s linear infinite;
+        opacity: 0;
+      }
+
+      .growth-particles:nth-child(4) {
+        left: 20%;
+        animation-delay: 0s;
+      }
+
+      .growth-particles:nth-child(5) {
+        left: 60%;
+        animation-delay: 4s;
+      }
+
+      .growth-particles:nth-child(6) {
+        left: 80%;
+        animation-delay: 8s;
+      }
+
+      @keyframes evolutionFloat {
+        0% {
+          opacity: 0;
+          transform: scale(0.8) translateY(20px);
+        }
+        25% {
+          opacity: 0.4;
+          transform: scale(1) translateY(-10px);
+        }
+        50% {
+          opacity: 0.6;
+          transform: scale(1.2) translateY(-25px);
+        }
+        75% {
+          opacity: 0.3;
+          transform: scale(1.4) translateY(-15px);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(1.8) translateY(30px);
+        }
+      }
+
+      @keyframes particleRise {
+        0% {
+          opacity: 0;
+          transform: translateY(100vh) scale(0.5);
+        }
+        10% {
+          opacity: 0.8;
+          transform: translateY(90vh) scale(1);
+        }
+        90% {
+          opacity: 0.6;
+          transform: translateY(10vh) scale(0.8);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(0) scale(0.3);
+        }
+      }
+
+      /* ╭─ NAVIGATION ───────────────────────────────────────────────╮ */
+      .sacred-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        background: rgba(15, 15, 35, 0.95);
+        backdrop-filter: blur(30px);
+        border-bottom: 1px solid rgba(147, 51, 234, 0.2);
+        padding: 0;
+      }
+
+      .nav-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 2rem;
+        gap: 1rem;
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.8rem 1.5rem;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(147, 51, 234, 0.2);
+        border-radius: 50px;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        font-weight: 400;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        min-height: 44px;
+      }
+
+      .nav-link:hover {
+        background: rgba(147, 51, 234, 0.15);
+        border-color: rgba(147, 51, 234, 0.4);
+        color: rgba(255, 255, 255, 0.95);
+        transform: translateY(-1px);
+      }
+
+      .nav-center {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+      }
+
+      .evolution-nav {
+        display: flex;
+        align-items: center;
+      }
+
+      .nav-title {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        font-size: clamp(1.1rem, 3vw, 1.3rem);
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.95);
+      }
+
+      .nav-icon {
+        font-size: 1.5rem;
+        animation: evolutionPulse 3s ease-in-out infinite;
+      }
+
+      @keyframes evolutionPulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+        50% {
+          transform: scale(1.1);
+          opacity: 1;
+        }
+      }
+
+      /* ╭─ MAIN CONTENT ─────────────────────────────────────────────╮ */
+      .evolution-main {
+        position: relative;
+        z-index: 10;
+        min-height: calc(100vh - 80px);
+        display: flex;
+        padding-right: 350px; /* Space for sidebar */
+      }
+
+      .evolution-container {
+        flex: 1;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      /* ╭─ LOADING STATES ───────────────────────────────────────────╮ */
+      .loading-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(100vh - 80px);
+        padding: 2rem;
+      }
+
+      .loading-content {
+        text-align: center;
+        color: rgba(255, 255, 255, 0.9);
+        max-width: 400px;
+      }
+
+      .evolution-loader {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 2rem;
+      }
+
+      .loader-spiral {
+        position: absolute;
+        inset: 0;
+        border: 3px solid transparent;
+        border-top: 3px solid rgba(147, 51, 234, 0.8);
+        border-right: 3px solid rgba(99, 102, 241, 0.6);
+        border-radius: 50%;
+        animation: spiralSpin 2s linear infinite;
+      }
+
+      .loader-spiral::before {
+        content: "";
+        position: absolute;
+        inset: 15px;
+        border: 2px solid transparent;
+        border-top: 2px solid rgba(139, 92, 246, 0.6);
+        border-left: 2px solid rgba(168, 85, 247, 0.4);
+        border-radius: 50%;
+        animation: spiralSpin 1.5s linear infinite reverse;
+      }
+
+      .loader-center {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        animation: evolutionPulse 2s ease-in-out infinite;
+      }
+
+      @keyframes spiralSpin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-title {
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        font-weight: 300;
+        margin: 0 0 1rem 0;
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.9) 0%,
+          rgba(99, 102, 241, 0.9) 50%,
+          rgba(139, 92, 246, 0.9) 100%
+        );
+        -webkit-background-clip: text;
+        color: transparent;
+      }
+
+      .loading-subtitle {
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0;
+        font-style: italic;
+      }
+
+      /* ╭─ ERROR STATES ─────────────────────────────────────────────╮ */
+      .error-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(100vh - 80px);
+        padding: 2rem;
+      }
+
+      .error-content {
+        text-align: center;
+        max-width: 500px;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .error-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        opacity: 0.8;
+      }
+
+      .error-title {
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        font-weight: 300;
+        margin: 0 0 1rem 0;
+        color: rgba(255, 255, 255, 0.95);
+      }
+
+      .error-subtitle {
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0 0 2rem 0;
+        line-height: 1.6;
+      }
+
+      .error-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      /* ╭─ EVOLUTION HEADER ─────────────────────────────────────────╮ */
+      .evolution-header {
+        margin-bottom: 3rem;
+        padding: 2rem;
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.08) 0%,
+          rgba(99, 102, 241, 0.05) 50%,
+          rgba(139, 92, 246, 0.08) 100%
+        );
+        backdrop-filter: blur(40px);
+        border: 1px solid rgba(147, 51, 234, 0.2);
+        border-radius: 24px;
+        position: relative;
+        overflow: hidden;
+        animation: headerAppear 1s ease-out;
+      }
+
+      @keyframes headerAppear {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .evolution-header::before {
+        content: "";
+        position: absolute;
+        inset: 1px;
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.05) 0%,
+          rgba(99, 102, 241, 0.02) 50%,
+          rgba(139, 92, 246, 0.05) 100%
+        );
+        border-radius: 23px;
+        pointer-events: none;
+      }
+
+      .header-content {
+        position: relative;
+        z-index: 2;
+      }
+
+      .evolution-title-section {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .evolution-title {
+        font-size: clamp(2rem, 6vw, 3rem);
+        font-weight: 300;
+        margin: 0 0 1rem 0;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.95) 0%,
+          rgba(199, 125, 255, 0.9) 50%,
+          rgba(255, 255, 255, 0.95) 100%
+        );
+        -webkit-background-clip: text;
+        color: transparent;
+        line-height: 1.2;
+      }
+
+      .evolution-subtitle {
+        font-size: clamp(1rem, 3vw, 1.2rem);
+        color: rgba(255, 255, 255, 0.8);
+        margin: 0;
+        line-height: 1.6;
+        font-weight: 300;
+      }
+
+      .evolution-meta {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .meta-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.2rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(147, 51, 234, 0.15);
+        border-radius: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .meta-card:hover {
+        background: rgba(147, 51, 234, 0.1);
+        border-color: rgba(147, 51, 234, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .meta-icon {
+        font-size: 1.8rem;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(147, 51, 234, 0.2);
+        border-radius: 12px;
+        flex-shrink: 0;
+      }
+
+      .meta-content {
+        flex: 1;
+      }
+
+      .meta-label {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 0.3rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .meta-value {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.95);
+      }
+
+      /* ╭─ SECTION STYLING ──────────────────────────────────────────╮ */
+      .evolution-analysis-section,
+      .patterns-section,
+      .growth-section,
+      .insights-section,
+      .continue-section {
+        margin-bottom: 3rem;
+        animation: sectionSlide 0.8s ease-out;
+        animation-fill-mode: both;
+      }
+
+      .evolution-analysis-section {
+        animation-delay: 0.1s;
+      }
+      .patterns-section {
+        animation-delay: 0.2s;
+      }
+      .growth-section {
+        animation-delay: 0.3s;
+      }
+      .insights-section {
+        animation-delay: 0.4s;
+      }
+      .continue-section {
+        animation-delay: 0.5s;
+      }
+
+      @keyframes sectionSlide {
+        from {
+          opacity: 0;
+          transform: translateX(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(147, 51, 234, 0.2);
+      }
+
+      .section-title {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        font-size: clamp(1.3rem, 4vw, 1.6rem);
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0;
+      }
+
+      .section-icon {
+        font-size: 1.5rem;
+        opacity: 0.9;
+      }
+
+      .report-type-badge {
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .report-type-badge.essential {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.3),
+          rgba(16, 185, 129, 0.2)
+        );
+        color: #6ee7b7;
+      }
+
+      .report-type-badge.premium {
+        background: linear-gradient(
+          135deg,
+          rgba(245, 158, 11, 0.3),
+          rgba(245, 158, 11, 0.2)
+        );
+        color: #fbbf24;
+      }
+
+      /* ╭─ MIRROR ANALYSIS ──────────────────────────────────────────╮ */
+      .analysis-content {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.04) 0%,
+          rgba(147, 51, 234, 0.02) 50%,
+          rgba(255, 255, 255, 0.04) 100%
+        );
+        backdrop-filter: blur(30px);
+        border: 1px solid rgba(147, 51, 234, 0.15);
+        border-radius: 20px;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .mirror-analysis {
+        font-size: clamp(1rem, 3vw, 1.1rem);
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.9);
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+
+      .analysis-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        padding: 2rem;
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .typing-indicator {
+        display: flex;
+        gap: 0.3rem;
+      }
+
+      .typing-indicator span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(147, 51, 234, 0.8);
+        animation: typingDot 1.4s infinite ease-in-out;
+      }
+
+      .typing-indicator span:nth-child(1) {
+        animation-delay: 0s;
+      }
+      .typing-indicator span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing-indicator span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes typingDot {
+        0%,
+        80%,
+        100% {
+          transform: scale(0.8);
+          opacity: 0.5;
+        }
+        40% {
+          transform: scale(1.2);
+          opacity: 1;
+        }
+      }
+
+      /* ╭─ PATTERNS VISUALIZATION ───────────────────────────────────╮ */
+      .patterns-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .pattern-card {
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(147, 51, 234, 0.15);
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .pattern-card:hover {
+        background: rgba(147, 51, 234, 0.08);
+        border-color: rgba(147, 51, 234, 0.3);
+        transform: translateY(-3px);
+      }
+
+      .pattern-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .pattern-icon {
+        font-size: 1.8rem;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(147, 51, 234, 0.2);
+        border-radius: 12px;
+      }
+
+      .pattern-title {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0;
+      }
+
+      .pattern-description {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.6;
+        margin: 0;
+      }
+
+      .pattern-frequency {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        font-size: 0.7rem;
+        padding: 0.3rem 0.6rem;
+        background: rgba(147, 51, 234, 0.3);
+        color: rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        font-weight: 500;
+      }
+
+      .pattern-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        padding: 2rem;
+        color: rgba(255, 255, 255, 0.6);
+        text-align: center;
+        grid-column: 1 / -1;
+      }
+
+      .pattern-placeholder .pattern-icon {
+        font-size: 3rem;
+        background: none;
+        width: auto;
+        height: auto;
+        animation: evolutionPulse 2s ease-in-out infinite;
+      }
+
+      /* ╭─ GROWTH VISUALIZATION ─────────────────────────────────────╮ */
+      .growth-visualization {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(147, 51, 234, 0.1);
+        border-radius: 16px;
+        padding: 2rem;
+        min-height: 300px;
+      }
+
+      .growth-chart {
+        width: 100%;
+        height: 250px;
+        position: relative;
+      }
+
+      .chart-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: rgba(255, 255, 255, 0.6);
+        text-align: center;
+      }
+
+      .chart-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.7;
+        animation: evolutionPulse 2s ease-in-out infinite;
+      }
+
+      /* ╭─ INSIGHTS GRID ────────────────────────────────────────────╮ */
+      .insights-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .insight-card {
+        padding: 1.5rem;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.06) 0%,
+          rgba(147, 51, 234, 0.04) 100%
+        );
+        border: 1px solid rgba(147, 51, 234, 0.2);
+        border-radius: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .insight-card:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.1) 0%,
+          rgba(99, 102, 241, 0.08) 100%
+        );
+        border-color: rgba(147, 51, 234, 0.4);
+        transform: translateY(-2px);
+      }
+
+      .insight-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .insight-icon {
+        font-size: 1.5rem;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(147, 51, 234, 0.2);
+        border-radius: 10px;
+      }
+
+      .insight-title {
+        font-size: 1rem;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0;
+      }
+
+      .insight-content {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.6;
+        margin: 0;
+      }
+
+      /* ╭─ CONTINUE SECTION ─────────────────────────────────────────╮ */
+      .continue-section {
+        text-align: center;
+        padding: 3rem 2rem;
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.05) 0%,
+          rgba(99, 102, 241, 0.03) 50%,
+          rgba(139, 92, 246, 0.05) 100%
+        );
+        border: 1px solid rgba(147, 51, 234, 0.15);
+        border-radius: 20px;
+        margin-top: 2rem;
+      }
+
+      .continue-title {
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        font-weight: 300;
+        margin: 0 0 1rem 0;
+        color: rgba(255, 255, 255, 0.95);
+      }
+
+      .continue-subtitle {
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0 0 2rem 0;
+        line-height: 1.6;
+      }
+
+      .continue-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .continue-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 1rem 1.8rem;
+        border: none;
+        border-radius: 16px;
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        white-space: nowrap;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        min-height: 48px;
+      }
+
+      .continue-btn.primary {
+        background: linear-gradient(135deg, #9333ea, #7c3aed);
+        color: white;
+        border: 1px solid rgba(147, 51, 234, 0.4);
+        box-shadow: 0 4px 15px rgba(147, 51, 234, 0.3);
+      }
+
+      .continue-btn.primary:hover {
+        background: linear-gradient(135deg, #7c3aed, #6d28d9);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(147, 51, 234, 0.4);
+      }
+
+      .continue-btn.secondary {
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(147, 51, 234, 0.2);
+      }
+
+      .continue-btn.secondary:hover {
+        background: rgba(147, 51, 234, 0.15);
+        border-color: rgba(147, 51, 234, 0.4);
+        transform: translateY(-2px);
+      }
+
+      .continue-btn:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+      }
+
+      /* ╭─ REPORTS SIDEBAR ──────────────────────────────────────────╮ */
+      .reports-sidebar {
+        position: fixed;
+        top: 80px;
+        right: 0;
+        width: 350px;
+        height: calc(100vh - 80px);
+        background: rgba(15, 15, 35, 0.95);
+        backdrop-filter: blur(30px);
+        border-left: 1px solid rgba(147, 51, 234, 0.2);
+        overflow-y: auto;
+        z-index: 50;
+        transform: translateX(0);
+        transition: transform 0.3s ease;
+      }
+
+      .reports-sidebar.collapsed {
+        transform: translateX(300px);
+      }
+
+      .sidebar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(147, 51, 234, 0.15);
+        position: sticky;
+        top: 0;
+        background: rgba(15, 15, 35, 0.98);
+        backdrop-filter: blur(30px);
+      }
+
+      .sidebar-title {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0;
+      }
+
+      .sidebar-toggle {
+        background: none;
+        border: 1px solid rgba(147, 51, 234, 0.2);
+        color: rgba(255, 255, 255, 0.7);
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .sidebar-toggle:hover {
+        background: rgba(147, 51, 234, 0.1);
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .sidebar-content {
+        padding: 1.5rem;
+      }
+
+      .reports-list {
+        margin-bottom: 2rem;
+      }
+
+      .reports-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        padding: 2rem 1rem;
+        color: rgba(255, 255, 255, 0.6);
+        text-align: center;
+      }
+
+      .report-item {
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(147, 51, 234, 0.1);
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .report-item:hover {
+        background: rgba(147, 51, 234, 0.08);
+        border-color: rgba(147, 51, 234, 0.3);
+      }
+
+      .report-item.active {
+        background: rgba(147, 51, 234, 0.15);
+        border-color: rgba(147, 51, 234, 0.4);
+      }
+
+      .report-date {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 0.5rem;
+      }
+
+      .report-summary {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.4;
+      }
+
+      .sidebar-actions {
+        border-top: 1px solid rgba(147, 51, 234, 0.15);
+        padding-top: 1.5rem;
+      }
+
+      .sidebar-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.2),
+          rgba(99, 102, 241, 0.15)
+        );
+        border: 1px solid rgba(147, 51, 234, 0.3);
+        border-radius: 12px;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .sidebar-btn:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.3),
+          rgba(99, 102, 241, 0.2)
+        );
+        border-color: rgba(147, 51, 234, 0.5);
+      }
+
+      /* ╭─ MODAL STYLING ────────────────────────────────────────────╮ */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        padding: 1rem;
+      }
+
+      .modal-overlay:not(.hidden) {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .modal-content {
+        background: rgba(15, 15, 35, 0.98);
+        backdrop-filter: blur(40px);
+        border: 1px solid rgba(147, 51, 234, 0.3);
+        border-radius: 20px;
+        max-width: 500px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+      }
+
+      .modal-overlay:not(.hidden) .modal-content {
+        transform: scale(1);
+      }
+
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(147, 51, 234, 0.2);
+      }
+
+      .modal-title {
+        font-size: 1.3rem;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0;
+      }
+
+      .modal-close {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1.5rem;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .modal-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .modal-body {
+        padding: 1.5rem;
+      }
+
+      .generation-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .info-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 12px;
+      }
+
+      .info-icon {
+        font-size: 1.2rem;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(147, 51, 234, 0.2);
+        border-radius: 8px;
+        flex-shrink: 0;
+      }
+
+      .info-text {
+        flex: 1;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .info-text strong {
+        color: rgba(255, 255, 255, 0.95);
+      }
+
+      .generation-description {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.6;
+        padding: 1rem;
+        background: rgba(147, 51, 234, 0.05);
+        border-radius: 12px;
+        border: 1px solid rgba(147, 51, 234, 0.15);
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        padding: 1.5rem;
+        border-top: 1px solid rgba(147, 51, 234, 0.2);
+      }
+
+      .modal-btn {
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .modal-btn.primary {
+        background: linear-gradient(135deg, #9333ea, #7c3aed);
+        color: white;
+      }
+
+      .modal-btn.primary:hover {
+        background: linear-gradient(135deg, #7c3aed, #6d28d9);
+      }
+
+      .modal-btn.secondary {
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(147, 51, 234, 0.2);
+      }
+
+      .modal-btn.secondary:hover {
+        background: rgba(147, 51, 234, 0.15);
+        color: rgba(255, 255, 255, 0.95);
+      }
+
+      /* ╭─ GENERATION PROMPT STYLES ─────────────────────────────────╮ */
+      .generation-prompt {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 60vh;
+        padding: 2rem;
+      }
+
+      .prompt-content {
+        text-align: center;
+        max-width: 500px;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .prompt-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        animation: evolutionPulse 3s ease-in-out infinite;
+      }
+
+      .prompt-title {
+        font-size: clamp(1.8rem, 5vw, 2.5rem);
+        font-weight: 300;
+        margin: 0 0 1rem 0;
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.9) 0%,
+          rgba(99, 102, 241, 0.9) 100%
+        );
+        -webkit-background-clip: text;
+        color: transparent;
+      }
+
+      .prompt-subtitle {
+        font-size: clamp(1rem, 3vw, 1.2rem);
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0 0 2rem 0;
+        line-height: 1.6;
+      }
+
+      .prompt-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin: 2rem 0;
+      }
+
+      .prompt-info .info-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .prompt-info .info-icon {
+        font-size: 1.2rem;
+      }
+
+      .generate-first-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 1.2rem 2rem;
+        background: linear-gradient(135deg, #9333ea, #7c3aed);
+        border: none;
+        border-radius: 16px;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 20px rgba(147, 51, 234, 0.3);
+      }
+
+      .generate-first-btn:hover {
+        background: linear-gradient(135deg, #7c3aed, #6d28d9);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(147, 51, 234, 0.4);
+      }
+
+      /* ╭─ UTILITY CLASSES ──────────────────────────────────────────╮ */
+      .hidden {
+        display: none !important;
+      }
+
+      .cosmic-spinner {
+        width: 30px;
+        height: 30px;
+        border: 2px solid rgba(147, 51, 234, 0.2);
+        border-radius: 50%;
+        border-top-color: rgba(147, 51, 234, 0.8);
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* ╭─ MOBILE RESPONSIVE DESIGN ───────────────────────────────╮ */
+      @media (max-width: 1024px) {
+        .evolution-main {
+          padding-right: 0;
+        }
+
+        .reports-sidebar {
+          transform: translateX(100%);
+        }
+
+        .reports-sidebar:not(.collapsed) {
+          transform: translateX(0);
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding-top: 70px;
+        }
+
+        .nav-content {
+          padding: 0.8rem 1rem;
+          flex-wrap: wrap;
+        }
+
+        .nav-center {
+          order: 3;
+          width: 100%;
+          margin-top: 0.5rem;
+        }
+
+        .evolution-container {
+          padding: 1rem;
+        }
+
+        .evolution-header {
+          padding: 1.5rem;
+          margin-bottom: 2rem;
+        }
+
+        .evolution-meta {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+
+        .patterns-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .continue-actions {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .continue-btn {
+          width: 100%;
+          max-width: 300px;
+        }
+
+        .reports-sidebar {
+          width: 100%;
+          height: calc(100vh - 70px);
+          top: 70px;
+        }
+
+        .error-actions {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .sacred-button {
+          width: 100%;
+          max-width: 250px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .evolution-container {
+          padding: 0.8rem;
+        }
+
+        .evolution-header {
+          padding: 1.2rem;
+        }
+
+        .section-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.8rem;
+        }
+
+        .analysis-content {
+          padding: 1.5rem;
+        }
+
+        .meta-card {
+          padding: 1rem;
+        }
+
+        .continue-section {
+          padding: 2rem 1rem;
+        }
+
+        .modal-content {
+          margin: 0.5rem;
+          border-radius: 16px;
+        }
+
+        .modal-actions {
+          flex-direction: column;
+        }
+
+        .modal-btn {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      /* ╭─ ACCESSIBILITY & PERFORMANCE ─────────────────────────────╮ */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      @media (prefers-contrast: high) {
+        .evolution-header,
+        .analysis-content,
+        .pattern-card,
+        .insight-card {
+          border-color: rgba(147, 51, 234, 0.6);
+        }
+      }
+    </style>
   </head>
 
   <body>
@@ -316,6 +1774,1312 @@
     <!-- Toast Notifications -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <script src="/evolution/reports.js"></script>
+    <script>
+      // Sacred Evolution Reports - Consciousness Tracking Interface
+      // Complete interactive functionality for evolution analytics
+
+      let currentUser = null;
+      let currentReport = null;
+      let allReports = [];
+      let isGenerating = false;
+      let evolutionEligibility = null;
+
+      // Report display states
+      const DISPLAY_STATES = {
+        LOADING: "loading",
+        ERROR: "error",
+        CONTENT: "content",
+      };
+
+      // Initialize evolution interface on page load
+      window.addEventListener("load", initializeEvolution);
+
+      async function initializeEvolution() {
+        try {
+          await authenticateUser();
+          await checkEvolutionEligibility();
+          await loadEvolutionData();
+          setupInteractions();
+          handleUrlParameters();
+        } catch (error) {
+          console.error("🦋 Evolution initialization failed:", error);
+          showErrorState("Failed to load evolution interface");
+        }
+      }
+
+      // ╭─ AUTHENTICATION & USER MANAGEMENT ────────────────────────╮
+      async function authenticateUser() {
+        const token = localStorage.getItem("mirror_auth_token");
+
+        if (!token) {
+          throw new Error("Authentication required");
+        }
+
+        try {
+          const response = await fetch("/api/auth", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ action: "verify-token" }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Authentication failed: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          if (!data.success) {
+            throw new Error(data.error || "Token verification failed");
+          }
+
+          currentUser = data.user;
+
+          console.log(
+            `🦋 Evolution loaded for: ${currentUser.email} (${currentUser.tier})`
+          );
+        } catch (error) {
+          console.error("🦋 Authentication error:", error);
+          handleAuthenticationError();
+          throw error;
+        }
+      }
+
+      async function checkEvolutionEligibility() {
+        try {
+          const token = localStorage.getItem("mirror_auth_token");
+
+          const response = await fetch(
+            "/api/evolution?action=check-eligibility",
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+              evolutionEligibility = data;
+
+              // Show error if user not eligible
+              if (!data.eligible) {
+                if (data.upgradeRequired) {
+                  showErrorState(
+                    "Evolution reports require Essential or Premium subscription",
+                    "Upgrade to unlock consciousness evolution tracking",
+                    [
+                      { text: "Upgrade Now", href: "/register", primary: true },
+                      { text: "Return to Dashboard", href: "/dashboard" },
+                    ]
+                  );
+                } else {
+                  showErrorState(
+                    `Need ${
+                      data.requiredReflections - data.currentReflections
+                    } more reflections`,
+                    `Create ${
+                      data.requiredReflections - data.currentReflections
+                    } more reflection${
+                      data.requiredReflections - data.currentReflections === 1
+                        ? ""
+                        : "s"
+                    } to unlock your ${data.tier} evolution report`,
+                    [
+                      {
+                        text: "Create Reflection",
+                        href: "/reflection",
+                        primary: true,
+                      },
+                      { text: "Return to Dashboard", href: "/dashboard" },
+                    ]
+                  );
+                }
+                return;
+              }
+            }
+          }
+        } catch (error) {
+          console.error("🦋 Eligibility check failed:", error);
+        }
+      }
+
+      // ╭─ DATA LOADING ─────────────────────────────────────────────╮
+      async function loadEvolutionData() {
+        if (!evolutionEligibility?.eligible) {
+          return; // Skip loading if not eligible
+        }
+
+        setDisplayState(DISPLAY_STATES.LOADING);
+
+        try {
+          // Load all evolution reports
+          await loadEvolutionReports();
+
+          // If we have reports, show the interface
+          if (allReports.length > 0) {
+            setDisplayState(DISPLAY_STATES.CONTENT);
+            updateSidebar();
+
+            // Load most recent report by default
+            if (!currentReport) {
+              await loadReport(allReports[0].id);
+            }
+          } else {
+            // No reports exist, show generation prompt
+            showGenerationPrompt();
+          }
+        } catch (error) {
+          console.error("🦋 Failed to load evolution data:", error);
+          showErrorState("Failed to load evolution reports");
+        }
+      }
+
+      async function loadEvolutionReports() {
+        const token = localStorage.getItem("mirror_auth_token");
+
+        const response = await fetch(
+          "/api/evolution?action=get-reports&limit=20",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            allReports = data.reports || [];
+          }
+        }
+      }
+
+      async function loadReport(reportId) {
+        const token = localStorage.getItem("mirror_auth_token");
+
+        try {
+          const response = await fetch(
+            `/api/evolution?action=get-report&id=${reportId}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+              currentReport = data.report;
+              displayReport(currentReport);
+              updateSidebarSelection(reportId);
+              updateUrl(reportId);
+              return;
+            }
+          }
+
+          throw new Error("Failed to load report");
+        } catch (error) {
+          console.error("🦋 Failed to load report:", error);
+          showToast("Failed to load evolution report", "error");
+        }
+      }
+
+      // ╭─ REPORT DISPLAY ───────────────────────────────────────────╮
+      function displayReport(report) {
+        // Update header metadata
+        updateReportHeader(report);
+
+        // Display analysis with typing effect
+        displayAnalysis(report.analysis);
+
+        // Show patterns
+        displayPatterns(report.patterns);
+
+        // Show growth visualization
+        displayGrowthVisualization(report);
+
+        // Show insights
+        displayInsights(report.insights);
+      }
+
+      function updateReportHeader(report) {
+        // Safely update elements that might not exist during generation prompt
+        const growthScore = document.getElementById("growthScore");
+        if (growthScore) {
+          growthScore.textContent = report.growthScore || "--";
+        }
+
+        const reflectionsAnalyzed = document.getElementById(
+          "reflectionsAnalyzed"
+        );
+        if (reflectionsAnalyzed) {
+          reflectionsAnalyzed.textContent = report.reflectionCount || "--";
+        }
+
+        const reportDate = document.getElementById("reportDate");
+        if (reportDate) {
+          const date = new Date(report.createdAt).toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          });
+          reportDate.textContent = date;
+        }
+
+        // Time period
+        const timePeriodText = document.getElementById("timePeriodText");
+        if (report.timePeriod && timePeriodText) {
+          const startDate = new Date(
+            report.timePeriod.start
+          ).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+          const endDate = new Date(report.timePeriod.end).toLocaleDateString(
+            "en-US",
+            { month: "short", day: "numeric" }
+          );
+          timePeriodText.textContent = `${startDate} - ${endDate}`;
+        }
+
+        // Report type badge
+        const badge = document.getElementById("reportTypeBadge");
+        if (badge) {
+          badge.textContent = `${
+            report.reportType.charAt(0).toUpperCase() +
+            report.reportType.slice(1)
+          } Report`;
+          badge.className = `report-type-badge ${report.reportType}`;
+        }
+      }
+
+      function displayAnalysis(analysisText) {
+        const analysisContainer = document.getElementById("mirrorAnalysis");
+        if (!analysisContainer) return;
+
+        // Clear loading state
+        analysisContainer.innerHTML = "";
+
+        // Create analysis content with typing effect
+        const analysisDiv = document.createElement("div");
+        analysisDiv.className = "analysis-text";
+        analysisContainer.appendChild(analysisDiv);
+
+        // Type out the analysis text
+        typeText(analysisDiv, analysisText, 30); // 30ms delay between characters
+      }
+
+      function displayPatterns(patterns) {
+        const patternsGrid = document.getElementById("patternsGrid");
+        if (!patternsGrid) return;
+
+        patternsGrid.innerHTML = "";
+
+        if (!patterns || patterns.length === 0) {
+          patternsGrid.innerHTML = `
+            <div class="pattern-placeholder">
+              <div class="pattern-icon">🌱</div>
+              <div class="pattern-text">Your unique patterns are still emerging...</div>
+            </div>
+          `;
+          return;
+        }
+
+        patterns.forEach((pattern, index) => {
+          const patternCard = createPatternCard(pattern, index);
+          patternsGrid.appendChild(patternCard);
+        });
+      }
+
+      function createPatternCard(pattern, index) {
+        const card = document.createElement("div");
+        card.className = "pattern-card";
+        card.style.animationDelay = `${index * 0.1}s`;
+
+        const patternInfo = getPatternInfo(pattern);
+
+        card.innerHTML = `
+          <div class="pattern-header">
+            <div class="pattern-icon">${patternInfo.icon}</div>
+            <div class="pattern-title">${patternInfo.title}</div>
+          </div>
+          <div class="pattern-description">${patternInfo.description}</div>
+          <div class="pattern-frequency">${patternInfo.frequency}</div>
+        `;
+
+        return card;
+      }
+
+      function getPatternInfo(pattern) {
+        // Extract pattern type and count from API format (e.g., "business_3")
+        const [type, count] = pattern.includes("_")
+          ? pattern.split("_")
+          : [pattern, 1];
+
+        const patternMap = {
+          business: {
+            icon: "💼",
+            title: "Entrepreneurial Spirit",
+            description:
+              "You consistently explore business ventures and creative independence.",
+            getFrequency: (c) => `${c} reflection${c === 1 ? "" : "s"}`,
+          },
+          creativity: {
+            icon: "🎨",
+            title: "Creative Expression",
+            description:
+              "Your artistic and creative impulses guide your journey.",
+            getFrequency: (c) => `${c} reflection${c === 1 ? "" : "s"}`,
+          },
+          relationships: {
+            icon: "💝",
+            title: "Connection & Love",
+            description:
+              "Deep relationships and meaningful connections drive your choices.",
+            getFrequency: (c) => `${c} reflection${c === 1 ? "" : "s"}`,
+          },
+          independence: {
+            icon: "🗽",
+            title: "Freedom Seeking",
+            description:
+              "You value autonomy and creating your own path forward.",
+            getFrequency: (c) => `${c} reflection${c === 1 ? "" : "s"}`,
+          },
+          uncertainty: {
+            icon: "🌊",
+            title: "Navigating Unknown",
+            description:
+              "You acknowledge fears while moving toward your dreams.",
+            getFrequency: (c) => `${c} reflection${c === 1 ? "" : "s"}`,
+          },
+          confidence: {
+            icon: "✨",
+            title: "Growing Certainty",
+            description:
+              "Your self-trust and confidence are expanding over time.",
+            getFrequency: (c) => `${c} reflection${c === 1 ? "" : "s"}`,
+          },
+        };
+
+        const info = patternMap[type] || {
+          icon: "🔮",
+          title: "Unique Pattern",
+          description: "A distinctive theme in your consciousness evolution.",
+          getFrequency: (c) => `Emerging`,
+        };
+
+        return {
+          ...info,
+          frequency: info.getFrequency(parseInt(count) || 1),
+        };
+      }
+
+      function displayGrowthVisualization(report) {
+        const chartContainer = document.getElementById("growthChart");
+        if (!chartContainer) return;
+
+        // For now, create a simple visualization
+        // In a full implementation, you might use Chart.js or D3.js
+        chartContainer.innerHTML = `
+          <div class="simple-growth-chart">
+            <div class="growth-score-display">
+              <div class="score-circle">
+                <div class="score-value">${report.growthScore}</div>
+                <div class="score-label">Growth Score</div>
+              </div>
+            </div>
+            <div class="growth-indicators">
+              <div class="indicator">
+                <div class="indicator-icon">📈</div>
+                <div class="indicator-text">
+                  <div class="indicator-title">Reflection Frequency</div>
+                  <div class="indicator-value">${
+                    report.reflectionCount
+                  } analyzed</div>
+                </div>
+              </div>
+              <div class="indicator">
+                <div class="indicator-icon">🌱</div>
+                <div class="indicator-text">
+                  <div class="indicator-title">Pattern Diversity</div>
+                  <div class="indicator-value">${
+                    report.patterns?.length || 0
+                  } themes</div>
+                </div>
+              </div>
+              <div class="indicator">
+                <div class="indicator-icon">⏰</div>
+                <div class="indicator-text">
+                  <div class="indicator-title">Evolution Period</div>
+                  <div class="indicator-value">${calculatePeriodLength(
+                    report.timePeriod
+                  )}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // Add CSS for the simple chart
+        addSimpleChartStyles(report.growthScore);
+      }
+
+      function displayInsights(insights) {
+        const insightsGrid = document.getElementById("insightsGrid");
+        if (!insightsGrid) return;
+
+        insightsGrid.innerHTML = "";
+
+        if (!insights || typeof insights !== "object") {
+          insightsGrid.innerHTML = `
+            <div class="insight-placeholder">
+              <div class="insight-icon">💎</div>
+              <div class="insight-text">Your wisdom insights are crystallizing...</div>
+            </div>
+          `;
+          return;
+        }
+
+        // Generate insights from the structured data
+        const insightCards = generateInsightCards(insights);
+
+        insightCards.forEach((insight, index) => {
+          const card = createInsightCard(insight, index);
+          insightsGrid.appendChild(card);
+        });
+      }
+
+      function generateInsightCards(insights) {
+        const cards = [];
+
+        // Time span insight
+        if (insights.timeSpan) {
+          cards.push({
+            icon: "⏳",
+            title: "Evolution Timespan",
+            content: `Your consciousness has been evolving over ${insights.timeSpan.duration}, showing consistent growth patterns.`,
+          });
+        }
+
+        // Growth indicators
+        if (insights.growthIndicators?.includes("increasing_confidence")) {
+          cards.push({
+            icon: "🌅",
+            title: "Rising Confidence",
+            content:
+              "Your recent reflections show increasing self-trust and certainty in your path.",
+          });
+        }
+
+        // Theme evolution
+        if (insights.themes?.length > 0) {
+          cards.push({
+            icon: "🧬",
+            title: "Recurring Themes",
+            content: `Your consciousness consistently returns to themes of growth, creativity, and authentic expression.`,
+          });
+        }
+
+        // Progression notes
+        if (insights.progressionNotes?.length > 0) {
+          cards.push({
+            icon: "📖",
+            title: "Evolution Notes",
+            content:
+              "Your journey shows a natural progression from uncertainty to clarity, from seeking to knowing.",
+          });
+        }
+
+        // Default wisdom insight if no specific insights
+        if (cards.length === 0) {
+          cards.push({
+            icon: "🔮",
+            title: "Emerging Wisdom",
+            content:
+              "Your unique patterns of growth are still crystallizing. Each reflection adds depth to your evolving story.",
+          });
+        }
+
+        return cards;
+      }
+
+      function createInsightCard(insight, index) {
+        const card = document.createElement("div");
+        card.className = "insight-card";
+        card.style.animationDelay = `${index * 0.1}s`;
+
+        card.innerHTML = `
+          <div class="insight-header">
+            <div class="insight-icon">${insight.icon}</div>
+            <div class="insight-title">${insight.title}</div>
+          </div>
+          <div class="insight-content">${insight.content}</div>
+        `;
+
+        return card;
+      }
+
+      // ╭─ REPORT GENERATION ────────────────────────────────────────╮
+      async function generateNewReport() {
+        if (isGenerating) return;
+
+        try {
+          isGenerating = true;
+          setDisplayState(DISPLAY_STATES.LOADING);
+
+          const token = localStorage.getItem("mirror_auth_token");
+
+          const response = await fetch("/api/evolution", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ action: "generate-report" }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            // Report generated successfully
+            currentReport = data.report;
+
+            // Update reports list
+            allReports.unshift(currentReport);
+
+            // Restore the proper container structure before displaying
+            restoreContainerStructure();
+
+            // Display the new report
+            setDisplayState(DISPLAY_STATES.CONTENT);
+            displayReport(currentReport);
+            updateSidebar();
+            updateUrl(currentReport.id);
+
+            showToast("Evolution report generated successfully!", "success");
+          } else {
+            throw new Error(
+              data.error || "Failed to generate evolution report"
+            );
+          }
+        } catch (error) {
+          console.error("🦋 Report generation error:", error);
+          showErrorState("Failed to generate evolution report", error.message);
+          showToast(
+            "Failed to generate evolution report. Please try again.",
+            "error"
+          );
+        } finally {
+          isGenerating = false;
+        }
+      }
+
+      function restoreContainerStructure() {
+        const container = document.getElementById("evolutionContainer");
+        if (!container) return;
+
+        // Restore the full container structure if it was replaced by generation prompt
+        if (!document.getElementById("growthScore")) {
+          container.innerHTML = `
+            <!-- Evolution Header -->
+            <header class="evolution-header">
+              <div class="header-content">
+                <div class="evolution-title-section">
+                  <h1 class="evolution-title">Your Consciousness Evolution</h1>
+                  <p class="evolution-subtitle">
+                    Witness the patterns of your becoming across
+                    <span id="timePeriodText">your sacred journey</span>
+                  </p>
+                </div>
+
+                <div class="evolution-meta">
+                  <div class="meta-card">
+                    <div class="meta-icon">📈</div>
+                    <div class="meta-content">
+                      <div class="meta-label">Growth Score</div>
+                      <div class="meta-value" id="growthScore">--</div>
+                    </div>
+                  </div>
+                  <div class="meta-card">
+                    <div class="meta-icon">🌙</div>
+                    <div class="meta-content">
+                      <div class="meta-label">Reflections Analyzed</div>
+                      <div class="meta-value" id="reflectionsAnalyzed">--</div>
+                    </div>
+                  </div>
+                  <div class="meta-card">
+                    <div class="meta-icon">⏰</div>
+                    <div class="meta-content">
+                      <div class="meta-label">Report Generated</div>
+                      <div class="meta-value" id="reportDate">--</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </header>
+
+            <!-- Evolution Analysis -->
+            <section class="evolution-analysis-section">
+              <div class="section-header">
+                <h2 class="section-title">
+                  <span class="section-icon">🔮</span>
+                  <span>The Mirror's Recognition</span>
+                </h2>
+                <div class="report-type-badge" id="reportTypeBadge">
+                  Essential Report
+                </div>
+              </div>
+
+              <div class="analysis-content">
+                <div class="mirror-analysis" id="mirrorAnalysis">
+                  <div class="analysis-loading">
+                    <div class="typing-indicator">
+                      <span></span><span></span><span></span>
+                    </div>
+                    <p>The mirror is revealing your patterns...</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Pattern Recognition -->
+            <section class="patterns-section">
+              <div class="section-header">
+                <h2 class="section-title">
+                  <span class="section-icon">🌊</span>
+                  <span>Patterns in Your Becoming</span>
+                </h2>
+              </div>
+
+              <div class="patterns-grid" id="patternsGrid">
+                <div class="pattern-placeholder">
+                  <div class="pattern-icon">🌱</div>
+                  <div class="pattern-text">
+                    Discovering your unique patterns...
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Growth Visualization -->
+            <section class="growth-section">
+              <div class="section-header">
+                <h2 class="section-title">
+                  <span class="section-icon">📊</span>
+                  <span>Your Evolution Timeline</span>
+                </h2>
+              </div>
+
+              <div class="growth-visualization">
+                <div class="growth-chart" id="growthChart">
+                  <div class="chart-placeholder">
+                    <div class="chart-icon">📈</div>
+                    <p>Visualizing your consciousness evolution...</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Insights & Recommendations -->
+            <section class="insights-section">
+              <div class="section-header">
+                <h2 class="section-title">
+                  <span class="section-icon">💎</span>
+                  <span>Wisdom for Your Path</span>
+                </h2>
+              </div>
+
+              <div class="insights-grid" id="insightsGrid">
+                <!-- Insights will be dynamically loaded -->
+              </div>
+            </section>
+
+            <!-- Continue Journey -->
+            <section class="continue-section">
+              <div class="continue-content">
+                <h2 class="continue-title">Continue Your Evolution</h2>
+                <p class="continue-subtitle">
+                  Your consciousness journey deepens with each reflection
+                </p>
+
+                <div class="continue-actions">
+                  <a href="/reflection" class="continue-btn primary">
+                    <span class="btn-icon">✨</span>
+                    <span class="btn-text">Add New Reflection</span>
+                  </a>
+
+                  <button class="continue-btn secondary" id="shareReportBtn">
+                    <span class="btn-icon">🔗</span>
+                    <span class="btn-text">Share Evolution</span>
+                  </button>
+
+                  <button class="continue-btn secondary" id="downloadReportBtn">
+                    <span class="btn-icon">💾</span>
+                    <span class="btn-text">Save Report</span>
+                  </button>
+                </div>
+              </div>
+            </section>
+          `;
+        }
+      }
+
+      function showGenerationPrompt() {
+        setDisplayState(DISPLAY_STATES.CONTENT);
+
+        const container = document.getElementById("evolutionContainer");
+        container.innerHTML = `
+          <div class="generation-prompt">
+            <div class="prompt-content">
+              <div class="prompt-icon">🦋</div>
+              <h2 class="prompt-title">Begin Your Evolution Journey</h2>
+              <p class="prompt-subtitle">
+                Generate your first evolution report to witness patterns in your consciousness development.
+              </p>
+              <div class="prompt-info">
+                <div class="info-item">
+                  <span class="info-icon">🌙</span>
+                  <span>${
+                    evolutionEligibility?.currentReflections || 0
+                  } reflections available for analysis</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-icon">🔮</span>
+                  <span>${
+                    evolutionEligibility?.tier || "Essential"
+                  } evolution insights</span>
+                </div>
+              </div>
+              <button class="generate-first-btn" onclick="generateNewReport()">
+                <span>🦋</span>
+                <span>Generate First Evolution Report</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      // ╭─ SIDEBAR MANAGEMENT ───────────────────────────────────────╮
+      function updateSidebar() {
+        const reportsList = document.getElementById("reportsList");
+
+        if (allReports.length === 0) {
+          reportsList.innerHTML = `
+            <div class="reports-empty">
+              <div class="empty-icon">🌱</div>
+              <p>No evolution reports yet</p>
+            </div>
+          `;
+          return;
+        }
+
+        reportsList.innerHTML = "";
+
+        allReports.forEach((report) => {
+          const reportItem = createReportSidebarItem(report);
+          reportsList.appendChild(reportItem);
+        });
+      }
+
+      function createReportSidebarItem(report) {
+        const item = document.createElement("div");
+        item.className = "report-item";
+        item.onclick = () => loadReport(report.id);
+
+        const date = new Date(report.createdAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+
+        const timeAgo = getTimeAgo(report.createdAt);
+
+        item.innerHTML = `
+          <div class="report-date">${date}</div>
+          <div class="report-summary">
+            Growth Score: ${report.growthScore} • ${report.reflectionCount} reflections
+          </div>
+          <div class="report-time">${timeAgo}</div>
+        `;
+
+        return item;
+      }
+
+      function updateSidebarSelection(reportId) {
+        document.querySelectorAll(".report-item").forEach((item) => {
+          item.classList.remove("active");
+        });
+
+        // Find and highlight current report
+        const activeItem = Array.from(
+          document.querySelectorAll(".report-item")
+        ).find((item) => item.onclick.toString().includes(reportId));
+
+        if (activeItem) {
+          activeItem.classList.add("active");
+        }
+      }
+
+      // ╭─ INTERACTIONS & EVENTS ────────────────────────────────────╮
+      function setupInteractions() {
+        // Sidebar toggle
+        const sidebarToggle = document.getElementById("sidebarToggle");
+        const sidebar = document.getElementById("reportsSidebar");
+
+        sidebarToggle?.addEventListener("click", () => {
+          sidebar.classList.toggle("collapsed");
+          sidebarToggle.textContent = sidebar.classList.contains("collapsed")
+            ? "←"
+            : "→";
+        });
+
+        // Generate new report button
+        const generateBtn = document.getElementById("generateNewReportBtn");
+        generateBtn?.addEventListener("click", showGenerateModal);
+
+        // Continue section buttons
+        const shareBtn = document.getElementById("shareReportBtn");
+        shareBtn?.addEventListener("click", shareReport);
+
+        const downloadBtn = document.getElementById("downloadReportBtn");
+        downloadBtn?.addEventListener("click", downloadReport);
+
+        // Modal interactions
+        setupModalInteractions();
+
+        // Mobile sidebar auto-collapse
+        if (window.innerWidth <= 1024) {
+          const sidebar = document.getElementById("reportsSidebar");
+          sidebar?.classList.add("collapsed");
+        }
+
+        // Keyboard shortcuts
+        setupKeyboardShortcuts();
+      }
+
+      function setupModalInteractions() {
+        const modal = document.getElementById("generateModal");
+        const closeBtn = document.getElementById("closeGenerateModal");
+        const cancelBtn = document.getElementById("cancelGenerate");
+        const confirmBtn = document.getElementById("confirmGenerate");
+
+        closeBtn?.addEventListener("click", hideGenerateModal);
+        cancelBtn?.addEventListener("click", hideGenerateModal);
+        confirmBtn?.addEventListener("click", handleConfirmGenerate);
+
+        // Close modal on backdrop click
+        modal?.addEventListener("click", (e) => {
+          if (e.target === modal) {
+            hideGenerateModal();
+          }
+        });
+
+        // Close modal on escape key
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && !modal?.classList.contains("hidden")) {
+            hideGenerateModal();
+          }
+        });
+      }
+
+      function showGenerateModal() {
+        const modal = document.getElementById("generateModal");
+
+        // Update modal content with current user data
+        const availableElement = document.getElementById(
+          "availableReflections"
+        );
+        if (availableElement) {
+          availableElement.textContent =
+            evolutionEligibility?.currentReflections || "--";
+        }
+
+        const modalTypeElement = document.getElementById("modalReportType");
+        if (modalTypeElement) {
+          modalTypeElement.textContent =
+            currentUser?.tier?.charAt(0).toUpperCase() +
+              currentUser?.tier?.slice(1) || "Essential";
+        }
+
+        modal.classList.remove("hidden");
+
+        // Focus confirm button
+        setTimeout(() => {
+          document.getElementById("confirmGenerate")?.focus();
+        }, 100);
+      }
+
+      function hideGenerateModal() {
+        const modal = document.getElementById("generateModal");
+        modal.classList.add("hidden");
+      }
+
+      async function handleConfirmGenerate() {
+        hideGenerateModal();
+        await generateNewReport();
+      }
+
+      // ╭─ UTILITY FUNCTIONS ────────────────────────────────────────╮
+      function setDisplayState(state) {
+        const loadingSection = document.getElementById("loadingSection");
+        const errorSection = document.getElementById("errorSection");
+        const contentContainer = document.getElementById("evolutionContainer");
+
+        // Hide all sections
+        loadingSection.classList.add("hidden");
+        errorSection.classList.add("hidden");
+        contentContainer.classList.add("hidden");
+
+        // Show appropriate section
+        switch (state) {
+          case DISPLAY_STATES.LOADING:
+            loadingSection.classList.remove("hidden");
+            break;
+          case DISPLAY_STATES.ERROR:
+            errorSection.classList.remove("hidden");
+            break;
+          case DISPLAY_STATES.CONTENT:
+            contentContainer.classList.remove("hidden");
+            break;
+        }
+      }
+
+      function showErrorState(title, subtitle = null, actions = null) {
+        setDisplayState(DISPLAY_STATES.ERROR);
+
+        const titleElement = document.querySelector(".error-title");
+        if (titleElement) {
+          titleElement.textContent = title;
+        }
+
+        const errorMessage = document.getElementById("errorMessage");
+        if (subtitle && errorMessage) {
+          errorMessage.textContent = subtitle;
+        }
+
+        if (actions) {
+          const actionsContainer = document.querySelector(".error-actions");
+          if (actionsContainer) {
+            actionsContainer.innerHTML = "";
+
+            actions.forEach((action) => {
+              const button = document.createElement("a");
+              button.href = action.href;
+              button.className = `sacred-button ${
+                action.primary ? "primary" : "secondary"
+              }`;
+              button.innerHTML = `<span>${action.text}</span>`;
+              actionsContainer.appendChild(button);
+            });
+          }
+        }
+      }
+
+      function typeText(element, text, delay = 30) {
+        element.textContent = "";
+        let index = 0;
+
+        const timer = setInterval(() => {
+          element.textContent += text[index];
+          index++;
+
+          if (index >= text.length) {
+            clearInterval(timer);
+          }
+        }, delay);
+      }
+
+      function calculatePeriodLength(timePeriod) {
+        if (!timePeriod?.start || !timePeriod?.end) return "Unknown";
+
+        const start = new Date(timePeriod.start);
+        const end = new Date(timePeriod.end);
+        const diffMs = end - start;
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+        if (diffDays < 7) return `${diffDays} days`;
+        if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks`;
+        if (diffDays < 365) return `${Math.floor(diffDays / 30)} months`;
+        return `${Math.floor(diffDays / 365)} years`;
+      }
+
+      function getTimeAgo(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.floor(diffMs / (1000 * 60));
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+        if (diffMins < 1) return "just now";
+        if (diffMins < 60)
+          return `${diffMins} min${diffMins === 1 ? "" : "s"} ago`;
+        if (diffHours < 24)
+          return `${diffHours} hour${diffHours === 1 ? "" : "s"} ago`;
+        if (diffDays < 7)
+          return `${diffDays} day${diffDays === 1 ? "" : "s"} ago`;
+
+        return date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: diffDays > 365 ? "numeric" : undefined,
+        });
+      }
+
+      // ╭─ URL & NAVIGATION ──────────────────────────────────────────╮
+      function handleUrlParameters() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const reportId = urlParams.get("report");
+
+        if (reportId && allReports.length > 0) {
+          const report = allReports.find((r) => r.id === reportId);
+          if (report) {
+            loadReport(reportId);
+            return;
+          }
+        }
+      }
+
+      function updateUrl(reportId) {
+        const url = new URL(window.location);
+        url.searchParams.set("report", reportId);
+        window.history.replaceState({}, "", url);
+      }
+
+      // ╭─ ACTIONS ───────────────────────────────────────────────────╮
+      async function shareReport() {
+        if (!currentReport) return;
+
+        const shareData = {
+          title: "My Evolution Report - Mirror of Truth",
+          text: `I just generated an evolution report showing my consciousness growth! Growth Score: ${currentReport.growthScore}`,
+          url: window.location.href,
+        };
+
+        if (navigator.share) {
+          try {
+            await navigator.share(shareData);
+          } catch (error) {
+            console.log("Share cancelled");
+          }
+        } else {
+          // Fallback to copying URL
+          await navigator.clipboard.writeText(window.location.href);
+          showToast("Report link copied to clipboard!", "success");
+        }
+      }
+
+      function downloadReport() {
+        if (!currentReport) return;
+
+        showToast("Download feature coming soon!", "info");
+        // TODO: Implement PDF generation of the evolution report
+      }
+
+      // ╭─ KEYBOARD SHORTCUTS ───────────────────────────────────────╮
+      function setupKeyboardShortcuts() {
+        document.addEventListener("keydown", (e) => {
+          // Cmd/Ctrl + G for generate new report
+          if ((e.metaKey || e.ctrlKey) && e.key === "g") {
+            e.preventDefault();
+            if (evolutionEligibility?.eligible) {
+              showGenerateModal();
+            }
+          }
+
+          // Cmd/Ctrl + S for share
+          if ((e.metaKey || e.ctrlKey) && e.key === "s") {
+            e.preventDefault();
+            if (currentReport) {
+              shareReport();
+            }
+          }
+        });
+      }
+
+      // ╭─ ERROR HANDLING ────────────────────────────────────────────╮
+      function handleAuthenticationError() {
+        showToast("Authentication failed. Please sign in again.", "error");
+
+        setTimeout(() => {
+          localStorage.removeItem("mirror_auth_token");
+          localStorage.removeItem("mirrorVerifiedUser");
+          window.location.href = "/auth/signin";
+        }, 2000);
+      }
+
+      // ╭─ TOAST NOTIFICATIONS ───────────────────────────────────────╮
+      function showToast(message, type = "info", duration = 5000) {
+        const container =
+          document.getElementById("toastContainer") || createToastContainer();
+
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+
+        container.appendChild(toast);
+
+        // Remove toast after duration
+        setTimeout(() => {
+          toast.style.transform = "translateX(100%)";
+          toast.style.opacity = "0";
+
+          setTimeout(() => {
+            if (container.contains(toast)) {
+              container.removeChild(toast);
+            }
+          }, 300);
+        }, duration);
+      }
+
+      function createToastContainer() {
+        const container = document.createElement("div");
+        container.id = "toastContainer";
+        container.className = "toast-container";
+        container.style.cssText = `
+          position: fixed;
+          top: 100px;
+          right: 1rem;
+          z-index: 1001;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+          max-width: 400px;
+        `;
+        document.body.appendChild(container);
+        return container;
+      }
+
+      // ╭─ DYNAMIC STYLES ────────────────────────────────────────────╮
+      function addSimpleChartStyles(growthScore) {
+        if (document.getElementById("simpleChartStyles")) return;
+
+        const style = document.createElement("style");
+        style.id = "simpleChartStyles";
+        style.textContent = `
+          .simple-growth-chart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            padding: 2rem;
+          }
+          
+          .growth-score-display {
+            display: flex;
+            justify-content: center;
+          }
+          
+          .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(
+              from 0deg,
+              rgba(147, 51, 234, 0.8) 0%,
+              rgba(147, 51, 234, 0.8) ${growthScore || 70}%,
+              rgba(255, 255, 255, 0.1) ${growthScore || 70}%,
+              rgba(255, 255, 255, 0.1) 100%
+            );
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+          }
+          
+          .score-circle::before {
+            content: '';
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(15, 15, 35, 0.95) 0%, rgba(26, 26, 46, 0.95) 100%);
+            position: absolute;
+          }
+          
+          .score-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.95);
+            position: relative;
+            z-index: 1;
+          }
+          
+          .score-label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            position: relative;
+            z-index: 1;
+          }
+          
+          .growth-indicators {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            width: 100%;
+          }
+          
+          .indicator {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(147, 51, 234, 0.15);
+          }
+          
+          .indicator-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(147, 51, 234, 0.2);
+            border-radius: 8px;
+            flex-shrink: 0;
+          }
+          
+          .indicator-text {
+            flex: 1;
+          }
+          
+          .indicator-title {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 0.2rem;
+          }
+          
+          .indicator-value {
+            font-size: 1rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
+      // ╭─ DEBUG (Development Only) ─────────────────────────────────╮
+      if (window.location.hostname === "localhost") {
+        console.log("🦋 Sacred Evolution Interface initialized");
+
+        // Add debug utilities to window
+        window.evolutionDebug = {
+          currentUser: () => currentUser,
+          currentReport: () => currentReport,
+          allReports: () => allReports,
+          eligibility: () => evolutionEligibility,
+          generateReport: generateNewReport,
+          loadReport: loadReport,
+          testToast: (message, type) => showToast(message, type),
+        };
+      }
+    </script>
   </body>
 </html>
