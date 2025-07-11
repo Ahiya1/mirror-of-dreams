@@ -1368,6 +1368,8 @@
       let currentReflection = null;
       let currentReflectionId = null;
       let authToken = null;
+      let isSubmitting = false; // FIXED: Add submission protection
+      let isRestoringForm = false; // FIXED: Add form restoration flag
 
       /* — INITIALIZATION — */
       window.addEventListener("load", () => {
@@ -1638,6 +1640,7 @@
               if (reflectionData.isPremium) {
                 showPremiumBadge();
               }
+              currentReflectionId = reflectionData.reflectionId; // FIXED: Set currentReflectionId
               showSection("results");
               return;
             } catch (e) {
@@ -1660,6 +1663,8 @@
       }
 
       function saveFormState() {
+        if (isRestoringForm) return; // FIXED: Prevent recursive calls during form restoration
+
         const form = document.getElementById("reflectionForm");
         const formData = new FormData(form);
 
@@ -1684,11 +1689,15 @@
       function restoreFormState() {
         if (!formState || Object.keys(formState).length === 0) return;
 
+        isRestoringForm = true; // FIXED: Set flag to prevent recursive calls
+
         const form = document.getElementById("reflectionForm");
         Object.entries(formState).forEach(([key, value]) => {
           if (key === "tone") {
             selectedTone = value;
-            selectTone(value);
+            // FIXED: Update UI without triggering saveFormState
+            updateToneSelection(value);
+            transitionToTone(value);
             return;
           }
 
@@ -1715,6 +1724,19 @@
             }
           }
         });
+
+        isRestoringForm = false; // FIXED: Clear flag after restoration
+      }
+
+      // FIXED: New function to update tone selection without triggering save
+      function updateToneSelection(tone) {
+        document
+          .querySelectorAll(".tone-btn")
+          .forEach((b) => b.classList.remove("selected"));
+
+        document
+          .querySelector(`[data-tone="${tone}"]`)
+          .classList.add("selected");
       }
 
       /* — TONE BACKGROUND SYSTEM — */
@@ -1835,8 +1857,22 @@
           .addEventListener("submit", async (e) => {
             e.preventDefault();
 
+            // FIXED: Prevent double submission
+            if (isSubmitting) {
+              console.log("Form submission already in progress");
+              return;
+            }
+
+            isSubmitting = true;
+            const submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Creating your reflection...";
+
             if (!authToken && !isCreatorMode && !isTestMode) {
               redirectToAuth("Please sign in to save your reflection");
+              isSubmitting = false;
+              submitBtn.disabled = false;
+              submitBtn.textContent = "Receive Your Reflection";
               return;
             }
 
@@ -1910,7 +1946,8 @@
 
               showSection("results");
 
-              if (!isCreatorMode && !isTestMode && currentReflectionId) {
+              // FIXED: Show feedback for everyone who has a reflection ID
+              if (currentReflectionId) {
                 setTimeout(showFeedbackSection, 3000);
               }
             } catch (err) {
@@ -1919,6 +1956,11 @@
                 <h2>A moment of silence…</h2>
                 <p>Your reflection is being prepared. Please try again soon.</p>`;
               showSection("results");
+            } finally {
+              // FIXED: Reset submission state
+              isSubmitting = false;
+              submitBtn.disabled = false;
+              submitBtn.textContent = "Receive Your Reflection";
             }
           });
       }
@@ -1957,6 +1999,13 @@
         `;
 
         const actionsSection = document.querySelector(".results-actions");
+        if (!actionsSection) {
+          console.error(
+            "Could not find results-actions section for feedback insertion"
+          );
+          return;
+        }
+
         actionsSection.insertAdjacentHTML("beforebegin", feedbackHtml);
 
         const feedbackSection = document.getElementById("feedbackSection");
@@ -2063,17 +2112,13 @@
         if (tone === selectedTone) return;
 
         selectedTone = tone;
-
-        document
-          .querySelectorAll(".tone-btn")
-          .forEach((b) => b.classList.remove("selected"));
-
-        document
-          .querySelector(`[data-tone="${tone}"]`)
-          .classList.add("selected");
-
+        updateToneSelection(tone);
         transitionToTone(tone);
-        saveFormState();
+
+        if (!isRestoringForm) {
+          // FIXED: Only save if not restoring
+          saveFormState();
+        }
       }
 
       function transitionToTone(newTone) {
