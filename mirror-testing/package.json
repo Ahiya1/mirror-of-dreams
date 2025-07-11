@@ -1,0 +1,24 @@
+{
+  "name": "mirror-testing",
+  "version": "1.0.0",
+  "main": "mirror-testing-agent.js",
+  "scripts": {
+    "setup": "node -e \"require('./testing-setup').setupTestUser()\"",
+    "test-single": "node -e \"require('./testing-setup').testSingleReflection('fusion')\"",
+    "test-tones": "node -e \"require('./testing-setup').compareTones()\"",
+    "test-full": "node -e \"require('./testing-setup').incrementalTesting()\"",
+    "cleanup": "node -e \"require('./testing-setup').cleanupTestData()\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.50.5",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.0",
+    "fs": "^0.0.1-security",
+    "openai": "^5.9.0",
+    "path": "^0.12.7"
+  }
+}
