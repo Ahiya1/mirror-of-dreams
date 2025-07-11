@@ -1,5 +1,5 @@
 // api/reflections.js - Mirror of Truth Reflection Management with Usage Limits
-// ENHANCED: Added feedback submission handler
+// ENHANCED: Added feedback submission handler + Fixed GET/POST reflection loading
 
 const { createClient } = require("@supabase/supabase-js");
 const { authenticateRequest } = require("./auth.js");
@@ -315,11 +315,13 @@ async function handleGetHistory(req, res) {
   }
 }
 
-// Get single reflection
+// Get single reflection - FIXED to handle both GET and POST
 async function handleGetReflection(req, res) {
   try {
     const user = await authenticateRequest(req);
-    const { id } = req.query;
+
+    // Handle both GET (query params) and POST (body) requests
+    const { id } = req.method === "GET" ? req.query : req.body;
 
     if (!id) {
       return res.status(400).json({
@@ -336,6 +338,7 @@ async function handleGetReflection(req, res) {
       .single();
 
     if (error || !reflection) {
+      console.error("Reflection not found:", error);
       return res.status(404).json({
         success: false,
         error: "Reflection not found",
@@ -368,6 +371,8 @@ async function handleGetReflection(req, res) {
         }
       ),
     };
+
+    console.log(`📖 Reflection viewed: ${id} by ${user.email}`);
 
     return res.json({
       success: true,
@@ -599,7 +604,7 @@ async function handleSearchReflections(req, res) {
   }
 }
 
-// NEW: Submit feedback for a reflection
+// Submit feedback for a reflection
 async function handleSubmitFeedback(req, res) {
   try {
     const user = await authenticateRequest(req);
