@@ -26,6 +26,10 @@
       "destination": "/reflections/history.html"
     },
     {
+      "source": "/reflections/history",
+      "destination": "/reflections/history.html"
+    },
+    {
       "source": "/reflections/view",
       "destination": "/reflections/view.html"
     },
