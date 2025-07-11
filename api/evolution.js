@@ -618,7 +618,7 @@ async function generateEvolutionAnalysis(
       ...(tier === "premium" && {
         thinking: {
           type: "enabled",
-          budget_tokens: 5000,
+          budget_tokens: 3500,
         },
       }),
     });
