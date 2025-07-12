@@ -1,5 +1,7 @@
-// API: Payment - Sacred PayPal Subscription Processing with Billing Agreements
-// TRANSFORMED: From one-time payments to recurring subscriptions
+// API: Payment - Stripe Subscription Processing
+// MIGRATED: From PayPal to Stripe for consciousness-first technology
+
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // Main handler
 module.exports = async function handler(req, res) {
@@ -29,10 +31,10 @@ module.exports = async function handler(req, res) {
     if (req.method === "POST") {
       const { action } = req.body;
 
-      if (action === "create-subscription") {
-        return await handleCreateSubscription(req, res);
+      if (action === "create-checkout-session") {
+        return await handleCreateCheckoutSession(req, res);
       } else if (action === "webhook") {
-        return await handlePayPalWebhook(req, res);
+        return await handleStripeWebhook(req, res);
       } else {
         return res.status(400).json({
           success: false,
@@ -56,54 +58,51 @@ module.exports = async function handler(req, res) {
   }
 };
 
-// Get PayPal configuration with subscription pricing
+// Get Stripe configuration with subscription pricing
 async function handleGetConfig(req, res) {
   try {
     const config = {
-      clientId: process.env.PAYPAL_CLIENT_ID,
+      publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
       currency: "USD",
       environment:
-        process.env.NODE_ENV === "production" ? "production" : "sandbox",
+        process.env.NODE_ENV === "production" ? "production" : "test",
       subscriptions: {
         essential: {
           monthly: {
             amount: "4.99",
-            planId: process.env.PAYPAL_ESSENTIAL_MONTHLY_PLAN_ID,
+            priceId: process.env.STRIPE_ESSENTIAL_MONTHLY_PRICE_ID,
           },
           yearly: {
             amount: "49.99",
-            planId: process.env.PAYPAL_ESSENTIAL_YEARLY_PLAN_ID,
+            priceId: process.env.STRIPE_ESSENTIAL_YEARLY_PRICE_ID,
           },
         },
         premium: {
           monthly: {
             amount: "9.99",
-            planId: process.env.PAYPAL_PREMIUM_MONTHLY_PLAN_ID,
+            priceId: process.env.STRIPE_PREMIUM_MONTHLY_PRICE_ID,
           },
           yearly: {
             amount: "99.99",
-            planId: process.env.PAYPAL_PREMIUM_YEARLY_PLAN_ID,
+            priceId: process.env.STRIPE_PREMIUM_YEARLY_PRICE_ID,
           },
         },
-      },
-      // Legacy one-time for gifts
-      oneTime: {
-        essential: "4.99",
-        premium: "9.99",
       },
     };
 
     // Validate configuration
-    if (!config.clientId) {
-      console.error("🚨 PAYPAL_CLIENT_ID not found in environment variables");
+    if (!config.publishableKey) {
+      console.error(
+        "🚨 STRIPE_PUBLISHABLE_KEY not found in environment variables"
+      );
       return res.status(500).json({
         success: false,
-        error: "PayPal configuration missing",
+        error: "Stripe configuration missing",
       });
     }
 
     console.log(
-      `💳 PayPal subscription config requested - Environment: ${config.environment}`
+      `💳 Stripe subscription config requested - Environment: ${config.environment}`
     );
 
     return res.json({
@@ -111,30 +110,22 @@ async function handleGetConfig(req, res) {
       config,
     });
   } catch (error) {
-    console.error("PayPal Config Error:", error);
+    console.error("Stripe Config Error:", error);
     return res.status(500).json({
       success: false,
-      error: "Failed to load PayPal configuration",
+      error: "Failed to load Stripe configuration",
       details:
         process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 }
 
-// Create PayPal subscription
-async function handleCreateSubscription(req, res) {
-  const {
-    name,
-    email,
-    tier,
-    period,
-    language = "en",
-    subscriptionId,
-    planId,
-  } = req.body;
+// Create Stripe Checkout Session for subscription
+async function handleCreateCheckoutSession(req, res) {
+  const { name, email, tier, period, language = "en" } = req.body;
 
   // Validation
-  if (!name || !email || !tier || !period || !subscriptionId) {
+  if (!name || !email || !tier || !period) {
     return res.status(400).json({
       success: false,
       error: "Missing required subscription data",
@@ -156,6 +147,118 @@ async function handleCreateSubscription(req, res) {
   }
 
   try {
+    // Get the correct price ID
+    const priceId = getPriceId(tier, period);
+
+    if (!priceId) {
+      return res.status(500).json({
+        success: false,
+        error: "Price configuration missing",
+      });
+    }
+
+    // Create Stripe Checkout Session
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "subscription",
+      line_items: [
+        {
+          price: priceId,
+          quantity: 1,
+        },
+      ],
+      customer_email: email,
+      metadata: {
+        name: name,
+        email: email,
+        tier: tier,
+        period: period,
+        language: language,
+      },
+      success_url: `${getBaseUrl()}/dashboard?session_id={CHECKOUT_SESSION_ID}&success=true`,
+      cancel_url: `${getBaseUrl()}/commitment?canceled=true`,
+      allow_promotion_codes: true,
+      billing_address_collection: "auto",
+      tax_id_collection: {
+        enabled: true,
+      },
+    });
+
+    console.log(
+      `🚀 Stripe checkout session created: ${email} → ${tier} (${period}) → ${session.id}`
+    );
+
+    return res.json({
+      success: true,
+      sessionId: session.id,
+      url: session.url,
+    });
+  } catch (error) {
+    console.error("Stripe checkout session creation error:", error);
+    return res.status(500).json({
+      success: false,
+      error: error.message || "Failed to create checkout session",
+    });
+  }
+}
+
+// Stripe webhook handler for subscription events
+async function handleStripeWebhook(req, res) {
+  const sig = req.headers["stripe-signature"];
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  let event;
+
+  try {
+    // Verify webhook signature
+    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+  } catch (err) {
+    console.error("Webhook signature verification failed:", err.message);
+    return res.status(400).json({ error: "Invalid signature" });
+  }
+
+  console.log(`📦 Stripe webhook received: ${event.type}`);
+
+  try {
+    // Handle different webhook events
+    switch (event.type) {
+      case "checkout.session.completed":
+        await handleCheckoutSessionCompleted(event);
+        break;
+      case "customer.subscription.created":
+        await handleSubscriptionCreated(event);
+        break;
+      case "customer.subscription.updated":
+        await handleSubscriptionUpdated(event);
+        break;
+      case "customer.subscription.deleted":
+        await handleSubscriptionDeleted(event);
+        break;
+      case "invoice.payment_succeeded":
+        await handlePaymentSucceeded(event);
+        break;
+      case "invoice.payment_failed":
+        await handlePaymentFailed(event);
+        break;
+      default:
+        console.log(`Unhandled Stripe event: ${event.type}`);
+    }
+
+    return res.status(200).json({ received: true });
+  } catch (error) {
+    console.error("Stripe webhook error:", error);
+    return res.status(500).json({ error: "Webhook processing failed" });
+  }
+}
+
+// Webhook event handlers
+async function handleCheckoutSessionCompleted(event) {
+  try {
+    const session = event.data.object;
+    const { name, email, tier, period, language } = session.metadata;
+
+    console.log(`🎉 Checkout completed: ${email} → ${tier} (${period})`);
+
     // Create user account with subscription
     const userResponse = await fetch(`${getBaseUrl()}/api/auth`, {
       method: "POST",
@@ -163,7 +266,7 @@ async function handleCreateSubscription(req, res) {
       body: JSON.stringify({
         action: "signup",
         email: email,
-        password: generateSecurePassword(), // Auto-generate secure password
+        password: generateSecurePassword(),
         name: name,
         tier: tier,
         language: language,
@@ -173,56 +276,18 @@ async function handleCreateSubscription(req, res) {
     const userData = await userResponse.json();
 
     if (!userData.success) {
-      // Check if user exists - try sign in instead
+      // Check if user exists - update their subscription instead
       if (userData.error?.includes("already exists")) {
-        const signinResponse = await fetch(`${getBaseUrl()}/api/auth`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "signin",
-            email: email,
-            password: "temp", // This will fail but that's ok
-          }),
-        });
-
-        // For existing users, we'll need them to sign in manually
-        return res.status(400).json({
-          success: false,
-          error: "User already exists. Please sign in first.",
-          requiresSignin: true,
-        });
+        await updateExistingUserSubscription(email, tier, period, session);
+        return;
       }
-
       throw new Error(userData.error || "Failed to create user");
     }
 
-    // Update user with subscription details
-    const subscriptionResponse = await fetch(
-      `${getBaseUrl()}/api/subscriptions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${userData.token}`,
-        },
-        body: JSON.stringify({
-          action: "create-subscription",
-          tier: tier,
-          period: period,
-          paypalSubscriptionId: subscriptionId,
-        }),
-      }
-    );
+    // Update user with Stripe subscription details
+    await updateUserSubscription(userData.user.id, tier, period, session);
 
-    const subscriptionData = await subscriptionResponse.json();
-
-    if (!subscriptionData.success) {
-      throw new Error(
-        subscriptionData.error || "Failed to create subscription"
-      );
-    }
-
-    // Send subscription confirmation email
+    // Send welcome email
     try {
       await fetch(`${getBaseUrl()}/api/communication`, {
         method: "POST",
@@ -237,75 +302,66 @@ async function handleCreateSubscription(req, res) {
         }),
       });
     } catch (emailError) {
-      console.warn("Subscription confirmation email failed:", emailError);
-      // Don't fail the whole process for email issues
+      console.warn("Welcome email failed:", emailError);
     }
+  } catch (error) {
+    console.error("Error handling checkout completion:", error);
+  }
+}
 
-    console.log(
-      `🚀 Subscription created: ${email} → ${tier} (${period}) → ${subscriptionId}`
+async function handleSubscriptionCreated(event) {
+  try {
+    const subscription = event.data.object;
+    console.log(`✅ Subscription created: ${subscription.id}`);
+
+    // Additional subscription creation logic if needed
+  } catch (error) {
+    console.error("Error handling subscription creation:", error);
+  }
+}
+
+async function handleSubscriptionUpdated(event) {
+  try {
+    const subscription = event.data.object;
+    const customerId = subscription.customer;
+
+    const { createClient } = require("@supabase/supabase-js");
+    const supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
     );
 
-    return res.json({
-      success: true,
-      message: "Subscription created successfully",
-      user: userData.user,
-      token: userData.token,
-      subscription: subscriptionData.subscription,
-    });
-  } catch (error) {
-    console.error("Subscription creation error:", error);
-    return res.status(500).json({
-      success: false,
-      error: error.message || "Failed to create subscription",
-    });
-  }
-}
+    // Update subscription status based on current status
+    const status =
+      subscription.status === "active"
+        ? "active"
+        : subscription.status === "canceled"
+        ? "canceled"
+        : subscription.status === "past_due"
+        ? "past_due"
+        : "inactive";
 
-// PayPal webhook handler for subscription events
-async function handlePayPalWebhook(req, res) {
-  try {
-    const event = req.body;
+    const { error } = await supabase
+      .from("users")
+      .update({
+        subscription_status: status,
+      })
+      .eq("stripe_customer_id", customerId);
 
-    console.log(`📦 PayPal webhook received: ${event.event_type}`);
-
-    // Verify webhook signature (implement in production)
-    // const isValid = await verifyPayPalWebhook(req);
-    // if (!isValid) {
-    //   return res.status(400).json({ error: "Invalid webhook signature" });
-    // }
-
-    // Handle different webhook events
-    switch (event.event_type) {
-      case "BILLING.SUBSCRIPTION.ACTIVATED":
-        await handleSubscriptionActivated(event);
-        break;
-      case "BILLING.SUBSCRIPTION.CANCELLED":
-        await handleSubscriptionCancelled(event);
-        break;
-      case "BILLING.SUBSCRIPTION.EXPIRED":
-        await handleSubscriptionExpired(event);
-        break;
-      case "PAYMENT.SALE.COMPLETED":
-        await handlePaymentCompleted(event);
-        break;
-      case "BILLING.SUBSCRIPTION.PAYMENT.FAILED":
-        await handlePaymentFailed(event);
-        break;
-      default:
-        console.log(`Unhandled PayPal event: ${event.event_type}`);
+    if (error) {
+      console.error("Error updating subscription:", error);
+    } else {
+      console.log(`🔄 Subscription updated: ${subscription.id} → ${status}`);
     }
-
-    return res.status(200).json({ received: true });
   } catch (error) {
-    console.error("PayPal webhook error:", error);
-    return res.status(500).json({ error: "Webhook processing failed" });
+    console.error("Error handling subscription update:", error);
   }
 }
 
-// Webhook event handlers
-async function handleSubscriptionActivated(event) {
+async function handleSubscriptionDeleted(event) {
   try {
-    const subscriptionId = event.resource.id;
+    const subscription = event.data.object;
+    const customerId = subscription.customer;
 
     const { createClient } = require("@supabase/supabase-js");
     const supabase = createClient(
@@ -316,85 +372,175 @@ async function handleSubscriptionActivated(event) {
     const { error } = await supabase
       .from("users")
       .update({
-        subscription_status: "active",
-        subscription_started_at: new Date().toISOString(),
+        subscription_status: "canceled",
+        tier: "free",
       })
-      .eq("subscription_id", subscriptionId);
-
-    if (error) {
-      console.error("Error activating subscription:", error);
-    } else {
-      console.log(`✅ Subscription activated: ${subscriptionId}`);
-    }
-  } catch (error) {
-    console.error("Error handling subscription activation:", error);
-  }
-}
-
-async function handleSubscriptionCancelled(event) {
-  try {
-    const subscriptionId = event.resource.id;
-
-    const { createClient } = require("@supabase/supabase-js");
-    const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-    );
-
-    const { error } = await supabase
-      .from("users")
-      .update({ subscription_status: "canceled" })
-      .eq("subscription_id", subscriptionId);
+      .eq("stripe_customer_id", customerId);
 
     if (error) {
       console.error("Error canceling subscription:", error);
     } else {
-      console.log(`❌ Subscription canceled: ${subscriptionId}`);
+      console.log(`❌ Subscription canceled: ${subscription.id}`);
     }
   } catch (error) {
-    console.error("Error handling subscription cancellation:", error);
+    console.error("Error handling subscription deletion:", error);
   }
 }
 
-async function handleSubscriptionExpired(event) {
+async function handlePaymentSucceeded(event) {
   try {
-    const subscriptionId = event.resource.id;
+    const invoice = event.data.object;
+    console.log(`💰 Payment succeeded: ${invoice.id}`);
 
+    // Update subscription if needed
+    if (invoice.subscription) {
+      const customerId = invoice.customer;
+
+      const { createClient } = require("@supabase/supabase-js");
+      const supabase = createClient(
+        process.env.SUPABASE_URL,
+        process.env.SUPABASE_SERVICE_ROLE_KEY
+      );
+
+      const { error } = await supabase
+        .from("users")
+        .update({
+          subscription_status: "active",
+        })
+        .eq("stripe_customer_id", customerId);
+
+      if (!error) {
+        console.log(`✅ Subscription reactivated for payment: ${invoice.id}`);
+      }
+    }
+  } catch (error) {
+    console.error("Error handling payment success:", error);
+  }
+}
+
+async function handlePaymentFailed(event) {
+  try {
+    const invoice = event.data.object;
+    console.log(`💸 Payment failed: ${invoice.id}`);
+
+    // Optional: Send payment failure notification, update status, etc.
+    if (invoice.subscription) {
+      const customerId = invoice.customer;
+
+      const { createClient } = require("@supabase/supabase-js");
+      const supabase = createClient(
+        process.env.SUPABASE_URL,
+        process.env.SUPABASE_SERVICE_ROLE_KEY
+      );
+
+      const { error } = await supabase
+        .from("users")
+        .update({
+          subscription_status: "past_due",
+        })
+        .eq("stripe_customer_id", customerId);
+
+      if (!error) {
+        console.log(`⚠️ Subscription marked past due: ${invoice.subscription}`);
+      }
+    }
+  } catch (error) {
+    console.error("Error handling payment failure:", error);
+  }
+}
+
+// Helper functions
+async function updateUserSubscription(userId, tier, period, session) {
+  try {
     const { createClient } = require("@supabase/supabase-js");
     const supabase = createClient(
       process.env.SUPABASE_URL,
       process.env.SUPABASE_SERVICE_ROLE_KEY
     );
 
+    const startDate = new Date();
+    const expiryDate = new Date(startDate);
+    if (period === "monthly") {
+      expiryDate.setMonth(expiryDate.getMonth() + 1);
+    } else {
+      expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+    }
+
     const { error } = await supabase
       .from("users")
       .update({
-        subscription_status: "expired",
-        tier: "free", // Downgrade to free tier
+        tier: tier,
+        subscription_status: "active",
+        subscription_period: period,
+        stripe_customer_id: session.customer,
+        stripe_subscription_id: session.subscription,
+        subscription_started_at: startDate.toISOString(),
+        subscription_expires_at: expiryDate.toISOString(),
       })
-      .eq("subscription_id", subscriptionId);
+      .eq("id", userId);
 
     if (error) {
-      console.error("Error expiring subscription:", error);
-    } else {
-      console.log(`⏰ Subscription expired: ${subscriptionId}`);
+      console.error("Error updating user subscription:", error);
     }
   } catch (error) {
-    console.error("Error handling subscription expiration:", error);
+    console.error("Error in updateUserSubscription:", error);
   }
 }
 
-async function handlePaymentCompleted(event) {
-  console.log(`💰 Payment completed: ${event.resource.id}`);
-  // Optional: Log successful payment, update payment history, etc.
+async function updateExistingUserSubscription(email, tier, period, session) {
+  try {
+    const { createClient } = require("@supabase/supabase-js");
+    const supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
+
+    const startDate = new Date();
+    const expiryDate = new Date(startDate);
+    if (period === "monthly") {
+      expiryDate.setMonth(expiryDate.getMonth() + 1);
+    } else {
+      expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+    }
+
+    const { error } = await supabase
+      .from("users")
+      .update({
+        tier: tier,
+        subscription_status: "active",
+        subscription_period: period,
+        stripe_customer_id: session.customer,
+        stripe_subscription_id: session.subscription,
+        subscription_started_at: startDate.toISOString(),
+        subscription_expires_at: expiryDate.toISOString(),
+      })
+      .eq("email", email);
+
+    if (error) {
+      console.error("Error updating existing user subscription:", error);
+    } else {
+      console.log(`🔄 Updated existing user subscription: ${email}`);
+    }
+  } catch (error) {
+    console.error("Error in updateExistingUserSubscription:", error);
+  }
 }
 
-async function handlePaymentFailed(event) {
-  console.log(`💸 Payment failed: ${event.resource.id}`);
-  // Optional: Send payment failure notification, retry logic, etc.
+function getPriceId(tier, period) {
+  const priceMap = {
+    essential: {
+      monthly: process.env.STRIPE_ESSENTIAL_MONTHLY_PRICE_ID,
+      yearly: process.env.STRIPE_ESSENTIAL_YEARLY_PRICE_ID,
+    },
+    premium: {
+      monthly: process.env.STRIPE_PREMIUM_MONTHLY_PRICE_ID,
+      yearly: process.env.STRIPE_PREMIUM_YEARLY_PRICE_ID,
+    },
+  };
+
+  return priceMap[tier]?.[period];
 }
 
-// Utility functions
 function getBaseUrl() {
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;
@@ -406,7 +552,6 @@ function getBaseUrl() {
 }
 
 function generateSecurePassword() {
-  // Generate a secure random password for auto-created accounts
   const chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
   let password = "";

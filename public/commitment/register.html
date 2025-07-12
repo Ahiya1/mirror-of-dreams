@@ -10,7 +10,7 @@
     <link rel="manifest" href="/site.webmanifest" />
     <title>Begin Your Journey | Mirror of Truth</title>
     <style>
-      /* Self-Contained Register - Perfect No-Scroll */
+      /* Enhanced Register - Beautiful Consciousness-First Design */
       * {
         margin: 0;
         padding: 0;
@@ -23,49 +23,147 @@
         overflow: hidden;
         background: linear-gradient(
           135deg,
-          #0f0f23 0%,
-          #1a1a2e 25%,
-          #16213e 50%,
-          #0f0f23 100%
+          #0a0a1f 0%,
+          #1a1a3e 25%,
+          #2d1b69 45%,
+          #1e293b 65%,
+          #0f172a 100%
         );
         color: #fff;
         font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
         position: fixed;
         width: 100vw;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
 
-      /* Cosmic background animation */
+      /* Enhanced cosmic background with consciousness energy */
       body::before {
         content: "";
         position: fixed;
         inset: 0;
         background: radial-gradient(
             circle at 20% 30%,
-            rgba(59, 130, 246, 0.03) 0%,
+            rgba(99, 102, 241, 0.08) 0%,
             transparent 50%
           ),
           radial-gradient(
             circle at 80% 70%,
-            rgba(147, 51, 234, 0.02) 0%,
+            rgba(147, 51, 234, 0.06) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 50% 10%,
+            rgba(16, 185, 129, 0.04) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 10% 80%,
+            rgba(251, 146, 60, 0.03) 0%,
             transparent 50%
           );
         z-index: 1;
-        animation: gentleShift 30s ease-in-out infinite;
+        animation: consciousnessFlow 45s ease-in-out infinite;
       }
 
-      @keyframes gentleShift {
+      @keyframes consciousnessFlow {
         0%,
         100% {
           transform: scale(1) rotate(0deg);
-          opacity: 0.6;
+          opacity: 0.7;
+        }
+        25% {
+          transform: scale(1.1) rotate(90deg);
+          opacity: 0.9;
         }
         50% {
-          transform: scale(1.05) rotate(180deg);
+          transform: scale(0.9) rotate(180deg);
           opacity: 0.8;
+        }
+        75% {
+          transform: scale(1.05) rotate(270deg);
+          opacity: 0.85;
         }
       }
 
-      /* Navigation */
+      /* Floating consciousness particles */
+      .consciousness-field {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 2;
+        overflow: hidden;
+      }
+
+      .energy-particle {
+        position: absolute;
+        border-radius: 50%;
+        animation: energyFloat 20s linear infinite;
+        opacity: 0.6;
+      }
+
+      .energy-particle:nth-child(1) {
+        width: 3px;
+        height: 3px;
+        background: radial-gradient(circle, #6366f1 0%, transparent 70%);
+        left: 15%;
+        animation-delay: 0s;
+      }
+
+      .energy-particle:nth-child(2) {
+        width: 2px;
+        height: 2px;
+        background: radial-gradient(circle, #10b981 0%, transparent 70%);
+        left: 35%;
+        animation-delay: 5s;
+      }
+
+      .energy-particle:nth-child(3) {
+        width: 4px;
+        height: 4px;
+        background: radial-gradient(circle, #f59e0b 0%, transparent 70%);
+        left: 55%;
+        animation-delay: 10s;
+      }
+
+      .energy-particle:nth-child(4) {
+        width: 2px;
+        height: 2px;
+        background: radial-gradient(circle, #ec4899 0%, transparent 70%);
+        left: 75%;
+        animation-delay: 15s;
+      }
+
+      .energy-particle:nth-child(5) {
+        width: 3px;
+        height: 3px;
+        background: radial-gradient(circle, #8b5cf6 0%, transparent 70%);
+        left: 85%;
+        animation-delay: 8s;
+      }
+
+      @keyframes energyFloat {
+        0% {
+          transform: translateY(100vh) rotate(0deg) scale(0.5);
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.8;
+        }
+        50% {
+          opacity: 1;
+          transform: translateY(50vh) rotate(180deg) scale(1);
+        }
+        90% {
+          opacity: 0.4;
+        }
+        100% {
+          transform: translateY(-10vh) rotate(360deg) scale(0.3);
+          opacity: 0;
+        }
+      }
+
+      /* Enhanced Navigation */
       .back-link {
         position: fixed;
         top: clamp(1rem, 2vh, 1.5rem);
@@ -73,29 +171,42 @@
         z-index: 100;
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        color: rgba(255, 255, 255, 0.7);
+        gap: 0.6rem;
+        color: rgba(255, 255, 255, 0.8);
         text-decoration: none;
-        padding: clamp(0.6rem, 1.5vh, 0.8rem) clamp(1rem, 2vw, 1.2rem);
+        padding: clamp(0.7rem, 1.4vh, 0.9rem) clamp(1.2rem, 2.4vw, 1.5rem);
         border-radius: 50px;
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: all 0.3s ease;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.08) 0%,
+          rgba(147, 51, 234, 0.05) 50%,
+          rgba(255, 255, 255, 0.03) 100%
+        );
+        backdrop-filter: blur(25px) saturate(150%);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        transition: all 0.4s ease;
         font-size: clamp(0.8rem, 1.8vw, 0.9rem);
-        font-weight: 300;
+        font-weight: 400;
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
         white-space: nowrap;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
       }
 
       .back-link:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: rgba(255, 255, 255, 0.9);
-        transform: translateY(-2px);
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.12) 0%,
+          rgba(147, 51, 234, 0.08) 50%,
+          rgba(255, 255, 255, 0.06) 100%
+        );
+        border-color: rgba(255, 255, 255, 0.25);
+        color: rgba(255, 255, 255, 0.95);
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 12px 35px rgba(147, 51, 234, 0.15);
       }
 
-      /* Main container - perfectly centered */
+      /* Main container - Enhanced centering */
       .main-container {
         position: relative;
         z-index: 10;
@@ -107,83 +218,186 @@
         padding: clamp(0.5rem, 1vh, 1rem) clamp(1rem, 2vw, 1.5rem);
         max-width: 95vw;
         margin: 0 auto;
-        gap: clamp(0.6rem, 1.2vh, 0.9rem);
+        gap: clamp(0.8rem, 1.6vh, 1.2rem);
       }
 
-      /* Header section */
+      /* Enhanced Header */
       .header {
         text-align: center;
         flex-shrink: 0;
+        position: relative;
       }
 
       .mirror-icon {
-        font-size: clamp(1.5rem, 3.2vw, 2rem);
-        margin-bottom: clamp(0.3rem, 0.6vh, 0.5rem);
+        font-size: clamp(2rem, 4vw, 2.5rem);
+        margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
         display: block;
-        animation: gentlePulse 4s ease-in-out infinite;
+        animation: consciousPulse 6s ease-in-out infinite;
+        filter: drop-shadow(0 0 20px rgba(147, 51, 234, 0.3));
+        position: relative;
       }
 
-      @keyframes gentlePulse {
+      .mirror-icon::before {
+        content: "✨";
+        position: absolute;
+        left: -2rem;
+        top: 0;
+        font-size: 0.6em;
+        animation: sparkle 4s ease-in-out infinite;
+        opacity: 0.7;
+      }
+
+      .mirror-icon::after {
+        content: "✨";
+        position: absolute;
+        right: -2rem;
+        top: 0;
+        font-size: 0.6em;
+        animation: sparkle 4s ease-in-out infinite 2s;
+        opacity: 0.7;
+      }
+
+      @keyframes consciousPulse {
         0%,
         100% {
-          transform: scale(1);
+          transform: scale(1) rotate(0deg);
           opacity: 0.9;
         }
-        50% {
-          transform: scale(1.05);
+        33% {
+          transform: scale(1.08) rotate(1deg);
           opacity: 1;
+        }
+        66% {
+          transform: scale(1.05) rotate(-1deg);
+          opacity: 0.95;
+        }
+      }
+
+      @keyframes sparkle {
+        0%,
+        100% {
+          opacity: 0.3;
+          transform: scale(0.8) rotate(0deg);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.2) rotate(180deg);
         }
       }
 
       .title {
-        font-size: clamp(1.4rem, 3vw, 1.8rem);
+        font-size: clamp(1.6rem, 3.5vw, 2.2rem);
         font-weight: 300;
-        margin-bottom: clamp(0.2rem, 0.4vh, 0.3rem);
+        margin-bottom: clamp(0.3rem, 0.6vh, 0.5rem);
         background: linear-gradient(
           135deg,
           rgba(255, 255, 255, 0.95) 0%,
-          rgba(255, 255, 255, 0.8) 100%
+          rgba(147, 51, 234, 0.9) 30%,
+          rgba(99, 102, 241, 0.85) 60%,
+          rgba(255, 255, 255, 0.9) 100%
         );
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
         letter-spacing: 0.5px;
+        line-height: 1.2;
+        animation: titleGlow 8s ease-in-out infinite;
+      }
+
+      @keyframes titleGlow {
+        0%,
+        100% {
+          filter: drop-shadow(0 0 10px rgba(147, 51, 234, 0.2));
+        }
+        50% {
+          filter: drop-shadow(0 0 25px rgba(99, 102, 241, 0.4));
+        }
       }
 
       .subtitle {
-        font-size: clamp(0.8rem, 1.8vw, 0.95rem);
-        opacity: 0.8;
+        font-size: clamp(0.9rem, 2vw, 1.1rem);
+        opacity: 0.85;
         color: rgba(255, 255, 255, 0.8);
-        line-height: 1.3;
+        line-height: 1.4;
         font-weight: 300;
-        margin-bottom: clamp(0.2rem, 0.4vh, 0.3rem);
+        margin-bottom: clamp(0.3rem, 0.6vh, 0.5rem);
       }
 
-      /* Selected tier display */
+      /* Enhanced Selected tier display */
       .selected-tier {
         display: inline-flex;
         align-items: center;
-        gap: clamp(0.4rem, 0.8vw, 0.6rem);
-        padding: clamp(0.4rem, 0.8vh, 0.6rem) clamp(0.8rem, 1.6vw, 1.2rem);
-        background: rgba(16, 185, 129, 0.1);
+        gap: clamp(0.6rem, 1.2vw, 0.8rem);
+        padding: clamp(0.6rem, 1.2vh, 0.8rem) clamp(1.2rem, 2.4vw, 1.6rem);
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.15) 0%,
+          rgba(5, 150, 105, 0.08) 100%
+        );
         border: 1px solid rgba(16, 185, 129, 0.3);
-        border-radius: clamp(8px, 1.4vw, 12px);
-        font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+        border-radius: clamp(12px, 2vw, 18px);
+        font-size: clamp(0.8rem, 1.8vw, 0.95rem);
         color: #6ee7b7;
         font-weight: 500;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.1);
+        animation: tierGlow 4s ease-in-out infinite;
       }
 
-      /* Main form container */
+      .selected-tier::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.1) 50%,
+          transparent 100%
+        );
+        animation: shimmer 3s ease-in-out infinite;
+      }
+
+      @keyframes tierGlow {
+        0%,
+        100% {
+          box-shadow: 0 8px 25px rgba(16, 185, 129, 0.1);
+        }
+        50% {
+          box-shadow: 0 12px 35px rgba(16, 185, 129, 0.2);
+        }
+      }
+
+      @keyframes shimmer {
+        0% {
+          left: -100%;
+        }
+        100% {
+          left: 100%;
+        }
+      }
+
+      /* Enhanced Form Container */
       .form-section {
         width: 100%;
-        max-width: clamp(320px, 40vw, 420px);
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(40px) saturate(120%);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: clamp(16px, 3vw, 24px);
-        padding: clamp(1.5rem, 3vh, 2.5rem) clamp(1.2rem, 2.5vw, 2rem);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3),
-          0 0 0 1px rgba(255, 255, 255, 0.05);
+        max-width: clamp(380px, 45vw, 480px);
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.06) 0%,
+          rgba(147, 51, 234, 0.04) 30%,
+          rgba(99, 102, 241, 0.03) 70%,
+          rgba(255, 255, 255, 0.05) 100%
+        );
+        backdrop-filter: blur(40px) saturate(150%) brightness(120%);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: clamp(20px, 4vw, 28px);
+        padding: clamp(1.8rem, 3.6vh, 2.8rem) clamp(1.5rem, 3vw, 2.2rem);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3),
+          0 0 0 1px rgba(255, 255, 255, 0.08),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
         position: relative;
         overflow: hidden;
         display: flex;
@@ -197,49 +411,74 @@
         inset: 1px;
         background: linear-gradient(
           135deg,
-          rgba(255, 255, 255, 0.06) 0%,
-          rgba(147, 51, 234, 0.02) 50%,
-          rgba(255, 255, 255, 0.01) 100%
+          rgba(255, 255, 255, 0.08) 0%,
+          rgba(147, 51, 234, 0.05) 25%,
+          rgba(99, 102, 241, 0.03) 50%,
+          rgba(16, 185, 129, 0.02) 75%,
+          rgba(255, 255, 255, 0.06) 100%
         );
-        border-radius: clamp(15px, 3vw, 23px);
+        border-radius: clamp(19px, 4vw, 27px);
         pointer-events: none;
+        animation: formGlow 10s ease-in-out infinite;
       }
 
-      /* Messages */
+      @keyframes formGlow {
+        0%,
+        100% {
+          opacity: 0.7;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      /* Enhanced Messages */
       .message {
-        padding: clamp(0.6rem, 1.2vh, 0.8rem);
-        border-radius: clamp(8px, 1.6vw, 12px);
-        font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+        padding: clamp(0.8rem, 1.6vh, 1rem);
+        border-radius: clamp(12px, 2.4vw, 16px);
+        font-size: clamp(0.8rem, 1.8vw, 0.9rem);
         text-align: center;
         opacity: 0;
-        transform: translateY(-10px);
-        transition: all 0.3s ease;
-        font-weight: 300;
-        margin-bottom: clamp(0.4rem, 0.8vh, 0.6rem);
+        transform: translateY(-15px) scale(0.95);
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        font-weight: 400;
+        margin-bottom: clamp(0.6rem, 1.2vh, 0.8rem);
+        position: relative;
+        overflow: hidden;
       }
 
       .message.show {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
       }
 
       .message.error {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.2);
-        color: rgba(252, 165, 165, 0.9);
+        background: linear-gradient(
+          135deg,
+          rgba(239, 68, 68, 0.15) 0%,
+          rgba(220, 38, 38, 0.08) 100%
+        );
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: rgba(252, 165, 165, 0.95);
+        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.1);
       }
 
       .message.success {
-        background: rgba(34, 197, 94, 0.1);
-        border: 1px solid rgba(34, 197, 94, 0.2);
-        color: rgba(110, 231, 183, 0.9);
+        background: linear-gradient(
+          135deg,
+          rgba(34, 197, 94, 0.15) 0%,
+          rgba(22, 163, 74, 0.08) 100%
+        );
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        color: rgba(110, 231, 183, 0.95);
+        box-shadow: 0 8px 25px rgba(34, 197, 94, 0.1);
       }
 
-      /* Form */
+      /* Enhanced Form Elements */
       .register-form {
         display: flex;
         flex-direction: column;
-        gap: clamp(0.8rem, 1.6vh, 1.2rem);
+        gap: clamp(1rem, 2vh, 1.4rem);
         flex: 1;
       }
 
@@ -249,29 +488,39 @@
 
       .form-input {
         width: 100%;
-        padding: clamp(0.9rem, 1.8vh, 1.1rem);
-        background: rgba(255, 255, 255, 0.06);
+        padding: clamp(1rem, 2vh, 1.3rem);
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.08) 0%,
+          rgba(255, 255, 255, 0.04) 100%
+        );
         backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: clamp(10px, 2vw, 14px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: clamp(12px, 2.4vw, 16px);
         color: #fff;
-        font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+        font-size: clamp(0.9rem, 2vw, 1rem);
         font-family: inherit;
-        transition: all 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         font-weight: 300;
         outline: none;
         -webkit-tap-highlight-color: transparent;
+        position: relative;
       }
 
       .form-input.has-icon {
-        padding-right: clamp(2.2rem, 4.5vw, 2.8rem);
+        padding-right: clamp(2.5rem, 5vw, 3rem);
       }
 
       .form-input:focus {
-        border-color: rgba(147, 51, 234, 0.4);
-        background: rgba(255, 255, 255, 0.08);
-        box-shadow: 0 0 20px rgba(147, 51, 234, 0.15);
-        transform: translateY(-1px);
+        border-color: rgba(147, 51, 234, 0.5);
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(147, 51, 234, 0.05) 100%
+        );
+        box-shadow: 0 0 25px rgba(147, 51, 234, 0.2),
+          0 8px 25px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px) scale(1.02);
       }
 
       .form-input::placeholder {
@@ -280,78 +529,108 @@
         font-weight: 300;
       }
 
+      /* Enhanced Labels */
       .form-label {
         position: absolute;
-        left: clamp(0.9rem, 1.8vh, 1.1rem);
-        top: clamp(0.9rem, 1.8vh, 1.1rem);
-        color: rgba(255, 255, 255, 0.5);
-        font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+        left: clamp(1rem, 2vh, 1.3rem);
+        top: clamp(1rem, 2vh, 1.3rem);
+        color: rgba(255, 255, 255, 0.6);
+        font-size: clamp(0.9rem, 2vw, 1rem);
         font-weight: 300;
         pointer-events: none;
-        transition: all 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         transform-origin: left top;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.6) 0%,
+          rgba(147, 51, 234, 0.7) 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
       }
 
       .form-input:focus + .form-label,
       .form-input:not(:placeholder-shown) + .form-label {
-        transform: translateY(clamp(-1.6rem, -3.2vh, -2rem)) scale(0.85);
-        color: rgba(147, 51, 234, 0.8);
-        left: clamp(0.6rem, 1.2vh, 0.8rem);
+        transform: translateY(clamp(-1.8rem, -3.6vh, -2.2rem)) scale(0.8);
+        color: rgba(147, 51, 234, 0.9);
+        left: clamp(0.8rem, 1.6vh, 1rem);
+        font-weight: 500;
       }
 
-      /* Password toggle */
+      /* Enhanced Password Toggle */
       .password-toggle {
         position: absolute;
-        right: clamp(0.7rem, 1.4vw, 0.9rem);
+        right: clamp(0.8rem, 1.6vw, 1rem);
         top: 50%;
         transform: translateY(-50%);
-        background: none;
-        border: none;
-        color: rgba(255, 255, 255, 0.5);
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(147, 51, 234, 0.08) 100%
+        );
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.7);
         cursor: pointer;
-        padding: clamp(0.3rem, 0.6vh, 0.4rem);
-        border-radius: 6px;
+        padding: clamp(0.4rem, 0.8vh, 0.5rem);
+        border-radius: 8px;
         transition: all 0.3s ease;
-        font-size: clamp(0.9rem, 1.8vw, 1rem);
+        font-size: clamp(1rem, 2vw, 1.1rem);
         display: flex;
         align-items: center;
         justify-content: center;
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
+        backdrop-filter: blur(10px);
       }
 
       .password-toggle:hover {
-        color: rgba(255, 255, 255, 0.8);
-        background: rgba(255, 255, 255, 0.05);
-      }
-
-      /* Password hint */
-      .password-hint {
-        font-size: clamp(0.7rem, 1.4vw, 0.8rem);
-        color: rgba(255, 255, 255, 0.5);
-        margin-top: clamp(0.3rem, 0.6vh, 0.4rem);
-        font-style: italic;
-      }
-
-      /* Submit button */
-      .submit-button {
-        width: 100%;
-        padding: clamp(1rem, 2vh, 1.3rem);
+        color: rgba(255, 255, 255, 0.9);
         background: linear-gradient(
           135deg,
-          rgba(255, 255, 255, 0.12) 0%,
-          rgba(16, 185, 129, 0.08) 50%,
-          rgba(255, 255, 255, 0.06) 100%
+          rgba(255, 255, 255, 0.15) 0%,
+          rgba(147, 51, 234, 0.12) 100%
         );
-        backdrop-filter: blur(30px);
-        border: 1px solid rgba(16, 185, 129, 0.2);
-        border-radius: clamp(10px, 2vw, 14px);
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateY(-50%) scale(1.05);
+      }
+
+      /* Enhanced Password Hint */
+      .password-hint {
+        font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+        color: rgba(255, 255, 255, 0.5);
+        margin-top: clamp(0.4rem, 0.8vh, 0.5rem);
+        font-style: italic;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .password-hint::before {
+        content: "💡";
+        font-size: 0.9em;
+        opacity: 0.7;
+      }
+
+      /* Enhanced Submit Button */
+      .submit-button {
+        width: 100%;
+        padding: clamp(1.2rem, 2.4vh, 1.6rem);
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.8) 0%,
+          rgba(5, 150, 105, 0.9) 30%,
+          rgba(147, 51, 234, 0.8) 70%,
+          rgba(99, 102, 241, 0.85) 100%
+        );
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: clamp(12px, 2.4vw, 16px);
         color: #fff;
-        font-size: clamp(0.85rem, 1.8vw, 0.95rem);
-        font-weight: 500;
+        font-size: clamp(0.9rem, 2vw, 1rem);
+        font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s ease;
-        letter-spacing: 0.3px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        letter-spacing: 0.5px;
         position: relative;
         overflow: hidden;
         outline: none;
@@ -361,19 +640,45 @@
         align-items: center;
         justify-content: center;
         text-align: center;
-        margin-top: clamp(0.4rem, 0.8vh, 0.6rem);
+        margin-top: clamp(0.6rem, 1.2vh, 0.8rem);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2),
+          0 4px 15px rgba(147, 51, 234, 0.1);
+        text-transform: uppercase;
+        min-height: clamp(50px, 8vh, 60px);
+      }
+
+      .submit-button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.2) 50%,
+          transparent 100%
+        );
+        transition: left 0.5s ease;
       }
 
       .submit-button:hover:not(:disabled) {
         background: linear-gradient(
           135deg,
-          rgba(255, 255, 255, 0.18) 0%,
-          rgba(16, 185, 129, 0.12) 50%,
-          rgba(255, 255, 255, 0.08) 100%
+          rgba(16, 185, 129, 0.9) 0%,
+          rgba(5, 150, 105, 1) 30%,
+          rgba(147, 51, 234, 0.9) 70%,
+          rgba(99, 102, 241, 0.95) 100%
         );
-        border-color: rgba(16, 185, 129, 0.3);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(16, 185, 129, 0.15);
+        border-color: rgba(16, 185, 129, 0.5);
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 15px 35px rgba(16, 185, 129, 0.3),
+          0 8px 25px rgba(147, 51, 234, 0.2);
+      }
+
+      .submit-button:hover:not(:disabled)::before {
+        left: 100%;
       }
 
       .submit-button:disabled {
@@ -386,104 +691,159 @@
         transform: translateY(-1px) scale(0.98);
       }
 
-      /* Loading state */
+      /* Enhanced Loading Animation */
       .button-loading {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: clamp(0.5rem, 1vw, 0.7rem);
+        gap: clamp(0.6rem, 1.2vw, 0.8rem);
       }
 
       .loading-spinner {
-        width: clamp(14px, 2.8vw, 16px);
-        height: clamp(14px, 2.8vw, 16px);
+        width: clamp(16px, 3.2vw, 20px);
+        height: clamp(16px, 3.2vw, 20px);
         border: 2px solid rgba(255, 255, 255, 0.3);
         border-radius: 50%;
-        border-top-color: rgba(16, 185, 129, 0.8);
-        animation: spin 1s linear infinite;
+        border-top-color: rgba(255, 255, 255, 0.9);
+        animation: consciousSpin 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55)
+          infinite;
       }
 
-      @keyframes spin {
+      @keyframes consciousSpin {
         0% {
-          transform: rotate(0deg);
+          transform: rotate(0deg) scale(1);
+        }
+        50% {
+          transform: rotate(180deg) scale(1.1);
         }
         100% {
-          transform: rotate(360deg);
+          transform: rotate(360deg) scale(1);
         }
       }
 
-      /* Footer section */
+      /* Enhanced Footer */
       .footer {
         text-align: center;
         flex-shrink: 0;
-        margin-top: clamp(0.4rem, 0.8vh, 0.6rem);
+        margin-top: clamp(0.6rem, 1.2vh, 0.8rem);
       }
 
       .signin-text {
         color: rgba(255, 255, 255, 0.7);
-        font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+        font-size: clamp(0.8rem, 1.8vw, 0.9rem);
         line-height: 1.4;
         font-weight: 300;
-        margin-bottom: clamp(0.6rem, 1.2vh, 0.8rem);
+        margin-bottom: clamp(0.8rem, 1.6vh, 1rem);
       }
 
       .signin-link {
         display: inline-flex;
         align-items: center;
-        gap: clamp(0.4rem, 0.8vw, 0.6rem);
-        color: rgba(255, 255, 255, 0.8);
+        gap: clamp(0.5rem, 1vw, 0.7rem);
+        color: rgba(255, 255, 255, 0.85);
         text-decoration: none;
-        padding: clamp(0.7rem, 1.4vh, 0.9rem) clamp(1.2rem, 2.4vw, 1.6rem);
-        border-radius: clamp(8px, 1.6vw, 12px);
+        padding: clamp(0.8rem, 1.6vh, 1rem) clamp(1.4rem, 2.8vw, 1.8rem);
+        border-radius: clamp(12px, 2.4vw, 16px);
         background: linear-gradient(
           135deg,
-          rgba(147, 51, 234, 0.12) 0%,
-          rgba(59, 130, 246, 0.08) 100%
+          rgba(99, 102, 241, 0.12) 0%,
+          rgba(147, 51, 234, 0.08) 50%,
+          rgba(59, 130, 246, 0.1) 100%
         );
-        border: 1px solid rgba(147, 51, 234, 0.2);
-        transition: all 0.3s ease;
-        font-weight: 400;
-        font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+        border: 1px solid rgba(99, 102, 241, 0.25);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        font-weight: 500;
+        font-size: clamp(0.8rem, 1.8vw, 0.9rem);
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
         white-space: nowrap;
+        backdrop-filter: blur(20px);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .signin-link::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(99, 102, 241, 0.15) 0%,
+          rgba(147, 51, 234, 0.12) 100%
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
       }
 
       .signin-link:hover {
         background: linear-gradient(
           135deg,
-          rgba(147, 51, 234, 0.18) 0%,
-          rgba(59, 130, 246, 0.12) 100%
+          rgba(99, 102, 241, 0.18) 0%,
+          rgba(147, 51, 234, 0.12) 50%,
+          rgba(59, 130, 246, 0.15) 100%
         );
-        border-color: rgba(147, 51, 234, 0.3);
+        border-color: rgba(99, 102, 241, 0.4);
         color: rgba(255, 255, 255, 0.95);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(147, 51, 234, 0.2);
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 12px 30px rgba(99, 102, 241, 0.2);
       }
 
-      /* Mobile responsive */
+      .signin-link:hover::before {
+        opacity: 1;
+      }
+
+      /* Tier-specific styling */
+      .tier-essential .selected-tier {
+        background: linear-gradient(
+          135deg,
+          rgba(251, 146, 60, 0.15) 0%,
+          rgba(245, 101, 101, 0.08) 100%
+        );
+        border-color: rgba(251, 146, 60, 0.3);
+        color: #fbbf24;
+      }
+
+      .tier-premium .selected-tier {
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.15) 0%,
+          rgba(99, 102, 241, 0.08) 100%
+        );
+        border-color: rgba(147, 51, 234, 0.3);
+        color: #c084fc;
+      }
+
+      /* Responsive design */
       @media (max-width: 768px) {
         .main-container {
           padding: clamp(0.4rem, 0.8vh, 0.6rem) clamp(0.5rem, 1vw, 0.8rem);
-          gap: clamp(0.4rem, 0.8vh, 0.6rem);
+          gap: clamp(0.6rem, 1.2vh, 0.8rem);
         }
 
         .form-section {
           max-width: 90vw;
-          padding: clamp(1.2rem, 2.4vh, 1.8rem) clamp(1rem, 2vw, 1.5rem);
+          padding: clamp(1.4rem, 2.8vh, 2rem) clamp(1.2rem, 2.4vw, 1.6rem);
+        }
+
+        .consciousness-field {
+          opacity: 0.7;
+        }
+
+        .mirror-icon::before,
+        .mirror-icon::after {
+          display: none;
         }
       }
 
-      /* Mobile landscape optimization */
       @media (max-height: 600px) and (orientation: landscape) {
         .main-container {
           padding: clamp(0.2rem, 0.4vh, 0.4rem) clamp(0.8rem, 1.6vw, 1.2rem);
-          gap: clamp(0.3rem, 0.6vh, 0.5rem);
+          gap: clamp(0.4rem, 0.8vh, 0.6rem);
         }
 
         .mirror-icon {
-          font-size: clamp(1.2rem, 2.4vw, 1.6rem);
-          margin-bottom: clamp(0.2rem, 0.4vh, 0.3rem);
+          font-size: clamp(1.5rem, 3vw, 2rem);
+          margin-bottom: clamp(0.3rem, 0.6vh, 0.4rem);
         }
 
         .subtitle {
@@ -491,26 +851,24 @@
         }
 
         .form-section {
-          padding: clamp(1rem, 2vh, 1.4rem) clamp(1rem, 2vw, 1.5rem);
+          padding: clamp(1.2rem, 2.4vh, 1.6rem) clamp(1.2rem, 2.4vw, 1.6rem);
         }
       }
 
-      /* Ultra small screens */
       @media (max-height: 500px) {
         .selected-tier {
           display: none;
         }
 
         .register-form {
-          gap: clamp(0.6rem, 1.2vh, 0.8rem);
+          gap: clamp(0.8rem, 1.6vh, 1rem);
         }
       }
 
-      /* Very small width */
       @media (max-width: 360px) {
         .form-section {
           max-width: 95vw;
-          padding: clamp(1.2rem, 2.4vh, 1.6rem) clamp(0.8rem, 1.6vw, 1.2rem);
+          padding: clamp(1.2rem, 2.4vh, 1.6rem) clamp(1rem, 2vw, 1.3rem);
         }
       }
 
@@ -531,8 +889,8 @@
       .back-link:focus-visible,
       .signin-link:focus-visible,
       .password-toggle:focus-visible {
-        outline: 2px solid rgba(16, 185, 129, 0.6);
-        outline-offset: 2px;
+        outline: 2px solid rgba(147, 51, 234, 0.6);
+        outline-offset: 3px;
       }
 
       /* Remove all default focus outlines */
@@ -544,6 +902,15 @@
   </head>
 
   <body>
+    <!-- Consciousness Field -->
+    <div class="consciousness-field">
+      <div class="energy-particle"></div>
+      <div class="energy-particle"></div>
+      <div class="energy-particle"></div>
+      <div class="energy-particle"></div>
+      <div class="energy-particle"></div>
+    </div>
+
     <!-- Navigation -->
     <a href="/commitment" class="back-link">
       <span>←</span>
@@ -659,7 +1026,7 @@
             <span class="button-text" id="buttonText">Create Free Account</span>
             <span class="button-loading" style="display: none">
               <div class="loading-spinner"></div>
-              <span>Creating account...</span>
+              <span>Creating your sacred space...</span>
             </span>
           </button>
         </form>
@@ -676,9 +1043,10 @@
     </div>
 
     <script>
-      // Registration Logic - Self-Contained Perfect
+      // Enhanced Registration with Stripe Integration
       let isLoading = false;
       let selectedTier = "free";
+      let stripeConfig = null;
 
       // Initialize
       document.addEventListener("DOMContentLoaded", function () {
@@ -686,6 +1054,8 @@
         setupForm();
         setupPasswordToggles();
         setupKeyboardShortcuts();
+        loadStripeConfig();
+        addTierStyling();
       });
 
       function parseURLParams() {
@@ -695,6 +1065,10 @@
         selectedTier = tier;
         updateTierDisplay();
         updateButtonText();
+      }
+
+      function addTierStyling() {
+        document.body.classList.add(`tier-${selectedTier}`);
       }
 
       function updateTierDisplay() {
@@ -714,7 +1088,24 @@
         if (selectedTier === "free") {
           buttonText.textContent = "Create Free Account";
         } else {
-          buttonText.textContent = `Continue to Payment`;
+          buttonText.textContent = "Continue to Secure Payment";
+        }
+      }
+
+      async function loadStripeConfig() {
+        if (selectedTier === "free") return;
+
+        try {
+          const response = await fetch("/api/payment?action=config");
+          const result = await response.json();
+
+          if (result.success) {
+            stripeConfig = result.config;
+          } else {
+            console.warn("Stripe config failed:", result.error);
+          }
+        } catch (error) {
+          console.warn("Stripe config error:", error);
         }
       }
 
@@ -724,20 +1115,68 @@
 
         form.addEventListener("submit", handleRegistration);
 
-        // Input validation
+        // Enhanced input validation with animations
         inputs.forEach((input) => {
           input.addEventListener("blur", validateInput);
           input.addEventListener("input", clearValidationStyling);
+          input.addEventListener("focus", handleInputFocus);
         });
 
-        // Auto-focus first input
+        // Auto-focus first input with delay for better UX
         setTimeout(() => {
           document.getElementById("name").focus();
-        }, 800);
+        }, 1000);
       }
 
+      function handleInputFocus(e) {
+        createFocusEffect(e.target);
+      }
+
+      function createFocusEffect(element) {
+        const rect = element.getBoundingClientRect();
+        for (let i = 0; i < 3; i++) {
+          setTimeout(() => {
+            const particle = document.createElement("div");
+            particle.style.cssText = `
+              position: fixed;
+              left: ${rect.left + Math.random() * rect.width}px;
+              top: ${rect.top + Math.random() * rect.height}px;
+              width: 3px;
+              height: 3px;
+              background: radial-gradient(circle, rgba(147, 51, 234, 0.8) 0%, transparent 70%);
+              border-radius: 50%;
+              pointer-events: none;
+              z-index: 1000;
+              animation: focusParticle 2s ease-out forwards;
+            `;
+            document.body.appendChild(particle);
+            setTimeout(() => particle.remove(), 2000);
+          }, i * 100);
+        }
+      }
+
+      // Add focus particle animation
+      const focusStyle = document.createElement("style");
+      focusStyle.textContent = `
+        @keyframes focusParticle {
+          0% { 
+            opacity: 0; 
+            transform: scale(0) rotate(0deg); 
+          }
+          50% { 
+            opacity: 1; 
+            transform: scale(1.5) rotate(180deg); 
+          }
+          100% { 
+            opacity: 0; 
+            transform: scale(0) rotate(360deg); 
+          }
+        }
+      `;
+      document.head.appendChild(focusStyle);
+
       function setupPasswordToggles() {
-        // Password toggle
+        // Enhanced password toggle with animation
         const passwordToggle = document.getElementById("passwordToggle");
         const passwordInput = document.getElementById("password");
         const toggleIcon = document.getElementById("toggleIcon");
@@ -746,6 +1185,13 @@
           const isPassword = passwordInput.type === "password";
           passwordInput.type = isPassword ? "text" : "password";
           toggleIcon.textContent = isPassword ? "🙈" : "👁️";
+
+          // Add toggle animation
+          this.style.transform = "scale(0.8)";
+          setTimeout(() => {
+            this.style.transform = "";
+          }, 150);
+
           passwordInput.focus();
         });
 
@@ -760,6 +1206,13 @@
           const isPassword = confirmPasswordInput.type === "password";
           confirmPasswordInput.type = isPassword ? "text" : "password";
           confirmToggleIcon.textContent = isPassword ? "🙈" : "👁️";
+
+          // Add toggle animation
+          this.style.transform = "scale(0.8)";
+          setTimeout(() => {
+            this.style.transform = "";
+          }, 150);
+
           confirmPasswordInput.focus();
         });
       }
@@ -784,9 +1237,9 @@
         const confirmPassword =
           document.getElementById("confirmPassword").value;
 
-        // Validation
+        // Enhanced validation
         if (!name || !email || !password || !confirmPassword) {
-          showMessage("Please fill in all fields", "error");
+          showMessage("Please fill in all fields to continue", "error");
           return;
         }
 
@@ -809,50 +1262,94 @@
         hideMessages();
 
         try {
-          const response = await fetch("/api/auth", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              action: "signup",
-              name: name,
-              email: email,
-              password: password,
-              tier: selectedTier,
-            }),
-          });
-
-          const result = await response.json();
-
-          if (result.success) {
-            // Store with correct localStorage keys
-            localStorage.setItem("mirror_auth_token", result.token);
-            localStorage.setItem(
-              "mirrorVerifiedUser",
-              JSON.stringify(result.user)
-            );
-
-            showMessage(
-              "Account created successfully! Welcome to your journey.",
-              "success"
-            );
-
-            setTimeout(() => {
-              window.location.href = "/dashboard";
-            }, 2000);
+          if (selectedTier === "free") {
+            // Create free account directly
+            await createFreeAccount(name, email, password);
           } else {
-            throw new Error(result.error || "Account creation failed");
+            // Create Stripe checkout session for paid tiers
+            await createStripeCheckout(name, email, password);
           }
         } catch (error) {
           console.error("Registration error:", error);
           showMessage(
-            error.message || "Account creation failed. Please try again.",
+            error.message || "Something went wrong. Please try again.",
             "error"
           );
-        } finally {
           setLoadingState(false);
         }
+      }
+
+      async function createFreeAccount(name, email, password) {
+        const response = await fetch("/api/auth", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            action: "signup",
+            name: name,
+            email: email,
+            password: password,
+            tier: "free",
+          }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          // Store auth data
+          localStorage.setItem("mirror_auth_token", result.token);
+          localStorage.setItem(
+            "mirrorVerifiedUser",
+            JSON.stringify(result.user)
+          );
+
+          showMessage(
+            "✨ Welcome to your consciousness journey! Your free account is ready.",
+            "success"
+          );
+
+          setTimeout(() => {
+            window.location.href = "/dashboard";
+          }, 2000);
+        } else {
+          throw new Error(result.error || "Account creation failed");
+        }
+
+        setLoadingState(false);
+      }
+
+      async function createStripeCheckout(name, email, password) {
+        if (!stripeConfig) {
+          throw new Error("Payment system not available. Please try again.");
+        }
+
+        const response = await fetch("/api/payment", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            action: "create-checkout-session",
+            name: name,
+            email: email,
+            tier: selectedTier,
+            period: "monthly", // Default to monthly
+          }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showMessage("Redirecting to secure payment...", "success");
+
+          // Redirect to Stripe Checkout
+          window.location.href = result.url;
+        } else {
+          throw new Error(result.error || "Payment setup failed");
+        }
+
+        setLoadingState(false);
       }
 
       function validateInput(e) {
@@ -862,18 +1359,21 @@
         switch (input.id) {
           case "email":
             if (value && !validateEmail(value)) {
-              input.style.borderColor = "rgba(239, 68, 68, 0.4)";
+              input.style.borderColor = "rgba(239, 68, 68, 0.5)";
+              input.style.boxShadow = "0 0 15px rgba(239, 68, 68, 0.2)";
             }
             break;
           case "password":
             if (value && value.length < 6) {
-              input.style.borderColor = "rgba(245, 158, 11, 0.4)";
+              input.style.borderColor = "rgba(245, 158, 11, 0.5)";
+              input.style.boxShadow = "0 0 15px rgba(245, 158, 11, 0.2)";
             }
             break;
           case "confirmPassword":
             const password = document.getElementById("password").value;
             if (value && value !== password) {
-              input.style.borderColor = "rgba(239, 68, 68, 0.4)";
+              input.style.borderColor = "rgba(239, 68, 68, 0.5)";
+              input.style.boxShadow = "0 0 15px rgba(239, 68, 68, 0.2)";
             }
             break;
         }
@@ -881,6 +1381,7 @@
 
       function clearValidationStyling(e) {
         e.target.style.borderColor = "";
+        e.target.style.boxShadow = "";
       }
 
       function validateEmail(email) {
@@ -926,7 +1427,7 @@
         ["errorMessage", "successMessage"].forEach((id) => {
           const div = document.getElementById(id);
           div.classList.remove("show");
-          setTimeout(() => (div.style.display = "none"), 300);
+          setTimeout(() => (div.style.display = "none"), 400);
         });
       }
 
@@ -939,18 +1440,20 @@
         // Reset any validation styling
         document.querySelectorAll(".form-input").forEach((input) => {
           input.style.borderColor = "";
+          input.style.boxShadow = "";
         });
       }
 
       // Debug (Development Only)
       if (window.location.hostname === "localhost") {
-        console.log("🪞 Sacred Registration - Perfect Self-Contained");
+        console.log("🪞 Enhanced Sacred Registration with Stripe Integration");
 
         window.registerDebug = {
           selectedTier: () => selectedTier,
           clearForm,
           testMessage: (message, type) => showMessage(message, type),
           toggleLoading: () => setLoadingState(!isLoading),
+          stripeConfig: () => stripeConfig,
         };
       }
     </script>

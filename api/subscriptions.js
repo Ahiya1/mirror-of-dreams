@@ -1,7 +1,8 @@
-// api/subscriptions.js - Mirror of Truth Subscription gift Management with PayPal
+// api/subscriptions.js - Mirror of Truth Subscription Management with Stripe
 
 const { createClient } = require("@supabase/supabase-js");
 const { authenticateRequest } = require("./auth.js");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -25,13 +26,13 @@ const SUBSCRIPTION_PRICING = {
 const GIFT_PRICING = {
   essential: {
     "1mo": 4.99,
-    "3mo": 14.97, // 3 * 4.99
-    "1yr": 49.99, // Annual price
+    "3mo": 12.99, // Discounted from 14.97
+    "1yr": 49.99,
   },
   premium: {
     "1mo": 9.99,
-    "3mo": 29.97, // 3 * 9.99
-    "1yr": 99.99, // Annual price
+    "3mo": 24.99, // Discounted from 29.97
+    "1yr": 99.99,
   },
 };
 
@@ -55,8 +56,8 @@ module.exports = async function handler(req, res) {
         return await handleCreateSubscription(req, res);
       case "cancel-subscription":
         return await handleCancelSubscription(req, res);
-      case "gift-subscription":
-        return await handleGiftSubscription(req, res);
+      case "create-gift-checkout":
+        return await handleCreateGiftCheckout(req, res);
       case "redeem-gift":
         return await handleRedeemGift(req, res);
       case "validate-gift":
@@ -64,7 +65,7 @@ module.exports = async function handler(req, res) {
       case "get-pricing":
         return await handleGetPricing(req, res);
       case "webhook":
-        return await handlePayPalWebhook(req, res);
+        return await handleStripeWebhook(req, res);
       default:
         return res.status(400).json({
           success: false,
@@ -91,7 +92,7 @@ async function handleGetCurrentSubscription(req, res) {
       .from("users")
       .select(
         `
-        tier, subscription_status, subscription_period, subscription_id,
+        tier, subscription_status, subscription_period, stripe_subscription_id,
         subscription_started_at, subscription_expires_at
       `
       )
@@ -132,11 +133,11 @@ async function handleGetCurrentSubscription(req, res) {
   }
 }
 
-// Create new subscription (for register flow - to be used later)
+// Create new subscription (for register flow)
 async function handleCreateSubscription(req, res) {
   try {
     const user = await authenticateRequest(req);
-    const { tier, period, paypalSubscriptionId } = req.body;
+    const { tier, period, stripeSubscriptionId, stripeCustomerId } = req.body;
 
     if (!["essential", "premium"].includes(tier)) {
       return res.status(400).json({
@@ -168,7 +169,8 @@ async function handleCreateSubscription(req, res) {
         tier: tier,
         subscription_status: "active",
         subscription_period: period,
-        subscription_id: paypalSubscriptionId,
+        stripe_subscription_id: stripeSubscriptionId,
+        stripe_customer_id: stripeCustomerId,
         subscription_started_at: startDate.toISOString(),
         subscription_expires_at: expiryDate.toISOString(),
       })
@@ -217,6 +219,30 @@ async function handleCancelSubscription(req, res) {
   try {
     const user = await authenticateRequest(req);
 
+    // Get user's Stripe subscription ID
+    const { data: userData, error: fetchError } = await supabase
+      .from("users")
+      .select("stripe_subscription_id")
+      .eq("id", user.id)
+      .single();
+
+    if (fetchError || !userData.stripe_subscription_id) {
+      return res.status(400).json({
+        success: false,
+        error: "No active subscription found",
+      });
+    }
+
+    // Cancel the subscription in Stripe
+    try {
+      await stripe.subscriptions.update(userData.stripe_subscription_id, {
+        cancel_at_period_end: true,
+      });
+    } catch (stripeError) {
+      console.error("Stripe cancellation error:", stripeError);
+      // Continue with local update even if Stripe fails
+    }
+
     // Update subscription status
     const { data: updatedUser, error } = await supabase
       .from("users")
@@ -254,8 +280,8 @@ async function handleCancelSubscription(req, res) {
   }
 }
 
-// Gift subscription
-async function handleGiftSubscription(req, res) {
+// Create Stripe Checkout for gift subscription
+async function handleCreateGiftCheckout(req, res) {
   const {
     giverName,
     giverEmail,
@@ -264,9 +290,6 @@ async function handleGiftSubscription(req, res) {
     subscriptionTier,
     subscriptionDuration,
     personalMessage,
-    paymentMethod = "paypal",
-    paymentId,
-    amount,
   } = req.body;
 
   // Validation
@@ -298,77 +321,64 @@ async function handleGiftSubscription(req, res) {
     });
   }
 
-  // Validate pricing
-  const expectedAmount = GIFT_PRICING[subscriptionTier][subscriptionDuration];
-  if (Math.abs(parseFloat(amount) - expectedAmount) > 0.01) {
-    return res.status(400).json({
-      success: false,
-      error: "Invalid amount for selected gift",
-    });
-  }
-
   try {
+    // Get the correct price ID for the gift
+    const priceId = getGiftPriceId(subscriptionTier, subscriptionDuration);
+
+    if (!priceId) {
+      return res.status(500).json({
+        success: false,
+        error: "Gift price configuration missing",
+      });
+    }
+
     // Generate gift code
     const giftCode = generateGiftCode();
 
-    // Convert duration to months
-    const durationMonths =
-      subscriptionDuration === "1mo"
-        ? 1
-        : subscriptionDuration === "3mo"
-        ? 3
-        : 12;
-
-    // Create subscription gift
-    const { data: gift, error } = await supabase
-      .from("subscription_gifts")
-      .insert({
+    // Create Stripe Checkout Session for one-time payment
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment", // One-time payment for gifts
+      line_items: [
+        {
+          price: priceId,
+          quantity: 1,
+        },
+      ],
+      customer_email: giverEmail,
+      metadata: {
+        type: "gift",
         gift_code: giftCode,
         giver_name: giverName,
         giver_email: giverEmail,
         recipient_name: recipientName,
         recipient_email: recipientEmail,
         subscription_tier: subscriptionTier,
-        subscription_duration: durationMonths,
-        amount: parseFloat(amount),
-        payment_method: paymentMethod,
-        payment_id: paymentId,
+        subscription_duration: subscriptionDuration,
         personal_message: personalMessage || "",
-      })
-      .select("*")
-      .single();
-
-    if (error) {
-      console.error("Gift creation error:", error);
-      return res.status(500).json({
-        success: false,
-        error: "Failed to create subscription gift",
-      });
-    }
+      },
+      success_url: `${getBaseUrl()}/gifting?session_id={CHECKOUT_SESSION_ID}&success=true&gift_code=${giftCode}`,
+      cancel_url: `${getBaseUrl()}/gifting?canceled=true`,
+      allow_promotion_codes: true,
+      billing_address_collection: "auto",
+    });
 
     console.log(
-      `🎁 Subscription gift created: ${giftCode} - ${subscriptionTier} for ${durationMonths} months`
+      `🎁 Gift checkout session created: ${giftCode} → ${subscriptionTier} (${subscriptionDuration})`
     );
-
-    // Send gift invitation email
-    await sendGiftInvitation(gift);
-
-    // Send receipt to giver
-    await sendGiftReceipt(gift);
 
     return res.json({
       success: true,
-      message: "Subscription gift created successfully",
+      sessionId: session.id,
+      url: session.url,
       giftCode: giftCode,
-      gift: {
-        tier: subscriptionTier,
-        duration: subscriptionDuration,
-        amount: amount,
-      },
     });
   } catch (error) {
-    console.error("Error creating subscription gift:", error);
-    throw error;
+    console.error("Error creating gift checkout:", error);
+    return res.status(500).json({
+      success: false,
+      error: error.message || "Failed to create gift checkout",
+    });
   }
 }
 
@@ -559,32 +569,104 @@ async function handleGetPricing(req, res) {
   });
 }
 
-// PayPal webhook handler (for subscription updates)
-async function handlePayPalWebhook(req, res) {
+// Stripe webhook handler (for gift payment completion)
+async function handleStripeWebhook(req, res) {
+  const sig = req.headers["stripe-signature"];
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  let event;
+
   try {
-    const event = req.body;
+    // Verify webhook signature
+    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+  } catch (err) {
+    console.error("Webhook signature verification failed:", err.message);
+    return res.status(400).json({ error: "Invalid signature" });
+  }
 
-    console.log(`📦 PayPal webhook received: ${event.event_type}`);
+  console.log(`📦 Stripe webhook received: ${event.type}`);
 
-    // Handle different PayPal events
-    switch (event.event_type) {
-      case "BILLING.SUBSCRIPTION.CANCELLED":
-        await handleSubscriptionCancelled(event);
-        break;
-      case "BILLING.SUBSCRIPTION.EXPIRED":
-        await handleSubscriptionExpired(event);
-        break;
-      case "PAYMENT.SALE.COMPLETED":
-        await handlePaymentCompleted(event);
+  try {
+    // Handle different webhook events
+    switch (event.type) {
+      case "checkout.session.completed":
+        await handleGiftCheckoutCompleted(event);
         break;
       default:
-        console.log(`Unhandled PayPal event: ${event.event_type}`);
+        console.log(`Unhandled Stripe event: ${event.type}`);
     }
 
     return res.status(200).json({ received: true });
   } catch (error) {
-    console.error("PayPal webhook error:", error);
+    console.error("Stripe webhook error:", error);
     return res.status(500).json({ error: "Webhook processing failed" });
+  }
+}
+
+// Handle completed gift checkout
+async function handleGiftCheckoutCompleted(event) {
+  try {
+    const session = event.data.object;
+
+    // Only process gift payments
+    if (session.metadata.type !== "gift") {
+      return;
+    }
+
+    const {
+      gift_code,
+      giver_name,
+      giver_email,
+      recipient_name,
+      recipient_email,
+      subscription_tier,
+      subscription_duration,
+      personal_message,
+    } = session.metadata;
+
+    // Convert duration to months
+    const durationMonths =
+      subscription_duration === "1mo"
+        ? 1
+        : subscription_duration === "3mo"
+        ? 3
+        : 12;
+
+    // Create subscription gift record
+    const { data: gift, error } = await supabase
+      .from("subscription_gifts")
+      .insert({
+        gift_code: gift_code,
+        giver_name: giver_name,
+        giver_email: giver_email,
+        recipient_name: recipient_name,
+        recipient_email: recipient_email,
+        subscription_tier: subscription_tier,
+        subscription_duration: durationMonths,
+        amount: session.amount_total / 100, // Convert from cents
+        payment_method: "stripe",
+        stripe_session_id: session.id,
+        personal_message: personal_message || "",
+      })
+      .select("*")
+      .single();
+
+    if (error) {
+      console.error("Gift creation error:", error);
+      return;
+    }
+
+    console.log(
+      `🎁 Subscription gift completed: ${gift_code} - ${subscription_tier} for ${durationMonths} months`
+    );
+
+    // Send gift invitation email
+    await sendGiftInvitation(gift);
+
+    // Send receipt to giver
+    await sendGiftReceipt(gift);
+  } catch (error) {
+    console.error("Error handling gift checkout completion:", error);
   }
 }
 
@@ -593,6 +675,23 @@ function generateGiftCode() {
   const timestamp = Date.now().toString();
   const random = Math.random().toString(36).substr(2, 8).toUpperCase();
   return `SUB${timestamp.slice(-4)}${random}`;
+}
+
+function getGiftPriceId(tier, duration) {
+  const priceMap = {
+    essential: {
+      "1mo": process.env.STRIPE_ESSENTIAL_1MO_PRICE_ID,
+      "3mo": process.env.STRIPE_ESSENTIAL_3MO_PRICE_ID,
+      "1yr": process.env.STRIPE_ESSENTIAL_1YR_PRICE_ID,
+    },
+    premium: {
+      "1mo": process.env.STRIPE_PREMIUM_1MO_PRICE_ID,
+      "3mo": process.env.STRIPE_PREMIUM_3MO_PRICE_ID,
+      "1yr": process.env.STRIPE_PREMIUM_1YR_PRICE_ID,
+    },
+  };
+
+  return priceMap[tier]?.[duration];
 }
 
 async function sendGiftInvitation(gift) {
@@ -643,51 +742,4 @@ function getBaseUrl() {
     return process.env.DOMAIN;
   }
   return "http://localhost:3000";
-}
-
-// Webhook event handlers
-async function handleSubscriptionCancelled(event) {
-  try {
-    const subscriptionId = event.resource.id;
-
-    const { error } = await supabase
-      .from("users")
-      .update({ subscription_status: "canceled" })
-      .eq("subscription_id", subscriptionId);
-
-    if (error) {
-      console.error("Error updating canceled subscription:", error);
-    } else {
-      console.log(`📵 Subscription canceled via webhook: ${subscriptionId}`);
-    }
-  } catch (error) {
-    console.error("Error handling subscription cancellation:", error);
-  }
-}
-
-async function handleSubscriptionExpired(event) {
-  try {
-    const subscriptionId = event.resource.id;
-
-    const { error } = await supabase
-      .from("users")
-      .update({
-        subscription_status: "expired",
-        tier: "free",
-      })
-      .eq("subscription_id", subscriptionId);
-
-    if (error) {
-      console.error("Error updating expired subscription:", error);
-    } else {
-      console.log(`⏰ Subscription expired via webhook: ${subscriptionId}`);
-    }
-  } catch (error) {
-    console.error("Error handling subscription expiration:", error);
-  }
-}
-
-async function handlePaymentCompleted(event) {
-  // Handle successful payment completion
-  console.log(`💰 Payment completed: ${event.resource.id}`);
 }

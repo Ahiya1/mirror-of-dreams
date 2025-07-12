@@ -12,7 +12,7 @@
       Gift Mirror of Truth Access | Self-Discovery for Someone You Care About
     </title>
     <style>
-      /* Perfect Centered 3-Page Gifting - Final Version */
+      /* Perfect Centered 3-Page Gifting with Stripe - Final Version */
       * {
         margin: 0;
         padding: 0;
@@ -803,7 +803,8 @@
         margin-bottom: clamp(0.8rem, 1.5vh, 1rem);
       }
 
-      #paypal-button-container {
+      /* Stripe payment button styles */
+      .stripe-button-container {
         min-height: clamp(40px, 7vh, 50px);
         border-radius: clamp(6px, 1.2vw, 10px);
         overflow: hidden;
@@ -811,25 +812,56 @@
         transition: opacity 0.3s ease;
       }
 
-      .paypal-loading {
+      .stripe-loading {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: clamp(0.6rem, 1.2vw, 0.8rem);
         padding: clamp(0.8rem, 1.5vh, 1rem);
-        background: rgba(59, 130, 246, 0.1);
-        border: 1px solid rgba(59, 130, 246, 0.2);
+        background: rgba(99, 102, 241, 0.1);
+        border: 1px solid rgba(99, 102, 241, 0.2);
         border-radius: clamp(6px, 1.2vw, 10px);
-        color: #93c5fd;
+        color: #a5b4fc;
         font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+      }
+
+      .stripe-payment-button {
+        width: 100%;
+        padding: clamp(0.9rem, 1.8vh, 1.2rem);
+        background: linear-gradient(135deg, #635bff 0%, #4f46e5 100%);
+        color: white;
+        border: none;
+        border-radius: clamp(6px, 1.2vw, 10px);
+        font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+      }
+
+      .stripe-payment-button:hover:not(:disabled) {
+        background: linear-gradient(135deg, #5449d6 0%, #4338ca 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+      }
+
+      .stripe-payment-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
       }
 
       .loading-spinner {
         width: clamp(14px, 2.8vw, 18px);
         height: clamp(14px, 2.8vw, 18px);
-        border: 2px solid rgba(147, 197, 253, 0.3);
+        border: 2px solid rgba(165, 180, 252, 0.3);
         border-radius: 50%;
-        border-top-color: #93c5fd;
+        border-top-color: #a5b4fc;
         animation: spin 1s linear infinite;
       }
 
@@ -1050,7 +1082,8 @@
       .nav-button:focus-visible,
       .option-card:focus-visible,
       .form-input:focus-visible,
-      .back-link:focus-visible {
+      .back-link:focus-visible,
+      .stripe-payment-button:focus-visible {
         outline: 2px solid rgba(16, 185, 129, 0.6);
         outline-offset: 2px;
       }
@@ -1342,7 +1375,7 @@
                         </div>
                         <div class="option-card" data-duration="3mo">
                           <div class="option-name">3 Months</div>
-                          <div class="option-price" id="price3mo">$14.97</div>
+                          <div class="option-price" id="price3mo">$12.99</div>
                         </div>
                         <div class="option-card" data-duration="1yr">
                           <div class="option-name">1 Year</div>
@@ -1392,12 +1425,21 @@
                   Essential • 1 Month Gift
                 </div>
 
-                <div class="paypal-loading" id="paypalLoading">
+                <div class="stripe-loading" id="stripeLoading">
                   <div class="loading-spinner"></div>
                   <span>Loading secure payment...</span>
                 </div>
 
-                <div id="paypal-button-container"></div>
+                <div class="stripe-button-container" id="stripeButtonContainer">
+                  <button
+                    class="stripe-payment-button"
+                    id="stripePaymentButton"
+                    style="display: none"
+                  >
+                    <span>🔒</span>
+                    <span>Complete Gift Purchase</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1436,14 +1478,12 @@
     </div>
 
     <script>
-      // Perfect Centered 3-Page Gifting Experience - Final Version
+      // Perfect Centered 3-Page Gifting Experience with Stripe - Final Version
       let currentPage = 0;
       let selectedTier = "essential";
       let selectedDuration = "1mo";
       let currentAmount = "4.99";
       let giftPricing = {};
-      let paypalConfig = null;
-      let paypalInitialized = false;
       let isProcessing = false;
 
       // Initialize the experience
@@ -1454,11 +1494,10 @@
       async function initializeGiftingExperience() {
         setupEventListeners();
         await loadGiftPricing();
-        await loadPayPalConfiguration();
         initializeSelections();
         updatePageDisplay();
         console.log(
-          "🎁 Perfect Centered 3-Page Gifting Experience initialized"
+          "🎁 Perfect Centered 3-Page Gifting Experience with Stripe initialized"
         );
       }
 
@@ -1512,6 +1551,11 @@
 
         // Keyboard navigation
         document.addEventListener("keydown", handleKeyboardNavigation);
+
+        // Stripe payment button
+        document
+          .getElementById("stripePaymentButton")
+          .addEventListener("click", handleStripePayment);
       }
 
       function handleKeyboardNavigation(e) {
@@ -1519,7 +1563,8 @@
           e.key === "ArrowRight" ||
           (e.key === "Enter" &&
             e.target.tagName !== "INPUT" &&
-            e.target.tagName !== "TEXTAREA")
+            e.target.tagName !== "TEXTAREA" &&
+            e.target.tagName !== "BUTTON")
         ) {
           if (currentPage < 2) {
             goToNextPage();
@@ -1544,10 +1589,10 @@
           updatePricingDisplay();
         } catch (error) {
           console.error("Pricing error:", error);
-          // Fallback pricing
+          // Fallback pricing with updated 3-month prices
           giftPricing = {
-            essential: { "1mo": 4.99, "3mo": 14.97, "1yr": 49.99 },
-            premium: { "1mo": 9.99, "3mo": 29.97, "1yr": 99.99 },
+            essential: { "1mo": 4.99, "3mo": 12.99, "1yr": 49.99 },
+            premium: { "1mo": 9.99, "3mo": 24.99, "1yr": 99.99 },
           };
           updatePricingDisplay();
         }
@@ -1638,25 +1683,6 @@
         }
       }
 
-      async function loadPayPalConfiguration() {
-        try {
-          const response = await fetch("/api/payment?action=config");
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-          const result = await response.json();
-          if (!result.success)
-            throw new Error(result.error || "PayPal configuration failed");
-
-          paypalConfig = result.config;
-        } catch (error) {
-          console.error("PayPal configuration error:", error);
-          showMessage(
-            "Payment system initialization failed. Please refresh the page.",
-            "error"
-          );
-        }
-      }
-
       function goToNextPage() {
         if (currentPage === 1) {
           // Validate form before going to payment
@@ -1668,9 +1694,7 @@
             return;
           }
           updatePaymentSummary();
-          if (!paypalInitialized) {
-            initializePayPal();
-          }
+          setupStripePayment();
         }
 
         if (currentPage < 2) {
@@ -1754,132 +1778,28 @@
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
       }
 
-      function initializePayPal() {
-        if (!window.paypal || !window.paypal.Buttons) {
-          loadPayPalSDK()
-            .then(() => {
-              renderPayPalButtons();
-            })
-            .catch((error) => {
-              console.error("PayPal loading error:", error);
-              showMessage(
-                "Payment system error. Please refresh the page.",
-                "error"
-              );
-            });
-        } else {
-          renderPayPalButtons();
-        }
+      function setupStripePayment() {
+        document.getElementById("stripeLoading").style.display = "flex";
+        document.getElementById("stripePaymentButton").style.display = "none";
+
+        // Simulate loading and show payment button
+        setTimeout(() => {
+          document.getElementById("stripeLoading").style.display = "none";
+          document.getElementById("stripePaymentButton").style.display = "flex";
+        }, 1500);
       }
 
-      function loadPayPalSDK() {
-        return new Promise((resolve, reject) => {
-          if (window.paypal && window.paypal.Buttons) {
-            resolve();
-            return;
-          }
+      async function handleStripePayment() {
+        if (isProcessing) return;
 
-          const script = document.createElement("script");
-          script.src = `https://www.paypal.com/sdk/js?client-id=${paypalConfig.clientId}&currency=${paypalConfig.currency}&intent=capture`;
+        isProcessing = true;
+        const button = document.getElementById("stripePaymentButton");
+        button.disabled = true;
+        button.innerHTML = `
+          <div class="loading-spinner"></div>
+          <span>Processing...</span>
+        `;
 
-          script.onload = () => {
-            setTimeout(() => {
-              if (window.paypal && window.paypal.Buttons) {
-                resolve();
-              } else {
-                reject(new Error("PayPal loaded but not available"));
-              }
-            }, 100);
-          };
-
-          script.onerror = () => {
-            reject(new Error("Failed to load PayPal"));
-          };
-
-          document.head.appendChild(script);
-        });
-      }
-
-      function renderPayPalButtons() {
-        document.getElementById("paypalLoading").style.display = "none";
-
-        try {
-          window.paypal
-            .Buttons({
-              style: {
-                color: "gold",
-                shape: "rect",
-                label: "pay",
-                height: 40,
-                tagline: false,
-              },
-
-              createOrder: function (data, actions) {
-                const giverName = document
-                  .getElementById("giverName")
-                  .value.trim();
-                const giverEmail = document
-                  .getElementById("giverEmail")
-                  .value.trim();
-                const tierName =
-                  selectedTier.charAt(0).toUpperCase() + selectedTier.slice(1);
-                const durationText =
-                  selectedDuration === "1mo"
-                    ? "1 Month"
-                    : selectedDuration === "3mo"
-                    ? "3 Months"
-                    : "1 Year";
-
-                const orderData = {
-                  purchase_units: [
-                    {
-                      amount: {
-                        value: currentAmount,
-                        currency_code: paypalConfig.currency,
-                      },
-                      description: `Mirror of Truth - ${tierName} Gift (${durationText})`,
-                    },
-                  ],
-                };
-
-                if (giverEmail && validateEmail(giverEmail)) {
-                  orderData.payer = {
-                    email_address: giverEmail,
-                    name: {
-                      given_name: giverName.split(" ")[0] || giverName,
-                      surname: giverName.split(" ").slice(1).join(" ") || "",
-                    },
-                  };
-                }
-
-                return actions.order.create(orderData);
-              },
-
-              onApprove: function (data, actions) {
-                return actions.order.capture().then(function (details) {
-                  handleGiftCompletion(details);
-                });
-              },
-
-              onError: function (err) {
-                console.error("PayPal error:", err);
-                showMessage("Payment error. Please try again.", "error");
-              },
-            })
-            .render("#paypal-button-container")
-            .then(() => {
-              paypalInitialized = true;
-            });
-        } catch (error) {
-          console.error("PayPal render error:", error);
-          showMessage(
-            "Payment system error. Please refresh the page.",
-            "error"
-          );
-        }
-      }
-
-      async function handleGiftCompletion(paymentDetails) {
         try {
           const giftData = {
             giverName: document.getElementById("giverName").value.trim(),
@@ -1895,16 +1815,13 @@
               .value.trim(),
             subscriptionTier: selectedTier,
             subscriptionDuration: selectedDuration,
-            amount: parseFloat(currentAmount),
-            paymentMethod: "paypal",
-            paymentId: paymentDetails.id,
           };
 
           const response = await fetch("/api/subscriptions", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              action: "gift-subscription",
+              action: "create-gift-checkout",
               ...giftData,
             }),
           });
@@ -1912,32 +1829,27 @@
           const result = await response.json();
 
           if (!result.success) {
-            throw new Error(result.error || "Failed to create gift");
+            throw new Error(result.error || "Failed to create gift checkout");
           }
 
-          const tierName =
-            selectedTier.charAt(0).toUpperCase() + selectedTier.slice(1);
-          const durationText =
-            selectedDuration === "1mo"
-              ? "one month"
-              : selectedDuration === "3mo"
-              ? "three months"
-              : "one year";
+          showMessage("Redirecting to secure payment...", "info");
 
-          showMessage(
-            `🎁 Gift successfully created! ${giftData.recipientName} will receive ${durationText} of ${tierName} access.`,
-            "success"
-          );
-
-          setTimeout(() => {
-            window.location.href = "/";
-          }, 3000);
+          // Redirect to Stripe Checkout
+          window.location.href = result.url;
         } catch (error) {
-          console.error("Gift creation error:", error);
+          console.error("Gift checkout error:", error);
           showMessage(
-            "Gift was paid for but invitation creation failed. Please contact support.",
+            error.message || "Payment setup failed. Please try again.",
             "error"
           );
+
+          // Reset button state
+          button.disabled = false;
+          button.innerHTML = `
+            <span>🔒</span>
+            <span>Complete Gift Purchase</span>
+          `;
+          isProcessing = false;
         }
       }
 
@@ -1959,6 +1871,8 @@
           setTimeout(hideMessages, 6000);
         } else if (type === "success") {
           setTimeout(hideMessages, 8000);
+        } else if (type === "info") {
+          setTimeout(hideMessages, 4000);
         }
       }
 
@@ -2010,6 +1924,31 @@
       `;
       document.head.appendChild(effectStyle);
 
+      // Handle successful gift creation from URL params
+      function checkForSuccess() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const success = urlParams.get("success");
+        const giftCode = urlParams.get("gift_code");
+
+        if (success === "true" && giftCode) {
+          showMessage(
+            `🎁 Gift successfully created! Gift code: ${giftCode}`,
+            "success"
+          );
+
+          // Clean up URL
+          const cleanUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, cleanUrl);
+
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 5000);
+        }
+      }
+
+      // Check for success on page load
+      setTimeout(checkForSuccess, 1000);
+
       // Debug (development only)
       if (window.location.hostname === "localhost") {
         window.giftingDebug = {
@@ -2021,6 +1960,7 @@
           selectedTier: () => selectedTier,
           selectedDuration: () => selectedDuration,
           validateForm: validateForm,
+          giftPricing: () => giftPricing,
         };
       }
     </script>

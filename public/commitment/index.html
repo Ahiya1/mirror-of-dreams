@@ -364,7 +364,7 @@
           rgba(255, 255, 255, 0.06) 100%
         );
         backdrop-filter: blur(30px);
-        border: 1px solid rgba(16, 185, 129, 0.2);
+        border: 2px solid rgba(16, 185, 129, 0.2);
         border-radius: clamp(10px, 1.6vw, 14px);
         color: #fff;
         font-size: clamp(0.85rem, 2vw, 0.95rem);
@@ -388,8 +388,8 @@
           rgba(255, 255, 255, 0.08) 100%
         );
         border-color: rgba(16, 185, 129, 0.3);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(16, 185, 129, 0.15);
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.15);
       }
 
       .continue-button:active {
@@ -685,7 +685,7 @@
         if (tier === "free") {
           buttonText.textContent = "Continue to Sign Up";
         } else {
-          buttonText.textContent = "Continue to Payment";
+          buttonText.textContent = "Continue to Sign Up";
         }
 
         console.log(`✅ Selected tier: ${tier}`);
