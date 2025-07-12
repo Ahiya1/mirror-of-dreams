@@ -178,7 +178,7 @@
       .pages-wrapper {
         display: flex;
         height: 100vh;
-        width: 800vw; /* 8 pages */
+        width: 900vw; /* 9 pages */
         transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       }
 
@@ -240,18 +240,22 @@
         --page-glow: rgba(99, 102, 241, 0.08);
       }
       .page-5 {
+        --page-color: #8b5cf6;
+        --page-glow: rgba(139, 92, 246, 0.08);
+      }
+      .page-6 {
         --page-color: #f59e0b;
         --page-glow: rgba(245, 158, 11, 0.08);
       }
-      .page-6 {
+      .page-7 {
         --page-color: #06b6d4;
         --page-glow: rgba(6, 182, 212, 0.08);
       }
-      .page-7 {
+      .page-8 {
         --page-color: #84cc16;
         --page-glow: rgba(132, 204, 22, 0.08);
       }
-      .page-8 {
+      .page-9 {
         --page-color: #ec4899;
         --page-glow: rgba(236, 72, 153, 0.08);
       }
@@ -817,15 +821,18 @@
         background: #6366f1;
       }
       .nav-segment:nth-child(5) {
-        background: #f59e0b;
+        background: #8b5cf6;
       }
       .nav-segment:nth-child(6) {
-        background: #06b6d4;
+        background: #f59e0b;
       }
       .nav-segment:nth-child(7) {
-        background: #84cc16;
+        background: #06b6d4;
       }
       .nav-segment:nth-child(8) {
+        background: #84cc16;
+      }
+      .nav-segment:nth-child(9) {
         background: #ec4899;
       }
 
@@ -1129,7 +1136,7 @@
                 problems
               </h2>
               <p class="page-subtitle">
-                <strong>Five sacred questions</strong> reveal how you actually
+                <strong>5 dedicated questions</strong> reveal how you actually
                 operate<br />
                 vs. how you think you operate.
               </p>
@@ -1170,7 +1177,64 @@
           </div>
         </div>
 
-        <!-- Page 5: Real Example -->
+        <!-- Page 5: Evolution Reports -->
+        <div class="page page-6">
+          <div class="page-content">
+            <div class="page-top">
+              <div class="page-emoji">🦋</div>
+            </div>
+            <div class="page-middle">
+              <h2 class="page-title">
+                Watch your consciousness
+                <span class="highlight">evolve</span> over time
+              </h2>
+              <p class="page-subtitle">
+                <strong>Evolution Reports</strong> reveal patterns you can't
+                see<br />
+                while living inside your own transformation.
+              </p>
+              <div class="comparison-card">
+                <div class="comparison-title">
+                  <span class="icon">🔬</span>
+                  What Evolution Reports Show
+                </div>
+                <div class="comparison-items">
+                  <div class="comparison-item">
+                    <span class="icon">📈</span>
+                    <span
+                      >How your authority language has evolved over months</span
+                    >
+                  </div>
+                  <div class="comparison-item">
+                    <span class="icon">🎯</span>
+                    <span
+                      >Which recognition styles resonate most deeply with
+                      you</span
+                    >
+                  </div>
+                  <div class="comparison-item">
+                    <span class="icon">🗂️</span>
+                    <span
+                      >Patterns in your dreams, blocks, and breakthroughs</span
+                    >
+                  </div>
+                  <div class="comparison-item">
+                    <span class="icon">⚡</span>
+                    <span>Growth score based on consciousness development</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="page-bottom">
+              <p class="page-text">
+                Available after 4+ reflections for Essential users,<br />
+                <strong>6+ reflections for Premium deep analysis.</strong>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page 6: Real Example -->
         <div class="page page-5">
           <div class="page-content">
             <div class="page-top">
@@ -1205,8 +1269,8 @@
           </div>
         </div>
 
-        <!-- Page 6: About Ahiya -->
-        <div class="page page-6">
+        <!-- Page 7: About Ahiya -->
+        <div class="page page-7">
           <div class="page-content">
             <div class="page-top">
               <div class="page-emoji">🥔</div>
@@ -1245,8 +1309,8 @@
           </div>
         </div>
 
-        <!-- Page 7: Pricing -->
-        <div class="page page-7">
+        <!-- Page 8: Pricing -->
+        <div class="page page-8">
           <div class="page-content">
             <div class="page-top">
               <div class="page-emoji">🛤️</div>
@@ -1309,8 +1373,8 @@
           </div>
         </div>
 
-        <!-- Page 8: Sacred Invitation -->
-        <div class="page page-8">
+        <!-- Page 9: Sacred Invitation -->
+        <div class="page page-9">
           <div class="page-content">
             <div class="page-top">
               <div class="page-emoji">🪞</div>
@@ -1318,7 +1382,7 @@
             <div class="page-middle">
               <h2 class="page-title">
                 Experience technology that serves<br />
-                your <span class="highlight">consciousness</span>
+                who you <span class="highlight">actually are</span>
               </h2>
               <p class="page-subtitle">
                 Join the movement toward awareness-first technology
@@ -1334,7 +1398,7 @@
                   >No credit card. No manipulation. No attention
                   hijacking.</strong
                 ><br />
-                Just consciousness technology that helps you see yourself
+                Just experience technology that helps you see yourself
                 clearly.<br />
                 Your first reflection awaits.
               </p>
@@ -1358,6 +1422,7 @@
           <div class="nav-segment" data-page="5"></div>
           <div class="nav-segment" data-page="6"></div>
           <div class="nav-segment" data-page="7"></div>
+          <div class="nav-segment" data-page="8"></div>
         </div>
       </div>
 
@@ -1367,7 +1432,7 @@
     <script>
       // Consciousness-First Technology Book Navigation
       let currentPage = 0;
-      const totalPages = 8;
+      const totalPages = 9;
       let isTransitioning = false;
       let autoProgress = true;
       let autoProgressTimer;
@@ -1382,7 +1447,7 @@
         setupWheelNavigation();
         startAutoProgress();
 
-        console.log("🪞 Consciousness-First Technology Book - 8 Pages Loaded");
+        console.log("🪞 Consciousness-First Technology Book - 9 Pages Loaded");
       }
 
       function setupNavigation() {
