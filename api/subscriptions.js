@@ -10,6 +10,23 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+// Helper function to get raw body
+function getRawBody(req) {
+  return new Promise((resolve, reject) => {
+    let data = "";
+    req.setEncoding("utf8");
+    req.on("data", (chunk) => {
+      data += chunk;
+    });
+    req.on("end", () => {
+      resolve(data);
+    });
+    req.on("error", (err) => {
+      reject(err);
+    });
+  });
+}
+
 // Subscription pricing
 const SUBSCRIPTION_PRICING = {
   essential: {
@@ -40,32 +57,63 @@ module.exports = async function handler(req, res) {
   // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, Stripe-Signature"
+  );
 
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
 
   try {
-    const { action } = req.method === "GET" ? req.query : req.body;
+    // Check if this is a Stripe webhook (has signature header)
+    const sig = req.headers["stripe-signature"];
+
+    if (sig && req.method === "POST") {
+      console.log(
+        "🎁 Detected Stripe webhook for subscriptions - routing to webhook handler"
+      );
+      // This is a Stripe webhook - needs raw body
+      return await handleStripeWebhook(req, res);
+    }
+
+    // For non-webhook requests, parse the body manually if needed
+    let body = {};
+    if (req.method === "POST") {
+      const rawBody = await getRawBody(req);
+      try {
+        body = JSON.parse(rawBody);
+      } catch (e) {
+        return res.status(400).json({
+          success: false,
+          error: "Invalid JSON body",
+        });
+      }
+    }
+
+    const { action } = req.method === "GET" ? req.query : body;
 
     switch (action) {
       case "get-current":
+        req.body = body; // Add parsed body for auth functions
         return await handleGetCurrentSubscription(req, res);
       case "create-subscription":
+        req.body = body;
         return await handleCreateSubscription(req, res);
       case "cancel-subscription":
+        req.body = body;
         return await handleCancelSubscription(req, res);
       case "create-gift-checkout":
+        req.body = body;
         return await handleCreateGiftCheckout(req, res);
       case "redeem-gift":
+        req.body = body;
         return await handleRedeemGift(req, res);
       case "validate-gift":
         return await handleValidateGift(req, res);
       case "get-pricing":
         return await handleGetPricing(req, res);
-      case "webhook":
-        return await handleStripeWebhook(req, res);
       default:
         return res.status(400).json({
           success: false,
@@ -571,34 +619,73 @@ async function handleGetPricing(req, res) {
 
 // Stripe webhook handler (for gift payment completion)
 async function handleStripeWebhook(req, res) {
+  console.log("🎁 Subscription webhook received - Headers:", req.headers);
+  console.log("🎁 Request method:", req.method);
+  console.log("🎁 Request URL:", req.url);
+
   const sig = req.headers["stripe-signature"];
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+  console.log("🎁 Signature present:", !!sig);
+  console.log("🎁 Webhook secret configured:", !!webhookSecret);
+
+  if (!sig) {
+    console.error("❌ No Stripe signature found in headers");
+    return res.status(400).json({ error: "No signature" });
+  }
+
+  if (!webhookSecret) {
+    console.error("❌ STRIPE_WEBHOOK_SECRET not configured");
+    return res.status(500).json({ error: "Webhook secret not configured" });
+  }
+
   let event;
+  let rawBody;
 
   try {
-    // Verify webhook signature
-    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+    // Get raw body for signature verification
+    rawBody = await getRawBody(req);
+    console.log(
+      "✅ Raw body retrieved for subscriptions, length:",
+      rawBody.length
+    );
   } catch (err) {
-    console.error("Webhook signature verification failed:", err.message);
+    console.error("❌ Failed to get raw body:", err.message);
+    return res.status(400).json({ error: "Failed to read request body" });
+  }
+
+  try {
+    // Verify webhook signature with raw body
+    event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
+    console.log("✅ Subscription webhook signature verified successfully");
+  } catch (err) {
+    console.error(
+      "❌ Subscription webhook signature verification failed:",
+      err.message
+    );
+    console.error("❌ Signature:", sig);
+    console.error("❌ Body length:", rawBody?.length || 0);
     return res.status(400).json({ error: "Invalid signature" });
   }
 
-  console.log(`📦 Stripe webhook received: ${event.type}`);
+  console.log(`📦 Stripe subscription webhook received: ${event.type}`);
+  console.log(`📦 Event ID: ${event.id}`);
 
   try {
     // Handle different webhook events
     switch (event.type) {
       case "checkout.session.completed":
+        console.log("🎁 Processing gift checkout.session.completed");
         await handleGiftCheckoutCompleted(event);
         break;
       default:
-        console.log(`Unhandled Stripe event: ${event.type}`);
+        console.log(`⚠️ Unhandled Stripe subscription event: ${event.type}`);
     }
 
+    console.log("✅ Subscription webhook processed successfully");
     return res.status(200).json({ received: true });
   } catch (error) {
-    console.error("Stripe webhook error:", error);
+    console.error("❌ Stripe subscription webhook error:", error);
     return res.status(500).json({ error: "Webhook processing failed" });
   }
 }
@@ -610,6 +697,7 @@ async function handleGiftCheckoutCompleted(event) {
 
     // Only process gift payments
     if (session.metadata.type !== "gift") {
+      console.log("⚠️ Non-gift checkout session, skipping");
       return;
     }
 
@@ -745,3 +833,10 @@ function getBaseUrl() {
   }
   return "http://localhost:3000";
 }
+
+// CRITICAL: Disable body parsing for webhooks
+module.exports.config = {
+  api: {
+    bodyParser: false,
+  },
+};

@@ -3,6 +3,23 @@
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
+// Helper function to get raw body
+function getRawBody(req) {
+  return new Promise((resolve, reject) => {
+    let data = "";
+    req.setEncoding("utf8");
+    req.on("data", (chunk) => {
+      data += chunk;
+    });
+    req.on("end", () => {
+      resolve(data);
+    });
+    req.on("error", (err) => {
+      reject(err);
+    });
+  });
+}
+
 // Main handler
 module.exports = async function handler(req, res) {
   // CORS
@@ -26,8 +43,22 @@ module.exports = async function handler(req, res) {
 
     if (sig && req.method === "POST") {
       console.log("🪝 Detected Stripe webhook - routing to webhook handler");
-      // This is a Stripe webhook
+      // This is a Stripe webhook - needs raw body
       return await handleStripeWebhook(req, res);
+    }
+
+    // For non-webhook requests, parse the body manually
+    let body = {};
+    if (req.method === "POST") {
+      const rawBody = await getRawBody(req);
+      try {
+        body = JSON.parse(rawBody);
+      } catch (e) {
+        return res.status(400).json({
+          success: false,
+          error: "Invalid JSON body",
+        });
+      }
     }
 
     // Regular API calls
@@ -45,10 +76,12 @@ module.exports = async function handler(req, res) {
     }
 
     if (req.method === "POST") {
-      const { action } = req.body;
+      const { action } = body;
       console.log(`📝 POST request with action: ${action}`);
 
       if (action === "create-checkout-session") {
+        // Add body to req for handler
+        req.body = body;
         return await handleCreateCheckoutSession(req, res);
       } else {
         console.log(`❌ Unknown POST action: ${action}`);
@@ -253,15 +286,25 @@ async function handleStripeWebhook(req, res) {
   }
 
   let event;
+  let rawBody;
 
   try {
-    // Verify webhook signature
-    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+    // Get raw body for signature verification
+    rawBody = await getRawBody(req);
+    console.log("✅ Raw body retrieved, length:", rawBody.length);
+  } catch (err) {
+    console.error("❌ Failed to get raw body:", err.message);
+    return res.status(400).json({ error: "Failed to read request body" });
+  }
+
+  try {
+    // Verify webhook signature with raw body
+    event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
     console.log("✅ Webhook signature verified successfully");
   } catch (err) {
     console.error("❌ Webhook signature verification failed:", err.message);
     console.error("❌ Signature:", sig);
-    console.error("❌ Body length:", req.body?.length || 0);
+    console.error("❌ Body length:", rawBody?.length || 0);
     return res.status(400).json({ error: "Invalid signature" });
   }
 
@@ -736,3 +779,10 @@ function generateSecurePassword() {
   }
   return password;
 }
+
+// CRITICAL: Disable body parsing for webhooks
+module.exports.config = {
+  api: {
+    bodyParser: false,
+  },
+};
