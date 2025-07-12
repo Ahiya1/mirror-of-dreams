@@ -10,6 +10,10 @@
       "destination": "/portal/index.html"
     },
     {
+      "source": "/commitment",
+      "destination": "/commitment/index.html"
+    },
+    {
       "source": "/register",
       "destination": "/commitment/register.html"
     },
