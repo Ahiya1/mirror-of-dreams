@@ -1,7 +1,14 @@
-// API: Payment - Fixed Stripe Subscription Processing
-// FIXED: Proper webhook routing and password preservation
+// API: Payment - Simplified for Existing User Upgrades (No Redis)
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const { createClient } = require("@supabase/supabase-js");
+const { authenticateRequest } = require("./auth.js");
+
+// Initialize Supabase client
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
 // Helper function to get raw body
 function getRawBody(req) {
@@ -27,7 +34,7 @@ module.exports = async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "Content-Type, Stripe-Signature"
+    "Content-Type, Authorization, Stripe-Signature"
   );
 
   if (req.method === "OPTIONS") {
@@ -35,7 +42,6 @@ module.exports = async function handler(req, res) {
   }
 
   console.log(`🔍 Payment API called: ${req.method} ${req.url}`);
-  console.log(`🔍 Headers:`, req.headers);
 
   try {
     // Check if this is a Stripe webhook (has signature header)
@@ -43,7 +49,6 @@ module.exports = async function handler(req, res) {
 
     if (sig && req.method === "POST") {
       console.log("🪝 Detected Stripe webhook - routing to webhook handler");
-      // This is a Stripe webhook - needs raw body
       return await handleStripeWebhook(req, res);
     }
 
@@ -79,10 +84,10 @@ module.exports = async function handler(req, res) {
       const { action } = body;
       console.log(`📝 POST request with action: ${action}`);
 
-      if (action === "create-checkout-session") {
+      if (action === "create-upgrade-checkout") {
         // Add body to req for handler
         req.body = body;
-        return await handleCreateCheckoutSession(req, res);
+        return await handleCreateUpgradeCheckout(req, res);
       } else {
         console.log(`❌ Unknown POST action: ${action}`);
         return res.status(400).json({
@@ -169,33 +174,39 @@ async function handleGetConfig(req, res) {
   }
 }
 
-// Create Stripe Checkout Session for subscription
-async function handleCreateCheckoutSession(req, res) {
-  const { name, email, tier, period, password, language = "en" } = req.body;
-
-  // Validation
-  if (!name || !email || !tier || !period || !password) {
-    return res.status(400).json({
-      success: false,
-      error: "Missing required subscription data",
-    });
-  }
-
-  if (!["essential", "premium"].includes(tier)) {
-    return res.status(400).json({
-      success: false,
-      error: "Invalid subscription tier",
-    });
-  }
-
-  if (!["monthly", "yearly"].includes(period)) {
-    return res.status(400).json({
-      success: false,
-      error: "Invalid subscription period",
-    });
-  }
-
+// Create Stripe Checkout Session for existing user upgrade
+async function handleCreateUpgradeCheckout(req, res) {
   try {
+    // Authenticate the user
+    const user = await authenticateRequest(req);
+    const { tier, period } = req.body;
+
+    // Validation
+    if (!["essential", "premium"].includes(tier)) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid subscription tier",
+      });
+    }
+
+    if (!["monthly", "yearly"].includes(period)) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid subscription period",
+      });
+    }
+
+    // Check if user already has this tier or higher
+    if (
+      user.tier === tier ||
+      (user.tier === "premium" && tier === "essential")
+    ) {
+      return res.status(400).json({
+        success: false,
+        error: "User already has this tier or higher",
+      });
+    }
+
     // Get the correct price ID
     const priceId = getPriceId(tier, period);
 
@@ -206,18 +217,7 @@ async function handleCreateCheckoutSession(req, res) {
       });
     }
 
-    // Store user data temporarily with a session token
-    const sessionToken = generateSessionToken();
-    await storeTemporaryUserData(sessionToken, {
-      name,
-      email,
-      password,
-      tier,
-      period,
-      language,
-    });
-
-    // Create Stripe Checkout Session
+    // Create Stripe Checkout Session with user ID in metadata
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "subscription",
@@ -227,17 +227,16 @@ async function handleCreateCheckoutSession(req, res) {
           quantity: 1,
         },
       ],
-      customer_email: email,
+      customer_email: user.email,
       metadata: {
-        name: name,
-        email: email,
+        userId: user.id,
+        email: user.email,
         tier: tier,
         period: period,
-        language: language,
-        session_token: sessionToken, // 🔑 Key addition!
+        upgradeExistingUser: "true",
       },
-      success_url: `${getBaseUrl()}/dashboard?session_id={CHECKOUT_SESSION_ID}&success=true`,
-      cancel_url: `${getBaseUrl()}/commitment?canceled=true`,
+      success_url: `${getBaseUrl()}/dashboard?upgrade_success=true`,
+      cancel_url: `${getBaseUrl()}/upgrade?canceled=true`,
       allow_promotion_codes: true,
       billing_address_collection: "auto",
       tax_id_collection: {
@@ -246,7 +245,7 @@ async function handleCreateCheckoutSession(req, res) {
     });
 
     console.log(
-      `🚀 Stripe checkout session created: ${email} → ${tier} (${period}) → ${session.id}`
+      `🚀 Upgrade checkout session created: ${user.email} → ${tier} (${period}) → ${session.id}`
     );
 
     return res.json({
@@ -255,6 +254,16 @@ async function handleCreateCheckoutSession(req, res) {
       url: session.url,
     });
   } catch (error) {
+    if (
+      error.message === "Authentication required" ||
+      error.message === "Invalid authentication"
+    ) {
+      return res.status(401).json({
+        success: false,
+        error: error.message,
+      });
+    }
+
     console.error("Stripe checkout session creation error:", error);
     return res.status(500).json({
       success: false,
@@ -266,14 +275,9 @@ async function handleCreateCheckoutSession(req, res) {
 // Stripe webhook handler for subscription events
 async function handleStripeWebhook(req, res) {
   console.log("🪝 Webhook received - Headers:", req.headers);
-  console.log("🪝 Request method:", req.method);
-  console.log("🪝 Request URL:", req.url);
 
   const sig = req.headers["stripe-signature"];
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-  console.log("🪝 Signature present:", !!sig);
-  console.log("🪝 Webhook secret configured:", !!webhookSecret);
 
   if (!sig) {
     console.error("❌ No Stripe signature found in headers");
@@ -303,8 +307,6 @@ async function handleStripeWebhook(req, res) {
     console.log("✅ Webhook signature verified successfully");
   } catch (err) {
     console.error("❌ Webhook signature verification failed:", err.message);
-    console.error("❌ Signature:", sig);
-    console.error("❌ Body length:", rawBody?.length || 0);
     return res.status(400).json({ error: "Invalid signature" });
   }
 
@@ -317,10 +319,6 @@ async function handleStripeWebhook(req, res) {
       case "checkout.session.completed":
         console.log("🎉 Processing checkout.session.completed");
         await handleCheckoutSessionCompleted(event);
-        break;
-      case "customer.subscription.created":
-        console.log("✅ Processing customer.subscription.created");
-        await handleSubscriptionCreated(event);
         break;
       case "customer.subscription.updated":
         console.log("🔄 Processing customer.subscription.updated");
@@ -354,189 +352,77 @@ async function handleStripeWebhook(req, res) {
 async function handleCheckoutSessionCompleted(event) {
   try {
     const session = event.data.object;
-    const { name, email, tier, period, language, session_token } =
+    const { userId, email, tier, period, upgradeExistingUser } =
       session.metadata;
 
     console.log(`🎉 Checkout completed: ${email} → ${tier} (${period})`);
 
-    // Retrieve the original user data including password
-    const userData = await getTemporaryUserData(session_token);
-
-    if (!userData) {
-      console.error(
-        "❌ Could not retrieve user data for session:",
-        session_token
-      );
-      // Fallback: create user with random password and send reset email
-      await createUserWithRandomPassword(
-        session,
-        name,
-        email,
-        tier,
-        period,
-        language
-      );
-      return;
+    if (upgradeExistingUser === "true" && userId) {
+      // Upgrade existing user
+      console.log(`⬆️ Upgrading existing user: ${userId}`);
+      await upgradeExistingUser(userId, tier, period, session);
+    } else {
+      console.log(`⚠️ No userId found in metadata or not an upgrade`);
+      console.log(`📋 Session metadata:`, session.metadata);
     }
 
-    // Create user account with the ORIGINAL password
-    const userResponse = await fetch(`${getBaseUrl()}/api/auth`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "signup",
-        email: userData.email,
-        password: userData.password, // 🔑 Original password!
-        name: userData.name,
-        tier: userData.tier,
-        language: userData.language,
-      }),
-    });
+    console.log(`✅ Checkout processing completed for: ${email}`);
+  } catch (error) {
+    console.error("❌ Error handling checkout completion:", error);
+  }
+}
 
-    const userResult = await userResponse.json();
-
-    if (!userResult.success) {
-      // Check if user exists - update their subscription instead
-      if (userResult.error?.includes("already exists")) {
-        await updateExistingUserSubscription(email, tier, period, session);
-        return;
-      }
-      throw new Error(userResult.error || "Failed to create user");
+// Upgrade existing user (SIMPLE!)
+async function upgradeExistingUser(userId, tier, period, session) {
+  try {
+    const startDate = new Date();
+    const expiryDate = new Date(startDate);
+    if (period === "monthly") {
+      expiryDate.setMonth(expiryDate.getMonth() + 1);
+    } else {
+      expiryDate.setFullYear(expiryDate.getFullYear() + 1);
     }
 
-    // Update user with Stripe subscription details
-    await updateUserSubscription(userResult.user.id, tier, period, session);
+    const { data: updatedUser, error } = await supabase
+      .from("users")
+      .update({
+        tier: tier,
+        subscription_status: "active",
+        subscription_period: period,
+        stripe_customer_id: session.customer,
+        stripe_subscription_id: session.subscription,
+        subscription_started_at: startDate.toISOString(),
+        subscription_expires_at: expiryDate.toISOString(),
+      })
+      .eq("id", userId)
+      .select("email, name")
+      .single();
 
-    // Clean up temporary data
-    await cleanupTemporaryUserData(session_token);
+    if (error) {
+      throw new Error(`Failed to upgrade user: ${error.message}`);
+    }
 
-    // Send welcome email
+    console.log(`✅ User upgraded successfully: ${updatedUser.email}`);
+
+    // Send upgrade confirmation email
     try {
       await fetch(`${getBaseUrl()}/api/communication`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          action: "send-subscription-confirmation",
-          email: email,
-          name: name,
+          action: "send-upgrade-confirmation",
+          email: updatedUser.email,
+          name: updatedUser.name,
           tier: tier,
           period: period,
-          language: language,
         }),
       });
     } catch (emailError) {
-      console.warn("Welcome email failed:", emailError);
-    }
-
-    console.log(`✅ User account created successfully: ${email}`);
-  } catch (error) {
-    console.error("Error handling checkout completion:", error);
-  }
-}
-
-// Fallback for when temporary data is lost
-async function createUserWithRandomPassword(
-  session,
-  name,
-  email,
-  tier,
-  period,
-  language
-) {
-  try {
-    const tempPassword = generateSecurePassword();
-
-    const userResponse = await fetch(`${getBaseUrl()}/api/auth`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "signup",
-        email: email,
-        password: tempPassword,
-        name: name,
-        tier: tier,
-        language: language,
-      }),
-    });
-
-    const userResult = await userResponse.json();
-
-    if (userResult.success) {
-      await updateUserSubscription(userResult.user.id, tier, period, session);
-
-      // Send password reset email
-      await fetch(`${getBaseUrl()}/api/auth`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "forgot-password",
-          email: email,
-        }),
-      });
-
-      console.log(
-        `⚠️ User created with temp password, reset email sent: ${email}`
-      );
+      console.warn("Upgrade email failed:", emailError);
     }
   } catch (error) {
-    console.error("Error in fallback user creation:", error);
-  }
-}
-
-// Temporary data storage functions (using Redis or similar)
-async function storeTemporaryUserData(sessionToken, userData) {
-  try {
-    // Store for 1 hour
-    const { Redis } = require("@upstash/redis");
-    const redis = Redis.fromEnv();
-
-    await redis.setex(
-      `temp_user:${sessionToken}`,
-      3600,
-      JSON.stringify(userData)
-    );
-    console.log(`💾 Stored temporary user data: ${sessionToken}`);
-  } catch (error) {
-    console.error("Error storing temporary user data:", error);
-  }
-}
-
-async function getTemporaryUserData(sessionToken) {
-  try {
-    const { Redis } = require("@upstash/redis");
-    const redis = Redis.fromEnv();
-
-    const data = await redis.get(`temp_user:${sessionToken}`);
-    return data ? JSON.parse(data) : null;
-  } catch (error) {
-    console.error("Error retrieving temporary user data:", error);
-    return null;
-  }
-}
-
-async function cleanupTemporaryUserData(sessionToken) {
-  try {
-    const { Redis } = require("@upstash/redis");
-    const redis = Redis.fromEnv();
-
-    await redis.del(`temp_user:${sessionToken}`);
-    console.log(`🗑️ Cleaned up temporary user data: ${sessionToken}`);
-  } catch (error) {
-    console.error("Error cleaning up temporary user data:", error);
-  }
-}
-
-function generateSessionToken() {
-  return Date.now() + "_" + Math.random().toString(36).substr(2, 9);
-}
-
-// [Rest of the functions remain the same...]
-async function handleSubscriptionCreated(event) {
-  try {
-    const subscription = event.data.object;
-    console.log(`✅ Subscription created: ${subscription.id}`);
-  } catch (error) {
-    console.error("Error handling subscription creation:", error);
+    console.error("Error upgrading user:", error);
+    throw error;
   }
 }
 
@@ -544,12 +430,6 @@ async function handleSubscriptionUpdated(event) {
   try {
     const subscription = event.data.object;
     const customerId = subscription.customer;
-
-    const { createClient } = require("@supabase/supabase-js");
-    const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-    );
 
     const status =
       subscription.status === "active"
@@ -582,12 +462,6 @@ async function handleSubscriptionDeleted(event) {
     const subscription = event.data.object;
     const customerId = subscription.customer;
 
-    const { createClient } = require("@supabase/supabase-js");
-    const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-    );
-
     const { error } = await supabase
       .from("users")
       .update({
@@ -614,12 +488,6 @@ async function handlePaymentSucceeded(event) {
     if (invoice.subscription) {
       const customerId = invoice.customer;
 
-      const { createClient } = require("@supabase/supabase-js");
-      const supabase = createClient(
-        process.env.SUPABASE_URL,
-        process.env.SUPABASE_SERVICE_ROLE_KEY
-      );
-
       const { error } = await supabase
         .from("users")
         .update({
@@ -644,12 +512,6 @@ async function handlePaymentFailed(event) {
     if (invoice.subscription) {
       const customerId = invoice.customer;
 
-      const { createClient } = require("@supabase/supabase-js");
-      const supabase = createClient(
-        process.env.SUPABASE_URL,
-        process.env.SUPABASE_SERVICE_ROLE_KEY
-      );
-
       const { error } = await supabase
         .from("users")
         .update({
@@ -667,82 +529,6 @@ async function handlePaymentFailed(event) {
 }
 
 // Helper functions
-async function updateUserSubscription(userId, tier, period, session) {
-  try {
-    const { createClient } = require("@supabase/supabase-js");
-    const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-    );
-
-    const startDate = new Date();
-    const expiryDate = new Date(startDate);
-    if (period === "monthly") {
-      expiryDate.setMonth(expiryDate.getMonth() + 1);
-    } else {
-      expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-    }
-
-    const { error } = await supabase
-      .from("users")
-      .update({
-        tier: tier,
-        subscription_status: "active",
-        subscription_period: period,
-        stripe_customer_id: session.customer,
-        stripe_subscription_id: session.subscription,
-        subscription_started_at: startDate.toISOString(),
-        subscription_expires_at: expiryDate.toISOString(),
-      })
-      .eq("id", userId);
-
-    if (error) {
-      console.error("Error updating user subscription:", error);
-    }
-  } catch (error) {
-    console.error("Error in updateUserSubscription:", error);
-  }
-}
-
-async function updateExistingUserSubscription(email, tier, period, session) {
-  try {
-    const { createClient } = require("@supabase/supabase-js");
-    const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-    );
-
-    const startDate = new Date();
-    const expiryDate = new Date(startDate);
-    if (period === "monthly") {
-      expiryDate.setMonth(expiryDate.getMonth() + 1);
-    } else {
-      expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-    }
-
-    const { error } = await supabase
-      .from("users")
-      .update({
-        tier: tier,
-        subscription_status: "active",
-        subscription_period: period,
-        stripe_customer_id: session.customer,
-        stripe_subscription_id: session.subscription,
-        subscription_started_at: startDate.toISOString(),
-        subscription_expires_at: expiryDate.toISOString(),
-      })
-      .eq("email", email);
-
-    if (error) {
-      console.error("Error updating existing user subscription:", error);
-    } else {
-      console.log(`🔄 Updated existing user subscription: ${email}`);
-    }
-  } catch (error) {
-    console.error("Error in updateExistingUserSubscription:", error);
-  }
-}
-
 function getPriceId(tier, period) {
   const priceMap = {
     essential: {
@@ -761,23 +547,13 @@ function getPriceId(tier, period) {
 function getBaseUrl() {
   // Always use your custom domain in production
   if (process.env.NODE_ENV === "production") {
-    return "https://www.mirror-of-truth.xyz"; // Fixed: Added www
+    return "https://www.mirror-of-truth.xyz";
   }
   // For development
   if (process.env.DOMAIN) {
     return process.env.DOMAIN;
   }
   return "http://localhost:3000";
-}
-
-function generateSecurePassword() {
-  const chars =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
-  let password = "";
-  for (let i = 0; i < 16; i++) {
-    password += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return password;
 }
 
 // CRITICAL: Disable body parsing for webhooks
