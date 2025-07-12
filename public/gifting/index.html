@@ -12,7 +12,7 @@
       Gift Mirror of Truth Access | Self-Discovery for Someone You Care About
     </title>
     <style>
-      /* Perfect No-Scroll 3-Page Gifting Experience */
+      /* Perfect Centered 3-Page Gifting - Final Version */
       * {
         margin: 0;
         padding: 0;
@@ -136,12 +136,20 @@
         }
       }
 
-      /* Top Navigation */
-      .back-link {
+      /* Top Navigation - Fixed Height */
+      .top-nav {
         position: fixed;
-        top: clamp(1rem, 2vh, 1.5rem);
-        left: clamp(1rem, 2vw, 1.5rem);
+        top: 0;
+        left: 0;
+        right: 0;
+        height: clamp(4rem, 8vh, 5rem);
         z-index: 100;
+        display: flex;
+        align-items: center;
+        padding: 0 clamp(1rem, 2vw, 1.5rem);
+      }
+
+      .back-link {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
@@ -166,17 +174,23 @@
         transform: translateY(-2px);
       }
 
-      /* Bottom Navigation */
-      .page-navigation {
+      /* Bottom Navigation - Fixed Height */
+      .bottom-nav {
         position: fixed;
-        bottom: clamp(1.5rem, 3vh, 2rem);
-        left: 50%;
-        transform: translateX(-50%);
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: clamp(4rem, 8vh, 5rem);
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .page-navigation {
         display: flex;
         align-items: center;
         gap: clamp(1rem, 2vw, 1.5rem);
-        z-index: 100;
-        height: clamp(50px, 8vh, 60px);
       }
 
       .nav-button {
@@ -258,15 +272,22 @@
       }
 
       /* Main Container - Perfect Centering */
-      .page-container {
+      .main-container {
         position: relative;
         z-index: 10;
         height: 100vh;
         width: 100vw;
         overflow: hidden;
-        /* Account for top and bottom navigation */
-        padding-top: clamp(4rem, 8vh, 5rem);
-        padding-bottom: clamp(4rem, 8vh, 5rem);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .content-area {
+        flex: 1;
+        margin-top: clamp(4rem, 8vh, 5rem);
+        margin-bottom: clamp(4rem, 8vh, 5rem);
+        overflow: hidden;
+        position: relative;
       }
 
       .pages-wrapper {
@@ -321,8 +342,8 @@
       }
 
       .page-icon {
-        font-size: clamp(2rem, 4vw, 2.5rem);
-        margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
+        font-size: clamp(1.8rem, 3.5vw, 2.2rem);
+        margin-bottom: clamp(0.4rem, 0.8vh, 0.6rem);
         display: block;
         animation: iconPulse 4s ease-in-out infinite;
       }
@@ -340,9 +361,9 @@
       }
 
       .page-title {
-        font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+        font-size: clamp(1.6rem, 3.2vw, 2.2rem);
         font-weight: 300;
-        margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
+        margin-bottom: clamp(0.4rem, 0.8vh, 0.6rem);
         background: linear-gradient(
           135deg,
           rgba(255, 255, 255, 0.95) 0%,
@@ -357,7 +378,7 @@
       }
 
       .page-subtitle {
-        font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+        font-size: clamp(0.85rem, 1.7vw, 1rem);
         opacity: 0.85;
         color: rgba(255, 255, 255, 0.8);
         line-height: 1.4;
@@ -365,24 +386,24 @@
         max-width: 600px;
       }
 
-      /* Page 1: What They'll Receive - Compact Grid */
+      /* Page 1: What They'll Receive - Compact 3x2 Grid */
       .benefits-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         grid-template-rows: repeat(2, 1fr);
-        gap: clamp(1rem, 2vw, 1.5rem);
+        gap: clamp(0.8rem, 1.5vw, 1.2rem);
         width: 100%;
         max-width: 1000px;
         flex: 1;
-        max-height: 60vh;
+        max-height: 55vh;
       }
 
       .benefit-card {
         background: rgba(255, 255, 255, 0.04);
         backdrop-filter: blur(40px) saturate(120%);
         border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: clamp(12px, 2vw, 18px);
-        padding: clamp(1rem, 2vh, 1.5rem);
+        border-radius: clamp(10px, 2vw, 16px);
+        padding: clamp(0.8rem, 1.5vh, 1.2rem);
         text-align: center;
         transition: all 0.3s ease;
         position: relative;
@@ -402,7 +423,7 @@
           rgba(251, 191, 36, 0.03) 50%,
           rgba(255, 255, 255, 0.02) 100%
         );
-        border-radius: clamp(11px, 2vw, 17px);
+        border-radius: clamp(9px, 2vw, 15px);
         pointer-events: none;
       }
 
@@ -413,23 +434,23 @@
       }
 
       .benefit-icon {
-        font-size: clamp(1.5rem, 3vw, 2rem);
-        margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
+        font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+        margin-bottom: clamp(0.4rem, 0.8vh, 0.6rem);
         display: block;
       }
 
       .benefit-title {
-        font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+        font-size: clamp(0.8rem, 1.6vw, 1rem);
         font-weight: 500;
-        margin-bottom: clamp(0.4rem, 0.8vh, 0.6rem);
+        margin-bottom: clamp(0.3rem, 0.6vh, 0.5rem);
         color: rgba(255, 255, 255, 0.95);
       }
 
       .benefit-description {
-        font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+        font-size: clamp(0.7rem, 1.4vw, 0.8rem);
         color: rgba(255, 255, 255, 0.75);
-        line-height: 1.4;
-        margin-bottom: clamp(0.6rem, 1.2vh, 0.8rem);
+        line-height: 1.3;
+        margin-bottom: clamp(0.4rem, 0.8vh, 0.6rem);
       }
 
       .benefit-features {
@@ -441,26 +462,26 @@
       .benefit-features li {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 0.3rem;
-        font-size: clamp(0.7rem, 1.4vw, 0.8rem);
+        gap: 0.4rem;
+        margin-bottom: 0.2rem;
+        font-size: clamp(0.65rem, 1.3vw, 0.75rem);
         color: rgba(255, 255, 255, 0.8);
       }
 
       .feature-icon {
-        font-size: 0.85em;
+        font-size: 0.8em;
         flex-shrink: 0;
       }
 
-      /* Page 2: Form - Horizontal Layout */
+      /* Page 2: Form - Optimized Layout */
       .form-container {
         width: 100%;
-        max-width: 1000px;
+        max-width: 950px;
         background: rgba(255, 255, 255, 0.04);
         backdrop-filter: blur(40px) saturate(120%);
         border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: clamp(16px, 3vw, 24px);
-        padding: clamp(1.5rem, 3vh, 2rem);
+        border-radius: clamp(14px, 2.5vw, 20px);
+        padding: clamp(1.2rem, 2.5vh, 1.8rem);
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3),
           0 0 0 1px rgba(255, 255, 255, 0.06);
         position: relative;
@@ -470,7 +491,7 @@
         flex-direction: column;
         justify-content: center;
         height: fit-content;
-        max-height: 70vh;
+        max-height: 60vh;
       }
 
       .form-container::before {
@@ -484,34 +505,34 @@
           rgba(147, 51, 234, 0.02) 70%,
           rgba(255, 255, 255, 0.04) 100%
         );
-        border-radius: clamp(15px, 3vw, 23px);
+        border-radius: clamp(13px, 2.5vw, 19px);
         pointer-events: none;
       }
 
       .gift-form {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: clamp(1.5rem, 3vw, 2rem);
+        gap: clamp(1.2rem, 2.5vw, 1.8rem);
         align-items: start;
       }
 
       .form-section {
         display: flex;
         flex-direction: column;
-        gap: clamp(1rem, 2vh, 1.3rem);
+        gap: clamp(0.8rem, 1.5vh, 1rem);
       }
 
       .form-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: clamp(0.8rem, 1.5vw, 1rem);
+        gap: clamp(0.6rem, 1.2vw, 0.8rem);
       }
 
       .form-group {
         position: relative;
         display: flex;
         flex-direction: column;
-        gap: clamp(0.3rem, 0.6vh, 0.4rem);
+        gap: clamp(0.25rem, 0.5vh, 0.35rem);
       }
 
       .form-group.full-width {
@@ -519,20 +540,20 @@
       }
 
       .form-label {
-        font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+        font-size: clamp(0.75rem, 1.5vw, 0.85rem);
         color: rgba(255, 255, 255, 0.8);
         font-weight: 400;
         letter-spacing: 0.3px;
       }
 
       .form-input {
-        padding: clamp(0.8rem, 1.5vh, 1rem);
+        padding: clamp(0.7rem, 1.4vh, 0.9rem);
         background: rgba(255, 255, 255, 0.06);
         backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: clamp(8px, 1.5vw, 12px);
+        border-radius: clamp(7px, 1.4vw, 10px);
         color: #fff;
-        font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+        font-size: clamp(0.75rem, 1.5vw, 0.85rem);
         font-family: inherit;
         transition: all 0.3s ease;
         font-weight: 300;
@@ -554,15 +575,15 @@
       }
 
       .form-textarea {
-        min-height: clamp(60px, 10vh, 80px);
+        min-height: clamp(50px, 8vh, 70px);
         resize: none;
-        line-height: 1.5;
+        line-height: 1.4;
         font-family: inherit;
       }
 
       .char-counter {
         text-align: right;
-        font-size: clamp(0.7rem, 1.4vw, 0.8rem);
+        font-size: clamp(0.65rem, 1.3vw, 0.75rem);
         color: rgba(255, 255, 255, 0.5);
         margin-top: 0.2rem;
         transition: color 0.3s ease;
@@ -572,8 +593,8 @@
       .selection-section {
         background: rgba(255, 255, 255, 0.03);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: clamp(12px, 2vw, 16px);
-        padding: clamp(1.2rem, 2vh, 1.5rem);
+        border-radius: clamp(10px, 2vw, 14px);
+        padding: clamp(1rem, 2vh, 1.3rem);
         position: relative;
         overflow: hidden;
       }
@@ -594,41 +615,41 @@
       }
 
       .section-title {
-        font-size: clamp(0.9rem, 1.8vw, 1rem);
+        font-size: clamp(0.8rem, 1.6vw, 0.9rem);
         font-weight: 500;
-        margin-bottom: clamp(0.8rem, 1.5vh, 1rem);
+        margin-bottom: clamp(0.6rem, 1.2vh, 0.8rem);
         color: rgba(255, 255, 255, 0.9);
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.4rem;
         letter-spacing: 0.3px;
       }
 
       .section-title::before {
         content: "✨";
-        font-size: 0.9em;
+        font-size: 0.85em;
         opacity: 0.8;
       }
 
-      /* Tier and duration selection - Compact */
+      /* Tier and duration selection - Ultra Compact */
       .tier-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: clamp(0.8rem, 1.5vw, 1rem);
-        margin-bottom: clamp(1rem, 2vh, 1.3rem);
+        gap: clamp(0.6rem, 1.2vw, 0.8rem);
+        margin-bottom: clamp(0.8rem, 1.5vh, 1rem);
       }
 
       .duration-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: clamp(0.6rem, 1.2vw, 0.8rem);
+        gap: clamp(0.5rem, 1vw, 0.6rem);
       }
 
       .option-card {
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: clamp(8px, 1.5vw, 12px);
-        padding: clamp(0.8rem, 1.5vh, 1rem);
+        border-radius: clamp(6px, 1.2vw, 8px);
+        padding: clamp(0.6rem, 1.2vh, 0.8rem);
         cursor: pointer;
         transition: all 0.3s ease;
         text-align: center;
@@ -675,34 +696,34 @@
 
       .premium-badge {
         position: absolute;
-        top: -6px;
-        right: -6px;
+        top: -4px;
+        right: -4px;
         background: linear-gradient(135deg, #f59e0b, #d97706);
         color: white;
-        padding: clamp(0.3rem, 0.6vh, 0.4rem) clamp(0.6rem, 1.2vw, 0.8rem);
-        border-radius: 6px;
-        font-size: clamp(0.6rem, 1.2vw, 0.7rem);
+        padding: clamp(0.2rem, 0.4vh, 0.3rem) clamp(0.4rem, 0.8vw, 0.6rem);
+        border-radius: 4px;
+        font-size: clamp(0.55rem, 1.1vw, 0.65rem);
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        box-shadow: 0 3px 12px rgba(245, 158, 11, 0.4);
+        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
       }
 
       .option-name {
-        font-size: clamp(0.85rem, 1.7vw, 1rem);
+        font-size: clamp(0.75rem, 1.5vw, 0.85rem);
         font-weight: 500;
-        margin-bottom: clamp(0.4rem, 0.8vh, 0.6rem);
+        margin-bottom: clamp(0.3rem, 0.6vh, 0.4rem);
         color: rgba(255, 255, 255, 0.95);
       }
 
       .option-description {
-        font-size: clamp(0.7rem, 1.4vw, 0.8rem);
+        font-size: clamp(0.65rem, 1.3vw, 0.75rem);
         color: rgba(255, 255, 255, 0.7);
-        line-height: 1.3;
+        line-height: 1.2;
       }
 
       .option-price {
-        font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+        font-size: clamp(0.8rem, 1.6vw, 0.9rem);
         font-weight: 600;
         color: #10b981;
       }
@@ -710,12 +731,12 @@
       /* Page 3: Payment - Centered Layout */
       .payment-container {
         width: 100%;
-        max-width: 600px;
+        max-width: 550px;
         background: rgba(255, 255, 255, 0.04);
         backdrop-filter: blur(40px) saturate(120%);
         border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: clamp(16px, 3vw, 24px);
-        padding: clamp(1.5rem, 3vh, 2rem);
+        border-radius: clamp(14px, 2.5vw, 20px);
+        padding: clamp(1.2rem, 2.5vh, 1.8rem);
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
         text-align: center;
         position: relative;
@@ -724,7 +745,7 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        gap: clamp(1rem, 2vh, 1.5rem);
+        gap: clamp(0.8rem, 1.5vh, 1.2rem);
       }
 
       .payment-container::before {
@@ -745,31 +766,31 @@
       .payment-summary {
         display: flex;
         flex-direction: column;
-        gap: clamp(0.5rem, 1vh, 0.8rem);
+        gap: clamp(0.4rem, 0.8vh, 0.6rem);
       }
 
       .summary-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: clamp(0.6rem, 1.2vh, 0.8rem) 0;
+        padding: clamp(0.5rem, 1vh, 0.7rem) 0;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+        font-size: clamp(0.8rem, 1.6vw, 0.9rem);
         color: rgba(255, 255, 255, 0.8);
       }
 
       .summary-item:last-child {
         border-bottom: none;
-        font-size: clamp(1rem, 2vw, 1.2rem);
+        font-size: clamp(0.9rem, 1.8vw, 1rem);
         font-weight: 600;
         color: rgba(255, 255, 255, 0.95);
-        margin-top: clamp(0.4rem, 0.8vh, 0.6rem);
+        margin-top: clamp(0.3rem, 0.6vh, 0.5rem);
       }
 
       .total-amount {
-        font-size: clamp(1.6rem, 3.2vw, 2.2rem);
+        font-size: clamp(1.4rem, 2.8vw, 1.8rem);
         font-weight: 600;
-        margin-bottom: clamp(0.3rem, 0.6vh, 0.5rem);
+        margin-bottom: clamp(0.3rem, 0.6vh, 0.4rem);
         background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         -webkit-background-clip: text;
         background-clip: text;
@@ -777,14 +798,14 @@
       }
 
       .total-description {
-        font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+        font-size: clamp(0.8rem, 1.6vw, 0.9rem);
         color: rgba(255, 255, 255, 0.7);
-        margin-bottom: clamp(1rem, 2vh, 1.3rem);
+        margin-bottom: clamp(0.8rem, 1.5vh, 1rem);
       }
 
       #paypal-button-container {
-        min-height: clamp(45px, 8vh, 55px);
-        border-radius: clamp(8px, 1.5vw, 12px);
+        min-height: clamp(40px, 7vh, 50px);
+        border-radius: clamp(6px, 1.2vw, 10px);
         overflow: hidden;
         opacity: 1;
         transition: opacity 0.3s ease;
@@ -794,18 +815,18 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: clamp(0.8rem, 1.5vw, 1rem);
-        padding: clamp(1rem, 2vh, 1.3rem);
+        gap: clamp(0.6rem, 1.2vw, 0.8rem);
+        padding: clamp(0.8rem, 1.5vh, 1rem);
         background: rgba(59, 130, 246, 0.1);
         border: 1px solid rgba(59, 130, 246, 0.2);
-        border-radius: clamp(8px, 1.5vw, 12px);
+        border-radius: clamp(6px, 1.2vw, 10px);
         color: #93c5fd;
-        font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+        font-size: clamp(0.75rem, 1.5vw, 0.85rem);
       }
 
       .loading-spinner {
-        width: clamp(16px, 3vw, 20px);
-        height: clamp(16px, 3vw, 20px);
+        width: clamp(14px, 2.8vw, 18px);
+        height: clamp(14px, 2.8vw, 18px);
         border: 2px solid rgba(147, 197, 253, 0.3);
         border-radius: 50%;
         border-top-color: #93c5fd;
@@ -820,9 +841,9 @@
 
       /* Messages */
       .message {
-        padding: clamp(0.7rem, 1.4vh, 0.9rem);
-        border-radius: clamp(8px, 1.5vw, 12px);
-        font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+        padding: clamp(0.6rem, 1.2vh, 0.8rem);
+        border-radius: clamp(6px, 1.2vw, 10px);
+        font-size: clamp(0.75rem, 1.5vw, 0.85rem);
         text-align: center;
         opacity: 0;
         transform: translateY(-10px);
@@ -831,7 +852,7 @@
         position: fixed;
         top: clamp(1rem, 2vh, 1.5rem);
         right: clamp(1rem, 2vw, 1.5rem);
-        max-width: 300px;
+        max-width: 280px;
         z-index: 200;
       }
 
@@ -867,20 +888,28 @@
 
         .gift-form {
           grid-template-columns: 1fr;
-          gap: clamp(1.2rem, 2.5vw, 1.5rem);
+          gap: clamp(1rem, 2vw, 1.3rem);
         }
       }
 
       @media (max-width: 768px) {
-        .page-container {
-          padding-top: clamp(3.5rem, 7vh, 4.5rem);
-          padding-bottom: clamp(3.5rem, 7vh, 4.5rem);
+        .top-nav {
+          height: clamp(3.5rem, 7vh, 4.5rem);
+        }
+
+        .bottom-nav {
+          height: clamp(3.5rem, 7vh, 4.5rem);
+        }
+
+        .content-area {
+          margin-top: clamp(3.5rem, 7vh, 4.5rem);
+          margin-bottom: clamp(3.5rem, 7vh, 4.5rem);
         }
 
         .benefits-grid {
           grid-template-columns: 1fr;
           grid-template-rows: repeat(6, 1fr);
-          max-height: 70vh;
+          max-height: 65vh;
           overflow-y: auto;
         }
 
@@ -920,11 +949,6 @@
           padding: 0 clamp(0.5rem, 1vw, 1rem);
         }
 
-        .page-navigation {
-          bottom: 1rem;
-          gap: 0.8rem;
-        }
-
         .nav-button {
           font-size: 0.75rem;
           padding: 0.6rem 1rem;
@@ -935,70 +959,79 @@
         }
 
         .benefit-card {
-          padding: clamp(0.8rem, 1.5vh, 1rem);
+          padding: clamp(0.6rem, 1.2vh, 0.8rem);
         }
 
         .form-container {
-          padding: clamp(1.2rem, 2.5vh, 1.5rem);
+          padding: clamp(1rem, 2vh, 1.3rem);
+        }
+      }
+
+      /* Very short screens */
+      @media (max-height: 600px) {
+        .top-nav {
+          height: 3rem;
+        }
+
+        .bottom-nav {
+          height: 3rem;
+        }
+
+        .content-area {
+          margin-top: 3rem;
+          margin-bottom: 3rem;
+        }
+
+        .page-title {
+          font-size: clamp(1.3rem, 2.6vw, 1.6rem);
+          margin-bottom: 0.3rem;
+        }
+
+        .page-subtitle {
+          font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+        }
+
+        .benefit-card {
+          padding: 0.6rem;
+        }
+
+        .form-container {
+          padding: 1rem;
+          max-height: 50vh;
+        }
+      }
+
+      /* Landscape mobile */
+      @media (max-height: 500px) and (orientation: landscape) {
+        .top-nav {
+          height: 2.5rem;
+        }
+
+        .bottom-nav {
+          height: 2.5rem;
+        }
+
+        .content-area {
+          margin-top: 2.5rem;
+          margin-bottom: 2.5rem;
+        }
+
+        .benefits-grid {
+          grid-template-columns: repeat(3, 1fr);
+          grid-template-rows: repeat(2, 1fr);
+          max-height: 45vh;
         }
       }
 
       /* Ultra-wide screens */
       @media (min-width: 1600px) {
         .benefits-grid {
-          max-width: 1400px;
-          gap: 2rem;
+          max-width: 1300px;
+          gap: 1.5rem;
         }
 
         .form-container {
-          max-width: 1200px;
-        }
-      }
-
-      /* Very short screens */
-      @media (max-height: 600px) {
-        .page-container {
-          padding-top: clamp(3rem, 6vh, 4rem);
-          padding-bottom: clamp(3rem, 6vh, 4rem);
-        }
-
-        .page-title {
-          font-size: clamp(1.4rem, 2.8vw, 1.8rem);
-          margin-bottom: 0.3rem;
-        }
-
-        .page-subtitle {
-          font-size: clamp(0.8rem, 1.6vw, 0.9rem);
-        }
-
-        .benefit-card {
-          padding: 0.8rem;
-        }
-
-        .form-container {
-          padding: 1.2rem;
-        }
-      }
-
-      /* Landscape mobile */
-      @media (max-height: 500px) and (orientation: landscape) {
-        .page-container {
-          padding-top: 2.5rem;
-          padding-bottom: 2.5rem;
-        }
-
-        .page-navigation {
-          bottom: 0.8rem;
-        }
-
-        .back-link {
-          top: 0.8rem;
-        }
-
-        .benefits-grid {
-          grid-template-columns: repeat(3, 1fr);
-          grid-template-rows: repeat(2, 1fr);
-          max-height: 50vh;
+          max-width: 1100px;
         }
       }
 
@@ -1040,12 +1073,6 @@
       <div class="particle"></div>
     </div>
 
-    <!-- Top Navigation -->
-    <a href="/" class="back-link">
-      <span>←</span>
-      <span>Return to Portal</span>
-    </a>
-
     <!-- Messages -->
     <div class="message error" id="errorMessage" style="display: none"></div>
     <div
@@ -1055,308 +1082,323 @@
     ></div>
     <div class="message info" id="infoMessage" style="display: none"></div>
 
+    <!-- Top Navigation -->
+    <div class="top-nav">
+      <a href="/" class="back-link">
+        <span>←</span>
+        <span>Return to Portal</span>
+      </a>
+    </div>
+
     <!-- Main Container -->
-    <div class="page-container">
-      <div class="pages-wrapper" id="pagesWrapper">
-        <!-- Page 1: What They'll Receive -->
-        <div class="page" id="page1">
-          <div class="page-content">
-            <div class="page-header">
-              <div class="page-icon">🎁</div>
-              <h1 class="page-title">What They'll Receive</h1>
-              <p class="page-subtitle">
-                A complete self-discovery experience that transforms how they
-                see themselves
-              </p>
-            </div>
-
-            <div class="benefits-grid">
-              <div class="benefit-card">
-                <div class="benefit-icon">📧</div>
-                <div class="benefit-title">Beautiful Welcome Invitation</div>
-                <div class="benefit-description">
-                  A personalized email invitation that feels special and sacred
-                </div>
-                <ul class="benefit-features">
-                  <li>
-                    <span class="feature-icon">✨</span> Personal message from
-                    you
-                  </li>
-                  <li>
-                    <span class="feature-icon">🎨</span> Beautifully designed
-                    experience
-                  </li>
-                  <li>
-                    <span class="feature-icon">🔗</span> Direct access link
-                    included
-                  </li>
-                </ul>
+    <div class="main-container">
+      <div class="content-area">
+        <div class="pages-wrapper" id="pagesWrapper">
+          <!-- Page 1: What They'll Receive -->
+          <div class="page" id="page1">
+            <div class="page-content">
+              <div class="page-header">
+                <div class="page-icon">🎁</div>
+                <h1 class="page-title">What They'll Receive</h1>
+                <p class="page-subtitle">
+                  A complete self-discovery experience that transforms how they
+                  see themselves
+                </p>
               </div>
 
-              <div class="benefit-card">
-                <div class="benefit-icon">🪞</div>
-                <div class="benefit-title">AI-Powered Reflection</div>
-                <div class="benefit-description">
-                  Advanced AI that recognizes patterns they can't see about
-                  themselves
+              <div class="benefits-grid">
+                <div class="benefit-card">
+                  <div class="benefit-icon">📧</div>
+                  <div class="benefit-title">Beautiful Welcome Invitation</div>
+                  <div class="benefit-description">
+                    A personalized email invitation that feels special and
+                    sacred
+                  </div>
+                  <ul class="benefit-features">
+                    <li>
+                      <span class="feature-icon">✨</span> Personal message from
+                      you
+                    </li>
+                    <li>
+                      <span class="feature-icon">🎨</span> Beautifully designed
+                      experience
+                    </li>
+                    <li>
+                      <span class="feature-icon">🔗</span> Direct access link
+                      included
+                    </li>
+                  </ul>
                 </div>
-                <ul class="benefit-features">
-                  <li>
-                    <span class="feature-icon">🧠</span> Deep pattern
-                    recognition
-                  </li>
-                  <li>
-                    <span class="feature-icon">💎</span> Personalized insights
-                  </li>
-                  <li>
-                    <span class="feature-icon">🌱</span> Growth-focused feedback
-                  </li>
-                </ul>
-              </div>
 
-              <div class="benefit-card">
-                <div class="benefit-icon">📊</div>
-                <div class="benefit-title">Personal Dashboard</div>
-                <div class="benefit-description">
-                  A sacred space to track their journey and evolution over time
+                <div class="benefit-card">
+                  <div class="benefit-icon">🪞</div>
+                  <div class="benefit-title">AI-Powered Reflection</div>
+                  <div class="benefit-description">
+                    Advanced AI that recognizes patterns they can't see about
+                    themselves
+                  </div>
+                  <ul class="benefit-features">
+                    <li>
+                      <span class="feature-icon">🧠</span> Deep pattern
+                      recognition
+                    </li>
+                    <li>
+                      <span class="feature-icon">💎</span> Personalized insights
+                    </li>
+                    <li>
+                      <span class="feature-icon">🌱</span> Growth-focused
+                      feedback
+                    </li>
+                  </ul>
                 </div>
-                <ul class="benefit-features">
-                  <li>
-                    <span class="feature-icon">📚</span> All reflections saved
-                  </li>
-                  <li>
-                    <span class="feature-icon">🔍</span> Search and organize
-                  </li>
-                  <li>
-                    <span class="feature-icon">📈</span> Track personal growth
-                  </li>
-                </ul>
-              </div>
 
-              <div class="benefit-card">
-                <div class="benefit-icon">🦋</div>
-                <div class="benefit-title">Evolution Reports</div>
-                <div class="benefit-description">
-                  See how their patterns evolve and transform over months
+                <div class="benefit-card">
+                  <div class="benefit-icon">📊</div>
+                  <div class="benefit-title">Personal Dashboard</div>
+                  <div class="benefit-description">
+                    A sacred space to track their journey and evolution over
+                    time
+                  </div>
+                  <ul class="benefit-features">
+                    <li>
+                      <span class="feature-icon">📚</span> All reflections saved
+                    </li>
+                    <li>
+                      <span class="feature-icon">🔍</span> Search and organize
+                    </li>
+                    <li>
+                      <span class="feature-icon">📈</span> Track personal growth
+                    </li>
+                  </ul>
                 </div>
-                <ul class="benefit-features">
-                  <li><span class="feature-icon">📊</span> Growth analytics</li>
-                  <li>
-                    <span class="feature-icon">🎯</span> Pattern evolution
-                  </li>
-                  <li>
-                    <span class="feature-icon">⚡</span> Breakthrough insights
-                  </li>
-                </ul>
-              </div>
 
-              <div class="benefit-card">
-                <div class="benefit-icon">🔒</div>
-                <div class="benefit-title">Complete Privacy</div>
-                <div class="benefit-description">
-                  Their reflections remain completely private and secure
+                <div class="benefit-card">
+                  <div class="benefit-icon">🦋</div>
+                  <div class="benefit-title">Evolution Reports</div>
+                  <div class="benefit-description">
+                    See how their patterns evolve and transform over months
+                  </div>
+                  <ul class="benefit-features">
+                    <li>
+                      <span class="feature-icon">📊</span> Growth analytics
+                    </li>
+                    <li>
+                      <span class="feature-icon">🎯</span> Pattern evolution
+                    </li>
+                    <li>
+                      <span class="feature-icon">⚡</span> Breakthrough insights
+                    </li>
+                  </ul>
                 </div>
-                <ul class="benefit-features">
-                  <li>
-                    <span class="feature-icon">🛡️</span> End-to-end security
-                  </li>
-                  <li>
-                    <span class="feature-icon">🤐</span> Never shared or sold
-                  </li>
-                  <li>
-                    <span class="feature-icon">💾</span> Permanently saved
-                  </li>
-                </ul>
-              </div>
 
-              <div class="benefit-card">
-                <div class="benefit-icon">⏰</div>
-                <div class="benefit-title">Immediate Access</div>
-                <div class="benefit-description">
-                  They can start their first reflection within minutes
+                <div class="benefit-card">
+                  <div class="benefit-icon">🔒</div>
+                  <div class="benefit-title">Complete Privacy</div>
+                  <div class="benefit-description">
+                    Their reflections remain completely private and secure
+                  </div>
+                  <ul class="benefit-features">
+                    <li>
+                      <span class="feature-icon">🛡️</span> End-to-end security
+                    </li>
+                    <li>
+                      <span class="feature-icon">🤐</span> Never shared or sold
+                    </li>
+                    <li>
+                      <span class="feature-icon">💾</span> Permanently saved
+                    </li>
+                  </ul>
                 </div>
-                <ul class="benefit-features">
-                  <li>
-                    <span class="feature-icon">🚪</span> Instant activation
-                  </li>
-                  <li>
-                    <span class="feature-icon">📱</span> Works on any device
-                  </li>
-                  <li>
-                    <span class="feature-icon">🌍</span> Available anywhere
-                  </li>
-                </ul>
+
+                <div class="benefit-card">
+                  <div class="benefit-icon">⏰</div>
+                  <div class="benefit-title">Immediate Access</div>
+                  <div class="benefit-description">
+                    They can start their first reflection within minutes
+                  </div>
+                  <ul class="benefit-features">
+                    <li>
+                      <span class="feature-icon">🚪</span> Instant activation
+                    </li>
+                    <li>
+                      <span class="feature-icon">📱</span> Works on any device
+                    </li>
+                    <li>
+                      <span class="feature-icon">🌍</span> Available anywhere
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Page 2: Fill Details -->
-        <div class="page" id="page2">
-          <div class="page-content">
-            <div class="page-header">
-              <div class="page-icon">✍️</div>
-              <h1 class="page-title">Gift Details</h1>
-              <p class="page-subtitle">
-                Tell us about this thoughtful gift and choose the perfect access
-                level
-              </p>
-            </div>
+          <!-- Page 2: Fill Details -->
+          <div class="page" id="page2">
+            <div class="page-content">
+              <div class="page-header">
+                <div class="page-icon">✍️</div>
+                <h1 class="page-title">Gift Details</h1>
+                <p class="page-subtitle">
+                  Tell us about this thoughtful gift and choose the perfect
+                  access level
+                </p>
+              </div>
 
-            <div class="form-container">
-              <form id="giftForm" class="gift-form">
-                <!-- Left Column: Personal Details -->
-                <div class="form-section">
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label class="form-label">Your name</label>
-                      <input
-                        type="text"
-                        id="giverName"
-                        class="form-input"
-                        placeholder="Your full name"
-                        required
-                      />
+              <div class="form-container">
+                <form id="giftForm" class="gift-form">
+                  <!-- Left Column: Personal Details -->
+                  <div class="form-section">
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">Your name</label>
+                        <input
+                          type="text"
+                          id="giverName"
+                          class="form-input"
+                          placeholder="Your full name"
+                          required
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Your email</label>
+                        <input
+                          type="email"
+                          id="giverEmail"
+                          class="form-input"
+                          placeholder="your@email.com"
+                          required
+                        />
+                      </div>
                     </div>
-                    <div class="form-group">
-                      <label class="form-label">Your email</label>
-                      <input
-                        type="email"
-                        id="giverEmail"
-                        class="form-input"
-                        placeholder="your@email.com"
-                        required
-                      />
+
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">Recipient's name</label>
+                        <input
+                          type="text"
+                          id="recipientName"
+                          class="form-input"
+                          placeholder="Who will receive this gift?"
+                          required
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Recipient's email</label>
+                        <input
+                          type="email"
+                          id="recipientEmail"
+                          class="form-input"
+                          placeholder="their@email.com"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                      <label class="form-label"
+                        >Personal message (optional)</label
+                      >
+                      <textarea
+                        id="personalMessage"
+                        class="form-input form-textarea"
+                        placeholder="Why are you sharing this journey of self-discovery with them?"
+                        maxlength="200"
+                      ></textarea>
+                      <div class="char-counter">
+                        <span id="charCount">0</span>/200 characters
+                      </div>
                     </div>
                   </div>
 
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label class="form-label">Recipient's name</label>
-                      <input
-                        type="text"
-                        id="recipientName"
-                        class="form-input"
-                        placeholder="Who will receive this gift?"
-                        required
-                      />
-                    </div>
-                    <div class="form-group">
-                      <label class="form-label">Recipient's email</label>
-                      <input
-                        type="email"
-                        id="recipientEmail"
-                        class="form-input"
-                        placeholder="their@email.com"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div class="form-group full-width">
-                    <label class="form-label"
-                      >Personal message (optional)</label
-                    >
-                    <textarea
-                      id="personalMessage"
-                      class="form-input form-textarea"
-                      placeholder="Why are you sharing this journey of self-discovery with them?"
-                      maxlength="200"
-                    ></textarea>
-                    <div class="char-counter">
-                      <span id="charCount">0</span>/200 characters
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Right Column: Selections -->
-                <div class="form-section">
-                  <div class="selection-section">
-                    <h3 class="section-title">Choose access level</h3>
-                    <div class="tier-grid">
-                      <div class="option-card" data-tier="essential">
-                        <div class="option-name">Essential</div>
-                        <div class="option-description">
-                          5 reflections/month<br />
-                          Pattern insights<br />
-                          Growth tracking
+                  <!-- Right Column: Selections -->
+                  <div class="form-section">
+                    <div class="selection-section">
+                      <h3 class="section-title">Choose access level</h3>
+                      <div class="tier-grid">
+                        <div class="option-card" data-tier="essential">
+                          <div class="option-name">Essential</div>
+                          <div class="option-description">
+                            5 reflections/month<br />
+                            Pattern insights<br />
+                            Growth tracking
+                          </div>
+                        </div>
+                        <div class="option-card" data-tier="premium">
+                          <div class="premium-badge">Most Popular</div>
+                          <div class="option-name">Premium</div>
+                          <div class="option-description">
+                            10 reflections/month<br />
+                            Advanced AI analysis<br />
+                            Deep insights
+                          </div>
                         </div>
                       </div>
-                      <div class="option-card" data-tier="premium">
-                        <div class="premium-badge">Most Popular</div>
-                        <div class="option-name">Premium</div>
-                        <div class="option-description">
-                          10 reflections/month<br />
-                          Advanced AI analysis<br />
-                          Deep insights
+
+                      <h3 class="section-title">Choose duration</h3>
+                      <div class="duration-grid">
+                        <div class="option-card" data-duration="1mo">
+                          <div class="option-name">1 Month</div>
+                          <div class="option-price" id="price1mo">$4.99</div>
+                        </div>
+                        <div class="option-card" data-duration="3mo">
+                          <div class="option-name">3 Months</div>
+                          <div class="option-price" id="price3mo">$14.97</div>
+                        </div>
+                        <div class="option-card" data-duration="1yr">
+                          <div class="option-name">1 Year</div>
+                          <div class="option-price" id="price1yr">$49.99</div>
                         </div>
                       </div>
                     </div>
-
-                    <h3 class="section-title">Choose duration</h3>
-                    <div class="duration-grid">
-                      <div class="option-card" data-duration="1mo">
-                        <div class="option-name">1 Month</div>
-                        <div class="option-price" id="price1mo">$4.99</div>
-                      </div>
-                      <div class="option-card" data-duration="3mo">
-                        <div class="option-name">3 Months</div>
-                        <div class="option-price" id="price3mo">$14.97</div>
-                      </div>
-                      <div class="option-card" data-duration="1yr">
-                        <div class="option-name">1 Year</div>
-                        <div class="option-price" id="price1yr">$49.99</div>
-                      </div>
-                    </div>
                   </div>
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Page 3: Payment -->
-        <div class="page" id="page3">
-          <div class="page-content">
-            <div class="page-header">
-              <div class="page-icon">💳</div>
-              <h1 class="page-title">Complete Your Gift</h1>
-              <p class="page-subtitle">
-                Secure payment to activate their transformational journey
-              </p>
-            </div>
-
-            <div class="payment-container">
-              <div class="payment-summary">
-                <div class="summary-item">
-                  <span>Recipient:</span>
-                  <span id="summaryRecipient">Name</span>
-                </div>
-                <div class="summary-item">
-                  <span>Access Level:</span>
-                  <span id="summaryTier">Essential</span>
-                </div>
-                <div class="summary-item">
-                  <span>Duration:</span>
-                  <span id="summaryDuration">1 Month</span>
-                </div>
-                <div class="summary-item">
-                  <span>Total:</span>
-                  <span id="summaryTotal">$4.99</span>
-                </div>
+          <!-- Page 3: Payment -->
+          <div class="page" id="page3">
+            <div class="page-content">
+              <div class="page-header">
+                <div class="page-icon">💳</div>
+                <h1 class="page-title">Complete Your Gift</h1>
+                <p class="page-subtitle">
+                  Secure payment to activate their transformational journey
+                </p>
               </div>
 
-              <div class="total-amount" id="totalAmount">$4.99</div>
-              <div class="total-description" id="totalDescription">
-                Essential • 1 Month Gift
-              </div>
+              <div class="payment-container">
+                <div class="payment-summary">
+                  <div class="summary-item">
+                    <span>Recipient:</span>
+                    <span id="summaryRecipient">Name</span>
+                  </div>
+                  <div class="summary-item">
+                    <span>Access Level:</span>
+                    <span id="summaryTier">Essential</span>
+                  </div>
+                  <div class="summary-item">
+                    <span>Duration:</span>
+                    <span id="summaryDuration">1 Month</span>
+                  </div>
+                  <div class="summary-item">
+                    <span>Total:</span>
+                    <span id="summaryTotal">$4.99</span>
+                  </div>
+                </div>
 
-              <div class="paypal-loading" id="paypalLoading">
-                <div class="loading-spinner"></div>
-                <span>Loading secure payment...</span>
-              </div>
+                <div class="total-amount" id="totalAmount">$4.99</div>
+                <div class="total-description" id="totalDescription">
+                  Essential • 1 Month Gift
+                </div>
 
-              <div id="paypal-button-container"></div>
+                <div class="paypal-loading" id="paypalLoading">
+                  <div class="loading-spinner"></div>
+                  <span>Loading secure payment...</span>
+                </div>
+
+                <div id="paypal-button-container"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -1364,31 +1406,37 @@
     </div>
 
     <!-- Bottom Navigation -->
-    <div class="page-navigation">
-      <button
-        class="nav-button"
-        id="prevBtn"
-        onclick="goToPreviousPage()"
-        disabled
-      >
-        <span>←</span>
-        <span>Previous</span>
-      </button>
+    <div class="bottom-nav">
+      <div class="page-navigation">
+        <button
+          class="nav-button"
+          id="prevBtn"
+          onclick="goToPreviousPage()"
+          disabled
+        >
+          <span>←</span>
+          <span>Previous</span>
+        </button>
 
-      <div class="progress-indicator">
-        <div class="progress-dot active" data-page="0"></div>
-        <div class="progress-dot" data-page="1"></div>
-        <div class="progress-dot" data-page="2"></div>
+        <div class="progress-indicator">
+          <div class="progress-dot active" data-page="0"></div>
+          <div class="progress-dot" data-page="1"></div>
+          <div class="progress-dot" data-page="2"></div>
+        </div>
+
+        <button
+          class="nav-button primary"
+          id="nextBtn"
+          onclick="goToNextPage()"
+        >
+          <span>Next</span>
+          <span>→</span>
+        </button>
       </div>
-
-      <button class="nav-button primary" id="nextBtn" onclick="goToNextPage()">
-        <span>Next</span>
-        <span>→</span>
-      </button>
     </div>
 
     <script>
-      // Perfect No-Scroll 3-Page Gifting Experience
+      // Perfect Centered 3-Page Gifting Experience - Final Version
       let currentPage = 0;
       let selectedTier = "essential";
       let selectedDuration = "1mo";
@@ -1410,7 +1458,7 @@
         initializeSelections();
         updatePageDisplay();
         console.log(
-          "🎁 Perfect No-Scroll 3-Page Gifting Experience initialized"
+          "🎁 Perfect Centered 3-Page Gifting Experience initialized"
         );
       }
 
@@ -1762,7 +1810,7 @@
                 color: "gold",
                 shape: "rect",
                 label: "pay",
-                height: 45,
+                height: 40,
                 tagline: false,
               },
 
