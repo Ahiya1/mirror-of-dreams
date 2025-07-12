@@ -1,4 +1,4 @@
-// API: Payment - Simplified for Existing User Upgrades (No Redis)
+// API: Payment - Simplified for Existing User Upgrades (Updated with Webhook Routing)
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const { createClient } = require("@supabase/supabase-js");
@@ -229,6 +229,7 @@ async function handleCreateUpgradeCheckout(req, res) {
       ],
       customer_email: user.email,
       metadata: {
+        type: "upgrade", // Mark as upgrade webhook
         userId: user.id,
         email: user.email,
         tier: tier,
@@ -272,7 +273,7 @@ async function handleCreateUpgradeCheckout(req, res) {
   }
 }
 
-// Stripe webhook handler for subscription events
+// Stripe webhook handler with routing (NEW: Added routing logic)
 async function handleStripeWebhook(req, res) {
   console.log("🪝 Webhook received - Headers:", req.headers);
 
@@ -314,10 +315,82 @@ async function handleStripeWebhook(req, res) {
   console.log(`📦 Event ID: ${event.id}`);
 
   try {
+    // NEW: Route webhook based on session metadata
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object;
+      const webhookType = session.metadata?.type;
+
+      console.log(`🔀 Routing webhook type: ${webhookType}`);
+
+      if (webhookType === "gift") {
+        console.log("🎁 Routing to gift webhook handler");
+        return await routeToGiftWebhook(event, res);
+      } else if (
+        webhookType === "upgrade" ||
+        session.metadata?.upgradeExistingUser === "true"
+      ) {
+        console.log("🚀 Processing upgrade webhook");
+        return await handleUpgradeWebhookEvents(event, res);
+      } else {
+        console.log("⚠️ Unknown webhook type, processing as upgrade");
+        return await handleUpgradeWebhookEvents(event, res);
+      }
+    } else {
+      // Handle other webhook events as upgrade-related
+      return await handleUpgradeWebhookEvents(event, res);
+    }
+  } catch (error) {
+    console.error("❌ Stripe webhook error:", error);
+    return res.status(500).json({ error: "Webhook processing failed" });
+  }
+}
+
+// NEW: Route gift webhooks to gifting API
+async function routeToGiftWebhook(event, res) {
+  try {
+    console.log("🎁 Forwarding gift webhook to gifting API");
+
+    // Forward to gifting API webhook handler
+    const giftingWebhookUrl = `${getBaseUrl()}/api/gifting`;
+
+    const response = await fetch(giftingWebhookUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Stripe-Signature": event.id, // Use event ID as signature for internal routing
+      },
+      body: JSON.stringify({
+        type: "webhook_forward",
+        event: event,
+      }),
+    });
+
+    if (response.ok) {
+      console.log("✅ Gift webhook forwarded successfully");
+      return res.status(200).json({ received: true, forwarded: "gift" });
+    } else {
+      console.error("❌ Failed to forward gift webhook");
+      return res.status(500).json({ error: "Failed to forward gift webhook" });
+    }
+  } catch (error) {
+    console.error("❌ Error forwarding gift webhook:", error);
+
+    // Fallback: Handle gift webhook directly
+    if (event.type === "checkout.session.completed") {
+      await handleGiftCheckoutCompleted(event);
+    }
+
+    return res.status(200).json({ received: true, handled: "fallback" });
+  }
+}
+
+// Handle upgrade-related webhook events
+async function handleUpgradeWebhookEvents(event, res) {
+  try {
     // Handle different webhook events
     switch (event.type) {
       case "checkout.session.completed":
-        console.log("🎉 Processing checkout.session.completed");
+        console.log("🎉 Processing upgrade checkout.session.completed");
         await handleCheckoutSessionCompleted(event);
         break;
       case "customer.subscription.updated":
@@ -340,15 +413,15 @@ async function handleStripeWebhook(req, res) {
         console.log(`⚠️ Unhandled Stripe event: ${event.type}`);
     }
 
-    console.log("✅ Webhook processed successfully");
+    console.log("✅ Upgrade webhook processed successfully");
     return res.status(200).json({ received: true });
   } catch (error) {
-    console.error("❌ Stripe webhook error:", error);
-    return res.status(500).json({ error: "Webhook processing failed" });
+    console.error("❌ Upgrade webhook processing error:", error);
+    return res.status(500).json({ error: "Upgrade webhook processing failed" });
   }
 }
 
-// Webhook event handlers
+// Webhook event handlers (existing upgrade logic)
 async function handleCheckoutSessionCompleted(event) {
   try {
     const session = event.data.object;
@@ -372,7 +445,7 @@ async function handleCheckoutSessionCompleted(event) {
   }
 }
 
-// Upgrade existing user (SIMPLE!)
+// Upgrade existing user (existing logic)
 async function upgradeExistingUser(userId, tier, period, session) {
   try {
     const startDate = new Date();
@@ -423,6 +496,26 @@ async function upgradeExistingUser(userId, tier, period, session) {
   } catch (error) {
     console.error("Error upgrading user:", error);
     throw error;
+  }
+}
+
+// NEW: Fallback gift checkout handler (simplified)
+async function handleGiftCheckoutCompleted(event) {
+  try {
+    const session = event.data.object;
+    console.log(
+      `🎁 Fallback: Processing gift checkout completion for session ${session.id}`
+    );
+
+    // Basic logging - full processing should happen in gifting API
+    if (session.metadata?.gift_code) {
+      console.log(`🎁 Gift code: ${session.metadata.gift_code}`);
+    }
+
+    // This is a fallback - the gifting API should handle the full logic
+    console.log("🎁 Gift checkout completed (fallback handler)");
+  } catch (error) {
+    console.error("❌ Error in fallback gift handler:", error);
   }
 }
 

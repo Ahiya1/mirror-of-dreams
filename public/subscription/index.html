@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <title>Your Consciousness Journey | Mirror of Truth</title>
+
+    <style>
+      /* Subscription Page - Conscious Journey Management */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100vh;
+        overflow: hidden;
+        background: linear-gradient(
+          135deg,
+          #0f0f23 0%,
+          #1a1a2e 25%,
+          #16213e 50%,
+          #0f0f23 100%
+        );
+        color: #fff;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+        position: fixed;
+        width: 100vw;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Subtle Cosmic Background */
+      .cosmic-background {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        overflow: hidden;
+      }
+
+      .cosmic-mirror {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(255, 255, 255, 0.05);
+        animation: cosmicFloat 18s ease-in-out infinite;
+        transition: all 0.4s ease;
+      }
+
+      .cosmic-mirror:nth-child(1) {
+        width: clamp(18px, 2.8vw, 28px);
+        height: clamp(18px, 2.8vw, 28px);
+        top: 20%;
+        right: 20%;
+        clip-path: polygon(50% 0%, 85% 25%, 100% 75%, 60% 100%, 0% 50%);
+        animation-delay: 0s;
+        animation-duration: 20s;
+      }
+
+      .cosmic-mirror:nth-child(2) {
+        width: clamp(16px, 2.2vw, 24px);
+        height: clamp(16px, 2.2vw, 24px);
+        top: 65%;
+        left: 15%;
+        clip-path: polygon(25% 0%, 100% 25%, 75% 100%, 0% 75%);
+        animation-delay: 8s;
+        animation-duration: 22s;
+      }
+
+      .cosmic-mirror:nth-child(3) {
+        width: clamp(20px, 3.5vw, 32px);
+        height: clamp(20px, 3.5vw, 32px);
+        bottom: 25%;
+        right: 30%;
+        clip-path: polygon(20% 0%, 80% 20%, 100% 80%, 20% 100%, 0% 80%);
+        animation-delay: 14s;
+        animation-duration: 24s;
+      }
+
+      @keyframes cosmicFloat {
+        0%,
+        100% {
+          transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+          opacity: 0.3;
+        }
+        25% {
+          transform: translateY(-8px) translateX(4px) rotate(90deg) scale(1.03);
+          opacity: 0.5;
+        }
+        50% {
+          transform: translateY(-4px) translateX(-6px) rotate(180deg)
+            scale(0.97);
+          opacity: 0.7;
+        }
+        75% {
+          transform: translateY(-10px) translateX(2px) rotate(270deg)
+            scale(1.01);
+          opacity: 0.4;
+        }
+      }
+
+      /* Floating Particles */
+      .cosmic-particles {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      .cosmic-particle {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        animation: particleFloat 15s linear infinite;
+      }
+
+      .cosmic-particle:nth-child(1) {
+        left: 30%;
+        animation-delay: 0s;
+        background: rgba(245, 158, 11, 0.3);
+      }
+
+      .cosmic-particle:nth-child(2) {
+        left: 70%;
+        animation-delay: 5s;
+        background: rgba(147, 51, 234, 0.3);
+      }
+
+      @keyframes particleFloat {
+        0% {
+          transform: translateY(100vh) scale(0);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 0.6;
+        }
+        100% {
+          transform: translateY(-10vh) scale(1);
+          opacity: 0;
+        }
+      }
+
+      /* Navigation Bar */
+      .nav-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        height: clamp(60px, 8vh, 80px);
+        background: rgba(15, 15, 35, 0.8);
+        backdrop-filter: blur(30px) saturate(120%);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 clamp(1rem, 3vw, 2rem);
+      }
+
+      .nav-left {
+        display: flex;
+        align-items: center;
+        gap: clamp(0.8rem, 2vw, 1.2rem);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.95);
+        font-weight: 400;
+        font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+        transition: all 0.3s ease;
+      }
+
+      .logo:hover {
+        color: rgba(255, 255, 255, 1);
+        transform: translateY(-1px);
+      }
+
+      .mirror-logo {
+        font-size: clamp(1.2rem, 3vw, 1.6rem);
+        animation: logoGlow 4s ease-in-out infinite;
+      }
+
+      @keyframes logoGlow {
+        0%,
+        100% {
+          filter: drop-shadow(0 0 8px rgba(147, 51, 234, 0.3));
+          transform: scale(1);
+        }
+        50% {
+          filter: drop-shadow(0 0 12px rgba(147, 51, 234, 0.5));
+          transform: scale(1.05);
+        }
+      }
+
+      .nav-links {
+        display: flex;
+        gap: clamp(0.4rem, 1vw, 0.6rem);
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: clamp(0.4rem, 1vh, 0.6rem) clamp(0.8rem, 2vw, 1rem);
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+        font-weight: 300;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+      }
+
+      .nav-link:hover,
+      .nav-link.active {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.9);
+        transform: translateY(-1px);
+      }
+
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: clamp(0.6rem, 1.5vw, 1rem);
+      }
+
+      .back-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: clamp(0.4rem, 1vh, 0.6rem) clamp(0.8rem, 2vw, 1rem);
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.12),
+          rgba(5, 150, 105, 0.08)
+        );
+        border: 1px solid rgba(16, 185, 129, 0.25);
+        border-radius: 20px;
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+        font-weight: 400;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+      }
+
+      .back-link:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.18),
+          rgba(5, 150, 105, 0.12)
+        );
+        border-color: rgba(16, 185, 129, 0.4);
+        transform: translateY(-1px);
+      }
+
+      /* Main Subscription Container */
+      .subscription-main {
+        position: relative;
+        z-index: 10;
+        height: 100vh;
+        padding-top: clamp(60px, 8vh, 80px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-left: clamp(1rem, 3vw, 2rem);
+        padding-right: clamp(1rem, 3vw, 2rem);
+        padding-bottom: clamp(2rem, 4vh, 3rem);
+      }
+
+      .subscription-container {
+        width: 100%;
+        max-width: 700px;
+        display: flex;
+        flex-direction: column;
+        gap: clamp(1.2rem, 2.5vh, 1.8rem);
+        animation: subscriptionAppear 1s ease-out;
+      }
+
+      @keyframes subscriptionAppear {
+        from {
+          opacity: 0;
+          transform: translateY(30px) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      /* Header */
+      .subscription-header {
+        text-align: center;
+        margin-bottom: clamp(0.5rem, 1vh, 1rem);
+      }
+
+      .subscription-title {
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        font-weight: 300;
+        margin-bottom: clamp(0.3rem, 0.8vh, 0.5rem);
+        line-height: 1.2;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.95) 0%,
+          rgba(245, 158, 11, 0.8) 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .subscription-subtitle {
+        font-size: clamp(0.85rem, 2vw, 1rem);
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 300;
+        line-height: 1.4;
+      }
+
+      /* Subscription Cards */
+      .subscription-card {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.08) 0%,
+          rgba(255, 255, 255, 0.03) 100%
+        );
+        backdrop-filter: blur(40px) saturate(120%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: clamp(16px, 3vw, 24px);
+        padding: clamp(1.5rem, 3vh, 2rem);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s ease;
+      }
+
+      .subscription-card::before {
+        content: "";
+        position: absolute;
+        inset: 1px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.04) 0%,
+          rgba(255, 255, 255, 0.01) 100%
+        );
+        border-radius: clamp(15px, 3vw, 23px);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .subscription-card:hover::before {
+        opacity: 1;
+      }
+
+      .subscription-card:hover {
+        border-color: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 40px rgba(255, 255, 255, 0.06);
+      }
+
+      .card-title {
+        display: flex;
+        align-items: center;
+        gap: clamp(0.5rem, 1.2vw, 0.8rem);
+        font-size: clamp(1rem, 2.5vw, 1.3rem);
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.95);
+        margin-bottom: clamp(1rem, 2vh, 1.5rem);
+      }
+
+      .card-icon {
+        font-size: clamp(1.2rem, 3vw, 1.6rem);
+        opacity: 0.9;
+      }
+
+      /* Status Display */
+      .status-display {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(0.8rem, 1.8vh, 1.2rem);
+      }
+
+      .status-main {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: clamp(0.8rem, 2vw, 1rem);
+      }
+
+      .tier-info {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .tier-badge {
+        display: inline-block;
+        padding: clamp(0.4rem, 1vh, 0.6rem) clamp(0.8rem, 2vw, 1.2rem);
+        border-radius: clamp(12px, 2.4vw, 16px);
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
+        font-weight: 500;
+        margin-bottom: clamp(0.4rem, 1vh, 0.6rem);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .tier-badge.free {
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .tier-badge.essential {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.2),
+          rgba(5, 150, 105, 0.15)
+        );
+        color: rgba(110, 231, 183, 0.9);
+      }
+
+      .tier-badge.premium {
+        background: linear-gradient(
+          135deg,
+          rgba(245, 158, 11, 0.2),
+          rgba(217, 119, 6, 0.15)
+        );
+        color: rgba(251, 191, 36, 0.9);
+      }
+
+      .tier-badge.creator {
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.2),
+          rgba(99, 102, 241, 0.15)
+        );
+        color: rgba(196, 181, 253, 0.9);
+      }
+
+      .tier-description {
+        font-size: clamp(0.8rem, 1.9vw, 0.9rem);
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.4;
+      }
+
+      .billing-info {
+        text-align: right;
+        min-width: 150px;
+      }
+
+      .billing-amount {
+        font-size: clamp(1.2rem, 3vw, 1.6rem);
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: clamp(0.2rem, 0.5vh, 0.3rem);
+      }
+
+      .billing-period {
+        font-size: clamp(0.7rem, 1.7vw, 0.8rem);
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: clamp(0.4rem, 1vh, 0.6rem);
+      }
+
+      .next-billing {
+        font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      /* Status Indicators */
+      .status-indicators {
+        display: flex;
+        gap: clamp(1rem, 2.5vw, 1.5rem);
+        flex-wrap: wrap;
+      }
+
+      .status-indicator {
+        display: flex;
+        align-items: center;
+        gap: clamp(0.4rem, 1vw, 0.6rem);
+        font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .status-icon {
+        width: clamp(8px, 1.5vw, 12px);
+        height: clamp(8px, 1.5vw, 12px);
+        border-radius: 50%;
+      }
+
+      .status-icon.active {
+        background: #10b981;
+        box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+      }
+
+      .status-icon.canceled {
+        background: #f59e0b;
+        box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+      }
+
+      .status-icon.inactive {
+        background: #6b7280;
+      }
+
+      /* Action Buttons */
+      .subscription-actions {
+        display: flex;
+        gap: clamp(0.8rem, 2vw, 1rem);
+        margin-top: clamp(1rem, 2vh, 1.5rem);
+        flex-wrap: wrap;
+      }
+
+      .action-button {
+        flex: 1;
+        min-width: clamp(140px, 25vw, 200px);
+        padding: clamp(0.8rem, 2vh, 1rem) clamp(1.2rem, 3vw, 1.5rem);
+        border: none;
+        border-radius: clamp(10px, 2vw, 14px);
+        font-size: clamp(0.85rem, 2.1vw, 1rem);
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        font-family: inherit;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .action-button::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+      }
+
+      .action-button:hover::before {
+        transform: translateX(100%);
+      }
+
+      .action-button.primary {
+        background: linear-gradient(
+          135deg,
+          rgba(245, 158, 11, 0.2),
+          rgba(217, 119, 6, 0.15)
+        );
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        color: rgba(251, 191, 36, 0.9);
+      }
+
+      .action-button.primary:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(245, 158, 11, 0.3),
+          rgba(217, 119, 6, 0.2)
+        );
+        border-color: rgba(245, 158, 11, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.2);
+      }
+
+      .action-button.secondary {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .action-button.secondary:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+      }
+
+      .action-button.danger {
+        background: linear-gradient(
+          135deg,
+          rgba(239, 68, 68, 0.15),
+          rgba(220, 38, 38, 0.1)
+        );
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: rgba(248, 113, 113, 0.9);
+      }
+
+      .action-button.danger:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(239, 68, 68, 0.25),
+          rgba(220, 38, 38, 0.15)
+        );
+        border-color: rgba(239, 68, 68, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.2);
+      }
+
+      .action-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .action-button:disabled:hover {
+        transform: none;
+        box-shadow: none;
+      }
+
+      /* Loading Spinner */
+      .loading-spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: rgba(255, 255, 255, 0.9);
+        animation: spin 1s linear infinite;
+        display: inline-block;
+        margin-left: 0.5rem;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Upgrade Options */
+      .upgrade-options {
+        border-color: rgba(16, 185, 129, 0.2);
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.05) 0%,
+          rgba(5, 150, 105, 0.02) 100%
+        );
+      }
+
+      .upgrade-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: clamp(0.8rem, 2vw, 1.2rem);
+      }
+
+      .upgrade-option {
+        padding: clamp(1rem, 2vh, 1.3rem);
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: clamp(12px, 2.4vw, 16px);
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .upgrade-option:hover {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(16, 185, 129, 0.2);
+        transform: translateY(-2px);
+      }
+
+      .upgrade-option.recommended {
+        border-color: rgba(16, 185, 129, 0.3);
+        background: rgba(16, 185, 129, 0.05);
+      }
+
+      .option-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: clamp(0.6rem, 1.5vh, 0.8rem);
+      }
+
+      .option-name {
+        font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.95);
+      }
+
+      .option-price {
+        font-size: clamp(1rem, 2.5vw, 1.3rem);
+        font-weight: 600;
+        color: rgba(16, 185, 129, 0.9);
+      }
+
+      .option-features {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .option-features li {
+        padding: clamp(0.2rem, 0.5vh, 0.3rem) 0;
+        font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+        color: rgba(255, 255, 255, 0.8);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .option-features li::before {
+        content: "✨";
+        font-size: 0.8em;
+      }
+
+      /* Toast Notifications */
+      .toast-container {
+        position: fixed;
+        top: clamp(80px, 12vh, 100px);
+        right: clamp(1rem, 3vw, 2rem);
+        z-index: 1001;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        max-width: clamp(280px, 40vw, 400px);
+      }
+
+      .toast {
+        padding: clamp(0.8rem, 2vh, 1.2rem) clamp(1rem, 2.5vw, 1.5rem);
+        background: rgba(15, 15, 35, 0.95);
+        backdrop-filter: blur(30px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: clamp(12px, 2.4vw, 16px);
+        color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        transform: translateX(100%);
+        opacity: 0;
+        transition: all 0.3s ease;
+        animation: toastSlide 0.3s ease-out forwards;
+        font-size: clamp(0.8rem, 1.9vw, 0.9rem);
+        line-height: 1.4;
+      }
+
+      @keyframes toastSlide {
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      .toast.success {
+        border-color: rgba(16, 185, 129, 0.3);
+        background: linear-gradient(
+          135deg,
+          rgba(15, 15, 35, 0.95) 0%,
+          rgba(16, 185, 129, 0.08) 100%
+        );
+      }
+
+      .toast.error {
+        border-color: rgba(239, 68, 68, 0.3);
+        background: linear-gradient(
+          135deg,
+          rgba(15, 15, 35, 0.95) 0%,
+          rgba(239, 68, 68, 0.08) 100%
+        );
+      }
+
+      .toast.warning {
+        border-color: rgba(245, 158, 11, 0.3);
+        background: linear-gradient(
+          135deg,
+          rgba(15, 15, 35, 0.95) 0%,
+          rgba(245, 158, 11, 0.08) 100%
+        );
+      }
+
+      /* Mobile Responsive */
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+        }
+
+        .status-main {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: clamp(1rem, 2vh, 1.2rem);
+        }
+
+        .billing-info {
+          text-align: left;
+          width: 100%;
+        }
+
+        .subscription-actions {
+          flex-direction: column;
+          gap: clamp(0.6rem, 1.5vh, 0.8rem);
+        }
+
+        .action-button {
+          min-width: 100%;
+        }
+
+        .upgrade-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .subscription-main {
+          padding-left: clamp(0.8rem, 2vw, 1.2rem);
+          padding-right: clamp(0.8rem, 2vw, 1.2rem);
+        }
+
+        .subscription-card {
+          padding: clamp(1.2rem, 2.5vh, 1.6rem);
+        }
+
+        .status-indicators {
+          flex-direction: column;
+          gap: clamp(0.6rem, 1.5vh, 0.8rem);
+        }
+      }
+
+      /* Accessibility */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* Focus indicators */
+      .action-button:focus-visible,
+      .nav-link:focus-visible,
+      .back-link:focus-visible,
+      .upgrade-option:focus-visible {
+        outline: 2px solid rgba(147, 51, 234, 0.6);
+        outline-offset: 2px;
+      }
+
+      /* Remove default outlines */
+      * {
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Cosmic Background -->
+    <div class="cosmic-background">
+      <div class="cosmic-mirror"></div>
+      <div class="cosmic-mirror"></div>
+      <div class="cosmic-mirror"></div>
+    </div>
+
+    <!-- Floating Particles -->
+    <div class="cosmic-particles">
+      <div class="cosmic-particle"></div>
+      <div class="cosmic-particle"></div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="nav-bar">
+      <div class="nav-left">
+        <a href="/" class="logo">
+          <span class="mirror-logo">🪞</span>
+          <span class="logo-text">Mirror of Truth</span>
+        </a>
+
+        <div class="nav-links">
+          <a href="/dashboard" class="nav-link">
+            <span>🏠</span>
+            <span>Journey</span>
+          </a>
+          <a href="/reflection" class="nav-link">
+            <span>✨</span>
+            <span>Reflect</span>
+          </a>
+          <a href="/subscription" class="nav-link active">
+            <span>💎</span>
+            <span>Subscription</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="nav-right">
+        <a href="/dashboard" class="back-link">
+          <span>←</span>
+          <span>Back to Journey</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Main Subscription Container -->
+    <main class="subscription-main">
+      <div class="subscription-container">
+        <!-- Header -->
+        <div class="subscription-header">
+          <h1 class="subscription-title">Your Consciousness Journey</h1>
+          <p class="subscription-subtitle">
+            Manage your reflection practice and billing
+          </p>
+        </div>
+
+        <!-- Current Subscription Status -->
+        <div class="subscription-card" id="currentSubscriptionCard">
+          <h2 class="card-title">
+            <span class="card-icon">💫</span>
+            Current Plan
+          </h2>
+
+          <div class="status-display">
+            <div class="status-main">
+              <div class="tier-info">
+                <div class="tier-badge" id="tierBadge">Loading...</div>
+                <div class="tier-description" id="tierDescription">
+                  Loading subscription details...
+                </div>
+              </div>
+              <div class="billing-info" id="billingInfo">
+                <div class="billing-amount" id="billingAmount">-</div>
+                <div class="billing-period" id="billingPeriod">-</div>
+                <div class="next-billing" id="nextBilling">-</div>
+              </div>
+            </div>
+
+            <div class="status-indicators" id="statusIndicators">
+              <div class="status-indicator">
+                <div class="status-icon" id="statusIcon"></div>
+                <span id="statusText">Loading...</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="subscription-actions" id="subscriptionActions">
+            <!-- Actions will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Upgrade Options (if applicable) -->
+        <div
+          class="subscription-card upgrade-options"
+          id="upgradeOptionsCard"
+          style="display: none"
+        >
+          <h2 class="card-title">
+            <span class="card-icon">🚀</span>
+            Upgrade Your Journey
+          </h2>
+
+          <div class="upgrade-grid" id="upgradeGrid">
+            <!-- Upgrade options will be populated by JavaScript -->
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+      // Subscription Page Logic - Conscious Journey Management
+      let userData = null;
+      let subscriptionData = null;
+      let isLoading = false;
+
+      // Initialize on load
+      window.addEventListener("load", initializeSubscription);
+
+      async function initializeSubscription() {
+        try {
+          await authenticateAndLoadUser();
+          await loadSubscriptionData();
+          updateSubscriptionDisplay();
+          console.log("💎 Subscription page initialized");
+        } catch (error) {
+          console.error("Subscription initialization failed:", error);
+          handleAuthenticationError();
+        }
+      }
+
+      // Authentication
+      async function authenticateAndLoadUser() {
+        const token = localStorage.getItem("mirror_auth_token");
+
+        if (!token) {
+          throw new Error("No authentication token found");
+        }
+
+        try {
+          const response = await fetch("/api/auth", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ action: "verify-token" }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Authentication failed: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          if (!data.success) {
+            throw new Error(data.error || "Authentication failed");
+          }
+
+          userData = data.user;
+          console.log("✅ User authenticated:", userData.email);
+        } catch (error) {
+          console.error("Authentication error:", error);
+          throw error;
+        }
+      }
+
+      // Load subscription data
+      async function loadSubscriptionData() {
+        try {
+          const token = localStorage.getItem("mirror_auth_token");
+
+          const response = await fetch(
+            "/api/subscriptions?action=get-current",
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+              subscriptionData = data.subscription;
+              console.log(
+                "💎 Subscription data loaded:",
+                subscriptionData.tier
+              );
+            } else {
+              throw new Error(data.error || "Failed to load subscription");
+            }
+          } else {
+            throw new Error(`Failed to load subscription: ${response.status}`);
+          }
+        } catch (error) {
+          console.error("Subscription loading error:", error);
+          // Fallback to user data
+          subscriptionData = {
+            tier: userData.tier || "free",
+            status: userData.subscriptionStatus || "active",
+            isActive: true,
+            isSubscribed: userData.tier !== "free",
+            canUpgrade:
+              userData.tier === "free" || userData.tier === "essential",
+            currentPrice: 0,
+            currency: "USD",
+          };
+        }
+      }
+
+      // Update subscription display
+      function updateSubscriptionDisplay() {
+        updateTierDisplay();
+        updateBillingInfo();
+        updateStatusIndicators();
+        updateSubscriptionActions();
+        updateUpgradeOptions();
+      }
+
+      function updateTierDisplay() {
+        const tierBadge = document.getElementById("tierBadge");
+        const tierDescription = document.getElementById("tierDescription");
+
+        const tier = subscriptionData.tier;
+        const tierInfo = getTierInfo(tier);
+
+        tierBadge.textContent = tierInfo.name;
+        tierBadge.className = `tier-badge ${tier}`;
+        tierDescription.textContent = tierInfo.description;
+      }
+
+      function updateBillingInfo() {
+        const billingAmount = document.getElementById("billingAmount");
+        const billingPeriod = document.getElementById("billingPeriod");
+        const nextBilling = document.getElementById("nextBilling");
+
+        if (subscriptionData.tier === "free") {
+          billingAmount.textContent = "Free";
+          billingPeriod.textContent = "forever";
+          nextBilling.textContent = "No billing required";
+        } else {
+          const price = subscriptionData.currentPrice || 0;
+          const period = subscriptionData.period || "monthly";
+
+          billingAmount.textContent = `$${price}`;
+          billingPeriod.textContent = `per ${
+            period === "yearly" ? "year" : "month"
+          }`;
+
+          if (subscriptionData.nextBilling) {
+            const nextDate = new Date(subscriptionData.nextBilling);
+            nextBilling.textContent = `Next billing: ${nextDate.toLocaleDateString()}`;
+          } else {
+            nextBilling.textContent = "Billing date unavailable";
+          }
+        }
+      }
+
+      function updateStatusIndicators() {
+        const statusIcon = document.getElementById("statusIcon");
+        const statusText = document.getElementById("statusText");
+
+        const status = subscriptionData.status;
+
+        if (status === "active") {
+          statusIcon.className = "status-icon active";
+          statusText.textContent = "Active subscription";
+        } else if (status === "canceled") {
+          statusIcon.className = "status-icon canceled";
+          statusText.textContent = "Canceled (active until period end)";
+        } else {
+          statusIcon.className = "status-icon inactive";
+          statusText.textContent = "Inactive subscription";
+        }
+      }
+
+      function updateSubscriptionActions() {
+        const actionsContainer = document.getElementById("subscriptionActions");
+        actionsContainer.innerHTML = "";
+
+        // Customer Portal button (for paid users)
+        if (subscriptionData.isSubscribed && subscriptionData.hasStripeData) {
+          const portalButton = createActionButton(
+            "⚙️",
+            "Manage Billing",
+            "secondary",
+            () => openCustomerPortal()
+          );
+          actionsContainer.appendChild(portalButton);
+        }
+
+        // Cancel/Reactivate button
+        if (subscriptionData.isSubscribed) {
+          if (subscriptionData.status === "active") {
+            const cancelButton = createActionButton(
+              "❌",
+              "Cancel Subscription",
+              "danger",
+              () => cancelSubscription()
+            );
+            actionsContainer.appendChild(cancelButton);
+          } else if (subscriptionData.canReactivate) {
+            const reactivateButton = createActionButton(
+              "🔄",
+              "Reactivate Subscription",
+              "primary",
+              () => reactivateSubscription()
+            );
+            actionsContainer.appendChild(reactivateButton);
+          }
+        }
+
+        // Upgrade button (for free users)
+        if (subscriptionData.tier === "free") {
+          const upgradeButton = createActionButton(
+            "✨",
+            "Upgrade to Essential",
+            "primary",
+            () => (window.location.href = "/register?tier=essential")
+          );
+          actionsContainer.appendChild(upgradeButton);
+        }
+      }
+
+      function updateUpgradeOptions() {
+        const upgradeCard = document.getElementById("upgradeOptionsCard");
+        const upgradeGrid = document.getElementById("upgradeGrid");
+
+        if (
+          subscriptionData.canUpgrade &&
+          subscriptionData.tier !== "premium"
+        ) {
+          upgradeCard.style.display = "block";
+          upgradeGrid.innerHTML = "";
+
+          const tiers = getUpgradeTiers();
+
+          tiers.forEach((tier) => {
+            const option = createUpgradeOption(tier);
+            upgradeGrid.appendChild(option);
+          });
+        } else {
+          upgradeCard.style.display = "none";
+        }
+      }
+
+      // Helper functions
+      function getTierInfo(tier) {
+        const tierInfo = {
+          free: {
+            name: "Free",
+            description: "1 reflection per month to explore your consciousness",
+          },
+          essential: {
+            name: "Essential",
+            description:
+              "5 reflections monthly + Evolution Reports to track growth",
+          },
+          premium: {
+            name: "Premium",
+            description: "10 reflections monthly + Advanced Evolution Insights",
+          },
+          creator: {
+            name: "Creator",
+            description:
+              "Unlimited reflections and full access to all features",
+          },
+        };
+
+        return tierInfo[tier] || tierInfo.free;
+      }
+
+      function getUpgradeTiers() {
+        const currentTier = subscriptionData.tier;
+        const tiers = [];
+
+        if (currentTier === "free") {
+          tiers.push({
+            name: "Essential",
+            tier: "essential",
+            price: "$4.99/month",
+            yearlyPrice: "$49.99/year",
+            features: [
+              "5 reflections per month",
+              "Complete reflection history",
+              "Evolution insights",
+              "Search & organize",
+            ],
+            recommended: true,
+          });
+
+          tiers.push({
+            name: "Premium",
+            tier: "premium",
+            price: "$9.99/month",
+            yearlyPrice: "$99.99/year",
+            features: [
+              "10 reflections per month",
+              "Extended AI thinking",
+              "Deep evolution reports",
+              "Priority support",
+            ],
+          });
+        } else if (currentTier === "essential") {
+          tiers.push({
+            name: "Premium",
+            tier: "premium",
+            price: "$9.99/month",
+            yearlyPrice: "$99.99/year",
+            features: [
+              "10 reflections per month",
+              "Extended AI thinking",
+              "Deep evolution reports",
+              "Priority support",
+            ],
+            recommended: true,
+          });
+        }
+
+        return tiers;
+      }
+
+      function createActionButton(icon, text, type, onClick) {
+        const button = document.createElement("button");
+        button.className = `action-button ${type}`;
+        button.innerHTML = `<span>${icon}</span><span>${text}</span>`;
+        button.onclick = onClick;
+        return button;
+      }
+
+      function createUpgradeOption(tier) {
+        const option = document.createElement("div");
+        option.className = `upgrade-option ${
+          tier.recommended ? "recommended" : ""
+        }`;
+
+        option.innerHTML = `
+          <div class="option-header">
+            <div class="option-name">${tier.name}</div>
+            <div class="option-price">${tier.price}</div>
+          </div>
+          <ul class="option-features">
+            ${tier.features.map((feature) => `<li>${feature}</li>`).join("")}
+          </ul>
+        `;
+
+        option.onclick = () => {
+          window.location.href = `/register?tier=${tier.tier}`;
+        };
+
+        return option;
+      }
+
+      // Action handlers
+      async function cancelSubscription() {
+        const confirmed = confirm(
+          "Are you sure you want to cancel your subscription? You'll retain access until the end of your current billing period."
+        );
+
+        if (!confirmed) return;
+
+        setLoadingState(true);
+
+        try {
+          const token = localStorage.getItem("mirror_auth_token");
+
+          const response = await fetch("/api/subscriptions", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              action: "cancel-subscription",
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            subscriptionData.status = "canceled";
+            updateSubscriptionDisplay();
+            showToast("Subscription canceled successfully", "success");
+          } else {
+            throw new Error(data.error || "Failed to cancel subscription");
+          }
+        } catch (error) {
+          console.error("Cancel subscription error:", error);
+          showToast(error.message || "Failed to cancel subscription", "error");
+        } finally {
+          setLoadingState(false);
+        }
+      }
+
+      async function reactivateSubscription() {
+        setLoadingState(true);
+
+        try {
+          const token = localStorage.getItem("mirror_auth_token");
+
+          const response = await fetch("/api/subscriptions", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              action: "reactivate",
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            subscriptionData.status = "active";
+            updateSubscriptionDisplay();
+            showToast("Subscription reactivated successfully", "success");
+          } else {
+            throw new Error(data.error || "Failed to reactivate subscription");
+          }
+        } catch (error) {
+          console.error("Reactivate subscription error:", error);
+          showToast(
+            error.message || "Failed to reactivate subscription",
+            "error"
+          );
+        } finally {
+          setLoadingState(false);
+        }
+      }
+
+      async function openCustomerPortal() {
+        setLoadingState(true);
+
+        try {
+          const token = localStorage.getItem("mirror_auth_token");
+
+          const response = await fetch("/api/subscriptions", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              action: "get-customer-portal",
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            window.location.href = data.portalUrl;
+          } else {
+            throw new Error(data.error || "Failed to open customer portal");
+          }
+        } catch (error) {
+          console.error("Customer portal error:", error);
+          showToast(error.message || "Failed to open customer portal", "error");
+        } finally {
+          setLoadingState(false);
+        }
+      }
+
+      // Loading state
+      function setLoadingState(loading) {
+        isLoading = loading;
+
+        const buttons = document.querySelectorAll(".action-button");
+        buttons.forEach((button) => {
+          button.disabled = loading;
+        });
+      }
+
+      // Authentication error handler
+      function handleAuthenticationError() {
+        showToast("Authentication failed. Please sign in again.", "error");
+
+        setTimeout(() => {
+          localStorage.removeItem("mirror_auth_token");
+          localStorage.removeItem("mirrorVerifiedUser");
+          window.location.href = "/auth/signin";
+        }, 2000);
+      }
+
+      // Toast notifications
+      function showToast(message, type = "info", duration = 5000) {
+        const container = document.getElementById("toastContainer");
+
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+
+        container.appendChild(toast);
+
+        // Remove toast after duration
+        setTimeout(() => {
+          toast.style.transform = "translateX(100%)";
+          toast.style.opacity = "0";
+
+          setTimeout(() => {
+            if (container.contains(toast)) {
+              container.removeChild(toast);
+            }
+          }, 300);
+        }, duration);
+      }
+
+      // Debug (Development Only)
+      if (window.location.hostname === "localhost") {
+        console.log("💎 Subscription Page - Conscious Journey Management");
+        window.subscriptionDebug = {
+          userData: () => userData,
+          subscriptionData: () => subscriptionData,
+          testToast: (message, type) => showToast(message, type),
+        };
+      }
+    </script>
+  </body>
+</html>
