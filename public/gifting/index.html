@@ -12,7 +12,7 @@
       Gift Mirror of Truth Access | Self-Discovery for Someone You Care About
     </title>
     <style>
-      /* Gift Flow - Perfect 3-Step Contained Experience */
+      /* 3-Page Gifting Experience - Perfect Contained Flow */
       * {
         margin: 0;
         padding: 0;
@@ -78,7 +78,7 @@
         }
       }
 
-      /* Floating particles for ambiance */
+      /* Floating particles */
       .floating-particles {
         position: fixed;
         inset: 0;
@@ -166,117 +166,90 @@
         transform: translateY(-2px);
       }
 
-      /* Progress indicator */
-      .progress-container {
-        position: fixed;
-        top: clamp(1rem, 2vh, 1.5rem);
-        right: clamp(1rem, 2vw, 1.5rem);
-        z-index: 100;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: clamp(0.6rem, 1.2vh, 0.8rem) clamp(1rem, 1.8vw, 1.2rem);
-        border-radius: 50px;
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        font-size: clamp(0.8rem, 1.6vw, 0.9rem);
-        font-weight: 300;
-        color: rgba(255, 255, 255, 0.8);
-      }
-
-      .progress-steps {
-        display: flex;
-        gap: 0.3rem;
-      }
-
-      .progress-step {
-        width: clamp(6px, 1.2vw, 8px);
-        height: clamp(6px, 1.2vw, 8px);
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.2);
-        transition: all 0.3s ease;
-      }
-
-      .progress-step.active {
-        background: rgba(251, 191, 36, 0.8);
-        box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
-      }
-
-      .progress-step.completed {
-        background: rgba(16, 185, 129, 0.8);
-        box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
-      }
-
-      /* Main container */
-      .main-container {
+      /* Page Container */
+      .page-container {
         position: relative;
         z-index: 10;
         height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: clamp(1rem, 2vh, 2rem) clamp(1rem, 3vw, 2rem);
-        max-width: 100vw;
-        margin: 0 auto;
+        width: 100vw;
+        overflow: hidden;
       }
 
-      /* Step container */
-      .step-container {
+      .pages-wrapper {
+        display: flex;
+        height: 100vh;
+        width: 300vw; /* 3 pages */
+        transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      }
+
+      /* Individual Pages */
+      .page {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        flex-shrink: 0;
+        padding: 0 clamp(1rem, 3vw, 2rem);
+        overflow: hidden;
+      }
+
+      .page-content {
         width: 100%;
-        max-width: clamp(800px, 85vw, 1000px);
-        display: none;
-        opacity: 0;
-        transform: translateY(20px);
-        transition: all 0.6s ease;
-      }
-
-      .step-container.active {
-        display: block;
-        opacity: 1;
-        transform: translateY(0);
-      }
-
-      /* Step 1 - What they'll receive */
-      .step-1 {
-        text-align: center;
+        max-width: 1200px;
+        height: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 100%;
-        gap: clamp(1.5rem, 3vh, 2.5rem);
+        animation: pageAppear 1.2s ease-out;
+        padding: clamp(2rem, 4vh, 3rem) 0;
       }
 
-      .step-1 .header {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: clamp(0.8rem, 1.5vh, 1.2rem);
+      @keyframes pageAppear {
+        0% {
+          opacity: 0;
+          transform: scale(0.95) translateY(30px);
+          filter: blur(2px);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+          filter: blur(0);
+        }
       }
 
-      .gift-icon {
-        font-size: clamp(3rem, 6vw, 4.5rem);
-        animation: giftPulse 6s ease-in-out infinite;
-        filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.4));
+      /* Page Headers */
+      .page-header {
+        text-align: center;
+        margin-bottom: clamp(2rem, 4vh, 3rem);
+        flex-shrink: 0;
       }
 
-      @keyframes giftPulse {
+      .page-icon {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
+        display: block;
+        animation: iconPulse 4s ease-in-out infinite;
+      }
+
+      @keyframes iconPulse {
         0%,
         100% {
-          transform: scale(1) rotate(0deg);
+          transform: scale(1);
           opacity: 0.9;
         }
         50% {
-          transform: scale(1.1) rotate(5deg);
+          transform: scale(1.05);
           opacity: 1;
         }
       }
 
-      .step-title {
-        font-size: clamp(2.5rem, 5vw, 3.5rem);
+      .page-title {
+        font-size: clamp(2rem, 4vw, 2.8rem);
         font-weight: 300;
+        margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
         background: linear-gradient(
           135deg,
           rgba(255, 255, 255, 0.95) 0%,
@@ -288,11 +261,10 @@
         color: transparent;
         letter-spacing: 0.5px;
         line-height: 1.1;
-        margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
       }
 
-      .step-subtitle {
-        font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+      .page-subtitle {
+        font-size: clamp(1rem, 2.2vw, 1.3rem);
         opacity: 0.85;
         color: rgba(255, 255, 255, 0.8);
         line-height: 1.4;
@@ -300,13 +272,16 @@
         max-width: 600px;
       }
 
-      /* Benefits grid */
+      /* Page 1: What They'll Receive */
       .benefits-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: clamp(1.2rem, 2.5vw, 2rem);
+        gap: clamp(1.5rem, 3vw, 2rem);
         width: 100%;
         max-width: 900px;
+        margin-bottom: clamp(2rem, 4vh, 3rem);
+        flex: 1;
+        align-content: center;
       }
 
       .benefit-card {
@@ -314,11 +289,11 @@
         backdrop-filter: blur(40px) saturate(120%);
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: clamp(16px, 3vw, 24px);
-        padding: clamp(1.8rem, 3vh, 2.5rem);
+        padding: clamp(1.5rem, 3vh, 2rem);
+        text-align: center;
+        transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
-        transition: all 0.4s ease;
-        text-align: left;
       }
 
       .benefit-card::before {
@@ -327,10 +302,9 @@
         inset: 1px;
         background: linear-gradient(
           135deg,
-          rgba(255, 255, 255, 0.08) 0%,
-          rgba(251, 191, 36, 0.03) 30%,
-          rgba(147, 51, 234, 0.02) 70%,
-          rgba(255, 255, 255, 0.04) 100%
+          rgba(255, 255, 255, 0.06) 0%,
+          rgba(251, 191, 36, 0.03) 50%,
+          rgba(255, 255, 255, 0.02) 100%
         );
         border-radius: clamp(15px, 3vw, 23px);
         pointer-events: none;
@@ -339,55 +313,68 @@
       .benefit-card:hover {
         transform: translateY(-5px);
         border-color: rgba(255, 255, 255, 0.2);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
       }
 
       .benefit-icon {
-        font-size: clamp(2rem, 4vw, 2.8rem);
-        margin-bottom: clamp(1rem, 2vh, 1.5rem);
+        font-size: clamp(2rem, 4vw, 2.5rem);
+        margin-bottom: clamp(1rem, 2vh, 1.3rem);
         display: block;
       }
 
       .benefit-title {
-        font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+        font-size: clamp(1.1rem, 2.2vw, 1.3rem);
         font-weight: 500;
         margin-bottom: clamp(0.8rem, 1.5vh, 1rem);
         color: rgba(255, 255, 255, 0.95);
       }
 
       .benefit-description {
-        font-size: clamp(0.95rem, 2vw, 1.1rem);
-        line-height: 1.6;
+        font-size: clamp(0.9rem, 1.8vw, 1rem);
         color: rgba(255, 255, 255, 0.75);
+        line-height: 1.5;
+        margin-bottom: clamp(1rem, 2vh, 1.3rem);
+      }
+
+      .benefit-features {
+        list-style: none;
+        padding: 0;
         margin: 0;
       }
 
-      /* Step 2 - Fill details */
-      .step-2 {
+      .benefit-features li {
         display: flex;
-        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        gap: clamp(2rem, 4vh, 3rem);
-        height: 100%;
+        gap: 0.8rem;
+        margin-bottom: 0.5rem;
+        font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+        color: rgba(255, 255, 255, 0.8);
       }
 
-      .step-2 .header {
-        text-align: center;
-        max-width: 600px;
+      .feature-icon {
+        font-size: 1rem;
+        flex-shrink: 0;
       }
 
+      /* Page 2: Fill Details */
       .form-container {
         width: 100%;
-        max-width: 650px;
+        max-width: 800px;
         background: rgba(255, 255, 255, 0.04);
         backdrop-filter: blur(40px) saturate(120%);
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: clamp(20px, 3vw, 28px);
-        padding: clamp(2.5rem, 4vh, 3.5rem);
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        padding: clamp(2rem, 4vh, 3rem);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3),
+          0 0 0 1px rgba(255, 255, 255, 0.06);
         position: relative;
         overflow: hidden;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        max-height: 70vh;
+        overflow-y: auto;
       }
 
       .form-container::before {
@@ -405,11 +392,28 @@
         pointer-events: none;
       }
 
-      /* Form styling */
+      .form-container::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      .form-container::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 2px;
+      }
+
+      .form-container::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 2px;
+      }
+
+      .form-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
       .gift-form {
         display: flex;
         flex-direction: column;
-        gap: clamp(1.5rem, 3vh, 2rem);
+        gap: clamp(1.2rem, 2vh, 1.6rem);
       }
 
       .form-row {
@@ -422,7 +426,7 @@
         position: relative;
         display: flex;
         flex-direction: column;
-        gap: clamp(0.5rem, 1vh, 0.7rem);
+        gap: clamp(0.4rem, 0.8vh, 0.5rem);
       }
 
       .form-group.full-width {
@@ -430,20 +434,20 @@
       }
 
       .form-label {
-        font-size: clamp(0.9rem, 1.8vw, 1rem);
+        font-size: clamp(0.85rem, 1.7vw, 0.95rem);
         color: rgba(255, 255, 255, 0.8);
         font-weight: 400;
         letter-spacing: 0.3px;
       }
 
       .form-input {
-        padding: clamp(1rem, 2vh, 1.2rem);
+        padding: clamp(0.9rem, 1.8vh, 1.1rem);
         background: rgba(255, 255, 255, 0.06);
         backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: clamp(12px, 2.4vw, 16px);
+        border-radius: clamp(10px, 2vw, 14px);
         color: #fff;
-        font-size: clamp(0.9rem, 1.8vw, 1rem);
+        font-size: clamp(0.85rem, 1.7vw, 0.95rem);
         font-family: inherit;
         transition: all 0.3s ease;
         font-weight: 300;
@@ -465,37 +469,53 @@
       }
 
       .form-textarea {
-        min-height: clamp(90px, 15vh, 120px);
+        min-height: clamp(80px, 12vh, 100px);
         resize: none;
-        line-height: 1.6;
+        line-height: 1.5;
         font-family: inherit;
       }
 
       .char-counter {
         text-align: right;
-        font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+        font-size: clamp(0.75rem, 1.5vw, 0.85rem);
         color: rgba(255, 255, 255, 0.5);
         margin-top: 0.3rem;
         transition: color 0.3s ease;
       }
 
-      /* Tier selection */
-      .tier-selection {
+      /* Selection sections */
+      .selection-section {
         background: rgba(255, 255, 255, 0.03);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: clamp(16px, 3vw, 20px);
-        padding: clamp(2rem, 3vh, 2.5rem);
-        margin-top: clamp(1rem, 2vh, 1.5rem);
+        border-radius: clamp(12px, 2.4vw, 16px);
+        padding: clamp(1.5rem, 2.5vh, 2rem);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .selection-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.2) 50%,
+          transparent 100%
+        );
       }
 
       .section-title {
-        font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+        font-size: clamp(1rem, 2vw, 1.2rem);
         font-weight: 500;
-        margin-bottom: clamp(1.5rem, 3vh, 2rem);
+        margin-bottom: clamp(1rem, 2vh, 1.3rem);
         color: rgba(255, 255, 255, 0.9);
         display: flex;
         align-items: center;
-        gap: 0.8rem;
+        gap: 0.6rem;
         letter-spacing: 0.3px;
       }
 
@@ -505,26 +525,35 @@
         opacity: 0.8;
       }
 
+      /* Tier and duration selection */
       .tier-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: clamp(1.2rem, 2.5vw, 1.8rem);
-        margin-bottom: clamp(2rem, 3vh, 2.5rem);
+        gap: clamp(1rem, 2vw, 1.3rem);
+        margin-bottom: clamp(1.5rem, 2.5vh, 2rem);
       }
 
-      .tier-option {
+      .duration-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: clamp(0.8rem, 1.5vw, 1rem);
+      }
+
+      .option-card {
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: clamp(12px, 2.4vw, 16px);
-        padding: clamp(1.5rem, 3vh, 2rem);
+        border-radius: clamp(10px, 2vw, 14px);
+        padding: clamp(1.2rem, 2vh, 1.6rem);
         cursor: pointer;
         transition: all 0.3s ease;
         text-align: center;
         position: relative;
         overflow: hidden;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
       }
 
-      .tier-option::before {
+      .option-card::before {
         content: "";
         position: absolute;
         inset: 0;
@@ -537,29 +566,26 @@
         transition: opacity 0.3s ease;
       }
 
-      .tier-option:hover {
+      .option-card:hover {
         background: rgba(255, 255, 255, 0.06);
         border-color: rgba(255, 255, 255, 0.2);
         transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
       }
 
-      .tier-option:hover::before {
+      .option-card:hover::before {
         opacity: 0.3;
       }
 
-      .tier-option.selected {
+      .option-card.selected {
         background: rgba(16, 185, 129, 0.1);
         border-color: rgba(16, 185, 129, 0.3);
         box-shadow: 0 0 25px rgba(16, 185, 129, 0.2);
+        transform: translateY(-1px);
       }
 
-      .tier-option.selected::before {
+      .option-card.selected::before {
         opacity: 1;
-      }
-
-      .tier-option.premium {
-        position: relative;
-        padding-top: clamp(2.2rem, 4vh, 2.8rem);
       }
 
       .premium-badge {
@@ -577,109 +603,39 @@
         box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
       }
 
-      .tier-name {
-        font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+      .option-name {
+        font-size: clamp(1rem, 2vw, 1.2rem);
         font-weight: 500;
-        margin-bottom: clamp(0.8rem, 1.5vh, 1rem);
+        margin-bottom: clamp(0.6rem, 1.2vh, 0.8rem);
         color: rgba(255, 255, 255, 0.95);
       }
 
-      .tier-description {
-        font-size: clamp(0.85rem, 1.7vw, 1rem);
+      .option-description {
+        font-size: clamp(0.8rem, 1.6vw, 0.9rem);
         color: rgba(255, 255, 255, 0.7);
-        line-height: 1.5;
+        line-height: 1.4;
       }
 
-      /* Duration selection */
-      .duration-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: clamp(1rem, 2vw, 1.3rem);
-      }
-
-      .duration-option {
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: clamp(10px, 2vw, 14px);
-        padding: clamp(1.2rem, 2.5vh, 1.6rem);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .duration-option::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          135deg,
-          rgba(251, 191, 36, 0.1) 0%,
-          rgba(147, 51, 234, 0.08) 100%
-        );
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-
-      .duration-option:hover {
-        background: rgba(255, 255, 255, 0.06);
-        border-color: rgba(255, 255, 255, 0.2);
-        transform: translateY(-2px);
-      }
-
-      .duration-option:hover::before {
-        opacity: 0.3;
-      }
-
-      .duration-option.selected {
-        background: rgba(251, 191, 36, 0.1);
-        border-color: rgba(251, 191, 36, 0.3);
-        box-shadow: 0 0 20px rgba(251, 191, 36, 0.2);
-      }
-
-      .duration-option.selected::before {
-        opacity: 1;
-      }
-
-      .duration-name {
-        font-size: clamp(0.9rem, 1.8vw, 1rem);
-        font-weight: 500;
-        margin-bottom: clamp(0.5rem, 1vh, 0.7rem);
-        color: rgba(255, 255, 255, 0.9);
-      }
-
-      .duration-price {
-        font-size: clamp(1.1rem, 2.2vw, 1.3rem);
+      .option-price {
+        font-size: clamp(1rem, 2vw, 1.2rem);
         font-weight: 600;
         color: #10b981;
       }
 
-      /* Step 3 - Payment */
-      .step-3 {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: clamp(2rem, 4vh, 3rem);
-        height: 100%;
-        text-align: center;
-      }
-
-      .step-3 .header {
-        max-width: 600px;
-      }
-
+      /* Page 3: Payment */
       .payment-container {
         width: 100%;
-        max-width: 500px;
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(40px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        max-width: 600px;
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(40px) saturate(120%);
+        border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: clamp(20px, 3vw, 28px);
-        padding: clamp(2.5rem, 4vh, 3.5rem);
+        padding: clamp(2rem, 4vh, 3rem);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        text-align: center;
         position: relative;
         overflow: hidden;
+        flex-shrink: 0;
       }
 
       .payment-container::before {
@@ -688,19 +644,41 @@
         top: 0;
         left: 0;
         right: 0;
-        height: 3px;
+        height: 2px;
         background: linear-gradient(
           90deg,
           transparent 0%,
-          rgba(16, 185, 129, 0.8) 50%,
+          rgba(16, 185, 129, 0.6) 50%,
           transparent 100%
         );
       }
 
-      .total-amount {
-        font-size: clamp(2.5rem, 5vw, 3.5rem);
+      .payment-summary {
+        margin-bottom: clamp(2rem, 4vh, 3rem);
+      }
+
+      .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: clamp(0.8rem, 1.5vh, 1rem) 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: clamp(0.9rem, 1.8vw, 1rem);
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .summary-item:last-child {
+        border-bottom: none;
+        font-size: clamp(1.1rem, 2.2vw, 1.3rem);
         font-weight: 600;
-        margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
+        color: rgba(255, 255, 255, 0.95);
+        margin-top: clamp(0.5rem, 1vh, 0.8rem);
+      }
+
+      .total-amount {
+        font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+        font-weight: 600;
+        margin-bottom: clamp(0.4rem, 0.8vh, 0.6rem);
         background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         -webkit-background-clip: text;
         background-clip: text;
@@ -708,49 +686,18 @@
       }
 
       .total-description {
-        font-size: clamp(1rem, 2vw, 1.2rem);
-        color: rgba(255, 255, 255, 0.8);
-        margin-bottom: clamp(2rem, 3vh, 2.5rem);
-      }
-
-      .gift-summary {
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: clamp(12px, 2.4vw, 16px);
-        padding: clamp(1.5rem, 3vh, 2rem);
-        margin-bottom: clamp(2rem, 3vh, 2.5rem);
-        text-align: left;
-      }
-
-      .summary-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: clamp(0.5rem, 1vh, 0.7rem) 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      }
-
-      .summary-row:last-child {
-        border-bottom: none;
-        font-weight: 500;
-        font-size: clamp(1rem, 2vw, 1.1rem);
-      }
-
-      .summary-label {
+        font-size: clamp(0.9rem, 1.8vw, 1rem);
         color: rgba(255, 255, 255, 0.7);
-        font-size: clamp(0.9rem, 1.8vw, 1rem);
-      }
-
-      .summary-value {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: clamp(0.9rem, 1.8vw, 1rem);
+        margin-bottom: clamp(1.2rem, 2vh, 1.6rem);
       }
 
       #paypal-button-container {
-        min-height: clamp(55px, 10vh, 65px);
-        border-radius: clamp(12px, 2.4vw, 16px);
+        min-height: clamp(50px, 9vh, 60px);
+        border-radius: clamp(10px, 2vw, 14px);
         overflow: hidden;
-        margin: clamp(1.5rem, 3vh, 2rem) 0;
+        opacity: 1;
+        transition: opacity 0.3s ease;
+        margin: clamp(1rem, 2vh, 1.3rem) 0;
       }
 
       .paypal-loading {
@@ -758,17 +705,17 @@
         align-items: center;
         justify-content: center;
         gap: clamp(1rem, 2vw, 1.3rem);
-        padding: clamp(1.5rem, 3vh, 2rem);
+        padding: clamp(1.2rem, 2vh, 1.5rem);
         background: rgba(59, 130, 246, 0.1);
         border: 1px solid rgba(59, 130, 246, 0.2);
-        border-radius: clamp(12px, 2.4vw, 16px);
+        border-radius: clamp(10px, 2vw, 14px);
         color: #93c5fd;
-        font-size: clamp(0.9rem, 1.8vw, 1rem);
+        font-size: clamp(0.85rem, 1.7vw, 0.95rem);
       }
 
       .loading-spinner {
-        width: clamp(20px, 4vw, 24px);
-        height: clamp(20px, 4vw, 24px);
+        width: clamp(18px, 3.5vw, 22px);
+        height: clamp(18px, 3.5vw, 22px);
         border: 2px solid rgba(147, 197, 253, 0.3);
         border-radius: 50%;
         border-top-color: #93c5fd;
@@ -782,70 +729,42 @@
       }
 
       /* Navigation buttons */
-      .nav-buttons {
+      .page-navigation {
+        position: fixed;
+        bottom: clamp(1.5rem, 3vh, 2rem);
+        left: 50%;
+        transform: translateX(-50%);
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        width: 100%;
-        max-width: 500px;
-        margin-top: clamp(2rem, 4vh, 3rem);
         gap: clamp(1rem, 2vw, 1.5rem);
+        z-index: 100;
       }
 
       .nav-button {
         display: flex;
         align-items: center;
         gap: 0.6rem;
-        padding: clamp(0.8rem, 1.6vh, 1rem) clamp(1.5rem, 3vw, 2rem);
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.08) 0%,
-          rgba(255, 255, 255, 0.04) 100%
-        );
-        backdrop-filter: blur(25px);
+        padding: clamp(0.8rem, 1.5vh, 1rem) clamp(1.5rem, 3vw, 2rem);
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(30px);
         border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: clamp(12px, 2.4vw, 16px);
+        border-radius: 50px;
         color: rgba(255, 255, 255, 0.9);
-        font-size: clamp(0.9rem, 1.8vw, 1rem);
-        font-weight: 400;
+        font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+        font-weight: 500;
         cursor: pointer;
         transition: all 0.3s ease;
-        text-decoration: none;
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
         white-space: nowrap;
-        flex: 1;
-        justify-content: center;
+        text-decoration: none;
       }
 
       .nav-button:hover {
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.12) 0%,
-          rgba(255, 255, 255, 0.06) 100%
-        );
+        background: rgba(255, 255, 255, 0.12);
         border-color: rgba(255, 255, 255, 0.25);
         transform: translateY(-2px);
-      }
-
-      .nav-button.primary {
-        background: linear-gradient(
-          135deg,
-          rgba(16, 185, 129, 0.12) 0%,
-          rgba(5, 150, 105, 0.08) 100%
-        );
-        border-color: rgba(16, 185, 129, 0.25);
-        color: rgba(255, 255, 255, 0.95);
-      }
-
-      .nav-button.primary:hover {
-        background: linear-gradient(
-          135deg,
-          rgba(16, 185, 129, 0.18) 0%,
-          rgba(5, 150, 105, 0.12) 100%
-        );
-        border-color: rgba(16, 185, 129, 0.35);
-        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.15);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
       }
 
       .nav-button:disabled {
@@ -854,23 +773,66 @@
         transform: none;
       }
 
-      .nav-button:disabled:hover {
-        transform: none;
+      .nav-button.primary {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.15) 0%,
+          rgba(5, 150, 105, 0.1) 100%
+        );
+        border-color: rgba(16, 185, 129, 0.3);
+        color: rgba(255, 255, 255, 0.95);
+      }
+
+      .nav-button.primary:hover:not(:disabled) {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.2) 0%,
+          rgba(5, 150, 105, 0.15) 100%
+        );
+        border-color: rgba(16, 185, 129, 0.4);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+      }
+
+      /* Progress indicator */
+      .progress-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .progress-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .progress-dot.active {
+        background: rgba(16, 185, 129, 0.8);
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+      }
+
+      .progress-dot.completed {
+        background: rgba(16, 185, 129, 0.6);
       }
 
       /* Messages */
       .message {
-        padding: clamp(0.8rem, 1.6vh, 1rem);
+        padding: clamp(0.8rem, 1.5vh, 1rem);
         border-radius: clamp(10px, 2vw, 14px);
-        font-size: clamp(0.9rem, 1.8vw, 1rem);
+        font-size: clamp(0.85rem, 1.7vw, 0.95rem);
         text-align: center;
         opacity: 0;
         transform: translateY(-10px);
         transition: all 0.3s ease;
         font-weight: 300;
-        margin-bottom: clamp(1rem, 2vh, 1.3rem);
-        max-width: 600px;
-        width: 100%;
+        margin-bottom: clamp(0.6rem, 1.2vh, 0.8rem);
+        position: fixed;
+        top: clamp(1rem, 2vh, 1.5rem);
+        right: clamp(1rem, 2vw, 1.5rem);
+        max-width: 300px;
+        z-index: 200;
       }
 
       .message.show {
@@ -897,15 +859,14 @@
       }
 
       /* Mobile responsive */
-      @media (max-width: 768px) {
+      @media (max-width: 1024px) {
         .benefits-grid {
           grid-template-columns: 1fr;
-          gap: clamp(1rem, 2vh, 1.5rem);
+          max-width: 600px;
         }
 
         .form-row {
           grid-template-columns: 1fr;
-          gap: clamp(0.8rem, 1.5vh, 1rem);
         }
 
         .tier-grid {
@@ -915,116 +876,40 @@
         .duration-grid {
           grid-template-columns: 1fr;
         }
+      }
 
-        .nav-buttons {
-          flex-direction: column;
-          gap: clamp(0.8rem, 1.5vh, 1rem);
+      @media (max-width: 768px) {
+        .page {
+          padding: 0 clamp(0.5rem, 1vw, 1rem);
         }
 
         .nav-button {
-          width: 100%;
-        }
-      }
-
-      @media (max-width: 480px) {
-        .main-container {
-          padding: clamp(0.5rem, 1vh, 1rem) clamp(0.8rem, 1.5vw, 1.2rem);
-        }
-
-        .form-container,
-        .payment-container {
-          padding: clamp(1.8rem, 3vh, 2.5rem) clamp(1.5rem, 3vw, 2rem);
-        }
-
-        .tier-option,
-        .duration-option {
-          padding: clamp(1rem, 2vh, 1.3rem);
-        }
-      }
-
-      /* Height-constrained screens */
-      @media (max-height: 700px) {
-        .main-container {
-          padding: clamp(0.5rem, 1vh, 1rem) clamp(1rem, 2vw, 1.5rem);
-        }
-
-        .step-container {
-          gap: clamp(1rem, 2vh, 1.5rem);
-        }
-
-        .benefits-grid {
-          gap: clamp(0.8rem, 1.5vh, 1.2rem);
+          font-size: 0.8rem;
+          padding: 0.7rem 1.2rem;
         }
 
         .benefit-card {
-          padding: clamp(1.2rem, 2.5vh, 1.8rem);
-        }
-      }
-
-      @media (max-height: 600px) {
-        .gift-icon {
-          font-size: clamp(2rem, 4vw, 2.8rem);
+          padding: clamp(1.2rem, 2vh, 1.5rem);
         }
 
-        .step-title {
-          font-size: clamp(2rem, 4vw, 2.8rem);
-        }
-
-        .benefits-grid {
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: clamp(0.8rem, 1.5vh, 1rem);
-        }
-
-        .benefit-card {
-          padding: clamp(1rem, 2vh, 1.5rem);
-        }
-
-        .form-container,
-        .payment-container {
+        .form-container {
           padding: clamp(1.5rem, 3vh, 2rem);
         }
       }
 
-      /* Landscape mobile */
-      @media (max-height: 500px) and (orientation: landscape) {
-        .main-container {
-          padding: clamp(0.5rem, 1vh, 1rem);
-          gap: clamp(0.5rem, 1vh, 1rem);
+      @media (max-width: 480px) {
+        .page-navigation {
+          bottom: 1rem;
+          gap: 0.8rem;
         }
 
-        .step-title {
-          font-size: clamp(1.8rem, 3.5vw, 2.2rem);
+        .nav-button {
+          font-size: 0.75rem;
+          padding: 0.6rem 1rem;
         }
 
-        .step-subtitle {
-          font-size: clamp(1rem, 2vw, 1.2rem);
-        }
-
-        .benefits-grid {
-          grid-template-columns: repeat(3, 1fr);
-          gap: clamp(0.8rem, 1.5vw, 1rem);
-        }
-
-        .benefit-card {
-          padding: clamp(0.8rem, 1.5vh, 1.2rem);
-        }
-
-        .benefit-icon {
-          font-size: clamp(1.5rem, 3vw, 2rem);
-          margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
-        }
-
-        .benefit-title {
-          font-size: clamp(1rem, 2vw, 1.2rem);
-          margin-bottom: clamp(0.5rem, 1vh, 0.7rem);
-        }
-
-        .benefit-description {
-          font-size: clamp(0.8rem, 1.5vw, 0.95rem);
-        }
-
-        .nav-buttons {
-          margin-top: clamp(1rem, 2vh, 1.5rem);
+        .progress-indicator {
+          order: -1;
         }
       }
 
@@ -1039,17 +924,16 @@
         }
       }
 
-      /* Focus styles for accessibility */
-      .tier-option:focus-visible,
-      .duration-option:focus-visible,
-      .form-input:focus-visible,
+      /* Focus styles */
       .nav-button:focus-visible,
+      .option-card:focus-visible,
+      .form-input:focus-visible,
       .back-link:focus-visible {
         outline: 2px solid rgba(16, 185, 129, 0.6);
         outline-offset: 2px;
       }
 
-      /* Remove default focus outlines */
+      /* Remove default outlines */
       * {
         outline: none !important;
         -webkit-tap-highlight-color: transparent;
@@ -1058,7 +942,7 @@
   </head>
 
   <body>
-    <!-- Floating particles for ambiance -->
+    <!-- Floating particles -->
     <div class="floating-particles">
       <div class="particle"></div>
       <div class="particle"></div>
@@ -1073,328 +957,372 @@
       <span>Return to Portal</span>
     </a>
 
-    <!-- Progress indicator -->
-    <div class="progress-container">
-      <div class="progress-steps">
-        <div class="progress-step active" id="step1Progress"></div>
-        <div class="progress-step" id="step2Progress"></div>
-        <div class="progress-step" id="step3Progress"></div>
+    <!-- Messages -->
+    <div class="message error" id="errorMessage" style="display: none"></div>
+    <div
+      class="message success"
+      id="successMessage"
+      style="display: none"
+    ></div>
+    <div class="message info" id="infoMessage" style="display: none"></div>
+
+    <!-- Page Container -->
+    <div class="page-container">
+      <div class="pages-wrapper" id="pagesWrapper">
+        <!-- Page 1: What They'll Receive -->
+        <div class="page" id="page1">
+          <div class="page-content">
+            <div class="page-header">
+              <div class="page-icon">🎁</div>
+              <h1 class="page-title">What They'll Receive</h1>
+              <p class="page-subtitle">
+                A complete self-discovery experience that transforms how they
+                see themselves
+              </p>
+            </div>
+
+            <div class="benefits-grid">
+              <div class="benefit-card">
+                <div class="benefit-icon">📧</div>
+                <div class="benefit-title">Beautiful Welcome Invitation</div>
+                <div class="benefit-description">
+                  A personalized email invitation that feels special and sacred
+                </div>
+                <ul class="benefit-features">
+                  <li>
+                    <span class="feature-icon">✨</span> Personal message from
+                    you
+                  </li>
+                  <li>
+                    <span class="feature-icon">🎨</span> Beautifully designed
+                    experience
+                  </li>
+                  <li>
+                    <span class="feature-icon">🔗</span> Direct access link
+                    included
+                  </li>
+                </ul>
+              </div>
+
+              <div class="benefit-card">
+                <div class="benefit-icon">🪞</div>
+                <div class="benefit-title">AI-Powered Reflection</div>
+                <div class="benefit-description">
+                  Advanced AI that recognizes patterns they can't see about
+                  themselves
+                </div>
+                <ul class="benefit-features">
+                  <li>
+                    <span class="feature-icon">🧠</span> Deep pattern
+                    recognition
+                  </li>
+                  <li>
+                    <span class="feature-icon">💎</span> Personalized insights
+                  </li>
+                  <li>
+                    <span class="feature-icon">🌱</span> Growth-focused feedback
+                  </li>
+                </ul>
+              </div>
+
+              <div class="benefit-card">
+                <div class="benefit-icon">📊</div>
+                <div class="benefit-title">Personal Dashboard</div>
+                <div class="benefit-description">
+                  A sacred space to track their journey and evolution over time
+                </div>
+                <ul class="benefit-features">
+                  <li>
+                    <span class="feature-icon">📚</span> All reflections saved
+                  </li>
+                  <li>
+                    <span class="feature-icon">🔍</span> Search and organize
+                  </li>
+                  <li>
+                    <span class="feature-icon">📈</span> Track personal growth
+                  </li>
+                </ul>
+              </div>
+
+              <div class="benefit-card">
+                <div class="benefit-icon">🦋</div>
+                <div class="benefit-title">Evolution Reports</div>
+                <div class="benefit-description">
+                  See how their patterns evolve and transform over months
+                </div>
+                <ul class="benefit-features">
+                  <li><span class="feature-icon">📊</span> Growth analytics</li>
+                  <li>
+                    <span class="feature-icon">🎯</span> Pattern evolution
+                  </li>
+                  <li>
+                    <span class="feature-icon">⚡</span> Breakthrough insights
+                  </li>
+                </ul>
+              </div>
+
+              <div class="benefit-card">
+                <div class="benefit-icon">🔒</div>
+                <div class="benefit-title">Complete Privacy</div>
+                <div class="benefit-description">
+                  Their reflections remain completely private and secure
+                </div>
+                <ul class="benefit-features">
+                  <li>
+                    <span class="feature-icon">🛡️</span> End-to-end security
+                  </li>
+                  <li>
+                    <span class="feature-icon">🤐</span> Never shared or sold
+                  </li>
+                  <li>
+                    <span class="feature-icon">💾</span> Permanently saved
+                  </li>
+                </ul>
+              </div>
+
+              <div class="benefit-card">
+                <div class="benefit-icon">⏰</div>
+                <div class="benefit-title">Immediate Access</div>
+                <div class="benefit-description">
+                  They can start their first reflection within minutes
+                </div>
+                <ul class="benefit-features">
+                  <li>
+                    <span class="feature-icon">🚪</span> Instant activation
+                  </li>
+                  <li>
+                    <span class="feature-icon">📱</span> Works on any device
+                  </li>
+                  <li>
+                    <span class="feature-icon">🌍</span> Available anywhere
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page 2: Fill Details -->
+        <div class="page" id="page2">
+          <div class="page-content">
+            <div class="page-header">
+              <div class="page-icon">✍️</div>
+              <h1 class="page-title">Gift Details</h1>
+              <p class="page-subtitle">
+                Tell us about this thoughtful gift and choose the perfect access
+                level
+              </p>
+            </div>
+
+            <div class="form-container">
+              <form id="giftForm" class="gift-form">
+                <!-- Personal details -->
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Your name</label>
+                    <input
+                      type="text"
+                      id="giverName"
+                      class="form-input"
+                      placeholder="Your full name"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Your email</label>
+                    <input
+                      type="email"
+                      id="giverEmail"
+                      class="form-input"
+                      placeholder="your@email.com"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Recipient's name</label>
+                    <input
+                      type="text"
+                      id="recipientName"
+                      class="form-input"
+                      placeholder="Who will receive this gift?"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Recipient's email</label>
+                    <input
+                      type="email"
+                      id="recipientEmail"
+                      class="form-input"
+                      placeholder="their@email.com"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">Personal message (optional)</label>
+                  <textarea
+                    id="personalMessage"
+                    class="form-input form-textarea"
+                    placeholder="Why are you sharing this journey of self-discovery with them?"
+                    maxlength="200"
+                  ></textarea>
+                  <div class="char-counter">
+                    <span id="charCount">0</span>/200 characters
+                  </div>
+                </div>
+
+                <!-- Access level selection -->
+                <div class="selection-section">
+                  <h3 class="section-title">Choose access level</h3>
+                  <div class="tier-grid">
+                    <div class="option-card" data-tier="essential">
+                      <div class="option-name">Essential</div>
+                      <div class="option-description">
+                        5 reflections/month<br />
+                        Pattern insights<br />
+                        Growth tracking
+                      </div>
+                    </div>
+                    <div class="option-card" data-tier="premium">
+                      <div class="premium-badge">Most Popular</div>
+                      <div class="option-name">Premium</div>
+                      <div class="option-description">
+                        10 reflections/month<br />
+                        Advanced AI analysis<br />
+                        Deep insights
+                      </div>
+                    </div>
+                  </div>
+
+                  <h3 class="section-title">Choose duration</h3>
+                  <div class="duration-grid">
+                    <div class="option-card" data-duration="1mo">
+                      <div class="option-name">1 Month</div>
+                      <div class="option-price" id="price1mo">$4.99</div>
+                    </div>
+                    <div class="option-card" data-duration="3mo">
+                      <div class="option-name">3 Months</div>
+                      <div class="option-price" id="price3mo">$14.97</div>
+                    </div>
+                    <div class="option-card" data-duration="1yr">
+                      <div class="option-name">1 Year</div>
+                      <div class="option-price" id="price1yr">$49.99</div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page 3: Payment -->
+        <div class="page" id="page3">
+          <div class="page-content">
+            <div class="page-header">
+              <div class="page-icon">💳</div>
+              <h1 class="page-title">Complete Your Gift</h1>
+              <p class="page-subtitle">
+                Secure payment to activate their transformational journey
+              </p>
+            </div>
+
+            <div class="payment-container">
+              <div class="payment-summary">
+                <div class="summary-item">
+                  <span>Recipient:</span>
+                  <span id="summaryRecipient">Name</span>
+                </div>
+                <div class="summary-item">
+                  <span>Access Level:</span>
+                  <span id="summaryTier">Essential</span>
+                </div>
+                <div class="summary-item">
+                  <span>Duration:</span>
+                  <span id="summaryDuration">1 Month</span>
+                </div>
+                <div class="summary-item">
+                  <span>Total:</span>
+                  <span id="summaryTotal">$4.99</span>
+                </div>
+              </div>
+
+              <div class="total-amount" id="totalAmount">$4.99</div>
+              <div class="total-description" id="totalDescription">
+                Essential • 1 Month Gift
+              </div>
+
+              <div class="paypal-loading" id="paypalLoading">
+                <div class="loading-spinner"></div>
+                <span>Loading secure payment...</span>
+              </div>
+
+              <div id="paypal-button-container"></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <span id="progressText">1 of 3</span>
     </div>
 
-    <!-- Main container -->
-    <div class="main-container">
-      <!-- Messages -->
-      <div class="message error" id="errorMessage" style="display: none"></div>
-      <div
-        class="message success"
-        id="successMessage"
-        style="display: none"
-      ></div>
-      <div class="message info" id="infoMessage" style="display: none"></div>
+    <!-- Page Navigation -->
+    <div class="page-navigation">
+      <button
+        class="nav-button"
+        id="prevBtn"
+        onclick="goToPreviousPage()"
+        disabled
+      >
+        <span>←</span>
+        <span>Previous</span>
+      </button>
 
-      <!-- Step 1: What they'll receive -->
-      <div class="step-container step-1 active" id="step1">
-        <div class="header">
-          <div class="gift-icon">🎁</div>
-          <h1 class="step-title">What they'll receive</h1>
-          <p class="step-subtitle">
-            A complete self-discovery experience that arrives instantly in their
-            inbox
-          </p>
-        </div>
-
-        <div class="benefits-grid">
-          <div class="benefit-card">
-            <div class="benefit-icon">📧</div>
-            <h3 class="benefit-title">Beautiful Welcome Invitation</h3>
-            <p class="benefit-description">
-              A personalized email invitation with your message, explaining this
-              gift of self-discovery and how to begin their journey.
-            </p>
-          </div>
-
-          <div class="benefit-card">
-            <div class="benefit-icon">🚪</div>
-            <h3 class="benefit-title">Instant Platform Access</h3>
-            <p class="benefit-description">
-              Immediate access to their chosen subscription tier with no setup
-              required. They can start reflecting within minutes of receiving
-              your gift.
-            </p>
-          </div>
-
-          <div class="benefit-card">
-            <div class="benefit-icon">🤖</div>
-            <h3 class="benefit-title">AI-Powered Pattern Recognition</h3>
-            <p class="benefit-description">
-              Advanced AI that notices patterns in their responses they might
-              miss themselves, revealing insights about who they truly are.
-            </p>
-          </div>
-
-          <div class="benefit-card">
-            <div class="benefit-icon">📊</div>
-            <h3 class="benefit-title">Personal Growth Dashboard</h3>
-            <p class="benefit-description">
-              A beautiful interface to track their reflection journey, save
-              meaningful insights, and watch their self-awareness evolve over
-              time.
-            </p>
-          </div>
-
-          <div class="benefit-card">
-            <div class="benefit-icon">🌱</div>
-            <h3 class="benefit-title">Evolution Reports</h3>
-            <p class="benefit-description">
-              Detailed analysis of how their language, confidence, and
-              self-understanding develops across multiple reflections (Premium
-              tier only).
-            </p>
-          </div>
-
-          <div class="benefit-card">
-            <div class="benefit-icon">⏰</div>
-            <h3 class="benefit-title">Extended Journey</h3>
-            <p class="benefit-description">
-              Full access for the duration you choose - whether one month of
-              exploration or a full year of self-discovery and growth.
-            </p>
-          </div>
-        </div>
-
-        <div class="nav-buttons">
-          <div></div>
-          <button class="nav-button primary" onclick="nextStep()">
-            <span>Choose Their Experience</span>
-            <span>→</span>
-          </button>
-        </div>
+      <div class="progress-indicator">
+        <div class="progress-dot active" data-page="0"></div>
+        <div class="progress-dot" data-page="1"></div>
+        <div class="progress-dot" data-page="2"></div>
       </div>
 
-      <!-- Step 2: Fill details -->
-      <div class="step-container step-2" id="step2">
-        <div class="header">
-          <div class="gift-icon">✨</div>
-          <h1 class="step-title">Create Their Gift</h1>
-          <p class="step-subtitle">
-            Personalize their experience and choose the perfect level of access
-          </p>
-        </div>
-
-        <div class="form-container">
-          <form id="giftForm" class="gift-form">
-            <!-- Gift details -->
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Your name</label>
-                <input
-                  type="text"
-                  id="giverName"
-                  class="form-input"
-                  placeholder="Your full name"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Your email</label>
-                <input
-                  type="email"
-                  id="giverEmail"
-                  class="form-input"
-                  placeholder="your@email.com"
-                  required
-                />
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Recipient's name</label>
-                <input
-                  type="text"
-                  id="recipientName"
-                  class="form-input"
-                  placeholder="Who will receive this gift?"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Recipient's email</label>
-                <input
-                  type="email"
-                  id="recipientEmail"
-                  class="form-input"
-                  placeholder="their@email.com"
-                  required
-                />
-              </div>
-            </div>
-
-            <div class="form-group full-width">
-              <label class="form-label">Personal message (optional)</label>
-              <textarea
-                id="personalMessage"
-                class="form-input form-textarea"
-                placeholder="Why are you sharing this journey of self-discovery with them?"
-                maxlength="200"
-              ></textarea>
-              <div class="char-counter">
-                <span id="charCount">0</span>/200 characters
-              </div>
-            </div>
-          </form>
-
-          <!-- Tier and duration selection -->
-          <div class="tier-selection">
-            <h3 class="section-title">Choose access level</h3>
-            <div class="tier-grid">
-              <div class="tier-option" data-tier="essential">
-                <div class="tier-name">Essential</div>
-                <div class="tier-description">
-                  5 reflections/month<br />
-                  Pattern insights<br />
-                  Growth tracking
-                </div>
-              </div>
-              <div class="tier-option premium" data-tier="premium">
-                <div class="premium-badge">Most Popular</div>
-                <div class="tier-name">Premium</div>
-                <div class="tier-description">
-                  10 reflections/month<br />
-                  Advanced AI analysis<br />
-                  Deep insights
-                </div>
-              </div>
-            </div>
-
-            <h3 class="section-title">Choose duration</h3>
-            <div class="duration-grid">
-              <div class="duration-option" data-duration="1mo">
-                <div class="duration-name">1 Month</div>
-                <div class="duration-price" id="price1mo">$4.99</div>
-              </div>
-              <div class="duration-option" data-duration="3mo">
-                <div class="duration-name">3 Months</div>
-                <div class="duration-price" id="price3mo">$14.97</div>
-              </div>
-              <div class="duration-option" data-duration="1yr">
-                <div class="duration-name">1 Year</div>
-                <div class="duration-price" id="price1yr">$49.99</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="nav-buttons">
-          <button class="nav-button" onclick="previousStep()">
-            <span>←</span>
-            <span>Back</span>
-          </button>
-          <button
-            class="nav-button primary"
-            id="reviewButton"
-            onclick="nextStep()"
-            disabled
-          >
-            <span>Review & Pay</span>
-            <span>→</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Step 3: Payment -->
-      <div class="step-container step-3" id="step3">
-        <div class="header">
-          <div class="gift-icon">💝</div>
-          <h1 class="step-title">Complete Your Gift</h1>
-          <p class="step-subtitle">
-            Review your choices and send this beautiful experience
-          </p>
-        </div>
-
-        <div class="payment-container">
-          <div class="total-amount" id="totalAmount">$4.99</div>
-          <div class="total-description" id="totalDescription">
-            Essential • 1 Month
-          </div>
-
-          <div class="gift-summary" id="giftSummary">
-            <div class="summary-row">
-              <span class="summary-label">From:</span>
-              <span class="summary-value" id="summaryGiver">-</span>
-            </div>
-            <div class="summary-row">
-              <span class="summary-label">To:</span>
-              <span class="summary-value" id="summaryRecipient">-</span>
-            </div>
-            <div class="summary-row">
-              <span class="summary-label">Access Level:</span>
-              <span class="summary-value" id="summaryTier">-</span>
-            </div>
-            <div class="summary-row">
-              <span class="summary-label">Duration:</span>
-              <span class="summary-value" id="summaryDuration">-</span>
-            </div>
-            <div class="summary-row">
-              <span class="summary-label">Total:</span>
-              <span class="summary-value" id="summaryTotal">-</span>
-            </div>
-          </div>
-
-          <div class="paypal-loading" id="paypalLoading">
-            <div class="loading-spinner"></div>
-            <span>Loading payment options...</span>
-          </div>
-
-          <div id="paypal-button-container"></div>
-        </div>
-
-        <div class="nav-buttons">
-          <button class="nav-button" onclick="previousStep()">
-            <span>←</span>
-            <span>Back to Details</span>
-          </button>
-          <div></div>
-        </div>
-      </div>
+      <button class="nav-button primary" id="nextBtn" onclick="goToNextPage()">
+        <span>Next</span>
+        <span>→</span>
+      </button>
     </div>
 
     <script>
-      // Gift Flow - Perfect 3-Step Experience
-      let currentStep = 1;
-      let paypalConfig = null;
-      let paypalInitialized = false;
+      // 3-Page Gifting Experience Logic
+      let currentPage = 0;
       let selectedTier = "essential";
       let selectedDuration = "1mo";
       let currentAmount = "4.99";
       let giftPricing = {};
+      let paypalConfig = null;
+      let paypalInitialized = false;
       let isProcessing = false;
 
-      // Initialize the gift experience
+      // Initialize the experience
       document.addEventListener("DOMContentLoaded", function () {
-        initializeGiftFlow();
+        initializeGiftingExperience();
       });
 
-      async function initializeGiftFlow() {
+      async function initializeGiftingExperience() {
         setupEventListeners();
         await loadGiftPricing();
         await loadPayPalConfiguration();
         initializeSelections();
-        setupFormValidation();
-        console.log("🎁 Perfect 3-step gift flow initialized");
+        updatePageDisplay();
+        console.log("🎁 3-Page Gifting Experience initialized");
       }
 
       function setupEventListeners() {
         // Form validation
         ["giverName", "giverEmail", "recipientName", "recipientEmail"].forEach(
           (id) => {
-            const input = document.getElementById(id);
-            if (input) {
-              input.addEventListener("input", validateForm);
-              input.addEventListener("blur", validateField);
-            }
+            document.getElementById(id).addEventListener("input", validateForm);
+            document.getElementById(id).addEventListener("blur", validateField);
           }
         );
 
@@ -1402,56 +1330,55 @@
         const messageInput = document.getElementById("personalMessage");
         const charCount = document.getElementById("charCount");
 
-        if (messageInput && charCount) {
-          messageInput.addEventListener("input", function () {
-            const length = this.value.length;
-            charCount.textContent = length;
+        messageInput.addEventListener("input", function () {
+          const length = this.value.length;
+          charCount.textContent = length;
 
-            const counter = document.querySelector(".char-counter");
-            if (length > 160) {
-              counter.style.color = "#ef4444";
-            } else if (length > 120) {
-              counter.style.color = "#f59e0b";
-            } else {
-              counter.style.color = "rgba(255, 255, 255, 0.5)";
-            }
-          });
-        }
-
-        // Name formatting
-        ["giverName", "recipientName"].forEach((id) => {
-          const input = document.getElementById(id);
-          if (input) {
-            input.addEventListener("blur", function () {
-              this.value = this.value.replace(/\b\w/g, (l) => l.toUpperCase());
-            });
+          const counter = document.querySelector(".char-counter");
+          if (length > 160) {
+            counter.style.color = "#ef4444";
+          } else if (length > 120) {
+            counter.style.color = "#f59e0b";
+          } else {
+            counter.style.color = "rgba(255, 255, 255, 0.5)";
           }
         });
 
+        // Name formatting
+        ["giverName", "recipientName"].forEach((id) => {
+          document.getElementById(id).addEventListener("blur", function () {
+            this.value = this.value.replace(/\b\w/g, (l) => l.toUpperCase());
+          });
+        });
+
         // Tier selection
-        document.querySelectorAll(".tier-option").forEach((option) => {
+        document.querySelectorAll("[data-tier]").forEach((option) => {
           option.addEventListener("click", function () {
             selectTier(this.dataset.tier);
           });
         });
 
         // Duration selection
-        document.querySelectorAll(".duration-option").forEach((option) => {
+        document.querySelectorAll("[data-duration]").forEach((option) => {
           option.addEventListener("click", function () {
             selectDuration(this.dataset.duration);
           });
         });
 
         // Keyboard navigation
-        document.addEventListener("keydown", function (e) {
-          if (e.key === "ArrowRight" || (e.key === "Enter" && e.ctrlKey)) {
-            if (currentStep < 3) nextStep();
-          } else if (e.key === "ArrowLeft") {
-            if (currentStep > 1) previousStep();
-          } else if (e.key === "Escape") {
-            window.location.href = "/";
+        document.addEventListener("keydown", handleKeyboardNavigation);
+      }
+
+      function handleKeyboardNavigation(e) {
+        if (e.key === "ArrowRight" || e.key === "Enter") {
+          if (currentPage < 2) {
+            goToNextPage();
           }
-        });
+        } else if (e.key === "ArrowLeft") {
+          if (currentPage > 0) {
+            goToPreviousPage();
+          }
+        }
       }
 
       async function loadGiftPricing() {
@@ -1477,21 +1404,18 @@
       }
 
       function updatePricingDisplay() {
-        const elements = {
-          price1mo: document.getElementById("price1mo"),
-          price3mo: document.getElementById("price3mo"),
-          price1yr: document.getElementById("price1yr"),
-        };
-
-        if (elements.price1mo)
-          elements.price1mo.textContent = `$${giftPricing[selectedTier]["1mo"]}`;
-        if (elements.price3mo)
-          elements.price3mo.textContent = `$${giftPricing[selectedTier]["3mo"]}`;
-        if (elements.price1yr)
-          elements.price1yr.textContent = `$${giftPricing[selectedTier]["1yr"]}`;
+        document.getElementById(
+          "price1mo"
+        ).textContent = `$${giftPricing[selectedTier]["1mo"]}`;
+        document.getElementById(
+          "price3mo"
+        ).textContent = `$${giftPricing[selectedTier]["3mo"]}`;
+        document.getElementById(
+          "price1yr"
+        ).textContent = `$${giftPricing[selectedTier]["1yr"]}`;
 
         currentAmount = giftPricing[selectedTier][selectedDuration].toString();
-        updateTotalDisplay();
+        updatePaymentSummary();
       }
 
       function initializeSelections() {
@@ -1503,40 +1427,36 @@
         selectedTier = tier;
 
         // Update tier selection UI
-        document.querySelectorAll(".tier-option").forEach((option) => {
+        document.querySelectorAll("[data-tier]").forEach((option) => {
           option.classList.remove("selected");
         });
-        const selectedOption = document.querySelector(`[data-tier="${tier}"]`);
-        if (selectedOption) {
-          selectedOption.classList.add("selected");
-        }
+        document
+          .querySelector(`[data-tier="${tier}"]`)
+          .classList.add("selected");
 
         updatePricingDisplay();
-        validateForm();
-        createSelectionEffect(selectedOption);
+        createSelectionEffect(document.querySelector(`[data-tier="${tier}"]`));
       }
 
       function selectDuration(duration) {
         selectedDuration = duration;
 
         // Update duration selection UI
-        document.querySelectorAll(".duration-option").forEach((option) => {
+        document.querySelectorAll("[data-duration]").forEach((option) => {
           option.classList.remove("selected");
         });
-        const selectedOption = document.querySelector(
-          `[data-duration="${duration}"]`
-        );
-        if (selectedOption) {
-          selectedOption.classList.add("selected");
-        }
+        document
+          .querySelector(`[data-duration="${duration}"]`)
+          .classList.add("selected");
 
         currentAmount = giftPricing[selectedTier][duration].toString();
-        updateTotalDisplay();
-        validateForm();
-        createSelectionEffect(selectedOption);
+        updatePaymentSummary();
+        createSelectionEffect(
+          document.querySelector(`[data-duration="${duration}"]`)
+        );
       }
 
-      function updateTotalDisplay() {
+      function updatePaymentSummary() {
         const tierName =
           selectedTier.charAt(0).toUpperCase() + selectedTier.slice(1);
         const durationText =
@@ -1546,12 +1466,26 @@
             ? "3 Months"
             : "1 Year";
 
-        const totalAmount = document.getElementById("totalAmount");
-        const totalDescription = document.getElementById("totalDescription");
+        document.getElementById("summaryTier").textContent = tierName;
+        document.getElementById("summaryDuration").textContent = durationText;
+        document.getElementById(
+          "summaryTotal"
+        ).textContent = `$${currentAmount}`;
+        document.getElementById(
+          "totalAmount"
+        ).textContent = `$${currentAmount}`;
+        document.getElementById(
+          "totalDescription"
+        ).textContent = `${tierName} • ${durationText} Gift`;
 
-        if (totalAmount) totalAmount.textContent = `$${currentAmount}`;
-        if (totalDescription)
-          totalDescription.textContent = `${tierName} • ${durationText}`;
+        // Update recipient name if available
+        const recipientName = document
+          .getElementById("recipientName")
+          .value.trim();
+        if (recipientName) {
+          document.getElementById("summaryRecipient").textContent =
+            recipientName;
+        }
       }
 
       async function loadPayPalConfiguration() {
@@ -1573,30 +1507,78 @@
         }
       }
 
-      function validateForm() {
-        const giverName =
-          document.getElementById("giverName")?.value?.trim() || "";
-        const giverEmail =
-          document.getElementById("giverEmail")?.value?.trim() || "";
-        const recipientName =
-          document.getElementById("recipientName")?.value?.trim() || "";
-        const recipientEmail =
-          document.getElementById("recipientEmail")?.value?.trim() || "";
+      function goToNextPage() {
+        if (currentPage === 1) {
+          // Validate form before going to payment
+          if (!validateForm()) {
+            showMessage(
+              "Please fill in all required fields with valid information.",
+              "error"
+            );
+            return;
+          }
+          updatePaymentSummary();
+          if (!paypalInitialized) {
+            initializePayPal();
+          }
+        }
 
-        const isValid =
+        if (currentPage < 2) {
+          currentPage++;
+          updatePageDisplay();
+        }
+      }
+
+      function goToPreviousPage() {
+        if (currentPage > 0) {
+          currentPage--;
+          updatePageDisplay();
+        }
+      }
+
+      function updatePageDisplay() {
+        const pagesWrapper = document.getElementById("pagesWrapper");
+        pagesWrapper.style.transform = `translateX(-${currentPage * 100}vw)`;
+
+        // Update navigation buttons
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+
+        prevBtn.disabled = currentPage === 0;
+
+        if (currentPage === 2) {
+          nextBtn.style.display = "none";
+        } else {
+          nextBtn.style.display = "flex";
+        }
+
+        // Update progress indicator
+        document.querySelectorAll(".progress-dot").forEach((dot, index) => {
+          dot.classList.remove("active", "completed");
+          if (index === currentPage) {
+            dot.classList.add("active");
+          } else if (index < currentPage) {
+            dot.classList.add("completed");
+          }
+        });
+      }
+
+      function validateForm() {
+        const giverName = document.getElementById("giverName").value.trim();
+        const giverEmail = document.getElementById("giverEmail").value.trim();
+        const recipientName = document
+          .getElementById("recipientName")
+          .value.trim();
+        const recipientEmail = document
+          .getElementById("recipientEmail")
+          .value.trim();
+
+        return (
           giverName &&
           validateEmail(giverEmail) &&
           recipientName &&
-          validateEmail(recipientEmail) &&
-          selectedTier &&
-          selectedDuration;
-
-        const reviewButton = document.getElementById("reviewButton");
-        if (reviewButton) {
-          reviewButton.disabled = !isValid;
-        }
-
-        return isValid;
+          validateEmail(recipientEmail)
+        );
       }
 
       function validateField(event) {
@@ -1622,139 +1604,27 @@
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
       }
 
-      function setupFormValidation() {
-        validateForm();
-      }
-
-      // Step navigation
-      function nextStep() {
-        if (currentStep < 3) {
-          if (currentStep === 2 && !validateForm()) {
-            showMessage(
-              "Please fill in all required fields with valid information.",
-              "error"
-            );
-            return;
-          }
-
-          hideMessages();
-          updateStep(currentStep + 1);
-
-          if (currentStep === 3) {
-            updateSummary();
-            initializePayPal();
-          }
-        }
-      }
-
-      function previousStep() {
-        if (currentStep > 1) {
-          hideMessages();
-          updateStep(currentStep - 1);
-        }
-      }
-
-      function updateStep(step) {
-        // Hide current step
-        const currentStepEl = document.getElementById(`step${currentStep}`);
-        if (currentStepEl) {
-          currentStepEl.classList.remove("active");
-        }
-
-        // Update progress
-        updateProgress(currentStep, false);
-
-        currentStep = step;
-
-        // Show new step
-        const newStepEl = document.getElementById(`step${currentStep}`);
-        if (newStepEl) {
-          setTimeout(() => {
-            newStepEl.classList.add("active");
-          }, 300);
-        }
-
-        // Update progress
-        updateProgress(currentStep, true);
-
-        // Update progress text
-        const progressText = document.getElementById("progressText");
-        if (progressText) {
-          progressText.textContent = `${currentStep} of 3`;
-        }
-      }
-
-      function updateProgress(step, active) {
-        const progressStep = document.getElementById(`step${step}Progress`);
-        if (!progressStep) return;
-
-        if (active) {
-          progressStep.classList.add("active");
-          progressStep.classList.remove("completed");
-        } else {
-          progressStep.classList.remove("active");
-          if (step < currentStep) {
-            progressStep.classList.add("completed");
-          }
-        }
-      }
-
-      function updateSummary() {
-        const giverName =
-          document.getElementById("giverName")?.value?.trim() || "";
-        const recipientName =
-          document.getElementById("recipientName")?.value?.trim() || "";
-        const tierName =
-          selectedTier.charAt(0).toUpperCase() + selectedTier.slice(1);
-        const durationText =
-          selectedDuration === "1mo"
-            ? "1 Month"
-            : selectedDuration === "3mo"
-            ? "3 Months"
-            : "1 Year";
-
-        // Update summary elements
-        const elements = {
-          summaryGiver: document.getElementById("summaryGiver"),
-          summaryRecipient: document.getElementById("summaryRecipient"),
-          summaryTier: document.getElementById("summaryTier"),
-          summaryDuration: document.getElementById("summaryDuration"),
-          summaryTotal: document.getElementById("summaryTotal"),
-        };
-
-        if (elements.summaryGiver)
-          elements.summaryGiver.textContent = giverName;
-        if (elements.summaryRecipient)
-          elements.summaryRecipient.textContent = recipientName;
-        if (elements.summaryTier) elements.summaryTier.textContent = tierName;
-        if (elements.summaryDuration)
-          elements.summaryDuration.textContent = durationText;
-        if (elements.summaryTotal)
-          elements.summaryTotal.textContent = `$${currentAmount}`;
-      }
-
       function initializePayPal() {
         if (!window.paypal || !window.paypal.Buttons) {
           loadPayPalSDK()
             .then(() => {
-              setupPayPalButtons();
+              renderPayPalButtons();
             })
             .catch((error) => {
-              console.error("PayPal SDK load error:", error);
+              console.error("PayPal loading error:", error);
               showMessage(
-                "Payment system not available. Please refresh the page.",
+                "Payment system error. Please refresh the page.",
                 "error"
               );
             });
         } else {
-          setupPayPalButtons();
+          renderPayPalButtons();
         }
       }
 
       function loadPayPalSDK() {
         return new Promise((resolve, reject) => {
           if (window.paypal && window.paypal.Buttons) {
-            hidePayPalLoading();
             resolve();
             return;
           }
@@ -1762,15 +1632,9 @@
           const script = document.createElement("script");
           script.src = `https://www.paypal.com/sdk/js?client-id=${paypalConfig.clientId}&currency=${paypalConfig.currency}&intent=capture`;
 
-          const timeout = setTimeout(() => {
-            reject(new Error("PayPal loading timeout"));
-          }, 15000);
-
           script.onload = () => {
-            clearTimeout(timeout);
             setTimeout(() => {
               if (window.paypal && window.paypal.Buttons) {
-                hidePayPalLoading();
                 resolve();
               } else {
                 reject(new Error("PayPal loaded but not available"));
@@ -1779,7 +1643,6 @@
           };
 
           script.onerror = () => {
-            clearTimeout(timeout);
             reject(new Error("Failed to load PayPal"));
           };
 
@@ -1787,15 +1650,8 @@
         });
       }
 
-      function hidePayPalLoading() {
-        const loading = document.getElementById("paypalLoading");
-        if (loading) {
-          loading.style.display = "none";
-        }
-      }
-
-      function setupPayPalButtons() {
-        if (paypalInitialized) return;
+      function renderPayPalButtons() {
+        document.getElementById("paypalLoading").style.display = "none";
 
         try {
           window.paypal
@@ -1859,24 +1715,13 @@
                 console.error("PayPal error:", err);
                 showMessage("Payment error. Please try again.", "error");
               },
-
-              onCancel: function (data) {
-                // Payment cancelled, user can try again
-              },
             })
             .render("#paypal-button-container")
             .then(() => {
               paypalInitialized = true;
-            })
-            .catch((error) => {
-              console.error("PayPal render error:", error);
-              showMessage(
-                "Payment system initialization failed. Please refresh the page.",
-                "error"
-              );
             });
         } catch (error) {
-          console.error("PayPal initialization error:", error);
+          console.error("PayPal render error:", error);
           showMessage(
             "Payment system error. Please refresh the page.",
             "error"
@@ -1943,9 +1788,6 @@
             "Gift was paid for but invitation creation failed. Please contact support.",
             "error"
           );
-          setTimeout(() => {
-            window.location.href = "/";
-          }, 5000);
         }
       }
 
@@ -1981,8 +1823,6 @@
       }
 
       function createSelectionEffect(element) {
-        if (!element) return;
-
         const rect = element.getBoundingClientRect();
         for (let i = 0; i < 4; i++) {
           setTimeout(() => {
@@ -2022,15 +1862,15 @@
 
       // Debug (development only)
       if (window.location.hostname === "localhost") {
-        window.giftDebug = {
-          currentStep: () => currentStep,
-          goToStep: (step) => updateStep(step),
+        window.giftingDebug = {
+          currentPage: () => currentPage,
+          goToPage: (page) => {
+            currentPage = Math.max(0, Math.min(2, page));
+            updatePageDisplay();
+          },
           selectedTier: () => selectedTier,
           selectedDuration: () => selectedDuration,
-          currentAmount: () => currentAmount,
-          pricing: () => giftPricing,
           validateForm: validateForm,
-          testMessage: (msg, type) => showMessage(msg, type),
         };
       }
     </script>
