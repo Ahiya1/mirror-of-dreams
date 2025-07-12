@@ -1,5 +1,5 @@
-// API: Payment - Stripe Subscription Processing
-// MIGRATED: From PayPal to Stripe for consciousness-first technology
+// API: Payment - Fixed Stripe Subscription Processing
+// FIXED: Proper webhook routing and password preservation
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -8,16 +8,27 @@ module.exports = async function handler(req, res) {
   // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Stripe-Signature"
+  );
 
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
 
-  const { action } = req.query;
-
   try {
+    // Check if this is a Stripe webhook (has signature header)
+    const sig = req.headers["stripe-signature"];
+
+    if (sig && req.method === "POST") {
+      // This is a Stripe webhook
+      return await handleStripeWebhook(req, res);
+    }
+
+    // Regular API calls
     if (req.method === "GET") {
+      const { action } = req.query;
       if (action === "config" || !action) {
         return await handleGetConfig(req, res);
       } else {
@@ -33,8 +44,6 @@ module.exports = async function handler(req, res) {
 
       if (action === "create-checkout-session") {
         return await handleCreateCheckoutSession(req, res);
-      } else if (action === "webhook") {
-        return await handleStripeWebhook(req, res);
       } else {
         return res.status(400).json({
           success: false,
@@ -122,10 +131,10 @@ async function handleGetConfig(req, res) {
 
 // Create Stripe Checkout Session for subscription
 async function handleCreateCheckoutSession(req, res) {
-  const { name, email, tier, period, language = "en" } = req.body;
+  const { name, email, tier, period, password, language = "en" } = req.body;
 
   // Validation
-  if (!name || !email || !tier || !period) {
+  if (!name || !email || !tier || !period || !password) {
     return res.status(400).json({
       success: false,
       error: "Missing required subscription data",
@@ -157,6 +166,17 @@ async function handleCreateCheckoutSession(req, res) {
       });
     }
 
+    // Store user data temporarily with a session token
+    const sessionToken = generateSessionToken();
+    await storeTemporaryUserData(sessionToken, {
+      name,
+      email,
+      password,
+      tier,
+      period,
+      language,
+    });
+
     // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -174,6 +194,7 @@ async function handleCreateCheckoutSession(req, res) {
         tier: tier,
         period: period,
         language: language,
+        session_token: sessionToken, // 🔑 Key addition!
       },
       success_url: `${getBaseUrl()}/dashboard?session_id={CHECKOUT_SESSION_ID}&success=true`,
       cancel_url: `${getBaseUrl()}/commitment?canceled=true`,
@@ -255,37 +276,61 @@ async function handleStripeWebhook(req, res) {
 async function handleCheckoutSessionCompleted(event) {
   try {
     const session = event.data.object;
-    const { name, email, tier, period, language } = session.metadata;
+    const { name, email, tier, period, language, session_token } =
+      session.metadata;
 
     console.log(`🎉 Checkout completed: ${email} → ${tier} (${period})`);
 
-    // Create user account with subscription
+    // Retrieve the original user data including password
+    const userData = await getTemporaryUserData(session_token);
+
+    if (!userData) {
+      console.error(
+        "❌ Could not retrieve user data for session:",
+        session_token
+      );
+      // Fallback: create user with random password and send reset email
+      await createUserWithRandomPassword(
+        session,
+        name,
+        email,
+        tier,
+        period,
+        language
+      );
+      return;
+    }
+
+    // Create user account with the ORIGINAL password
     const userResponse = await fetch(`${getBaseUrl()}/api/auth`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         action: "signup",
-        email: email,
-        password: generateSecurePassword(),
-        name: name,
-        tier: tier,
-        language: language,
+        email: userData.email,
+        password: userData.password, // 🔑 Original password!
+        name: userData.name,
+        tier: userData.tier,
+        language: userData.language,
       }),
     });
 
-    const userData = await userResponse.json();
+    const userResult = await userResponse.json();
 
-    if (!userData.success) {
+    if (!userResult.success) {
       // Check if user exists - update their subscription instead
-      if (userData.error?.includes("already exists")) {
+      if (userResult.error?.includes("already exists")) {
         await updateExistingUserSubscription(email, tier, period, session);
         return;
       }
-      throw new Error(userData.error || "Failed to create user");
+      throw new Error(userResult.error || "Failed to create user");
     }
 
     // Update user with Stripe subscription details
-    await updateUserSubscription(userData.user.id, tier, period, session);
+    await updateUserSubscription(userResult.user.id, tier, period, session);
+
+    // Clean up temporary data
+    await cleanupTemporaryUserData(session_token);
 
     // Send welcome email
     try {
@@ -304,17 +349,114 @@ async function handleCheckoutSessionCompleted(event) {
     } catch (emailError) {
       console.warn("Welcome email failed:", emailError);
     }
+
+    console.log(`✅ User account created successfully: ${email}`);
   } catch (error) {
     console.error("Error handling checkout completion:", error);
   }
 }
 
+// Fallback for when temporary data is lost
+async function createUserWithRandomPassword(
+  session,
+  name,
+  email,
+  tier,
+  period,
+  language
+) {
+  try {
+    const tempPassword = generateSecurePassword();
+
+    const userResponse = await fetch(`${getBaseUrl()}/api/auth`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "signup",
+        email: email,
+        password: tempPassword,
+        name: name,
+        tier: tier,
+        language: language,
+      }),
+    });
+
+    const userResult = await userResponse.json();
+
+    if (userResult.success) {
+      await updateUserSubscription(userResult.user.id, tier, period, session);
+
+      // Send password reset email
+      await fetch(`${getBaseUrl()}/api/auth`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "forgot-password",
+          email: email,
+        }),
+      });
+
+      console.log(
+        `⚠️ User created with temp password, reset email sent: ${email}`
+      );
+    }
+  } catch (error) {
+    console.error("Error in fallback user creation:", error);
+  }
+}
+
+// Temporary data storage functions (using Redis or similar)
+async function storeTemporaryUserData(sessionToken, userData) {
+  try {
+    // Store for 1 hour
+    const { Redis } = require("@upstash/redis");
+    const redis = Redis.fromEnv();
+
+    await redis.setex(
+      `temp_user:${sessionToken}`,
+      3600,
+      JSON.stringify(userData)
+    );
+    console.log(`💾 Stored temporary user data: ${sessionToken}`);
+  } catch (error) {
+    console.error("Error storing temporary user data:", error);
+  }
+}
+
+async function getTemporaryUserData(sessionToken) {
+  try {
+    const { Redis } = require("@upstash/redis");
+    const redis = Redis.fromEnv();
+
+    const data = await redis.get(`temp_user:${sessionToken}`);
+    return data ? JSON.parse(data) : null;
+  } catch (error) {
+    console.error("Error retrieving temporary user data:", error);
+    return null;
+  }
+}
+
+async function cleanupTemporaryUserData(sessionToken) {
+  try {
+    const { Redis } = require("@upstash/redis");
+    const redis = Redis.fromEnv();
+
+    await redis.del(`temp_user:${sessionToken}`);
+    console.log(`🗑️ Cleaned up temporary user data: ${sessionToken}`);
+  } catch (error) {
+    console.error("Error cleaning up temporary user data:", error);
+  }
+}
+
+function generateSessionToken() {
+  return Date.now() + "_" + Math.random().toString(36).substr(2, 9);
+}
+
+// [Rest of the functions remain the same...]
 async function handleSubscriptionCreated(event) {
   try {
     const subscription = event.data.object;
     console.log(`✅ Subscription created: ${subscription.id}`);
-
-    // Additional subscription creation logic if needed
   } catch (error) {
     console.error("Error handling subscription creation:", error);
   }
@@ -331,7 +473,6 @@ async function handleSubscriptionUpdated(event) {
       process.env.SUPABASE_SERVICE_ROLE_KEY
     );
 
-    // Update subscription status based on current status
     const status =
       subscription.status === "active"
         ? "active"
@@ -392,7 +533,6 @@ async function handlePaymentSucceeded(event) {
     const invoice = event.data.object;
     console.log(`💰 Payment succeeded: ${invoice.id}`);
 
-    // Update subscription if needed
     if (invoice.subscription) {
       const customerId = invoice.customer;
 
@@ -423,7 +563,6 @@ async function handlePaymentFailed(event) {
     const invoice = event.data.object;
     console.log(`💸 Payment failed: ${invoice.id}`);
 
-    // Optional: Send payment failure notification, update status, etc.
     if (invoice.subscription) {
       const customerId = invoice.customer;
 
