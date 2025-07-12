@@ -611,7 +611,7 @@
           <span class="selected-name" id="selectedTierName">Seeker (Free)</span>
         </p>
         <a
-          href="/commitment/register?tier=free"
+          href="/register?tier=free"
           class="continue-button"
           id="continueButton"
         >
@@ -678,7 +678,7 @@
 
         // Update continue button
         const continueButton = document.getElementById("continueButton");
-        continueButton.href = `/commitment/register?tier=${tier}`;
+        continueButton.href = `/register?tier=${tier}`;
 
         // Update button text based on tier
         const buttonText = continueButton.querySelector("span:last-child");
