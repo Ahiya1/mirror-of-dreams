@@ -11,7 +11,7 @@
     <title>Begin Your Journey | Mirror of Truth</title>
 
     <style>
-      /* Subtle Register - Dissolved Yet Undeniable */
+      /* Sacred Registration - Always Free, Perfect Fit */
       * {
         margin: 0;
         padding: 0;
@@ -37,7 +37,7 @@
         -moz-osx-font-smoothing: grayscale;
       }
 
-      /* Subtle Cosmic Presence */
+      /* Cosmic Presence */
       body::before {
         content: "";
         position: fixed;
@@ -124,7 +124,7 @@
         }
       }
 
-      /* Refined Navigation */
+      /* Navigation */
       .back-link {
         position: fixed;
         top: clamp(1rem, 2vh, 1.5rem);
@@ -156,7 +156,7 @@
         transform: translateY(-1px);
       }
 
-      /* Main Container - Centered & Grounded */
+      /* Main Container - Perfect Centering */
       .main-container {
         position: relative;
         z-index: 10;
@@ -168,10 +168,10 @@
         padding: clamp(1rem, 2vh, 1.5rem);
         max-width: 100vw;
         margin: 0 auto;
-        gap: clamp(1rem, 2vh, 1.5rem);
+        gap: clamp(1.2rem, 2.5vh, 2rem);
       }
 
-      /* Quiet Header */
+      /* Header */
       .header {
         text-align: center;
         flex-shrink: 0;
@@ -179,8 +179,8 @@
       }
 
       .mirror-icon {
-        font-size: clamp(1.8rem, 3.5vw, 2.2rem);
-        margin-bottom: clamp(0.6rem, 1.2vh, 0.8rem);
+        font-size: clamp(2rem, 4vw, 2.5rem);
+        margin-bottom: clamp(0.8rem, 1.5vh, 1rem);
         display: block;
         opacity: 0.9;
         animation: quietPresence 8s ease-in-out infinite;
@@ -199,9 +199,9 @@
       }
 
       .title {
-        font-size: clamp(1.4rem, 3vw, 1.8rem);
+        font-size: clamp(1.6rem, 3.5vw, 2.2rem);
         font-weight: 300;
-        margin-bottom: clamp(0.4rem, 0.8vh, 0.6rem);
+        margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
         background: linear-gradient(
           135deg,
           rgba(255, 255, 255, 0.95) 0%,
@@ -215,40 +215,67 @@
       }
 
       .subtitle {
-        font-size: clamp(0.85rem, 1.8vw, 1rem);
-        opacity: 0.7;
-        color: rgba(255, 255, 255, 0.7);
+        font-size: clamp(0.9rem, 2vw, 1.1rem);
+        opacity: 0.8;
+        color: rgba(255, 255, 255, 0.8);
         line-height: 1.4;
         font-weight: 300;
-        margin-bottom: clamp(0.4rem, 0.8vh, 0.6rem);
+        margin-bottom: clamp(0.6rem, 1.2vh, 0.8rem);
+        max-width: 500px;
       }
 
-      /* Understated Tier Display */
-      .selected-tier {
+      .free-badge {
         display: inline-flex;
         align-items: center;
-        gap: clamp(0.5rem, 1vw, 0.7rem);
-        padding: clamp(0.5rem, 1vh, 0.7rem) clamp(1rem, 2vw, 1.3rem);
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: clamp(10px, 2vw, 14px);
-        font-size: clamp(0.75rem, 1.7vw, 0.85rem);
-        color: rgba(255, 255, 255, 0.8);
+        gap: clamp(0.4rem, 0.8vw, 0.6rem);
+        padding: clamp(0.4rem, 0.8vh, 0.6rem) clamp(1rem, 2vw, 1.3rem);
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.15),
+          rgba(5, 150, 105, 0.1)
+        );
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: clamp(12px, 2.4vw, 16px);
+        font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+        color: rgba(110, 231, 183, 0.9);
         font-weight: 400;
         position: relative;
         overflow: hidden;
       }
 
-      /* Refined Form Container */
+      .free-badge::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(16, 185, 129, 0.1),
+          transparent
+        );
+        animation: shimmer 3s ease-in-out infinite;
+      }
+
+      @keyframes shimmer {
+        0%,
+        100% {
+          transform: translateX(-100%);
+        }
+        50% {
+          transform: translateX(100%);
+        }
+      }
+
+      /* Form Container */
       .form-section {
         width: 100%;
-        max-width: clamp(360px, 40vw, 450px);
+        max-width: clamp(380px, 45vw, 480px);
         background: rgba(255, 255, 255, 0.03);
         backdrop-filter: blur(30px) saturate(120%);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: clamp(18px, 3.5vw, 24px);
-        padding: clamp(1.6rem, 3vh, 2.4rem) clamp(1.4rem, 2.8vw, 2rem);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2),
+        border-radius: clamp(20px, 4vw, 26px);
+        padding: clamp(2rem, 4vh, 2.8rem) clamp(1.8rem, 3.5vw, 2.4rem);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2),
           0 0 0 1px rgba(255, 255, 255, 0.04);
         position: relative;
         overflow: hidden;
@@ -278,21 +305,21 @@
           rgba(255, 255, 255, 0.04) 0%,
           rgba(255, 255, 255, 0.01) 100%
         );
-        border-radius: clamp(17px, 3.5vw, 23px);
+        border-radius: clamp(19px, 4vw, 25px);
         pointer-events: none;
       }
 
-      /* Refined Messages */
+      /* Messages */
       .message {
-        padding: clamp(0.7rem, 1.4vh, 0.9rem);
-        border-radius: clamp(10px, 2vw, 14px);
-        font-size: clamp(0.75rem, 1.7vw, 0.85rem);
+        padding: clamp(0.8rem, 1.6vh, 1rem);
+        border-radius: clamp(12px, 2.4vw, 16px);
+        font-size: clamp(0.8rem, 1.8vw, 0.9rem);
         text-align: center;
         opacity: 0;
         transform: translateY(-10px);
         transition: all 0.3s ease;
         font-weight: 300;
-        margin-bottom: clamp(0.5rem, 1vh, 0.7rem);
+        margin-bottom: clamp(0.8rem, 1.6vh, 1rem);
       }
 
       .message.show {
@@ -312,11 +339,11 @@
         color: rgba(110, 231, 183, 0.9);
       }
 
-      /* Refined Form Elements */
+      /* Form Elements */
       .register-form {
         display: flex;
         flex-direction: column;
-        gap: clamp(1rem, 2vh, 1.3rem);
+        gap: clamp(1.2rem, 2.5vh, 1.6rem);
         flex: 1;
       }
 
@@ -326,13 +353,13 @@
 
       .form-input {
         width: 100%;
-        padding: clamp(0.9rem, 1.8vh, 1.2rem);
+        padding: clamp(1rem, 2vh, 1.3rem);
         background: rgba(255, 255, 255, 0.04);
         backdrop-filter: blur(15px);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: clamp(10px, 2vw, 14px);
+        border-radius: clamp(12px, 2.4vw, 16px);
         color: #fff;
-        font-size: clamp(0.85rem, 1.9vw, 0.95rem);
+        font-size: clamp(0.9rem, 2vw, 1rem);
         font-family: inherit;
         transition: all 0.3s ease;
         font-weight: 300;
@@ -342,13 +369,13 @@
       }
 
       .form-input.has-icon {
-        padding-right: clamp(2.3rem, 4.5vw, 2.8rem);
+        padding-right: clamp(2.5rem, 5vw, 3rem);
       }
 
       .form-input:focus {
-        border-color: rgba(147, 51, 234, 0.3);
+        border-color: rgba(16, 185, 129, 0.4);
         background: rgba(255, 255, 255, 0.06);
-        box-shadow: 0 0 20px rgba(147, 51, 234, 0.1);
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
         transform: translateY(-1px);
       }
 
@@ -358,13 +385,13 @@
         font-weight: 300;
       }
 
-      /* Refined Labels */
+      /* Floating Labels */
       .form-label {
         position: absolute;
-        left: clamp(0.9rem, 1.8vh, 1.2rem);
-        top: clamp(0.9rem, 1.8vh, 1.2rem);
+        left: clamp(1rem, 2vh, 1.3rem);
+        top: clamp(1rem, 2vh, 1.3rem);
         color: rgba(255, 255, 255, 0.5);
-        font-size: clamp(0.85rem, 1.9vw, 0.95rem);
+        font-size: clamp(0.9rem, 2vw, 1rem);
         font-weight: 300;
         pointer-events: none;
         transition: all 0.3s ease;
@@ -373,26 +400,26 @@
 
       .form-input:focus + .form-label,
       .form-input:not(:placeholder-shown) + .form-label {
-        transform: translateY(clamp(-1.6rem, -3.2vh, -2rem)) scale(0.8);
-        color: rgba(147, 51, 234, 0.8);
-        left: clamp(0.7rem, 1.4vh, 0.9rem);
+        transform: translateY(clamp(-1.8rem, -3.6vh, -2.2rem)) scale(0.8);
+        color: rgba(16, 185, 129, 0.8);
+        left: clamp(0.8rem, 1.6vh, 1rem);
         font-weight: 400;
       }
 
-      /* Refined Password Toggle */
+      /* Password Toggle */
       .password-toggle {
         position: absolute;
-        right: clamp(0.7rem, 1.4vw, 0.9rem);
+        right: clamp(0.8rem, 1.6vw, 1rem);
         top: 50%;
         transform: translateY(-50%);
         background: rgba(255, 255, 255, 0.06);
         border: 1px solid rgba(255, 255, 255, 0.1);
         color: rgba(255, 255, 255, 0.6);
         cursor: pointer;
-        padding: clamp(0.35rem, 0.7vh, 0.45rem);
-        border-radius: 6px;
+        padding: clamp(0.4rem, 0.8vh, 0.5rem);
+        border-radius: 8px;
         transition: all 0.3s ease;
-        font-size: clamp(0.9rem, 1.8vw, 1rem);
+        font-size: clamp(1rem, 2vw, 1.1rem);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -407,37 +434,37 @@
         border-color: rgba(255, 255, 255, 0.15);
       }
 
-      /* Refined Password Hint */
+      /* Password Hint */
       .password-hint {
-        font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+        font-size: clamp(0.75rem, 1.6vw, 0.85rem);
         color: rgba(255, 255, 255, 0.4);
-        margin-top: clamp(0.3rem, 0.6vh, 0.4rem);
+        margin-top: clamp(0.4rem, 0.8vh, 0.5rem);
         font-style: italic;
         display: flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
 
       .password-hint::before {
         content: "💡";
-        font-size: 0.8em;
+        font-size: 0.9em;
         opacity: 0.6;
       }
 
-      /* Confident Submit Button */
+      /* Submit Button */
       .submit-button {
         width: 100%;
-        padding: clamp(1rem, 2vh, 1.4rem);
+        padding: clamp(1.2rem, 2.5vh, 1.6rem);
         background: linear-gradient(
           135deg,
-          rgba(147, 51, 234, 0.15) 0%,
-          rgba(99, 102, 241, 0.12) 100%
+          rgba(16, 185, 129, 0.15) 0%,
+          rgba(5, 150, 105, 0.12) 100%
         );
         backdrop-filter: blur(20px);
-        border: 1px solid rgba(147, 51, 234, 0.25);
-        border-radius: clamp(10px, 2vw, 14px);
-        color: rgba(196, 181, 253, 0.95);
-        font-size: clamp(0.85rem, 1.9vw, 0.95rem);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: clamp(12px, 2.4vw, 16px);
+        color: rgba(110, 231, 183, 0.95);
+        font-size: clamp(0.9rem, 2vw, 1rem);
         font-weight: 500;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -451,20 +478,20 @@
         align-items: center;
         justify-content: center;
         text-align: center;
-        margin-top: clamp(0.5rem, 1vh, 0.7rem);
-        min-height: clamp(45px, 7vh, 55px);
+        margin-top: clamp(0.6rem, 1.2vh, 0.8rem);
+        min-height: clamp(50px, 8vh, 60px);
       }
 
       .submit-button:hover:not(:disabled) {
         background: linear-gradient(
           135deg,
-          rgba(147, 51, 234, 0.2) 0%,
-          rgba(99, 102, 241, 0.15) 100%
+          rgba(16, 185, 129, 0.2) 0%,
+          rgba(5, 150, 105, 0.15) 100%
         );
-        border-color: rgba(147, 51, 234, 0.4);
+        border-color: rgba(16, 185, 129, 0.4);
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(147, 51, 234, 0.15);
-        color: rgba(196, 181, 253, 1);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.15);
+        color: rgba(110, 231, 183, 1);
       }
 
       .submit-button:disabled {
@@ -477,17 +504,17 @@
         transform: translateY(-1px);
       }
 
-      /* Refined Loading Animation */
+      /* Loading Animation */
       .button-loading {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: clamp(0.5rem, 1vw, 0.7rem);
+        gap: clamp(0.6rem, 1.2vw, 0.8rem);
       }
 
       .loading-spinner {
-        width: clamp(14px, 2.8vw, 18px);
-        height: clamp(14px, 2.8vw, 18px);
+        width: clamp(16px, 3vw, 20px);
+        height: clamp(16px, 3vw, 20px);
         border: 2px solid rgba(255, 255, 255, 0.2);
         border-radius: 50%;
         border-top-color: rgba(255, 255, 255, 0.8);
@@ -503,34 +530,34 @@
         }
       }
 
-      /* Refined Footer */
+      /* Footer */
       .footer {
         text-align: center;
         flex-shrink: 0;
-        margin-top: clamp(0.5rem, 1vh, 0.7rem);
+        margin-top: clamp(1rem, 2vh, 1.4rem);
       }
 
       .signin-text {
         color: rgba(255, 255, 255, 0.6);
-        font-size: clamp(0.75rem, 1.7vw, 0.85rem);
+        font-size: clamp(0.8rem, 1.8vw, 0.9rem);
         line-height: 1.4;
         font-weight: 300;
-        margin-bottom: clamp(0.7rem, 1.4vh, 0.9rem);
+        margin-bottom: clamp(0.8rem, 1.6vh, 1rem);
       }
 
       .signin-link {
         display: inline-flex;
         align-items: center;
-        gap: clamp(0.4rem, 0.8vw, 0.6rem);
+        gap: clamp(0.5rem, 1vw, 0.7rem);
         color: rgba(255, 255, 255, 0.7);
         text-decoration: none;
-        padding: clamp(0.7rem, 1.4vh, 0.9rem) clamp(1.2rem, 2.4vw, 1.5rem);
-        border-radius: clamp(10px, 2vw, 14px);
+        padding: clamp(0.8rem, 1.6vh, 1rem) clamp(1.4rem, 2.8vw, 1.8rem);
+        border-radius: clamp(12px, 2.4vw, 16px);
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.08);
         transition: all 0.3s ease;
         font-weight: 400;
-        font-size: clamp(0.75rem, 1.7vw, 0.85rem);
+        font-size: clamp(0.8rem, 1.8vw, 0.9rem);
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
         white-space: nowrap;
@@ -544,43 +571,80 @@
         transform: translateY(-1px);
       }
 
-      /* Tier-specific subtle styling */
-      .tier-essential .selected-tier {
-        border-color: rgba(16, 185, 129, 0.15);
-        color: rgba(110, 231, 183, 0.8);
+      /* Benefits Preview */
+      .benefits-preview {
+        text-align: center;
+        flex-shrink: 0;
+        margin-top: clamp(0.8rem, 1.6vh, 1.2rem);
       }
 
-      .tier-premium .selected-tier {
-        border-color: rgba(245, 158, 11, 0.15);
-        color: rgba(251, 191, 36, 0.8);
+      .benefits-list {
+        display: flex;
+        justify-content: center;
+        gap: clamp(1.5rem, 3vw, 2rem);
+        margin-top: clamp(0.6rem, 1.2vh, 0.8rem);
       }
 
-      /* Responsive design */
+      .benefit-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: clamp(0.3rem, 0.6vh, 0.4rem);
+        opacity: 0.7;
+      }
+
+      .benefit-icon {
+        font-size: clamp(1.2rem, 2.5vw, 1.4rem);
+        opacity: 0.8;
+      }
+
+      .benefit-text {
+        font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+        color: rgba(255, 255, 255, 0.6);
+        text-align: center;
+        white-space: nowrap;
+      }
+
+      /* Responsive Design */
       @media (max-width: 768px) {
         .main-container {
           padding: clamp(0.8rem, 1.6vh, 1.2rem);
-          gap: clamp(0.8rem, 1.6vh, 1.2rem);
+          gap: clamp(1rem, 2vh, 1.5rem);
         }
 
         .form-section {
           max-width: 90vw;
-          padding: clamp(1.2rem, 2.4vh, 1.8rem) clamp(1rem, 2vw, 1.4rem);
+          padding: clamp(1.5rem, 3vh, 2rem) clamp(1.2rem, 2.5vw, 1.6rem);
         }
 
         .cosmic-presence {
           opacity: 0.6;
         }
+
+        .benefits-list {
+          flex-direction: column;
+          gap: clamp(0.8rem, 1.6vh, 1rem);
+        }
+
+        .benefit-item {
+          flex-direction: row;
+          gap: clamp(0.6rem, 1.2vw, 0.8rem);
+        }
+
+        .benefit-text {
+          white-space: normal;
+        }
       }
 
-      @media (max-height: 600px) and (orientation: landscape) {
+      @media (max-height: 700px) and (orientation: landscape) {
         .main-container {
           padding: clamp(0.5rem, 1vh, 0.8rem) clamp(1rem, 2vw, 1.5rem);
-          gap: clamp(0.5rem, 1vh, 0.8rem);
+          gap: clamp(0.8rem, 1.6vh, 1.2rem);
         }
 
         .mirror-icon {
-          font-size: clamp(1.4rem, 2.8vw, 1.8rem);
-          margin-bottom: clamp(0.3rem, 0.6vh, 0.5rem);
+          font-size: clamp(1.6rem, 3.2vw, 2rem);
+          margin-bottom: clamp(0.4rem, 0.8vh, 0.6rem);
         }
 
         .subtitle {
@@ -588,24 +652,32 @@
         }
 
         .form-section {
-          padding: clamp(1rem, 2vh, 1.4rem) clamp(1rem, 2vw, 1.4rem);
+          padding: clamp(1.2rem, 2.4vh, 1.6rem) clamp(1.2rem, 2.4vw, 1.6rem);
+        }
+
+        .benefits-preview {
+          display: none;
         }
       }
 
-      @media (max-height: 500px) {
-        .selected-tier {
+      @media (max-height: 600px) {
+        .free-badge {
           display: none;
         }
 
         .register-form {
-          gap: clamp(0.7rem, 1.4vh, 1rem);
+          gap: clamp(0.8rem, 1.6vh, 1.2rem);
         }
       }
 
-      @media (max-width: 360px) {
+      @media (max-width: 480px) {
         .form-section {
           max-width: 95vw;
-          padding: clamp(1rem, 2vh, 1.4rem) clamp(0.8rem, 1.6vw, 1.2rem);
+          padding: clamp(1.2rem, 2.4vh, 1.6rem) clamp(1rem, 2vw, 1.4rem);
+        }
+
+        .benefits-list {
+          gap: clamp(0.6rem, 1.2vh, 0.8rem);
         }
       }
 
@@ -626,7 +698,7 @@
       .back-link:focus-visible,
       .signin-link:focus-visible,
       .password-toggle:focus-visible {
-        outline: 2px solid rgba(147, 51, 234, 0.5);
+        outline: 2px solid rgba(16, 185, 129, 0.5);
         outline-offset: 2px;
       }
 
@@ -647,9 +719,9 @@
     </div>
 
     <!-- Navigation -->
-    <a href="/commitment" class="back-link">
+    <a href="/" class="back-link">
       <span>←</span>
-      <span>Back to tier selection</span>
+      <span>Return to portal</span>
     </a>
 
     <!-- Main Container -->
@@ -658,10 +730,13 @@
       <div class="header">
         <div class="mirror-icon">🪞</div>
         <h1 class="title">Begin Your Journey</h1>
-        <p class="subtitle">Your path to self-discovery starts here</p>
-        <div class="selected-tier">
+        <p class="subtitle">
+          Create your free account and start discovering yourself through
+          reflection
+        </p>
+        <div class="free-badge">
           <span>✨</span>
-          <span id="tierDisplay">Free Forever</span>
+          <span>Free Forever - No Credit Card Required</span>
         </div>
       </div>
 
@@ -775,74 +850,41 @@
           </a>
         </div>
       </div>
+
+      <!-- Benefits Preview -->
+      <div class="benefits-preview">
+        <div class="benefits-list">
+          <div class="benefit-item">
+            <div class="benefit-icon">🌙</div>
+            <div class="benefit-text">1 Monthly Reflection</div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">💾</div>
+            <div class="benefit-text">Saved Forever</div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">🤖</div>
+            <div class="benefit-text">AI Recognition</div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">🔒</div>
+            <div class="benefit-text">Private & Secure</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script>
-      // Subtle Registration with Fixed Stripe Integration
+      // Sacred Registration - Always Free, Perfect Flow
       let isLoading = false;
-      let selectedTier = "free";
-      let stripeConfig = null;
 
       // Initialize
       document.addEventListener("DOMContentLoaded", function () {
-        parseURLParams();
         setupForm();
         setupPasswordToggles();
         setupKeyboardShortcuts();
-        loadStripeConfig();
-        addTierStyling();
+        addEnhancedValidation();
       });
-
-      function parseURLParams() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const tier = urlParams.get("tier") || "free";
-
-        selectedTier = tier;
-        updateTierDisplay();
-        updateButtonText();
-      }
-
-      function addTierStyling() {
-        document.body.classList.add(`tier-${selectedTier}`);
-      }
-
-      function updateTierDisplay() {
-        const tierDisplay = document.getElementById("tierDisplay");
-        const tierNames = {
-          free: "Free Forever",
-          essential: "Essential ($4.99/month)",
-          premium: "Premium ($9.99/month)",
-        };
-
-        tierDisplay.textContent = tierNames[selectedTier] || "Free Forever";
-      }
-
-      function updateButtonText() {
-        const buttonText = document.getElementById("buttonText");
-
-        if (selectedTier === "free") {
-          buttonText.textContent = "Create Free Account";
-        } else {
-          buttonText.textContent = "Continue to Secure Payment";
-        }
-      }
-
-      async function loadStripeConfig() {
-        if (selectedTier === "free") return;
-
-        try {
-          const response = await fetch("/api/payment?action=config");
-          const result = await response.json();
-
-          if (result.success) {
-            stripeConfig = result.config;
-          } else {
-            console.warn("Stripe config failed:", result.error);
-          }
-        } catch (error) {
-          console.warn("Stripe config error:", error);
-        }
-      }
 
       function setupForm() {
         const form = document.getElementById("registerForm");
@@ -914,6 +956,27 @@
         });
       }
 
+      function addEnhancedValidation() {
+        // Real-time password matching
+        const password = document.getElementById("password");
+        const confirmPassword = document.getElementById("confirmPassword");
+
+        confirmPassword.addEventListener("input", function () {
+          if (this.value && password.value && this.value !== password.value) {
+            this.style.borderColor = "rgba(245, 158, 11, 0.4)";
+          } else {
+            this.style.borderColor = "";
+          }
+        });
+
+        // Name formatting
+        const nameInput = document.getElementById("name");
+        nameInput.addEventListener("blur", function () {
+          // Capitalize first letter of each word
+          this.value = this.value.replace(/\b\w/g, (l) => l.toUpperCase());
+        });
+      }
+
       async function handleRegistration(e) {
         e.preventDefault();
         if (isLoading) return;
@@ -949,13 +1012,8 @@
         hideMessages();
 
         try {
-          if (selectedTier === "free") {
-            // Create free account directly
-            await createFreeAccount(name, email, password);
-          } else {
-            // Create Stripe checkout session for paid tiers
-            await createStripeCheckout(name, email, password);
-          }
+          // Create free account
+          await createFreeAccount(name, email, password);
         } catch (error) {
           console.error("Registration error:", error);
           showMessage(
@@ -1001,40 +1059,6 @@
           }, 2000);
         } else {
           throw new Error(result.error || "Account creation failed");
-        }
-
-        setLoadingState(false);
-      }
-
-      async function createStripeCheckout(name, email, password) {
-        if (!stripeConfig) {
-          throw new Error("Payment system not available. Please try again.");
-        }
-
-        const response = await fetch("/api/payment", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            action: "create-checkout-session",
-            name: name,
-            email: email,
-            password: password, // 🔑 Include the password!
-            tier: selectedTier,
-            period: "monthly", // Default to monthly
-          }),
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          showMessage("Redirecting to secure payment...", "success");
-
-          // Redirect to Stripe Checkout
-          window.location.href = result.url;
-        } else {
-          throw new Error(result.error || "Payment setup failed");
         }
 
         setLoadingState(false);
@@ -1134,14 +1158,12 @@
 
       // Debug (Development Only)
       if (window.location.hostname === "localhost") {
-        console.log("🪞 Subtle Sacred Registration - Dissolved Yet Undeniable");
+        console.log("🪞 Sacred Registration - Always Free, Perfect Flow");
 
         window.registerDebug = {
-          selectedTier: () => selectedTier,
           clearForm,
           testMessage: (message, type) => showMessage(message, type),
           toggleLoading: () => setLoadingState(!isLoading),
-          stripeConfig: () => stripeConfig,
         };
       }
     </script>
