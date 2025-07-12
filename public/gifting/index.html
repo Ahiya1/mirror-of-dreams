@@ -12,7 +12,7 @@
       Gift Mirror of Truth Access | Self-Discovery for Someone You Care About
     </title>
     <style>
-      /* Perfect Full-Width Gift Experience - All Content Visible */
+      /* Gift Flow - Perfect 3-Step Contained Experience */
       * {
         margin: 0;
         padding: 0;
@@ -38,7 +38,7 @@
         -moz-osx-font-smoothing: grayscale;
       }
 
-      /* Gentle cosmic background animation */
+      /* Cosmic background animation */
       body::before {
         content: "";
         position: fixed;
@@ -166,7 +166,49 @@
         transform: translateY(-2px);
       }
 
-      /* Main container - full width utilization */
+      /* Progress indicator */
+      .progress-container {
+        position: fixed;
+        top: clamp(1rem, 2vh, 1.5rem);
+        right: clamp(1rem, 2vw, 1.5rem);
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: clamp(0.6rem, 1.2vh, 0.8rem) clamp(1rem, 1.8vw, 1.2rem);
+        border-radius: 50px;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .progress-steps {
+        display: flex;
+        gap: 0.3rem;
+      }
+
+      .progress-step {
+        width: clamp(6px, 1.2vw, 8px);
+        height: clamp(6px, 1.2vw, 8px);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .progress-step.active {
+        background: rgba(251, 191, 36, 0.8);
+        box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+      }
+
+      .progress-step.completed {
+        background: rgba(16, 185, 129, 0.8);
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+      }
+
+      /* Main container */
       .main-container {
         position: relative;
         z-index: 10;
@@ -175,25 +217,49 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: clamp(0.8rem, 1.5vh, 1.2rem) clamp(1.5rem, 3vw, 2.5rem);
+        padding: clamp(1rem, 2vh, 2rem) clamp(1rem, 3vw, 2rem);
         max-width: 100vw;
         margin: 0 auto;
-        gap: clamp(0.6rem, 1.2vh, 0.8rem);
       }
 
-      /* Header section */
-      .header {
+      /* Step container */
+      .step-container {
+        width: 100%;
+        max-width: clamp(800px, 85vw, 1000px);
+        display: none;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease;
+      }
+
+      .step-container.active {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Step 1 - What they'll receive */
+      .step-1 {
         text-align: center;
-        flex-shrink: 0;
-        margin-bottom: clamp(0.8rem, 1.5vh, 1rem);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        gap: clamp(1.5rem, 3vh, 2.5rem);
+      }
+
+      .step-1 .header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: clamp(0.8rem, 1.5vh, 1.2rem);
       }
 
       .gift-icon {
-        font-size: clamp(2.2rem, 4vw, 3rem);
-        margin-bottom: clamp(0.5rem, 1vh, 0.7rem);
-        display: block;
+        font-size: clamp(3rem, 6vw, 4.5rem);
         animation: giftPulse 6s ease-in-out infinite;
-        filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.3));
+        filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.4));
       }
 
       @keyframes giftPulse {
@@ -203,15 +269,14 @@
           opacity: 0.9;
         }
         50% {
-          transform: scale(1.08) rotate(5deg);
+          transform: scale(1.1) rotate(5deg);
           opacity: 1;
         }
       }
 
-      .title {
-        font-size: clamp(2rem, 4vw, 2.8rem);
+      .step-title {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
         font-weight: 300;
-        margin-bottom: clamp(0.4rem, 0.8vh, 0.6rem);
         background: linear-gradient(
           135deg,
           rgba(255, 255, 255, 0.95) 0%,
@@ -223,45 +288,109 @@
         color: transparent;
         letter-spacing: 0.5px;
         line-height: 1.1;
+        margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
       }
 
-      .subtitle {
-        font-size: clamp(1rem, 2.2vw, 1.3rem);
+      .step-subtitle {
+        font-size: clamp(1.2rem, 2.5vw, 1.6rem);
         opacity: 0.85;
         color: rgba(255, 255, 255, 0.8);
         line-height: 1.4;
         font-weight: 300;
-        margin-bottom: clamp(0.3rem, 0.6vh, 0.4rem);
+        max-width: 600px;
       }
 
-      .description {
-        font-size: clamp(0.85rem, 1.8vw, 1rem);
-        opacity: 0.7;
-        color: rgba(255, 255, 255, 0.7);
-        font-style: italic;
-        max-width: clamp(400px, 60vw, 600px);
-        line-height: 1.4;
-      }
-
-      /* Main form container - wider and well-spaced */
-      .gift-container {
+      /* Benefits grid */
+      .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: clamp(1.2rem, 2.5vw, 2rem);
         width: 100%;
-        max-width: clamp(800px, 85vw, 1200px);
+        max-width: 900px;
+      }
+
+      .benefit-card {
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(40px) saturate(120%);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: clamp(16px, 3vw, 24px);
+        padding: clamp(1.8rem, 3vh, 2.5rem);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        text-align: left;
+      }
+
+      .benefit-card::before {
+        content: "";
+        position: absolute;
+        inset: 1px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.08) 0%,
+          rgba(251, 191, 36, 0.03) 30%,
+          rgba(147, 51, 234, 0.02) 70%,
+          rgba(255, 255, 255, 0.04) 100%
+        );
+        border-radius: clamp(15px, 3vw, 23px);
+        pointer-events: none;
+      }
+
+      .benefit-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .benefit-icon {
+        font-size: clamp(2rem, 4vw, 2.8rem);
+        margin-bottom: clamp(1rem, 2vh, 1.5rem);
+        display: block;
+      }
+
+      .benefit-title {
+        font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+        font-weight: 500;
+        margin-bottom: clamp(0.8rem, 1.5vh, 1rem);
+        color: rgba(255, 255, 255, 0.95);
+      }
+
+      .benefit-description {
+        font-size: clamp(0.95rem, 2vw, 1.1rem);
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.75);
+        margin: 0;
+      }
+
+      /* Step 2 - Fill details */
+      .step-2 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(2rem, 4vh, 3rem);
+        height: 100%;
+      }
+
+      .step-2 .header {
+        text-align: center;
+        max-width: 600px;
+      }
+
+      .form-container {
+        width: 100%;
+        max-width: 650px;
         background: rgba(255, 255, 255, 0.04);
         backdrop-filter: blur(40px) saturate(120%);
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: clamp(20px, 3vw, 28px);
-        padding: clamp(2rem, 3vh, 3rem);
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3),
-          0 0 0 1px rgba(255, 255, 255, 0.06);
+        padding: clamp(2.5rem, 4vh, 3.5rem);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
         position: relative;
         overflow: hidden;
-        flex-shrink: 0;
-        animation: containerAppear 1.2s ease-out;
-        max-height: 70vh;
       }
 
-      .gift-container::before {
+      .form-container::before {
         content: "";
         position: absolute;
         inset: 1px;
@@ -276,93 +405,13 @@
         pointer-events: none;
       }
 
-      @keyframes containerAppear {
-        0% {
-          opacity: 0;
-          transform: scale(0.95) translateY(30px);
-          filter: blur(10px);
-        }
-        100% {
-          opacity: 1;
-          transform: scale(1) translateY(0);
-          filter: blur(0);
-        }
-      }
-
-      /* Grid layout for form and preview - proper wide layout */
-      .gift-content {
-        display: grid;
-        grid-template-columns: 1fr 320px;
-        gap: clamp(2.5rem, 4vw, 3.5rem);
-        align-items: start;
-        height: 100%;
-      }
-
-      /* Form section */
-      .form-section {
+      /* Form styling */
+      .gift-form {
         display: flex;
         flex-direction: column;
-        gap: clamp(1.2rem, 2vh, 1.6rem);
-        height: 100%;
-        overflow-y: auto;
-        padding-right: 0.5rem;
+        gap: clamp(1.5rem, 3vh, 2rem);
       }
 
-      .form-section::-webkit-scrollbar {
-        width: 4px;
-      }
-
-      .form-section::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 2px;
-      }
-
-      .form-section::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 2px;
-      }
-
-      .form-section::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 255, 255, 0.3);
-      }
-
-      /* Messages */
-      .message {
-        padding: clamp(0.8rem, 1.5vh, 1rem);
-        border-radius: clamp(10px, 2vw, 14px);
-        font-size: clamp(0.85rem, 1.7vw, 0.95rem);
-        text-align: center;
-        opacity: 0;
-        transform: translateY(-10px);
-        transition: all 0.3s ease;
-        font-weight: 300;
-        margin-bottom: clamp(0.6rem, 1.2vh, 0.8rem);
-      }
-
-      .message.show {
-        opacity: 1;
-        transform: translateY(0);
-      }
-
-      .message.error {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.2);
-        color: rgba(252, 165, 165, 0.9);
-      }
-
-      .message.success {
-        background: rgba(34, 197, 94, 0.1);
-        border: 1px solid rgba(34, 197, 94, 0.2);
-        color: rgba(110, 231, 183, 0.9);
-      }
-
-      .message.info {
-        background: rgba(59, 130, 246, 0.1);
-        border: 1px solid rgba(59, 130, 246, 0.2);
-        color: rgba(147, 197, 253, 0.9);
-      }
-
-      /* Form groups */
       .form-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -373,7 +422,7 @@
         position: relative;
         display: flex;
         flex-direction: column;
-        gap: clamp(0.4rem, 0.8vh, 0.5rem);
+        gap: clamp(0.5rem, 1vh, 0.7rem);
       }
 
       .form-group.full-width {
@@ -381,20 +430,20 @@
       }
 
       .form-label {
-        font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+        font-size: clamp(0.9rem, 1.8vw, 1rem);
         color: rgba(255, 255, 255, 0.8);
         font-weight: 400;
         letter-spacing: 0.3px;
       }
 
       .form-input {
-        padding: clamp(0.9rem, 1.8vh, 1.1rem);
+        padding: clamp(1rem, 2vh, 1.2rem);
         background: rgba(255, 255, 255, 0.06);
         backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: clamp(10px, 2vw, 14px);
+        border-radius: clamp(12px, 2.4vw, 16px);
         color: #fff;
-        font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+        font-size: clamp(0.9rem, 1.8vw, 1rem);
         font-family: inherit;
         transition: all 0.3s ease;
         font-weight: 300;
@@ -416,53 +465,37 @@
       }
 
       .form-textarea {
-        min-height: clamp(80px, 14vh, 100px);
+        min-height: clamp(90px, 15vh, 120px);
         resize: none;
-        line-height: 1.5;
+        line-height: 1.6;
         font-family: inherit;
       }
 
       .char-counter {
         text-align: right;
-        font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+        font-size: clamp(0.8rem, 1.6vw, 0.9rem);
         color: rgba(255, 255, 255, 0.5);
         margin-top: 0.3rem;
         transition: color 0.3s ease;
       }
 
-      /* Selection sections */
-      .selection-section {
+      /* Tier selection */
+      .tier-selection {
         background: rgba(255, 255, 255, 0.03);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: clamp(12px, 2.4vw, 16px);
-        padding: clamp(1.5rem, 2.5vh, 2rem);
-        position: relative;
-        overflow: hidden;
-      }
-
-      .selection-section::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(
-          90deg,
-          transparent 0%,
-          rgba(255, 255, 255, 0.2) 50%,
-          transparent 100%
-        );
+        border-radius: clamp(16px, 3vw, 20px);
+        padding: clamp(2rem, 3vh, 2.5rem);
+        margin-top: clamp(1rem, 2vh, 1.5rem);
       }
 
       .section-title {
-        font-size: clamp(1rem, 2vw, 1.2rem);
+        font-size: clamp(1.2rem, 2.4vw, 1.5rem);
         font-weight: 500;
-        margin-bottom: clamp(1rem, 2vh, 1.3rem);
+        margin-bottom: clamp(1.5rem, 3vh, 2rem);
         color: rgba(255, 255, 255, 0.9);
         display: flex;
         align-items: center;
-        gap: 0.6rem;
+        gap: 0.8rem;
         letter-spacing: 0.3px;
       }
 
@@ -472,26 +505,23 @@
         opacity: 0.8;
       }
 
-      /* Tier selection */
       .tier-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: clamp(1rem, 2vw, 1.3rem);
-        margin-bottom: clamp(1.5rem, 2.5vh, 2rem);
+        gap: clamp(1.2rem, 2.5vw, 1.8rem);
+        margin-bottom: clamp(2rem, 3vh, 2.5rem);
       }
 
       .tier-option {
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: clamp(10px, 2vw, 14px);
-        padding: clamp(1.2rem, 2vh, 1.6rem);
+        border-radius: clamp(12px, 2.4vw, 16px);
+        padding: clamp(1.5rem, 3vh, 2rem);
         cursor: pointer;
         transition: all 0.3s ease;
         text-align: center;
         position: relative;
         overflow: hidden;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
       }
 
       .tier-option::before {
@@ -511,7 +541,6 @@
         background: rgba(255, 255, 255, 0.06);
         border-color: rgba(255, 255, 255, 0.2);
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
       }
 
       .tier-option:hover::before {
@@ -522,7 +551,6 @@
         background: rgba(16, 185, 129, 0.1);
         border-color: rgba(16, 185, 129, 0.3);
         box-shadow: 0 0 25px rgba(16, 185, 129, 0.2);
-        transform: translateY(-1px);
       }
 
       .tier-option.selected::before {
@@ -531,7 +559,7 @@
 
       .tier-option.premium {
         position: relative;
-        padding-top: clamp(1.8rem, 3vh, 2.2rem);
+        padding-top: clamp(2.2rem, 4vh, 2.8rem);
       }
 
       .premium-badge {
@@ -550,37 +578,35 @@
       }
 
       .tier-name {
-        font-size: clamp(1rem, 2vw, 1.2rem);
+        font-size: clamp(1.2rem, 2.4vw, 1.5rem);
         font-weight: 500;
-        margin-bottom: clamp(0.6rem, 1.2vh, 0.8rem);
+        margin-bottom: clamp(0.8rem, 1.5vh, 1rem);
         color: rgba(255, 255, 255, 0.95);
       }
 
       .tier-description {
-        font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+        font-size: clamp(0.85rem, 1.7vw, 1rem);
         color: rgba(255, 255, 255, 0.7);
-        line-height: 1.4;
+        line-height: 1.5;
       }
 
       /* Duration selection */
       .duration-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: clamp(0.8rem, 1.5vw, 1rem);
+        gap: clamp(1rem, 2vw, 1.3rem);
       }
 
       .duration-option {
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: clamp(8px, 1.6vw, 12px);
-        padding: clamp(1rem, 1.8vh, 1.3rem);
+        border-radius: clamp(10px, 2vw, 14px);
+        padding: clamp(1.2rem, 2.5vh, 1.6rem);
         cursor: pointer;
         transition: all 0.3s ease;
         text-align: center;
         position: relative;
         overflow: hidden;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
       }
 
       .duration-option::before {
@@ -617,49 +643,64 @@
       }
 
       .duration-name {
-        font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+        font-size: clamp(0.9rem, 1.8vw, 1rem);
         font-weight: 500;
-        margin-bottom: clamp(0.4rem, 0.8vh, 0.5rem);
+        margin-bottom: clamp(0.5rem, 1vh, 0.7rem);
         color: rgba(255, 255, 255, 0.9);
       }
 
       .duration-price {
-        font-size: clamp(1rem, 2vw, 1.2rem);
+        font-size: clamp(1.1rem, 2.2vw, 1.3rem);
         font-weight: 600;
         color: #10b981;
       }
 
-      /* Payment section */
-      .payment-section {
-        margin-top: clamp(1.2rem, 2vh, 1.6rem);
-        padding: clamp(1.5rem, 2.5vh, 2rem);
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: clamp(12px, 2.4vw, 16px);
+      /* Step 3 - Payment */
+      .step-3 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(2rem, 4vh, 3rem);
+        height: 100%;
         text-align: center;
+      }
+
+      .step-3 .header {
+        max-width: 600px;
+      }
+
+      .payment-container {
+        width: 100%;
+        max-width: 500px;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(40px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: clamp(20px, 3vw, 28px);
+        padding: clamp(2.5rem, 4vh, 3.5rem);
         position: relative;
         overflow: hidden;
       }
 
-      .payment-section::before {
+      .payment-container::before {
         content: "";
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        height: 2px;
+        height: 3px;
         background: linear-gradient(
           90deg,
           transparent 0%,
-          rgba(16, 185, 129, 0.6) 50%,
+          rgba(16, 185, 129, 0.8) 50%,
           transparent 100%
         );
       }
 
       .total-amount {
-        font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
         font-weight: 600;
-        margin-bottom: clamp(0.4rem, 0.8vh, 0.6rem);
+        margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
         background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         -webkit-background-clip: text;
         background-clip: text;
@@ -667,22 +708,49 @@
       }
 
       .total-description {
-        font-size: clamp(0.9rem, 1.8vw, 1rem);
+        font-size: clamp(1rem, 2vw, 1.2rem);
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: clamp(2rem, 3vh, 2.5rem);
+      }
+
+      .gift-summary {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: clamp(12px, 2.4vw, 16px);
+        padding: clamp(1.5rem, 3vh, 2rem);
+        margin-bottom: clamp(2rem, 3vh, 2.5rem);
+        text-align: left;
+      }
+
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: clamp(0.5rem, 1vh, 0.7rem) 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .summary-row:last-child {
+        border-bottom: none;
+        font-weight: 500;
+        font-size: clamp(1rem, 2vw, 1.1rem);
+      }
+
+      .summary-label {
         color: rgba(255, 255, 255, 0.7);
-        margin-bottom: clamp(1.2rem, 2vh, 1.6rem);
+        font-size: clamp(0.9rem, 1.8vw, 1rem);
+      }
+
+      .summary-value {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: clamp(0.9rem, 1.8vw, 1rem);
       }
 
       #paypal-button-container {
-        min-height: clamp(50px, 9vh, 60px);
-        border-radius: clamp(10px, 2vw, 14px);
+        min-height: clamp(55px, 10vh, 65px);
+        border-radius: clamp(12px, 2.4vw, 16px);
         overflow: hidden;
-        opacity: 0.5;
-        transition: opacity 0.3s ease;
-        margin: clamp(1rem, 2vh, 1.3rem) 0;
-      }
-
-      #paypal-button-container.enabled {
-        opacity: 1;
+        margin: clamp(1.5rem, 3vh, 2rem) 0;
       }
 
       .paypal-loading {
@@ -690,17 +758,17 @@
         align-items: center;
         justify-content: center;
         gap: clamp(1rem, 2vw, 1.3rem);
-        padding: clamp(1.2rem, 2vh, 1.5rem);
+        padding: clamp(1.5rem, 3vh, 2rem);
         background: rgba(59, 130, 246, 0.1);
         border: 1px solid rgba(59, 130, 246, 0.2);
-        border-radius: clamp(10px, 2vw, 14px);
+        border-radius: clamp(12px, 2.4vw, 16px);
         color: #93c5fd;
-        font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+        font-size: clamp(0.9rem, 1.8vw, 1rem);
       }
 
       .loading-spinner {
-        width: clamp(18px, 3.5vw, 22px);
-        height: clamp(18px, 3.5vw, 22px);
+        width: clamp(20px, 4vw, 24px);
+        height: clamp(20px, 4vw, 24px);
         border: 2px solid rgba(147, 197, 253, 0.3);
         border-radius: 50%;
         border-top-color: #93c5fd;
@@ -713,252 +781,128 @@
         }
       }
 
-      .processing-message {
-        display: none;
-        text-align: center;
-        padding: clamp(1rem, 2vh, 1.3rem);
-        background: rgba(59, 130, 246, 0.1);
-        border: 1px solid rgba(59, 130, 246, 0.2);
-        border-radius: clamp(10px, 2vw, 14px);
-        color: #93c5fd;
-        margin-top: clamp(1rem, 2vh, 1.3rem);
-        font-size: clamp(0.85rem, 1.7vw, 0.95rem);
-      }
-
-      /* Preview section */
-      .preview-section {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: clamp(12px, 2.4vw, 16px);
-        padding: clamp(1.8rem, 3vh, 2.2rem);
-        height: fit-content;
-        position: relative;
-        overflow: hidden;
-        max-height: 100%;
-      }
-
-      .preview-section::before {
-        content: "";
-        position: absolute;
-        top: 15%;
-        right: -15%;
-        width: 150px;
-        height: 150px;
-        background: radial-gradient(
-          circle,
-          rgba(251, 191, 36, 0.15) 0%,
-          rgba(147, 51, 234, 0.1) 50%,
-          transparent 70%
-        );
-        border-radius: 50%;
-        animation: previewGlow 8s ease-in-out infinite;
-        filter: blur(25px);
-      }
-
-      @keyframes previewGlow {
-        0%,
-        100% {
-          opacity: 0.6;
-          transform: scale(1) rotate(0deg);
-        }
-        50% {
-          opacity: 0.9;
-          transform: scale(1.2) rotate(180deg);
-        }
-      }
-
-      .preview-header {
-        text-align: center;
-        margin-bottom: clamp(1.5rem, 2.5vh, 2rem);
-        position: relative;
-        z-index: 2;
-      }
-
-      .preview-icon {
-        font-size: clamp(2.5rem, 4.5vw, 3.2rem);
-        margin-bottom: clamp(0.8rem, 1.5vh, 1rem);
-        display: block;
-        animation: giftFloat 5s ease-in-out infinite;
-      }
-
-      @keyframes giftFloat {
-        0%,
-        100% {
-          transform: translateY(0) rotate(0deg);
-        }
-        50% {
-          transform: translateY(-10px) rotate(5deg);
-        }
-      }
-
-      .preview-title {
-        font-size: clamp(1.3rem, 2.5vw, 1.6rem);
-        font-weight: 500;
-        margin-bottom: clamp(0.4rem, 0.8vh, 0.6rem);
-        color: rgba(255, 255, 255, 0.95);
-      }
-
-      .preview-subtitle {
-        font-size: clamp(0.9rem, 1.8vw, 1rem);
-        color: rgba(255, 255, 255, 0.7);
-        font-style: italic;
-      }
-
-      .preview-benefits {
+      /* Navigation buttons */
+      .nav-buttons {
         display: flex;
-        flex-direction: column;
-        gap: clamp(0.8rem, 1.5vh, 1rem);
-        position: relative;
-        z-index: 2;
-        margin-bottom: clamp(1.5rem, 2.5vh, 2rem);
-      }
-
-      .benefit-item {
-        display: flex;
+        justify-content: space-between;
         align-items: center;
-        gap: clamp(1rem, 2vw, 1.3rem);
-        padding: clamp(1rem, 1.8vh, 1.3rem);
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: clamp(8px, 1.6vw, 12px);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
+        width: 100%;
+        max-width: 500px;
+        margin-top: clamp(2rem, 4vh, 3rem);
+        gap: clamp(1rem, 2vw, 1.5rem);
       }
 
-      .benefit-item::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        width: 3px;
-        background: linear-gradient(
-          180deg,
-          rgba(16, 185, 129, 0.8) 0%,
-          rgba(59, 130, 246, 0.6) 100%
-        );
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-
-      .benefit-item:hover {
-        background: rgba(255, 255, 255, 0.06);
-        border-color: rgba(255, 255, 255, 0.15);
-        transform: translateX(5px);
-      }
-
-      .benefit-item:hover::before {
-        opacity: 1;
-      }
-
-      .benefit-icon {
-        font-size: clamp(1.4rem, 2.8vw, 1.7rem);
-        flex-shrink: 0;
-      }
-
-      .benefit-text {
-        font-size: clamp(0.9rem, 1.8vw, 1rem);
-        color: rgba(255, 255, 255, 0.8);
-        line-height: 1.4;
-      }
-
-      .benefit-premium {
-        display: none;
-      }
-
-      .preview-note {
-        padding: clamp(1.2rem, 2vh, 1.5rem);
-        background: rgba(59, 130, 246, 0.08);
-        border: 1px solid rgba(59, 130, 246, 0.2);
-        border-radius: clamp(8px, 1.6vw, 12px);
-        position: relative;
-        z-index: 2;
-      }
-
-      .note-title {
-        font-size: clamp(0.9rem, 1.8vw, 1rem);
-        font-weight: 500;
-        margin-bottom: clamp(0.6rem, 1.2vh, 0.8rem);
-        color: rgba(255, 255, 255, 0.9);
+      .nav-button {
         display: flex;
         align-items: center;
         gap: 0.6rem;
+        padding: clamp(0.8rem, 1.6vh, 1rem) clamp(1.5rem, 3vw, 2rem);
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.08) 0%,
+          rgba(255, 255, 255, 0.04) 100%
+        );
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: clamp(12px, 2.4vw, 16px);
+        color: rgba(255, 255, 255, 0.9);
+        font-size: clamp(0.9rem, 1.8vw, 1rem);
+        font-weight: 400;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        white-space: nowrap;
+        flex: 1;
+        justify-content: center;
       }
 
-      .note-text {
-        font-size: clamp(0.8rem, 1.6vw, 0.9rem);
-        line-height: 1.5;
-        color: rgba(255, 255, 255, 0.7);
+      .nav-button:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.12) 0%,
+          rgba(255, 255, 255, 0.06) 100%
+        );
+        border-color: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
       }
 
-      /* Loading states */
-      .form-disabled {
-        opacity: 0.6;
-        pointer-events: none;
+      .nav-button.primary {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.12) 0%,
+          rgba(5, 150, 105, 0.08) 100%
+        );
+        border-color: rgba(16, 185, 129, 0.25);
+        color: rgba(255, 255, 255, 0.95);
       }
 
-      /* Responsive design - maintain all content visibility */
-      @media (max-width: 1400px) {
-        .gift-content {
-          grid-template-columns: 1fr 280px;
-          gap: clamp(2rem, 3vw, 2.5rem);
-        }
+      .nav-button.primary:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.18) 0%,
+          rgba(5, 150, 105, 0.12) 100%
+        );
+        border-color: rgba(16, 185, 129, 0.35);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.15);
       }
 
-      @media (max-width: 1200px) {
-        .gift-content {
-          grid-template-columns: 1fr 260px;
-          gap: clamp(1.5rem, 2.5vw, 2rem);
-        }
-
-        .preview-section {
-          padding: clamp(1.2rem, 2vh, 1.5rem);
-        }
+      .nav-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
       }
 
-      @media (max-width: 1024px) {
-        .gift-content {
-          grid-template-columns: 1fr;
-          gap: clamp(1.5rem, 2.5vh, 2rem);
-        }
-
-        .preview-section {
-          order: -1;
-          max-height: 35vh;
-          overflow-y: auto;
-        }
-
-        .preview-section::-webkit-scrollbar {
-          width: 4px;
-        }
-
-        .preview-section::-webkit-scrollbar-track {
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 2px;
-        }
-
-        .preview-section::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.2);
-          border-radius: 2px;
-        }
-
-        .main-container {
-          padding-top: clamp(4rem, 7vh, 6rem);
-          padding-bottom: clamp(1rem, 2vh, 1.5rem);
-          justify-content: flex-start;
-          height: auto;
-          min-height: 100vh;
-          overflow-y: auto;
-        }
-
-        .gift-container {
-          max-width: 95vw;
-          max-height: 85vh;
-        }
+      .nav-button:disabled:hover {
+        transform: none;
       }
 
+      /* Messages */
+      .message {
+        padding: clamp(0.8rem, 1.6vh, 1rem);
+        border-radius: clamp(10px, 2vw, 14px);
+        font-size: clamp(0.9rem, 1.8vw, 1rem);
+        text-align: center;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        font-weight: 300;
+        margin-bottom: clamp(1rem, 2vh, 1.3rem);
+        max-width: 600px;
+        width: 100%;
+      }
+
+      .message.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .message.error {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        color: rgba(252, 165, 165, 0.9);
+      }
+
+      .message.success {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+        color: rgba(110, 231, 183, 0.9);
+      }
+
+      .message.info {
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        color: rgba(147, 197, 253, 0.9);
+      }
+
+      /* Mobile responsive */
       @media (max-width: 768px) {
+        .benefits-grid {
+          grid-template-columns: 1fr;
+          gap: clamp(1rem, 2vh, 1.5rem);
+        }
+
         .form-row {
           grid-template-columns: 1fr;
           gap: clamp(0.8rem, 1.5vh, 1rem);
@@ -972,95 +916,119 @@
           grid-template-columns: 1fr;
         }
 
-        .main-container {
-          padding-top: clamp(3rem, 5vh, 4rem);
+        .nav-buttons {
+          flex-direction: column;
+          gap: clamp(0.8rem, 1.5vh, 1rem);
         }
 
-        .gift-container {
-          max-height: 90vh;
-        }
-      }
-
-      @media (max-width: 600px) {
-        .gift-container {
-          padding: clamp(1.5rem, 2.5vh, 2rem);
-          max-width: 98vw;
-        }
-
-        .main-container {
-          padding: clamp(0.5rem, 1vh, 0.8rem) clamp(0.8rem, 1.5vw, 1rem);
-          padding-top: clamp(2.5rem, 4vh, 3.5rem);
-        }
-
-        .preview-benefits {
-          gap: clamp(0.6rem, 1vh, 0.8rem);
+        .nav-button {
+          width: 100%;
         }
       }
 
-      /* Mobile landscape optimization */
-      @media (max-height: 700px) and (orientation: landscape) {
+      @media (max-width: 480px) {
         .main-container {
-          justify-content: flex-start;
-          padding-top: clamp(2rem, 4vh, 3rem);
+          padding: clamp(0.5rem, 1vh, 1rem) clamp(0.8rem, 1.5vw, 1.2rem);
         }
 
-        .description {
-          display: none;
+        .form-container,
+        .payment-container {
+          padding: clamp(1.8rem, 3vh, 2.5rem) clamp(1.5rem, 3vw, 2rem);
         }
 
-        .gift-container {
-          max-height: 80vh;
-        }
-
-        .preview-section {
-          max-height: 30vh;
-        }
-      }
-
-      /* Very short screens */
-      @media (max-height: 600px) {
-        .header {
-          margin-bottom: 0.5rem;
-        }
-
-        .gift-icon {
-          font-size: 1.8rem;
-          margin-bottom: 0.3rem;
-        }
-
-        .title {
-          font-size: 1.6rem;
-          margin-bottom: 0.2rem;
-        }
-
-        .subtitle {
-          font-size: 0.9rem;
-          margin-bottom: 0.2rem;
-        }
-
-        .description {
-          display: none;
-        }
-
-        .gift-container {
-          padding: clamp(1.2rem, 2vh, 1.5rem);
-          max-height: 75vh;
-        }
-
-        .form-section {
-          gap: 0.8rem;
-        }
-
-        .selection-section {
+        .tier-option,
+        .duration-option {
           padding: clamp(1rem, 2vh, 1.3rem);
         }
+      }
 
-        .section-title {
-          margin-bottom: 0.8rem;
+      /* Height-constrained screens */
+      @media (max-height: 700px) {
+        .main-container {
+          padding: clamp(0.5rem, 1vh, 1rem) clamp(1rem, 2vw, 1.5rem);
+        }
+
+        .step-container {
+          gap: clamp(1rem, 2vh, 1.5rem);
+        }
+
+        .benefits-grid {
+          gap: clamp(0.8rem, 1.5vh, 1.2rem);
+        }
+
+        .benefit-card {
+          padding: clamp(1.2rem, 2.5vh, 1.8rem);
         }
       }
 
-      /* Accessibility and motion preferences */
+      @media (max-height: 600px) {
+        .gift-icon {
+          font-size: clamp(2rem, 4vw, 2.8rem);
+        }
+
+        .step-title {
+          font-size: clamp(2rem, 4vw, 2.8rem);
+        }
+
+        .benefits-grid {
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: clamp(0.8rem, 1.5vh, 1rem);
+        }
+
+        .benefit-card {
+          padding: clamp(1rem, 2vh, 1.5rem);
+        }
+
+        .form-container,
+        .payment-container {
+          padding: clamp(1.5rem, 3vh, 2rem);
+        }
+      }
+
+      /* Landscape mobile */
+      @media (max-height: 500px) and (orientation: landscape) {
+        .main-container {
+          padding: clamp(0.5rem, 1vh, 1rem);
+          gap: clamp(0.5rem, 1vh, 1rem);
+        }
+
+        .step-title {
+          font-size: clamp(1.8rem, 3.5vw, 2.2rem);
+        }
+
+        .step-subtitle {
+          font-size: clamp(1rem, 2vw, 1.2rem);
+        }
+
+        .benefits-grid {
+          grid-template-columns: repeat(3, 1fr);
+          gap: clamp(0.8rem, 1.5vw, 1rem);
+        }
+
+        .benefit-card {
+          padding: clamp(0.8rem, 1.5vh, 1.2rem);
+        }
+
+        .benefit-icon {
+          font-size: clamp(1.5rem, 3vw, 2rem);
+          margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
+        }
+
+        .benefit-title {
+          font-size: clamp(1rem, 2vw, 1.2rem);
+          margin-bottom: clamp(0.5rem, 1vh, 0.7rem);
+        }
+
+        .benefit-description {
+          font-size: clamp(0.8rem, 1.5vw, 0.95rem);
+        }
+
+        .nav-buttons {
+          margin-top: clamp(1rem, 2vh, 1.5rem);
+        }
+      }
+
+      /* Accessibility */
       @media (prefers-reduced-motion: reduce) {
         *,
         *::before,
@@ -1075,6 +1043,7 @@
       .tier-option:focus-visible,
       .duration-option:focus-visible,
       .form-input:focus-visible,
+      .nav-button:focus-visible,
       .back-link:focus-visible {
         outline: 2px solid rgba(16, 185, 129, 0.6);
         outline-offset: 2px;
@@ -1104,221 +1073,297 @@
       <span>Return to Portal</span>
     </a>
 
+    <!-- Progress indicator -->
+    <div class="progress-container">
+      <div class="progress-steps">
+        <div class="progress-step active" id="step1Progress"></div>
+        <div class="progress-step" id="step2Progress"></div>
+        <div class="progress-step" id="step3Progress"></div>
+      </div>
+      <span id="progressText">1 of 3</span>
+    </div>
+
     <!-- Main container -->
     <div class="main-container">
-      <!-- Header -->
-      <div class="header">
-        <div class="gift-icon">🎁</div>
-        <h1 class="title">Gift Mirror of Truth Access</h1>
-        <p class="subtitle">
-          Share the power of self-discovery with someone you care about
-        </p>
-        <p class="description">
-          AI-powered reflection and pattern recognition for personal growth
-        </p>
+      <!-- Messages -->
+      <div class="message error" id="errorMessage" style="display: none"></div>
+      <div
+        class="message success"
+        id="successMessage"
+        style="display: none"
+      ></div>
+      <div class="message info" id="infoMessage" style="display: none"></div>
+
+      <!-- Step 1: What they'll receive -->
+      <div class="step-container step-1 active" id="step1">
+        <div class="header">
+          <div class="gift-icon">🎁</div>
+          <h1 class="step-title">What they'll receive</h1>
+          <p class="step-subtitle">
+            A complete self-discovery experience that arrives instantly in their
+            inbox
+          </p>
+        </div>
+
+        <div class="benefits-grid">
+          <div class="benefit-card">
+            <div class="benefit-icon">📧</div>
+            <h3 class="benefit-title">Beautiful Welcome Invitation</h3>
+            <p class="benefit-description">
+              A personalized email invitation with your message, explaining this
+              gift of self-discovery and how to begin their journey.
+            </p>
+          </div>
+
+          <div class="benefit-card">
+            <div class="benefit-icon">🚪</div>
+            <h3 class="benefit-title">Instant Platform Access</h3>
+            <p class="benefit-description">
+              Immediate access to their chosen subscription tier with no setup
+              required. They can start reflecting within minutes of receiving
+              your gift.
+            </p>
+          </div>
+
+          <div class="benefit-card">
+            <div class="benefit-icon">🤖</div>
+            <h3 class="benefit-title">AI-Powered Pattern Recognition</h3>
+            <p class="benefit-description">
+              Advanced AI that notices patterns in their responses they might
+              miss themselves, revealing insights about who they truly are.
+            </p>
+          </div>
+
+          <div class="benefit-card">
+            <div class="benefit-icon">📊</div>
+            <h3 class="benefit-title">Personal Growth Dashboard</h3>
+            <p class="benefit-description">
+              A beautiful interface to track their reflection journey, save
+              meaningful insights, and watch their self-awareness evolve over
+              time.
+            </p>
+          </div>
+
+          <div class="benefit-card">
+            <div class="benefit-icon">🌱</div>
+            <h3 class="benefit-title">Evolution Reports</h3>
+            <p class="benefit-description">
+              Detailed analysis of how their language, confidence, and
+              self-understanding develops across multiple reflections (Premium
+              tier only).
+            </p>
+          </div>
+
+          <div class="benefit-card">
+            <div class="benefit-icon">⏰</div>
+            <h3 class="benefit-title">Extended Journey</h3>
+            <p class="benefit-description">
+              Full access for the duration you choose - whether one month of
+              exploration or a full year of self-discovery and growth.
+            </p>
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <div></div>
+          <button class="nav-button primary" onclick="nextStep()">
+            <span>Choose Their Experience</span>
+            <span>→</span>
+          </button>
+        </div>
       </div>
 
-      <!-- Gift container -->
-      <div class="gift-container">
-        <div class="gift-content">
-          <!-- Form section -->
-          <div class="form-section">
-            <!-- Messages -->
-            <div
-              class="message error"
-              id="errorMessage"
-              style="display: none"
-            ></div>
-            <div
-              class="message success"
-              id="successMessage"
-              style="display: none"
-            ></div>
-            <div
-              class="message info"
-              id="infoMessage"
-              style="display: none"
-            ></div>
+      <!-- Step 2: Fill details -->
+      <div class="step-container step-2" id="step2">
+        <div class="header">
+          <div class="gift-icon">✨</div>
+          <h1 class="step-title">Create Their Gift</h1>
+          <p class="step-subtitle">
+            Personalize their experience and choose the perfect level of access
+          </p>
+        </div>
 
-            <!-- Gift form -->
-            <form id="giftForm">
-              <!-- Gift details -->
-              <div class="form-row">
-                <div class="form-group">
-                  <label class="form-label">Your name</label>
-                  <input
-                    type="text"
-                    id="giverName"
-                    class="form-input"
-                    placeholder="Your full name"
-                    required
-                  />
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Your email</label>
-                  <input
-                    type="email"
-                    id="giverEmail"
-                    class="form-input"
-                    placeholder="your@email.com"
-                    required
-                  />
-                </div>
+        <div class="form-container">
+          <form id="giftForm" class="gift-form">
+            <!-- Gift details -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Your name</label>
+                <input
+                  type="text"
+                  id="giverName"
+                  class="form-input"
+                  placeholder="Your full name"
+                  required
+                />
               </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label class="form-label">Recipient's name</label>
-                  <input
-                    type="text"
-                    id="recipientName"
-                    class="form-input"
-                    placeholder="Who will receive this gift?"
-                    required
-                  />
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Recipient's email</label>
-                  <input
-                    type="email"
-                    id="recipientEmail"
-                    class="form-input"
-                    placeholder="their@email.com"
-                    required
-                  />
-                </div>
+              <div class="form-group">
+                <label class="form-label">Your email</label>
+                <input
+                  type="email"
+                  id="giverEmail"
+                  class="form-input"
+                  placeholder="your@email.com"
+                  required
+                />
               </div>
-
-              <div class="form-group full-width">
-                <label class="form-label">Personal message (optional)</label>
-                <textarea
-                  id="personalMessage"
-                  class="form-input form-textarea"
-                  placeholder="Why are you sharing this journey of self-discovery with them?"
-                  maxlength="200"
-                ></textarea>
-                <div class="char-counter">
-                  <span id="charCount">0</span>/200 characters
-                </div>
-              </div>
-
-              <!-- Tier selection -->
-              <div class="selection-section">
-                <h3 class="section-title">Choose access level</h3>
-                <div class="tier-grid">
-                  <div class="tier-option" data-tier="essential">
-                    <div class="tier-name">Essential</div>
-                    <div class="tier-description">
-                      5 reflections/month<br />
-                      Pattern insights<br />
-                      Growth tracking
-                    </div>
-                  </div>
-                  <div class="tier-option premium" data-tier="premium">
-                    <div class="premium-badge">Most Popular</div>
-                    <div class="tier-name">Premium</div>
-                    <div class="tier-description">
-                      10 reflections/month<br />
-                      Advanced AI analysis<br />
-                      Deep insights
-                    </div>
-                  </div>
-                </div>
-
-                <h3 class="section-title">Choose duration</h3>
-                <div class="duration-grid">
-                  <div class="duration-option" data-duration="1mo">
-                    <div class="duration-name">1 Month</div>
-                    <div class="duration-price" id="price1mo">$4.99</div>
-                  </div>
-                  <div class="duration-option" data-duration="3mo">
-                    <div class="duration-name">3 Months</div>
-                    <div class="duration-price" id="price3mo">$14.97</div>
-                  </div>
-                  <div class="duration-option" data-duration="1yr">
-                    <div class="duration-name">1 Year</div>
-                    <div class="duration-price" id="price1yr">$49.99</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Payment section -->
-              <div class="payment-section">
-                <div class="total-amount" id="totalAmount">$4.99</div>
-                <div class="total-description" id="totalDescription">
-                  Essential • 1 Month
-                </div>
-
-                <div class="paypal-loading" id="paypalLoading">
-                  <div class="loading-spinner"></div>
-                  <span>Loading payment options...</span>
-                </div>
-
-                <div id="paypal-button-container"></div>
-
-                <div class="processing-message" id="processingMessage">
-                  ⏳ Creating their invitation and setting up access...
-                </div>
-              </div>
-            </form>
-          </div>
-
-          <!-- Preview section -->
-          <div class="preview-section">
-            <div class="preview-header">
-              <div class="preview-icon">📧</div>
-              <h3 class="preview-title">What they'll receive</h3>
-              <p class="preview-subtitle">
-                A complete self-discovery experience
-              </p>
             </div>
 
-            <div class="preview-benefits">
-              <div class="benefit-item">
-                <div class="benefit-icon">✨</div>
-                <div class="benefit-text">Beautiful welcome invitation</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Recipient's name</label>
+                <input
+                  type="text"
+                  id="recipientName"
+                  class="form-input"
+                  placeholder="Who will receive this gift?"
+                  required
+                />
               </div>
-              <div class="benefit-item">
-                <div class="benefit-icon">🚪</div>
-                <div class="benefit-text">Instant platform access</div>
+              <div class="form-group">
+                <label class="form-label">Recipient's email</label>
+                <input
+                  type="email"
+                  id="recipientEmail"
+                  class="form-input"
+                  placeholder="their@email.com"
+                  required
+                />
               </div>
-              <div class="benefit-item">
-                <div class="benefit-icon">🤖</div>
-                <div class="benefit-text">AI-powered pattern recognition</div>
+            </div>
+
+            <div class="form-group full-width">
+              <label class="form-label">Personal message (optional)</label>
+              <textarea
+                id="personalMessage"
+                class="form-input form-textarea"
+                placeholder="Why are you sharing this journey of self-discovery with them?"
+                maxlength="200"
+              ></textarea>
+              <div class="char-counter">
+                <span id="charCount">0</span>/200 characters
               </div>
-              <div class="benefit-item">
-                <div class="benefit-icon">📊</div>
-                <div class="benefit-text">Personal growth dashboard</div>
+            </div>
+          </form>
+
+          <!-- Tier and duration selection -->
+          <div class="tier-selection">
+            <h3 class="section-title">Choose access level</h3>
+            <div class="tier-grid">
+              <div class="tier-option" data-tier="essential">
+                <div class="tier-name">Essential</div>
+                <div class="tier-description">
+                  5 reflections/month<br />
+                  Pattern insights<br />
+                  Growth tracking
+                </div>
               </div>
-              <div class="benefit-item benefit-premium">
-                <div class="benefit-icon">🧠</div>
-                <div class="benefit-text">Extended AI thinking time</div>
-              </div>
-              <div class="benefit-item">
-                <div class="benefit-icon">⏰</div>
-                <div class="benefit-text">
-                  <span id="durationDisplay">One month</span> of reflections
+              <div class="tier-option premium" data-tier="premium">
+                <div class="premium-badge">Most Popular</div>
+                <div class="tier-name">Premium</div>
+                <div class="tier-description">
+                  10 reflections/month<br />
+                  Advanced AI analysis<br />
+                  Deep insights
                 </div>
               </div>
             </div>
 
-            <div class="preview-note">
-              <div class="note-title">
-                <span>💡</span>
-                <span>How it works</span>
+            <h3 class="section-title">Choose duration</h3>
+            <div class="duration-grid">
+              <div class="duration-option" data-duration="1mo">
+                <div class="duration-name">1 Month</div>
+                <div class="duration-price" id="price1mo">$4.99</div>
               </div>
-              <div class="note-text">
-                They'll receive an email invitation with immediate access to
-                their chosen subscription tier for the full duration you select.
+              <div class="duration-option" data-duration="3mo">
+                <div class="duration-name">3 Months</div>
+                <div class="duration-price" id="price3mo">$14.97</div>
+              </div>
+              <div class="duration-option" data-duration="1yr">
+                <div class="duration-name">1 Year</div>
+                <div class="duration-price" id="price1yr">$49.99</div>
               </div>
             </div>
           </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="nav-button" onclick="previousStep()">
+            <span>←</span>
+            <span>Back</span>
+          </button>
+          <button
+            class="nav-button primary"
+            id="reviewButton"
+            onclick="nextStep()"
+            disabled
+          >
+            <span>Review & Pay</span>
+            <span>→</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3: Payment -->
+      <div class="step-container step-3" id="step3">
+        <div class="header">
+          <div class="gift-icon">💝</div>
+          <h1 class="step-title">Complete Your Gift</h1>
+          <p class="step-subtitle">
+            Review your choices and send this beautiful experience
+          </p>
+        </div>
+
+        <div class="payment-container">
+          <div class="total-amount" id="totalAmount">$4.99</div>
+          <div class="total-description" id="totalDescription">
+            Essential • 1 Month
+          </div>
+
+          <div class="gift-summary" id="giftSummary">
+            <div class="summary-row">
+              <span class="summary-label">From:</span>
+              <span class="summary-value" id="summaryGiver">-</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">To:</span>
+              <span class="summary-value" id="summaryRecipient">-</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Access Level:</span>
+              <span class="summary-value" id="summaryTier">-</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Duration:</span>
+              <span class="summary-value" id="summaryDuration">-</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Total:</span>
+              <span class="summary-value" id="summaryTotal">-</span>
+            </div>
+          </div>
+
+          <div class="paypal-loading" id="paypalLoading">
+            <div class="loading-spinner"></div>
+            <span>Loading payment options...</span>
+          </div>
+
+          <div id="paypal-button-container"></div>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="nav-button" onclick="previousStep()">
+            <span>←</span>
+            <span>Back to Details</span>
+          </button>
+          <div></div>
         </div>
       </div>
     </div>
 
     <script>
-      // Perfect Full-Width Gift Experience - All Content Visible
+      // Gift Flow - Perfect 3-Step Experience
+      let currentStep = 1;
       let paypalConfig = null;
       let paypalInitialized = false;
       let selectedTier = "essential";
@@ -1329,24 +1374,27 @@
 
       // Initialize the gift experience
       document.addEventListener("DOMContentLoaded", function () {
-        initializeGiftExperience();
+        initializeGiftFlow();
       });
 
-      async function initializeGiftExperience() {
+      async function initializeGiftFlow() {
         setupEventListeners();
         await loadGiftPricing();
         await loadPayPalConfiguration();
         initializeSelections();
         setupFormValidation();
-        console.log("🎁 Perfect full-width gift experience initialized");
+        console.log("🎁 Perfect 3-step gift flow initialized");
       }
 
       function setupEventListeners() {
         // Form validation
         ["giverName", "giverEmail", "recipientName", "recipientEmail"].forEach(
           (id) => {
-            document.getElementById(id).addEventListener("input", validateForm);
-            document.getElementById(id).addEventListener("blur", validateField);
+            const input = document.getElementById(id);
+            if (input) {
+              input.addEventListener("input", validateForm);
+              input.addEventListener("blur", validateField);
+            }
           }
         );
 
@@ -1354,25 +1402,30 @@
         const messageInput = document.getElementById("personalMessage");
         const charCount = document.getElementById("charCount");
 
-        messageInput.addEventListener("input", function () {
-          const length = this.value.length;
-          charCount.textContent = length;
+        if (messageInput && charCount) {
+          messageInput.addEventListener("input", function () {
+            const length = this.value.length;
+            charCount.textContent = length;
 
-          const counter = document.querySelector(".char-counter");
-          if (length > 160) {
-            counter.style.color = "#ef4444";
-          } else if (length > 120) {
-            counter.style.color = "#f59e0b";
-          } else {
-            counter.style.color = "rgba(255, 255, 255, 0.5)";
-          }
-        });
+            const counter = document.querySelector(".char-counter");
+            if (length > 160) {
+              counter.style.color = "#ef4444";
+            } else if (length > 120) {
+              counter.style.color = "#f59e0b";
+            } else {
+              counter.style.color = "rgba(255, 255, 255, 0.5)";
+            }
+          });
+        }
 
         // Name formatting
         ["giverName", "recipientName"].forEach((id) => {
-          document.getElementById(id).addEventListener("blur", function () {
-            this.value = this.value.replace(/\b\w/g, (l) => l.toUpperCase());
-          });
+          const input = document.getElementById(id);
+          if (input) {
+            input.addEventListener("blur", function () {
+              this.value = this.value.replace(/\b\w/g, (l) => l.toUpperCase());
+            });
+          }
         });
 
         // Tier selection
@@ -1389,10 +1442,16 @@
           });
         });
 
-        // Form submission
-        document
-          .getElementById("giftForm")
-          .addEventListener("submit", handleGiftPurchase);
+        // Keyboard navigation
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "ArrowRight" || (e.key === "Enter" && e.ctrlKey)) {
+            if (currentStep < 3) nextStep();
+          } else if (e.key === "ArrowLeft") {
+            if (currentStep > 1) previousStep();
+          } else if (e.key === "Escape") {
+            window.location.href = "/";
+          }
+        });
       }
 
       async function loadGiftPricing() {
@@ -1418,15 +1477,18 @@
       }
 
       function updatePricingDisplay() {
-        document.getElementById(
-          "price1mo"
-        ).textContent = `$${giftPricing[selectedTier]["1mo"]}`;
-        document.getElementById(
-          "price3mo"
-        ).textContent = `$${giftPricing[selectedTier]["3mo"]}`;
-        document.getElementById(
-          "price1yr"
-        ).textContent = `$${giftPricing[selectedTier]["1yr"]}`;
+        const elements = {
+          price1mo: document.getElementById("price1mo"),
+          price3mo: document.getElementById("price3mo"),
+          price1yr: document.getElementById("price1yr"),
+        };
+
+        if (elements.price1mo)
+          elements.price1mo.textContent = `$${giftPricing[selectedTier]["1mo"]}`;
+        if (elements.price3mo)
+          elements.price3mo.textContent = `$${giftPricing[selectedTier]["3mo"]}`;
+        if (elements.price1yr)
+          elements.price1yr.textContent = `$${giftPricing[selectedTier]["1yr"]}`;
 
         currentAmount = giftPricing[selectedTier][selectedDuration].toString();
         updateTotalDisplay();
@@ -1444,22 +1506,14 @@
         document.querySelectorAll(".tier-option").forEach((option) => {
           option.classList.remove("selected");
         });
-        document
-          .querySelector(`[data-tier="${tier}"]`)
-          .classList.add("selected");
-
-        // Show/hide premium benefits
-        const premiumBenefits = document.querySelectorAll(".benefit-premium");
-        premiumBenefits.forEach((benefit) => {
-          benefit.style.display = tier === "premium" ? "flex" : "none";
-        });
+        const selectedOption = document.querySelector(`[data-tier="${tier}"]`);
+        if (selectedOption) {
+          selectedOption.classList.add("selected");
+        }
 
         updatePricingDisplay();
-        createSelectionEffect(document.querySelector(`[data-tier="${tier}"]`));
-
-        if (paypalInitialized) {
-          reinitializePayPal();
-        }
+        validateForm();
+        createSelectionEffect(selectedOption);
       }
 
       function selectDuration(duration) {
@@ -1469,28 +1523,17 @@
         document.querySelectorAll(".duration-option").forEach((option) => {
           option.classList.remove("selected");
         });
-        document
-          .querySelector(`[data-duration="${duration}"]`)
-          .classList.add("selected");
-
-        // Update duration display
-        const durationText =
-          duration === "1mo"
-            ? "One month"
-            : duration === "3mo"
-            ? "Three months"
-            : "One year";
-        document.getElementById("durationDisplay").textContent = durationText;
+        const selectedOption = document.querySelector(
+          `[data-duration="${duration}"]`
+        );
+        if (selectedOption) {
+          selectedOption.classList.add("selected");
+        }
 
         currentAmount = giftPricing[selectedTier][duration].toString();
         updateTotalDisplay();
-        createSelectionEffect(
-          document.querySelector(`[data-duration="${duration}"]`)
-        );
-
-        if (paypalInitialized) {
-          reinitializePayPal();
-        }
+        validateForm();
+        createSelectionEffect(selectedOption);
       }
 
       function updateTotalDisplay() {
@@ -1503,12 +1546,12 @@
             ? "3 Months"
             : "1 Year";
 
-        document.getElementById(
-          "totalAmount"
-        ).textContent = `$${currentAmount}`;
-        document.getElementById(
-          "totalDescription"
-        ).textContent = `${tierName} • ${durationText}`;
+        const totalAmount = document.getElementById("totalAmount");
+        const totalDescription = document.getElementById("totalDescription");
+
+        if (totalAmount) totalAmount.textContent = `$${currentAmount}`;
+        if (totalDescription)
+          totalDescription.textContent = `${tierName} • ${durationText}`;
       }
 
       async function loadPayPalConfiguration() {
@@ -1521,7 +1564,6 @@
             throw new Error(result.error || "PayPal configuration failed");
 
           paypalConfig = result.config;
-          await loadPayPalSDK();
         } catch (error) {
           console.error("PayPal configuration error:", error);
           showMessage(
@@ -1531,73 +1573,27 @@
         }
       }
 
-      function loadPayPalSDK() {
-        return new Promise((resolve, reject) => {
-          if (window.paypal && window.paypal.Buttons) {
-            hidePayPalLoading();
-            initializePayPal();
-            resolve();
-            return;
-          }
-
-          const script = document.createElement("script");
-          script.src = `https://www.paypal.com/sdk/js?client-id=${paypalConfig.clientId}&currency=${paypalConfig.currency}&intent=capture`;
-
-          const timeout = setTimeout(() => {
-            reject(new Error("PayPal loading timeout"));
-          }, 15000);
-
-          script.onload = () => {
-            clearTimeout(timeout);
-            setTimeout(() => {
-              if (window.paypal && window.paypal.Buttons) {
-                hidePayPalLoading();
-                initializePayPal();
-                resolve();
-              } else {
-                reject(new Error("PayPal loaded but not available"));
-              }
-            }, 100);
-          };
-
-          script.onerror = () => {
-            clearTimeout(timeout);
-            reject(new Error("Failed to load PayPal"));
-          };
-
-          document.head.appendChild(script);
-        });
-      }
-
-      function hidePayPalLoading() {
-        document.getElementById("paypalLoading").style.display = "none";
-      }
-
       function validateForm() {
-        const giverName = document.getElementById("giverName").value.trim();
-        const giverEmail = document.getElementById("giverEmail").value.trim();
-        const recipientName = document
-          .getElementById("recipientName")
-          .value.trim();
-        const recipientEmail = document
-          .getElementById("recipientEmail")
-          .value.trim();
+        const giverName =
+          document.getElementById("giverName")?.value?.trim() || "";
+        const giverEmail =
+          document.getElementById("giverEmail")?.value?.trim() || "";
+        const recipientName =
+          document.getElementById("recipientName")?.value?.trim() || "";
+        const recipientEmail =
+          document.getElementById("recipientEmail")?.value?.trim() || "";
 
         const isValid =
           giverName &&
           validateEmail(giverEmail) &&
           recipientName &&
-          validateEmail(recipientEmail);
+          validateEmail(recipientEmail) &&
+          selectedTier &&
+          selectedDuration;
 
-        const paypalContainer = document.getElementById(
-          "paypal-button-container"
-        );
-        if (paypalContainer) {
-          if (isValid) {
-            paypalContainer.classList.add("enabled");
-          } else {
-            paypalContainer.classList.remove("enabled");
-          }
+        const reviewButton = document.getElementById("reviewButton");
+        if (reviewButton) {
+          reviewButton.disabled = !isValid;
         }
 
         return isValid;
@@ -1630,30 +1626,175 @@
         validateForm();
       }
 
-      function reinitializePayPal() {
-        const container = document.getElementById("paypal-button-container");
-        container.innerHTML = "";
-        paypalInitialized = false;
-        initializePayPal();
+      // Step navigation
+      function nextStep() {
+        if (currentStep < 3) {
+          if (currentStep === 2 && !validateForm()) {
+            showMessage(
+              "Please fill in all required fields with valid information.",
+              "error"
+            );
+            return;
+          }
+
+          hideMessages();
+          updateStep(currentStep + 1);
+
+          if (currentStep === 3) {
+            updateSummary();
+            initializePayPal();
+          }
+        }
+      }
+
+      function previousStep() {
+        if (currentStep > 1) {
+          hideMessages();
+          updateStep(currentStep - 1);
+        }
+      }
+
+      function updateStep(step) {
+        // Hide current step
+        const currentStepEl = document.getElementById(`step${currentStep}`);
+        if (currentStepEl) {
+          currentStepEl.classList.remove("active");
+        }
+
+        // Update progress
+        updateProgress(currentStep, false);
+
+        currentStep = step;
+
+        // Show new step
+        const newStepEl = document.getElementById(`step${currentStep}`);
+        if (newStepEl) {
+          setTimeout(() => {
+            newStepEl.classList.add("active");
+          }, 300);
+        }
+
+        // Update progress
+        updateProgress(currentStep, true);
+
+        // Update progress text
+        const progressText = document.getElementById("progressText");
+        if (progressText) {
+          progressText.textContent = `${currentStep} of 3`;
+        }
+      }
+
+      function updateProgress(step, active) {
+        const progressStep = document.getElementById(`step${step}Progress`);
+        if (!progressStep) return;
+
+        if (active) {
+          progressStep.classList.add("active");
+          progressStep.classList.remove("completed");
+        } else {
+          progressStep.classList.remove("active");
+          if (step < currentStep) {
+            progressStep.classList.add("completed");
+          }
+        }
+      }
+
+      function updateSummary() {
+        const giverName =
+          document.getElementById("giverName")?.value?.trim() || "";
+        const recipientName =
+          document.getElementById("recipientName")?.value?.trim() || "";
+        const tierName =
+          selectedTier.charAt(0).toUpperCase() + selectedTier.slice(1);
+        const durationText =
+          selectedDuration === "1mo"
+            ? "1 Month"
+            : selectedDuration === "3mo"
+            ? "3 Months"
+            : "1 Year";
+
+        // Update summary elements
+        const elements = {
+          summaryGiver: document.getElementById("summaryGiver"),
+          summaryRecipient: document.getElementById("summaryRecipient"),
+          summaryTier: document.getElementById("summaryTier"),
+          summaryDuration: document.getElementById("summaryDuration"),
+          summaryTotal: document.getElementById("summaryTotal"),
+        };
+
+        if (elements.summaryGiver)
+          elements.summaryGiver.textContent = giverName;
+        if (elements.summaryRecipient)
+          elements.summaryRecipient.textContent = recipientName;
+        if (elements.summaryTier) elements.summaryTier.textContent = tierName;
+        if (elements.summaryDuration)
+          elements.summaryDuration.textContent = durationText;
+        if (elements.summaryTotal)
+          elements.summaryTotal.textContent = `$${currentAmount}`;
       }
 
       function initializePayPal() {
         if (!window.paypal || !window.paypal.Buttons) {
-          showMessage(
-            "Payment system not available. Please refresh the page.",
-            "error"
-          );
-          return;
+          loadPayPalSDK()
+            .then(() => {
+              setupPayPalButtons();
+            })
+            .catch((error) => {
+              console.error("PayPal SDK load error:", error);
+              showMessage(
+                "Payment system not available. Please refresh the page.",
+                "error"
+              );
+            });
+        } else {
+          setupPayPalButtons();
         }
+      }
 
-        if (!paypalConfig) {
-          showMessage(
-            "Payment configuration missing. Please refresh the page.",
-            "error"
-          );
-          return;
+      function loadPayPalSDK() {
+        return new Promise((resolve, reject) => {
+          if (window.paypal && window.paypal.Buttons) {
+            hidePayPalLoading();
+            resolve();
+            return;
+          }
+
+          const script = document.createElement("script");
+          script.src = `https://www.paypal.com/sdk/js?client-id=${paypalConfig.clientId}&currency=${paypalConfig.currency}&intent=capture`;
+
+          const timeout = setTimeout(() => {
+            reject(new Error("PayPal loading timeout"));
+          }, 15000);
+
+          script.onload = () => {
+            clearTimeout(timeout);
+            setTimeout(() => {
+              if (window.paypal && window.paypal.Buttons) {
+                hidePayPalLoading();
+                resolve();
+              } else {
+                reject(new Error("PayPal loaded but not available"));
+              }
+            }, 100);
+          };
+
+          script.onerror = () => {
+            clearTimeout(timeout);
+            reject(new Error("Failed to load PayPal"));
+          };
+
+          document.head.appendChild(script);
+        });
+      }
+
+      function hidePayPalLoading() {
+        const loading = document.getElementById("paypalLoading");
+        if (loading) {
+          loading.style.display = "none";
         }
+      }
 
+      function setupPayPalButtons() {
         if (paypalInitialized) return;
 
         try {
@@ -1665,17 +1806,6 @@
                 label: "pay",
                 height: 55,
                 tagline: false,
-              },
-
-              onClick: function (data, actions) {
-                if (!validateForm()) {
-                  showMessage(
-                    "Please fill in all required fields with valid information.",
-                    "error"
-                  );
-                  return actions.reject();
-                }
-                return actions.resolve();
               },
 
               createOrder: function (data, actions) {
@@ -1728,17 +1858,15 @@
               onError: function (err) {
                 console.error("PayPal error:", err);
                 showMessage("Payment error. Please try again.", "error");
-                resetProcessingState();
               },
 
               onCancel: function (data) {
-                resetProcessingState();
+                // Payment cancelled, user can try again
               },
             })
             .render("#paypal-button-container")
             .then(() => {
               paypalInitialized = true;
-              validateForm();
             })
             .catch((error) => {
               console.error("PayPal render error:", error);
@@ -1757,8 +1885,6 @@
       }
 
       async function handleGiftCompletion(paymentDetails) {
-        setProcessingState(true);
-
         try {
           const giftData = {
             giverName: document.getElementById("giverName").value.trim(),
@@ -1823,29 +1949,6 @@
         }
       }
 
-      function handleGiftPurchase(event) {
-        event.preventDefault();
-        // PayPal handles the actual purchase flow
-      }
-
-      function setProcessingState(processing) {
-        isProcessing = processing;
-        const form = document.getElementById("giftForm");
-        const processingMessage = document.getElementById("processingMessage");
-
-        if (processing) {
-          form.classList.add("form-disabled");
-          processingMessage.style.display = "block";
-        } else {
-          form.classList.remove("form-disabled");
-          processingMessage.style.display = "none";
-        }
-      }
-
-      function resetProcessingState() {
-        setProcessingState(false);
-      }
-
       function showMessage(message, type) {
         const messageDiv = document.getElementById(`${type}Message`);
         if (!messageDiv) return;
@@ -1878,6 +1981,8 @@
       }
 
       function createSelectionEffect(element) {
+        if (!element) return;
+
         const rect = element.getBoundingClientRect();
         for (let i = 0; i < 4; i++) {
           setTimeout(() => {
@@ -1918,6 +2023,8 @@
       // Debug (development only)
       if (window.location.hostname === "localhost") {
         window.giftDebug = {
+          currentStep: () => currentStep,
+          goToStep: (step) => updateStep(step),
           selectedTier: () => selectedTier,
           selectedDuration: () => selectedDuration,
           currentAmount: () => currentAmount,
