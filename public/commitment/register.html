@@ -11,7 +11,7 @@
     <title>Begin Your Journey | Mirror of Truth</title>
 
     <style>
-      /* Beautiful Symmetrical Registration - Floating Design */
+      /* Beautiful Symmetrical Registration - Condensed Upward */
       * {
         margin: 0;
         padding: 0;
@@ -130,7 +130,7 @@
         }
       }
 
-      /* Main Container - Full Screen Flow */
+      /* Main Container - Condensed Upward */
       .register-screen {
         position: relative;
         z-index: 10;
@@ -139,31 +139,38 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: space-between;
-        padding: clamp(1.5rem, 4vh, 2.5rem) clamp(1rem, 3vw, 2rem);
-        gap: clamp(1rem, 2vh, 1.5rem);
+        justify-content: flex-start; /* Changed from space-between to flex-start */
+        padding: clamp(1rem, 2.5vh, 1.8rem) clamp(1rem, 3vw, 2rem);
+        gap: clamp(0.8rem, 1.5vh, 1.2rem); /* Reduced gap */
+        max-height: 100vh;
+        overflow: hidden;
       }
 
-      /* Back Navigation - Flowing with Content */
+      /* Back Navigation - Smaller */
       .back-navigation {
         width: 100%;
         display: flex;
         justify-content: flex-start;
         flex-shrink: 0;
+        margin-bottom: clamp(
+          0.5rem,
+          1vh,
+          0.8rem
+        ); /* Added margin instead of relying on gap */
       }
 
       .back-link {
         display: inline-flex;
         align-items: center;
-        gap: clamp(0.5rem, 1.2vw, 0.7rem);
-        padding: clamp(0.7rem, 1.5vh, 1rem) clamp(1.2rem, 2.5vw, 1.6rem);
+        gap: clamp(0.4rem, 1vw, 0.6rem);
+        padding: clamp(0.6rem, 1.2vh, 0.8rem) clamp(1rem, 2.2vw, 1.4rem);
         background: rgba(255, 255, 255, 0.05);
         backdrop-filter: blur(30px) saturate(120%);
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 50px;
         color: rgba(255, 255, 255, 0.8);
         text-decoration: none;
-        font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+        font-size: clamp(0.75rem, 1.6vw, 0.85rem);
         font-weight: 300;
         transition: all 0.4s ease;
         touch-action: manipulation;
@@ -201,7 +208,7 @@
       }
 
       .back-arrow {
-        font-size: clamp(1rem, 2.2vw, 1.2rem);
+        font-size: clamp(0.9rem, 1.8vw, 1.1rem);
         transition: transform 0.3s ease;
       }
 
@@ -209,32 +216,32 @@
         transform: translateX(-3px);
       }
 
-      /* Central Registration Form - Flowing Content */
+      /* Central Registration Form - No flex growth */
       .register-form-section {
-        flex: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         width: 100%;
-        max-width: clamp(400px, 45vw, 500px);
-        gap: clamp(1.5rem, 3vh, 2.2rem);
+        max-width: clamp(380px, 42vw, 480px);
+        gap: clamp(1rem, 2vh, 1.5rem); /* Reduced gap */
         position: relative;
+        flex-shrink: 0; /* Don't allow shrinking */
       }
 
-      /* Header Section */
+      /* Header Section - Condensed */
       .register-header {
         text-align: center;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: clamp(0.8rem, 1.8vh, 1.2rem);
-        margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
+        gap: clamp(0.6rem, 1.2vh, 0.8rem); /* Reduced gap */
+        margin-bottom: 0; /* Removed margin */
       }
 
       .mirror-icon {
-        font-size: clamp(2.2rem, 5vw, 3rem);
-        margin-bottom: clamp(0.3rem, 0.8vh, 0.6rem);
+        font-size: clamp(2rem, 4.5vw, 2.6rem); /* Slightly smaller */
+        margin-bottom: clamp(0.2rem, 0.5vh, 0.4rem);
         display: block;
         animation: iconPulse 6s ease-in-out infinite;
         filter: drop-shadow(0 0 15px rgba(147, 51, 234, 0.3));
@@ -253,9 +260,9 @@
       }
 
       .register-title {
-        font-size: clamp(1.8rem, 4vw, 2.4rem);
+        font-size: clamp(1.6rem, 3.5vw, 2.1rem); /* Reduced size */
         font-weight: 300;
-        margin-bottom: clamp(0.3rem, 0.8vh, 0.5rem);
+        margin-bottom: clamp(0.2rem, 0.5vh, 0.3rem);
         background: linear-gradient(
           135deg,
           rgba(255, 255, 255, 0.95) 0%,
@@ -266,14 +273,14 @@
         background-clip: text;
         color: transparent;
         letter-spacing: 0.5px;
-        line-height: 1.2;
+        line-height: 1.1; /* Tighter line height */
       }
 
       .register-subtitle {
-        font-size: clamp(0.9rem, 2vw, 1.1rem);
+        font-size: clamp(0.85rem, 1.8vw, 1rem);
         color: rgba(255, 255, 255, 0.7);
         font-weight: 300;
-        line-height: 1.4;
+        line-height: 1.3; /* Tighter line height */
         letter-spacing: 0.3px;
       }
 
@@ -281,7 +288,7 @@
         display: inline-flex;
         align-items: center;
         gap: 0.4rem;
-        padding: clamp(0.4rem, 1vh, 0.6rem) clamp(0.8rem, 2vw, 1.2rem);
+        padding: clamp(0.3rem, 0.8vh, 0.5rem) clamp(0.7rem, 1.8vw, 1rem);
         background: linear-gradient(
           135deg,
           rgba(16, 185, 129, 0.12),
@@ -290,11 +297,11 @@
         border: 1px solid rgba(16, 185, 129, 0.2);
         border-radius: 50px;
         color: rgba(110, 231, 183, 0.9);
-        font-size: clamp(0.7rem, 1.6vw, 0.8rem);
+        font-size: clamp(0.65rem, 1.4vw, 0.75rem);
         font-weight: 500;
         text-transform: uppercase;
         letter-spacing: 1px;
-        margin-top: clamp(0.5rem, 1vh, 0.8rem);
+        margin-top: clamp(0.3rem, 0.6vh, 0.5rem);
         animation: badgeGlow 4s ease-in-out infinite;
       }
 
@@ -308,11 +315,11 @@
         }
       }
 
-      /* Form Container */
+      /* Form Container - Tighter spacing */
       .register-form {
         display: flex;
         flex-direction: column;
-        gap: clamp(1.2rem, 2.5vh, 1.8rem);
+        gap: clamp(1rem, 2vh, 1.4rem); /* Reduced gap */
         width: 100%;
         position: relative;
       }
@@ -322,12 +329,12 @@
         position: relative;
         display: flex;
         flex-direction: column;
-        gap: clamp(0.3rem, 0.8vh, 0.5rem);
+        gap: clamp(0.25rem, 0.6vh, 0.4rem); /* Reduced gap */
       }
 
       .form-input {
         width: 100%;
-        padding: clamp(1rem, 2.2vh, 1.4rem) clamp(1.2rem, 2.5vw, 1.6rem);
+        padding: clamp(0.9rem, 1.8vh, 1.2rem) clamp(1.1rem, 2.2vw, 1.4rem);
         background: linear-gradient(
           135deg,
           rgba(255, 255, 255, 0.06) 0%,
@@ -335,9 +342,9 @@
         );
         backdrop-filter: blur(25px) saturate(120%);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: clamp(12px, 2.5vw, 16px);
+        border-radius: clamp(10px, 2vw, 14px);
         color: #fff;
-        font-size: clamp(0.9rem, 2vw, 1.05rem);
+        font-size: clamp(0.85rem, 1.8vw, 1rem);
         font-family: inherit;
         transition: all 0.4s ease;
         font-weight: 300;
@@ -373,13 +380,13 @@
       }
 
       .password-input {
-        padding-right: clamp(3.5rem, 7vw, 4.5rem);
+        padding-right: clamp(3.2rem, 6.5vw, 4.2rem);
       }
 
       /* PERFECTLY CENTERED Password Toggle */
       .password-toggle {
         position: absolute;
-        right: clamp(1rem, 2.2vw, 1.4rem);
+        right: clamp(0.9rem, 2vw, 1.2rem);
         top: 50%;
         transform: translateY(-50%);
         background: rgba(255, 255, 255, 0.08);
@@ -387,17 +394,17 @@
         border: 1px solid rgba(255, 255, 255, 0.12);
         color: rgba(255, 255, 255, 0.7);
         cursor: pointer;
-        padding: clamp(0.45rem, 1vh, 0.6rem);
-        border-radius: clamp(8px, 1.6vw, 10px);
+        padding: clamp(0.4rem, 0.8vh, 0.55rem);
+        border-radius: clamp(7px, 1.4vw, 9px);
         transition: all 0.3s ease;
-        font-size: clamp(1rem, 2.2vw, 1.2rem);
+        font-size: clamp(0.9rem, 2vw, 1.1rem);
         display: flex;
         align-items: center;
         justify-content: center;
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
-        width: clamp(2.5rem, 5vw, 3rem);
-        height: clamp(2.5rem, 5vw, 3rem);
+        width: clamp(2.2rem, 4.5vw, 2.8rem);
+        height: clamp(2.2rem, 4.5vw, 2.8rem);
       }
 
       .password-toggle:hover {
@@ -413,22 +420,22 @@
 
       /* Form Labels */
       .form-label {
-        font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+        font-size: clamp(0.75rem, 1.6vw, 0.85rem);
         color: rgba(255, 255, 255, 0.8);
         font-weight: 400;
         letter-spacing: 0.3px;
-        margin-bottom: clamp(0.2rem, 0.5vh, 0.3rem);
+        margin-bottom: clamp(0.15rem, 0.3vh, 0.25rem);
       }
 
       /* Password Strength Indicator */
       .password-hint {
-        font-size: clamp(0.7rem, 1.6vw, 0.8rem);
+        font-size: clamp(0.65rem, 1.4vw, 0.75rem);
         color: rgba(255, 255, 255, 0.5);
         font-style: italic;
         display: flex;
         align-items: center;
         gap: 0.4rem;
-        margin-top: clamp(0.3rem, 0.6vh, 0.4rem);
+        margin-top: clamp(0.2rem, 0.4vh, 0.3rem);
         transition: all 0.3s ease;
       }
 
@@ -449,7 +456,7 @@
       /* Submit Button */
       .submit-button {
         width: 100%;
-        padding: clamp(1.1rem, 2.5vh, 1.6rem);
+        padding: clamp(1rem, 2vh, 1.4rem);
         background: linear-gradient(
           135deg,
           rgba(147, 51, 234, 0.15) 0%,
@@ -458,9 +465,9 @@
         );
         backdrop-filter: blur(25px);
         border: 1px solid rgba(147, 51, 234, 0.3);
-        border-radius: clamp(12px, 2.5vw, 16px);
+        border-radius: clamp(10px, 2vw, 14px);
         color: rgba(196, 181, 253, 0.95);
-        font-size: clamp(0.9rem, 2vw, 1.05rem);
+        font-size: clamp(0.85rem, 1.9vw, 1rem);
         font-weight: 500;
         cursor: pointer;
         transition: all 0.4s ease;
@@ -474,8 +481,8 @@
         align-items: center;
         justify-content: center;
         text-align: center;
-        margin-top: clamp(0.5rem, 1.2vh, 0.8rem);
-        min-height: clamp(50px, 8vh, 60px);
+        margin-top: clamp(0.3rem, 0.8vh, 0.6rem);
+        min-height: clamp(45px, 7vh, 55px);
         box-shadow: 0 6px 25px rgba(147, 51, 234, 0.12);
       }
 
@@ -525,12 +532,12 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: clamp(0.6rem, 1.3vw, 0.8rem);
+        gap: clamp(0.5rem, 1.2vw, 0.7rem);
       }
 
       .loading-spinner {
-        width: clamp(16px, 3.2vw, 20px);
-        height: clamp(16px, 3.2vw, 20px);
+        width: clamp(14px, 2.8vw, 18px);
+        height: clamp(14px, 2.8vw, 18px);
         border: 2px solid rgba(255, 255, 255, 0.2);
         border-radius: 50%;
         border-top-color: rgba(255, 255, 255, 0.8);
@@ -546,40 +553,45 @@
         }
       }
 
-      /* Bottom Section - Flowing with Content */
+      /* Bottom Section - Compact */
       .register-footer {
         width: 100%;
-        max-width: clamp(400px, 45vw, 500px);
+        max-width: clamp(380px, 42vw, 480px);
         text-align: center;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: clamp(0.8rem, 1.8vh, 1.2rem);
+        gap: clamp(0.6rem, 1.2vh, 0.8rem); /* Reduced gap */
         flex-shrink: 0;
+        margin-top: clamp(
+          0.8rem,
+          1.5vh,
+          1.2rem
+        ); /* Added margin instead of relying on gap */
       }
 
       .signin-text {
         color: rgba(255, 255, 255, 0.6);
-        font-size: clamp(0.8rem, 1.8vw, 0.9rem);
-        line-height: 1.4;
+        font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+        line-height: 1.3; /* Tighter line height */
         font-weight: 300;
-        margin-bottom: clamp(0.3rem, 0.8vh, 0.5rem);
+        margin-bottom: clamp(0.2rem, 0.5vh, 0.3rem);
       }
 
       .signin-link {
         display: inline-flex;
         align-items: center;
-        gap: clamp(0.5rem, 1.2vw, 0.7rem);
+        gap: clamp(0.4rem, 1vw, 0.6rem);
         color: rgba(255, 255, 255, 0.8);
         text-decoration: none;
-        padding: clamp(0.8rem, 1.8vh, 1.1rem) clamp(1.5rem, 3vw, 2rem);
-        border-radius: clamp(12px, 2.5vw, 16px);
+        padding: clamp(0.7rem, 1.5vh, 0.9rem) clamp(1.3rem, 2.8vw, 1.8rem);
+        border-radius: clamp(10px, 2vw, 14px);
         background: rgba(255, 255, 255, 0.05);
         backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.1);
         transition: all 0.4s ease;
         font-weight: 400;
-        font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+        font-size: clamp(0.75rem, 1.6vw, 0.85rem);
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
         white-space: nowrap;
@@ -614,15 +626,15 @@
 
       /* Message Notifications */
       .message {
-        padding: clamp(0.8rem, 1.8vh, 1.1rem);
-        border-radius: clamp(10px, 2vw, 14px);
-        font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+        padding: clamp(0.7rem, 1.5vh, 0.9rem);
+        border-radius: clamp(9px, 1.8vw, 12px);
+        font-size: clamp(0.75rem, 1.6vw, 0.85rem);
         text-align: center;
         opacity: 0;
         transform: translateY(-15px);
         transition: all 0.4s ease;
         font-weight: 300;
-        margin-bottom: clamp(0.8rem, 1.8vh, 1.2rem);
+        margin-bottom: clamp(0.6rem, 1.2vh, 0.8rem); /* Reduced margin */
         position: relative;
         backdrop-filter: blur(20px);
       }
@@ -652,60 +664,58 @@
         color: rgba(110, 231, 183, 0.95);
       }
 
-      /* Empty Space for Perfect Balance */
-      .bottom-space {
-        height: clamp(1rem, 2vh, 1.5rem);
-        flex-shrink: 0;
-      }
-
-      /* Responsive Design */
+      /* Responsive Design - More Aggressive Condensing */
       @media (max-width: 768px) {
         .register-screen {
-          padding: clamp(1rem, 2vh, 1.5rem);
-          gap: clamp(0.8rem, 1.8vh, 1.2rem);
+          padding: clamp(0.8rem, 1.8vh, 1.2rem);
+          gap: clamp(0.6rem, 1.2vh, 0.8rem);
         }
 
         .register-form-section {
           max-width: 90vw;
-          gap: clamp(1.2rem, 2.5vh, 1.8rem);
+          gap: clamp(0.8rem, 1.8vh, 1.2rem);
         }
 
         .form-input {
-          padding: clamp(0.9rem, 2vh, 1.2rem);
+          padding: clamp(0.8rem, 1.6vh, 1rem);
         }
 
         .password-toggle {
-          width: clamp(2.2rem, 4.5vw, 2.8rem);
-          height: clamp(2.2rem, 4.5vw, 2.8rem);
-          right: clamp(0.8rem, 1.8vw, 1.2rem);
+          width: clamp(2rem, 4vw, 2.5rem);
+          height: clamp(2rem, 4vw, 2.5rem);
+          right: clamp(0.7rem, 1.6vw, 1rem);
         }
 
         .password-input {
-          padding-right: clamp(3rem, 6vw, 4rem);
+          padding-right: clamp(2.8rem, 5.5vw, 3.5rem);
         }
       }
 
       @media (max-height: 700px) {
         .register-screen {
-          padding: clamp(0.8rem, 1.5vh, 1.2rem);
-          gap: clamp(0.6rem, 1.2vh, 1rem);
+          padding: clamp(0.6rem, 1.2vh, 0.8rem);
+          gap: clamp(0.4rem, 0.8vh, 0.6rem);
         }
 
         .register-form-section {
-          gap: clamp(1rem, 2vh, 1.4rem);
+          gap: clamp(0.7rem, 1.4vh, 1rem);
         }
 
         .register-header {
-          gap: clamp(0.5rem, 1vh, 0.8rem);
-          margin-bottom: clamp(0.3rem, 0.6vh, 0.5rem);
+          gap: clamp(0.4rem, 0.8vh, 0.6rem);
         }
 
         .register-form {
-          gap: clamp(1rem, 2vh, 1.4rem);
+          gap: clamp(0.8rem, 1.5vh, 1.1rem);
         }
 
         .mirror-icon {
-          font-size: clamp(1.8rem, 4vw, 2.4rem);
+          font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+        }
+
+        .register-footer {
+          gap: clamp(0.4rem, 0.8vh, 0.6rem);
+          margin-top: clamp(0.5rem, 1vh, 0.8rem);
         }
       }
 
@@ -715,44 +725,89 @@
         }
 
         .back-link {
-          padding: clamp(0.6rem, 1.3vh, 0.8rem) clamp(1rem, 2.2vw, 1.3rem);
+          padding: clamp(0.5rem, 1vh, 0.7rem) clamp(0.8rem, 2vw, 1.1rem);
         }
 
         .form-input {
-          padding: clamp(0.8rem, 1.8vh, 1.1rem);
+          padding: clamp(0.7rem, 1.4vh, 0.9rem);
         }
 
         .submit-button {
-          padding: clamp(1rem, 2.2vh, 1.4rem);
+          padding: clamp(0.9rem, 1.8vh, 1.2rem);
+        }
+      }
+
+      /* Ultra compact for very small screens */
+      @media (max-height: 600px) {
+        .register-screen {
+          padding: clamp(0.4rem, 0.8vh, 0.6rem) clamp(0.8rem, 1.8vw, 1.2rem);
+          gap: clamp(0.3rem, 0.6vh, 0.4rem);
+        }
+
+        .register-header {
+          gap: clamp(0.3rem, 0.6vh, 0.4rem);
+        }
+
+        .register-form {
+          gap: clamp(0.6rem, 1.2vh, 0.8rem);
+        }
+
+        .free-badge {
+          margin-top: clamp(0.2rem, 0.4vh, 0.3rem);
+          padding: clamp(0.25rem, 0.5vh, 0.35rem) clamp(0.6rem, 1.4vw, 0.8rem);
+        }
+
+        .submit-button {
+          margin-top: clamp(0.2rem, 0.4vh, 0.3rem);
+          min-height: clamp(40px, 6vh, 50px);
+        }
+
+        .register-footer {
+          margin-top: clamp(0.4rem, 0.8vh, 0.6rem);
+          gap: clamp(0.3rem, 0.6vh, 0.4rem);
         }
       }
 
       /* Landscape mobile optimization */
       @media (max-height: 500px) and (orientation: landscape) {
         .register-screen {
-          padding: clamp(0.5rem, 1vh, 0.8rem) clamp(1rem, 2vw, 1.5rem);
-          gap: clamp(0.4rem, 0.8vh, 0.6rem);
+          padding: clamp(0.3rem, 0.6vh, 0.4rem) clamp(0.8rem, 1.8vw, 1.2rem);
+          gap: clamp(0.2rem, 0.4vh, 0.3rem);
         }
 
         .register-header {
-          gap: clamp(0.3rem, 0.6vh, 0.5rem);
-          margin-bottom: clamp(0.2rem, 0.4vh, 0.3rem);
+          gap: clamp(0.2rem, 0.4vh, 0.3rem);
         }
 
         .register-form {
-          gap: clamp(0.8rem, 1.5vh, 1.2rem);
+          gap: clamp(0.5rem, 1vh, 0.7rem);
+        }
+
+        .mirror-icon {
+          font-size: clamp(1.4rem, 3vw, 1.8rem);
+          margin-bottom: clamp(0.1rem, 0.2vh, 0.2rem);
+        }
+
+        .register-title {
+          font-size: clamp(1.4rem, 3vw, 1.8rem);
+          margin-bottom: clamp(0.1rem, 0.2vh, 0.2rem);
+        }
+
+        .register-subtitle {
+          font-size: clamp(0.75rem, 1.6vw, 0.9rem);
         }
 
         .free-badge {
-          margin-top: clamp(0.2rem, 0.4vh, 0.3rem);
+          margin-top: clamp(0.1rem, 0.2vh, 0.2rem);
         }
 
         .submit-button {
-          margin-top: clamp(0.3rem, 0.6vh, 0.5rem);
+          margin-top: clamp(0.1rem, 0.2vh, 0.2rem);
+          min-height: clamp(35px, 5vh, 45px);
         }
 
-        .bottom-space {
-          height: clamp(0.5rem, 1vh, 0.8rem);
+        .register-footer {
+          margin-top: clamp(0.3rem, 0.6vh, 0.4rem);
         }
       }
 
@@ -787,7 +842,7 @@
       @supports (-webkit-touch-callout: none) {
         .register-screen {
           padding-top: max(
-            clamp(1.5rem, 4vh, 2.5rem),
+            clamp(1rem, 2.5vh, 1.8rem),
             env(safe-area-inset-top)
           );
           padding-left: max(clamp(1rem, 3vw, 2rem), env(safe-area-inset-left));
@@ -796,7 +851,7 @@
             env(safe-area-inset-right)
           );
           padding-bottom: max(
-            clamp(1.5rem, 4vh, 2.5rem),
+            clamp(1rem, 2.5vh, 1.8rem),
             env(safe-area-inset-bottom)
           );
         }
@@ -949,9 +1004,6 @@
           <span>Sign in to your journey</span>
         </a>
       </div>
-
-      <!-- Bottom Space for Perfect Balance -->
-      <div class="bottom-space"></div>
     </div>
 
     <script>
@@ -1363,7 +1415,7 @@
 
       // Debug (Development Only)
       if (window.location.hostname === "localhost") {
-        console.log("🪞 Beautiful Symmetrical Registration - Free Forever");
+        console.log("🪞 Beautiful Symmetrical Registration - Condensed Upward");
 
         window.registerDebug = {
           clearForm,
