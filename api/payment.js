@@ -718,7 +718,7 @@ function getPriceId(tier, period) {
 function getBaseUrl() {
   // Always use your custom domain in production
   if (process.env.NODE_ENV === "production") {
-    return "https://mirror-of-truth.xyz";
+    return "https://www.mirror-of-truth.xyz"; // Fixed: Added www
   }
   // For development
   if (process.env.DOMAIN) {

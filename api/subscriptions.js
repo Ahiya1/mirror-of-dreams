@@ -735,9 +735,11 @@ async function sendGiftReceipt(gift) {
 }
 
 function getBaseUrl() {
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
+  // Always use your custom domain in production
+  if (process.env.NODE_ENV === "production") {
+    return "https://www.mirror-of-truth.xyz"; // Fixed: Added www
   }
+  // For development
   if (process.env.DOMAIN) {
     return process.env.DOMAIN;
   }
