@@ -22,6 +22,14 @@
       "destination": "/dashboard/index.html"
     },
     {
+      "source": "/profile",
+      "destination": "/profile/index.html"
+    },
+    {
+      "source": "/subscription",
+      "destination": "/subscription/index.html"
+    },
+    {
       "source": "/reflections",
       "destination": "/reflections/history.html"
     },
@@ -119,6 +127,16 @@
     {
       "source": "/gift",
       "destination": "/gifting",
+      "permanent": true
+    },
+    {
+      "source": "/settings",
+      "destination": "/profile",
+      "permanent": true
+    },
+    {
+      "source": "/billing",
+      "destination": "/subscription",
       "permanent": true
     }
   ],

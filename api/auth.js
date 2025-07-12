@@ -1,4 +1,4 @@
-// api/auth.js - Mirror of Truth Authentication System (FIXED)
+// api/auth.js - Mirror of Truth Authentication System (UPDATED with Change Password)
 const { createClient } = require("@supabase/supabase-js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -77,6 +77,7 @@ module.exports = async function handler(req, res) {
             "signout",
             "get-user",
             "update-profile",
+            "change-password",
             "delete-account",
           ],
         },
@@ -100,6 +101,8 @@ module.exports = async function handler(req, res) {
         return await handleGetUser(req, res, requestId);
       case "update-profile":
         return await handleUpdateProfile(req, res, requestId);
+      case "change-password":
+        return await handleChangePassword(req, res, requestId);
       case "delete-account":
         return await handleDeleteAccount(req, res, requestId);
       default:
@@ -118,6 +121,7 @@ module.exports = async function handler(req, res) {
               "signout",
               "get-user",
               "update-profile",
+              "change-password",
               "delete-account",
             ],
           },
@@ -542,7 +546,7 @@ async function handleGetUser(req, res, requestId) {
       .select(
         `
         id, email, name, tier, subscription_status, subscription_period,
-        subscription_started_at, subscription_expires_at, paypal_subscription_id,
+        subscription_started_at, subscription_expires_at, stripe_subscription_id,
         reflection_count_this_month, total_reflections,
         is_creator, is_admin, language, timezone,
         last_reflection_at, created_at,
@@ -634,6 +638,117 @@ async function handleUpdateProfile(req, res, requestId) {
       success: true,
       message: "Profile updated successfully",
       user: updatedUser,
+      debug: { requestId },
+    });
+  } catch (error) {
+    if (
+      error.message === "Authentication required" ||
+      error.message === "Invalid authentication"
+    ) {
+      return res.status(401).json({
+        success: false,
+        error: error.message,
+        debug: { requestId },
+      });
+    }
+    throw error;
+  }
+}
+
+// NEW: Change password
+async function handleChangePassword(req, res, requestId) {
+  console.log(`🔍 [${requestId}] === CHANGE PASSWORD START ===`);
+  console.log(`🔍 [${requestId}] Change password request`);
+
+  try {
+    const user = await authenticateRequest(req, requestId);
+    const { currentPassword, newPassword } = req.body;
+
+    // Validation
+    if (!currentPassword || !newPassword) {
+      console.log(`❌ [${requestId}] Missing current or new password`);
+      return res.status(400).json({
+        success: false,
+        error: "Current password and new password are required",
+        debug: { requestId },
+      });
+    }
+
+    if (newPassword.length < 6) {
+      console.log(`❌ [${requestId}] New password too short`);
+      return res.status(400).json({
+        success: false,
+        error: "New password must be at least 6 characters",
+        debug: { requestId },
+      });
+    }
+
+    if (currentPassword === newPassword) {
+      console.log(`❌ [${requestId}] Same password provided`);
+      return res.status(400).json({
+        success: false,
+        error: "New password must be different from current password",
+        debug: { requestId },
+      });
+    }
+
+    // Get user's current password hash
+    const { data: userData, error: fetchError } = await supabase
+      .from("users")
+      .select("password_hash")
+      .eq("id", user.id)
+      .single();
+
+    if (fetchError || !userData) {
+      console.log(`❌ [${requestId}] Failed to fetch user data:`, fetchError);
+      return res.status(500).json({
+        success: false,
+        error: "Failed to verify current password",
+        debug: { requestId },
+      });
+    }
+
+    // Verify current password
+    const isValidCurrentPassword = await bcrypt.compare(
+      currentPassword,
+      userData.password_hash
+    );
+
+    if (!isValidCurrentPassword) {
+      console.log(`❌ [${requestId}] Current password verification failed`);
+      return res.status(401).json({
+        success: false,
+        error: "Current password is incorrect",
+        debug: { requestId },
+      });
+    }
+
+    // Hash new password
+    console.log(`🔍 [${requestId}] Hashing new password...`);
+    const newPasswordHash = await bcrypt.hash(newPassword, 12);
+
+    // Update password in database
+    const { error: updateError } = await supabase
+      .from("users")
+      .update({ password_hash: newPasswordHash })
+      .eq("id", user.id);
+
+    if (updateError) {
+      console.log(`❌ [${requestId}] Password update failed:`, updateError);
+      return res.status(500).json({
+        success: false,
+        error: "Failed to update password",
+        debug: { requestId },
+      });
+    }
+
+    console.log(
+      `✅ [${requestId}] Password changed successfully: ${user.email}`
+    );
+
+    return res.json({
+      success: true,
+      message: "Password changed successfully",
       debug: { requestId },
     });
   } catch (error) {
@@ -757,7 +872,7 @@ async function createUserAccount(userData, requestId) {
 
   // Add subscription fields
   if (subscriptionId) {
-    userRecord.paypal_subscription_id = subscriptionId;
+    userRecord.stripe_subscription_id = subscriptionId;
   }
 
   const { data: user, error } = await supabase

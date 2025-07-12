@@ -1,4 +1,5 @@
-// api/subscriptions.js - Mirror of Truth Subscription Management with Stripe
+// api/subscriptions.js - Mirror of Truth Subscription Management
+// Clean API focused only on subscription lifecycle management
 
 const { createClient } = require("@supabase/supabase-js");
 const { authenticateRequest } = require("./auth.js");
@@ -10,114 +11,40 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// Helper function to get raw body
-function getRawBody(req) {
-  return new Promise((resolve, reject) => {
-    let data = "";
-    req.setEncoding("utf8");
-    req.on("data", (chunk) => {
-      data += chunk;
-    });
-    req.on("end", () => {
-      resolve(data);
-    });
-    req.on("error", (err) => {
-      reject(err);
-    });
-  });
-}
-
-// Subscription pricing
-const SUBSCRIPTION_PRICING = {
-  essential: {
-    monthly: 4.99,
-    yearly: 49.99,
-  },
-  premium: {
-    monthly: 9.99,
-    yearly: 99.99,
-  },
-};
-
-// Gift duration pricing (Essential/Premium for 1mo, 3mo, 1yr)
-const GIFT_PRICING = {
-  essential: {
-    "1mo": 4.99,
-    "3mo": 12.99, // Discounted from 14.97
-    "1yr": 49.99,
-  },
-  premium: {
-    "1mo": 9.99,
-    "3mo": 24.99, // Discounted from 29.97
-    "1yr": 99.99,
-  },
-};
-
 module.exports = async function handler(req, res) {
   // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, Stripe-Signature"
-  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
 
   try {
-    // Check if this is a Stripe webhook (has signature header)
-    const sig = req.headers["stripe-signature"];
+    const { action } = req.method === "GET" ? req.query : req.body;
 
-    if (sig && req.method === "POST") {
-      console.log(
-        "🎁 Detected Stripe webhook for subscriptions - routing to webhook handler"
-      );
-      // This is a Stripe webhook - needs raw body
-      return await handleStripeWebhook(req, res);
-    }
-
-    // For non-webhook requests, parse the body manually if needed
-    let body = {};
-    if (req.method === "POST") {
-      const rawBody = await getRawBody(req);
-      try {
-        body = JSON.parse(rawBody);
-      } catch (e) {
-        return res.status(400).json({
-          success: false,
-          error: "Invalid JSON body",
-        });
-      }
-    }
-
-    const { action } = req.method === "GET" ? req.query : body;
+    console.log(`💳 Subscriptions API - Action: ${action}`);
 
     switch (action) {
       case "get-current":
-        req.body = body; // Add parsed body for auth functions
-        return await handleGetCurrentSubscription(req, res);
-      case "create-subscription":
-        req.body = body;
-        return await handleCreateSubscription(req, res);
+        return await handleGetCurrent(req, res);
       case "cancel-subscription":
-        req.body = body;
         return await handleCancelSubscription(req, res);
-      case "create-gift-checkout":
-        req.body = body;
-        return await handleCreateGiftCheckout(req, res);
-      case "redeem-gift":
-        req.body = body;
-        return await handleRedeemGift(req, res);
-      case "validate-gift":
-        return await handleValidateGift(req, res);
-      case "get-pricing":
-        return await handleGetPricing(req, res);
+      case "get-customer-portal":
+        return await handleGetCustomerPortal(req, res);
+      case "reactivate":
+        return await handleReactivateSubscription(req, res);
       default:
         return res.status(400).json({
           success: false,
           error: "Invalid action",
+          availableActions: [
+            "get-current",
+            "cancel-subscription",
+            "get-customer-portal",
+            "reactivate",
+          ],
         });
     }
   } catch (error) {
@@ -131,8 +58,8 @@ module.exports = async function handler(req, res) {
   }
 };
 
-// Get current user subscription
-async function handleGetCurrentSubscription(req, res) {
+// Get current user subscription details
+async function handleGetCurrent(req, res) {
   try {
     const user = await authenticateRequest(req);
 
@@ -140,7 +67,8 @@ async function handleGetCurrentSubscription(req, res) {
       .from("users")
       .select(
         `
-        tier, subscription_status, subscription_period, stripe_subscription_id,
+        tier, subscription_status, subscription_period, 
+        stripe_subscription_id, stripe_customer_id,
         subscription_started_at, subscription_expires_at
       `
       )
@@ -148,11 +76,50 @@ async function handleGetCurrentSubscription(req, res) {
       .single();
 
     if (error) {
+      console.error("Failed to get subscription details:", error);
       return res.status(500).json({
         success: false,
         error: "Failed to get subscription details",
       });
     }
+
+    // Calculate subscription info
+    const isActive = subscription.subscription_status === "active";
+    const isSubscribed = subscription.tier !== "free";
+    const isCanceled = subscription.subscription_status === "canceled";
+
+    // Calculate next billing date (approximate)
+    let nextBilling = null;
+    if (
+      subscription.subscription_started_at &&
+      subscription.subscription_period &&
+      isActive
+    ) {
+      const startDate = new Date(subscription.subscription_started_at);
+      const nextDate = new Date(startDate);
+
+      if (subscription.subscription_period === "monthly") {
+        nextDate.setMonth(nextDate.getMonth() + 1);
+      } else if (subscription.subscription_period === "yearly") {
+        nextDate.setFullYear(nextDate.getFullYear() + 1);
+      }
+
+      nextBilling = nextDate.toISOString();
+    }
+
+    // Calculate pricing
+    const pricing = {
+      essential: { monthly: 4.99, yearly: 49.99 },
+      premium: { monthly: 9.99, yearly: 99.99 },
+    };
+
+    const currentPrice = isSubscribed
+      ? pricing[subscription.tier]?.[subscription.subscription_period]
+      : 0;
+
+    console.log(
+      `💳 Subscription details retrieved for: ${user.email} (${subscription.tier})`
+    );
 
     return res.json({
       success: true,
@@ -162,9 +129,24 @@ async function handleGetCurrentSubscription(req, res) {
         period: subscription.subscription_period,
         startedAt: subscription.subscription_started_at,
         expiresAt: subscription.subscription_expires_at,
-        isActive: subscription.subscription_status === "active",
+        nextBilling: nextBilling,
+        currentPrice: currentPrice,
+        currency: "USD",
+
+        // Status flags
+        isActive: isActive,
+        isSubscribed: isSubscribed,
+        isCanceled: isCanceled,
         canUpgrade: subscription.tier === "essential",
         canDowngrade: subscription.tier === "premium",
+        canReactivate: isCanceled && isSubscribed,
+
+        // Stripe integration flags
+        hasStripeData: !!(
+          subscription.stripe_subscription_id && subscription.stripe_customer_id
+        ),
+        stripeSubscriptionId: subscription.stripe_subscription_id,
+        stripeCustomerId: subscription.stripe_customer_id,
       },
     });
   } catch (error) {
@@ -181,138 +163,85 @@ async function handleGetCurrentSubscription(req, res) {
   }
 }
 
-// Create new subscription (for register flow)
-async function handleCreateSubscription(req, res) {
-  try {
-    const user = await authenticateRequest(req);
-    const { tier, period, stripeSubscriptionId, stripeCustomerId } = req.body;
-
-    if (!["essential", "premium"].includes(tier)) {
-      return res.status(400).json({
-        success: false,
-        error: "Invalid subscription tier",
-      });
-    }
-
-    if (!["monthly", "yearly"].includes(period)) {
-      return res.status(400).json({
-        success: false,
-        error: "Invalid subscription period",
-      });
-    }
-
-    // Calculate expiry date
-    const startDate = new Date();
-    const expiryDate = new Date(startDate);
-    if (period === "monthly") {
-      expiryDate.setMonth(expiryDate.getMonth() + 1);
-    } else {
-      expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-    }
-
-    // Update user subscription
-    const { data: updatedUser, error } = await supabase
-      .from("users")
-      .update({
-        tier: tier,
-        subscription_status: "active",
-        subscription_period: period,
-        stripe_subscription_id: stripeSubscriptionId,
-        stripe_customer_id: stripeCustomerId,
-        subscription_started_at: startDate.toISOString(),
-        subscription_expires_at: expiryDate.toISOString(),
-      })
-      .eq("id", user.id)
-      .select("id, email, tier, subscription_status")
-      .single();
-
-    if (error) {
-      return res.status(500).json({
-        success: false,
-        error: "Failed to create subscription",
-      });
-    }
-
-    console.log(
-      `🚀 Subscription created: ${updatedUser.email} → ${tier} (${period})`
-    );
-
-    return res.json({
-      success: true,
-      message: "Subscription created successfully",
-      subscription: {
-        tier: updatedUser.tier,
-        status: updatedUser.subscription_status,
-        period: period,
-        startedAt: startDate.toISOString(),
-        expiresAt: expiryDate.toISOString(),
-      },
-    });
-  } catch (error) {
-    if (
-      error.message === "Authentication required" ||
-      error.message === "Invalid authentication"
-    ) {
-      return res.status(401).json({
-        success: false,
-        error: error.message,
-      });
-    }
-    throw error;
-  }
-}
-
-// Cancel subscription
+// Cancel subscription (set to cancel at period end)
 async function handleCancelSubscription(req, res) {
   try {
     const user = await authenticateRequest(req);
 
-    // Get user's Stripe subscription ID
+    // Get user's subscription details
     const { data: userData, error: fetchError } = await supabase
       .from("users")
-      .select("stripe_subscription_id")
+      .select("stripe_subscription_id, stripe_customer_id, email, tier")
       .eq("id", user.id)
       .single();
 
-    if (fetchError || !userData.stripe_subscription_id) {
-      return res.status(400).json({
+    if (fetchError || !userData) {
+      return res.status(404).json({
         success: false,
-        error: "No active subscription found",
+        error: "User subscription not found",
       });
     }
 
-    // Cancel the subscription in Stripe
-    try {
-      await stripe.subscriptions.update(userData.stripe_subscription_id, {
-        cancel_at_period_end: true,
+    if (userData.tier === "free") {
+      return res.status(400).json({
+        success: false,
+        error: "No active subscription to cancel",
       });
+    }
+
+    if (!userData.stripe_subscription_id) {
+      return res.status(400).json({
+        success: false,
+        error: "No Stripe subscription found",
+      });
+    }
+
+    // Cancel subscription in Stripe (at period end)
+    let stripeSuccess = false;
+    try {
+      const stripeSubscription = await stripe.subscriptions.update(
+        userData.stripe_subscription_id,
+        {
+          cancel_at_period_end: true,
+        }
+      );
+      stripeSuccess = true;
+      console.log(`💳 Stripe subscription canceled: ${stripeSubscription.id}`);
     } catch (stripeError) {
       console.error("Stripe cancellation error:", stripeError);
       // Continue with local update even if Stripe fails
     }
 
-    // Update subscription status
-    const { data: updatedUser, error } = await supabase
+    // Update local subscription status
+    const { data: updatedUser, error: updateError } = await supabase
       .from("users")
       .update({
         subscription_status: "canceled",
       })
       .eq("id", user.id)
-      .select("id, email, tier")
+      .select("email, tier, subscription_status")
       .single();
 
-    if (error) {
+    if (updateError) {
       return res.status(500).json({
         success: false,
-        error: "Failed to cancel subscription",
+        error: "Failed to update subscription status",
       });
     }
 
-    console.log(`❌ Subscription canceled: ${updatedUser.email}`);
+    console.log(
+      `❌ Subscription canceled: ${updatedUser.email} (${updatedUser.tier})`
+    );
 
     return res.json({
       success: true,
       message: "Subscription canceled successfully",
+      subscription: {
+        status: "canceled",
+        tier: updatedUser.tier,
+        stripeUpdated: stripeSuccess,
+        note: "Your subscription will remain active until the end of your current billing period",
+      },
     });
   } catch (error) {
     if (
@@ -328,515 +257,180 @@ async function handleCancelSubscription(req, res) {
   }
 }
 
-// Create Stripe Checkout for gift subscription
-async function handleCreateGiftCheckout(req, res) {
-  const {
-    giverName,
-    giverEmail,
-    recipientName,
-    recipientEmail,
-    subscriptionTier,
-    subscriptionDuration,
-    personalMessage,
-  } = req.body;
-
-  // Validation
-  if (
-    !giverName ||
-    !giverEmail ||
-    !recipientName ||
-    !recipientEmail ||
-    !subscriptionTier ||
-    !subscriptionDuration
-  ) {
-    return res.status(400).json({
-      success: false,
-      error: "Missing required gift information",
-    });
-  }
-
-  if (!["essential", "premium"].includes(subscriptionTier)) {
-    return res.status(400).json({
-      success: false,
-      error: "Invalid subscription tier",
-    });
-  }
-
-  if (!["1mo", "3mo", "1yr"].includes(subscriptionDuration)) {
-    return res.status(400).json({
-      success: false,
-      error: "Invalid subscription duration",
-    });
-  }
-
+// Get Stripe Customer Portal URL
+async function handleGetCustomerPortal(req, res) {
   try {
-    // Get the correct price ID for the gift
-    const priceId = getGiftPriceId(subscriptionTier, subscriptionDuration);
+    const user = await authenticateRequest(req);
 
-    if (!priceId) {
-      return res.status(500).json({
+    // Get user's Stripe customer ID
+    const { data: userData, error: fetchError } = await supabase
+      .from("users")
+      .select("stripe_customer_id, email")
+      .eq("id", user.id)
+      .single();
+
+    if (fetchError || !userData) {
+      return res.status(404).json({
         success: false,
-        error: "Gift price configuration missing",
+        error: "User data not found",
       });
     }
 
-    // Generate gift code
-    const giftCode = generateGiftCode();
+    if (!userData.stripe_customer_id) {
+      return res.status(400).json({
+        success: false,
+        error: "No Stripe customer account found. Please contact support.",
+      });
+    }
 
-    // Create Stripe Checkout Session for one-time payment
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      mode: "payment", // One-time payment for gifts
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      customer_email: giverEmail,
-      metadata: {
-        type: "gift",
-        gift_code: giftCode,
-        giver_name: giverName,
-        giver_email: giverEmail,
-        recipient_name: recipientName,
-        recipient_email: recipientEmail,
-        subscription_tier: subscriptionTier,
-        subscription_duration: subscriptionDuration,
-        personal_message: personalMessage || "",
-      },
-      success_url: `${getBaseUrl()}/gifting?session_id={CHECKOUT_SESSION_ID}&success=true&gift_code=${giftCode}`,
-      cancel_url: `${getBaseUrl()}/gifting?canceled=true`,
-      allow_promotion_codes: true,
-      billing_address_collection: "auto",
-    });
+    // Create Stripe Customer Portal session
+    try {
+      const portalSession = await stripe.billingPortal.sessions.create({
+        customer: userData.stripe_customer_id,
+        return_url: `${getBaseUrl()}/subscription`,
+      });
 
-    console.log(
-      `🎁 Gift checkout session created: ${giftCode} → ${subscriptionTier} (${subscriptionDuration})`
-    );
+      console.log(`💳 Customer portal created for: ${userData.email}`);
 
-    return res.json({
-      success: true,
-      sessionId: session.id,
-      url: session.url,
-      giftCode: giftCode,
-    });
+      return res.json({
+        success: true,
+        portalUrl: portalSession.url,
+        message: "Customer portal URL generated successfully",
+      });
+    } catch (stripeError) {
+      console.error("Stripe portal error:", stripeError);
+      return res.status(500).json({
+        success: false,
+        error: "Failed to create customer portal session",
+        details:
+          process.env.NODE_ENV === "development"
+            ? stripeError.message
+            : undefined,
+      });
+    }
   } catch (error) {
-    console.error("Error creating gift checkout:", error);
-    return res.status(500).json({
-      success: false,
-      error: error.message || "Failed to create gift checkout",
-    });
+    if (
+      error.message === "Authentication required" ||
+      error.message === "Invalid authentication"
+    ) {
+      return res.status(401).json({
+        success: false,
+        error: error.message,
+      });
+    }
+    throw error;
   }
 }
 
-// Redeem subscription gift
-async function handleRedeemGift(req, res) {
-  const { giftCode, userEmail } = req.body;
-
-  if (!giftCode) {
-    return res.status(400).json({
-      success: false,
-      error: "Gift code required",
-    });
-  }
-
+// Reactivate canceled subscription
+async function handleReactivateSubscription(req, res) {
   try {
-    // Get gift details
-    const { data: gift, error: giftError } = await supabase
-      .from("subscription_gifts")
-      .select("*")
-      .eq("gift_code", giftCode)
+    const user = await authenticateRequest(req);
+
+    // Get user's subscription details
+    const { data: userData, error: fetchError } = await supabase
+      .from("users")
+      .select("stripe_subscription_id, subscription_status, tier, email")
+      .eq("id", user.id)
       .single();
 
-    if (giftError || !gift) {
+    if (fetchError || !userData) {
       return res.status(404).json({
         success: false,
-        error: "Invalid gift code",
+        error: "User subscription not found",
       });
     }
 
-    if (gift.is_redeemed) {
+    if (userData.subscription_status !== "canceled") {
       return res.status(400).json({
         success: false,
-        error: "Gift has already been redeemed",
+        error: "Subscription is not canceled",
       });
     }
 
-    // Check if user exists, create if not
-    let user;
-    const { data: existingUser } = await supabase
-      .from("users")
-      .select("*")
-      .eq("email", userEmail || gift.recipient_email)
-      .single();
-
-    if (existingUser) {
-      user = existingUser;
-    } else {
-      // Create new user account
-      const bcrypt = require("bcryptjs");
-      const tempPassword = Math.random().toString(36).slice(-12);
-      const passwordHash = await bcrypt.hash(tempPassword, 12);
-
-      const { data: newUser, error: createError } = await supabase
-        .from("users")
-        .insert({
-          email: userEmail || gift.recipient_email,
-          password_hash: passwordHash,
-          name: gift.recipient_name,
-          tier: "free",
-          subscription_status: "active",
-        })
-        .select("*")
-        .single();
-
-      if (createError) {
-        return res.status(500).json({
-          success: false,
-          error: "Failed to create user account",
-        });
-      }
-
-      user = newUser;
+    if (userData.tier === "free") {
+      return res.status(400).json({
+        success: false,
+        error: "No subscription to reactivate",
+      });
     }
 
-    // Calculate subscription dates
-    const startDate = new Date();
-    const endDate = new Date(startDate);
-    endDate.setMonth(endDate.getMonth() + gift.subscription_duration);
+    if (!userData.stripe_subscription_id) {
+      return res.status(400).json({
+        success: false,
+        error: "No Stripe subscription found",
+      });
+    }
 
-    // Update user with gift subscription
-    const { error: updateError } = await supabase
+    // Reactivate in Stripe (remove cancel_at_period_end)
+    let stripeSuccess = false;
+    try {
+      const stripeSubscription = await stripe.subscriptions.update(
+        userData.stripe_subscription_id,
+        {
+          cancel_at_period_end: false,
+        }
+      );
+      stripeSuccess = true;
+      console.log(
+        `💳 Stripe subscription reactivated: ${stripeSubscription.id}`
+      );
+    } catch (stripeError) {
+      console.error("Stripe reactivation error:", stripeError);
+      // Continue with local update even if Stripe fails
+    }
+
+    // Update local subscription status
+    const { data: updatedUser, error: updateError } = await supabase
       .from("users")
       .update({
-        tier: gift.subscription_tier,
         subscription_status: "active",
-        subscription_started_at: startDate.toISOString(),
-        subscription_expires_at: endDate.toISOString(),
-        subscription_period:
-          gift.subscription_duration >= 12 ? "yearly" : "monthly",
       })
-      .eq("id", user.id);
+      .eq("id", user.id)
+      .select("email, tier, subscription_status")
+      .single();
 
     if (updateError) {
       return res.status(500).json({
         success: false,
-        error: "Failed to apply gift subscription",
+        error: "Failed to reactivate subscription",
       });
     }
 
-    // Mark gift as redeemed
-    await supabase
-      .from("subscription_gifts")
-      .update({
-        is_redeemed: true,
-        redeemed_at: new Date().toISOString(),
-        recipient_user_id: user.id,
-      })
-      .eq("id", gift.id);
-
-    console.log(`🎁 Subscription gift redeemed: ${giftCode} by ${user.email}`);
+    console.log(
+      `✅ Subscription reactivated: ${updatedUser.email} (${updatedUser.tier})`
+    );
 
     return res.json({
       success: true,
-      message: "Subscription gift redeemed successfully",
+      message: "Subscription reactivated successfully",
       subscription: {
-        tier: gift.subscription_tier,
-        duration: gift.subscription_duration,
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
+        status: "active",
+        tier: updatedUser.tier,
+        stripeUpdated: stripeSuccess,
       },
     });
   } catch (error) {
-    console.error("Error redeeming gift:", error);
+    if (
+      error.message === "Authentication required" ||
+      error.message === "Invalid authentication"
+    ) {
+      return res.status(401).json({
+        success: false,
+        error: error.message,
+      });
+    }
     throw error;
   }
 }
 
-// Validate gift code
-async function handleValidateGift(req, res) {
-  const { giftCode } = req.query;
-
-  if (!giftCode) {
-    return res.status(400).json({
-      success: false,
-      error: "Gift code required",
-    });
-  }
-
-  try {
-    const { data: gift, error } = await supabase
-      .from("subscription_gifts")
-      .select("*")
-      .eq("gift_code", giftCode)
-      .single();
-
-    if (error || !gift) {
-      return res.json({
-        success: false,
-        valid: false,
-        error: "Invalid gift code",
-      });
-    }
-
-    if (gift.is_redeemed) {
-      return res.json({
-        success: false,
-        valid: false,
-        error: "Gift has already been redeemed",
-      });
-    }
-
-    return res.json({
-      success: true,
-      valid: true,
-      gift: {
-        recipientName: gift.recipient_name,
-        giverName: gift.giver_name,
-        subscriptionTier: gift.subscription_tier,
-        subscriptionDuration: gift.subscription_duration,
-        personalMessage: gift.personal_message,
-        createdAt: gift.created_at,
-      },
-    });
-  } catch (error) {
-    console.error("Error validating gift:", error);
-    throw error;
-  }
-}
-
-// Get pricing information
-async function handleGetPricing(req, res) {
-  return res.json({
-    success: true,
-    pricing: {
-      subscriptions: SUBSCRIPTION_PRICING,
-      gifts: GIFT_PRICING,
-    },
-  });
-}
-
-// Stripe webhook handler (for gift payment completion)
-async function handleStripeWebhook(req, res) {
-  console.log("🎁 Subscription webhook received - Headers:", req.headers);
-  console.log("🎁 Request method:", req.method);
-  console.log("🎁 Request URL:", req.url);
-
-  const sig = req.headers["stripe-signature"];
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-  console.log("🎁 Signature present:", !!sig);
-  console.log("🎁 Webhook secret configured:", !!webhookSecret);
-
-  if (!sig) {
-    console.error("❌ No Stripe signature found in headers");
-    return res.status(400).json({ error: "No signature" });
-  }
-
-  if (!webhookSecret) {
-    console.error("❌ STRIPE_WEBHOOK_SECRET not configured");
-    return res.status(500).json({ error: "Webhook secret not configured" });
-  }
-
-  let event;
-  let rawBody;
-
-  try {
-    // Get raw body for signature verification
-    rawBody = await getRawBody(req);
-    console.log(
-      "✅ Raw body retrieved for subscriptions, length:",
-      rawBody.length
-    );
-  } catch (err) {
-    console.error("❌ Failed to get raw body:", err.message);
-    return res.status(400).json({ error: "Failed to read request body" });
-  }
-
-  try {
-    // Verify webhook signature with raw body
-    event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
-    console.log("✅ Subscription webhook signature verified successfully");
-  } catch (err) {
-    console.error(
-      "❌ Subscription webhook signature verification failed:",
-      err.message
-    );
-    console.error("❌ Signature:", sig);
-    console.error("❌ Body length:", rawBody?.length || 0);
-    return res.status(400).json({ error: "Invalid signature" });
-  }
-
-  console.log(`📦 Stripe subscription webhook received: ${event.type}`);
-  console.log(`📦 Event ID: ${event.id}`);
-
-  try {
-    // Handle different webhook events
-    switch (event.type) {
-      case "checkout.session.completed":
-        console.log("🎁 Processing gift checkout.session.completed");
-        await handleGiftCheckoutCompleted(event);
-        break;
-      default:
-        console.log(`⚠️ Unhandled Stripe subscription event: ${event.type}`);
-    }
-
-    console.log("✅ Subscription webhook processed successfully");
-    return res.status(200).json({ received: true });
-  } catch (error) {
-    console.error("❌ Stripe subscription webhook error:", error);
-    return res.status(500).json({ error: "Webhook processing failed" });
-  }
-}
-
-// Handle completed gift checkout
-async function handleGiftCheckoutCompleted(event) {
-  try {
-    const session = event.data.object;
-
-    // Only process gift payments
-    if (session.metadata.type !== "gift") {
-      console.log("⚠️ Non-gift checkout session, skipping");
-      return;
-    }
-
-    const {
-      gift_code,
-      giver_name,
-      giver_email,
-      recipient_name,
-      recipient_email,
-      subscription_tier,
-      subscription_duration,
-      personal_message,
-    } = session.metadata;
-
-    // Convert duration to months
-    const durationMonths =
-      subscription_duration === "1mo"
-        ? 1
-        : subscription_duration === "3mo"
-        ? 3
-        : 12;
-
-    // Create subscription gift record
-    const { data: gift, error } = await supabase
-      .from("subscription_gifts")
-      .insert({
-        gift_code: gift_code,
-        giver_name: giver_name,
-        giver_email: giver_email,
-        recipient_name: recipient_name,
-        recipient_email: recipient_email,
-        subscription_tier: subscription_tier,
-        subscription_duration: durationMonths,
-        amount: session.amount_total / 100, // Convert from cents
-        payment_method: "stripe",
-        stripe_session_id: session.id,
-        personal_message: personal_message || "",
-      })
-      .select("*")
-      .single();
-
-    if (error) {
-      console.error("Gift creation error:", error);
-      return;
-    }
-
-    console.log(
-      `🎁 Subscription gift completed: ${gift_code} - ${subscription_tier} for ${durationMonths} months`
-    );
-
-    // Send gift invitation email
-    await sendGiftInvitation(gift);
-
-    // Send receipt to giver
-    await sendGiftReceipt(gift);
-  } catch (error) {
-    console.error("Error handling gift checkout completion:", error);
-  }
-}
-
-// Helper functions
-function generateGiftCode() {
-  const timestamp = Date.now().toString();
-  const random = Math.random().toString(36).substr(2, 8).toUpperCase();
-  return `SUB${timestamp.slice(-4)}${random}`;
-}
-
-function getGiftPriceId(tier, duration) {
-  const priceMap = {
-    essential: {
-      "1mo": process.env.STRIPE_ESSENTIAL_1MO_PRICE_ID,
-      "3mo": process.env.STRIPE_ESSENTIAL_3MO_PRICE_ID,
-      "1yr": process.env.STRIPE_ESSENTIAL_1YR_PRICE_ID,
-    },
-    premium: {
-      "1mo": process.env.STRIPE_PREMIUM_1MO_PRICE_ID,
-      "3mo": process.env.STRIPE_PREMIUM_3MO_PRICE_ID,
-      "1yr": process.env.STRIPE_PREMIUM_1YR_PRICE_ID,
-    },
-  };
-
-  return priceMap[tier]?.[duration];
-}
-
-async function sendGiftInvitation(gift) {
-  try {
-    const response = await fetch(`${getBaseUrl()}/api/communication`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "send-subscription-gift-invitation",
-        gift,
-      }),
-    });
-
-    if (response.ok) {
-      console.log(
-        `📧 Subscription gift invitation sent to ${gift.recipient_email}`
-      );
-    }
-  } catch (error) {
-    console.error("Error sending gift invitation:", error);
-  }
-}
-
-async function sendGiftReceipt(gift) {
-  try {
-    const response = await fetch(`${getBaseUrl()}/api/communication`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "generate-subscription-gift-receipt",
-        gift,
-      }),
-    });
-
-    if (response.ok) {
-      console.log(`🧾 Subscription gift receipt sent to ${gift.giver_email}`);
-    }
-  } catch (error) {
-    console.error("Error generating gift receipt:", error);
-  }
-}
-
+// Utility functions
 function getBaseUrl() {
-  // Always use your custom domain in production
   if (process.env.NODE_ENV === "production") {
-    return "https://www.mirror-of-truth.xyz"; // Fixed: Added www
+    return "https://www.mirror-of-truth.xyz";
   }
-  // For development
   if (process.env.DOMAIN) {
     return process.env.DOMAIN;
   }
   return "http://localhost:3000";
 }
-
-// CRITICAL: Disable body parsing for webhooks
-module.exports.config = {
-  api: {
-    bodyParser: false,
-  },
-};

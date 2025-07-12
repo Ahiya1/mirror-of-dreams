@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <title>Your Inner Sanctuary | Mirror of Truth</title>
+
+    <style>
+      /* Profile Page - Mystical Configuration Panel */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100vh;
+        overflow: hidden;
+        background: linear-gradient(
+          135deg,
+          #0f0f23 0%,
+          #1a1a2e 25%,
+          #16213e 50%,
+          #0f0f23 100%
+        );
+        color: #fff;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+        position: fixed;
+        width: 100vw;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Subtle Cosmic Background */
+      .cosmic-background {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        overflow: hidden;
+      }
+
+      .cosmic-mirror {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(255, 255, 255, 0.05);
+        animation: cosmicFloat 18s ease-in-out infinite;
+        transition: all 0.4s ease;
+      }
+
+      .cosmic-mirror:nth-child(1) {
+        width: clamp(20px, 3vw, 30px);
+        height: clamp(20px, 3vw, 30px);
+        top: 15%;
+        right: 15%;
+        clip-path: polygon(50% 0%, 85% 25%, 100% 75%, 60% 100%, 0% 50%);
+        animation-delay: 0s;
+        animation-duration: 20s;
+      }
+
+      .cosmic-mirror:nth-child(2) {
+        width: clamp(15px, 2.5vw, 25px);
+        height: clamp(15px, 2.5vw, 25px);
+        top: 60%;
+        left: 10%;
+        clip-path: polygon(25% 0%, 100% 25%, 75% 100%, 0% 75%);
+        animation-delay: 6s;
+        animation-duration: 22s;
+      }
+
+      .cosmic-mirror:nth-child(3) {
+        width: clamp(18px, 3.2vw, 28px);
+        height: clamp(18px, 3.2vw, 28px);
+        bottom: 20%;
+        right: 25%;
+        clip-path: polygon(20% 0%, 80% 20%, 100% 80%, 20% 100%, 0% 80%);
+        animation-delay: 12s;
+        animation-duration: 24s;
+      }
+
+      @keyframes cosmicFloat {
+        0%,
+        100% {
+          transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+          opacity: 0.3;
+        }
+        25% {
+          transform: translateY(-10px) translateX(5px) rotate(90deg) scale(1.05);
+          opacity: 0.5;
+        }
+        50% {
+          transform: translateY(-5px) translateX(-8px) rotate(180deg)
+            scale(0.95);
+          opacity: 0.7;
+        }
+        75% {
+          transform: translateY(-12px) translateX(3px) rotate(270deg)
+            scale(1.02);
+          opacity: 0.4;
+        }
+      }
+
+      /* Floating Particles */
+      .cosmic-particles {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      .cosmic-particle {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        animation: particleFloat 12s linear infinite;
+      }
+
+      .cosmic-particle:nth-child(1) {
+        left: 25%;
+        animation-delay: 0s;
+        background: rgba(147, 51, 234, 0.3);
+      }
+
+      .cosmic-particle:nth-child(2) {
+        left: 75%;
+        animation-delay: 4s;
+        background: rgba(59, 130, 246, 0.3);
+      }
+
+      @keyframes particleFloat {
+        0% {
+          transform: translateY(100vh) scale(0);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 0.6;
+        }
+        100% {
+          transform: translateY(-10vh) scale(1);
+          opacity: 0;
+        }
+      }
+
+      /* Navigation Bar */
+      .nav-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        height: clamp(60px, 8vh, 80px);
+        background: rgba(15, 15, 35, 0.8);
+        backdrop-filter: blur(30px) saturate(120%);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 clamp(1rem, 3vw, 2rem);
+      }
+
+      .nav-left {
+        display: flex;
+        align-items: center;
+        gap: clamp(0.8rem, 2vw, 1.2rem);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.95);
+        font-weight: 400;
+        font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+        transition: all 0.3s ease;
+      }
+
+      .logo:hover {
+        color: rgba(255, 255, 255, 1);
+        transform: translateY(-1px);
+      }
+
+      .mirror-logo {
+        font-size: clamp(1.2rem, 3vw, 1.6rem);
+        animation: logoGlow 4s ease-in-out infinite;
+      }
+
+      @keyframes logoGlow {
+        0%,
+        100% {
+          filter: drop-shadow(0 0 8px rgba(147, 51, 234, 0.3));
+          transform: scale(1);
+        }
+        50% {
+          filter: drop-shadow(0 0 12px rgba(147, 51, 234, 0.5));
+          transform: scale(1.05);
+        }
+      }
+
+      .nav-links {
+        display: flex;
+        gap: clamp(0.4rem, 1vw, 0.6rem);
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: clamp(0.4rem, 1vh, 0.6rem) clamp(0.8rem, 2vw, 1rem);
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+        font-weight: 300;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+      }
+
+      .nav-link:hover,
+      .nav-link.active {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.9);
+        transform: translateY(-1px);
+      }
+
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: clamp(0.6rem, 1.5vw, 1rem);
+      }
+
+      .back-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: clamp(0.4rem, 1vh, 0.6rem) clamp(0.8rem, 2vw, 1rem);
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.12),
+          rgba(5, 150, 105, 0.08)
+        );
+        border: 1px solid rgba(16, 185, 129, 0.25);
+        border-radius: 20px;
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+        font-weight: 400;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+      }
+
+      .back-link:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.18),
+          rgba(5, 150, 105, 0.12)
+        );
+        border-color: rgba(16, 185, 129, 0.4);
+        transform: translateY(-1px);
+      }
+
+      /* Main Profile Container */
+      .profile-main {
+        position: relative;
+        z-index: 10;
+        height: 100vh;
+        padding-top: clamp(60px, 8vh, 80px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-left: clamp(1rem, 3vw, 2rem);
+        padding-right: clamp(1rem, 3vw, 2rem);
+        padding-bottom: clamp(2rem, 4vh, 3rem);
+      }
+
+      .profile-container {
+        width: 100%;
+        max-width: 600px;
+        display: flex;
+        flex-direction: column;
+        gap: clamp(1.5rem, 3vh, 2rem);
+        animation: profileAppear 1s ease-out;
+      }
+
+      @keyframes profileAppear {
+        from {
+          opacity: 0;
+          transform: translateY(30px) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      /* Header */
+      .profile-header {
+        text-align: center;
+        margin-bottom: clamp(0.5rem, 1vh, 1rem);
+      }
+
+      .profile-title {
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        font-weight: 300;
+        margin-bottom: clamp(0.3rem, 0.8vh, 0.5rem);
+        line-height: 1.2;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.95) 0%,
+          rgba(147, 51, 234, 0.8) 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .profile-subtitle {
+        font-size: clamp(0.85rem, 2vw, 1rem);
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 300;
+        line-height: 1.4;
+      }
+
+      /* Profile Cards */
+      .profile-card {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.08) 0%,
+          rgba(255, 255, 255, 0.03) 100%
+        );
+        backdrop-filter: blur(40px) saturate(120%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: clamp(16px, 3vw, 24px);
+        padding: clamp(1.5rem, 3vh, 2rem);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s ease;
+      }
+
+      .profile-card::before {
+        content: "";
+        position: absolute;
+        inset: 1px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.04) 0%,
+          rgba(255, 255, 255, 0.01) 100%
+        );
+        border-radius: clamp(15px, 3vw, 23px);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .profile-card:hover::before {
+        opacity: 1;
+      }
+
+      .profile-card:hover {
+        border-color: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 40px rgba(255, 255, 255, 0.06);
+      }
+
+      .card-title {
+        display: flex;
+        align-items: center;
+        gap: clamp(0.5rem, 1.2vw, 0.8rem);
+        font-size: clamp(1rem, 2.5vw, 1.3rem);
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.95);
+        margin-bottom: clamp(1rem, 2vh, 1.5rem);
+      }
+
+      .card-icon {
+        font-size: clamp(1.2rem, 3vw, 1.6rem);
+        opacity: 0.9;
+      }
+
+      /* Form Styling */
+      .form-group {
+        margin-bottom: clamp(1rem, 2vh, 1.5rem);
+      }
+
+      .form-group:last-child {
+        margin-bottom: 0;
+      }
+
+      .form-label {
+        display: block;
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: clamp(0.3rem, 0.8vh, 0.5rem);
+        font-weight: 400;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: clamp(0.8rem, 2vh, 1rem) clamp(1rem, 2.5vw, 1.2rem);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: clamp(10px, 2vw, 14px);
+        color: rgba(255, 255, 255, 0.9);
+        font-size: clamp(0.85rem, 2.1vw, 1rem);
+        font-family: inherit;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: rgba(147, 51, 234, 0.5);
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+      }
+
+      .form-input::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .form-select {
+        width: 100%;
+        padding: clamp(0.8rem, 2vh, 1rem) clamp(1rem, 2.5vw, 1.2rem);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: clamp(10px, 2vw, 14px);
+        color: rgba(255, 255, 255, 0.9);
+        font-size: clamp(0.85rem, 2.1vw, 1rem);
+        font-family: inherit;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        cursor: pointer;
+      }
+
+      .form-select:focus {
+        outline: none;
+        border-color: rgba(147, 51, 234, 0.5);
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+      }
+
+      .form-select option {
+        background: #1a1a2e;
+        color: #fff;
+      }
+
+      /* Form Actions */
+      .form-actions {
+        display: flex;
+        gap: clamp(0.8rem, 2vw, 1rem);
+        margin-top: clamp(1.5rem, 3vh, 2rem);
+      }
+
+      .form-button {
+        flex: 1;
+        padding: clamp(0.8rem, 2vh, 1rem) clamp(1.2rem, 3vw, 1.5rem);
+        border: none;
+        border-radius: clamp(10px, 2vw, 14px);
+        font-size: clamp(0.85rem, 2.1vw, 1rem);
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        font-family: inherit;
+      }
+
+      .form-button::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+      }
+
+      .form-button:hover::before {
+        transform: translateX(100%);
+      }
+
+      .form-button.primary {
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.2),
+          rgba(99, 102, 241, 0.15)
+        );
+        border: 1px solid rgba(147, 51, 234, 0.3);
+        color: rgba(196, 181, 253, 0.9);
+      }
+
+      .form-button.primary:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.3),
+          rgba(99, 102, 241, 0.2)
+        );
+        border-color: rgba(147, 51, 234, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(147, 51, 234, 0.2);
+      }
+
+      .form-button.secondary {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .form-button.secondary:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+      }
+
+      .form-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .form-button:disabled:hover {
+        transform: none;
+        box-shadow: none;
+      }
+
+      /* Danger Zone */
+      .danger-zone {
+        border-color: rgba(239, 68, 68, 0.2);
+        background: linear-gradient(
+          135deg,
+          rgba(239, 68, 68, 0.05) 0%,
+          rgba(220, 38, 38, 0.02) 100%
+        );
+      }
+
+      .danger-zone .card-title {
+        color: rgba(248, 113, 113, 0.9);
+      }
+
+      .danger-zone .card-icon {
+        color: rgba(248, 113, 113, 0.8);
+      }
+
+      .form-button.danger {
+        background: linear-gradient(
+          135deg,
+          rgba(239, 68, 68, 0.15),
+          rgba(220, 38, 38, 0.1)
+        );
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: rgba(248, 113, 113, 0.9);
+      }
+
+      .form-button.danger:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(239, 68, 68, 0.25),
+          rgba(220, 38, 38, 0.15)
+        );
+        border-color: rgba(239, 68, 68, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.2);
+      }
+
+      .danger-description {
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.5;
+        margin-bottom: clamp(1rem, 2vh, 1.5rem);
+      }
+
+      /* Loading Spinner */
+      .loading-spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: rgba(255, 255, 255, 0.9);
+        animation: spin 1s linear infinite;
+        display: inline-block;
+        margin-left: 0.5rem;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Toast Notifications */
+      .toast-container {
+        position: fixed;
+        top: clamp(80px, 12vh, 100px);
+        right: clamp(1rem, 3vw, 2rem);
+        z-index: 1001;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        max-width: clamp(280px, 40vw, 400px);
+      }
+
+      .toast {
+        padding: clamp(0.8rem, 2vh, 1.2rem) clamp(1rem, 2.5vw, 1.5rem);
+        background: rgba(15, 15, 35, 0.95);
+        backdrop-filter: blur(30px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: clamp(12px, 2.4vw, 16px);
+        color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        transform: translateX(100%);
+        opacity: 0;
+        transition: all 0.3s ease;
+        animation: toastSlide 0.3s ease-out forwards;
+        font-size: clamp(0.8rem, 1.9vw, 0.9rem);
+        line-height: 1.4;
+      }
+
+      @keyframes toastSlide {
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      .toast.success {
+        border-color: rgba(16, 185, 129, 0.3);
+        background: linear-gradient(
+          135deg,
+          rgba(15, 15, 35, 0.95) 0%,
+          rgba(16, 185, 129, 0.08) 100%
+        );
+      }
+
+      .toast.error {
+        border-color: rgba(239, 68, 68, 0.3);
+        background: linear-gradient(
+          135deg,
+          rgba(15, 15, 35, 0.95) 0%,
+          rgba(239, 68, 68, 0.08) 100%
+        );
+      }
+
+      /* Mobile Responsive */
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+        }
+
+        .profile-container {
+          gap: clamp(1.2rem, 2.5vh, 1.8rem);
+        }
+
+        .form-actions {
+          flex-direction: column;
+          gap: clamp(0.6rem, 1.5vh, 0.8rem);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .profile-main {
+          padding-left: clamp(0.8rem, 2vw, 1.2rem);
+          padding-right: clamp(0.8rem, 2vw, 1.2rem);
+        }
+
+        .profile-card {
+          padding: clamp(1.2rem, 2.5vh, 1.6rem);
+        }
+      }
+
+      /* Accessibility */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* Focus indicators */
+      .form-input:focus-visible,
+      .form-select:focus-visible,
+      .form-button:focus-visible,
+      .nav-link:focus-visible,
+      .back-link:focus-visible {
+        outline: 2px solid rgba(147, 51, 234, 0.6);
+        outline-offset: 2px;
+      }
+
+      /* Remove default outlines */
+      * {
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Cosmic Background -->
+    <div class="cosmic-background">
+      <div class="cosmic-mirror"></div>
+      <div class="cosmic-mirror"></div>
+      <div class="cosmic-mirror"></div>
+    </div>
+
+    <!-- Floating Particles -->
+    <div class="cosmic-particles">
+      <div class="cosmic-particle"></div>
+      <div class="cosmic-particle"></div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="nav-bar">
+      <div class="nav-left">
+        <a href="/" class="logo">
+          <span class="mirror-logo">🪞</span>
+          <span class="logo-text">Mirror of Truth</span>
+        </a>
+
+        <div class="nav-links">
+          <a href="/dashboard" class="nav-link">
+            <span>🏠</span>
+            <span>Journey</span>
+          </a>
+          <a href="/reflection" class="nav-link">
+            <span>✨</span>
+            <span>Reflect</span>
+          </a>
+          <a href="/profile" class="nav-link active">
+            <span>👤</span>
+            <span>Profile</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="nav-right">
+        <a href="/dashboard" class="back-link">
+          <span>←</span>
+          <span>Back to Journey</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Main Profile Container -->
+    <main class="profile-main">
+      <div class="profile-container">
+        <!-- Header -->
+        <div class="profile-header">
+          <h1 class="profile-title">Your Inner Sanctuary</h1>
+          <p class="profile-subtitle">
+            Configure your consciousness journey settings
+          </p>
+        </div>
+
+        <!-- Personal Information -->
+        <div class="profile-card">
+          <h2 class="card-title">
+            <span class="card-icon">✨</span>
+            Personal Information
+          </h2>
+
+          <form id="personalInfoForm">
+            <div class="form-group">
+              <label for="userName" class="form-label">Display Name</label>
+              <input
+                type="text"
+                id="userName"
+                name="userName"
+                class="form-input"
+                placeholder="How shall we address you?"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="userTimezone" class="form-label">Timezone</label>
+              <select id="userTimezone" name="userTimezone" class="form-select">
+                <option value="">Select your timezone...</option>
+                <option value="America/New_York">Eastern Time (EST/EDT)</option>
+                <option value="America/Chicago">Central Time (CST/CDT)</option>
+                <option value="America/Denver">Mountain Time (MST/MDT)</option>
+                <option value="America/Los_Angeles">
+                  Pacific Time (PST/PDT)
+                </option>
+                <option value="Europe/London">London (GMT/BST)</option>
+                <option value="Europe/Paris">Paris (CET/CEST)</option>
+                <option value="Asia/Tokyo">Tokyo (JST)</option>
+                <option value="Australia/Sydney">Sydney (AEST/AEDT)</option>
+                <option value="UTC">UTC</option>
+              </select>
+            </div>
+
+            <div class="form-actions">
+              <button
+                type="submit"
+                class="form-button primary"
+                id="savePersonalBtn"
+              >
+                <span>Save Changes</span>
+                <span
+                  class="loading-spinner"
+                  id="personalSpinner"
+                  style="display: none"
+                ></span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Change Password -->
+        <div class="profile-card">
+          <h2 class="card-title">
+            <span class="card-icon">🔐</span>
+            Change Password
+          </h2>
+
+          <form id="changePasswordForm">
+            <div class="form-group">
+              <label for="currentPassword" class="form-label"
+                >Current Password</label
+              >
+              <input
+                type="password"
+                id="currentPassword"
+                name="currentPassword"
+                class="form-input"
+                placeholder="Enter your current password"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="newPassword" class="form-label">New Password</label>
+              <input
+                type="password"
+                id="newPassword"
+                name="newPassword"
+                class="form-input"
+                placeholder="Enter your new password"
+                required
+                minlength="6"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="confirmPassword" class="form-label"
+                >Confirm New Password</label
+              >
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                class="form-input"
+                placeholder="Confirm your new password"
+                required
+                minlength="6"
+              />
+            </div>
+
+            <div class="form-actions">
+              <button
+                type="submit"
+                class="form-button primary"
+                id="changePasswordBtn"
+              >
+                <span>Update Password</span>
+                <span
+                  class="loading-spinner"
+                  id="passwordSpinner"
+                  style="display: none"
+                ></span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="profile-card danger-zone">
+          <h2 class="card-title">
+            <span class="card-icon">⚠️</span>
+            Danger Zone
+          </h2>
+
+          <p class="danger-description">
+            This action will permanently delete your account and all associated
+            data. This cannot be undone.
+          </p>
+
+          <form id="deleteAccountForm">
+            <div class="form-group">
+              <label for="deletePassword" class="form-label"
+                >Confirm Password</label
+              >
+              <input
+                type="password"
+                id="deletePassword"
+                name="deletePassword"
+                class="form-input"
+                placeholder="Enter your password to confirm deletion"
+                required
+              />
+            </div>
+
+            <div class="form-actions">
+              <button
+                type="submit"
+                class="form-button danger"
+                id="deleteAccountBtn"
+              >
+                <span>Delete Account</span>
+                <span
+                  class="loading-spinner"
+                  id="deleteSpinner"
+                  style="display: none"
+                ></span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+      // Profile Page Logic - Mystical Configuration Panel
+      let userData = null;
+      let isLoading = false;
+
+      // Initialize on load
+      window.addEventListener("load", initializeProfile);
+
+      async function initializeProfile() {
+        try {
+          await authenticateAndLoadUser();
+          populateProfileForm();
+          setupFormHandlers();
+          console.log("🪞 Profile page initialized");
+        } catch (error) {
+          console.error("Profile initialization failed:", error);
+          handleAuthenticationError();
+        }
+      }
+
+      // Authentication
+      async function authenticateAndLoadUser() {
+        const token = localStorage.getItem("mirror_auth_token");
+
+        if (!token) {
+          throw new Error("No authentication token found");
+        }
+
+        try {
+          const response = await fetch("/api/auth", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ action: "get-user" }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Authentication failed: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          if (!data.success) {
+            throw new Error(data.error || "Failed to get user data");
+          }
+
+          userData = data.user;
+          console.log("✅ User authenticated:", userData.email);
+        } catch (error) {
+          console.error("Authentication error:", error);
+          throw error;
+        }
+      }
+
+      // Populate form with user data
+      function populateProfileForm() {
+        if (!userData) return;
+
+        document.getElementById("userName").value = userData.name || "";
+        document.getElementById("userTimezone").value = userData.timezone || "";
+      }
+
+      // Setup form handlers
+      function setupFormHandlers() {
+        // Personal Information Form
+        document
+          .getElementById("personalInfoForm")
+          .addEventListener("submit", handlePersonalInfoSubmit);
+
+        // Change Password Form
+        document
+          .getElementById("changePasswordForm")
+          .addEventListener("submit", handlePasswordChangeSubmit);
+
+        // Delete Account Form
+        document
+          .getElementById("deleteAccountForm")
+          .addEventListener("submit", handleDeleteAccountSubmit);
+
+        // Real-time password validation
+        document
+          .getElementById("confirmPassword")
+          .addEventListener("input", validatePasswordMatch);
+      }
+
+      // Handle personal info form submission
+      async function handlePersonalInfoSubmit(e) {
+        e.preventDefault();
+
+        if (isLoading) return;
+
+        const formData = new FormData(e.target);
+        const name = formData.get("userName").trim();
+        const timezone = formData.get("userTimezone");
+
+        if (!name) {
+          showToast("Name cannot be empty", "error");
+          return;
+        }
+
+        setLoadingState("personal", true);
+
+        try {
+          const token = localStorage.getItem("mirror_auth_token");
+
+          const response = await fetch("/api/auth", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              action: "update-profile",
+              name: name,
+              timezone: timezone,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            userData.name = name;
+            userData.timezone = timezone;
+
+            // Update localStorage
+            const storedUser = JSON.parse(
+              localStorage.getItem("mirrorVerifiedUser") || "{}"
+            );
+            storedUser.name = name;
+            storedUser.timezone = timezone;
+            localStorage.setItem(
+              "mirrorVerifiedUser",
+              JSON.stringify(storedUser)
+            );
+
+            showToast("Profile updated successfully", "success");
+          } else {
+            throw new Error(data.error || "Failed to update profile");
+          }
+        } catch (error) {
+          console.error("Profile update error:", error);
+          showToast(error.message || "Failed to update profile", "error");
+        } finally {
+          setLoadingState("personal", false);
+        }
+      }
+
+      // Handle password change form submission
+      async function handlePasswordChangeSubmit(e) {
+        e.preventDefault();
+
+        if (isLoading) return;
+
+        const formData = new FormData(e.target);
+        const currentPassword = formData.get("currentPassword");
+        const newPassword = formData.get("newPassword");
+        const confirmPassword = formData.get("confirmPassword");
+
+        // Validation
+        if (!currentPassword || !newPassword || !confirmPassword) {
+          showToast("All password fields are required", "error");
+          return;
+        }
+
+        if (newPassword.length < 6) {
+          showToast("New password must be at least 6 characters", "error");
+          return;
+        }
+
+        if (newPassword !== confirmPassword) {
+          showToast("New passwords do not match", "error");
+          return;
+        }
+
+        if (currentPassword === newPassword) {
+          showToast(
+            "New password must be different from current password",
+            "error"
+          );
+          return;
+        }
+
+        setLoadingState("password", true);
+
+        try {
+          const token = localStorage.getItem("mirror_auth_token");
+
+          const response = await fetch("/api/auth", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              action: "change-password",
+              currentPassword: currentPassword,
+              newPassword: newPassword,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            // Clear form
+            e.target.reset();
+            showToast("Password changed successfully", "success");
+          } else {
+            throw new Error(data.error || "Failed to change password");
+          }
+        } catch (error) {
+          console.error("Password change error:", error);
+          showToast(error.message || "Failed to change password", "error");
+        } finally {
+          setLoadingState("password", false);
+        }
+      }
+
+      // Handle delete account form submission
+      async function handleDeleteAccountSubmit(e) {
+        e.preventDefault();
+
+        if (isLoading) return;
+
+        const formData = new FormData(e.target);
+        const password = formData.get("deletePassword");
+
+        if (!password) {
+          showToast("Password confirmation is required", "error");
+          return;
+        }
+
+        // Double confirmation
+        const confirmed = confirm(
+          "Are you absolutely sure you want to delete your account? This action cannot be undone."
+        );
+
+        if (!confirmed) return;
+
+        const finalConfirm = confirm(
+          "This will permanently delete all your reflections and data. Type 'DELETE' to confirm."
+        );
+
+        if (!finalConfirm) return;
+
+        setLoadingState("delete", true);
+
+        try {
+          const token = localStorage.getItem("mirror_auth_token");
+
+          const response = await fetch("/api/auth", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              action: "delete-account",
+              password: password,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showToast("Account deleted successfully", "success");
+
+            // Clear storage and redirect after delay
+            setTimeout(() => {
+              localStorage.removeItem("mirror_auth_token");
+              localStorage.removeItem("mirrorVerifiedUser");
+              window.location.href = "/";
+            }, 2000);
+          } else {
+            throw new Error(data.error || "Failed to delete account");
+          }
+        } catch (error) {
+          console.error("Account deletion error:", error);
+          showToast(error.message || "Failed to delete account", "error");
+        } finally {
+          setLoadingState("delete", false);
+        }
+      }
+
+      // Real-time password validation
+      function validatePasswordMatch() {
+        const newPassword = document.getElementById("newPassword").value;
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+        const confirmInput = document.getElementById("confirmPassword");
+
+        if (newPassword && confirmPassword) {
+          if (newPassword === confirmPassword) {
+            confirmInput.style.borderColor = "rgba(16, 185, 129, 0.5)";
+          } else {
+            confirmInput.style.borderColor = "rgba(239, 68, 68, 0.5)";
+          }
+        } else {
+          confirmInput.style.borderColor = "rgba(255, 255, 255, 0.15)";
+        }
+      }
+
+      // Loading states
+      function setLoadingState(type, loading) {
+        isLoading = loading;
+
+        const buttons = {
+          personal: document.getElementById("savePersonalBtn"),
+          password: document.getElementById("changePasswordBtn"),
+          delete: document.getElementById("deleteAccountBtn"),
+        };
+
+        const spinners = {
+          personal: document.getElementById("personalSpinner"),
+          password: document.getElementById("passwordSpinner"),
+          delete: document.getElementById("deleteSpinner"),
+        };
+
+        const button = buttons[type];
+        const spinner = spinners[type];
+
+        if (button && spinner) {
+          button.disabled = loading;
+          spinner.style.display = loading ? "inline-block" : "none";
+        }
+      }
+
+      // Authentication error handler
+      function handleAuthenticationError() {
+        showToast("Authentication failed. Please sign in again.", "error");
+
+        setTimeout(() => {
+          localStorage.removeItem("mirror_auth_token");
+          localStorage.removeItem("mirrorVerifiedUser");
+          window.location.href = "/auth/signin";
+        }, 2000);
+      }
+
+      // Toast notifications
+      function showToast(message, type = "info", duration = 5000) {
+        const container = document.getElementById("toastContainer");
+
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+
+        container.appendChild(toast);
+
+        // Remove toast after duration
+        setTimeout(() => {
+          toast.style.transform = "translateX(100%)";
+          toast.style.opacity = "0";
+
+          setTimeout(() => {
+            if (container.contains(toast)) {
+              container.removeChild(toast);
+            }
+          }, 300);
+        }, duration);
+      }
+
+      // Debug (Development Only)
+      if (window.location.hostname === "localhost") {
+        console.log("🪞 Profile Page - Mystical Configuration Panel");
+        window.profileDebug = {
+          userData: () => userData,
+          testToast: (message, type) => showToast(message, type),
+        };
+      }
+    </script>
+  </body>
+</html>
