@@ -17,11 +17,15 @@ module.exports = async function handler(req, res) {
     return res.status(200).end();
   }
 
+  console.log(`🔍 Payment API called: ${req.method} ${req.url}`);
+  console.log(`🔍 Headers:`, req.headers);
+
   try {
     // Check if this is a Stripe webhook (has signature header)
     const sig = req.headers["stripe-signature"];
 
     if (sig && req.method === "POST") {
+      console.log("🪝 Detected Stripe webhook - routing to webhook handler");
       // This is a Stripe webhook
       return await handleStripeWebhook(req, res);
     }
@@ -29,6 +33,7 @@ module.exports = async function handler(req, res) {
     // Regular API calls
     if (req.method === "GET") {
       const { action } = req.query;
+      console.log(`📝 GET request with action: ${action}`);
       if (action === "config" || !action) {
         return await handleGetConfig(req, res);
       } else {
@@ -41,10 +46,12 @@ module.exports = async function handler(req, res) {
 
     if (req.method === "POST") {
       const { action } = req.body;
+      console.log(`📝 POST request with action: ${action}`);
 
       if (action === "create-checkout-session") {
         return await handleCreateCheckoutSession(req, res);
       } else {
+        console.log(`❌ Unknown POST action: ${action}`);
         return res.status(400).json({
           success: false,
           error: "Invalid action",
@@ -57,7 +64,7 @@ module.exports = async function handler(req, res) {
       error: "Method not allowed",
     });
   } catch (error) {
-    console.error("Payment API Error:", error);
+    console.error("❌ Payment API Error:", error);
     return res.status(500).json({
       success: false,
       error: "Payment service error",
@@ -225,49 +232,77 @@ async function handleCreateCheckoutSession(req, res) {
 
 // Stripe webhook handler for subscription events
 async function handleStripeWebhook(req, res) {
+  console.log("🪝 Webhook received - Headers:", req.headers);
+  console.log("🪝 Request method:", req.method);
+  console.log("🪝 Request URL:", req.url);
+
   const sig = req.headers["stripe-signature"];
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  console.log("🪝 Signature present:", !!sig);
+  console.log("🪝 Webhook secret configured:", !!webhookSecret);
+
+  if (!sig) {
+    console.error("❌ No Stripe signature found in headers");
+    return res.status(400).json({ error: "No signature" });
+  }
+
+  if (!webhookSecret) {
+    console.error("❌ STRIPE_WEBHOOK_SECRET not configured");
+    return res.status(500).json({ error: "Webhook secret not configured" });
+  }
 
   let event;
 
   try {
     // Verify webhook signature
     event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+    console.log("✅ Webhook signature verified successfully");
   } catch (err) {
-    console.error("Webhook signature verification failed:", err.message);
+    console.error("❌ Webhook signature verification failed:", err.message);
+    console.error("❌ Signature:", sig);
+    console.error("❌ Body length:", req.body?.length || 0);
     return res.status(400).json({ error: "Invalid signature" });
   }
 
   console.log(`📦 Stripe webhook received: ${event.type}`);
+  console.log(`📦 Event ID: ${event.id}`);
 
   try {
     // Handle different webhook events
     switch (event.type) {
       case "checkout.session.completed":
+        console.log("🎉 Processing checkout.session.completed");
         await handleCheckoutSessionCompleted(event);
         break;
       case "customer.subscription.created":
+        console.log("✅ Processing customer.subscription.created");
         await handleSubscriptionCreated(event);
         break;
       case "customer.subscription.updated":
+        console.log("🔄 Processing customer.subscription.updated");
         await handleSubscriptionUpdated(event);
         break;
       case "customer.subscription.deleted":
+        console.log("❌ Processing customer.subscription.deleted");
         await handleSubscriptionDeleted(event);
         break;
       case "invoice.payment_succeeded":
+        console.log("💰 Processing invoice.payment_succeeded");
         await handlePaymentSucceeded(event);
         break;
       case "invoice.payment_failed":
+        console.log("💸 Processing invoice.payment_failed");
         await handlePaymentFailed(event);
         break;
       default:
-        console.log(`Unhandled Stripe event: ${event.type}`);
+        console.log(`⚠️ Unhandled Stripe event: ${event.type}`);
     }
 
+    console.log("✅ Webhook processed successfully");
     return res.status(200).json({ received: true });
   } catch (error) {
-    console.error("Stripe webhook error:", error);
+    console.error("❌ Stripe webhook error:", error);
     return res.status(500).json({ error: "Webhook processing failed" });
   }
 }
@@ -681,9 +716,11 @@ function getPriceId(tier, period) {
 }
 
 function getBaseUrl() {
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
+  // Always use your custom domain in production
+  if (process.env.NODE_ENV === "production") {
+    return "https://mirror-of-truth.xyz";
   }
+  // For development
   if (process.env.DOMAIN) {
     return process.env.DOMAIN;
   }
