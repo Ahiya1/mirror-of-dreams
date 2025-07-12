@@ -9,10 +9,9 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <title>Your Sacred Journey | Mirror of Truth</title>
-    <link rel="stylesheet" href="/shared/foundation.css" />
 
     <style>
-      /* Dashboard - Sacred Journey Command Center */
+      /* Mesmerizing Dashboard - Perfect Contained Experience */
       * {
         margin: 0;
         padding: 0;
@@ -21,6 +20,8 @@
 
       html,
       body {
+        height: 100vh;
+        overflow: hidden;
         background: linear-gradient(
           135deg,
           #0f0f23 0%,
@@ -30,15 +31,14 @@
         );
         color: #fff;
         font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
-        min-height: 100vh;
-        overflow-x: hidden;
-        -webkit-text-size-adjust: 100%;
-        -ms-text-size-adjust: 100%;
-        touch-action: manipulation;
+        position: fixed;
+        width: 100vw;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
 
-      /* Cosmic Background Animation */
-      .cosmic-background {
+      /* Cosmic Mirror Shards - Enhanced Animation */
+      .cosmic-mirrors {
         position: fixed;
         inset: 0;
         pointer-events: none;
@@ -46,215 +46,301 @@
         overflow: hidden;
       }
 
-      .cosmic-breath {
+      .cosmic-mirror {
         position: absolute;
-        border-radius: 50%;
-        background: radial-gradient(
-          circle,
-          rgba(255, 255, 255, 0.04) 0%,
-          rgba(255, 255, 255, 0.015) 40%,
-          rgba(255, 255, 255, 0.008) 70%,
-          transparent 100%
-        );
-        animation: cosmicBreathe 18s ease-in-out infinite;
-        opacity: 0;
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(255, 255, 255, 0.05);
+        animation: cosmicFloat 20s ease-in-out infinite;
+        transition: all 0.4s ease;
       }
 
-      .cosmic-breath:nth-child(1) {
-        width: clamp(200px, 40vw, 300px);
-        height: clamp(200px, 40vw, 300px);
-        left: 15%;
-        top: 10%;
+      .cosmic-mirror:nth-child(1) {
+        width: clamp(20px, 3vw, 35px);
+        height: clamp(20px, 3vw, 35px);
+        top: 8%;
+        left: 12%;
+        clip-path: polygon(30% 0%, 85% 15%, 100% 70%, 45% 100%, 0% 65%);
         animation-delay: 0s;
-        animation-duration: 20s;
-      }
-
-      .cosmic-breath:nth-child(2) {
-        width: clamp(150px, 30vw, 200px);
-        height: clamp(150px, 30vw, 200px);
-        right: 20%;
-        top: 60%;
-        animation-delay: 5s;
-        animation-duration: 16s;
-      }
-
-      .cosmic-breath:nth-child(3) {
-        width: clamp(100px, 25vw, 150px);
-        height: clamp(100px, 25vw, 150px);
-        left: 60%;
-        top: 30%;
-        animation-delay: 10s;
         animation-duration: 22s;
       }
 
-      .cosmic-breath:nth-child(4) {
-        width: clamp(180px, 35vw, 250px);
-        height: clamp(180px, 35vw, 250px);
-        left: 30%;
-        bottom: 20%;
-        animation-delay: 15s;
+      .cosmic-mirror:nth-child(2) {
+        width: clamp(15px, 2.5vw, 28px);
+        height: clamp(15px, 2.5vw, 28px);
+        top: 15%;
+        right: 18%;
+        clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+        animation-delay: 3s;
         animation-duration: 18s;
       }
 
-      @keyframes cosmicBreathe {
-        0% {
-          opacity: 0;
-          transform: scale(0.8);
+      .cosmic-mirror:nth-child(3) {
+        width: clamp(25px, 4vw, 40px);
+        height: clamp(25px, 4vw, 40px);
+        top: 35%;
+        left: 8%;
+        clip-path: polygon(25% 0%, 100% 25%, 75% 100%, 0% 75%);
+        animation-delay: 6s;
+        animation-duration: 25s;
+      }
+
+      .cosmic-mirror:nth-child(4) {
+        width: clamp(18px, 3.2vw, 32px);
+        height: clamp(18px, 3.2vw, 32px);
+        top: 55%;
+        right: 12%;
+        clip-path: polygon(20% 0%, 80% 20%, 100% 80%, 20% 100%, 0% 80%);
+        animation-delay: 9s;
+        animation-duration: 20s;
+      }
+
+      .cosmic-mirror:nth-child(5) {
+        width: clamp(22px, 3.5vw, 38px);
+        height: clamp(22px, 3.5vw, 38px);
+        bottom: 20%;
+        left: 25%;
+        clip-path: polygon(40% 0%, 85% 25%, 100% 75%, 60% 100%, 0% 50%);
+        animation-delay: 12s;
+        animation-duration: 24s;
+      }
+
+      .cosmic-mirror:nth-child(6) {
+        width: clamp(16px, 2.8vw, 30px);
+        height: clamp(16px, 2.8vw, 30px);
+        bottom: 12%;
+        right: 35%;
+        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        animation-delay: 15s;
+        animation-duration: 19s;
+      }
+
+      @keyframes cosmicFloat {
+        0%,
+        100% {
+          transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+          opacity: 0.3;
         }
         25% {
-          opacity: 0.3;
-          transform: scale(1);
+          transform: translateY(-15px) translateX(8px) rotate(90deg) scale(1.1);
+          opacity: 0.6;
         }
         50% {
-          opacity: 0.5;
-          transform: scale(1.2);
+          transform: translateY(-8px) translateX(-12px) rotate(180deg)
+            scale(0.9);
+          opacity: 0.8;
         }
         75% {
-          opacity: 0.2;
-          transform: scale(1.4);
-        }
-        100% {
-          opacity: 0;
-          transform: scale(1.8);
+          transform: translateY(-20px) translateX(5px) rotate(270deg)
+            scale(1.05);
+          opacity: 0.5;
         }
       }
 
-      /* Navigation */
-      .dashboard-nav {
+      /* Enhanced shimmer effect */
+      .cosmic-mirror::after {
+        content: "";
+        position: absolute;
+        inset: -20%;
+        background: linear-gradient(
+          45deg,
+          rgba(147, 51, 234, 0.2) 0%,
+          transparent 30%,
+          rgba(59, 130, 246, 0.15) 60%,
+          transparent 100%
+        );
+        animation: cosmicShimmer 12s linear infinite;
+        mix-blend-mode: overlay;
+        border-radius: inherit;
+      }
+
+      @keyframes cosmicShimmer {
+        0% {
+          transform: translateX(-100%) translateY(-100%) rotate(-45deg);
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateX(200%) translateY(200%) rotate(-45deg);
+          opacity: 0;
+        }
+      }
+
+      /* Floating Particles for Extra Magic */
+      .cosmic-particles {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      .cosmic-particle {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: 50%;
+        animation: particleFloat 15s linear infinite;
+      }
+
+      .cosmic-particle:nth-child(1) {
+        left: 15%;
+        animation-delay: 0s;
+        background: rgba(147, 51, 234, 0.3);
+      }
+
+      .cosmic-particle:nth-child(2) {
+        left: 45%;
+        animation-delay: 5s;
+        background: rgba(59, 130, 246, 0.3);
+      }
+
+      .cosmic-particle:nth-child(3) {
+        left: 75%;
+        animation-delay: 10s;
+        background: rgba(16, 185, 129, 0.3);
+      }
+
+      @keyframes particleFloat {
+        0% {
+          transform: translateY(100vh) scale(0);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 0.6;
+        }
+        100% {
+          transform: translateY(-10vh) scale(1);
+          opacity: 0;
+        }
+      }
+
+      /* Navigation Bar - Ultra Compact */
+      .nav-bar {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         z-index: 100;
-        background: rgba(15, 15, 35, 0.9);
-        backdrop-filter: blur(25px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 0;
-      }
-
-      .nav-container {
-        max-width: 1400px;
-        margin: 0 auto;
+        height: clamp(60px, 8vh, 80px);
+        background: rgba(15, 15, 35, 0.8);
+        backdrop-filter: blur(30px) saturate(120%);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 1rem 2rem;
-        gap: 1rem;
+        padding: 0 clamp(1rem, 3vw, 2rem);
       }
 
       .nav-left {
         display: flex;
         align-items: center;
-        flex-shrink: 0;
+        gap: clamp(0.8rem, 2vw, 1.2rem);
       }
 
-      .logo-link {
+      .logo {
         display: flex;
         align-items: center;
-        gap: 0.8rem;
+        gap: 0.6rem;
         text-decoration: none;
         color: rgba(255, 255, 255, 0.95);
-        font-weight: 500;
-        font-size: clamp(1rem, 2.5vw, 1.1rem);
+        font-weight: 400;
+        font-size: clamp(0.9rem, 2.2vw, 1.1rem);
         transition: all 0.3s ease;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
       }
 
-      .mirror-symbol {
-        font-size: clamp(1.5rem, 4vw, 1.8rem);
-        animation: gentleGlow 4s ease-in-out infinite;
+      .logo:hover {
+        color: rgba(255, 255, 255, 1);
+        transform: translateY(-1px);
       }
 
-      @keyframes gentleGlow {
+      .mirror-logo {
+        font-size: clamp(1.2rem, 3vw, 1.6rem);
+        animation: logoGlow 4s ease-in-out infinite;
+      }
+
+      @keyframes logoGlow {
         0%,
         100% {
-          opacity: 0.8;
+          filter: drop-shadow(0 0 8px rgba(147, 51, 234, 0.3));
           transform: scale(1);
         }
         50% {
-          opacity: 1;
+          filter: drop-shadow(0 0 12px rgba(147, 51, 234, 0.5));
           transform: scale(1.05);
         }
       }
 
-      .logo-text {
-        font-weight: 300;
-        letter-spacing: 0.5px;
-      }
-
-      .nav-center {
+      .nav-links {
         display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        flex: 1;
-        justify-content: center;
+        gap: clamp(0.4rem, 1vw, 0.6rem);
       }
 
       .nav-link {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.8rem 1.2rem;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 50px;
+        gap: 0.4rem;
+        padding: clamp(0.4rem, 1vh, 0.6rem) clamp(0.8rem, 2vw, 1rem);
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
         color: rgba(255, 255, 255, 0.7);
         text-decoration: none;
-        font-size: clamp(0.8rem, 2vw, 0.9rem);
-        font-weight: 400;
+        font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+        font-weight: 300;
         transition: all 0.3s ease;
         white-space: nowrap;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-        min-height: 44px;
       }
 
       .nav-link:hover,
       .nav-link.active {
-        background: rgba(255, 255, 255, 0.12);
-        border-color: rgba(255, 255, 255, 0.2);
-        color: rgba(255, 255, 255, 0.95);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.9);
         transform: translateY(-1px);
-      }
-
-      .nav-link:active {
-        transform: scale(0.98);
-        transition: transform 0.1s ease;
       }
 
       .nav-right {
         display: flex;
         align-items: center;
-        gap: 1rem;
-        flex-shrink: 0;
+        gap: clamp(0.6rem, 1.5vw, 1rem);
       }
 
       .upgrade-btn {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.8rem 1.2rem;
-        background: linear-gradient(135deg, #f59e0b, #d97706);
-        border: none;
-        border-radius: 50px;
-        color: white;
-        font-size: clamp(0.8rem, 2vw, 0.9rem);
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.3s ease;
+        gap: 0.4rem;
+        padding: clamp(0.4rem, 1vh, 0.6rem) clamp(0.8rem, 2vw, 1rem);
+        background: linear-gradient(
+          135deg,
+          rgba(245, 158, 11, 0.15),
+          rgba(217, 119, 6, 0.1)
+        );
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        border-radius: 20px;
+        color: rgba(251, 191, 36, 0.9);
         text-decoration: none;
+        font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+        font-weight: 400;
+        transition: all 0.3s ease;
         white-space: nowrap;
-        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-        min-height: 44px;
       }
 
       .upgrade-btn:hover {
-        background: linear-gradient(135deg, #d97706, #b45309);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        background: linear-gradient(
+          135deg,
+          rgba(245, 158, 11, 0.2),
+          rgba(217, 119, 6, 0.15)
+        );
+        border-color: rgba(245, 158, 11, 0.4);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
       }
 
       /* User Menu */
@@ -262,42 +348,35 @@
         position: relative;
       }
 
-      .user-button {
+      .user-btn {
         display: flex;
         align-items: center;
-        gap: 0.8rem;
-        padding: 0.8rem 1.2rem;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 50px;
+        gap: clamp(0.4rem, 1vw, 0.6rem);
+        padding: clamp(0.4rem, 1vh, 0.6rem) clamp(0.8rem, 2vw, 1rem);
+        background: rgba(16, 185, 129, 0.08);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        border-radius: 20px;
         color: rgba(255, 255, 255, 0.9);
         cursor: pointer;
-        font-size: clamp(0.8rem, 2vw, 0.9rem);
+        font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+        font-weight: 300;
         transition: all 0.3s ease;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-        min-height: 44px;
+        white-space: nowrap;
+        background: none;
       }
 
-      .user-button:hover {
-        background: rgba(255, 255, 255, 0.12);
-        border-color: rgba(255, 255, 255, 0.25);
+      .user-btn:hover {
+        background: rgba(16, 185, 129, 0.12);
+        border-color: rgba(16, 185, 129, 0.3);
+        transform: translateY(-1px);
       }
 
       .user-avatar {
-        font-size: 1.2rem;
-      }
-
-      .user-name {
-        font-weight: 400;
-        max-width: 120px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        font-size: clamp(0.9rem, 2.2vw, 1.1rem);
       }
 
       .dropdown-arrow {
-        font-size: 0.7rem;
+        font-size: clamp(0.5rem, 1.2vw, 0.7rem);
         opacity: 0.7;
         transition: transform 0.3s ease;
       }
@@ -310,12 +389,13 @@
         position: absolute;
         top: calc(100% + 0.5rem);
         right: 0;
-        min-width: 280px;
+        min-width: 200px;
         background: rgba(15, 15, 35, 0.95);
         backdrop-filter: blur(30px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 16px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        padding: 0.5rem;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         opacity: 0;
         visibility: hidden;
         transform: translateY(-10px);
@@ -329,147 +409,129 @@
         transform: translateY(0);
       }
 
-      .dropdown-header {
-        padding: 1.5rem 1.2rem 1rem;
-      }
-
-      .user-info {
-        text-align: center;
-      }
-
-      .user-display-name {
-        font-size: 1.1rem;
-        font-weight: 500;
-        color: rgba(255, 255, 255, 0.95);
-        margin-bottom: 0.5rem;
-      }
-
-      .user-tier-badge {
-        font-size: 0.8rem;
-        padding: 0.3rem 0.8rem;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 50px;
-        color: rgba(255, 255, 255, 0.8);
-        display: inline-block;
-      }
-
-      .user-tier-badge.essential {
-        background: rgba(16, 185, 129, 0.2);
-        color: #6ee7b7;
-      }
-
-      .user-tier-badge.premium {
-        background: rgba(245, 158, 11, 0.2);
-        color: #fbbf24;
-      }
-
-      .user-tier-badge.creator {
-        background: linear-gradient(
-          135deg,
-          rgba(147, 51, 234, 0.3),
-          rgba(99, 102, 241, 0.2)
-        );
-        color: #c4b5fd;
-      }
-
-      .dropdown-divider {
-        height: 1px;
-        background: rgba(255, 255, 255, 0.1);
-        margin: 0.5rem 0;
-      }
-
       .dropdown-item {
         display: flex;
         align-items: center;
-        gap: 0.8rem;
-        padding: 0.8rem 1.2rem;
+        gap: 0.6rem;
+        padding: 0.6rem 0.8rem;
         color: rgba(255, 255, 255, 0.8);
         text-decoration: none;
-        font-size: 0.9rem;
+        border-radius: 8px;
         transition: all 0.3s ease;
+        font-size: 0.8rem;
+        cursor: pointer;
         border: none;
         background: none;
-        cursor: pointer;
         width: 100%;
         text-align: left;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-        min-height: 44px;
       }
 
       .dropdown-item:hover {
-        background: rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.06);
         color: rgba(255, 255, 255, 0.95);
       }
 
-      /* Main Dashboard */
+      /* Main Dashboard - Perfect Fit */
       .dashboard-main {
         position: relative;
         z-index: 10;
-        min-height: 100vh;
-        padding-top: 80px;
+        height: 100vh;
+        padding-top: clamp(60px, 8vh, 80px);
+        display: flex;
+        flex-direction: column;
       }
 
       .dashboard-container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 2rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: clamp(0.8rem, 2vh, 1.5rem) clamp(1rem, 3vw, 2rem);
+        gap: clamp(0.8rem, 2vh, 1.2rem);
+        overflow: hidden;
       }
 
-      /* Welcome Section */
+      /* Welcome Section - Compact but Impactful */
       .welcome-section {
+        flex-shrink: 0;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 3rem;
-        padding: 2rem;
+        padding: clamp(1rem, 2.5vh, 1.8rem) clamp(1.2rem, 3vw, 2rem);
         background: linear-gradient(
           135deg,
-          rgba(255, 255, 255, 0.05) 0%,
+          rgba(255, 255, 255, 0.06) 0%,
+          rgba(147, 51, 234, 0.03) 50%,
           rgba(255, 255, 255, 0.02) 100%
         );
-        backdrop-filter: blur(30px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 24px;
+        backdrop-filter: blur(40px) saturate(120%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: clamp(16px, 3vw, 24px);
         position: relative;
         overflow: hidden;
-        animation: fadeInUp 1s ease-out;
+        animation: welcomeGlow 1s ease-out;
       }
 
-      @keyframes fadeInUp {
+      @keyframes welcomeGlow {
         from {
           opacity: 0;
-          transform: translateY(30px);
+          transform: translateY(20px) scale(0.98);
         }
         to {
           opacity: 1;
-          transform: translateY(0);
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .welcome-section::before {
+        content: "";
+        position: absolute;
+        inset: 1px;
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.04) 0%,
+          transparent 50%,
+          rgba(59, 130, 246, 0.02) 100%
+        );
+        border-radius: clamp(15px, 3vw, 23px);
+        pointer-events: none;
+        animation: welcomeShimmer 8s ease-in-out infinite;
+      }
+
+      @keyframes welcomeShimmer {
+        0%,
+        100% {
+          opacity: 0.3;
+        }
+        50% {
+          opacity: 0.7;
         }
       }
 
       .welcome-content {
         flex: 1;
+        position: relative;
+        z-index: 2;
       }
 
       .welcome-title {
-        font-size: clamp(1.8rem, 5vw, 2.5rem);
+        font-size: clamp(1.4rem, 3.5vw, 2rem);
         font-weight: 300;
-        margin-bottom: 0.5rem;
-        line-height: 1.3;
+        margin-bottom: clamp(0.3rem, 0.8vh, 0.5rem);
+        line-height: 1.2;
       }
 
       .greeting {
         color: rgba(255, 255, 255, 0.7);
         display: block;
-        font-size: clamp(1rem, 3vw, 1.2rem);
-        margin-bottom: 0.3rem;
+        font-size: clamp(0.8rem, 2vw, 1rem);
+        margin-bottom: 0.2rem;
       }
 
       .user-name-display {
         background: linear-gradient(
           135deg,
           rgba(255, 255, 255, 0.95) 0%,
-          rgba(255, 255, 255, 0.8) 100%
+          rgba(147, 51, 234, 0.8) 100%
         );
         -webkit-background-clip: text;
         background-clip: text;
@@ -478,112 +540,142 @@
       }
 
       .welcome-subtitle {
-        font-size: clamp(0.9rem, 2.5vw, 1rem);
+        font-size: clamp(0.75rem, 1.8vw, 0.9rem);
         color: rgba(255, 255, 255, 0.6);
         margin: 0;
         font-weight: 300;
-        line-height: 1.5;
+        line-height: 1.4;
       }
 
       .quick-actions {
         display: flex;
-        gap: 1rem;
+        gap: clamp(0.6rem, 1.5vw, 0.8rem);
         flex-shrink: 0;
+        position: relative;
+        z-index: 2;
       }
 
       .action-btn {
         display: flex;
         align-items: center;
-        gap: 0.8rem;
-        padding: 1rem 1.5rem;
+        gap: clamp(0.4rem, 1vw, 0.6rem);
+        padding: clamp(0.6rem, 1.5vh, 0.9rem) clamp(1rem, 2.5vw, 1.4rem);
         border: none;
-        border-radius: 16px;
-        font-size: clamp(0.9rem, 2.5vw, 1rem);
-        font-weight: 500;
+        border-radius: clamp(10px, 2vw, 14px);
+        font-size: clamp(0.75rem, 1.8vw, 0.9rem);
+        font-weight: 400;
         cursor: pointer;
         transition: all 0.3s ease;
         text-decoration: none;
         white-space: nowrap;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-        min-height: 48px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .action-btn::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+      }
+
+      .action-btn:hover::before {
+        transform: translateX(100%);
       }
 
       .action-btn.primary {
         background: linear-gradient(
           135deg,
-          rgba(255, 255, 255, 0.15),
-          rgba(255, 255, 255, 0.08)
+          rgba(147, 51, 234, 0.2),
+          rgba(99, 102, 241, 0.15)
         );
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #fff;
-      }
-
-      .action-btn.secondary {
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        color: rgba(255, 255, 255, 0.8);
-      }
-
-      .action-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(147, 51, 234, 0.3);
+        color: rgba(196, 181, 253, 0.9);
       }
 
       .action-btn.primary:hover {
         background: linear-gradient(
           135deg,
-          rgba(255, 255, 255, 0.2),
-          rgba(255, 255, 255, 0.12)
+          rgba(147, 51, 234, 0.3),
+          rgba(99, 102, 241, 0.2)
         );
-        border-color: rgba(255, 255, 255, 0.3);
+        border-color: rgba(147, 51, 234, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(147, 51, 234, 0.2);
       }
 
-      .action-btn:active {
-        transform: scale(0.98);
-        transition: transform 0.1s ease;
+      .action-btn.secondary {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.08),
+          rgba(255, 255, 255, 0.04)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: rgba(255, 255, 255, 0.8);
       }
 
-      /* Dashboard Grid */
+      .action-btn.secondary:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.12),
+          rgba(255, 255, 255, 0.06)
+        );
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+      }
+
+      /* Dashboard Grid - 2x2 Compact Layout */
       .dashboard-grid {
+        flex: 1;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: clamp(0.8rem, 2vh, 1.2rem);
+        min-height: 0;
       }
 
-      /* Dashboard Cards */
+      /* Dashboard Cards - Compact but Premium */
       .dashboard-card {
         background: linear-gradient(
           135deg,
-          rgba(255, 255, 255, 0.06) 0%,
+          rgba(255, 255, 255, 0.05) 0%,
           rgba(255, 255, 255, 0.02) 100%
         );
-        backdrop-filter: blur(40px);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 20px;
-        padding: 1.5rem;
+        backdrop-filter: blur(40px) saturate(120%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: clamp(14px, 2.8vw, 20px);
+        padding: clamp(1rem, 2.5vh, 1.4rem);
         position: relative;
         overflow: hidden;
         transition: all 0.4s ease;
-        animation: cardAppear 0.8s ease-out forwards;
-        animation-delay: var(--delay, 0s);
+        animation: cardFloat 0.8s ease-out;
+        animation-fill-mode: backwards;
+        display: flex;
+        flex-direction: column;
       }
 
       .dashboard-card:nth-child(1) {
-        --delay: 0.1s;
+        animation-delay: 0.1s;
       }
       .dashboard-card:nth-child(2) {
-        --delay: 0.2s;
+        animation-delay: 0.2s;
       }
       .dashboard-card:nth-child(3) {
-        --delay: 0.3s;
+        animation-delay: 0.3s;
       }
       .dashboard-card:nth-child(4) {
-        --delay: 0.4s;
+        animation-delay: 0.4s;
       }
 
-      @keyframes cardAppear {
+      @keyframes cardFloat {
         from {
           opacity: 0;
           transform: translateY(30px) scale(0.95);
@@ -600,10 +692,10 @@
         inset: 1px;
         background: linear-gradient(
           135deg,
-          rgba(255, 255, 255, 0.08) 0%,
-          rgba(255, 255, 255, 0.02) 100%
+          rgba(255, 255, 255, 0.06) 0%,
+          rgba(255, 255, 255, 0.01) 100%
         );
-        border-radius: 19px;
+        border-radius: clamp(13px, 2.8vw, 19px);
         pointer-events: none;
         opacity: 0;
         transition: opacity 0.3s ease;
@@ -614,69 +706,85 @@
       }
 
       .dashboard-card:hover {
-        border-color: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.15);
         transform: translateY(-3px);
-        box-shadow: 0 15px 40px rgba(255, 255, 255, 0.05);
+        box-shadow: 0 15px 40px rgba(255, 255, 255, 0.06);
       }
 
       .card-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 1.5rem;
+        margin-bottom: clamp(0.8rem, 2vh, 1.2rem);
         position: relative;
         z-index: 2;
+        flex-shrink: 0;
       }
 
       .card-title {
         display: flex;
         align-items: center;
-        gap: 0.8rem;
-        font-size: clamp(1.1rem, 3vw, 1.3rem);
-        font-weight: 500;
+        gap: clamp(0.4rem, 1vw, 0.6rem);
+        font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+        font-weight: 400;
         color: rgba(255, 255, 255, 0.95);
         margin: 0;
       }
 
       .card-icon {
-        font-size: 1.5rem;
+        font-size: clamp(1rem, 2.5vw, 1.3rem);
         opacity: 0.9;
+        animation: iconGlow 3s ease-in-out infinite;
+      }
+
+      @keyframes iconGlow {
+        0%,
+        100% {
+          filter: drop-shadow(0 0 4px rgba(147, 51, 234, 0.3));
+        }
+        50% {
+          filter: drop-shadow(0 0 8px rgba(147, 51, 234, 0.5));
+        }
       }
 
       .header-action {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 20px;
+        gap: 0.3rem;
+        padding: clamp(0.3rem, 0.8vh, 0.5rem) clamp(0.6rem, 1.5vw, 0.8rem);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
         color: rgba(255, 255, 255, 0.7);
-        font-size: 0.85rem;
+        font-size: clamp(0.7rem, 1.7vw, 0.8rem);
         cursor: pointer;
         transition: all 0.3s ease;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-        min-height: 36px;
         text-decoration: none;
       }
 
       .header-action:hover {
-        background: rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.08);
         color: rgba(255, 255, 255, 0.9);
+        transform: translateY(-1px);
       }
 
       .card-content {
         position: relative;
         z-index: 2;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
       }
 
-      /* Usage Card */
+      /* Usage Card - Compact Circular Progress */
       .usage-display {
         display: flex;
         align-items: center;
-        gap: 2rem;
-        margin-bottom: 1.5rem;
+        gap: clamp(1rem, 2.5vw, 1.5rem);
+        margin-bottom: clamp(0.8rem, 2vh, 1rem);
+        flex: 1;
+        min-height: 0;
       }
 
       .usage-chart {
@@ -684,15 +792,15 @@
       }
 
       .progress-circle {
-        width: 100px;
-        height: 100px;
+        width: clamp(70px, 15vw, 90px);
+        height: clamp(70px, 15vw, 90px);
         border-radius: 50%;
         background: conic-gradient(
           from 0deg,
-          rgba(16, 185, 129, 0.8) 0%,
-          rgba(16, 185, 129, 0.8) var(--progress, 0%),
-          rgba(255, 255, 255, 0.1) var(--progress, 0%),
-          rgba(255, 255, 255, 0.1) 100%
+          rgba(147, 51, 234, 0.8) 0%,
+          rgba(147, 51, 234, 0.8) var(--progress, 0%),
+          rgba(255, 255, 255, 0.08) var(--progress, 0%),
+          rgba(255, 255, 255, 0.08) 100%
         );
         display: flex;
         align-items: center;
@@ -712,8 +820,8 @@
 
       .progress-circle::before {
         content: "";
-        width: 75px;
-        height: 75px;
+        width: clamp(55px, 12vw, 70px);
+        height: clamp(55px, 12vw, 70px);
         border-radius: 50%;
         background: linear-gradient(
           135deg,
@@ -724,7 +832,7 @@
       }
 
       .progress-value {
-        font-size: 1.2rem;
+        font-size: clamp(0.9rem, 2.2vw, 1.1rem);
         font-weight: 600;
         color: rgba(255, 255, 255, 0.9);
         position: relative;
@@ -732,76 +840,72 @@
       }
 
       .usage-stats {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: clamp(0.4rem, 1vh, 0.6rem);
+        min-width: 0;
+      }
+
+      .stat-row {
         display: flex;
         align-items: center;
-        gap: 1rem;
-        flex: 1;
-      }
-
-      .stat-item {
-        text-align: center;
-      }
-
-      .stat-value {
-        font-size: clamp(1.5rem, 4vw, 2rem);
-        font-weight: 600;
-        color: rgba(255, 255, 255, 0.95);
-        line-height: 1;
+        justify-content: space-between;
       }
 
       .stat-label {
-        font-size: 0.8rem;
+        font-size: clamp(0.7rem, 1.7vw, 0.8rem);
         color: rgba(255, 255, 255, 0.6);
-        margin-top: 0.3rem;
       }
 
-      .stat-divider {
-        color: rgba(255, 255, 255, 0.4);
-        font-size: 1.2rem;
-        font-weight: 300;
+      .stat-value {
+        font-size: clamp(0.8rem, 2vw, 1rem);
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.9);
       }
 
       .usage-actions {
         text-align: center;
+        flex-shrink: 0;
       }
 
       .usage-btn {
-        padding: 0.8rem 1.5rem;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 12px;
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: clamp(0.5rem, 1.2vh, 0.7rem) clamp(0.8rem, 2vw, 1.2rem);
+        background: rgba(147, 51, 234, 0.1);
+        border: 1px solid rgba(147, 51, 234, 0.2);
+        border-radius: 10px;
+        color: rgba(196, 181, 253, 0.9);
+        font-size: clamp(0.7rem, 1.7vw, 0.8rem);
         cursor: pointer;
         transition: all 0.3s ease;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-        min-height: 44px;
         text-decoration: none;
-        display: inline-block;
       }
 
       .usage-btn:hover {
-        background: rgba(255, 255, 255, 0.12);
-        color: rgba(255, 255, 255, 0.95);
+        background: rgba(147, 51, 234, 0.15);
+        color: rgba(196, 181, 253, 1);
         transform: translateY(-1px);
       }
 
-      /* Reflections Card */
+      /* Reflections Card - Compact List */
       .reflections-list {
+        flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 1rem;
-        max-height: 300px;
+        gap: clamp(0.5rem, 1.2vh, 0.8rem);
         overflow-y: auto;
-        padding-right: 0.5rem;
+        padding-right: clamp(0.2rem, 0.5vw, 0.4rem);
+        min-height: 0;
       }
 
       .reflection-item {
-        padding: 1rem;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 12px;
+        padding: clamp(0.6rem, 1.5vh, 0.9rem);
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: clamp(8px, 1.6vw, 12px);
         transition: all 0.3s ease;
         cursor: pointer;
         position: relative;
@@ -811,7 +915,7 @@
       @keyframes reflectionSlide {
         from {
           opacity: 0;
-          transform: translateX(-20px);
+          transform: translateX(-15px);
         }
         to {
           opacity: 1;
@@ -820,39 +924,41 @@
       }
 
       .reflection-item:hover {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.15);
-        transform: translateX(5px);
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 255, 255, 0.12);
+        transform: translateX(3px);
       }
 
       .reflection-header {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: space-between;
-        margin-bottom: 0.5rem;
+        margin-bottom: clamp(0.3rem, 0.8vh, 0.5rem);
+        gap: clamp(0.5rem, 1.2vw, 0.8rem);
       }
 
       .reflection-title {
-        font-size: 0.95rem;
-        font-weight: 500;
+        font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+        font-weight: 400;
         color: rgba(255, 255, 255, 0.9);
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         flex: 1;
-        margin-right: 1rem;
+        line-height: 1.3;
       }
 
       .reflection-date {
-        font-size: 0.8rem;
+        font-size: clamp(0.65rem, 1.5vw, 0.75rem);
         color: rgba(255, 255, 255, 0.5);
+        flex-shrink: 0;
       }
 
       .reflection-preview {
-        font-size: 0.85rem;
+        font-size: clamp(0.7rem, 1.7vw, 0.8rem);
         color: rgba(255, 255, 255, 0.7);
-        line-height: 1.4;
-        margin-bottom: 0.8rem;
+        line-height: 1.3;
+        margin-bottom: clamp(0.4rem, 1vh, 0.6rem);
         overflow: hidden;
         display: -webkit-box;
         -webkit-line-clamp: 2;
@@ -862,335 +968,392 @@
       .reflection-meta {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: clamp(0.4rem, 1vw, 0.6rem);
       }
 
       .reflection-tone {
-        font-size: 0.75rem;
-        padding: 0.2rem 0.6rem;
-        border-radius: 20px;
-        background: rgba(255, 255, 255, 0.1);
+        font-size: clamp(0.6rem, 1.4vw, 0.7rem);
+        padding: clamp(0.15rem, 0.4vh, 0.2rem) clamp(0.4rem, 1vw, 0.6rem);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.08);
         color: rgba(255, 255, 255, 0.8);
+        text-transform: capitalize;
       }
 
       .reflection-tone.fusion {
-        background: rgba(251, 191, 36, 0.2);
-        color: #fbbf24;
+        background: rgba(251, 191, 36, 0.15);
+        color: rgba(251, 191, 36, 0.9);
       }
 
       .reflection-tone.gentle {
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.12);
         color: rgba(255, 255, 255, 0.9);
       }
 
       .reflection-tone.intense {
-        background: rgba(147, 51, 234, 0.2);
-        color: #c4b5fd;
+        background: rgba(147, 51, 234, 0.15);
+        color: rgba(196, 181, 253, 0.9);
       }
 
       .premium-indicator {
-        font-size: 0.7rem;
-        padding: 0.2rem 0.5rem;
-        border-radius: 12px;
-        background: linear-gradient(135deg, #f59e0b, #d97706);
-        color: white;
+        font-size: clamp(0.55rem, 1.3vw, 0.65rem);
+        padding: clamp(0.15rem, 0.4vh, 0.2rem) clamp(0.3rem, 0.8vw, 0.5rem);
+        border-radius: 8px;
+        background: linear-gradient(
+          135deg,
+          rgba(245, 158, 11, 0.2),
+          rgba(217, 119, 6, 0.15)
+        );
+        color: rgba(251, 191, 36, 0.9);
         font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
 
-      /* Loading States */
-      .loading-reflections {
+      /* Evolution Card - Compact Insights */
+      .evolution-content {
+        flex: 1;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        gap: 1rem;
-        padding: 2rem;
-        color: rgba(255, 255, 255, 0.6);
+        gap: clamp(0.6rem, 1.5vh, 1rem);
+        min-height: 0;
       }
 
-      .cosmic-spinner {
-        width: 40px;
-        height: 40px;
-        border: 3px solid rgba(255, 255, 255, 0.2);
-        border-radius: 50%;
-        border-top-color: rgba(255, 255, 255, 0.8);
-        animation: spin 1.5s linear infinite;
-      }
-
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      /* Empty States */
-      .empty-state {
-        text-align: center;
-        padding: 2rem 1rem;
-        color: rgba(255, 255, 255, 0.7);
-      }
-
-      .empty-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        opacity: 0.8;
-      }
-
-      .empty-state h4 {
-        font-size: 1.2rem;
-        font-weight: 500;
-        margin: 0 0 0.5rem 0;
-        color: rgba(255, 255, 255, 0.9);
-      }
-
-      .empty-state p {
-        font-size: 0.9rem;
-        margin: 0 0 1.5rem 0;
-        line-height: 1.5;
-      }
-
-      .empty-action {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.6rem;
-        padding: 0.8rem 1.5rem;
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.12),
-          rgba(255, 255, 255, 0.06)
-        );
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-        min-height: 44px;
-        text-decoration: none;
-      }
-
-      .empty-action:hover {
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.18),
-          rgba(255, 255, 255, 0.1)
-        );
-        transform: translateY(-2px);
-      }
-
-      /* Evolution Card */
       .evolution-preview {
+        flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
+        gap: clamp(0.4rem, 1vh, 0.6rem);
+        min-height: 0;
       }
 
       .insight-item {
         display: flex;
         align-items: center;
-        gap: 1rem;
-        padding: 0.8rem;
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 12px;
+        gap: clamp(0.6rem, 1.5vw, 0.8rem);
+        padding: clamp(0.5rem, 1.2vh, 0.7rem);
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: clamp(8px, 1.6vw, 10px);
         transition: all 0.3s ease;
       }
 
       .insight-item.locked {
-        opacity: 0.6;
+        opacity: 0.5;
+      }
+
+      .insight-item:not(.locked):hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
       }
 
       .insight-icon {
-        font-size: 1.5rem;
-        width: 40px;
-        height: 40px;
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+        width: clamp(28px, 6vw, 32px);
+        height: clamp(28px, 6vw, 32px);
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: clamp(6px, 1.2vw, 8px);
         flex-shrink: 0;
       }
 
       .insight-text {
         flex: 1;
+        min-width: 0;
       }
 
       .insight-title {
-        font-size: 0.9rem;
-        font-weight: 500;
+        font-size: clamp(0.7rem, 1.7vw, 0.8rem);
+        font-weight: 400;
         color: rgba(255, 255, 255, 0.9);
-        margin-bottom: 0.2rem;
+        margin-bottom: clamp(0.1rem, 0.3vh, 0.2rem);
+        line-height: 1.2;
       }
 
       .insight-value {
-        font-size: 1.1rem;
-        font-weight: 600;
+        font-size: clamp(0.8rem, 2vw, 0.95rem);
+        font-weight: 500;
         color: rgba(255, 255, 255, 0.95);
+        line-height: 1.2;
       }
 
       .unlock-message {
-        font-size: 0.8rem !important;
-        font-weight: 400 !important;
+        font-size: clamp(0.65rem, 1.6vw, 0.75rem) !important;
+        font-weight: 300 !important;
         color: rgba(255, 255, 255, 0.6) !important;
         font-style: italic;
       }
 
       .required-count {
         color: rgba(16, 185, 129, 0.8);
-        font-weight: 500;
-      }
-
-      .evolution-badge {
-        padding: 0.3rem 0.8rem;
-        background: linear-gradient(135deg, #f59e0b, #d97706);
-        color: white;
-        font-size: 0.7rem;
-        font-weight: 600;
-        border-radius: 20px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        animation: badgePulse 2s ease-in-out infinite;
-      }
-
-      @keyframes badgePulse {
-        0%,
-        100% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.05);
-        }
+        font-weight: 400;
       }
 
       .evolution-actions {
         text-align: center;
+        flex-shrink: 0;
       }
 
       .evolution-btn {
-        padding: 0.8rem 1.5rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: clamp(0.5rem, 1.2vh, 0.7rem) clamp(0.8rem, 2vw, 1.2rem);
         background: linear-gradient(
           135deg,
-          rgba(16, 185, 129, 0.2),
-          rgba(16, 185, 129, 0.1)
+          rgba(16, 185, 129, 0.12),
+          rgba(5, 150, 105, 0.08)
         );
-        border: 1px solid rgba(16, 185, 129, 0.3);
-        border-radius: 12px;
-        color: #6ee7b7;
-        font-size: 0.9rem;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        border-radius: 10px;
+        color: rgba(110, 231, 183, 0.9);
+        font-size: clamp(0.7rem, 1.7vw, 0.8rem);
         cursor: pointer;
         transition: all 0.3s ease;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-        min-height: 44px;
         text-decoration: none;
-        display: inline-block;
       }
 
       .evolution-btn:hover {
         background: linear-gradient(
           135deg,
-          rgba(16, 185, 129, 0.3),
-          rgba(16, 185, 129, 0.15)
+          rgba(16, 185, 129, 0.18),
+          rgba(5, 150, 105, 0.12)
         );
-        transform: translateY(-2px);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15);
       }
 
-      /* Subscription Card */
+      /* Subscription Card - Compact Tier Display */
+      .subscription-status {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: clamp(0.8rem, 2vh, 1.2rem);
+        min-height: 0;
+      }
+
       .tier-display {
-        margin-bottom: 1.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        gap: clamp(0.5rem, 1.2vh, 0.8rem);
       }
 
       .tier-badge {
         display: inline-block;
-        padding: 0.6rem 1.2rem;
-        border-radius: 20px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        margin-bottom: 0.8rem;
+        padding: clamp(0.4rem, 1vh, 0.6rem) clamp(0.8rem, 2vw, 1.2rem);
+        border-radius: clamp(12px, 2.4vw, 16px);
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
+        font-weight: 500;
+        margin-bottom: clamp(0.4rem, 1vh, 0.6rem);
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        align-self: center;
       }
 
       .tier-badge.free {
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.1);
         color: rgba(255, 255, 255, 0.9);
       }
 
       .tier-badge.essential {
         background: linear-gradient(
           135deg,
-          rgba(16, 185, 129, 0.3),
-          rgba(16, 185, 129, 0.2)
+          rgba(16, 185, 129, 0.2),
+          rgba(5, 150, 105, 0.15)
         );
-        color: #6ee7b7;
+        color: rgba(110, 231, 183, 0.9);
       }
 
       .tier-badge.premium {
         background: linear-gradient(
           135deg,
-          rgba(245, 158, 11, 0.3),
-          rgba(245, 158, 11, 0.2)
+          rgba(245, 158, 11, 0.2),
+          rgba(217, 119, 6, 0.15)
         );
-        color: #fbbf24;
+        color: rgba(251, 191, 36, 0.9);
       }
 
       .tier-badge.creator {
         background: linear-gradient(
           135deg,
-          rgba(147, 51, 234, 0.3),
-          rgba(99, 102, 241, 0.2)
+          rgba(147, 51, 234, 0.2),
+          rgba(99, 102, 241, 0.15)
         );
-        color: #c4b5fd;
+        color: rgba(196, 181, 253, 0.9);
       }
 
       .tier-description {
-        font-size: 0.9rem;
+        font-size: clamp(0.7rem, 1.7vw, 0.8rem);
         color: rgba(255, 255, 255, 0.7);
-        line-height: 1.5;
+        line-height: 1.4;
+        text-align: center;
       }
 
       .subscription-actions {
         text-align: center;
+        flex-shrink: 0;
       }
 
       .subscription-btn {
         display: inline-flex;
         align-items: center;
-        gap: 0.6rem;
-        padding: 1rem 1.5rem;
+        gap: 0.4rem;
+        padding: clamp(0.6rem, 1.5vh, 0.8rem) clamp(1rem, 2.5vw, 1.4rem);
         border: none;
-        border-radius: 12px;
-        font-size: 0.9rem;
-        font-weight: 500;
+        border-radius: clamp(10px, 2vw, 12px);
+        font-size: clamp(0.7rem, 1.7vw, 0.8rem);
+        font-weight: 400;
         cursor: pointer;
         transition: all 0.3s ease;
         text-decoration: none;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-        min-height: 44px;
       }
 
       .subscription-btn.upgrade-subscription {
-        background: linear-gradient(135deg, #f59e0b, #d97706);
-        color: white;
-        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        background: linear-gradient(
+          135deg,
+          rgba(245, 158, 11, 0.2),
+          rgba(217, 119, 6, 0.15)
+        );
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        color: rgba(251, 191, 36, 0.9);
       }
 
       .subscription-btn.upgrade-subscription:hover {
-        background: linear-gradient(135deg, #d97706, #b45309);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        background: linear-gradient(
+          135deg,
+          rgba(245, 158, 11, 0.3),
+          rgba(217, 119, 6, 0.2)
+        );
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.15);
       }
 
-      /* Loading Overlay */
+      /* Loading States - Cosmic Theme */
+      .loading-reflections {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(0.8rem, 2vh, 1.2rem);
+        color: rgba(255, 255, 255, 0.6);
+        text-align: center;
+        padding: clamp(1rem, 2.5vh, 1.5rem);
+      }
+
+      .cosmic-spinner {
+        width: clamp(30px, 6vw, 40px);
+        height: clamp(30px, 6vw, 40px);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        border-top-color: rgba(147, 51, 234, 0.7);
+        border-right-color: rgba(59, 130, 246, 0.5);
+        animation: cosmicSpin 1.5s linear infinite;
+        position: relative;
+      }
+
+      @keyframes cosmicSpin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .cosmic-spinner::after {
+        content: "";
+        position: absolute;
+        inset: 6px;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 50%;
+        border-left-color: transparent;
+        border-bottom-color: transparent;
+        animation: cosmicSpin 2s linear infinite reverse;
+      }
+
+      /* Empty States */
+      .empty-state {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: clamp(1rem, 2.5vh, 1.5rem);
+        color: rgba(255, 255, 255, 0.7);
+        gap: clamp(0.6rem, 1.5vh, 1rem);
+      }
+
+      .empty-icon {
+        font-size: clamp(2rem, 5vw, 2.5rem);
+        opacity: 0.6;
+        animation: emptyFloat 3s ease-in-out infinite;
+      }
+
+      @keyframes emptyFloat {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+
+      .empty-state h4 {
+        font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+        font-weight: 400;
+        margin: 0;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .empty-state p {
+        font-size: clamp(0.7rem, 1.7vw, 0.8rem);
+        margin: 0;
+        line-height: 1.4;
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .empty-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: clamp(0.5rem, 1.2vh, 0.7rem) clamp(0.8rem, 2vw, 1.2rem);
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.12),
+          rgba(99, 102, 241, 0.08)
+        );
+        border: 1px solid rgba(147, 51, 234, 0.2);
+        border-radius: 10px;
+        color: rgba(196, 181, 253, 0.9);
+        font-size: clamp(0.7rem, 1.7vw, 0.8rem);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+      }
+
+      .empty-action:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.18),
+          rgba(99, 102, 241, 0.12)
+        );
+        transform: translateY(-1px);
+      }
+
+      /* Loading Overlay - Cosmic Theme */
       .loading-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(10px);
+        background: rgba(15, 15, 35, 0.9);
+        backdrop-filter: blur(20px);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1208,50 +1371,76 @@
       .loading-content {
         text-align: center;
         color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: clamp(1rem, 2.5vh, 1.5rem);
       }
 
       .cosmic-loader {
-        width: 60px;
-        height: 60px;
-        border: 3px solid rgba(255, 255, 255, 0.2);
+        width: clamp(60px, 12vw, 80px);
+        height: clamp(60px, 12vw, 80px);
+        position: relative;
+      }
+
+      .cosmic-loader::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border: 3px solid rgba(255, 255, 255, 0.1);
         border-radius: 50%;
-        border-top-color: #fff;
-        animation: spin 1.5s linear infinite;
-        margin: 0 auto 1rem;
+        border-top-color: rgba(147, 51, 234, 0.8);
+        border-right-color: rgba(59, 130, 246, 0.6);
+        animation: cosmicSpin 1.5s linear infinite;
       }
 
-      .loading-content p {
-        font-size: 1rem;
-        opacity: 0.8;
+      .cosmic-loader::after {
+        content: "";
+        position: absolute;
+        inset: 12px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        border-left-color: rgba(16, 185, 129, 0.7);
+        border-bottom-color: rgba(245, 158, 11, 0.5);
+        animation: cosmicSpin 2s linear infinite reverse;
       }
 
-      /* Toast Notifications */
+      .loading-text {
+        font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.8);
+        letter-spacing: 0.5px;
+      }
+
+      /* Toast Notifications - Cosmic Theme */
       .toast-container {
         position: fixed;
-        top: 100px;
-        right: 1rem;
+        top: clamp(80px, 12vh, 100px);
+        right: clamp(1rem, 3vw, 2rem);
         z-index: 1001;
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
-        max-width: 400px;
+        max-width: clamp(280px, 40vw, 400px);
       }
 
       .toast {
-        padding: 1rem 1.5rem;
+        padding: clamp(0.8rem, 2vh, 1.2rem) clamp(1rem, 2.5vw, 1.5rem);
         background: rgba(15, 15, 35, 0.95);
         backdrop-filter: blur(30px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: clamp(12px, 2.4vw, 16px);
         color: rgba(255, 255, 255, 0.9);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         transform: translateX(100%);
         opacity: 0;
         transition: all 0.3s ease;
-        animation: toastSlideIn 0.3s ease-out forwards;
+        animation: toastSlide 0.3s ease-out forwards;
+        font-size: clamp(0.8rem, 1.9vw, 0.9rem);
+        line-height: 1.4;
       }
 
-      @keyframes toastSlideIn {
+      @keyframes toastSlide {
         to {
           transform: translateX(0);
           opacity: 1;
@@ -1263,7 +1452,7 @@
         background: linear-gradient(
           135deg,
           rgba(15, 15, 35, 0.95) 0%,
-          rgba(16, 185, 129, 0.1) 100%
+          rgba(16, 185, 129, 0.08) 100%
         );
       }
 
@@ -1272,7 +1461,7 @@
         background: linear-gradient(
           135deg,
           rgba(15, 15, 35, 0.95) 0%,
-          rgba(239, 68, 68, 0.1) 100%
+          rgba(239, 68, 68, 0.08) 100%
         );
       }
 
@@ -1281,62 +1470,62 @@
         background: linear-gradient(
           135deg,
           rgba(15, 15, 35, 0.95) 0%,
-          rgba(245, 158, 11, 0.1) 100%
+          rgba(245, 158, 11, 0.08) 100%
         );
       }
 
-      /* Mobile Responsive */
+      /* Mobile Responsive - Optimized Experience */
       @media (max-width: 1024px) {
         .dashboard-grid {
           grid-template-columns: 1fr;
+          grid-template-rows: repeat(4, minmax(200px, 1fr));
+        }
+
+        .nav-links {
+          display: none;
         }
       }
 
       @media (max-width: 768px) {
+        html,
         body {
-          padding-top: 70px;
+          overflow-y: auto;
+          height: auto;
+          min-height: 100vh;
+          position: static;
         }
 
-        .nav-container {
-          padding: 0.8rem 1rem;
-          flex-wrap: wrap;
-          gap: 0.5rem;
+        .nav-bar {
+          position: sticky;
+          height: clamp(50px, 7vh, 60px);
         }
 
-        .nav-center {
-          order: 3;
-          width: 100%;
-          justify-content: center;
-          margin-top: 0.5rem;
-        }
-
-        .nav-link {
-          padding: 0.6rem 1rem;
-          font-size: 0.8rem;
-        }
-
-        .logo-text {
+        .nav-left .logo .logo-text {
           display: none;
         }
 
-        .user-name {
-          display: none;
+        .dashboard-main {
+          height: auto;
+          min-height: calc(100vh - clamp(50px, 7vh, 60px));
+          padding-top: 0;
         }
 
         .dashboard-container {
-          padding: 1rem;
+          padding: clamp(0.8rem, 2vh, 1.2rem);
+          gap: clamp(0.8rem, 2vh, 1.2rem);
         }
 
         .welcome-section {
           flex-direction: column;
-          gap: 1.5rem;
+          gap: clamp(1rem, 2.5vh, 1.5rem);
           text-align: center;
-          padding: 1.5rem;
+          padding: clamp(1.2rem, 3vh, 1.8rem);
         }
 
         .quick-actions {
           flex-direction: column;
           width: 100%;
+          gap: clamp(0.6rem, 1.5vh, 0.8rem);
         }
 
         .action-btn {
@@ -1345,27 +1534,29 @@
         }
 
         .dashboard-grid {
-          gap: 1rem;
-          margin-bottom: 1rem;
-        }
-
-        .dashboard-card {
-          padding: 1.2rem;
+          grid-template-columns: 1fr;
+          grid-template-rows: none;
+          grid-auto-rows: minmax(220px, auto);
         }
 
         .usage-display {
           flex-direction: column;
-          gap: 1rem;
           text-align: center;
+          gap: clamp(0.8rem, 2vh, 1.2rem);
         }
 
         .usage-stats {
+          align-items: center;
+        }
+
+        .stat-row {
           justify-content: center;
+          gap: clamp(0.5rem, 1.2vw, 0.8rem);
         }
 
         .user-dropdown {
-          min-width: 260px;
-          right: -1rem;
+          min-width: 180px;
+          right: -0.5rem;
         }
 
         .toast-container {
@@ -1376,63 +1567,72 @@
       }
 
       @media (max-width: 480px) {
-        .nav-container {
-          padding: 0.6rem 0.8rem;
-        }
-
-        .nav-center {
-          gap: 0.3rem;
-        }
-
-        .nav-link {
-          padding: 0.5rem 0.8rem;
-          font-size: 0.75rem;
-        }
-
-        .nav-link span:last-child {
-          display: none;
-        }
-
-        .upgrade-btn span:last-child {
-          display: none;
-        }
-
         .dashboard-container {
-          padding: 0.8rem;
+          padding: clamp(0.6rem, 1.5vh, 1rem);
+        }
+
+        .nav-bar {
+          padding: 0 clamp(0.8rem, 2vw, 1.2rem);
         }
 
         .welcome-section {
-          padding: 1.2rem;
-          margin-bottom: 1.5rem;
-        }
-
-        .welcome-title {
-          font-size: 1.5rem;
+          padding: clamp(1rem, 2.5vh, 1.4rem);
         }
 
         .dashboard-card {
-          padding: 1rem;
-          border-radius: 16px;
+          padding: clamp(0.8rem, 2vh, 1.2rem);
         }
 
-        .card-title {
-          font-size: 1.1rem;
-        }
-
-        .insight-item {
-          padding: 0.6rem;
+        .reflections-list {
+          gap: clamp(0.4rem, 1vh, 0.6rem);
         }
 
         .reflection-item {
-          padding: 0.8rem;
+          padding: clamp(0.5rem, 1.2vh, 0.7rem);
         }
 
-        .user-dropdown {
-          min-width: 240px;
+        .nav-right .upgrade-btn span:last-child {
+          display: none;
+        }
+
+        .user-btn .user-name {
+          display: none;
         }
       }
 
-      /* Accessibility */
+      /* Ultra compact for very small screens */
+      @media (max-width: 360px) {
+        .dashboard-card {
+          border-radius: 14px;
+          padding: clamp(0.7rem, 1.8vh, 1rem);
+        }
+
+        .card-header {
+          margin-bottom: clamp(0.6rem, 1.5vh, 0.8rem);
+        }
+
+        .insight-item,
+        .reflection-item {
+          padding: clamp(0.4rem, 1vh, 0.6rem);
+        }
+      }
+
+      /* Landscape mobile optimization */
+      @media (max-height: 500px) and (orientation: landscape) {
+        .welcome-section {
+          padding: clamp(0.8rem, 2vh, 1.2rem);
+        }
+
+        .dashboard-grid {
+          grid-auto-rows: minmax(180px, auto);
+        }
+
+        .dashboard-card {
+          padding: clamp(0.6rem, 1.5vh, 0.9rem);
+        }
+      }
+
+      /* Accessibility improvements */
       @media (prefers-reduced-motion: reduce) {
         *,
         *::before,
@@ -1442,121 +1642,164 @@
           transition-duration: 0.01ms !important;
         }
 
-        .cosmic-breath,
+        .cosmic-mirror,
+        .cosmic-particle,
         .cosmic-spinner,
+        .cosmic-loader,
         .progress-circle {
-          animation: none;
+          animation: none !important;
         }
       }
 
-      /* iOS specific optimizations */
+      /* High contrast mode support */
+      @media (prefers-contrast: high) {
+        .dashboard-card,
+        .nav-bar,
+        .welcome-section {
+          border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .card-title,
+        .welcome-title,
+        .nav-link {
+          color: rgba(255, 255, 255, 1);
+        }
+      }
+
+      /* Focus indicators for keyboard navigation */
+      .nav-link:focus-visible,
+      .action-btn:focus-visible,
+      .usage-btn:focus-visible,
+      .evolution-btn:focus-visible,
+      .subscription-btn:focus-visible,
+      .user-btn:focus-visible,
+      .dropdown-item:focus-visible {
+        outline: 2px solid rgba(147, 51, 234, 0.6);
+        outline-offset: 2px;
+      }
+
+      /* Remove default focus outlines */
+      * {
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* iOS specific safe area handling */
       @supports (-webkit-touch-callout: none) {
-        .dashboard-nav {
+        .nav-bar {
           padding-top: max(0px, env(safe-area-inset-top));
         }
 
         .dashboard-container {
-          padding-left: max(1rem, env(safe-area-inset-left));
-          padding-right: max(1rem, env(safe-area-inset-right));
+          padding-left: max(clamp(1rem, 3vw, 2rem), env(safe-area-inset-left));
+          padding-right: max(
+            clamp(1rem, 3vw, 2rem),
+            env(safe-area-inset-right)
+          );
+          padding-bottom: max(
+            clamp(0.8rem, 2vh, 1.5rem),
+            env(safe-area-inset-bottom)
+          );
         }
 
         .toast-container {
-          right: max(1rem, env(safe-area-inset-right));
+          right: max(clamp(1rem, 3vw, 2rem), env(safe-area-inset-right));
         }
       }
     </style>
   </head>
 
   <body>
-    <!-- Cosmic Background -->
-    <div class="cosmic-background">
-      <div class="cosmic-breath"></div>
-      <div class="cosmic-breath"></div>
-      <div class="cosmic-breath"></div>
-      <div class="cosmic-breath"></div>
+    <!-- Cosmic Mirror Shards -->
+    <div class="cosmic-mirrors">
+      <div class="cosmic-mirror"></div>
+      <div class="cosmic-mirror"></div>
+      <div class="cosmic-mirror"></div>
+      <div class="cosmic-mirror"></div>
+      <div class="cosmic-mirror"></div>
+      <div class="cosmic-mirror"></div>
     </div>
 
-    <!-- Navigation Header -->
-    <nav class="dashboard-nav">
-      <div class="nav-container">
-        <div class="nav-left">
-          <a href="/" class="logo-link">
-            <span class="mirror-symbol">🪞</span>
-            <span class="logo-text">Mirror of Truth</span>
-          </a>
-        </div>
+    <!-- Floating Particles -->
+    <div class="cosmic-particles">
+      <div class="cosmic-particle"></div>
+      <div class="cosmic-particle"></div>
+      <div class="cosmic-particle"></div>
+    </div>
 
-        <div class="nav-center">
+    <!-- Navigation Bar -->
+    <nav class="nav-bar">
+      <div class="nav-left">
+        <a href="/" class="logo">
+          <span class="mirror-logo">🪞</span>
+          <span class="logo-text">Mirror of Truth</span>
+        </a>
+
+        <div class="nav-links">
           <a href="/dashboard" class="nav-link active">
             <span>🏠</span>
-            <span>My Journey</span>
+            <span>Journey</span>
           </a>
           <a href="/reflection" class="nav-link reflect-nav">
             <span>✨</span>
-            <span>Reflect Again</span>
+            <span>Reflect</span>
           </a>
           <a href="/admin" class="nav-link admin-only" style="display: none">
             <span>⚡</span>
             <span>Admin</span>
           </a>
         </div>
+      </div>
 
-        <div class="nav-right">
-          <a
-            href="/register"
-            class="upgrade-btn tier-upgrade"
-            style="display: none"
-          >
-            <span>💎</span>
-            <span>Upgrade</span>
-          </a>
+      <div class="nav-right">
+        <a
+          href="/register"
+          class="upgrade-btn tier-upgrade"
+          style="display: none"
+        >
+          <span>💎</span>
+          <span>Upgrade</span>
+        </a>
 
-          <div class="user-menu">
-            <button class="user-button" id="userMenuBtn">
-              <span class="user-avatar" id="userAvatar">👤</span>
-              <span class="user-name" id="userName">Loading...</span>
-              <span class="dropdown-arrow">▼</span>
+        <div class="user-menu" id="userMenu">
+          <button class="user-btn" id="userBtn">
+            <span class="user-avatar" id="userAvatar">👤</span>
+            <span class="user-name" id="userName">Loading...</span>
+            <span class="dropdown-arrow">▼</span>
+          </button>
+
+          <div class="user-dropdown" id="userDropdown">
+            <a href="/profile" class="dropdown-item">
+              <span>👤</span>
+              <span>Profile</span>
+            </a>
+            <a href="/reflections" class="dropdown-item">
+              <span>📚</span>
+              <span>All Reflections</span>
+            </a>
+            <a
+              href="/evolution"
+              class="dropdown-item evolution-only"
+              style="display: none"
+            >
+              <span>🌱</span>
+              <span>Evolution Reports</span>
+            </a>
+            <a href="/subscription" class="dropdown-item subscription-only">
+              <span>💳</span>
+              <span>Subscription</span>
+            </a>
+            <div
+              style="
+                height: 1px;
+                background: rgba(255, 255, 255, 0.1);
+                margin: 0.5rem 0;
+              "
+            ></div>
+            <button class="dropdown-item" onclick="handleSignOut()">
+              <span>🚪</span>
+              <span>Sign Out</span>
             </button>
-
-            <div class="user-dropdown" id="userDropdown">
-              <div class="dropdown-header">
-                <div class="user-info">
-                  <div class="user-display-name" id="userDisplayName">
-                    Loading...
-                  </div>
-                  <div class="user-tier-badge" id="userTierBadge">...</div>
-                </div>
-              </div>
-
-              <div class="dropdown-divider"></div>
-
-              <a href="/profile" class="dropdown-item">
-                <span>👤</span>
-                <span>Profile Settings</span>
-              </a>
-              <a href="/subscription" class="dropdown-item subscription-only">
-                <span>💳</span>
-                <span>Subscription</span>
-              </a>
-              <a
-                href="/evolution"
-                class="dropdown-item evolution-only"
-                style="display: none"
-              >
-                <span>📊</span>
-                <span>Evolution Reports</span>
-              </a>
-
-              <div class="dropdown-divider"></div>
-
-              <button
-                class="dropdown-item signout-btn"
-                onclick="handleSignOut()"
-              >
-                <span>🚪</span>
-                <span>Sign Out</span>
-              </button>
-            </div>
           </div>
         </div>
       </div>
@@ -1580,13 +1823,13 @@
           </div>
 
           <div class="quick-actions">
-            <a href="/reflection" class="action-btn primary" id="reflectNowBtn">
-              <span class="btn-icon">✨</span>
-              <span class="btn-text">Reflect Now</span>
+            <a href="/reflection" class="action-btn primary" id="reflectBtn">
+              <span>✨</span>
+              <span id="reflectBtnText">Reflect Now</span>
             </a>
-            <a href="/gifting" class="action-btn secondary" id="giftBtn">
-              <span class="btn-icon">🎁</span>
-              <span class="btn-text">Gift a Reflection</span>
+            <a href="/gifting" class="action-btn secondary">
+              <span>🎁</span>
+              <span>Gift Reflection</span>
             </a>
           </div>
         </section>
@@ -1598,36 +1841,38 @@
             <div class="card-header">
               <h3 class="card-title">
                 <span class="card-icon">📊</span>
-                <span>This Month's Journey</span>
+                <span>This Month</span>
               </h3>
             </div>
 
             <div class="card-content">
               <div class="usage-display">
-                <div class="usage-chart" id="usageChart">
-                  <div class="usage-progress">
-                    <div class="progress-circle">
-                      <div class="progress-value" id="usagePercentage">0%</div>
-                    </div>
+                <div class="usage-chart">
+                  <div class="progress-circle" id="usageProgress">
+                    <div class="progress-value" id="usagePercentage">0%</div>
                   </div>
                 </div>
 
                 <div class="usage-stats">
-                  <div class="stat-item">
-                    <div class="stat-value" id="currentCount">0</div>
-                    <div class="stat-label">Reflections Used</div>
+                  <div class="stat-row">
+                    <span class="stat-label">Reflections</span>
+                    <span class="stat-value" id="currentCount">0</span>
                   </div>
-                  <div class="stat-divider">of</div>
-                  <div class="stat-item">
-                    <div class="stat-value" id="monthlyLimit">∞</div>
-                    <div class="stat-label">Monthly Limit</div>
+                  <div class="stat-row">
+                    <span class="stat-label">Monthly Limit</span>
+                    <span class="stat-value" id="monthlyLimit">∞</span>
+                  </div>
+                  <div class="stat-row">
+                    <span class="stat-label">Total Created</span>
+                    <span class="stat-value" id="totalReflections">0</span>
                   </div>
                 </div>
               </div>
 
               <div class="usage-actions">
                 <a href="/reflections" class="usage-btn" id="usageActionBtn">
-                  <span>View All Reflections</span>
+                  <span>📚</span>
+                  <span>View All</span>
                 </a>
               </div>
             </div>
@@ -1640,11 +1885,7 @@
                 <span class="card-icon">🌙</span>
                 <span>Recent Reflections</span>
               </h3>
-              <a
-                href="/reflections"
-                class="header-action"
-                id="viewAllReflections"
-              >
+              <a href="/reflections" class="header-action">
                 <span>View All</span>
                 <span>→</span>
               </a>
@@ -1654,7 +1895,7 @@
               <div class="reflections-list" id="recentReflectionsList">
                 <div class="loading-reflections">
                   <div class="cosmic-spinner"></div>
-                  <span>Loading your sacred journey...</span>
+                  <span>Loading your journey...</span>
                 </div>
               </div>
 
@@ -1666,11 +1907,11 @@
                 <div class="empty-icon">🪞</div>
                 <h4>Your Journey Awaits</h4>
                 <p>
-                  Begin your first reflection to see your evolving wisdom here.
+                  Create your first reflection to begin seeing yourself clearly.
                 </p>
                 <a href="/reflection" class="empty-action">
                   <span>✨</span>
-                  <span>Create Your First Reflection</span>
+                  <span>Start Reflecting</span>
                 </a>
               </div>
             </div>
@@ -1683,43 +1924,37 @@
                 <span class="card-icon">🦋</span>
                 <span>Evolution Insights</span>
               </h3>
-              <div
-                class="evolution-badge"
-                id="evolutionBadge"
-                style="display: none"
-              >
-                <span>New!</span>
-              </div>
             </div>
 
             <div class="card-content">
-              <div class="evolution-content" id="evolutionContent">
+              <div class="evolution-content">
                 <div class="evolution-preview">
                   <div class="insight-item">
                     <div class="insight-icon">📈</div>
                     <div class="insight-text">
-                      <div class="insight-title">Total Reflections</div>
-                      <div class="insight-value" id="totalReflections">0</div>
-                    </div>
-                  </div>
-
-                  <div class="insight-item locked" id="growthInsight">
-                    <div class="insight-icon">🌱</div>
-                    <div class="insight-text">
-                      <div class="insight-title">Growth Patterns</div>
-                      <div class="insight-value unlock-message">
-                        Unlock with
-                        <span class="required-count">3</span> reflections
+                      <div class="insight-title">Total Journey</div>
+                      <div class="insight-value" id="totalReflectionsCount">
+                        0 reflections
                       </div>
                     </div>
                   </div>
 
-                  <div class="insight-item locked" id="evolutionInsight">
+                  <div class="insight-item locked" id="patternsInsight">
+                    <div class="insight-icon">🌊</div>
+                    <div class="insight-text">
+                      <div class="insight-title">Growth Patterns</div>
+                      <div class="insight-value unlock-message">
+                        <span class="required-count">3</span> more needed
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="insight-item locked" id="evolutionReportInsight">
                     <div class="insight-icon">🦋</div>
                     <div class="insight-text">
                       <div class="insight-title">Evolution Report</div>
                       <div class="insight-value unlock-message">
-                        Available for Essential+ subscribers
+                        Upgrade to Essential+
                       </div>
                     </div>
                   </div>
@@ -1731,7 +1966,8 @@
                     class="evolution-btn"
                     id="evolutionActionBtn"
                   >
-                    <span>Upgrade for Evolution Reports</span>
+                    <span>💎</span>
+                    <span>Unlock Evolution Reports</span>
                   </a>
                 </div>
               </div>
@@ -1743,16 +1979,16 @@
             <div class="card-header">
               <h3 class="card-title">
                 <span class="card-icon">💎</span>
-                <span>Subscription</span>
+                <span>Your Plan</span>
               </h3>
             </div>
 
             <div class="card-content">
-              <div class="subscription-status" id="subscriptionStatus">
+              <div class="subscription-status">
                 <div class="tier-display">
                   <div class="tier-badge" id="tierBadge">Free</div>
                   <div class="tier-description" id="tierDescription">
-                    Limited to 1 reflection per month
+                    1 reflection per month to explore your consciousness
                   </div>
                 </div>
 
@@ -1763,7 +1999,7 @@
                     id="subscriptionActionBtn"
                   >
                     <span>✨</span>
-                    <span>Upgrade Your Journey</span>
+                    <span>Upgrade Journey</span>
                   </a>
                 </div>
               </div>
@@ -1777,7 +2013,9 @@
     <div class="loading-overlay" id="loadingOverlay">
       <div class="loading-content">
         <div class="cosmic-loader"></div>
-        <p>Preparing your sacred space...</p>
+        <div class="loading-text" id="loadingText">
+          Preparing your sacred space...
+        </div>
       </div>
     </div>
 
@@ -1785,13 +2023,13 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-      // Dashboard Logic - Sacred Journey Command Center
+      // Mesmerizing Dashboard Logic - Perfect Contained Experience
       let userData = null;
       let usageData = null;
       let recentReflections = [];
       let isLoading = false;
 
-      // Tier limits and evolution thresholds
+      // Tier limits and thresholds
       const TIER_LIMITS = {
         free: 1,
         essential: 5,
@@ -1804,7 +2042,7 @@
         premium: 6,
       };
 
-      // Initialize dashboard on page load
+      // Initialize dashboard
       window.addEventListener("load", initializeDashboard);
 
       async function initializeDashboard() {
@@ -1812,7 +2050,7 @@
           await authenticateAndLoadUser();
           await loadDashboardData();
           setupInteractions();
-          animateEntry();
+          startCosmicAnimations();
         } catch (error) {
           console.error("🪞 Dashboard initialization failed:", error);
           handleAuthenticationError();
@@ -1915,23 +2153,27 @@
         // Update welcome message based on tier and usage
         const welcomeMessage = getWelcomeMessage();
         document.getElementById("welcomeMessage").textContent = welcomeMessage;
+
+        // Update reflect button
+        const reflectBtn = document.getElementById("reflectBtn");
+        const reflectBtnText = document.getElementById("reflectBtnText");
+
+        if (userData.isCreator || userData.isAdmin) {
+          reflectBtnText.textContent = "Creator Space";
+          reflectBtn.href = "/reflection?mode=creator";
+        } else {
+          reflectBtnText.textContent = "Reflect Now";
+          reflectBtn.href = "/reflection";
+        }
       }
 
       function updateUserMenu() {
         const userName = document.getElementById("userName");
-        const userDisplayName = document.getElementById("userDisplayName");
-        const userTierBadge = document.getElementById("userTierBadge");
         const userAvatar = document.getElementById("userAvatar");
 
         // Update display name (first name only for UI)
         const firstName = userData.name.split(" ")[0];
         userName.textContent = firstName;
-        userDisplayName.textContent = userData.name;
-
-        // Update tier badge
-        userTierBadge.textContent =
-          userData.tier.charAt(0).toUpperCase() + userData.tier.slice(1);
-        userTierBadge.className = `user-tier-badge ${userData.tier}`;
 
         // Update avatar based on tier
         if (userData.isCreator) {
@@ -1963,7 +2205,7 @@
 
       // Dashboard Data Loading
       async function loadDashboardData() {
-        showLoadingState(true);
+        showLoadingState(true, "Loading your sacred journey...");
 
         try {
           await loadUsageData();
@@ -2021,20 +2263,19 @@
         try {
           const token = localStorage.getItem("mirror_auth_token");
 
-          // Use GET request with query parameters
           const url = new URL("/api/reflections", window.location.origin);
           url.searchParams.set("action", "get-history");
-          url.searchParams.set("limit", "5");
+          url.searchParams.set("limit", "4");
 
-          const reflectionsResponse = await fetch(url, {
+          const response = await fetch(url, {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
             },
           });
 
-          if (reflectionsResponse.ok) {
-            const data = await reflectionsResponse.json();
+          if (response.ok) {
+            const data = await response.json();
             if (data.success) {
               recentReflections = data.reflections || [];
             }
@@ -2052,11 +2293,14 @@
         const limit =
           usageData?.limit ||
           (userData.isCreator ? "unlimited" : TIER_LIMITS[userData.tier]);
+        const totalReflections = userData.totalReflections || 0;
 
         // Update usage numbers
         document.getElementById("currentCount").textContent = currentCount;
         document.getElementById("monthlyLimit").textContent =
           limit === "unlimited" ? "∞" : limit;
+        document.getElementById("totalReflections").textContent =
+          totalReflections;
 
         // Update progress circle
         let percentage = 0;
@@ -2069,7 +2313,7 @@
         )}%`;
 
         // Update CSS custom property for progress circle
-        const progressCircle = document.querySelector(".progress-circle");
+        const progressCircle = document.getElementById("usageProgress");
         if (progressCircle) {
           progressCircle.style.setProperty("--progress", `${percentage}%`);
         }
@@ -2077,10 +2321,11 @@
         // Update usage action button
         const usageActionBtn = document.getElementById("usageActionBtn");
         if (currentCount === 0) {
-          usageActionBtn.textContent = "Create Your First Reflection";
+          usageActionBtn.innerHTML =
+            "<span>✨</span><span>Start Journey</span>";
           usageActionBtn.href = "/reflection";
         } else {
-          usageActionBtn.textContent = "View All Reflections";
+          usageActionBtn.innerHTML = "<span>📚</span><span>View All</span>";
           usageActionBtn.href = "/reflections";
         }
       }
@@ -2093,9 +2338,9 @@
 
         if (recentReflections.length === 0) {
           reflectionsList.style.display = "none";
-          emptyState.style.display = "block";
+          emptyState.style.display = "flex";
         } else {
-          reflectionsList.style.display = "block";
+          reflectionsList.style.display = "flex";
           emptyState.style.display = "none";
 
           // Clear loading state
@@ -2118,7 +2363,7 @@
         const timeAgo =
           reflection.timeAgo || formatTimeAgo(reflection.createdAt);
         const preview = reflection.dream
-          ? reflection.dream.substring(0, 120)
+          ? reflection.dream.substring(0, 80)
           : "Reflection content...";
 
         element.innerHTML = `
@@ -2129,7 +2374,7 @@
             <div class="reflection-date">${timeAgo}</div>
           </div>
           <div class="reflection-preview">${preview}${
-          preview.length > 120 ? "..." : ""
+          preview.length > 80 ? "..." : ""
         }</div>
           <div class="reflection-meta">
             <div class="reflection-tone ${
@@ -2151,45 +2396,48 @@
         const evolutionActionBtn =
           document.getElementById("evolutionActionBtn");
 
-        // Update total reflections
-        document.getElementById("totalReflections").textContent =
-          totalReflections;
+        // Update total reflections count
+        document.getElementById("totalReflectionsCount").textContent =
+          totalReflections === 0
+            ? "Begin your journey"
+            : totalReflections === 1
+            ? "1 reflection"
+            : `${totalReflections} reflections`;
 
         // Check evolution eligibility
         const canGenerateReport =
           userData.tier !== "free" &&
           totalReflections >= EVOLUTION_THRESHOLDS[userData.tier];
 
-        // Update growth insight
-        const growthInsight = document.getElementById("growthInsight");
+        // Update patterns insight
+        const patternsInsight = document.getElementById("patternsInsight");
         if (totalReflections >= 3) {
-          growthInsight.classList.remove("locked");
-          growthInsight.querySelector(".insight-value").textContent =
+          patternsInsight.classList.remove("locked");
+          patternsInsight.querySelector(".insight-value").textContent =
             "Available";
-          growthInsight.querySelector(".insight-value").className =
+          patternsInsight.querySelector(".insight-value").className =
             "insight-value";
         } else {
           const needed = 3 - totalReflections;
-          growthInsight.querySelector(".required-count").textContent = needed;
+          patternsInsight.querySelector(".required-count").textContent = needed;
         }
 
-        // Update evolution insight
-        const evolutionInsight = document.getElementById("evolutionInsight");
+        // Update evolution report insight
+        const evolutionReportInsight = document.getElementById(
+          "evolutionReportInsight"
+        );
         if (userData.tier === "free") {
-          evolutionInsight.querySelector(".insight-value").textContent =
-            "Upgrade to Essential";
+          evolutionReportInsight.querySelector(".insight-value").textContent =
+            "Upgrade to Essential+";
         } else if (canGenerateReport) {
-          evolutionInsight.classList.remove("locked");
-          evolutionInsight.querySelector(".insight-value").textContent =
+          evolutionReportInsight.classList.remove("locked");
+          evolutionReportInsight.querySelector(".insight-value").textContent =
             "Ready to Generate";
-          evolutionInsight.querySelector(".insight-value").className =
+          evolutionReportInsight.querySelector(".insight-value").className =
             "insight-value";
-
-          // Show new badge if eligible
-          document.getElementById("evolutionBadge").style.display = "block";
         } else {
           const needed = EVOLUTION_THRESHOLDS[userData.tier] - totalReflections;
-          evolutionInsight.querySelector(
+          evolutionReportInsight.querySelector(
             ".insight-value"
           ).textContent = `${needed} more reflection${
             needed === 1 ? "" : "s"
@@ -2198,21 +2446,19 @@
 
         // Update action button
         if (userData.tier === "free") {
-          evolutionActionBtn.textContent = "Upgrade for Evolution Reports";
+          evolutionActionBtn.innerHTML =
+            "<span>💎</span><span>Unlock Evolution Reports</span>";
           evolutionActionBtn.href = "/register";
         } else if (canGenerateReport) {
-          evolutionActionBtn.textContent = "Generate Evolution Report";
-          evolutionActionBtn.className = "evolution-btn ready";
+          evolutionActionBtn.innerHTML =
+            "<span>🦋</span><span>Generate Report</span>";
           evolutionActionBtn.onclick = generateEvolutionReport;
+          evolutionActionBtn.removeAttribute("href");
         } else {
-          evolutionActionBtn.textContent = `Create ${
-            EVOLUTION_THRESHOLDS[userData.tier] - totalReflections
-          } more reflection${
-            EVOLUTION_THRESHOLDS[userData.tier] - totalReflections === 1
-              ? ""
-              : "s"
-          }`;
+          const needed = EVOLUTION_THRESHOLDS[userData.tier] - totalReflections;
+          evolutionActionBtn.innerHTML = `<span>✨</span><span>Create ${needed} More</span>`;
           evolutionActionBtn.href = "/reflection";
+          evolutionActionBtn.onclick = null;
         }
       }
 
@@ -2230,10 +2476,10 @@
 
         // Update description based on tier
         const descriptions = {
-          free: "Limited to 1 reflection per month",
-          essential: "Up to 5 reflections per month + Evolution Reports",
-          premium:
-            "Up to 10 reflections per month + Advanced Evolution Insights",
+          free: "1 reflection per month to explore your consciousness",
+          essential:
+            "5 reflections monthly + Evolution Reports to track growth",
+          premium: "10 reflections monthly + Advanced Evolution Insights",
           creator: "Unlimited reflections and full access to all features",
         };
 
@@ -2243,15 +2489,15 @@
         // Update action button
         if (userData.tier === "free") {
           subscriptionActionBtn.innerHTML =
-            "<span>✨</span><span>Upgrade Your Journey</span>";
+            "<span>✨</span><span>Upgrade Journey</span>";
           subscriptionActionBtn.href = "/register";
         } else if (userData.tier === "essential") {
           subscriptionActionBtn.innerHTML =
-            "<span>💎</span><span>Upgrade to Premium</span>";
+            "<span>💎</span><span>Unlock Premium</span>";
           subscriptionActionBtn.href = "/register?tier=premium";
         } else {
           subscriptionActionBtn.innerHTML =
-            "<span>⚙️</span><span>Manage Subscription</span>";
+            "<span>⚙️</span><span>Manage Plan</span>";
           subscriptionActionBtn.href = "/subscription";
         }
       }
@@ -2259,27 +2505,20 @@
       // Interaction Handlers
       function setupInteractions() {
         setupUserMenu();
-
-        // Quick action buttons
-        document.getElementById("reflectNowBtn").href = userData.isCreator
-          ? "/reflection?mode=creator"
-          : "/reflection";
+        setupKeyboardShortcuts();
 
         // Mobile touch interactions
         if ("ontouchstart" in window) {
           addTouchInteractions();
         }
-
-        // Keyboard navigation
-        setupKeyboardNavigation();
       }
 
       function setupUserMenu() {
-        const userMenuBtn = document.getElementById("userMenuBtn");
+        const userBtn = document.getElementById("userBtn");
         const userDropdown = document.getElementById("userDropdown");
-        const userMenu = document.querySelector(".user-menu");
+        const userMenu = document.getElementById("userMenu");
 
-        userMenuBtn.addEventListener("click", function (e) {
+        userBtn.addEventListener("click", function (e) {
           e.stopPropagation();
           userMenu.classList.toggle("open");
           userDropdown.classList.toggle("show");
@@ -2298,6 +2537,24 @@
           if (e.key === "Escape") {
             userMenu.classList.remove("open");
             userDropdown.classList.remove("show");
+          }
+        });
+      }
+
+      function setupKeyboardShortcuts() {
+        document.addEventListener("keydown", function (e) {
+          // Cmd/Ctrl + R for new reflection
+          if ((e.metaKey || e.ctrlKey) && e.key === "r") {
+            e.preventDefault();
+            window.location.href = userData.isCreator
+              ? "/reflection?mode=creator"
+              : "/reflection";
+          }
+
+          // Cmd/Ctrl + G for gift
+          if ((e.metaKey || e.ctrlKey) && e.key === "g") {
+            e.preventDefault();
+            window.location.href = "/gifting";
           }
         });
       }
@@ -2405,12 +2662,9 @@
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
         if (diffMins < 1) return "just now";
-        if (diffMins < 60)
-          return `${diffMins} min${diffMins === 1 ? "" : "s"} ago`;
-        if (diffHours < 24)
-          return `${diffHours} hour${diffHours === 1 ? "" : "s"} ago`;
-        if (diffDays < 7)
-          return `${diffDays} day${diffDays === 1 ? "" : "s"} ago`;
+        if (diffMins < 60) return `${diffMins}m ago`;
+        if (diffHours < 24) return `${diffHours}h ago`;
+        if (diffDays < 7) return `${diffDays}d ago`;
 
         return date.toLocaleDateString("en-US", {
           month: "short",
@@ -2431,7 +2685,7 @@
       // Loading & Error States
       function showLoadingState(show, message = "Loading...") {
         const overlay = document.getElementById("loadingOverlay");
-        const loadingText = overlay.querySelector("p");
+        const loadingText = document.getElementById("loadingText");
 
         if (show) {
           loadingText.textContent = message;
@@ -2498,44 +2752,63 @@
           });
       }
 
-      function setupKeyboardNavigation() {
-        document.addEventListener("keydown", function (e) {
-          // Cmd/Ctrl + R for new reflection
-          if ((e.metaKey || e.ctrlKey) && e.key === "r") {
-            e.preventDefault();
-            window.location.href = userData.isCreator
-              ? "/reflection?mode=creator"
-              : "/reflection";
-          }
+      // Cosmic Animations
+      function startCosmicAnimations() {
+        // Enhanced mirror interactions on hover (desktop only)
+        if (window.matchMedia("(hover: hover)").matches) {
+          const mirrors = document.querySelectorAll(".cosmic-mirror");
 
-          // Cmd/Ctrl + G for gift
-          if ((e.metaKey || e.ctrlKey) && e.key === "g") {
-            e.preventDefault();
-            window.location.href = "/gifting";
-          }
-        });
+          mirrors.forEach((mirror) => {
+            mirror.addEventListener("mouseenter", function () {
+              this.style.transform = "scale(1.2) rotate(15deg)";
+              this.style.opacity = "0.8";
+            });
+
+            mirror.addEventListener("mouseleave", function () {
+              this.style.transform = "";
+              this.style.opacity = "";
+            });
+          });
+        }
+
+        // Add random sparkle effects
+        setInterval(createSparkle, 3000);
       }
 
-      // Animations
-      function animateEntry() {
-        // Stagger card animations
-        const cards = document.querySelectorAll(".dashboard-card");
-        cards.forEach((card, index) => {
-          card.style.animationDelay = `${0.1 + index * 0.1}s`;
-        });
+      function createSparkle() {
+        const sparkle = document.createElement("div");
+        sparkle.style.position = "fixed";
+        sparkle.style.width = "4px";
+        sparkle.style.height = "4px";
+        sparkle.style.background = "rgba(255, 255, 255, 0.8)";
+        sparkle.style.borderRadius = "50%";
+        sparkle.style.pointerEvents = "none";
+        sparkle.style.zIndex = "3";
+        sparkle.style.left = Math.random() * window.innerWidth + "px";
+        sparkle.style.top = Math.random() * window.innerHeight + "px";
 
-        // Animate progress circle
-        setTimeout(() => {
-          const progressCircle = document.querySelector(".progress-circle");
-          if (progressCircle) {
-            progressCircle.style.animation = "progressSpin 2s ease-out";
+        document.body.appendChild(sparkle);
+
+        sparkle.animate(
+          [
+            { opacity: 0, transform: "scale(0)" },
+            { opacity: 1, transform: "scale(1)" },
+            { opacity: 0, transform: "scale(0)" },
+          ],
+          {
+            duration: 2000,
+            easing: "ease-out",
           }
-        }, 500);
+        ).onfinish = () => {
+          if (document.body.contains(sparkle)) {
+            document.body.removeChild(sparkle);
+          }
+        };
       }
 
       // Debug (Development Only)
       if (window.location.hostname === "localhost") {
-        console.log("🪞 Sacred Dashboard initialized");
+        console.log("🪞 Mesmerizing Dashboard - Perfect Contained Experience");
 
         window.dashboardDebug = {
           userData: () => userData,
