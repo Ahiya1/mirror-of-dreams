@@ -11,1968 +11,1846 @@
     <title>Your Reflection | Mirror of Truth</title>
 
     <style>
-           /* Mirror of Truth - Synthesized Perfect Architecture */
-           /* Combining enhanced features with flawless functionality */
-
-           /* ╭─ COSMIC FOUNDATION (Enhanced) ──────────────────────────────────────╮ */
-           * {
-             margin: 0;
-             padding: 0;
-             box-sizing: border-box;
-           }
-
-           body {
-             background: #020617;
-             color: #fff;
-             overflow-x: hidden;
-             font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
-             scroll-behavior: smooth;
-             min-height: 100vh;
-             position: relative;
-             -webkit-text-size-adjust: 100%;
-             -ms-text-size-adjust: 100%;
-             touch-action: manipulation;
-           }
-
-           /* Enhanced cosmic background with smoother animation */
-           body::before {
-             content: "";
-             position: fixed;
-             inset: 0;
-             background: radial-gradient(
-                 circle at 20% 30%,
-                 rgba(59, 130, 246, 0.05) 0%,
-                 transparent 50%
-               ),
-               radial-gradient(
-                 circle at 80% 70%,
-                 rgba(147, 51, 234, 0.04) 0%,
-                 transparent 50%
-               ),
-               radial-gradient(
-                 circle at 50% 50%,
-                 rgba(251, 191, 36, 0.03) 0%,
-                 transparent 70%
-               );
-             z-index: 0;
-             animation: cosmicShift 80s ease-in-out infinite;
-           }
-
-           @keyframes cosmicShift {
-             0%,
-             100% {
-               transform: scale(1) rotate(0deg);
-             }
-             33% {
-               transform: scale(1.05) rotate(120deg);
-             }
-             66% {
-               transform: scale(0.98) rotate(240deg);
-             }
-           }
-
-           /* Enhanced starfield with better performance */
-           body::after {
-             content: "";
-             position: fixed;
-             inset: 0;
-             z-index: 1;
-             pointer-events: none;
-             background: radial-gradient(
-                 circle at 20% 30%,
-                 rgba(255, 255, 255, 0.3) 0 1px,
-                 transparent 2px
-               ),
-               radial-gradient(
-                 circle at 60% 70%,
-                 rgba(255, 255, 255, 0.25) 0 1px,
-                 transparent 2px
-               ),
-               radial-gradient(
-                 circle at 80% 20%,
-                 rgba(255, 255, 255, 0.28) 0 1px,
-                 transparent 2px
-               ),
-               radial-gradient(
-                 circle at 40% 90%,
-                 rgba(255, 255, 255, 0.22) 0 1px,
-                 transparent 2px
-               );
-             background-size: 1200px 900px, 1600px 1100px, 900px 1300px,
-               1400px 1000px;
-             opacity: 0.08;
-             animation: starfieldShimmer 180s linear infinite;
-           }
-
-           @keyframes starfieldShimmer {
-             0% {
-               transform: translate(0, 0);
-             }
-             100% {
-               transform: translate(-60px, -60px);
-             }
-           }
-
-           /* ╭─ TONE BACKGROUNDS (Preserved & Enhanced) ───────────────────────────╮ */
-           /* Fusion: Enhanced golden breathing */
-           .fusion-breath {
-             position: fixed;
-             border-radius: 50%;
-             background: radial-gradient(
-               circle,
-               rgba(251, 191, 36, 0.3) 0%,
-               rgba(245, 158, 11, 0.15) 30%,
-               rgba(217, 119, 6, 0.08) 60%,
-               transparent 80%
-             );
-             filter: blur(35px);
-             animation: fusionBreathe 25s ease-in-out infinite;
-             z-index: 1;
-             pointer-events: none;
-           }
-
-           @keyframes fusionBreathe {
-             0%,
-             100% {
-               opacity: 0;
-               transform: scale(0.4) translate(0, 0);
-             }
-             25% {
-               opacity: 0.6;
-               transform: scale(1.1) translate(30px, -40px);
-             }
-             50% {
-               opacity: 0.8;
-               transform: scale(1.4) translate(-15px, 25px);
-             }
-             75% {
-               opacity: 0.5;
-               transform: scale(0.9) translate(40px, 15px);
-             }
-           }
-
-           /* Gentle: Enhanced twinkling stars */
-           .gentle-star {
-             position: fixed;
-             width: 3px;
-             height: 3px;
-             background: rgba(255, 255, 255, 0.95);
-             border-radius: 50%;
-             box-shadow: 0 0 8px rgba(255, 255, 255, 0.7),
-               0 0 15px rgba(255, 255, 255, 0.4);
-             animation: gentleTwinkle 10s ease-in-out infinite;
-             z-index: 1;
-             pointer-events: none;
-           }
-
-           @keyframes gentleTwinkle {
-             0%,
-             100% {
-               opacity: 0;
-               transform: scale(0.4);
-             }
-             50% {
-               opacity: 1;
-               transform: scale(1.3);
-             }
-           }
-
-           /* Intense: Enhanced purple swirls */
-           .intense-swirl {
-             position: fixed;
-             width: clamp(180px, 35vw, 240px);
-             height: clamp(180px, 35vw, 240px);
-             background: radial-gradient(
-               circle at 30% 30%,
-               rgba(147, 51, 234, 0.35) 0%,
-               rgba(168, 85, 247, 0.18) 30%,
-               rgba(139, 92, 246, 0.1) 60%,
-               transparent 80%
-             );
-             filter: blur(30px);
-             border-radius: 50%;
-             animation: intenseSwirl 18s ease-in-out infinite;
-             z-index: 1;
-             pointer-events: none;
-           }
-
-           @keyframes intenseSwirl {
-             0%,
-             100% {
-               opacity: 0;
-               transform: rotate(0deg) scale(0.2);
-             }
-             25% {
-               opacity: 0.7;
-               transform: rotate(180deg) scale(1.1);
-             }
-             50% {
-               opacity: 0.9;
-               transform: rotate(360deg) scale(1.4);
-             }
-             75% {
-               opacity: 0.6;
-               transform: rotate(540deg) scale(0.8);
-             }
-           }
-
-           /* ╭─ MAIN CONTAINER (Enhanced) ─────────────────────────────────────────╮ */
-           .container {
-             max-width: 900px;
-             margin: 0 auto;
-             padding: clamp(1rem, 3vw, 2rem);
-             min-height: 100vh;
-             display: flex;
-             align-items: center;
-             justify-content: center;
-             position: relative;
-             z-index: 10;
-           }
-
-           /* ╭─ EXPERIENCE SECTIONS (Enhanced State Management) ──────────────────╮ */
-           .experience-section {
-             width: 100%;
-             text-align: center;
-             opacity: 0;
-             transform: translateY(30px);
-             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-             pointer-events: none;
-           }
-
-           .experience-section.active {
-             opacity: 1;
-             transform: translateY(0);
-             pointer-events: all;
-           }
-
-           .experience-section.hidden {
-             display: none;
-           }
-
-           /* ╭─ ENHANCED TONE SELECTOR ────────────────────────────────────────────╮ */
-           .tone-group {
-             display: flex;
-             gap: clamp(0.8rem, 2vw, 1.2rem);
-             margin-bottom: clamp(2rem, 4vw, 3rem);
-             flex-wrap: wrap;
-             justify-content: center;
-           }
-
-           .tone-label {
-             flex-basis: 100%;
-             margin-bottom: clamp(1rem, 2vw, 1.5rem);
-             font-size: clamp(1rem, 3vw, 1.2rem);
-             opacity: 0.85;
-             color: rgba(255, 255, 255, 0.9);
-             letter-spacing: 0.8px;
-             text-align: center;
-             font-weight: 300;
-             position: relative;
-           }
-
-           .tone-label::after {
-             content: "";
-             position: absolute;
-             bottom: -8px;
-             left: 50%;
-             transform: translateX(-50%);
-             width: 60px;
-             height: 1px;
-             background: linear-gradient(
-               90deg,
-               transparent,
-               rgba(255, 255, 255, 0.3),
-               transparent
-             );
-           }
-
-           .tone-btn {
-             flex: 1;
-             min-width: 140px;
-             max-width: 220px;
-             padding: clamp(1rem, 2.5vw, 1.4rem) clamp(1.2rem, 3vw, 1.6rem);
-             background: rgba(255, 255, 255, 0.06);
-             backdrop-filter: blur(25px) saturate(120%);
-             border: 1px solid rgba(255, 255, 255, 0.12);
-             border-radius: 18px;
-             color: rgba(255, 255, 255, 0.75);
-             text-align: center;
-             cursor: pointer;
-             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-             position: relative;
-             overflow: hidden;
-             font-weight: 400;
-             letter-spacing: 0.4px;
-             font-size: clamp(0.9rem, 2.2vw, 1rem);
-             touch-action: manipulation;
-             -webkit-tap-highlight-color: transparent;
-             min-height: 52px;
-             display: flex;
-             align-items: center;
-             justify-content: center;
-           }
-
-           .tone-btn::before {
-             content: "";
-             position: absolute;
-             inset: 0;
-             background: linear-gradient(
-               45deg,
-               transparent,
-               rgba(255, 255, 255, 0.1),
-               transparent
-             );
-             transform: translateX(-100%);
-             transition: transform 0.6s ease;
-           }
-
-           .tone-btn:hover::before {
-             transform: translateX(100%);
-           }
-
-           .tone-btn:hover {
-             background: rgba(255, 255, 255, 0.1);
-             border-color: rgba(255, 255, 255, 0.2);
-             color: rgba(255, 255, 255, 0.95);
-             transform: translateY(-3px) scale(1.02);
-             box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
-           }
-
-           .tone-btn.selected {
-             background: rgba(255, 255, 255, 0.12);
-             border-color: rgba(255, 255, 255, 0.25);
-             color: #fff;
-             box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
-           }
-
-           /* Enhanced tone-specific selection styles */
-           .tone-btn[data-tone="fusion"].selected {
-             border-color: rgba(251, 191, 36, 0.4);
-             background: rgba(251, 191, 36, 0.08);
-             box-shadow: 0 8px 25px rgba(251, 191, 36, 0.2);
-           }
-
-           .tone-btn[data-tone="gentle"].selected {
-             border-color: rgba(255, 255, 255, 0.3);
-             background: rgba(255, 255, 255, 0.1);
-             box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
-           }
-
-           .tone-btn[data-tone="intense"].selected {
-             border-color: rgba(147, 51, 234, 0.4);
-             background: rgba(147, 51, 234, 0.08);
-             box-shadow: 0 8px 25px rgba(147, 51, 234, 0.2);
-           }
-
-           /* ╭─ REVOLUTIONARY QUESTION CARDS ─────────────────────────────────────╮ */
-           .questions-form {
-             text-align: left;
-           }
-
-      state for animation */
-             opacity: 0;
-             transform: translateY(40px);
-           }
-
-           .question-group.appear {
-             opacity: 1;
-             transform: translateY(0);
-             animation: questionGlow 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-           }
-
-           @keyframes questionGlow {
-             0% {
-               opacity: 0;
-               transform: translateY(40px) scale(0.97);
-               box-shadow: 0 0 0 rgba(255, 255, 255, 0);
-             }
-             50% {
-               box-shadow: 0 0 50px rgba(255, 255, 255, 0.1),
-                 inset 0 0 25px rgba(255, 255, 255, 0.03);
-             }
-             100% {
-               opacity: 1;
-               transform: translateY(0) scale(1);
-               box-shadow: 0 0 0 rgba(255, 255, 255, 0);
-             }
-           }
-
-           .question-group::before {
-             content: "";
-             position: absolute;
-             inset: 0;
-             background: radial-gradient(
-               circle at 25% 50%,
-               rgba(255, 255, 255, 0.03) 0%,
-               transparent 60%
-             );
-             opacity: 0;
-             transition: opacity 0.6s ease;
-           }
-
-           .question-group:hover::before {
-             opacity: 1;
-           }
-
-           .question-group:hover {
-             border-color: rgba(255, 255, 255, 0.15);
-             transform: translateY(-4px);
-             box-shadow: 0 15px 50px rgba(255, 255, 255, 0.08);
-           }
-
-           .question-number {
-             font-size: clamp(0.7rem, 2vw, 0.8rem);
-             opacity: 0.45;
-             margin-bottom: clamp(1rem, 2vw, 1.2rem);
-             text-transform: uppercase;
-             letter-spacing: 2.5px;
-             color: rgba(255, 255, 255, 0.45);
-             font-weight: 600;
-             position: relative;
-           }
-
-           .question-number::after {
-             content: "";
-             position: absolute;
-             left: 0;
-             bottom: -4px;
-             width: 30px;
-             height: 1px;
-             background: linear-gradient(
-               90deg,
-               rgba(255, 255, 255, 0.3),
-               transparent
-             );
-           }
-
-           .question-text {
-             font-size: clamp(1.3rem, 4vw, 1.6rem);
-             margin-bottom: clamp(0.8rem, 1.5vw, 1rem);
-             line-height: 1.3;
-             color: rgba(255, 255, 255, 0.97);
-             font-weight: 300;
-             letter-spacing: 0.3px;
-             text-shadow: 0 2px 15px rgba(255, 255, 255, 0.05);
-           }
-
-           .question-subtitle {
-             font-size: clamp(0.9rem, 2.2vw, 1rem);
-             opacity: 0.6;
-             margin-bottom: clamp(1.5rem, 3vw, 2rem);
-             font-style: italic;
-             color: rgba(255, 255, 255, 0.6);
-             line-height: 1.4;
-             font-weight: 300;
-             letter-spacing: 0.2px;
-           }
-
-           /* ╭─ REVOLUTIONARY TEXTAREA (Character Count + Enhanced Styling) ──────╮ */
-           .textarea-container {
-             position: relative;
-           }
-
-           .sacred-textarea {
-             width: 100%;
-             padding: clamp(1.4rem, 3vw, 1.6rem);
-             background: linear-gradient(
-               135deg,
-               rgba(255, 255, 255, 0.05) 0%,
-               rgba(255, 255, 255, 0.025) 100%
-             );
-             backdrop-filter: blur(25px) saturate(120%);
-             border: 1px solid rgba(255, 255, 255, 0.12);
-             border-radius: 18px;
-             color: #fff;
-             font-size: clamp(1rem, 2.2vw, 1.1rem);
-             font-family: inherit;
-             transition: all 0.4s ease;
-             resize: vertical;
-             min-height: clamp(140px, 25vw, 180px);
-             line-height: 1.6;
-             -webkit-appearance: none;
-             appearance: none;
-             touch-action: manipulation;
-             -webkit-tap-highlight-color: transparent;
-             box-sizing: border-box;
-           }
-
-           .sacred-textarea:focus {
-             outline: none;
-             border-color: rgba(255, 255, 255, 0.3);
-             background: linear-gradient(
-               135deg,
-               rgba(255, 255, 255, 0.08) 0%,
-               rgba(255, 255, 255, 0.04) 100%
-             );
-             box-shadow: 0 0 40px rgba(255, 255, 255, 0.08),
-               inset 0 1px 0 rgba(255, 255, 255, 0.12);
-             transform: translateY(-2px);
-           }
-
-           .sacred-textarea::placeholder {
-             color: rgba(255, 255, 255, 0.4);
-             font-style: italic;
-             font-weight: 300;
-           }
-
-           /* CHARACTER COUNT INDICATOR (Revolutionary Feature) */
-           .char-count-container {
-             display: flex;
-             justify-content: space-between;
-             align-items: center;
-             margin-top: 0.8rem;
-             padding: 0 0.2rem;
-           }
-
-           .char-count {
-             font-size: clamp(0.75rem, 1.8vw, 0.85rem);
-             color: rgba(255, 255, 255, 0.5);
-             font-weight: 400;
-             transition: all 0.3s ease;
-           }
-
-           .char-count.approaching-limit {
-             color: rgba(251, 191, 36, 0.8);
-             font-weight: 500;
-           }
-
-           .char-count.at-limit {
-             color: rgba(239, 68, 68, 0.9);
-             font-weight: 600;
-             animation: charPulse 2s ease-in-out infinite;
-           }
-
-           @keyframes charPulse {
-             0%,
-             100% {
-               opacity: 0.9;
-             }
-             50% {
-               opacity: 1;
-             }
-           }
-
-           .char-progress {
-             width: 60px;
-             height: 3px;
-             background: rgba(255, 255, 255, 0.1);
-             border-radius: 2px;
-             overflow: hidden;
-             position: relative;
-           }
-
-           .char-progress-bar {
-             height: 100%;
-             background: linear-gradient(
-               90deg,
-               rgba(16, 185, 129, 0.8) 0%,
-               rgba(251, 191, 36, 0.8) 70%,
-               rgba(239, 68, 68, 0.9) 100%
-             );
-             border-radius: 2px;
-             transition: width 0.3s ease;
-             width: 0%;
-           }
-
-           /* ╭─ YES/NO BUTTONS (Enhanced) ─────────────────────────────────────────╮ */
-           .yes-no-buttons {
-             display: flex;
-             gap: clamp(1rem, 2.5vw, 1.4rem);
-             margin-top: clamp(1rem, 2vw, 1.2rem);
-           }
-
-           .yes-no-btn {
-             flex: 1;
-             padding: clamp(1rem, 2.5vw, 1.2rem);
-             background: rgba(255, 255, 255, 0.05);
-             backdrop-filter: blur(25px);
-             border: 1px solid rgba(255, 255, 255, 0.12);
-             border-radius: 16px;
-             color: rgba(255, 255, 255, 0.75);
-             text-align: center;
-             cursor: pointer;
-             transition: all 0.4s ease;
-             font-weight: 500;
-             letter-spacing: 0.5px;
-             font-size: clamp(1rem, 2.2vw, 1.1rem);
-             touch-action: manipulation;
-             -webkit-tap-highlight-color: transparent;
-             min-height: 52px;
-             display: flex;
-             align-items: center;
-             justify-content: center;
-             position: relative;
-             overflow: hidden;
-           }
-
-           .yes-no-btn::before {
-             content: "";
-             position: absolute;
-             inset: 0;
-             background: linear-gradient(
-               45deg,
-               transparent,
-               rgba(255, 255, 255, 0.1),
-               transparent
-             );
-             transform: translateX(-100%);
-             transition: transform 0.6s ease;
-           }
-
-           .yes-no-btn:hover::before {
-             transform: translateX(100%);
-           }
-
-           .yes-no-btn:hover {
-             background: rgba(255, 255, 255, 0.08);
-             border-color: rgba(255, 255, 255, 0.2);
-             color: rgba(255, 255, 255, 0.95);
-             transform: translateY(-2px) scale(1.02);
-           }
-
-           .yes-no-btn.selected {
-             background: rgba(255, 255, 255, 0.15);
-             border-color: rgba(255, 255, 255, 0.3);
-             color: #fff;
-             box-shadow: 0 0 20px rgba(255, 255, 255, 0.12);
-             transform: scale(1.05);
-           }
-
-           /* ╭─ DATE CONTAINER (Enhanced) ─────────────────────────────────────────╮ */
-           .date-container {
-             display: flex;
-             align-items: center;
-             gap: clamp(1rem, 2.5vw, 1.5rem);
-             margin-top: clamp(1.5rem, 3vw, 2rem);
-             padding: clamp(1rem, 2.5vw, 1.4rem);
-             background: rgba(255, 255, 255, 0.03);
-             border-radius: 16px;
-             border: 1px solid rgba(255, 255, 255, 0.08);
-             animation: dateSlideIn 0.6s ease;
-             flex-wrap: wrap;
-           }
-
-           @keyframes dateSlideIn {
-             from {
-               opacity: 0;
-               transform: translateY(15px);
-             }
-             to {
-               opacity: 1;
-               transform: translateY(0);
-             }
-           }
-
-           .date-container label {
-             color: rgba(255, 255, 255, 0.85);
-             font-weight: 500;
-             font-size: clamp(0.9rem, 2.2vw, 1rem);
-             min-width: fit-content;
-           }
-
-           .date-input {
-             flex: 1;
-             min-width: 180px;
-             padding: clamp(0.8rem, 2vw, 1rem);
-             background: rgba(255, 255, 255, 0.05);
-             border: 1px solid rgba(255, 255, 255, 0.15);
-             border-radius: 12px;
-             color: #fff;
-             font-family: inherit;
-             font-size: clamp(0.9rem, 2vw, 1rem);
-             transition: all 0.3s ease;
-           }
-
-           .date-input:focus {
-             outline: none;
-             border-color: rgba(255, 255, 255, 0.3);
-             background: rgba(255, 255, 255, 0.08);
-           }
-
-           /* ╭─ SUBMIT BUTTON (Revolutionary Enhancement) ─────────────────────────╮ */
-           .submit-btn {
-             width: 100%;
-             margin-top: clamp(3rem, 5vw, 4rem);
-             padding: clamp(1.4rem, 3vw, 1.8rem) clamp(2rem, 4vw, 2.5rem);
-             font-size: clamp(1.1rem, 2.8vw, 1.3rem);
-             font-weight: 500;
-             background: linear-gradient(
-               135deg,
-               rgba(255, 255, 255, 0.1) 0%,
-               rgba(255, 255, 255, 0.06) 100%
-             );
-             backdrop-filter: blur(30px) saturate(120%);
-             border: 1px solid rgba(255, 255, 255, 0.2);
-             border-radius: 24px;
-             color: #fff;
-             cursor: pointer;
-             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-             letter-spacing: 1px;
-             touch-action: manipulation;
-             -webkit-tap-highlight-color: transparent;
-             min-height: 64px;
-             position: relative;
-             overflow: hidden;
-             text-transform: uppercase;
-           }
-
-           .submit-btn::before {
-             content: "";
-             position: absolute;
-             inset: 0;
-             background: linear-gradient(
-               45deg,
-               transparent,
-               rgba(255, 255, 255, 0.15),
-               transparent
-             );
-             transform: translateX(-100%);
-             transition: transform 0.8s ease;
-           }
-
-           .submit-btn:hover::before {
-             transform: translateX(100%);
-           }
-
-           .submit-btn:hover:not(:disabled) {
-             background: linear-gradient(
-               135deg,
-               rgba(255, 255, 255, 0.15) 0%,
-               rgba(255, 255, 255, 0.08) 100%
-             );
-             border-color: rgba(255, 255, 255, 0.35);
-             transform: translateY(-4px) scale(1.02);
-             box-shadow: 0 20px 60px rgba(255, 255, 255, 0.15);
-             letter-spacing: 1.5px;
-           }
-
-           .submit-btn:disabled {
-             opacity: 0.6;
-             cursor: not-allowed;
-             transform: none;
-           }
-
-           .submit-btn:active:not(:disabled) {
-             transform: translateY(-2px) scale(0.98);
-           }
-
-           /* ╭─ LOADING STATES (Enhanced) ─────────────────────────────────────────╮ */
-           .loading-container {
-             display: flex;
-             flex-direction: column;
-             align-items: center;
-             gap: clamp(2rem, 4vw, 3rem);
-             padding: clamp(3rem, 6vw, 4rem);
-           }
-
-           .loading-circle {
-             width: clamp(140px, 30vw, 180px);
-             height: clamp(140px, 30vw, 180px);
-             border-radius: 50%;
-             background: radial-gradient(
-               circle,
-               rgba(255, 255, 255, 0.15) 0%,
-               rgba(255, 255, 255, 0.05) 40%,
-               rgba(255, 255, 255, 0.02) 70%,
-               transparent 85%
-             );
-             animation: breatheLoading 4.5s ease-in-out infinite;
-             position: relative;
-             box-shadow: 0 0 60px rgba(255, 255, 255, 0.1),
-               inset 0 0 30px rgba(255, 255, 255, 0.05);
-           }
-
-           .loading-circle::after {
-             content: "";
-             position: absolute;
-             inset: 25px;
-             border-radius: 50%;
-             background: radial-gradient(
-               circle,
-               rgba(255, 255, 255, 0.1) 0%,
-               rgba(255, 255, 255, 0.03) 50%,
-               transparent 75%
-             );
-             animation: breatheInner 4.5s ease-in-out infinite;
-           }
-
-           @keyframes breatheLoading {
-             0%,
-             100% {
-               transform: scale(1);
-               opacity: 0.7;
-             }
-             50% {
-               transform: scale(1.15);
-               opacity: 1;
-             }
-           }
-
-           @keyframes breatheInner {
-             0%,
-             100% {
-               transform: scale(1) rotate(0deg);
-               opacity: 0.5;
-             }
-             50% {
-               transform: scale(1.3) rotate(180deg);
-               opacity: 0.9;
-             }
-           }
-
-           .loading-text {
-             font-size: clamp(1.1rem, 3vw, 1.4rem);
-             font-weight: 300;
-             opacity: 0.8;
-             text-align: center;
-             letter-spacing: 1px;
-             color: rgba(255, 255, 255, 0.85);
-             animation: loadingPulse 3s ease-in-out infinite;
-           }
-
-           @keyframes loadingPulse {
-             0%,
-             100% {
-               opacity: 0.6;
-             }
-             50% {
-               opacity: 1;
-             }
-           }
-
-           /* ╭─ RESULTS SECTION (Revolutionary Artifact Integration) ──────────────╮ */
-           .results {
-             text-align: left;
-             max-width: 800px;
-             margin: 0 auto;
-             padding: 0 clamp(1rem, 2vw, 2rem);
-           }
-
-           .results-backdrop {
-             background: linear-gradient(
-               135deg,
-               rgba(255, 255, 255, 0.04) 0%,
-               rgba(255, 255, 255, 0.015) 100%
-             );
-             backdrop-filter: blur(50px) saturate(130%);
-             border: 1px solid rgba(255, 255, 255, 0.1);
-             border-radius: 28px;
-             padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2.5rem);
-             margin-bottom: clamp(2rem, 4vw, 3rem);
-             box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4),
-               inset 0 1px 0 rgba(255, 255, 255, 0.08);
-             position: relative;
-             overflow: hidden;
-             animation: resultsGlow 1s ease-out;
-           }
-
-           @keyframes resultsGlow {
-             from {
-               opacity: 0;
-               transform: translateY(30px) scale(0.95);
-             }
-             to {
-               opacity: 1;
-               transform: translateY(0) scale(1);
-             }
-           }
-
-           .results-content {
-             background: rgba(255, 255, 255, 0.97);
-             color: #1a1a2e;
-             padding: clamp(2.5rem, 5vw, 3.5rem) clamp(2rem, 4vw, 3rem);
-             border-radius: 24px;
-             box-shadow: 0 15px 60px rgba(0, 0, 0, 0.25);
-             font-size: clamp(1.05rem, 2.5vw, 1.2rem);
-             line-height: 1.7;
-             font-weight: 300;
-             position: relative;
-           }
-
-           /* Enhanced markdown styling for reflection content */
-           .results-content p {
-             margin: 0 0 1.8rem 0;
-           }
-
-           .results-content p:last-child {
-             margin-bottom: 0;
-           }
-
-           .results-content strong {
-             font-weight: 600;
-             color: #16213e;
-             background: linear-gradient(135deg, #667eea, #764ba2);
-             -webkit-background-clip: text;
-             background-clip: text;
-             -webkit-text-fill-color: transparent;
-             position: relative;
-           }
-
-           .results-content strong::after {
-             content: "";
-             position: absolute;
-             bottom: -2px;
-             left: 0;
-             right: 0;
-             height: 1px;
-             background: linear-gradient(
-               90deg,
-               transparent,
-               rgba(102, 126, 234, 0.3),
-               transparent
-             );
-           }
-
-           .results-content em {
-             font-style: italic;
-             color: #4a5568;
-             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-           }
-
-           /* ╭─ REVOLUTIONARY ACTIONS GRID ────────────────────────────────────────╮ */
-           .results-actions {
-             display: grid;
-             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-             gap: clamp(1rem, 2.5vw, 1.5rem);
-             margin-top: clamp(2rem, 4vw, 3rem);
-           }
-
-           .sacred-button {
-             display: flex;
-             align-items: center;
-             justify-content: center;
-             gap: clamp(0.6rem, 1.5vw, 0.8rem);
-             padding: clamp(1rem, 2.5vw, 1.4rem) clamp(1.2rem, 3vw, 1.6rem);
-             background: rgba(255, 255, 255, 0.06);
-             backdrop-filter: blur(25px);
-             border: 1px solid rgba(255, 255, 255, 0.15);
-             border-radius: 18px;
-             color: rgba(255, 255, 255, 0.9);
-             font-weight: 500;
-             letter-spacing: 0.4px;
-             transition: all 0.4s ease;
-             text-decoration: none;
-             display: flex;
-             align-items: center;
-             justify-content: center;
-             font-size: clamp(0.9rem, 2.2vw, 1rem);
-             touch-action: manipulation;
-             -webkit-tap-highlight-color: transparent;
-             min-height: 56px;
-             min-width: 140px;
-             flex: 1;
-             max-width: 220px;
-             cursor: pointer;
-             position: relative;
-             overflow: hidden;
-           }
-
-           .sacred-button::before {
-             content: "";
-             position: absolute;
-             inset: 0;
-             background: linear-gradient(
-               45deg,
-               transparent,
-               rgba(255, 255, 255, 0.1),
-               transparent
-             );
-             transform: translateX(-100%);
-             transition: transform 0.6s ease;
-           }
-
-           .sacred-button:hover::before {
-             transform: translateX(100%);
-           }
-
-           .sacred-button:hover {
-             background: rgba(255, 255, 255, 0.12);
-             border-color: rgba(255, 255, 255, 0.3);
-             transform: translateY(-3px) scale(1.05);
-             box-shadow: 0 15px 40px rgba(255, 255, 255, 0.15);
-           }
-
-           /* ARTIFACT BUTTON - Special styling */
-           .artifact-button {
-             background: linear-gradient(
-               135deg,
-               rgba(251, 191, 36, 0.15) 0%,
-               rgba(245, 158, 11, 0.1) 100%
-             ) !important;
-             border-color: rgba(251, 191, 36, 0.3) !important;
-             color: rgba(251, 191, 36, 0.95) !important;
-           }
-
-           .artifact-button:hover {
-             background: linear-gradient(
-               135deg,
-               rgba(251, 191, 36, 0.25) 0%,
-               rgba(245, 158, 11, 0.15) 100%
-             ) !important;
-             border-color: rgba(251, 191, 36, 0.5) !important;
-             box-shadow: 0 15px 40px rgba(251, 191, 36, 0.25) !important;
-           }
-
-           /* ╭─ ADMIN NOTICE (Enhanced) ───────────────────────────────────────────╮ */
-           .admin-notice {
-             background: rgba(168, 85, 247, 0.1);
-             border: 1px solid rgba(168, 85, 247, 0.25);
-             color: #d8b4fe;
-             padding: clamp(1rem, 2vw, 1.4rem) clamp(1.5rem, 3vw, 2rem);
-             border-radius: 16px;
-             margin-bottom: clamp(2rem, 3vw, 2.5rem);
-             font-size: clamp(0.85rem, 2vw, 0.95rem);
-             font-weight: 400;
-             letter-spacing: 0.3px;
-             text-align: center;
-             animation: adminGlow 4s ease-in-out infinite;
-             position: relative;
-             overflow: hidden;
-           }
-
-           .admin-notice::before {
-             content: "";
-             position: absolute;
-             inset: 0;
-             background: linear-gradient(
-               45deg,
-               transparent,
-               rgba(168, 85, 247, 0.1),
-               transparent
-             );
-             transform: translateX(-100%);
-             animation: adminShimmer 3s ease-in-out infinite;
-           }
-
-           @keyframes adminGlow {
-             0%,
-             100% {
-               background: rgba(168, 85, 247, 0.1);
-               border-color: rgba(168, 85, 247, 0.25);
-             }
-             50% {
-               background: rgba(168, 85, 247, 0.15);
-               border-color: rgba(168, 85, 247, 0.35);
-             }
-           }
-
-           @keyframes adminShimmer {
-             0% {
-               transform: translateX(-100%);
-             }
-             100% {
-               transform: translateX(100%);
-             }
-           }
-
-           /* ╭─ FEEDBACK SECTION ────────────────────────────────────────────────╮ */
-           .feedback-section {
-             margin: 3rem 0;
-             padding: 2.5rem;
-             background: rgba(255, 255, 255, 0.05);
-             backdrop-filter: blur(20px);
-             border: 1px solid rgba(255, 255, 255, 0.1);
-             border-radius: 24px;
-             transition: all 0.8s ease;
-           }
-
-           .feedback-content {
-             text-align: center;
-             max-width: 600px;
-             margin: 0 auto;
-           }
-
-           .feedback-title {
-             font-size: clamp(1.2rem, 3vw, 1.4rem);
-             font-weight: 300;
-             color: rgba(255, 255, 255, 0.95);
-             margin-bottom: 2rem;
-             line-height: 1.4;
-           }
-
-           .rating-container {
-             display: flex;
-             justify-content: center;
-             gap: 0.8rem;
-             margin-bottom: 0.5rem;
-             flex-wrap: wrap;
-           }
-
-           .rating-btn {
-             width: 48px;
-             height: 48px;
-             border: 1px solid rgba(255, 255, 255, 0.2);
-             background: rgba(255, 255, 255, 0.05);
-             border-radius: 12px;
-             color: rgba(255, 255, 255, 0.8);
-             font-size: 1.1rem;
-             font-weight: 500;
-             cursor: pointer;
-             transition: all 0.3s ease;
-             display: flex;
-             align-items: center;
-             justify-content: center;
-           }
-
-           .rating-btn:hover {
-             background: rgba(255, 255, 255, 0.1);
-             border-color: rgba(255, 255, 255, 0.4);
-             transform: translateY(-2px);
-           }
-
-           .rating-btn.selected {
-             background: linear-gradient(135deg, #10b981, #059669);
-             border-color: #10b981;
-             color: white;
-             font-weight: 600;
-             transform: scale(1.1);
-           }
-
-           .rating-labels {
-             display: flex;
-             justify-content: space-between;
-             max-width: 500px;
-             margin: 0 auto 2rem;
-             font-size: 0.9rem;
-             opacity: 0.6;
-           }
-
-           .feedback-insight {
-             width: 100%;
-             background: rgba(255, 255, 255, 0.05);
-             border: 1px solid rgba(255, 255, 255, 0.1);
-             color: rgba(255, 255, 255, 0.9);
-             border-radius: 16px;
-             padding: 1rem;
-             margin-bottom: 2rem;
-             resize: vertical;
-             min-height: 80px;
-             font-family: inherit;
-             font-size: 1rem;
-             line-height: 1.6;
-             transition: all 0.3s ease;
-           }
-
-           .feedback-insight:focus {
-             outline: none;
-             border-color: rgba(255, 255, 255, 0.3);
-             background: rgba(255, 255, 255, 0.08);
-           }
-
-           .feedback-insight::placeholder {
-             color: rgba(255, 255, 255, 0.4);
-           }
-
-           .submit-feedback-btn,
-           .skip-feedback-btn {
-             padding: 1rem 2rem;
-             border-radius: 16px;
-             border: none;
-             font-size: 1rem;
-             font-weight: 500;
-             cursor: pointer;
-             transition: all 0.3s ease;
-             font-family: inherit;
-           }
-
-           .submit-feedback-btn {
-             background: linear-gradient(135deg, #10b981, #059669);
-             color: white;
-             margin-right: 1rem;
-           }
-
-           .submit-feedback-btn:hover {
-             transform: translateY(-2px);
-             box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
-           }
-
-           .submit-feedback-btn:disabled {
-             opacity: 0.7;
-             cursor: not-allowed;
-             transform: none;
-           }
-
-           .skip-feedback-btn {
-             background: transparent;
-             color: rgba(255, 255, 255, 0.6);
-             border: 1px solid rgba(255, 255, 255, 0.2);
-           }
-
-           .skip-feedback-btn:hover {
-             background: rgba(255, 255, 255, 0.05);
-             color: rgba(255, 255, 255, 0.8);
-             border-color: rgba(255, 255, 255, 0.3);
-           }
-
-           /* Premium badge */
-           .premium-badge {
-             position: absolute;
-             top: -1px;
-             right: 1.5rem;
-             background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-             color: white;
-             padding: 0.4rem 1rem;
-             border-radius: 0 0 16px 16px;
-             font-size: 0.8rem;
-             font-weight: 600;
-             letter-spacing: 0.5px;
-             text-transform: uppercase;
-             box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-             z-index: 20;
-           }
-
-           /* Creator button special styling */
-           .creator-button {
-             background: linear-gradient(
-               135deg,
-               rgba(147, 51, 234, 0.15),
-               rgba(59, 130, 246, 0.1)
-             ) !important;
-             border-color: rgba(147, 51, 234, 0.3) !important;
-             position: relative;
-             overflow: hidden;
-           }
-
-           .creator-button::before {
-             content: "";
-             position: absolute;
-             inset: 0;
-             background: linear-gradient(
-               135deg,
-               rgba(147, 51, 234, 0.1),
-               rgba(59, 130, 246, 0.05)
-             );
-             opacity: 0;
-             transition: opacity 0.3s ease;
-           }
-
-           .creator-button:hover::before {
-             opacity: 1;
-           }
-
-           .creator-button:hover {
-             border-color: rgba(147, 51, 234, 0.5) !important;
-             transform: translateY(-2px);
-             box-shadow: 0 8px 25px rgba(147, 51, 234, 0.2) !important;
-           }
-
-           /* ╭─ MOBILE RESPONSIVE (Enhanced) ──────────────────────────────────────╮ */
-           @media (max-width: 768px) {
-             .container {
-               padding: clamp(0.5rem, 2vw, 1rem);
-             }
-
-             .question-group {
-               padding: clamp(1.5rem, 3vw, 2rem) clamp(1rem, 2.5vw, 1.5rem);
-               margin-bottom: clamp(2rem, 3vw, 2.5rem);
-             }
-
-             .tone-group {
-               flex-direction: column;
-               gap: clamp(1rem, 2vw, 1.2rem);
-               margin-bottom: clamp(1.5rem, 3vw, 2rem);
-             }
-
-             .tone-btn {
-               min-width: auto;
-               max-width: none;
-             }
-
-             .yes-no-buttons {
-               flex-direction: column;
-               gap: clamp(1rem, 2vw, 1.2rem);
-             }
-
-             .date-container {
-               flex-direction: column;
-               align-items: stretch;
-               gap: clamp(1rem, 2vw, 1.2rem);
-             }
-
-             .results-backdrop {
-               padding: clamp(1.5rem, 3vw, 2rem) clamp(1rem, 2.5vw, 1.5rem);
-             }
-
-             .results-content {
-               padding: clamp(1.5rem, 3vw, 2rem) clamp(1rem, 2.5vw, 1.5rem);
-             }
-
-             .results-actions {
-               grid-template-columns: 1fr;
-               gap: clamp(1rem, 2vw, 1.2rem);
-             }
-
-             .sacred-button {
-               max-width: none;
-             }
-
-             .feedback-section {
-               padding: 1.5rem;
-               margin: 2rem 0;
-             }
-
-             .rating-container {
-               gap: 0.5rem;
-             }
-
-             .rating-btn {
-               width: 40px;
-               height: 40px;
-               font-size: 1rem;
-             }
-
-             .submit-feedback-btn,
-             .skip-feedback-btn {
-               display: block;
-               width: 100%;
-               margin: 0.5rem 0;
-             }
-           }
-
-           @media (max-width: 480px) {
-             .container {
-               padding: clamp(0.3rem, 1vw, 0.8rem);
-             }
-
-             .question-group {
-               padding: clamp(1.2rem, 2.5vw, 1.6rem) clamp(0.8rem, 2vw, 1.2rem);
-               margin-bottom: clamp(1.5rem, 2.5vw, 2rem);
-               border-radius: 18px;
-             }
-
-             .sacred-textarea {
-               padding: clamp(1.2rem, 2.5vw, 1.4rem);
-               min-height: clamp(120px, 22vw, 150px);
-             }
-
-             .submit-btn {
-               padding: clamp(1.2rem, 2.5vw, 1.5rem) clamp(1.5rem, 3vw, 2rem);
-               margin-top: clamp(2rem, 4vw, 2.5rem);
-             }
-
-             .results-backdrop {
-               padding: clamp(1.2rem, 2.5vw, 1.6rem) clamp(0.8rem, 2vw, 1.2rem);
-               border-radius: 22px;
-             }
-
-             .results-content {
-               padding: clamp(1.2rem, 2.5vw, 1.6rem) clamp(0.8rem, 2vw, 1.2rem);
-               border-radius: 18px;
-             }
-
-             .loading-container {
-               padding: clamp(2rem, 4vw, 2.5rem);
-               gap: clamp(1.5rem, 3vw, 2rem);
-             }
-           }
-
-           /* Landscape mobile optimization */
-           @media (max-height: 600px) and (orientation: landscape) {
-             .container {
-               align-items: flex-start;
-               padding-top: clamp(1rem, 2vh, 1.5rem);
-             }
-
-             .question-group {
-               margin-bottom: clamp(1.5rem, 2.5vh, 2rem);
-               padding: clamp(1.2rem, 2vh, 1.6rem) clamp(1rem, 2vw, 1.5rem);
-             }
-
-             .tone-group {
-               margin-bottom: clamp(1rem, 1.5vh, 1.5rem);
-             }
-
-             .submit-btn {
-               margin-top: clamp(2rem, 3vh, 2.5rem);
-             }
-           }
-
-           /* High DPI displays */
-           @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-             .question-group,
-             .sacred-textarea,
-             .tone-btn,
-             .yes-no-btn,
-             .submit-btn {
-               border-width: 0.5px;
-             }
-           }
-
-           /* Reduce motion for accessibility */
-           @media (prefers-reduced-motion: reduce) {
-             *,
-             *::before,
-             *::after {
-               animation-duration: 0.01ms !important;
-               animation-iteration-count: 1 !important;
-               transition-duration: 0.01ms !important;
-             }
-
-             .fusion-breath,
-             .gentle-star,
-             .intense-swirl,
-             .loading-circle {
-               animation: none;
-             }
-           }
-
-           /* Focus indicators for accessibility */
-           .tone-btn:focus-visible,
-           .sacred-textarea:focus-visible,
-           .yes-no-btn:focus-visible,
-           .submit-btn:focus-visible,
-           .sacred-button:focus-visible {
-             outline: 2px solid rgba(255, 255, 255, 0.6);
-             outline-offset: 2px;
-           }
-
-           /* Remove default focus outlines */
-           * {
-             outline: none !important;
-             -webkit-tap-highlight-color: transparent;
-           }
-
-           /* iOS specific safe area handling */
-           @supports (-webkit-touch-callout: none) {
-             .container {
-               padding-top: max(clamp(1rem, 3vh, 2rem), env(safe-area-inset-top));
-               padding-left: max(clamp(1rem, 3vw, 2rem), env(safe-area-inset-left));
-               padding-right: max(
-                 clamp(1rem, 3vw, 2rem),
-                 env(safe-area-inset-right)
-               );
-               padding-bottom: max(
-                 clamp(1rem, 3vh, 2rem),
-                 env(safe-area-inset-bottom)
-               );
-             }
-           }
-
-           /* Subtle effects animations */
-           @keyframes subtleExpand {
-             0% {
-               opacity: 0;
-               transform: scale(0.4);
-             }
-             50% {
-               opacity: 0.4;
-             }
-             100% {
-               opacity: 0;
-               transform: scale(2.5);
-             }
-           }
-
-           @keyframes subtleTwinkle {
-             0% {
-               opacity: 0;
-               transform: scale(0) rotate(0deg);
-             }
-             50% {
-               opacity: 1;
-               transform: scale(1.2) rotate(180deg);
-             }
-             100% {
-               opacity: 0;
-               transform: scale(0) rotate(360deg);
-             }
-           }
-
-           @keyframes subtleSwirl {
-             0% {
-               opacity: 0;
-               transform: scale(0.5) rotate(0deg);
-             }
-             50% {
-               opacity: 0.5;
-               transform: scale(1.2) rotate(180deg);
-             }
-             100% {
-               opacity: 0;
-               transform: scale(1.8) rotate(360deg);
-             }
-           }
+      /* ═══════════════ MIRROR OF TRUTH - COMPLETE REWRITE ═══════════════ */
+      /* Revolutionary architecture with flawless functionality */
+
+      /* ╭─ RESET & FOUNDATION ────────────────────────────────────────────╮ */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+      }
+
+      body {
+        background: #020617;
+        color: #fff;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        line-height: 1.6;
+        overflow-x: hidden;
+        min-height: 100vh;
+        position: relative;
+        touch-action: manipulation;
+      }
+
+      /* ╭─ COSMIC BACKGROUND SYSTEM ──────────────────────────────────────╮ */
+      .cosmic-background {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .cosmic-gradient {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+            circle at 20% 30%,
+            rgba(59, 130, 246, 0.05) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 70%,
+            rgba(147, 51, 234, 0.04) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 50% 50%,
+            rgba(251, 191, 36, 0.03) 0%,
+            transparent 70%
+          );
+        animation: cosmicShift 80s ease-in-out infinite;
+      }
+
+      .starfield {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+            circle at 20% 30%,
+            rgba(255, 255, 255, 0.3) 0 1px,
+            transparent 2px
+          ),
+          radial-gradient(
+            circle at 60% 70%,
+            rgba(255, 255, 255, 0.25) 0 1px,
+            transparent 2px
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(255, 255, 255, 0.28) 0 1px,
+            transparent 2px
+          ),
+          radial-gradient(
+            circle at 40% 90%,
+            rgba(255, 255, 255, 0.22) 0 1px,
+            transparent 2px
+          );
+        background-size: 1200px 900px, 1600px 1100px, 900px 1300px,
+          1400px 1000px;
+        opacity: 0.08;
+        animation: starfieldDrift 180s linear infinite;
+      }
+
+      @keyframes cosmicShift {
+        0%,
+        100% {
+          transform: scale(1) rotate(0deg);
+        }
+        33% {
+          transform: scale(1.05) rotate(120deg);
+        }
+        66% {
+          transform: scale(0.98) rotate(240deg);
+        }
+      }
+
+      @keyframes starfieldDrift {
+        0% {
+          transform: translate(0, 0);
+        }
+        100% {
+          transform: translate(-60px, -60px);
+        }
+      }
+
+      /* ╭─ TONE-SPECIFIC BACKGROUNDS ─────────────────────────────────────╮ */
+      .tone-elements {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      /* Fusion Breathing Elements */
+      .fusion-breath {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(251, 191, 36, 0.3) 0%,
+          rgba(245, 158, 11, 0.15) 30%,
+          rgba(217, 119, 6, 0.08) 60%,
+          transparent 80%
+        );
+        filter: blur(35px);
+        animation: fusionBreathe 25s ease-in-out infinite;
+      }
+
+      @keyframes fusionBreathe {
+        0%,
+        100% {
+          opacity: 0;
+          transform: scale(0.4) translate(0, 0);
+        }
+        25% {
+          opacity: 0.6;
+          transform: scale(1.1) translate(30px, -40px);
+        }
+        50% {
+          opacity: 0.8;
+          transform: scale(1.4) translate(-15px, 25px);
+        }
+        75% {
+          opacity: 0.5;
+          transform: scale(0.9) translate(40px, 15px);
+        }
+      }
+
+      /* Gentle Stars */
+      .gentle-star {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 50%;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.7),
+          0 0 15px rgba(255, 255, 255, 0.4);
+        animation: gentleTwinkle 10s ease-in-out infinite;
+      }
+
+      @keyframes gentleTwinkle {
+        0%,
+        100% {
+          opacity: 0;
+          transform: scale(0.4);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.3);
+        }
+      }
+
+      /* Intense Swirls */
+      .intense-swirl {
+        position: absolute;
+        width: clamp(180px, 35vw, 240px);
+        height: clamp(180px, 35vw, 240px);
+        background: radial-gradient(
+          circle at 30% 30%,
+          rgba(147, 51, 234, 0.35) 0%,
+          rgba(168, 85, 247, 0.18) 30%,
+          rgba(139, 92, 246, 0.1) 60%,
+          transparent 80%
+        );
+        filter: blur(30px);
+        border-radius: 50%;
+        animation: intenseSwirl 18s ease-in-out infinite;
+      }
+
+      @keyframes intenseSwirl {
+        0%,
+        100% {
+          opacity: 0;
+          transform: rotate(0deg) scale(0.2);
+        }
+        25% {
+          opacity: 0.7;
+          transform: rotate(180deg) scale(1.1);
+        }
+        50% {
+          opacity: 0.9;
+          transform: rotate(360deg) scale(1.4);
+        }
+        75% {
+          opacity: 0.6;
+          transform: rotate(540deg) scale(0.8);
+        }
+      }
+
+      /* ╭─ MAIN LAYOUT STRUCTURE ─────────────────────────────────────────╮ */
+      .main-container {
+        position: relative;
+        z-index: 10;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: clamp(1rem, 3vw, 2rem);
+      }
+
+      .content-wrapper {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      /* ╭─ SECTION MANAGEMENT ────────────────────────────────────────────╮ */
+      .mirror-section {
+        width: 100%;
+        text-align: center;
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+
+      .mirror-section.is-hidden {
+        display: none;
+      }
+
+      .mirror-section.is-visible {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ╭─ TONE SELECTOR ──────────────────────────────────────────────────╮ */
+      .tone-selector {
+        margin-bottom: clamp(3rem, 5vw, 4rem);
+      }
+
+      .tone-label {
+        font-size: clamp(1.1rem, 3vw, 1.3rem);
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: clamp(1.5rem, 3vw, 2rem);
+        font-weight: 300;
+        letter-spacing: 0.8px;
+        position: relative;
+      }
+
+      .tone-label::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+      }
+
+      .tone-buttons {
+        display: flex;
+        gap: clamp(1rem, 2.5vw, 1.5rem);
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .tone-button {
+        flex: 1;
+        min-width: 140px;
+        max-width: 220px;
+        padding: clamp(1rem, 2.5vw, 1.4rem) clamp(1.2rem, 3vw, 1.6rem);
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(25px) saturate(120%);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        color: rgba(255, 255, 255, 0.75);
+        font-size: clamp(0.9rem, 2.2vw, 1rem);
+        font-weight: 400;
+        letter-spacing: 0.4px;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 52px;
+      }
+
+      .tone-button::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+      }
+
+      .tone-button:hover::before {
+        transform: translateX(100%);
+      }
+
+      .tone-button:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.95);
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+      }
+
+      .tone-button:active {
+        transform: translateY(-1px) scale(0.98);
+      }
+
+      .tone-button.is-selected {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.25);
+        color: #fff;
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
+      }
+
+      /* Tone-specific selection styles */
+      .tone-button[data-tone="fusion"].is-selected {
+        border-color: rgba(251, 191, 36, 0.4);
+        background: rgba(251, 191, 36, 0.08);
+        box-shadow: 0 8px 25px rgba(251, 191, 36, 0.2);
+      }
+
+      .tone-button[data-tone="gentle"].is-selected {
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+      }
+
+      .tone-button[data-tone="intense"].is-selected {
+        border-color: rgba(147, 51, 234, 0.4);
+        background: rgba(147, 51, 234, 0.08);
+        box-shadow: 0 8px 25px rgba(147, 51, 234, 0.2);
+      }
+
+      /* ╭─ QUESTIONS FORM ─────────────────────────────────────────────────╮ */
+      .questions-form {
+        text-align: left;
+      }
+
+      .question-card {
+        margin-bottom: clamp(2.5rem, 4vw, 3.5rem);
+        padding: clamp(2rem, 4vw, 2.5rem) clamp(1.5rem, 3vw, 2rem);
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.04) 0%,
+          rgba(255, 255, 255, 0.015) 100%
+        );
+        backdrop-filter: blur(45px) saturate(130%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .question-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at 25% 50%,
+          rgba(255, 255, 255, 0.03) 0%,
+          transparent 60%
+        );
+        opacity: 0;
+        transition: opacity 0.6s ease;
+      }
+
+      .question-card:hover::before {
+        opacity: 1;
+      }
+
+      .question-card:hover {
+        border-color: rgba(255, 255, 255, 0.15);
+        transform: translateY(-4px);
+        box-shadow: 0 15px 50px rgba(255, 255, 255, 0.08);
+      }
+
+      .question-number {
+        font-size: clamp(0.7rem, 2vw, 0.8rem);
+        opacity: 0.45;
+        margin-bottom: clamp(1rem, 2vw, 1.2rem);
+        text-transform: uppercase;
+        letter-spacing: 2.5px;
+        color: rgba(255, 255, 255, 0.45);
+        font-weight: 600;
+        position: relative;
+      }
+
+      .question-number::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -4px;
+        width: 30px;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+      }
+
+      .question-title {
+        font-size: clamp(1.3rem, 4vw, 1.6rem);
+        margin-bottom: clamp(0.8rem, 1.5vw, 1rem);
+        line-height: 1.3;
+        color: rgba(255, 255, 255, 0.97);
+        font-weight: 300;
+        letter-spacing: 0.3px;
+        text-shadow: 0 2px 15px rgba(255, 255, 255, 0.05);
+      }
+
+      .question-subtitle {
+        font-size: clamp(0.9rem, 2.2vw, 1rem);
+        opacity: 0.6;
+        margin-bottom: clamp(1.5rem, 3vw, 2rem);
+        font-style: italic;
+        color: rgba(255, 255, 255, 0.6);
+        line-height: 1.4;
+        font-weight: 300;
+        letter-spacing: 0.2px;
+      }
+
+      /* ╭─ FORM INPUTS ────────────────────────────────────────────────────╮ */
+      .input-group {
+        position: relative;
+      }
+
+      .form-textarea {
+        width: 100%;
+        padding: clamp(1.4rem, 3vw, 1.6rem);
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.05) 0%,
+          rgba(255, 255, 255, 0.025) 100%
+        );
+        backdrop-filter: blur(25px) saturate(120%);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        color: #fff;
+        font-size: clamp(1rem, 2.2vw, 1.1rem);
+        font-family: inherit;
+        line-height: 1.6;
+        resize: vertical;
+        min-height: clamp(140px, 25vw, 180px);
+        transition: all 0.4s ease;
+        -webkit-appearance: none;
+        appearance: none;
+        box-sizing: border-box;
+      }
+
+      .form-textarea:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.3);
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.08) 0%,
+          rgba(255, 255, 255, 0.04) 100%
+        );
+        box-shadow: 0 0 40px rgba(255, 255, 255, 0.08),
+          inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        transform: translateY(-2px);
+      }
+
+      .form-textarea::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+        font-style: italic;
+        font-weight: 300;
+      }
+
+      /* Character Counter */
+      .char-counter {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0.8rem;
+        padding: 0 0.2rem;
+      }
+
+      .char-count {
+        font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+        color: rgba(255, 255, 255, 0.5);
+        font-weight: 400;
+        transition: all 0.3s ease;
+      }
+
+      .char-count.approaching-limit {
+        color: rgba(251, 191, 36, 0.8);
+        font-weight: 500;
+      }
+
+      .char-count.at-limit {
+        color: rgba(239, 68, 68, 0.9);
+        font-weight: 600;
+        animation: charPulse 2s ease-in-out infinite;
+      }
+
+      @keyframes charPulse {
+        0%,
+        100% {
+          opacity: 0.9;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      .char-progress {
+        width: 60px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .char-progress-bar {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          rgba(16, 185, 129, 0.8) 0%,
+          rgba(251, 191, 36, 0.8) 70%,
+          rgba(239, 68, 68, 0.9) 100%
+        );
+        border-radius: 2px;
+        transition: width 0.3s ease;
+        width: 0%;
+      }
+
+      /* ╭─ YES/NO BUTTONS ─────────────────────────────────────────────────╮ */
+      .choice-buttons {
+        display: flex;
+        gap: clamp(1rem, 2.5vw, 1.4rem);
+        margin-top: clamp(1rem, 2vw, 1.2rem);
+      }
+
+      .choice-button {
+        flex: 1;
+        padding: clamp(1rem, 2.5vw, 1.2rem);
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 16px;
+        color: rgba(255, 255, 255, 0.75);
+        font-size: clamp(1rem, 2.2vw, 1.1rem);
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 52px;
+      }
+
+      .choice-button::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+      }
+
+      .choice-button:hover::before {
+        transform: translateX(100%);
+      }
+
+      .choice-button:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.95);
+        transform: translateY(-2px) scale(1.02);
+      }
+
+      .choice-button:active {
+        transform: translateY(0) scale(0.98);
+      }
+
+      .choice-button.is-selected {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+        color: #fff;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.12);
+        transform: scale(1.05);
+      }
+
+      /* ╭─ DATE INPUT ──────────────────────────────────────────────────────╮ */
+      .date-container {
+        display: none;
+        align-items: center;
+        gap: clamp(1rem, 2.5vw, 1.5rem);
+        margin-top: clamp(1.5rem, 3vw, 2rem);
+        padding: clamp(1rem, 2.5vw, 1.4rem);
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        animation: dateSlideIn 0.6s ease;
+        flex-wrap: wrap;
+      }
+
+      .date-container.is-visible {
+        display: flex;
+      }
+
+      @keyframes dateSlideIn {
+        from {
+          opacity: 0;
+          transform: translateY(15px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .date-label {
+        color: rgba(255, 255, 255, 0.85);
+        font-weight: 500;
+        font-size: clamp(0.9rem, 2.2vw, 1rem);
+        min-width: fit-content;
+      }
+
+      .date-input {
+        flex: 1;
+        min-width: 180px;
+        padding: clamp(0.8rem, 2vw, 1rem);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        color: #fff;
+        font-family: inherit;
+        font-size: clamp(0.9rem, 2vw, 1rem);
+        transition: all 0.3s ease;
+      }
+
+      .date-input:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      /* ╭─ SUBMIT BUTTON ──────────────────────────────────────────────────╮ */
+      .submit-button {
+        width: 100%;
+        margin-top: clamp(3rem, 5vw, 4rem);
+        padding: clamp(1.4rem, 3vw, 1.8rem) clamp(2rem, 4vw, 2.5rem);
+        font-size: clamp(1.1rem, 2.8vw, 1.3rem);
+        font-weight: 500;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0.06) 100%
+        );
+        backdrop-filter: blur(30px) saturate(120%);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 24px;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        position: relative;
+        overflow: hidden;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        min-height: 64px;
+      }
+
+      .submit-button::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.15),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.8s ease;
+      }
+
+      .submit-button:hover::before {
+        transform: translateX(100%);
+      }
+
+      .submit-button:hover:not(:disabled) {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.15) 0%,
+          rgba(255, 255, 255, 0.08) 100%
+        );
+        border-color: rgba(255, 255, 255, 0.35);
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 20px 60px rgba(255, 255, 255, 0.15);
+        letter-spacing: 1.5px;
+      }
+
+      .submit-button:active:not(:disabled) {
+        transform: translateY(-2px) scale(0.98);
+      }
+
+      .submit-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* ╭─ LOADING SECTION ────────────────────────────────────────────────╮ */
+      .loading-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: clamp(2rem, 4vw, 3rem);
+        padding: clamp(3rem, 6vw, 4rem);
+      }
+
+      .loading-circle {
+        width: clamp(140px, 30vw, 180px);
+        height: clamp(140px, 30vw, 180px);
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.15) 0%,
+          rgba(255, 255, 255, 0.05) 40%,
+          rgba(255, 255, 255, 0.02) 70%,
+          transparent 85%
+        );
+        animation: breatheLoading 4.5s ease-in-out infinite;
+        position: relative;
+        box-shadow: 0 0 60px rgba(255, 255, 255, 0.1),
+          inset 0 0 30px rgba(255, 255, 255, 0.05);
+      }
+
+      .loading-circle::after {
+        content: "";
+        position: absolute;
+        inset: 25px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0.03) 50%,
+          transparent 75%
+        );
+        animation: breatheInner 4.5s ease-in-out infinite;
+      }
+
+      @keyframes breatheLoading {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.7;
+        }
+        50% {
+          transform: scale(1.15);
+          opacity: 1;
+        }
+      }
+
+      @keyframes breatheInner {
+        0%,
+        100% {
+          transform: scale(1) rotate(0deg);
+          opacity: 0.5;
+        }
+        50% {
+          transform: scale(1.3) rotate(180deg);
+          opacity: 0.9;
+        }
+      }
+
+      .loading-text {
+        font-size: clamp(1.1rem, 3vw, 1.4rem);
+        font-weight: 300;
+        opacity: 0.8;
+        text-align: center;
+        letter-spacing: 1px;
+        color: rgba(255, 255, 255, 0.85);
+        animation: loadingPulse 3s ease-in-out infinite;
+      }
+
+      @keyframes loadingPulse {
+        0%,
+        100% {
+          opacity: 0.6;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      /* ╭─ RESULTS SECTION ────────────────────────────────────────────────╮ */
+      .results-container {
+        text-align: left;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 clamp(1rem, 2vw, 2rem);
+      }
+
+      .admin-notice {
+        background: rgba(168, 85, 247, 0.1);
+        border: 1px solid rgba(168, 85, 247, 0.25);
+        color: #d8b4fe;
+        padding: clamp(1rem, 2vw, 1.4rem) clamp(1.5rem, 3vw, 2rem);
+        border-radius: 16px;
+        margin-bottom: clamp(2rem, 3vw, 2.5rem);
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        font-weight: 400;
+        letter-spacing: 0.3px;
+        text-align: center;
+        animation: adminGlow 4s ease-in-out infinite;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .admin-notice::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(168, 85, 247, 0.1),
+          transparent
+        );
+        transform: translateX(-100%);
+        animation: adminShimmer 3s ease-in-out infinite;
+      }
+
+      @keyframes adminGlow {
+        0%,
+        100% {
+          background: rgba(168, 85, 247, 0.1);
+          border-color: rgba(168, 85, 247, 0.25);
+        }
+        50% {
+          background: rgba(168, 85, 247, 0.15);
+          border-color: rgba(168, 85, 247, 0.35);
+        }
+      }
+
+      @keyframes adminShimmer {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+
+      .results-backdrop {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.04) 0%,
+          rgba(255, 255, 255, 0.015) 100%
+        );
+        backdrop-filter: blur(50px) saturate(130%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 28px;
+        padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2.5rem);
+        margin-bottom: clamp(2rem, 4vw, 3rem);
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        position: relative;
+        overflow: hidden;
+        animation: resultsGlow 1s ease-out;
+      }
+
+      @keyframes resultsGlow {
+        from {
+          opacity: 0;
+          transform: translateY(30px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .results-content {
+        background: rgba(255, 255, 255, 0.97);
+        color: #1a1a2e;
+        padding: clamp(2.5rem, 5vw, 3.5rem) clamp(2rem, 4vw, 3rem);
+        border-radius: 24px;
+        box-shadow: 0 15px 60px rgba(0, 0, 0, 0.25);
+        font-size: clamp(1.05rem, 2.5vw, 1.2rem);
+        line-height: 1.7;
+        font-weight: 300;
+        position: relative;
+      }
+
+      .results-content p {
+        margin: 0 0 1.8rem 0;
+      }
+
+      .results-content p:last-child {
+        margin-bottom: 0;
+      }
+
+      .results-content strong {
+        font-weight: 600;
+        color: #16213e;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        position: relative;
+      }
+
+      .results-content strong::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(102, 126, 234, 0.3),
+          transparent
+        );
+      }
+
+      .results-content em {
+        font-style: italic;
+        color: #4a5568;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      /* ╭─ ACTION BUTTONS ─────────────────────────────────────────────────╮ */
+      .results-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: clamp(1rem, 2.5vw, 1.5rem);
+        margin-top: clamp(2rem, 4vw, 3rem);
+      }
+
+      .action-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(0.6rem, 1.5vw, 0.8rem);
+        padding: clamp(1rem, 2.5vw, 1.4rem) clamp(1.2rem, 3vw, 1.6rem);
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 18px;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+        letter-spacing: 0.4px;
+        text-decoration: none;
+        font-size: clamp(0.9rem, 2.2vw, 1rem);
+        cursor: pointer;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        min-height: 56px;
+        min-width: 140px;
+      }
+
+      .action-button::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+      }
+
+      .action-button:hover::before {
+        transform: translateX(100%);
+      }
+
+      .action-button:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 15px 40px rgba(255, 255, 255, 0.15);
+      }
+
+      .action-button:active {
+        transform: translateY(-1px) scale(0.98);
+      }
+
+      /* Special button styles */
+      .artifact-button {
+        background: linear-gradient(
+          135deg,
+          rgba(251, 191, 36, 0.15) 0%,
+          rgba(245, 158, 11, 0.1) 100%
+        ) !important;
+        border-color: rgba(251, 191, 36, 0.3) !important;
+        color: rgba(251, 191, 36, 0.95) !important;
+      }
+
+      .artifact-button:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(251, 191, 36, 0.25) 0%,
+          rgba(245, 158, 11, 0.15) 100%
+        ) !important;
+        border-color: rgba(251, 191, 36, 0.5) !important;
+        box-shadow: 0 15px 40px rgba(251, 191, 36, 0.25) !important;
+      }
+
+      .creator-button {
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.15),
+          rgba(59, 130, 246, 0.1)
+        ) !important;
+        border-color: rgba(147, 51, 234, 0.3) !important;
+      }
+
+      .creator-button:hover {
+        border-color: rgba(147, 51, 234, 0.5) !important;
+        box-shadow: 0 8px 25px rgba(147, 51, 234, 0.2) !important;
+      }
+
+      /* Premium badge */
+      .premium-badge {
+        position: absolute;
+        top: -1px;
+        right: 1.5rem;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 0 0 16px 16px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        z-index: 20;
+      }
+
+      /* ╭─ FEEDBACK SECTION ───────────────────────────────────────────────╮ */
+      .feedback-section {
+        margin: 3rem 0;
+        padding: 2.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        transition: all 0.8s ease;
+      }
+
+      .feedback-content {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .feedback-title {
+        font-size: clamp(1.2rem, 3vw, 1.4rem);
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.95);
+        margin-bottom: 2rem;
+        line-height: 1.4;
+      }
+
+      .rating-container {
+        display: flex;
+        justify-content: center;
+        gap: 0.8rem;
+        margin-bottom: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      .rating-button {
+        width: 48px;
+        height: 48px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+      }
+
+      .rating-button:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: translateY(-2px);
+      }
+
+      .rating-button.is-selected {
+        background: linear-gradient(135deg, #10b981, #059669);
+        border-color: #10b981;
+        color: white;
+        font-weight: 600;
+        transform: scale(1.1);
+      }
+
+      .rating-labels {
+        display: flex;
+        justify-content: space-between;
+        max-width: 500px;
+        margin: 0 auto 2rem;
+        font-size: 0.9rem;
+        opacity: 0.6;
+      }
+
+      .feedback-textarea {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.9);
+        border-radius: 16px;
+        padding: 1rem;
+        margin-bottom: 2rem;
+        resize: vertical;
+        min-height: 80px;
+        font-family: inherit;
+        font-size: 1rem;
+        line-height: 1.6;
+        transition: all 0.3s ease;
+      }
+
+      .feedback-textarea:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .feedback-textarea::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .feedback-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+      }
+
+      .feedback-submit,
+      .feedback-skip {
+        padding: 1rem 2rem;
+        border-radius: 16px;
+        border: none;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: inherit;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+      }
+
+      .feedback-submit {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+      }
+
+      .feedback-submit:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+      }
+
+      .feedback-submit:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .feedback-skip {
+        background: transparent;
+        color: rgba(255, 255, 255, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .feedback-skip:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.8);
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+
+      /* ╭─ RESPONSIVE DESIGN ──────────────────────────────────────────────╮ */
+      @media (max-width: 768px) {
+        .main-container {
+          padding: clamp(0.5rem, 2vw, 1rem);
+        }
+
+        .tone-buttons {
+          flex-direction: column;
+          gap: clamp(1rem, 2vw, 1.2rem);
+        }
+
+        .tone-button {
+          min-width: auto;
+          max-width: none;
+        }
+
+        .choice-buttons {
+          flex-direction: column;
+          gap: clamp(1rem, 2vw, 1.2rem);
+        }
+
+        .date-container {
+          flex-direction: column;
+          align-items: stretch;
+          gap: clamp(1rem, 2vw, 1.2rem);
+        }
+
+        .results-actions {
+          grid-template-columns: 1fr;
+          gap: clamp(1rem, 2vw, 1.2rem);
+        }
+
+        .feedback-buttons {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .feedback-submit,
+        .feedback-skip {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .question-card {
+          padding: clamp(1.2rem, 2.5vw, 1.6rem) clamp(0.8rem, 2vw, 1.2rem);
+          margin-bottom: clamp(1.5rem, 2.5vw, 2rem);
+          border-radius: 18px;
+        }
+
+        .form-textarea {
+          padding: clamp(1.2rem, 2.5vw, 1.4rem);
+          min-height: clamp(120px, 22vw, 150px);
+        }
+
+        .results-backdrop {
+          padding: clamp(1.2rem, 2.5vw, 1.6rem) clamp(0.8rem, 2vw, 1.2rem);
+          border-radius: 22px;
+        }
+
+        .results-content {
+          padding: clamp(1.2rem, 2.5vw, 1.6rem) clamp(0.8rem, 2vw, 1.2rem);
+          border-radius: 18px;
+        }
+      }
+
+      /* ╭─ ACCESSIBILITY ──────────────────────────────────────────────────╮ */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      .tone-button:focus-visible,
+      .choice-button:focus-visible,
+      .form-textarea:focus-visible,
+      .submit-button:focus-visible,
+      .action-button:focus-visible {
+        outline: 2px solid rgba(255, 255, 255, 0.6);
+        outline-offset: 2px;
+      }
+
+      /* ╭─ UTILITY CLASSES ────────────────────────────────────────────────╮ */
+      .is-hidden {
+        display: none !important;
+      }
+      .is-visible {
+        display: block !important;
+      }
+
+      /* Custom animations for focus effects */
+      @keyframes subtleExpand {
+        0% {
+          opacity: 0;
+          transform: scale(0.4);
+        }
+        50% {
+          opacity: 0.4;
+        }
+        100% {
+          opacity: 0;
+          transform: scale(2.5);
+        }
+      }
+
+      @keyframes subtleTwinkle {
+        0% {
+          opacity: 0;
+          transform: scale(0) rotate(0deg);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.2) rotate(180deg);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(0) rotate(360deg);
+        }
+      }
+
+      @keyframes subtleSwirl {
+        0% {
+          opacity: 0;
+          transform: scale(0.5) rotate(0deg);
+        }
+        50% {
+          opacity: 0.5;
+          transform: scale(1.2) rotate(180deg);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(1.8) rotate(360deg);
+        }
+      }
     </style>
   </head>
 
-  <body id="mirrorBody" class="tone-fusion">
-    <!-- Tone-specific background elements (will be created dynamically) -->
+  <body>
+    <!-- Cosmic Background -->
+    <div class="cosmic-background">
+      <div class="cosmic-gradient"></div>
+      <div class="starfield"></div>
+    </div>
 
-    <div class="container">
-      <!-- Questions Section -->
-      <div class="experience-section active" id="questions">
-        <form id="reflectionForm" class="questions-form">
-          <!-- Enhanced Tone Picker -->
-          <div class="tone-group">
+    <!-- Tone-specific Background Elements -->
+    <div class="tone-elements" id="toneElements"></div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+      <div class="content-wrapper">
+        <!-- Questions Section -->
+        <section class="mirror-section is-visible" id="questionsSection">
+          <!-- Tone Selector -->
+          <div class="tone-selector">
             <div class="tone-label">Choose the voice of your reflection</div>
-            <div class="tone-btn selected" data-tone="fusion">
-              Let the Mirror Breathe
-            </div>
-            <div class="tone-btn" data-tone="gentle">Gentle Clarity</div>
-            <div class="tone-btn" data-tone="intense">Luminous Fire</div>
-          </div>
-
-          <!-- Question 1: Dream -->
-          <div class="question-group" data-question="1">
-            <div class="question-number">Question 1</div>
-            <div class="question-text">What is your dream?</div>
-            <div class="question-subtitle">
-              Choose just one — the one that calls you most right now.
-            </div>
-            <div class="textarea-container">
-              <textarea
-                id="dreamInput"
-                name="dream"
-                class="sacred-textarea"
-                placeholder="Write the dream that calls you..."
-                data-min="200"
-                data-max="3200"
-                required
-              ></textarea>
-              <div class="char-count-container">
-                <div class="char-count" id="dreamCount">
-                  0 / 3200 characters
-                </div>
-                <div class="char-progress">
-                  <div class="char-progress-bar" id="dreamProgress"></div>
-                </div>
-              </div>
+            <div class="tone-buttons">
+              <button
+                class="tone-button is-selected"
+                data-tone="fusion"
+                type="button"
+              >
+                Let the Mirror Breathe
+              </button>
+              <button class="tone-button" data-tone="gentle" type="button">
+                Gentle Clarity
+              </button>
+              <button class="tone-button" data-tone="intense" type="button">
+                Luminous Fire
+              </button>
             </div>
           </div>
 
-          <!-- Question 2: Plan -->
-          <div class="question-group" data-question="2">
-            <div class="question-number">Question 2</div>
-            <div class="question-text">
-              What is your plan for achieving this dream?
-            </div>
-            <div class="question-subtitle">
-              Write what you already know. It's okay if it's unclear.
-            </div>
-            <div class="textarea-container">
-              <textarea
-                id="planInput"
-                name="plan"
-                class="sacred-textarea"
-                placeholder="Describe any plan (or absence of plan)..."
-                data-min="300"
-                data-max="4000"
-                required
-              ></textarea>
-              <div class="char-count-container">
-                <div class="char-count" id="planCount">0 / 4000 characters</div>
-                <div class="char-progress">
-                  <div class="char-progress-bar" id="planProgress"></div>
+          <!-- Questions Form -->
+          <form class="questions-form" id="reflectionForm">
+            <!-- Question 1: Dream -->
+            <div class="question-card">
+              <div class="question-number">Question 1</div>
+              <h3 class="question-title">What is your dream?</h3>
+              <p class="question-subtitle">
+                Choose just one — the one that calls you most right now.
+              </p>
+              <div class="input-group">
+                <textarea
+                  id="dreamInput"
+                  name="dream"
+                  class="form-textarea"
+                  placeholder="Write the dream that calls you..."
+                  data-min="200"
+                  data-max="3200"
+                  required
+                ></textarea>
+                <div class="char-counter">
+                  <div class="char-count" id="dreamCount">
+                    0 / 3200 characters
+                  </div>
+                  <div class="char-progress">
+                    <div class="char-progress-bar" id="dreamProgress"></div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Question 3: Date -->
-          <div class="question-group" data-question="3">
-            <div class="question-number">Question 3</div>
-            <div class="question-text">
-              Have you set a definite date for fulfilling your dream?
-            </div>
-            <div class="yes-no-buttons">
-              <div class="yes-no-btn" id="yesBtn" data-value="yes">Yes</div>
-              <div class="yes-no-btn" id="noBtn" data-value="no">No</div>
-            </div>
-            <input type="hidden" name="hasDate" required />
-            <div
-              class="date-container"
-              id="dateContainer"
-              style="display: none"
-            >
-              <label>What is the date?</label>
-              <input type="date" class="date-input" name="dreamDate" />
-            </div>
-          </div>
-
-          <!-- Question 4: Relationship -->
-          <div class="question-group" data-question="4">
-            <div class="question-number">Question 4</div>
-            <div class="question-text">
-              What is your current relationship with this dream?
-            </div>
-            <div class="question-subtitle">
-              Do you believe you'll achieve it? Why or why not?
-            </div>
-            <div class="textarea-container">
-              <textarea
-                id="relationshipInput"
-                name="relationship"
-                class="sacred-textarea"
-                placeholder="How do you relate to this dream now?"
-                data-min="300"
-                data-max="4000"
-                required
-              ></textarea>
-              <div class="char-count-container">
-                <div class="char-count" id="relationshipCount">
-                  0 / 4000 characters
-                </div>
-                <div class="char-progress">
-                  <div
-                    class="char-progress-bar"
-                    id="relationshipProgress"
-                  ></div>
+            <!-- Question 2: Plan -->
+            <div class="question-card">
+              <div class="question-number">Question 2</div>
+              <h3 class="question-title">
+                What is your plan for achieving this dream?
+              </h3>
+              <p class="question-subtitle">
+                Write what you already know. It's okay if it's unclear.
+              </p>
+              <div class="input-group">
+                <textarea
+                  id="planInput"
+                  name="plan"
+                  class="form-textarea"
+                  placeholder="Describe any plan (or absence of plan)..."
+                  data-min="300"
+                  data-max="4000"
+                  required
+                ></textarea>
+                <div class="char-counter">
+                  <div class="char-count" id="planCount">
+                    0 / 4000 characters
+                  </div>
+                  <div class="char-progress">
+                    <div class="char-progress-bar" id="planProgress"></div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Question 5: Offering -->
-          <div class="question-group" data-question="5">
-            <div class="question-number">Question 5</div>
-            <div class="question-text">
-              What are you willing to give in return?
+            <!-- Question 3: Date -->
+            <div class="question-card">
+              <div class="question-number">Question 3</div>
+              <h3 class="question-title">
+                Have you set a definite date for fulfilling your dream?
+              </h3>
+              <div class="choice-buttons">
+                <button class="choice-button" type="button" data-value="yes">
+                  Yes
+                </button>
+                <button class="choice-button" type="button" data-value="no">
+                  No
+                </button>
+              </div>
+              <input type="hidden" name="hasDate" required />
+              <div class="date-container" id="dateContainer">
+                <label class="date-label">What is the date?</label>
+                <input type="date" class="date-input" name="dreamDate" />
+              </div>
             </div>
-            <div class="question-subtitle">
-              Energy, focus, love, time — what will you offer to this dream?
-            </div>
-            <div class="textarea-container">
-              <textarea
-                id="offeringInput"
-                name="offering"
-                class="sacred-textarea"
-                placeholder="What will you offer in return?"
-                data-min="200"
-                data-max="2400"
-                required
-              ></textarea>
-              <div class="char-count-container">
-                <div class="char-count" id="offeringCount">
-                  0 / 2400 characters
-                </div>
-                <div class="char-progress">
-                  <div class="char-progress-bar" id="offeringProgress"></div>
+
+            <!-- Question 4: Relationship -->
+            <div class="question-card">
+              <div class="question-number">Question 4</div>
+              <h3 class="question-title">
+                What is your current relationship with this dream?
+              </h3>
+              <p class="question-subtitle">
+                Do you believe you'll achieve it? Why or why not?
+              </p>
+              <div class="input-group">
+                <textarea
+                  id="relationshipInput"
+                  name="relationship"
+                  class="form-textarea"
+                  placeholder="How do you relate to this dream now?"
+                  data-min="300"
+                  data-max="4000"
+                  required
+                ></textarea>
+                <div class="char-counter">
+                  <div class="char-count" id="relationshipCount">
+                    0 / 4000 characters
+                  </div>
+                  <div class="char-progress">
+                    <div
+                      class="char-progress-bar"
+                      id="relationshipProgress"
+                    ></div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <button type="submit" class="submit-btn" id="submitBtn">
-            Receive Your Reflection
-          </button>
-        </form>
-      </div>
+            <!-- Question 5: Offering -->
+            <div class="question-card">
+              <div class="question-number">Question 5</div>
+              <h3 class="question-title">
+                What are you willing to give in return?
+              </h3>
+              <p class="question-subtitle">
+                Energy, focus, love, time — what will you offer to this dream?
+              </p>
+              <div class="input-group">
+                <textarea
+                  id="offeringInput"
+                  name="offering"
+                  class="form-textarea"
+                  placeholder="What will you offer in return?"
+                  data-min="200"
+                  data-max="2400"
+                  required
+                ></textarea>
+                <div class="char-counter">
+                  <div class="char-count" id="offeringCount">
+                    0 / 2400 characters
+                  </div>
+                  <div class="char-progress">
+                    <div class="char-progress-bar" id="offeringProgress"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-      <!-- Loading Section -->
-      <div class="experience-section hidden" id="loading">
-        <div class="loading-container">
-          <div class="loading-circle"></div>
-          <div class="loading-text">Reflecting your truth...</div>
-        </div>
-      </div>
-
-      <!-- Results Section -->
-      <div class="experience-section hidden" id="results">
-        <div class="results">
-          <div class="admin-notice" id="adminNotice" style="display: none">
-            <span>✨ Creator mode — unlimited premium reflections</span>
-          </div>
-          <div class="results-backdrop">
-            <div class="results-content" id="reflectionContent"></div>
-          </div>
-          <div class="results-actions">
-            <button
-              class="sacred-button artifact-button"
-              id="createArtifactBtn"
-              style="display: none"
-            >
-              <span>🎨</span><span>Create Artifact</span>
+            <button type="submit" class="submit-button" id="submitButton">
+              Receive Your Reflection
             </button>
-            <button class="sacred-button" id="emailBtn">
-              <span>📧</span><span>Mail Reflection</span>
-            </button>
-            <a href="/behind-the-mirror" class="sacred-button creator-button">
-              <span>🤲</span><span>Who created this?</span>
-            </a>
-            <a href="/" class="sacred-button">
-              <span>🪞</span><span>Return to Portal</span>
-            </a>
+          </form>
+        </section>
+
+        <!-- Loading Section -->
+        <section class="mirror-section is-hidden" id="loadingSection">
+          <div class="loading-container">
+            <div class="loading-circle"></div>
+            <div class="loading-text">Reflecting your truth...</div>
           </div>
-        </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="mirror-section is-hidden" id="resultsSection">
+          <div class="results-container">
+            <div class="admin-notice is-hidden" id="adminNotice">
+              <span>✨ Creator mode — unlimited premium reflections</span>
+            </div>
+            <div class="results-backdrop">
+              <div class="results-content" id="reflectionContent"></div>
+            </div>
+            <div class="results-actions">
+              <button
+                class="action-button artifact-button is-hidden"
+                id="createArtifactButton"
+              >
+                <span>🎨</span><span>Create Artifact</span>
+              </button>
+              <button class="action-button" id="emailButton">
+                <span>📧</span><span>Mail Reflection</span>
+              </button>
+              <a href="/behind-the-mirror" class="action-button creator-button">
+                <span>🤲</span><span>Who created this?</span>
+              </a>
+              <a href="/" class="action-button">
+                <span>🪞</span><span>Return to Portal</span>
+              </a>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
 
     <script>
-      // Mirror of Truth - Synthesized Perfect Architecture
-      // Revolutionary features + flawless functionality
+      /* ═══════════════ MIRROR OF TRUTH - COMPLETE REWRITE ═══════════════ */
+      /* Revolutionary JavaScript architecture with flawless functionality */
 
-      /* ═══════════════ ENHANCED STATE MANAGER ═══════════════ */
+      "use strict";
+
+      // ╭─ GLOBAL STATE MANAGER ─────────────────────────────────────────────╮
       class MirrorState {
         constructor() {
-          this.form = new SessionStorageManager("mirror_active_form");
-          this.reflections = new LocalStorageManager("mirror_reflections");
-          this.url = new URLStateManager();
+          this.currentTone = "fusion";
           this.isSubmitting = false;
           this.isRestoringForm = false;
+          this.currentReflectionId = null;
+          this.userData = null;
+          this.authToken = null;
+          this.components = {};
         }
 
-        saveFormState(formData) {
+        // Session Storage Management
+        saveFormState(data) {
           if (this.isRestoringForm) return;
-          this.form.save(formData);
-        }
-
-        restoreFormState() {
-          this.isRestoringForm = true;
-          const data = this.form.load();
-          this.isRestoringForm = false;
-          return data;
-        }
-
-        saveReflection(reflectionData) {
-          this.reflections.save(reflectionData.id, reflectionData);
-          this.url.setReflectionState(reflectionData.id);
-        }
-      }
-
-      class SessionStorageManager {
-        constructor(key) {
-          this.key = key;
-        }
-
-        save(data) {
           try {
             sessionStorage.setItem(
-              this.key,
+              "mirror_form_state",
               JSON.stringify({
                 ...data,
                 timestamp: Date.now(),
               })
             );
-          } catch (e) {
-            console.warn("SessionStorage save failed:", e);
+          } catch (error) {
+            console.warn("Session storage failed:", error);
           }
         }
 
-        load() {
+        loadFormState() {
           try {
-            const data = sessionStorage.getItem(this.key);
+            const data = sessionStorage.getItem("mirror_form_state");
             return data ? JSON.parse(data) : null;
-          } catch (e) {
-            console.warn("SessionStorage load failed:", e);
+          } catch (error) {
+            console.warn("Session storage load failed:", error);
             return null;
           }
         }
 
-        clear() {
+        // Local Storage for Reflections
+        saveReflection(reflectionData) {
           try {
-            sessionStorage.removeItem(this.key);
-          } catch (e) {
-            console.warn("SessionStorage clear failed:", e);
-          }
-        }
-      }
-
-      class LocalStorageManager {
-        constructor(key) {
-          this.key = key;
-        }
-
-        save(id, data) {
-          try {
-            localStorage.setItem(`${this.key}_${id}`, JSON.stringify(data));
-          } catch (e) {
-            console.warn("LocalStorage save failed:", e);
+            localStorage.setItem(
+              `reflection_${reflectionData.id}`,
+              JSON.stringify(reflectionData)
+            );
+            this.updateURLState(reflectionData.id);
+          } catch (error) {
+            console.warn("Reflection storage failed:", error);
           }
         }
 
-        load(id) {
-          try {
-            const data = localStorage.getItem(`${this.key}_${id}`);
-            return data ? JSON.parse(data) : null;
-          } catch (e) {
-            console.warn("LocalStorage load failed:", e);
-            return null;
-          }
-        }
-      }
-
-      class URLStateManager {
-        setReflectionState(reflectionId) {
+        // URL State Management
+        updateURLState(reflectionId) {
           const url = new URL(window.location);
           url.searchParams.set("state", "reflection");
           url.searchParams.set("id", reflectionId);
           window.history.replaceState({}, "", url);
         }
+      }
 
-        getReflectionId() {
-          const urlParams = new URLSearchParams(window.location.search);
-          return urlParams.get("id");
+      // ╭─ TONE BACKGROUND MANAGER ──────────────────────────────────────────╮
+      class ToneManager {
+        constructor() {
+          this.currentElements = [];
+          this.container = document.getElementById("toneElements");
+        }
+
+        setTone(tone) {
+          // Clear existing elements
+          this.clearElements();
+
+          // Update body class
+          document.body.className = document.body.className.replace(
+            /tone-\w+/g,
+            ""
+          );
+          document.body.classList.add(`tone-${tone}`);
+
+          // Create new tone elements
+          this.createToneElements(tone);
+        }
+
+        clearElements() {
+          this.currentElements.forEach((el) => el.remove());
+          this.currentElements = [];
+        }
+
+        createToneElements(tone) {
+          if (tone === "fusion") {
+            this.createFusionElements();
+          } else if (tone === "gentle") {
+            this.createGentleElements();
+          } else if (tone === "intense") {
+            this.createIntenseElements();
+          }
+        }
+
+        createFusionElements() {
+          for (let i = 0; i < 6; i++) {
+            const breath = document.createElement("div");
+            breath.className = "fusion-breath";
+            breath.style.cssText = `
+              width: ${200 + Math.random() * 140}px;
+              height: ${200 + Math.random() * 140}px;
+              left: ${Math.random() * 100}%;
+              top: ${Math.random() * 100}%;
+              animation-delay: ${i * 4.2}s;
+              animation-duration: ${20 + Math.random() * 10}s;
+            `;
+            this.container.appendChild(breath);
+            this.currentElements.push(breath);
+          }
+        }
+
+        createGentleElements() {
+          for (let i = 0; i < 35; i++) {
+            const star = document.createElement("div");
+            star.className = "gentle-star";
+            star.style.cssText = `
+              left: ${Math.random() * 100}%;
+              top: ${Math.random() * 100}%;
+              animation-delay: ${Math.random() * 10}s;
+              animation-duration: ${8 + Math.random() * 6}s;
+            `;
+            this.container.appendChild(star);
+            this.currentElements.push(star);
+          }
+        }
+
+        createIntenseElements() {
+          for (let i = 0; i < 7; i++) {
+            const swirl = document.createElement("div");
+            swirl.className = "intense-swirl";
+            swirl.style.cssText = `
+              left: ${Math.random() * 100}%;
+              top: ${Math.random() * 100}%;
+              animation-delay: ${i * 3.5}s;
+              animation-duration: ${15 + Math.random() * 10}s;
+            `;
+            this.container.appendChild(swirl);
+            this.currentElements.push(swirl);
+          }
         }
       }
 
-      /* ═══════════════ COMPONENT FACTORIES ═══════════════ */
-      const ToneSelector = (container, initialTone = "fusion") => {
-        let selectedTone = initialTone;
-        let backgroundElements = [];
+      // ╭─ CHARACTER COUNTER COMPONENT ──────────────────────────────────────╮
+      class CharacterCounter {
+        constructor(textarea, countElement, progressElement) {
+          this.textarea = textarea;
+          this.countElement = countElement;
+          this.progressElement = progressElement;
+          this.min = parseInt(textarea.dataset.min) || 0;
+          this.max = parseInt(textarea.dataset.max) || 1000;
 
-        const updateToneSelection = (tone) => {
-          document
-            .querySelectorAll(".tone-btn")
-            .forEach((b) => b.classList.remove("selected"));
-          document
-            .querySelector(`[data-tone="${tone}"]`)
-            .classList.add("selected");
-        };
+          this.init();
+        }
 
-        const transitionToTone = (newTone) => {
-          document.body.classList.remove(
-            "tone-gentle",
-            "tone-intense",
-            "tone-fusion"
-          );
-          document.body.classList.add(`tone-${newTone}`);
-          createToneElements(newTone);
-        };
+        init() {
+          this.textarea.addEventListener("input", () => this.update());
+          this.update(); // Initial update
+        }
 
-        const createToneElements = (tone) => {
-          backgroundElements.forEach((el) => el.remove());
-          backgroundElements = [];
+        update() {
+          const length = this.textarea.value.length;
+          const percentage = (length / this.max) * 100;
 
-          if (tone === "fusion") {
-            for (let i = 0; i < 6; i++) {
-              const breath = document.createElement("div");
-              breath.className = "fusion-breath";
-              breath.style.width = `${200 + Math.random() * 140}px`;
-              breath.style.height = breath.style.width;
-              breath.style.left = `${Math.random() * 100}%`;
-              breath.style.top = `${Math.random() * 100}%`;
-              breath.style.animationDelay = `${i * 4.2}s`;
-              breath.style.animationDuration = `${20 + Math.random() * 10}s`;
-              document.body.appendChild(breath);
-              backgroundElements.push(breath);
-            }
-          } else if (tone === "gentle") {
-            for (let i = 0; i < 35; i++) {
-              const star = document.createElement("div");
-              star.className = "gentle-star";
-              star.style.left = `${Math.random() * 100}%`;
-              star.style.top = `${Math.random() * 100}%`;
-              star.style.animationDelay = `${Math.random() * 10}s`;
-              star.style.animationDuration = `${8 + Math.random() * 6}s`;
-              document.body.appendChild(star);
-              backgroundElements.push(star);
-            }
-          } else if (tone === "intense") {
-            for (let i = 0; i < 7; i++) {
-              const swirl = document.createElement("div");
-              swirl.className = "intense-swirl";
-              swirl.style.left = `${Math.random() * 100}%`;
-              swirl.style.top = `${Math.random() * 100}%`;
-              swirl.style.animationDelay = `${i * 3.5}s`;
-              swirl.style.animationDuration = `${15 + Math.random() * 10}s`;
-              document.body.appendChild(swirl);
-              backgroundElements.push(swirl);
-            }
-          }
-        };
+          // Update display
+          this.countElement.textContent = `${length} / ${this.max} characters`;
+          this.progressElement.style.width = `${Math.min(percentage, 100)}%`;
 
-        return {
-          getTone: () => selectedTone,
-          setTone: (tone) => {
-            selectedTone = tone;
-            updateToneSelection(tone);
-            transitionToTone(tone);
-          },
-          init: () => {
-            updateToneSelection(selectedTone);
-            createToneElements(selectedTone);
-          },
-        };
-      };
-
-      const CharacterCounter = (textarea, countElement, progressElement) => {
-        const min = parseInt(textarea.dataset.min) || 0;
-        const max = parseInt(textarea.dataset.max) || 1000;
-
-        const updateCount = () => {
-          const length = textarea.value.length;
-          const percentage = (length / max) * 100;
-
-          countElement.textContent = `${length} / ${max} characters`;
-          progressElement.style.width = `${Math.min(percentage, 100)}%`;
-
-          // Update styling based on progress
-          countElement.classList.remove("approaching-limit", "at-limit");
-          if (length >= max) {
-            countElement.classList.add("at-limit");
-          } else if (length >= max * 0.8) {
-            countElement.classList.add("approaching-limit");
+          // Update styling
+          this.countElement.classList.remove("approaching-limit", "at-limit");
+          if (length >= this.max) {
+            this.countElement.classList.add("at-limit");
+          } else if (length >= this.max * 0.8) {
+            this.countElement.classList.add("approaching-limit");
           }
 
-          // Validate minimum
-          const isValid = length >= min;
-          textarea.style.borderColor =
+          // Validation styling
+          const isValid = length >= this.min;
+          this.textarea.style.borderColor =
             length > 0 && !isValid ? "rgba(239, 68, 68, 0.4)" : "";
 
           return { length, isValid, percentage };
-        };
+        }
 
-        textarea.addEventListener("input", updateCount);
+        getStats() {
+          return {
+            min: this.min,
+            max: this.max,
+            current: this.textarea.value.length,
+          };
+        }
+      }
 
-        return {
-          validate: updateCount,
-          getStats: () => ({ min, max, current: textarea.value.length }),
-        };
-      };
-
-      const QuestionCard = (questionElement) => {
-        const textarea = questionElement.querySelector(".sacred-textarea");
-        const countElement = questionElement.querySelector(".char-count");
-        const progressElement =
-          questionElement.querySelector(".char-progress-bar");
-
-        const charCounter = CharacterCounter(
-          textarea,
-          countElement,
-          progressElement
-        );
-
-        return {
-          getValue: () => textarea.value,
-          setValue: (value) => {
-            textarea.value = value;
-            charCounter.validate();
-          },
-          validate: () => charCounter.validate(),
-          getStats: () => charCounter.getStats(),
-          focus: () => textarea.focus(),
-        };
-      };
-
-      /* ═══════════════ MAIN APPLICATION ═══════════════ */
-      class MirrorApp {
+      // ╭─ MAIN APPLICATION CLASS ───────────────────────────────────────────╮
+      class MirrorApplication {
         constructor() {
           this.state = new MirrorState();
-          this.components = {};
-          this.userData = null;
-          this.authToken = null;
-          this.currentReflectionId = null;
+          this.toneManager = new ToneManager();
+          this.characterCounters = new Map();
         }
 
         async init() {
           console.log("🪞 Initializing Mirror of Truth...");
-          await this.checkAuthentication();
-          this.setupComponents();
-          this.setupEventListeners();
-          this.restoreFormState();
-          this.animateEntrance();
-          console.log("✨ Mirror initialization complete");
+
+          try {
+            await this.initializeAuthentication();
+            this.setupComponents();
+            this.setupEventListeners();
+            this.initializeTone();
+            this.restoreFormState();
+
+            console.log("✨ Mirror initialization complete");
+          } catch (error) {
+            console.error("💥 Initialization failed:", error);
+            this.handleInitializationError(error);
+          }
         }
 
-        async checkAuthentication() {
+        async initializeAuthentication() {
           const urlParams = new URLSearchParams(window.location.search);
           const mode = urlParams.get("mode");
           const premium = urlParams.get("premium");
 
-          this.authToken = localStorage.getItem("mirror_auth_token");
+          this.state.authToken = localStorage.getItem("mirror_auth_token");
 
           if (mode === "creator") {
-            this.userData = {
+            this.state.userData = {
               isCreator: true,
               name: "Ahiya",
               email: "ahiya.butman@gmail.com",
@@ -1982,7 +1860,7 @@
               "✨ Creator mode — unlimited premium reflections"
             );
           } else if (mode === "user") {
-            this.userData = {
+            this.state.userData = {
               name: "Test User",
               email: "test@example.com",
               tier: premium === "true" ? "premium" : "essential",
@@ -1993,12 +1871,12 @@
                 premium === "true" ? "premium" : "essential"
               } reflection`
             );
-          } else if (!this.authToken) {
+          } else if (!this.state.authToken) {
             this.redirectToAuth("Authentication required for reflections");
             return;
           } else {
             try {
-              this.userData = await this.verifyAuthToken();
+              this.state.userData = await this.verifyAuthToken();
             } catch (error) {
               this.redirectToAuth(
                 "Authentication failed, please sign in again"
@@ -2008,8 +1886,8 @@
           }
 
           console.log("🔐 Authentication complete:", {
-            user: this.userData?.name || "Anonymous",
-            tier: this.userData?.tier || "unknown",
+            user: this.state.userData?.name || "Anonymous",
+            tier: this.state.userData?.tier || "unknown",
           });
         }
 
@@ -2018,7 +1896,7 @@
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${this.authToken}`,
+              Authorization: `Bearer ${this.state.authToken}`,
             },
             body: JSON.stringify({ action: "verify-token" }),
           });
@@ -2041,182 +1919,150 @@
 
         showAdminNotice(message) {
           const notice = document.getElementById("adminNotice");
-          notice.style.display = "block";
+          notice.classList.remove("is-hidden");
           notice.innerHTML = `<span>${message}</span>`;
         }
 
         setupComponents() {
           console.log("🔧 Setting up components...");
 
-          // Initialize tone selector
-          this.components.toneSelector = ToneSelector(
-            document.querySelector(".tone-group")
-          );
-          this.components.toneSelector.init();
+          // Setup character counters for all textareas
+          document.querySelectorAll(".form-textarea").forEach((textarea) => {
+            const countElement =
+              textarea.parentElement.querySelector(".char-count");
+            const progressElement =
+              textarea.parentElement.querySelector(".char-progress-bar");
 
-          // Initialize question cards with character counting
-          this.components.questions = {};
-          document
-            .querySelectorAll(".question-group[data-question]")
-            .forEach((questionElement) => {
-              const questionNum = questionElement.dataset.question;
-              this.components.questions[questionNum] =
-                QuestionCard(questionElement);
-            });
+            if (countElement && progressElement) {
+              const counter = new CharacterCounter(
+                textarea,
+                countElement,
+                progressElement
+              );
+              this.characterCounters.set(textarea.id, counter);
+            }
+          });
 
-          console.log("✅ Components initialized");
+          console.log("✅ Components setup complete");
         }
 
         setupEventListeners() {
           console.log("👂 Setting up event listeners...");
 
           // Tone selection
-          document.querySelectorAll(".tone-btn").forEach((btn) => {
-            btn.addEventListener("click", () => {
-              const tone = btn.dataset.tone;
-              this.components.toneSelector.setTone(tone);
-              this.saveFormState();
+          document.querySelectorAll(".tone-button").forEach((button) => {
+            button.addEventListener("click", (e) => {
+              e.preventDefault();
+              this.handleToneSelection(button.dataset.tone);
             });
           });
 
-          // Yes/No buttons
-          document.querySelectorAll(".yes-no-btn").forEach((btn) => {
-            btn.addEventListener("click", () => {
-              this.handleYesNoClick(btn);
+          // Choice buttons (Yes/No)
+          document.querySelectorAll(".choice-button").forEach((button) => {
+            button.addEventListener("click", (e) => {
+              e.preventDefault();
+              this.handleChoiceSelection(button);
             });
-          });
-
-          // Form input changes
-          document.querySelectorAll(".sacred-textarea").forEach((input) => {
-            input.addEventListener(
-              "input",
-              this.debounce(() => this.saveFormState(), 1000)
-            );
           });
 
           // Form submission
           document
             .getElementById("reflectionForm")
             .addEventListener("submit", (e) => {
-              this.handleFormSubmit(e);
+              this.handleFormSubmission(e);
             });
 
           // Artifact creation
           document
-            .getElementById("createArtifactBtn")
-            .addEventListener("click", () => {
+            .getElementById("createArtifactButton")
+            .addEventListener("click", (e) => {
+              e.preventDefault();
               this.createArtifact();
             });
 
           // Email reflection
-          document.getElementById("emailBtn").addEventListener("click", () => {
-            this.emailReflection();
+          document
+            .getElementById("emailButton")
+            .addEventListener("click", (e) => {
+              e.preventDefault();
+              this.emailReflection();
+            });
+
+          // Form state saving
+          document.querySelectorAll(".form-textarea").forEach((textarea) => {
+            textarea.addEventListener(
+              "input",
+              this.debounce(() => {
+                this.saveFormState();
+              }, 1000)
+            );
           });
 
-          // Focus animations
-          document.querySelectorAll(".sacred-textarea").forEach((input) => {
-            input.addEventListener("focus", () =>
-              this.createFocusEffect(input)
-            );
+          // Focus effects
+          document.querySelectorAll(".form-textarea").forEach((textarea) => {
+            textarea.addEventListener("focus", () => {
+              this.createFocusEffect(textarea);
+            });
           });
 
           console.log("✅ Event listeners setup complete");
         }
 
-        handleYesNoClick(btn) {
-          btn.parentNode
-            .querySelectorAll(".yes-no-btn")
-            .forEach((b) => b.classList.remove("selected"));
-          btn.classList.add("selected");
+        initializeTone() {
+          this.toneManager.setTone(this.state.currentTone);
+        }
 
-          const hasDate = btn.dataset.value;
-          document.querySelector('input[name="hasDate"]').value = hasDate;
+        handleToneSelection(tone) {
+          // Update visual selection
+          document.querySelectorAll(".tone-button").forEach((btn) => {
+            btn.classList.remove("is-selected");
+          });
+          document
+            .querySelector(`[data-tone="${tone}"]`)
+            .classList.add("is-selected");
 
-          const dateContainer = document.getElementById("dateContainer");
+          // Update state and background
+          this.state.currentTone = tone;
+          this.toneManager.setTone(tone);
+
+          // Save form state
+          this.saveFormState();
+        }
+
+        handleChoiceSelection(selectedButton) {
+          const container = selectedButton.parentElement;
+          const hiddenInput = container.parentElement.querySelector(
+            'input[type="hidden"]'
+          );
+          const dateContainer =
+            container.parentElement.querySelector(".date-container");
           const dateInput = dateContainer.querySelector("input");
 
-          if (hasDate === "yes") {
-            dateContainer.style.display = "flex";
+          // Update button selection
+          container.querySelectorAll(".choice-button").forEach((btn) => {
+            btn.classList.remove("is-selected");
+          });
+          selectedButton.classList.add("is-selected");
+
+          // Update hidden input
+          const value = selectedButton.dataset.value;
+          hiddenInput.value = value;
+
+          // Handle date container visibility
+          if (value === "yes") {
+            dateContainer.classList.add("is-visible");
             dateInput.required = true;
           } else {
-            dateContainer.style.display = "none";
+            dateContainer.classList.remove("is-visible");
             dateInput.required = false;
             dateInput.value = "";
           }
 
+          // Save form state
           this.saveFormState();
         }
 
-        saveFormState() {
-          if (this.state.isRestoringForm) return;
-
-          const form = document.getElementById("reflectionForm");
-          const formData = new FormData(form);
-
-          const state = {
-            dream: formData.get("dream") || "",
-            plan: formData.get("plan") || "",
-            hasDate: formData.get("hasDate") || "",
-            dreamDate: formData.get("dreamDate") || "",
-            relationship: formData.get("relationship") || "",
-            offering: formData.get("offering") || "",
-            tone: this.components.toneSelector.getTone(),
-            timestamp: Date.now(),
-          };
-
-          this.state.saveFormState(state);
-        }
-
-        restoreFormState() {
-          const savedState = this.state.restoreFormState();
-          if (!savedState) return;
-
-          console.log("🔄 Restoring form state...");
-
-          this.state.isRestoringForm = true;
-
-          // Restore tone
-          if (savedState.tone) {
-            this.components.toneSelector.setTone(savedState.tone);
-          }
-
-          // Restore form fields
-          Object.entries(savedState).forEach(([key, value]) => {
-            if (key === "tone" || key === "timestamp") return;
-
-            const field = document.querySelector(`[name="${key}"]`);
-            if (field) {
-              field.value = value;
-
-              // Handle yes/no buttons
-              if (key === "hasDate" && value) {
-                document.querySelectorAll(".yes-no-btn").forEach((btn) => {
-                  btn.classList.remove("selected");
-                  if (btn.dataset.value === value) {
-                    btn.classList.add("selected");
-                  }
-                });
-
-                const dateContainer = document.getElementById("dateContainer");
-                const dateInput = dateContainer.querySelector("input");
-                if (value === "yes") {
-                  dateContainer.style.display = "flex";
-                  dateInput.required = true;
-                }
-              }
-            }
-          });
-
-          // Update character counters
-          Object.values(this.components.questions).forEach((question) => {
-            question.validate();
-          });
-
-          this.state.isRestoringForm = false;
-          console.log("✅ Form state restored");
-        }
-
-        async handleFormSubmit(e) {
+        async handleFormSubmission(e) {
           e.preventDefault();
 
           if (this.state.isSubmitting) {
@@ -2228,12 +2074,13 @@
 
           // Validate character counts
           let isValid = true;
-          Object.values(this.components.questions).forEach((question) => {
-            const stats = question.getStats();
+          for (const [textareaId, counter] of this.characterCounters) {
+            const stats = counter.getStats();
             if (stats.current < stats.min) {
               isValid = false;
+              break;
             }
-          });
+          }
 
           if (!isValid) {
             alert(
@@ -2242,35 +2089,40 @@
             return;
           }
 
+          // Prepare submission
           this.state.isSubmitting = true;
-          const submitBtn = document.getElementById("submitBtn");
-          submitBtn.disabled = true;
-          submitBtn.textContent = "Creating your reflection...";
+          const submitButton = document.getElementById("submitButton");
+          submitButton.disabled = true;
+          submitButton.textContent = "Creating your reflection...";
 
-          this.showSection("loading");
-
-          const formData = new FormData(e.target);
-          const payload = {
-            dream: formData.get("dream"),
-            plan: formData.get("plan"),
-            hasDate: formData.get("hasDate"),
-            dreamDate: formData.get("dreamDate"),
-            relationship: formData.get("relationship"),
-            offering: formData.get("offering"),
-            userName: this.userData?.name || "Friend",
-            userEmail: this.userData?.email || "",
-            language: "en",
-            isAdmin: this.userData?.isCreator || this.userData?.testMode,
-            isCreator: this.userData?.isCreator,
-            isPremium:
-              this.userData?.tier === "premium" || this.userData?.isCreator,
-            tone: this.components.toneSelector.getTone(),
-          };
+          this.showSection("loadingSection");
 
           try {
+            // Prepare payload
+            const formData = new FormData(e.target);
+            const payload = {
+              dream: formData.get("dream"),
+              plan: formData.get("plan"),
+              hasDate: formData.get("hasDate"),
+              dreamDate: formData.get("dreamDate"),
+              relationship: formData.get("relationship"),
+              offering: formData.get("offering"),
+              userName: this.state.userData?.name || "Friend",
+              userEmail: this.state.userData?.email || "",
+              language: "en",
+              isAdmin:
+                this.state.userData?.isCreator || this.state.userData?.testMode,
+              isCreator: this.state.userData?.isCreator,
+              isPremium:
+                this.state.userData?.tier === "premium" ||
+                this.state.userData?.isCreator,
+              tone: this.state.currentTone,
+            };
+
+            // Submit to API
             const headers = { "Content-Type": "application/json" };
-            if (this.authToken) {
-              headers["Authorization"] = `Bearer ${this.authToken}`;
+            if (this.state.authToken) {
+              headers["Authorization"] = `Bearer ${this.state.authToken}`;
             }
 
             console.log("🔄 Sending reflection request...");
@@ -2288,27 +2140,30 @@
 
             console.log("✨ Reflection created successfully!");
 
+            // Display results
             document.getElementById("reflectionContent").innerHTML =
               data.reflection;
-            this.currentReflectionId = data.reflectionId;
+            this.state.currentReflectionId = data.reflectionId;
 
             if (data.isPremium) {
               this.showPremiumBadge();
             }
 
-            // Show artifact button for all successful reflections
-            const artifactBtn = document.getElementById("createArtifactBtn");
-            artifactBtn.style.display = "flex";
+            // Show artifact button
+            document
+              .getElementById("createArtifactButton")
+              .classList.remove("is-hidden");
 
+            // Save reflection
             this.state.saveReflection({
               id: data.reflectionId,
               content: data.reflection,
               isPremium: data.isPremium,
               timestamp: Date.now(),
-              userData: this.userData,
+              userData: this.state.userData,
             });
 
-            this.showSection("results");
+            this.showSection("resultsSection");
 
             // Show feedback after delay
             setTimeout(() => this.showFeedbackSection(), 3000);
@@ -2316,46 +2171,49 @@
             console.error("💥 Reflection creation failed:", error);
             document.getElementById("reflectionContent").innerHTML = `
               <h2>A moment of silence…</h2>
-              <p>Your reflection is being prepared. Please try again soon.</p>`;
-            this.showSection("results");
+              <p>Your reflection is being prepared. Please try again soon.</p>
+            `;
+            this.showSection("resultsSection");
           } finally {
             this.state.isSubmitting = false;
-            submitBtn.disabled = false;
-            submitBtn.textContent = "Receive Your Reflection";
+            submitButton.disabled = false;
+            submitButton.textContent = "Receive Your Reflection";
           }
         }
 
         async createArtifact() {
-          if (!this.currentReflectionId) {
+          if (!this.state.currentReflectionId) {
             alert("No reflection found to create artifact from.");
             return;
           }
 
           console.log("🎨 Creating artifact...");
 
-          const artifactBtn = document.getElementById("createArtifactBtn");
-          const originalContent = artifactBtn.innerHTML;
+          const button = document.getElementById("createArtifactButton");
+          const originalContent = button.innerHTML;
 
-          artifactBtn.innerHTML = "<span>🎨</span><span>Creating...</span>";
-          artifactBtn.disabled = true;
+          button.innerHTML = "<span>🎨</span><span>Creating...</span>";
+          button.disabled = true;
 
           try {
             const headers = { "Content-Type": "application/json" };
-            if (this.authToken) {
-              headers["Authorization"] = `Bearer ${this.authToken}`;
+            if (this.state.authToken) {
+              headers["Authorization"] = `Bearer ${this.state.authToken}`;
             }
 
             const response = await fetch("/api/artifact", {
               method: "POST",
               headers: headers,
-              body: JSON.stringify({ reflectionId: this.currentReflectionId }),
+              body: JSON.stringify({
+                reflectionId: this.state.currentReflectionId,
+              }),
             });
 
             const data = await response.json();
 
             if (data.success) {
               console.log("✨ Artifact created successfully!");
-              artifactBtn.innerHTML =
+              button.innerHTML =
                 "<span>✅</span><span>Artifact Created!</span>";
 
               // Create download link
@@ -2363,36 +2221,34 @@
               link.href = data.artifact.image_url;
               link.download = `reflection-artifact-${Date.now()}.png`;
               link.target = "_blank";
-              link.textContent = "Download Your Artifact";
-              link.className = "sacred-button";
+              link.className = "action-button";
+              link.innerHTML = "<span>⬇️</span><span>Download Artifact</span>";
               link.style.marginTop = "1rem";
 
-              artifactBtn.parentNode.appendChild(link);
+              button.parentNode.appendChild(link);
 
-              setTimeout(() => {
-                link.click();
-              }, 1000);
+              setTimeout(() => link.click(), 1000);
             } else {
               throw new Error(data.error || "Artifact creation failed");
             }
           } catch (error) {
             console.error("💥 Artifact creation failed:", error);
-            artifactBtn.innerHTML = "<span>⚡</span><span>Try Again</span>";
+            button.innerHTML = "<span>⚡</span><span>Try Again</span>";
             alert("Failed to create artifact. Please try again.");
           } finally {
             setTimeout(() => {
-              artifactBtn.innerHTML = originalContent;
-              artifactBtn.disabled = false;
+              button.innerHTML = originalContent;
+              button.disabled = false;
             }, 3000);
           }
         }
 
         async emailReflection() {
-          const btn = document.getElementById("emailBtn");
-          const originalContent = btn.innerHTML;
+          const button = document.getElementById("emailButton");
+          const originalContent = button.innerHTML;
 
-          btn.innerHTML = "<span>📧</span><span>Sending...</span>";
-          btn.disabled = true;
+          button.innerHTML = "<span>📧</span><span>Sending...</span>";
+          button.disabled = true;
 
           try {
             const response = await fetch("/api/communication", {
@@ -2400,167 +2256,183 @@
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 action: "send-reflection",
-                email: this.userData.email,
+                email: this.state.userData.email,
                 content: document.getElementById("reflectionContent").innerHTML,
-                userName: this.userData.name || "Friend",
+                userName: this.state.userData.name || "Friend",
                 language: "en",
                 isPremium:
-                  this.userData.tier === "premium" || this.userData.isCreator,
+                  this.state.userData.tier === "premium" ||
+                  this.state.userData.isCreator,
               }),
             });
 
             const data = await response.json();
 
             if (data.success) {
-              btn.innerHTML = "<span>✅</span><span>Sent!</span>";
+              button.innerHTML = "<span>✅</span><span>Sent!</span>";
             } else {
               throw new Error(data.error || "Email failed");
             }
           } catch (error) {
             console.error("💥 Email failed:", error);
-            btn.innerHTML = "<span>⚡</span><span>Try Again</span>";
+            button.innerHTML = "<span>⚡</span><span>Try Again</span>";
           } finally {
             setTimeout(() => {
-              btn.innerHTML = originalContent;
-              btn.disabled = false;
+              button.innerHTML = originalContent;
+              button.disabled = false;
             }, 3000);
           }
+        }
+
+        saveFormState() {
+          if (this.state.isRestoringForm) return;
+
+          const form = document.getElementById("reflectionForm");
+          const formData = new FormData(form);
+
+          const state = {
+            dream: formData.get("dream") || "",
+            plan: formData.get("plan") || "",
+            hasDate: formData.get("hasDate") || "",
+            dreamDate: formData.get("dreamDate") || "",
+            relationship: formData.get("relationship") || "",
+            offering: formData.get("offering") || "",
+            tone: this.state.currentTone,
+            timestamp: Date.now(),
+          };
+
+          this.state.saveFormState(state);
+        }
+
+        restoreFormState() {
+          const savedState = this.state.loadFormState();
+          if (!savedState) return;
+
+          console.log("🔄 Restoring form state...");
+
+          this.state.isRestoringForm = true;
+
+          // Restore tone
+          if (savedState.tone) {
+            this.handleToneSelection(savedState.tone);
+          }
+
+          // Restore form fields
+          Object.entries(savedState).forEach(([key, value]) => {
+            if (key === "tone" || key === "timestamp") return;
+
+            const field = document.querySelector(`[name="${key}"]`);
+            if (field) {
+              field.value = value;
+
+              // Handle choice buttons
+              if (key === "hasDate" && value) {
+                const choiceButton = document.querySelector(
+                  `[data-value="${value}"]`
+                );
+                if (choiceButton) {
+                  this.handleChoiceSelection(choiceButton);
+                }
+              }
+            }
+          });
+
+          // Update character counters
+          this.characterCounters.forEach((counter) => counter.update());
+
+          this.state.isRestoringForm = false;
+          console.log("✅ Form state restored");
         }
 
         showSection(sectionId) {
           console.log(`🔄 Transitioning to section: ${sectionId}`);
 
-          document
-            .querySelectorAll(".experience-section")
-            .forEach((section) => {
-              section.classList.remove("active");
-              setTimeout(() => section.classList.add("hidden"), 400);
-            });
+          // Hide all sections
+          document.querySelectorAll(".mirror-section").forEach((section) => {
+            section.classList.remove("is-visible");
+            section.classList.add("is-hidden");
+          });
 
+          // Show target section
+          const targetSection = document.getElementById(sectionId);
           setTimeout(() => {
-            document
-              .querySelectorAll(".experience-section")
-              .forEach((s) => s.classList.add("hidden"));
-            const targetSection = document.getElementById(sectionId);
-            targetSection.classList.remove("hidden");
-            setTimeout(() => targetSection.classList.add("active"), 100);
-          }, 400);
+            targetSection.classList.remove("is-hidden");
+            targetSection.classList.add("is-visible");
+          }, 300);
         }
 
         showPremiumBadge() {
-          const resultsBackdrop = document.querySelector(".results-backdrop");
+          const backdrop = document.querySelector(".results-backdrop");
           const badge = document.createElement("div");
           badge.className = "premium-badge";
           badge.innerHTML = "✨ Premium Reflection";
-          badge.style.cssText = `
-            position: absolute;
-            top: -1px;
-            right: 2rem;
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-            padding: 0.5rem 1.2rem;
-            border-radius: 0 0 16px 16px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-            z-index: 20;
-          `;
-          resultsBackdrop.insertBefore(badge, resultsBackdrop.firstChild);
+          backdrop.insertBefore(badge, backdrop.firstChild);
         }
 
-        createFocusEffect(element) {
-          const rect = element.getBoundingClientRect();
-          const tone = this.components.toneSelector.getTone();
-
-          if (tone === "fusion") {
-            this.createFusionFocusEffect(rect);
-          } else if (tone === "gentle") {
-            this.createGentleFocusEffect(rect);
-          } else if (tone === "intense") {
-            this.createIntenseFocusEffect(rect);
-          }
-        }
-
-        createFusionFocusEffect(rect) {
+        createFocusEffect(textarea) {
+          const rect = textarea.getBoundingClientRect();
           const effect = document.createElement("div");
-          effect.style.cssText = `
-            position: fixed;
-            left: ${rect.left + rect.width / 2}px;
-            top: ${rect.top + rect.height / 2}px;
-            width: 180px;
-            height: 180px;
-            margin-left: -90px;
-            margin-top: -90px;
-            border-radius: 50%;
-            background: radial-gradient(
-              circle,
-              rgba(251, 191, 36, 0.2) 0%,
-              rgba(245, 158, 11, 0.1) 40%,
-              transparent 70%
-            );
-            pointer-events: none;
-            z-index: 5;
-            animation: subtleExpand 3.5s ease-out forwards;
-          `;
-          document.body.appendChild(effect);
-          setTimeout(() => effect.remove(), 3500);
-        }
 
-        createGentleFocusEffect(rect) {
-          for (let i = 0; i < 6; i++) {
-            setTimeout(() => {
-              const star = document.createElement("div");
-              const offsetX = (Math.random() - 0.5) * 200;
-              const offsetY = (Math.random() - 0.5) * 200;
-              star.style.cssText = `
-                position: fixed;
-                left: ${rect.left + rect.width / 2 + offsetX}px;
-                top: ${rect.top + rect.height / 2 + offsetY}px;
-                width: 4px;
-                height: 4px;
-                background: rgba(255, 255, 255, 0.9);
-                border-radius: 50%;
-                box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
-                pointer-events: none;
-                z-index: 5;
-                animation: subtleTwinkle 2.5s ease-out forwards;
-              `;
-              document.body.appendChild(star);
-              setTimeout(() => star.remove(), 2500);
-            }, i * 200);
+          if (this.state.currentTone === "fusion") {
+            effect.style.cssText = `
+              position: fixed;
+              left: ${rect.left + rect.width / 2}px;
+              top: ${rect.top + rect.height / 2}px;
+              width: 180px;
+              height: 180px;
+              margin-left: -90px;
+              margin-top: -90px;
+              border-radius: 50%;
+              background: radial-gradient(circle, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.1) 40%, transparent 70%);
+              pointer-events: none;
+              z-index: 5;
+              animation: subtleExpand 3.5s ease-out forwards;
+            `;
+          } else if (this.state.currentTone === "gentle") {
+            for (let i = 0; i < 6; i++) {
+              setTimeout(() => {
+                const star = document.createElement("div");
+                const offsetX = (Math.random() - 0.5) * 200;
+                const offsetY = (Math.random() - 0.5) * 200;
+                star.style.cssText = `
+                  position: fixed;
+                  left: ${rect.left + rect.width / 2 + offsetX}px;
+                  top: ${rect.top + rect.height / 2 + offsetY}px;
+                  width: 4px;
+                  height: 4px;
+                  background: rgba(255, 255, 255, 0.9);
+                  border-radius: 50%;
+                  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+                  pointer-events: none;
+                  z-index: 5;
+                  animation: subtleTwinkle 2.5s ease-out forwards;
+                `;
+                document.body.appendChild(star);
+                setTimeout(() => star.remove(), 2500);
+              }, i * 200);
+            }
+            return; // Don't create the main effect element for gentle
+          } else if (this.state.currentTone === "intense") {
+            effect.style.cssText = `
+              position: fixed;
+              left: ${rect.left + rect.width / 2}px;
+              top: ${rect.top + rect.height / 2}px;
+              width: 150px;
+              height: 150px;
+              margin-left: -75px;
+              margin-top: -75px;
+              border-radius: 50%;
+              background: radial-gradient(circle, rgba(147, 51, 234, 0.25) 0%, rgba(168, 85, 247, 0.12) 40%, transparent 70%);
+              pointer-events: none;
+              z-index: 5;
+              animation: subtleSwirl 3.5s ease-out forwards;
+            `;
           }
-        }
 
-        createIntenseFocusEffect(rect) {
-          const swirl = document.createElement("div");
-          swirl.style.cssText = `
-            position: fixed;
-            left: ${rect.left + rect.width / 2}px;
-            top: ${rect.top + rect.height / 2}px;
-            width: 150px;
-            height: 150px;
-            margin-left: -75px;
-            margin-top: -75px;
-            border-radius: 50%;
-            background: radial-gradient(
-              circle,
-              rgba(147, 51, 234, 0.25) 0%,
-              rgba(168, 85, 247, 0.12) 40%,
-              transparent 70%
-            );
-            pointer-events: none;
-            z-index: 5;
-            animation: subtleSwirl 3.5s ease-out forwards;
-          `;
-          document.body.appendChild(swirl);
-          setTimeout(() => swirl.remove(), 3500);
-        }
-
-        animateEntrance() {
-          console.log("🌟 Questions should now be visible by default");
-          // Questions are now visible by default, animation is optional
+          if (this.state.currentTone !== "gentle") {
+            document.body.appendChild(effect);
+            setTimeout(() => effect.remove(), 3500);
+          }
         }
 
         showFeedbackSection() {
@@ -2576,7 +2448,7 @@
                   ${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                     .map(
                       (n) =>
-                        `<button class="rating-btn" data-rating="${n}">${n}</button>`
+                        `<button class="rating-button" data-rating="${n}" type="button">${n}</button>`
                     )
                     .join("")}
                 </div>
@@ -2585,37 +2457,22 @@
                   <span>Deeply</span>
                 </div>
                 <textarea 
-                  class="feedback-insight sacred-textarea" 
-                  id="feedbackInsight"
+                  class="feedback-textarea" 
+                  id="feedbackTextarea"
                   placeholder="What emerged for you? (optional)"
                   maxlength="500"
                   rows="3"
                 ></textarea>
-                <button class="submit-feedback-btn" id="submitFeedbackBtn">Submit & Continue</button>
-                <button class="skip-feedback-btn" id="skipFeedbackBtn">Skip</button>
+                <div class="feedback-buttons">
+                  <button class="feedback-submit" id="feedbackSubmit" type="button">Submit & Continue</button>
+                  <button class="feedback-skip" id="feedbackSkip" type="button">Skip</button>
+                </div>
               </div>
             </div>
           `;
 
           const actionsSection = document.querySelector(".results-actions");
-          if (!actionsSection) {
-            console.error(
-              "Could not find results-actions section for feedback insertion"
-            );
-            return;
-          }
-
           actionsSection.insertAdjacentHTML("beforebegin", feedbackHtml);
-
-          const feedbackSection = document.getElementById("feedbackSection");
-          feedbackSection.style.opacity = "0";
-          feedbackSection.style.transform = "translateY(20px)";
-
-          setTimeout(() => {
-            feedbackSection.style.transition = "all 0.8s ease";
-            feedbackSection.style.opacity = "1";
-            feedbackSection.style.transform = "translateY(0)";
-          }, 100);
 
           this.setupFeedbackInteractions();
         }
@@ -2623,23 +2480,20 @@
         setupFeedbackInteractions() {
           let selectedRating = null;
 
-          document.querySelectorAll(".rating-btn").forEach((btn) => {
-            btn.addEventListener("click", function () {
-              document
-                .querySelectorAll(".rating-btn")
-                .forEach((b) => b.classList.remove("selected"));
-              this.classList.add("selected");
-              selectedRating = parseInt(this.dataset.rating);
-
-              this.style.transform = "scale(1.2)";
-              setTimeout(() => {
-                this.style.transform = "";
-              }, 200);
+          // Rating buttons
+          document.querySelectorAll(".rating-button").forEach((button) => {
+            button.addEventListener("click", () => {
+              document.querySelectorAll(".rating-button").forEach((btn) => {
+                btn.classList.remove("is-selected");
+              });
+              button.classList.add("is-selected");
+              selectedRating = parseInt(button.dataset.rating);
             });
           });
 
+          // Submit feedback
           document
-            .getElementById("submitFeedbackBtn")
+            .getElementById("feedbackSubmit")
             .addEventListener("click", async () => {
               if (!selectedRating) {
                 alert("Please select a rating from 1-10");
@@ -2649,8 +2503,9 @@
               await this.submitFeedback(selectedRating);
             });
 
+          // Skip feedback
           document
-            .getElementById("skipFeedbackBtn")
+            .getElementById("feedbackSkip")
             .addEventListener("click", () => {
               this.hideFeedbackSection();
             });
@@ -2658,7 +2513,7 @@
 
         async submitFeedback(rating) {
           const feedbackText = document
-            .getElementById("feedbackInsight")
+            .getElementById("feedbackTextarea")
             .value.trim();
 
           try {
@@ -2666,11 +2521,11 @@
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${this.authToken}`,
+                Authorization: `Bearer ${this.state.authToken}`,
               },
               body: JSON.stringify({
                 action: "submit-feedback",
-                reflectionId: this.currentReflectionId,
+                reflectionId: this.state.currentReflectionId,
                 rating: rating,
                 feedback: feedbackText,
               }),
@@ -2680,10 +2535,9 @@
 
             if (data.success) {
               console.log("✅ Feedback submitted successfully");
-              const submitBtn = document.getElementById("submitFeedbackBtn");
-              submitBtn.textContent = "✓ Thank you!";
-              submitBtn.disabled = true;
-
+              const submitButton = document.getElementById("feedbackSubmit");
+              submitButton.textContent = "✓ Thank you!";
+              submitButton.disabled = true;
               setTimeout(() => this.hideFeedbackSection(), 1500);
             } else {
               console.error("💥 Failed to submit feedback:", data.error);
@@ -2701,11 +2555,39 @@
             feedbackSection.style.transition = "all 0.5s ease";
             feedbackSection.style.opacity = "0";
             feedbackSection.style.transform = "translateY(-20px)";
-
-            setTimeout(() => {
-              feedbackSection.remove();
-            }, 500);
+            setTimeout(() => feedbackSection.remove(), 500);
           }
+        }
+
+        handleInitializationError(error) {
+          console.error("💥 Fatal initialization error:", error);
+          document.body.innerHTML = `
+            <div style="
+              position: fixed;
+              inset: 0;
+              background: #020617;
+              color: white;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-direction: column;
+              gap: 2rem;
+              text-align: center;
+              padding: 2rem;
+            ">
+              <h1 style="font-size: 2rem; margin: 0;">Mirror Temporarily Unavailable</h1>
+              <p style="margin: 0; opacity: 0.8;">The reflection portal is experiencing technical difficulties.</p>
+              <button onclick="window.location.reload()" style="
+                padding: 1rem 2rem;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 16px;
+                color: white;
+                cursor: pointer;
+                font-size: 1rem;
+              ">Try Again</button>
+            </div>
+          `;
         }
 
         debounce(func, wait) {
@@ -2721,17 +2603,29 @@
         }
       }
 
-      /* ═══════════════ INITIALIZE APPLICATION ═══════════════ */
-      const mirrorApp = new MirrorApp();
+      // ╭─ APPLICATION INITIALIZATION ───────────────────────────────────────╮
+      let mirrorApp;
 
-      window.addEventListener("load", () => {
-        mirrorApp.init();
-      });
+      // Initialize when DOM is ready
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initializeApp);
+      } else {
+        initializeApp();
+      }
+
+      function initializeApp() {
+        try {
+          mirrorApp = new MirrorApplication();
+          mirrorApp.init();
+        } catch (error) {
+          console.error("💥 Failed to initialize Mirror of Truth:", error);
+        }
+      }
 
       // Global access for debugging
       window.mirrorApp = mirrorApp;
 
-      console.log("🪞 Mirror of Truth loaded and ready");
+      console.log("🪞 Mirror of Truth script loaded and ready");
     </script>
   </body>
 </html>
