@@ -1,4 +1,4 @@
-// API: Payment - COMPLETE Enhanced with Bulletproof Debugging and Error Handling
+// API: Payment - COMPLETE Enhanced with Bulletproof Debugging and Error Handling + PAYMENT METHOD FIX
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const { createClient } = require("@supabase/supabase-js");
@@ -674,7 +674,7 @@ async function handleStripeWebhook(req, res) {
   }
 }
 
-// COMPLETELY BULLETPROOF: Handle Payment Intent webhooks with comprehensive debugging
+// COMPLETELY BULLETPROOF: Handle Payment Intent webhooks with comprehensive debugging + PAYMENT METHOD FIX
 async function handlePaymentIntentWebhook(event, res) {
   const timestamp = new Date().toISOString();
   const webhookId = `WHK_${Date.now()}_${Math.random()
@@ -899,11 +899,94 @@ async function handlePaymentIntentWebhook(event, res) {
         `👤 [${webhookId}]   Stripe Customer: ${existingUser.stripe_customer_id}`
       );
 
-      // Step 3: Create Stripe subscription
-      log("info", `🔍 [${webhookId}] Step 3: Creating Stripe subscription...`);
+      // Step 3: Attach payment method to customer (NEW FIX)
+      log(
+        "info",
+        `🔍 [${webhookId}] Step 3: Attaching payment method to customer...`
+      );
+
+      // Get the payment method from the successful PaymentIntent
+      const paymentMethodId = paymentIntent.payment_method;
+
+      if (!paymentMethodId) {
+        log(
+          "error",
+          `❌ [${webhookId}] No payment method found on PaymentIntent`
+        );
+        throw new Error("No payment method found on PaymentIntent");
+      }
+
+      log("info", `💳 [${webhookId}] Payment Method ID: ${paymentMethodId}`);
+
+      // Attach the payment method to the customer
+      try {
+        await stripe.paymentMethods.attach(paymentMethodId, {
+          customer: paymentIntent.customer,
+        });
+        log("info", `✅ [${webhookId}] Payment method attached to customer`);
+      } catch (attachError) {
+        if (
+          attachError.code === "resource_missing" ||
+          attachError.message?.includes("already been attached")
+        ) {
+          log(
+            "info",
+            `⚠️ [${webhookId}] Payment method already attached, continuing...`
+          );
+        } else {
+          throw attachError;
+        }
+      }
+
+      // Set it as the default payment method for subscriptions
+      try {
+        await stripe.customers.update(paymentIntent.customer, {
+          invoice_settings: {
+            default_payment_method: paymentMethodId,
+          },
+        });
+        log(
+          "info",
+          `✅ [${webhookId}] Payment method set as default for customer`
+        );
+      } catch (defaultError) {
+        log(
+          "warn",
+          `⚠️ [${webhookId}] Could not set default payment method:`,
+          defaultError.message
+        );
+      }
+
+      // Step 4: Create Stripe subscription with trial period to avoid double charging
+      log(
+        "info",
+        `🔍 [${webhookId}] Step 4: Creating Stripe subscription with trial to avoid double charging...`
+      );
+
+      // Calculate next billing date to avoid double charging
+      const nextBillingDate = new Date();
+      if (period === "monthly") {
+        nextBillingDate.setMonth(nextBillingDate.getMonth() + 1);
+      } else if (period === "yearly") {
+        nextBillingDate.setFullYear(nextBillingDate.getFullYear() + 1);
+      }
+
+      log(
+        "info",
+        `📅 [${webhookId}] Trial end date: ${nextBillingDate.toISOString()}`
+      );
+      log(
+        "info",
+        `📅 [${webhookId}] Customer already paid $${
+          paymentIntent.amount / 100
+        } via PaymentIntent`
+      );
+
       const subscriptionData = {
         customer: paymentIntent.customer,
         items: [{ price: priceId }],
+        // CRITICAL: Set trial_end to prevent double charging
+        trial_end: Math.floor(nextBillingDate.getTime() / 1000),
         metadata: {
           userId: userId,
           tier: tier,
@@ -914,44 +997,47 @@ async function handlePaymentIntentWebhook(event, res) {
           createdAt: timestamp,
           webhookProcessedAt: timestamp,
           webhookId: webhookId,
+          alreadyPaidViaPaymentIntent: "true", // Flag for clarity
         },
       };
 
-      log("info", `📋 [${webhookId}] Subscription creation parameters:`);
+      log(
+        "info",
+        `📋 [${webhookId}] Creating subscription with trial period to avoid double charge`
+      );
       log("info", `📋 [${webhookId}]   Customer: ${subscriptionData.customer}`);
       log("info", `📋 [${webhookId}]   Price: ${priceId}`);
       log(
         "info",
-        `📋 [${webhookId}]   Metadata count: ${
-          Object.keys(subscriptionData.metadata).length
-        }`
+        `📋 [${webhookId}]   Trial End: ${new Date(
+          subscriptionData.trial_end * 1000
+        ).toISOString()}`
       );
 
       const subscription = await stripe.subscriptions.create(subscriptionData);
 
-      log(
-        "info",
-        `✅ [${webhookId}] Step 3: Stripe subscription created successfully`
-      );
+      log("info", `✅ [${webhookId}] Stripe subscription created successfully`);
       log("info", `🎫 [${webhookId}] Subscription Details:`);
       log("info", `🎫 [${webhookId}]   ID: ${subscription.id}`);
       log("info", `🎫 [${webhookId}]   Status: ${subscription.status}`);
       log("info", `🎫 [${webhookId}]   Customer: ${subscription.customer}`);
       log(
         "info",
-        `🎫 [${webhookId}]   Current Period Start: ${new Date(
-          subscription.current_period_start * 1000
+        `🎫 [${webhookId}]   Trial end: ${new Date(
+          subscription.trial_end * 1000
         ).toISOString()}`
       );
       log(
         "info",
-        `🎫 [${webhookId}]   Current Period End: ${new Date(
-          subscription.current_period_end * 1000
+        `💰 [${webhookId}]   Customer charged once ($${
+          paymentIntent.amount / 100
+        }), next charge: ${new Date(
+          subscription.trial_end * 1000
         ).toISOString()}`
       );
 
-      // Step 4: Update user in database with enhanced error handling and retries
-      log("info", `🔍 [${webhookId}] Step 4: Updating user in database...`);
+      // Step 5: Update user in database with enhanced error handling and retries
+      log("info", `🔍 [${webhookId}] Step 5: Updating user in database...`);
 
       let updateSuccess = false;
       let updateAttempts = 0;
@@ -1027,6 +1113,18 @@ async function handlePaymentIntentWebhook(event, res) {
       log("info", `✅ [${webhookId}]   Status: ${subscription.status}`);
       log(
         "info",
+        `✅ [${webhookId}]   Customer charged once: $${
+          paymentIntent.amount / 100
+        }`
+      );
+      log(
+        "info",
+        `✅ [${webhookId}]   Next charge: ${new Date(
+          subscription.trial_end * 1000
+        ).toISOString()}`
+      );
+      log(
+        "info",
         `✅ [${webhookId}]   Processing Time: ${
           Date.now() - new Date(timestamp).getTime()
         }ms`
@@ -1043,6 +1141,8 @@ async function handlePaymentIntentWebhook(event, res) {
         timestamp: timestamp,
         processingTimeMs: Date.now() - new Date(timestamp).getTime(),
         updateAttempts: updateAttempts,
+        chargedOnce: true,
+        nextChargeDate: new Date(subscription.trial_end * 1000).toISOString(),
       });
     } catch (subscriptionError) {
       log(
@@ -1155,25 +1255,41 @@ async function upgradeUserFromPaymentIntentEnhanced(
     // Step 2: Calculate subscription dates
     log("info", `🔍 [${webhookId}] Step 2: Calculating subscription dates...`);
     const startDate = new Date();
-    const expiryDate = new Date(startDate);
+    // For trial subscriptions, the subscription is active now but next charge is at trial_end
+    const expiryDate = subscription.trial_end
+      ? new Date(subscription.trial_end * 1000)
+      : new Date(startDate);
 
-    if (period === "monthly") {
-      expiryDate.setMonth(expiryDate.getMonth() + 1);
-    } else if (period === "yearly") {
-      expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-    } else {
-      throw new Error(`Invalid period: ${period}`);
+    if (!subscription.trial_end) {
+      // Fallback if no trial_end (shouldn't happen with our fix)
+      if (period === "monthly") {
+        expiryDate.setMonth(expiryDate.getMonth() + 1);
+      } else if (period === "yearly") {
+        expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+      }
     }
 
     log("info", `📅 [${webhookId}] Subscription dates calculated:`);
-    log("info", `📅 [${webhookId}]   Start: ${startDate.toISOString()}`);
-    log("info", `📅 [${webhookId}]   Expiry: ${expiryDate.toISOString()}`);
+    log(
+      "info",
+      `📅 [${webhookId}]   Start (immediate): ${startDate.toISOString()}`
+    );
+    log(
+      "info",
+      `📅 [${webhookId}]   Next billing: ${expiryDate.toISOString()}`
+    );
+    log(
+      "info",
+      `📅 [${webhookId}]   Trial period: ${
+        subscription.trial_end ? "Yes" : "No"
+      }`
+    );
 
     // Step 3: Prepare comprehensive update data
     log("info", `🔍 [${webhookId}] Step 3: Preparing update data...`);
     const updateData = {
       tier: tier,
-      subscription_status: "active",
+      subscription_status: "active", // Active subscription, just in trial
       subscription_period: period,
       stripe_subscription_id: subscription.id,
       stripe_customer_id: subscription.customer,
