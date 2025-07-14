@@ -1,5 +1,5 @@
 // api/evolution.js - Mirror of Truth Evolution Analytics & Growth Reports
-// SIMPLIFIED: Only text analysis + themes, proper limits, date awareness
+// FIXED: Proper limit logic, better report retrieval, comprehensive analysis
 
 const { createClient } = require("@supabase/supabase-js");
 const { authenticateRequest } = require("./auth.js");
@@ -17,7 +17,7 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-// Evolution report thresholds - every N reflections (not accumulating)
+// Evolution report thresholds - every N reflections
 const REPORT_THRESHOLDS = {
   essential: 4, // Every 4 reflections
   premium: 6, // Every 6 reflections
@@ -70,7 +70,7 @@ function buildEvolutionPrompt(
   return systemPrompt;
 }
 
-// Simplified premium enhancement
+// Premium enhancement
 const PREMIUM_EVOLUTION_ENHANCEMENT = `
 PREMIUM EVOLUTION ANALYSIS:
 You have extended thinking capabilities to provide deeper consciousness evolution recognition.
@@ -80,8 +80,11 @@ Focus on:
 - More nuanced language evolution tracking
 - Subtle identity shifts and consciousness development
 - Integration of previous resistances and growth
+- Archetypal and mythological dimensions of their journey
+- Sophisticated recognition of consciousness development stages
 
 Write with greater depth and sophistication while maintaining the same essential recognition approach.
+Provide rich, multi-layered insights that honor the complexity of consciousness evolution.
 `;
 
 module.exports = async function handler(req, res) {
@@ -122,7 +125,7 @@ module.exports = async function handler(req, res) {
   }
 };
 
-// Generate simplified evolution report
+// Generate evolution report
 async function handleGenerateReport(req, res) {
   try {
     const user = await authenticateRequest(req);
@@ -143,6 +146,8 @@ async function handleGenerateReport(req, res) {
         success: false,
         error: canGenerate.reason,
         needed: canGenerate.needed,
+        currentReflections: canGenerate.totalReflections,
+        requiredReflections: canGenerate.nextReportAt,
       });
     }
 
@@ -164,16 +169,16 @@ async function handleGenerateReport(req, res) {
     const threshold = REPORT_THRESHOLDS[user.tier];
     const analysisReflections = reflections.slice(0, threshold);
 
-    // Generate simplified evolution analysis
-    const analysis = await generateSimplifiedEvolutionAnalysis(
+    // Generate evolution analysis
+    const analysis = await generateEvolutionAnalysis(
       analysisReflections,
       user.tier,
       tone,
       user.isCreator
     );
 
-    // Extract simple themes
-    const themes = extractSimpleThemes(analysisReflections);
+    // Extract themes
+    const themes = extractThemes(analysisReflections);
 
     // Save evolution report
     const { data: report, error: reportError } = await supabase
@@ -181,15 +186,15 @@ async function handleGenerateReport(req, res) {
       .insert({
         user_id: user.id,
         analysis: analysis,
-        insights: { themes }, // Simplified - only themes
+        insights: { themes },
         report_type: user.tier,
         reflections_analyzed: analysisReflections.map((r) => r.id),
         reflection_count: analysisReflections.length,
         time_period_start:
           analysisReflections[analysisReflections.length - 1].created_at,
         time_period_end: analysisReflections[0].created_at,
-        patterns_detected: themes, // Simplified
-        growth_score: null, // Removed growth score
+        patterns_detected: themes,
+        growth_score: null,
       })
       .select("*")
       .single();
@@ -236,7 +241,7 @@ async function handleGenerateReport(req, res) {
   }
 }
 
-// Check if user can generate a report (every N reflections)
+// FIXED: Proper limit logic - every N reflections you can create a report
 async function checkCanGenerateReport(user) {
   const threshold = REPORT_THRESHOLDS[user.tier];
   if (!threshold) {
@@ -253,7 +258,7 @@ async function checkCanGenerateReport(user) {
     return { eligible: false, reason: "Error checking reflections" };
   }
 
-  // Check how many reports have been generated
+  // Count existing reports
   const { count: reportCount, error: reportError } = await supabase
     .from("evolution_reports")
     .select("*", { count: "exact", head: true })
@@ -263,19 +268,28 @@ async function checkCanGenerateReport(user) {
     return { eligible: false, reason: "Error checking reports" };
   }
 
-  // Calculate if eligible: total reflections should be >= (reports + 1) * threshold
+  // FIXED LOGIC: User can create a report every N reflections
+  // If they have 4 reflections and 0 reports -> eligible
+  // If they have 8 reflections and 1 report -> eligible
+  // If they have 7 reflections and 1 report -> need 1 more
+  const reportsAllowed = Math.floor(totalReflections / threshold);
+  const eligible = reportCount < reportsAllowed;
+
   const nextReportAt = (reportCount + 1) * threshold;
-  const eligible = totalReflections >= nextReportAt;
+  const needed = eligible ? 0 : nextReportAt - totalReflections;
 
   return {
     eligible,
     reason: eligible
       ? null
-      : `Need ${nextReportAt - totalReflections} more reflections`,
-    needed: eligible ? 0 : nextReportAt - totalReflections,
+      : `Need ${needed} more reflection${
+          needed === 1 ? "" : "s"
+        } to generate next report`,
+    needed,
     totalReflections,
     reportCount,
     nextReportAt,
+    reportsAllowed,
   };
 }
 
@@ -283,7 +297,7 @@ async function checkCanGenerateReport(user) {
 async function handleGetReports(req, res) {
   try {
     const user = await authenticateRequest(req);
-    const { page = 1, limit = 10 } = req.query;
+    const { page = 1, limit = 20 } = req.query;
 
     const offset = (parseInt(page) - 1) * parseInt(limit);
 
@@ -299,6 +313,7 @@ async function handleGetReports(req, res) {
       .range(offset, offset + parseInt(limit) - 1);
 
     if (error) {
+      console.error("Get reports error:", error);
       return res.status(500).json({
         success: false,
         error: "Failed to retrieve evolution reports",
@@ -316,6 +331,10 @@ async function handleGetReports(req, res) {
         start: report.time_period_start,
         end: report.time_period_end,
       },
+      // Add preview of analysis for sidebar
+      analysisPreview: report.analysis
+        ? report.analysis.substring(0, 100) + "..."
+        : "",
     }));
 
     return res.json({
@@ -363,6 +382,7 @@ async function handleGetReport(req, res) {
       .single();
 
     if (error || !report) {
+      console.error("Get report error:", error);
       return res.status(404).json({
         success: false,
         error: "Evolution report not found",
@@ -424,6 +444,8 @@ async function handleCheckEligibility(req, res) {
       needed: canGenerate.needed,
       tier: user.tier,
       reportCount: canGenerate.reportCount,
+      reportsAllowed: canGenerate.reportsAllowed,
+      threshold: REPORT_THRESHOLDS[user.tier],
     });
   } catch (error) {
     if (
@@ -439,14 +461,14 @@ async function handleCheckEligibility(req, res) {
   }
 }
 
-// Simplified evolution analysis
-async function generateSimplifiedEvolutionAnalysis(
+// Enhanced evolution analysis
+async function generateEvolutionAnalysis(
   reflections,
   tier,
   tone = "fusion",
   isCreator = false
 ) {
-  // Build reflection context with dates
+  // Build detailed reflection context with dates
   const reflectionContext = reflections
     .map((r, index) => {
       const date = new Date(r.created_at).toLocaleDateString("en-US", {
@@ -455,10 +477,11 @@ async function generateSimplifiedEvolutionAnalysis(
         day: "numeric",
       });
 
-      let context = `Reflection ${index + 1} (${date}):\n`;
-      context += `Dream: ${r.dream}\n`;
-      context += `Relationship: ${r.relationship}\n`;
-      context += `Offering: ${r.offering}`;
+      let context = `## Reflection ${index + 1} (${date})\n`;
+      context += `**Dream:** ${r.dream}\n`;
+      context += `**Relationship:** ${r.relationship}\n`;
+      context += `**Offering:** ${r.offering}\n`;
+      context += `**Tone:** ${r.tone || "fusion"}\n`;
       return context;
     })
     .join("\n\n");
@@ -469,28 +492,40 @@ async function generateSimplifiedEvolutionAnalysis(
     tier === "premium"
   );
 
-  // Add specific instruction for simplified analysis
+  // Enhanced analysis prompt with markdown formatting instructions
   const analysisPrompt = `${systemPrompt}
 
-SIMPLIFIED EVOLUTION ANALYSIS:
-Analyze the consciousness evolution in these reflections with focus on:
-1. Core patterns in how they relate to their dreams and capabilities
-2. Language evolution from permission-seeking to authority-claiming
-3. Identity shifts and growing self-recognition
-4. Key themes that emerge across their journey
+EVOLUTION ANALYSIS INSTRUCTIONS:
+Analyze the consciousness evolution in these reflections with deep recognition and insight.
 
-Provide a flowing, insightful analysis without complex metrics or scores. Focus on the human story of becoming.`;
+Focus on:
+1. **Consciousness Evolution Patterns** - How their awareness and self-recognition develops
+2. **Language & Authority Shifts** - Movement from seeking permission to claiming authority
+3. **Identity Integration** - How they reconcile different aspects of themselves
+4. **Relationship Dynamics** - How they relate to their dreams, capabilities, and offerings
+5. **Archetypal Themes** - The deeper mythological patterns in their journey
+
+FORMAT YOUR RESPONSE IN MARKDOWN:
+- Use headers (## or ###) to structure your analysis
+- Use **bold** for key insights and turning points
+- Use *italics* for subtle recognitions and evolving language
+- Use > blockquotes for powerful realizations or quotes from their reflections
+- Use bullet points sparingly, mainly for listing concrete patterns
+- Write in flowing, insightful prose that honors their journey
+
+The analysis should read like a sacred recognition of their becoming, written with sophistication and depth.
+`;
 
   try {
     const response = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",
       max_tokens: tier === "premium" ? 4000 : 3000,
-      temperature: 1,
+      temperature: 0.8,
       system: analysisPrompt,
       messages: [
         {
           role: "user",
-          content: `Analyze the consciousness evolution in these reflections:\n\n${reflectionContext}`,
+          content: `Analyze the consciousness evolution journey in these reflections:\n\n${reflectionContext}`,
         },
       ],
       ...(tier === "premium" && {
@@ -511,57 +546,161 @@ Provide a flowing, insightful analysis without complex metrics or scores. Focus 
   }
 }
 
-// Extract simple themes
-function extractSimpleThemes(reflections) {
+// Enhanced theme extraction
+function extractThemes(reflections) {
   const themes = [];
-  const dreamTexts = reflections
-    .map((r) => `${r.dream} ${r.relationship}`.toLowerCase())
+  const allText = reflections
+    .map((r) => `${r.dream} ${r.relationship} ${r.offering}`.toLowerCase())
     .join(" ");
 
-  // Simple theme detection
-  if (
-    dreamTexts.includes("business") ||
-    dreamTexts.includes("entrepreneur") ||
-    dreamTexts.includes("company")
-  ) {
-    themes.push("Entrepreneurial Vision");
-  }
-  if (
-    dreamTexts.includes("creative") ||
-    dreamTexts.includes("art") ||
-    dreamTexts.includes("write") ||
-    dreamTexts.includes("create")
-  ) {
-    themes.push("Creative Expression");
-  }
-  if (
-    dreamTexts.includes("help") ||
-    dreamTexts.includes("serve") ||
-    dreamTexts.includes("impact")
-  ) {
-    themes.push("Service & Impact");
-  }
-  if (
-    dreamTexts.includes("relationship") ||
-    dreamTexts.includes("love") ||
-    dreamTexts.includes("family")
-  ) {
-    themes.push("Connection & Love");
-  }
-  if (
-    dreamTexts.includes("freedom") ||
-    dreamTexts.includes("independent") ||
-    dreamTexts.includes("own")
-  ) {
-    themes.push("Freedom & Independence");
-  }
-  if (
-    dreamTexts.includes("learn") ||
-    dreamTexts.includes("grow") ||
-    dreamTexts.includes("develop")
-  ) {
-    themes.push("Growth & Learning");
-  }
+  // Enhanced theme detection with more nuanced patterns
+  const themePatterns = {
+    "Entrepreneurial Vision": [
+      "business",
+      "entrepreneur",
+      "company",
+      "startup",
+      "venture",
+      "enterprise",
+      "build",
+      "scale",
+      "market",
+      "customer",
+      "revenue",
+      "profit",
+      "innovation",
+    ],
+    "Creative Expression": [
+      "creative",
+      "art",
+      "write",
+      "create",
+      "design",
+      "music",
+      "story",
+      "express",
+      "artistic",
+      "craft",
+      "beauty",
+      "aesthetic",
+      "imagination",
+    ],
+    "Service & Impact": [
+      "help",
+      "serve",
+      "impact",
+      "change",
+      "difference",
+      "contribute",
+      "support",
+      "heal",
+      "transform",
+      "empower",
+      "uplift",
+      "benefit",
+    ],
+    "Connection & Love": [
+      "relationship",
+      "love",
+      "family",
+      "partner",
+      "connect",
+      "bond",
+      "intimacy",
+      "community",
+      "belonging",
+      "share",
+      "together",
+    ],
+    "Freedom & Independence": [
+      "freedom",
+      "independent",
+      "own",
+      "autonomy",
+      "choice",
+      "control",
+      "liberation",
+      "escape",
+      "break free",
+      "self-directed",
+    ],
+    "Growth & Learning": [
+      "learn",
+      "grow",
+      "develop",
+      "improve",
+      "evolve",
+      "progress",
+      "knowledge",
+      "skill",
+      "wisdom",
+      "understanding",
+      "discovery",
+    ],
+    "Leadership & Authority": [
+      "lead",
+      "guide",
+      "authority",
+      "power",
+      "influence",
+      "direct",
+      "command",
+      "manage",
+      "organize",
+      "inspire",
+      "mentor",
+    ],
+    "Spiritual Development": [
+      "spiritual",
+      "sacred",
+      "divine",
+      "soul",
+      "consciousness",
+      "awakening",
+      "enlightenment",
+      "meditation",
+      "prayer",
+      "transcendence",
+      "inner",
+    ],
+    "Adventure & Exploration": [
+      "adventure",
+      "explore",
+      "travel",
+      "discover",
+      "journey",
+      "experience",
+      "new",
+      "unknown",
+      "frontier",
+      "quest",
+      "wander",
+    ],
+    "Security & Stability": [
+      "security",
+      "stable",
+      "safe",
+      "protect",
+      "secure",
+      "reliable",
+      "consistent",
+      "foundation",
+      "structure",
+      "order",
+    ],
+  };
+
+  Object.entries(themePatterns).forEach(([theme, keywords]) => {
+    const score = keywords.reduce((count, keyword) => {
+      const matches = (allText.match(new RegExp(keyword, "g")) || []).length;
+      return count + matches;
+    }, 0);
+
+    if (score >= 2) {
+      // Threshold for theme inclusion
+      themes.push(theme);
+    }
+  });
 
   return themes.length > 0 ? themes : ["Personal Development"];
 }
