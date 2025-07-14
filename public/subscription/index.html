@@ -225,11 +225,12 @@
         flex: 1; /* 🎯 CHANGED: Fill remaining space */
         display: flex;
         flex-direction: column;
-        gap: clamp(0.8rem, 2vh, 1.2rem);
-        padding: clamp(0.8rem, 2vh, 1.5rem) clamp(1rem, 3vw, 2rem);
+        gap: clamp(0.8rem, 1.8vh, 1.2rem); /* 🎯 SMALLER: Reduced gap */
+        padding: clamp(0.8rem, 1.8vh, 1.2rem) clamp(1rem, 3vw, 2rem); /* 🎯 SMALLER: Less padding */
         overflow-y: auto; /* 🎯 ADDED: Only this scrolls if needed */
         overflow-x: hidden;
         min-height: 0; /* 🎯 ADDED: Allow flex shrinking */
+        max-height: 100%; /* 🎯 ADDED: Constrain height */
       }
 
       /* 🎯 ADDED: Custom scrollbar for container */
@@ -266,17 +267,25 @@
         }
       }
 
-      /* Header - Compact */
+      /* Header - More Compact */
       .subscription-header {
         text-align: center;
-        margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
+        margin-bottom: clamp(
+          0.4rem,
+          0.8vh,
+          0.6rem
+        ); /* 🎯 SMALLER: More compact */
         flex-shrink: 0; /* 🎯 ADDED: Don't shrink header */
       }
 
       .subscription-title {
-        font-size: clamp(1.8rem, 4vw, 2.2rem); /* 🎯 SMALLER: More compact */
+        font-size: clamp(1.6rem, 3.5vw, 2rem); /* 🎯 SMALLER: More compact */
         font-weight: 300;
-        margin-bottom: clamp(0.2rem, 0.5vh, 0.4rem);
+        margin-bottom: clamp(
+          0.1rem,
+          0.3vh,
+          0.2rem
+        ); /* 🎯 SMALLER: Less margin */
         line-height: 1.2;
         background: linear-gradient(
           135deg,
@@ -289,13 +298,17 @@
       }
 
       .subscription-subtitle {
-        font-size: clamp(0.8rem, 2vw, 0.9rem); /* 🎯 SMALLER: More compact */
+        font-size: clamp(
+          0.75rem,
+          1.8vw,
+          0.85rem
+        ); /* 🎯 SMALLER: More compact */
         color: rgba(255, 255, 255, 0.7);
         font-weight: 300;
         line-height: 1.4;
       }
 
-      /* Subscription Cards - Compact */
+      /* Subscription Cards - More Compact */
       .subscription-card {
         background: linear-gradient(
           135deg,
@@ -304,8 +317,8 @@
         );
         backdrop-filter: blur(30px);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: clamp(14px, 2.8vw, 18px); /* 🎯 SMALLER: More compact */
-        padding: clamp(1.2rem, 2.5vh, 1.6rem); /* 🎯 SMALLER: More compact */
+        border-radius: clamp(12px, 2.5vw, 16px); /* 🎯 SMALLER: More compact */
+        padding: clamp(1rem, 2vh, 1.3rem); /* 🎯 SMALLER: More compact */
         position: relative;
         overflow: hidden;
         transition: all 0.3s ease;
@@ -1644,16 +1657,8 @@
           }
         }
 
-        // Upgrade button (for free users)
-        if (subscriptionData.tier === "free") {
-          const upgradeButton = createActionButton(
-            "✨",
-            "Upgrade to Essential",
-            "primary",
-            () => openPaymentModal("essential", "monthly")
-          );
-          actionsContainer.appendChild(upgradeButton);
-        }
+        // 🎯 REMOVED: Upgrade button for free users (redundant with upgrade options below)
+        // No upgrade button needed here since we have upgrade options card below
 
         console.log("✅ Subscription actions updated");
       }
@@ -2545,6 +2550,17 @@
       // Enhanced Debug (Development Only)
       if (window.location.hostname === "localhost") {
         console.log("🛠️ Development Mode - Debug Functions Available");
+
+        // 🎯 ADDED: Backend fix instructions for customer portal
+        console.log("🏪 CUSTOMER PORTAL FIX NEEDED:");
+        console.log("   Add to your /api/subscriptions endpoint:");
+        console.log(
+          "   subscription.hasStripeData = !!user.stripe_customer_id;"
+        );
+        console.log(
+          "   Only show portal if user has actual Stripe customer ID"
+        );
+
         window.subscriptionDebug = {
           userData: () => userData,
           subscriptionData: () => subscriptionData,
