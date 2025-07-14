@@ -1,4 +1,4 @@
-// API: Payment - Enhanced with In-Page Payment Intent Support
+// API: Payment - Enhanced with Better Debugging and Error Handling
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const { createClient } = require("@supabase/supabase-js");
@@ -500,9 +500,9 @@ async function handleConfirmPayment(req, res) {
   }
 }
 
-// Stripe webhook handler with routing (Enhanced with Payment Intent support)
+// Stripe webhook handler with routing (Enhanced with better debugging)
 async function handleStripeWebhook(req, res) {
-  console.log("🪝 Webhook received - Headers:", req.headers);
+  console.log("🪝 Webhook received - Headers:", Object.keys(req.headers));
 
   const sig = req.headers["stripe-signature"];
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -566,14 +566,19 @@ async function handleStripeWebhook(req, res) {
   }
 }
 
-// NEW: Handle Payment Intent webhooks
+// ENHANCED: Handle Payment Intent webhooks with better debugging
 async function handlePaymentIntentWebhook(event, res) {
   try {
     const paymentIntent = event.data.object;
     const { type, userId, tier, period, priceId } = paymentIntent.metadata;
 
     console.log(`💳 Payment Intent succeeded: ${paymentIntent.id}`);
-    console.log(`📋 Metadata:`, paymentIntent.metadata);
+    console.log(
+      `📋 Full Metadata:`,
+      JSON.stringify(paymentIntent.metadata, null, 2)
+    );
+    console.log(`👤 Customer: ${paymentIntent.customer}`);
+    console.log(`💰 Amount: $${paymentIntent.amount / 100}`);
 
     // Check if this is a subscription upgrade
     if (
@@ -585,35 +590,95 @@ async function handlePaymentIntentWebhook(event, res) {
     ) {
       console.log(`🚀 Processing subscription upgrade for user: ${userId}`);
 
-      // Create subscription
-      const subscription = await stripe.subscriptions.create({
-        customer: paymentIntent.customer,
-        items: [{ price: priceId }],
-        metadata: {
+      try {
+        // Check if subscription already exists for this payment intent
+        const existingSubscriptions = await stripe.subscriptions.list({
+          customer: paymentIntent.customer,
+          status: "all",
+          limit: 10,
+        });
+
+        const duplicateSubscription = existingSubscriptions.data.find(
+          (sub) => sub.metadata.paymentIntentId === paymentIntent.id
+        );
+
+        if (duplicateSubscription) {
+          console.log(
+            `⚠️ Subscription already exists for payment intent: ${duplicateSubscription.id}`
+          );
+          return res.status(200).json({
+            received: true,
+            processed: "duplicate_subscription_exists",
+            subscriptionId: duplicateSubscription.id,
+          });
+        }
+
+        console.log(`🔄 Creating Stripe subscription...`);
+
+        // Create subscription
+        const subscription = await stripe.subscriptions.create({
+          customer: paymentIntent.customer,
+          items: [{ price: priceId }],
+          metadata: {
+            userId: userId,
+            tier: tier,
+            period: period,
+            upgradeType: "webhook_payment_intent",
+            paymentIntentId: paymentIntent.id,
+          },
+        });
+
+        console.log(`✅ Stripe subscription created: ${subscription.id}`);
+
+        // Update user in database with enhanced logging
+        console.log(`🔄 Updating user in database...`);
+        await upgradeUserFromPaymentIntent(userId, tier, period, subscription);
+
+        console.log(
+          `✅ Complete: Subscription created and user updated for: ${userId}`
+        );
+
+        return res.status(200).json({
+          received: true,
+          processed: "payment_intent_subscription_created",
+          subscriptionId: subscription.id,
           userId: userId,
-          tier: tier,
-          period: period,
-          upgradeType: "payment_intent",
-          paymentIntentId: paymentIntent.id,
-        },
-      });
+        });
+      } catch (subscriptionError) {
+        console.error(
+          `❌ Error processing subscription upgrade:`,
+          subscriptionError
+        );
+        console.error(`❌ Error stack:`, subscriptionError.stack);
 
-      // Update user in database
-      await upgradeUserFromPaymentIntent(userId, tier, period, subscription);
-
-      console.log(
-        `✅ Subscription created: ${subscription.id} for user: ${userId}`
-      );
+        // Still return success to Stripe to avoid retries, but log the error
+        return res.status(200).json({
+          received: true,
+          processed: "payment_intent_error",
+          error: subscriptionError.message,
+          userId: userId,
+        });
+      }
     } else {
-      console.log(`ℹ️ Payment Intent not for subscription upgrade, skipping`);
-    }
+      console.log(`ℹ️ Payment Intent not for subscription upgrade:`);
+      console.log(`   - Type: ${type || "missing"}`);
+      console.log(`   - UserId: ${userId || "missing"}`);
+      console.log(`   - Tier: ${tier || "missing"}`);
+      console.log(`   - Period: ${period || "missing"}`);
+      console.log(`   - PriceId: ${priceId || "missing"}`);
 
-    return res
-      .status(200)
-      .json({ received: true, processed: "payment_intent" });
+      return res.status(200).json({
+        received: true,
+        processed: "payment_intent_not_subscription",
+      });
+    }
   } catch (error) {
     console.error("❌ Payment Intent webhook error:", error);
-    return res.status(500).json({ error: "Payment Intent processing failed" });
+    console.error("❌ Error stack:", error.stack);
+    return res.status(500).json({
+      error: "Payment Intent processing failed",
+      details: error.message,
+    });
   }
 }
 
@@ -710,7 +775,7 @@ async function handleUpgradeCheckoutCompleted(event, res) {
   }
 }
 
-// NEW: Upgrade user from Payment Intent
+// ENHANCED: Upgrade user from Payment Intent with detailed debugging
 async function upgradeUserFromPaymentIntent(
   userId,
   tier,
@@ -718,6 +783,33 @@ async function upgradeUserFromPaymentIntent(
   subscription
 ) {
   try {
+    console.log(`🔍 Starting database update for user: ${userId}`);
+    console.log(`🔍 Update details: ${tier} ${period} subscription`);
+    console.log(`🔍 Stripe subscription ID: ${subscription.id}`);
+    console.log(`🔍 Stripe customer ID: ${subscription.customer}`);
+
+    // Verify user exists first
+    const { data: existingUser, error: fetchError } = await supabase
+      .from("users")
+      .select("id, email, name, tier")
+      .eq("id", userId)
+      .single();
+
+    if (fetchError) {
+      console.error(`❌ Failed to fetch user ${userId}:`, fetchError);
+      throw new Error(`User not found: ${fetchError.message}`);
+    }
+
+    if (!existingUser) {
+      console.error(`❌ User ${userId} does not exist in database`);
+      throw new Error(`User ${userId} not found`);
+    }
+
+    console.log(
+      `✅ User found: ${existingUser.email} (current tier: ${existingUser.tier})`
+    );
+
+    // Calculate dates
     const startDate = new Date();
     const expiryDate = new Date(startDate);
     if (period === "monthly") {
@@ -726,29 +818,68 @@ async function upgradeUserFromPaymentIntent(
       expiryDate.setFullYear(expiryDate.getFullYear() + 1);
     }
 
-    const { data: updatedUser, error } = await supabase
+    console.log(
+      `📅 Subscription dates: ${startDate.toISOString()} → ${expiryDate.toISOString()}`
+    );
+
+    // Prepare update data
+    const updateData = {
+      tier: tier,
+      subscription_status: "active",
+      subscription_period: period,
+      stripe_subscription_id: subscription.id,
+      stripe_customer_id: subscription.customer,
+      subscription_started_at: startDate.toISOString(),
+      subscription_expires_at: expiryDate.toISOString(),
+    };
+
+    console.log(`🔍 Update data:`, updateData);
+
+    // Perform database update
+    console.log(`🔄 Executing database update...`);
+    const { data: updatedUser, error: updateError } = await supabase
       .from("users")
-      .update({
-        tier: tier,
-        subscription_status: "active",
-        subscription_period: period,
-        stripe_subscription_id: subscription.id,
-        stripe_customer_id: subscription.customer,
-        subscription_started_at: startDate.toISOString(),
-        subscription_expires_at: expiryDate.toISOString(),
-      })
+      .update(updateData)
       .eq("id", userId)
-      .select("email, name")
+      .select("email, name, tier, subscription_status")
       .single();
 
-    if (error) {
-      throw new Error(`Failed to upgrade user: ${error.message}`);
+    if (updateError) {
+      console.error(`❌ Database update failed:`, updateError);
+      console.error(
+        `❌ Update error details:`,
+        JSON.stringify(updateError, null, 2)
+      );
+      throw new Error(`Failed to upgrade user: ${updateError.message}`);
     }
 
-    console.log(`✅ User upgraded via Payment Intent: ${updatedUser.email}`);
+    if (!updatedUser) {
+      console.error(`❌ Update succeeded but no user returned`);
+      throw new Error("Update succeeded but no user data returned");
+    }
+
+    console.log(`✅ User upgraded successfully in database:`);
+    console.log(`   - Email: ${updatedUser.email}`);
+    console.log(`   - Tier: ${updatedUser.tier}`);
+    console.log(`   - Status: ${updatedUser.subscription_status}`);
+
+    // Verify the update by reading back
+    console.log(`🔍 Verifying update by reading back user data...`);
+    const { data: verifiedUser, error: verifyError } = await supabase
+      .from("users")
+      .select("tier, subscription_status, stripe_subscription_id")
+      .eq("id", userId)
+      .single();
+
+    if (verifyError) {
+      console.warn(`⚠️ Could not verify update:`, verifyError);
+    } else {
+      console.log(`✅ Verification successful:`, verifiedUser);
+    }
 
     // Send upgrade confirmation email
     try {
+      console.log(`📧 Sending upgrade confirmation email...`);
       await fetch(`${getBaseUrl()}/api/communication`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -760,11 +891,15 @@ async function upgradeUserFromPaymentIntent(
           period: period,
         }),
       });
+      console.log(`✅ Upgrade confirmation email sent`);
     } catch (emailError) {
-      console.warn("Upgrade email failed:", emailError);
+      console.warn("⚠️ Upgrade email failed:", emailError.message);
     }
+
+    console.log(`🎉 Complete: User ${userId} upgraded to ${tier} (${period})`);
   } catch (error) {
-    console.error("Error upgrading user from Payment Intent:", error);
+    console.error("❌ Error upgrading user from Payment Intent:", error);
+    console.error("❌ Error stack:", error.stack);
     throw error;
   }
 }
