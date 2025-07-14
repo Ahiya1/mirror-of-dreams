@@ -1334,13 +1334,15 @@
               headers["Authorization"] = `Bearer ${this.state.authToken}`;
             }
 
-            const response = await fetch(
-              `/api/reflections/${this.state.currentReflectionId}`,
-              {
-                method: "GET",
-                headers: headers,
-              }
-            );
+            // FIXED: Use the correct API format that matches your reflections.js
+            const response = await fetch(`/api/reflections`, {
+              method: "POST",
+              headers: headers,
+              body: JSON.stringify({
+                action: "get-reflection",
+                id: this.state.currentReflectionId,
+              }),
+            });
 
             if (!response.ok) {
               throw new Error(`Failed to fetch reflection: ${response.status}`);
