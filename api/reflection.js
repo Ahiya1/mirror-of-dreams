@@ -1,5 +1,4 @@
-// api/reflection.js – Mirror of Truth (ENHANCED: Modular Prompt Architecture)
-// NEW: Base instructions + style modifiers + context modules for consciousness technology
+// api/reflection.js – Mirror of Truth (ENHANCED: Modular Prompt Architecture + Date Awareness)
 
 const fs = require("fs");
 const path = require("path");
@@ -7,7 +6,7 @@ const Anthropic = require("@anthropic-ai/sdk");
 const { createClient } = require("@supabase/supabase-js");
 const { authenticateRequest } = require("./auth.js");
 
-// ─── Initialize clients ─────────────────────────────────────
+// Initialize clients
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
@@ -17,14 +16,14 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// ─── Usage limits by tier ───────────────────────────────────
+// Usage limits by tier
 const TIER_LIMITS = {
   free: 1,
   essential: 5,
   premium: 10,
 };
 
-// ─── Enhanced Prompt Loading System ─────────────────────────
+// Enhanced Prompt Loading System
 const PROMPT_DIR = path.join(process.cwd(), "prompts");
 
 function loadPrompt(file) {
@@ -36,22 +35,17 @@ function loadPrompt(file) {
   }
 }
 
-// Load all prompt modules at startup
+// Load all prompt modules
 const PROMPT_MODULES = {
-  // Core system
   base: loadPrompt("base_instructions.txt"),
-
-  // Style modifiers
   gentle: loadPrompt("gentle_clarity.txt"),
   intense: loadPrompt("luminous_intensity.txt"),
   fusion: loadPrompt("sacred_fusion.txt"),
-
-  // Context modules
   creator: loadPrompt("creator_context.txt"),
   evolution: loadPrompt("evolution_instructions.txt"),
 };
 
-// ─── Premium instruction addition ───────────────────────────
+// Premium instruction addition
 const PREMIUM_INSTRUCTION = `
 
 PREMIUM REFLECTION ENHANCEMENT:
@@ -93,11 +87,12 @@ This premium reflection should feel like a conversation with their own deepest k
 
 Write as if you can see the eternal in this moment, the infinite in this specific longing.`;
 
-// ─── ENHANCED: Modular Prompt Assembly ──────────────────────
+// ENHANCED: Modular Prompt Assembly with Date Awareness
 function assembleMirrorPrompt(
   tone = "fusion",
   isCreator = false,
-  isPremium = false
+  isPremium = false,
+  currentDate = null
 ) {
   let promptParts = [];
 
@@ -106,27 +101,32 @@ function assembleMirrorPrompt(
     promptParts.push(PROMPT_MODULES.base.trim());
   }
 
-  // 2. Add style modifier
+  // 2. Add date awareness
+  if (currentDate) {
+    promptParts.push(`CURRENT DATE AWARENESS:
+Today's date is ${currentDate}. Be aware of this when reflecting on their plans, timing, and relationship with their dreams. Consider seasonal context, time of year, and how timing relates to their consciousness journey.`);
+  }
+
+  // 3. Add style modifier
   const styleModule = PROMPT_MODULES[tone] || PROMPT_MODULES.fusion;
   if (styleModule) {
     promptParts.push(styleModule.trim());
   }
 
-  // 3. Add creator context if needed
+  // 4. Add creator context if needed
   if (isCreator && PROMPT_MODULES.creator) {
     promptParts.push(PROMPT_MODULES.creator.trim());
   }
 
-  // 4. Add premium enhancement if needed
+  // 5. Add premium enhancement if needed
   if (isPremium) {
     promptParts.push(PREMIUM_INSTRUCTION.trim());
   }
 
-  // Join all parts with proper spacing
   return promptParts.join("\n\n");
 }
 
-// ─── Markdown → sacred HTML formatter (preserved) ──────────
+// Markdown → sacred HTML formatter (preserved)
 function toSacredHTML(md = "") {
   const wrap =
     "font-family:'Inter',sans-serif;font-size:1.05rem;line-height:1.7;color:#333;";
@@ -151,9 +151,8 @@ function toSacredHTML(md = "") {
   return `<div class="mirror-reflection" style="${wrap}">${html}</div>`;
 }
 
-// ─── Main handler (enhanced with modular prompts) ──────────
+// Main handler (enhanced with date awareness)
 module.exports = async function handler(req, res) {
-  // CORS
   res.setHeader("Content-Type", "application/json");
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -170,10 +169,8 @@ module.exports = async function handler(req, res) {
       .json({ success: false, error: "Method not allowed" });
 
   try {
-    // Authentication required for all reflections
     const user = await authenticateRequest(req);
 
-    // Extract body with mode detection for backwards compatibility
     const {
       dream,
       plan,
@@ -187,11 +184,9 @@ module.exports = async function handler(req, res) {
       isCreator = false,
       isPremium = false,
       tone = "fusion",
-      // Legacy mode parameters for creator/test access
       mode,
     } = req.body || {};
 
-    // Basic validation
     if (!dream || !plan || !hasDate || !relationship || !offering) {
       return res.status(400).json({
         success: false,
@@ -199,7 +194,6 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // Determine user context and premium status
     const userIsCreator = user.is_creator || isCreator || mode === "creator";
     const userIsAdmin = user.is_admin || isAdmin || userIsCreator;
     const shouldUsePremium =
@@ -224,12 +218,19 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    // Use user's name or provided name
     const cleanName = (n) =>
       !n || /^friend$/i.test(n?.trim()) ? "" : n?.trim();
     const name = cleanName(userName) || user.name || "Friend";
 
     const intro = name ? `My name is ${name}.\n\n` : "";
+
+    // Get current date for date awareness
+    const currentDate = new Date().toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
 
     const userPrompt = `${intro}**My dream:** ${dream}
 
@@ -245,19 +246,18 @@ module.exports = async function handler(req, res) {
 
 Please mirror back what you see, in a flowing reflection I can return to months from now.`;
 
-    // ── ENHANCED: Call Anthropic with modular prompt system ──
     if (!process.env.ANTHROPIC_API_KEY) {
       throw new Error("ANTHROPIC_API_KEY missing");
     }
 
-    // Assemble the complete prompt using modular system
+    // Assemble the complete prompt with date awareness
     const systemPrompt = assembleMirrorPrompt(
       tone,
       userIsCreator,
-      shouldUsePremium
+      shouldUsePremium,
+      currentDate
     );
 
-    // Configure request based on premium status
     const requestConfig = {
       model: "claude-sonnet-4-20250514",
       temperature: 1,
@@ -266,7 +266,6 @@ Please mirror back what you see, in a flowing reflection I can return to months 
       messages: [{ role: "user", content: userPrompt }],
     };
 
-    // Add extended thinking for premium reflections
     if (shouldUsePremium) {
       requestConfig.thinking = {
         type: "enabled",
@@ -349,7 +348,6 @@ Please mirror back what you see, in a flowing reflection I can return to months 
   } catch (err) {
     console.error("Mirror reflection error:", err);
 
-    // Handle authentication errors
     if (
       err.message === "Authentication required" ||
       err.message === "Invalid authentication"
@@ -383,7 +381,7 @@ Please mirror back what you see, in a flowing reflection I can return to months 
   }
 };
 
-// ─── Database operations (preserved) ─────────────────────────
+// Database operations (preserved)
 async function storeReflection(data) {
   const title =
     data.dream.length > 50 ? data.dream.substring(0, 47) + "..." : data.dream;
