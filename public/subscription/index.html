@@ -1342,14 +1342,14 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-      // Subscription Page Logic - In-Page Stripe Payment Integration
+      // Subscription Page Logic - Fixed Payment Flow
       let userData = null;
       let subscriptionData = null;
       let isLoading = false;
       let stripe = null;
       let elements = null;
       let paymentElement = null;
-      let currentPaymentIntent = null;
+      let currentUpgradePlan = null;
 
       // Initialize on load
       window.addEventListener("load", initializeSubscription);
@@ -1601,7 +1601,7 @@
           }
         }
 
-        // Upgrade button (for free users)
+        // Upgrade button (for free users) - Show Essential as default
         if (subscriptionData.tier === "free") {
           const upgradeButton = createActionButton(
             "✨",
@@ -1617,9 +1617,10 @@
         const upgradeCard = document.getElementById("upgradeOptionsCard");
         const upgradeGrid = document.getElementById("upgradeGrid");
 
+        // Show upgrade options for free and essential users
         if (
-          subscriptionData.canUpgrade &&
-          subscriptionData.tier !== "premium"
+          subscriptionData.tier === "free" ||
+          subscriptionData.tier === "essential"
         ) {
           upgradeCard.style.display = "block";
           upgradeGrid.innerHTML = "";
@@ -1666,6 +1667,7 @@
         const tiers = [];
 
         if (currentTier === "free") {
+          // Free users can upgrade to Essential OR Premium
           tiers.push({
             name: "Essential",
             tier: "essential",
@@ -1693,6 +1695,7 @@
             ],
           });
         } else if (currentTier === "essential") {
+          // Essential users can upgrade to Premium
           tiers.push({
             name: "Premium",
             tier: "premium",
@@ -1794,14 +1797,21 @@
           const actualPrice =
             period === "yearly" ? tierData.yearlyPrice : tierData.monthlyPrice;
 
+          // Store upgrade plan for later
+          currentUpgradePlan = {
+            tier: tier,
+            period: period,
+            price: actualPrice,
+            tierInfo: tierInfo,
+            tierData: tierData,
+          };
+
           // Create Payment Intent
           const paymentIntent = await createPaymentIntent(
             tier,
             period,
             actualPrice
           );
-
-          currentPaymentIntent = paymentIntent;
 
           // Update modal content
           updateModalContent(tierInfo, tierData, period, actualPrice);
@@ -1830,7 +1840,7 @@
           paymentElement = null;
         }
 
-        currentPaymentIntent = null;
+        currentUpgradePlan = null;
         console.log("💳 Payment modal closed");
       }
 
@@ -1949,7 +1959,7 @@
       }
 
       async function handlePaymentSubmit() {
-        if (!stripe || !elements || !currentPaymentIntent) {
+        if (!stripe || !elements || !currentUpgradePlan) {
           showToast("Payment system not ready", "error");
           return;
         }
@@ -1971,13 +1981,21 @@
           }
 
           if (paymentIntent.status === "succeeded") {
-            // Payment successful
+            // Payment successful - Now create subscription immediately
+            console.log("💳 Payment succeeded, creating subscription...");
+
+            await createSubscription(
+              currentUpgradePlan.tier,
+              currentUpgradePlan.period,
+              paymentIntent.id
+            );
+
             showToast(
               "Payment successful! Upgrading your account...",
               "success"
             );
 
-            // Wait a moment for webhook processing
+            // Update subscription data and UI
             setTimeout(async () => {
               await loadSubscriptionData();
               updateSubscriptionDisplay();
@@ -1986,7 +2004,7 @@
                 "Subscription upgraded successfully! Welcome to your new plan.",
                 "success"
               );
-            }, 2000);
+            }, 1500);
           } else {
             throw new Error("Payment was not completed successfully");
           }
@@ -1999,6 +2017,39 @@
           errorElement.style.display = "block";
         } finally {
           setPaymentLoading(false);
+        }
+      }
+
+      // NEW: Create subscription immediately after payment
+      async function createSubscription(tier, period, paymentIntentId) {
+        try {
+          const token = localStorage.getItem("mirror_auth_token");
+
+          const response = await fetch("/api/payment", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              action: "create-subscription-from-payment",
+              tier: tier,
+              period: period,
+              paymentIntentId: paymentIntentId,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!data.success) {
+            throw new Error(data.error || "Failed to create subscription");
+          }
+
+          console.log("✅ Subscription created:", data.subscription.id);
+          return data.subscription;
+        } catch (error) {
+          console.error("Subscription creation error:", error);
+          throw error;
         }
       }
 
@@ -2185,7 +2236,7 @@
 
       // Debug (Development Only)
       if (window.location.hostname === "localhost") {
-        console.log("💎 Subscription Page - In-Page Stripe Payment");
+        console.log("💎 Subscription Page - Fixed Payment Flow");
         window.subscriptionDebug = {
           userData: () => userData,
           subscriptionData: () => subscriptionData,
