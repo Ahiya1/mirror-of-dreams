@@ -1218,7 +1218,7 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-      // Subscription Page Logic - FIXED Payment Flow
+      // Subscription Page Logic - ENHANCED with Complete Debugging
       let userData = null;
       let subscriptionData = null;
       let isLoading = false;
@@ -1231,15 +1231,31 @@
       window.addEventListener("load", initializeSubscription);
 
       async function initializeSubscription() {
+        console.log("🚀 ============================================");
+        console.log("🚀 SUBSCRIPTION PAGE INITIALIZATION STARTED");
+        console.log("🚀 ============================================");
+
         try {
+          console.log("🔄 Step 1: Authenticating user...");
           await authenticateAndLoadUser();
+
+          console.log("🔄 Step 2: Initializing Stripe...");
           await initializeStripe();
+
+          console.log("🔄 Step 3: Loading subscription data...");
           await loadSubscriptionData();
+
+          console.log("🔄 Step 4: Updating subscription display...");
           updateSubscriptionDisplay();
+
+          console.log("🔄 Step 5: Setting up event listeners...");
           setupEventListeners();
-          console.log("💎 Subscription page initialized");
+
+          console.log("✅ =========================================");
+          console.log("✅ SUBSCRIPTION PAGE INITIALIZED SUCCESSFULLY");
+          console.log("✅ =========================================");
         } catch (error) {
-          console.error("Subscription initialization failed:", error);
+          console.error("💥 Subscription initialization failed:", error);
           handleAuthenticationError();
         }
       }
@@ -1247,17 +1263,27 @@
       // Initialize Stripe
       async function initializeStripe() {
         try {
+          console.log("🔄 Fetching Stripe configuration...");
           const configResponse = await fetch("/api/payment?action=config");
           const configData = await configResponse.json();
+
+          console.log("📋 Config response:", {
+            success: configData.success,
+            hasPublishableKey: !!configData.config?.publishableKey,
+            environment: configData.config?.environment,
+          });
 
           if (!configData.success) {
             throw new Error("Failed to load Stripe configuration");
           }
 
+          console.log("🔄 Initializing Stripe with publishable key...");
           stripe = Stripe(configData.config.publishableKey);
-          console.log("✅ Stripe initialized");
+
+          console.log("✅ Stripe initialized successfully");
+          console.log("📋 Stripe object:", !!stripe);
         } catch (error) {
-          console.error("Stripe initialization error:", error);
+          console.error("❌ Stripe initialization error:", error);
           throw error;
         }
       }
@@ -1266,11 +1292,13 @@
       async function authenticateAndLoadUser() {
         const token = localStorage.getItem("mirror_auth_token");
 
+        console.log("🔍 Token exists:", !!token);
         if (!token) {
           throw new Error("No authentication token found");
         }
 
         try {
+          console.log("🔄 Verifying authentication token...");
           const response = await fetch("/api/auth", {
             method: "POST",
             headers: {
@@ -1280,20 +1308,33 @@
             body: JSON.stringify({ action: "verify-token" }),
           });
 
+          console.log("📋 Auth response status:", response.status);
+
           if (!response.ok) {
             throw new Error(`Authentication failed: ${response.status}`);
           }
 
           const data = await response.json();
+          console.log("📋 Auth response:", {
+            success: data.success,
+            hasUser: !!data.user,
+            userEmail: data.user?.email,
+          });
 
           if (!data.success) {
             throw new Error(data.error || "Authentication failed");
           }
 
           userData = data.user;
-          console.log("✅ User authenticated:", userData.email);
+          console.log("✅ User authenticated successfully:", userData.email);
+          console.log("👤 User data:", {
+            id: userData.id,
+            email: userData.email,
+            tier: userData.tier,
+            subscriptionStatus: userData.subscriptionStatus,
+          });
         } catch (error) {
-          console.error("Authentication error:", error);
+          console.error("❌ Authentication error:", error);
           throw error;
         }
       }
@@ -1303,6 +1344,7 @@
         try {
           const token = localStorage.getItem("mirror_auth_token");
 
+          console.log("🔄 Fetching subscription data...");
           const response = await fetch(
             "/api/subscriptions?action=get-current",
             {
@@ -1313,14 +1355,25 @@
             }
           );
 
+          console.log("📋 Subscription response status:", response.status);
+
           if (response.ok) {
             const data = await response.json();
+            console.log("📋 Subscription response:", {
+              success: data.success,
+              hasSubscription: !!data.subscription,
+              tier: data.subscription?.tier,
+            });
+
             if (data.success) {
               subscriptionData = data.subscription;
-              console.log(
-                "💎 Subscription data loaded:",
-                subscriptionData.tier
-              );
+              console.log("✅ Subscription data loaded successfully");
+              console.log("💎 Current subscription:", {
+                tier: subscriptionData.tier,
+                status: subscriptionData.status,
+                isSubscribed: subscriptionData.isSubscribed,
+                canUpgrade: subscriptionData.canUpgrade,
+              });
             } else {
               throw new Error(data.error || "Failed to load subscription");
             }
@@ -1328,7 +1381,9 @@
             throw new Error(`Failed to load subscription: ${response.status}`);
           }
         } catch (error) {
-          console.error("Subscription loading error:", error);
+          console.error("❌ Subscription loading error:", error);
+          console.log("🔄 Falling back to user data...");
+
           // Fallback to user data
           subscriptionData = {
             tier: userData.tier || "free",
@@ -1340,11 +1395,15 @@
             currentPrice: 0,
             currency: "USD",
           };
+
+          console.log("⚠️ Using fallback subscription data:", subscriptionData);
         }
       }
 
       // Setup event listeners
       function setupEventListeners() {
+        console.log("🔄 Setting up event listeners...");
+
         // Modal close events
         document
           .getElementById("modalClose")
@@ -1373,15 +1432,19 @@
         document
           .getElementById("confirmPayment")
           .addEventListener("click", handlePaymentSubmit);
+
+        console.log("✅ Event listeners set up successfully");
       }
 
       // Update subscription display
       function updateSubscriptionDisplay() {
+        console.log("🔄 Updating subscription display...");
         updateTierDisplay();
         updateBillingInfo();
         updateStatusIndicators();
         updateSubscriptionActions();
         updateUpgradeOptions();
+        console.log("✅ Subscription display updated");
       }
 
       function updateTierDisplay() {
@@ -1656,6 +1719,13 @@
 
       // Payment Modal Functions
       async function openPaymentModal(tier, period, price) {
+        console.log("💳 =====================================");
+        console.log("💳 OPENING PAYMENT MODAL");
+        console.log("💳 =====================================");
+        console.log("💳 Tier:", tier);
+        console.log("💳 Period:", period);
+        console.log("💳 Price:", price);
+
         try {
           setLoadingState(true);
 
@@ -1671,6 +1741,12 @@
           const actualPrice =
             period === "yearly" ? tierData.yearlyPrice : tierData.monthlyPrice;
 
+          console.log("📋 Modal data:", {
+            tierInfo: tierInfo,
+            tierData: tierData,
+            actualPrice: actualPrice,
+          });
+
           // Store upgrade plan for later
           currentUpgradePlan = {
             tier: tier,
@@ -1680,25 +1756,33 @@
             tierData: tierData,
           };
 
+          console.log("💾 Stored upgrade plan:", currentUpgradePlan);
+
           // Create Payment Intent
+          console.log("🔄 Creating payment intent...");
           const paymentIntent = await createPaymentIntent(
             tier,
             period,
             actualPrice
           );
 
+          console.log("✅ Payment intent created:", paymentIntent.id);
+
           // Update modal content
+          console.log("🔄 Updating modal content...");
           updateModalContent(tierInfo, tierData, period, actualPrice);
 
           // Initialize Stripe Elements
+          console.log("🔄 Initializing payment element...");
           await initializePaymentElement(paymentIntent.client_secret);
 
           // Show modal
+          console.log("🔄 Showing payment modal...");
           document.getElementById("paymentModalOverlay").classList.add("show");
 
-          console.log(`💳 Payment modal opened for ${tier} (${period})`);
+          console.log("✅ Payment modal opened successfully");
         } catch (error) {
-          console.error("Payment modal error:", error);
+          console.error("❌ Payment modal error:", error);
           showToast(error.message || "Failed to open payment modal", "error");
         } finally {
           setLoadingState(false);
@@ -1706,21 +1790,22 @@
       }
 
       function closePaymentModal() {
+        console.log("🔄 Closing payment modal...");
         document.getElementById("paymentModalOverlay").classList.remove("show");
 
         // Clean up payment element
         if (paymentElement) {
+          console.log("🔄 Destroying payment element...");
           paymentElement.destroy();
           paymentElement = null;
         }
 
         if (elements) {
-          // elements.destroy(); // Remove this line as elements doesn't have a destroy method
           elements = null;
         }
 
         currentUpgradePlan = null;
-        console.log("💳 Payment modal closed");
+        console.log("✅ Payment modal closed");
       }
 
       function updateModalContent(tierInfo, tierData, period, price) {
@@ -1744,6 +1829,14 @@
         try {
           const token = localStorage.getItem("mirror_auth_token");
 
+          console.log("🔄 Sending payment intent request...");
+          console.log("📋 Request data:", {
+            action: "create-payment-intent",
+            tier: tier,
+            period: period,
+            amount: amount,
+          });
+
           const response = await fetch("/api/payment", {
             method: "POST",
             headers: {
@@ -1758,7 +1851,14 @@
             }),
           });
 
+          console.log("📋 Payment intent response status:", response.status);
+
           const data = await response.json();
+          console.log("📋 Payment intent response:", {
+            success: data.success,
+            hasPaymentIntent: !!data.paymentIntent,
+            paymentIntentId: data.paymentIntent?.id,
+          });
 
           if (!data.success) {
             throw new Error(data.error || "Failed to create payment intent");
@@ -1766,15 +1866,20 @@
 
           return data.paymentIntent;
         } catch (error) {
-          console.error("Payment intent creation error:", error);
+          console.error("❌ Payment intent creation error:", error);
           throw error;
         }
       }
 
       async function initializePaymentElement(clientSecret) {
         try {
+          console.log("🔄 Initializing payment element with client secret...");
+          console.log("📋 Client secret exists:", !!clientSecret);
+          console.log("📋 Client secret length:", clientSecret?.length);
+
           // Clean up existing elements
           if (paymentElement) {
+            console.log("🔄 Cleaning up existing payment element...");
             paymentElement.destroy();
             paymentElement = null;
           }
@@ -1784,6 +1889,7 @@
           }
 
           // Create elements instance
+          console.log("🔄 Creating Stripe elements...");
           elements = stripe.elements({
             clientSecret: clientSecret,
             appearance: {
@@ -1800,7 +1906,10 @@
             },
           });
 
+          console.log("✅ Stripe elements created");
+
           // Create payment element
+          console.log("🔄 Creating payment element...");
           paymentElement = elements.create("payment", {
             layout: {
               type: "tabs",
@@ -1808,30 +1917,43 @@
             },
           });
 
+          console.log("✅ Payment element created");
+
           // Clear existing content and mount payment element
           const paymentElementContainer =
             document.getElementById("payment-element");
           paymentElementContainer.innerHTML = "";
+
+          console.log("🔄 Mounting payment element...");
           paymentElement.mount("#payment-element");
 
           // Handle events
           paymentElement.on("ready", () => {
-            console.log("💳 Payment element ready");
+            console.log("✅ Payment element ready");
           });
 
           paymentElement.on("focus", () => {
+            console.log("🔍 Payment element focused");
             document.getElementById("payment-element").classList.add("focused");
           });
 
           paymentElement.on("blur", () => {
+            console.log("🔍 Payment element blurred");
             document
               .getElementById("payment-element")
               .classList.remove("focused");
           });
 
           paymentElement.on("change", (event) => {
+            console.log("🔍 Payment element changed:", {
+              complete: event.complete,
+              empty: event.empty,
+              hasError: !!event.error,
+            });
+
             const errorElement = document.getElementById("payment-error");
             if (event.error) {
+              console.error("❌ Payment element error:", event.error);
               errorElement.textContent = event.error.message;
               errorElement.style.display = "block";
               document
@@ -1844,15 +1966,29 @@
                 .classList.remove("invalid");
             }
           });
+
+          console.log("✅ Payment element initialized successfully");
         } catch (error) {
-          console.error("Payment element initialization error:", error);
+          console.error("❌ Payment element initialization error:", error);
           throw error;
         }
       }
 
-      // FIXED: Payment Submission with proper error handling
+      // ENHANCED: Payment Submission with comprehensive debugging
       async function handlePaymentSubmit() {
+        console.log("🚀 ============================================");
+        console.log("🚀 PAYMENT SUBMIT STARTED");
+        console.log("🚀 ============================================");
+        console.log("🔍 Stripe object:", !!stripe);
+        console.log("🔍 Elements object:", !!elements);
+        console.log("🔍 Payment element:", !!paymentElement);
+        console.log("🔍 Current upgrade plan:", currentUpgradePlan);
+
         if (!stripe || !elements || !currentUpgradePlan) {
+          console.error("❌ Missing required objects for payment");
+          console.error("❌ Stripe:", !!stripe);
+          console.error("❌ Elements:", !!elements);
+          console.error("❌ Upgrade plan:", !!currentUpgradePlan);
           showToast("Payment system not ready", "error");
           return;
         }
@@ -1864,77 +2000,151 @@
         errorElement.style.display = "none";
 
         try {
-          console.log("🔄 Starting payment confirmation...");
+          console.log("🔄 Step 1: Validating payment element...");
 
           // First, validate the payment element
           const { error: submitError } = await elements.submit();
 
           if (submitError) {
+            console.error("❌ Submit validation failed:", submitError);
+            console.error("❌ Submit error type:", submitError.type);
+            console.error("❌ Submit error code:", submitError.code);
             throw new Error(submitError.message);
           }
 
-          console.log("✅ Payment element validated");
+          console.log("✅ Step 1: Payment element validated successfully");
+          console.log("🔄 Step 2: Confirming payment...");
 
-          // Confirm payment with explicit return URL
-          const { error, paymentIntent } = await stripe.confirmPayment({
+          // Log the exact parameters we're sending
+          const confirmParams = {
             elements,
             confirmParams: {
               return_url: `${window.location.origin}/subscription?payment_success=true`,
             },
-            redirect: "if_required", // This prevents automatic redirects
+            redirect: "if_required",
+          };
+
+          console.log("📋 Confirm parameters:", {
+            return_url: confirmParams.confirmParams.return_url,
+            redirect: confirmParams.redirect,
+            elementsExists: !!confirmParams.elements,
+            origin: window.location.origin,
           });
 
-          if (error) {
-            console.error("Payment confirmation error:", error);
-            throw new Error(error.message);
+          // Confirm payment with detailed logging
+          console.log("🔄 Calling stripe.confirmPayment...");
+          const startTime = Date.now();
+          const result = await stripe.confirmPayment(confirmParams);
+          const endTime = Date.now();
+
+          console.log(
+            "⏱️ Payment confirmation took:",
+            endTime - startTime,
+            "ms"
+          );
+          console.log("📦 Full Stripe result:", result);
+          console.log("🔍 Result keys:", Object.keys(result));
+
+          if (result.error) {
+            console.error(
+              "❌ Step 2: Payment confirmation error:",
+              result.error
+            );
+            console.error("❌ Error type:", result.error.type);
+            console.error("❌ Error code:", result.error.code);
+            console.error("❌ Error message:", result.error.message);
+            console.error("❌ Error decline code:", result.error.decline_code);
+            throw new Error(result.error.message);
           }
 
+          const { paymentIntent } = result;
+
+          if (!paymentIntent) {
+            console.error("❌ No payment intent in result");
+            throw new Error("No payment intent returned from confirmation");
+          }
+
+          console.log("✅ Step 2: Payment confirmed");
+          console.log("💳 Payment Intent ID:", paymentIntent.id);
           console.log("💳 Payment Intent status:", paymentIntent.status);
+          console.log("💳 Payment Intent amount:", paymentIntent.amount);
+          console.log("💳 Payment Intent currency:", paymentIntent.currency);
+          console.log("💳 Payment Intent customer:", paymentIntent.customer);
 
           if (paymentIntent.status === "succeeded") {
-            console.log(
-              "✅ Payment succeeded! Webhook will handle the rest..."
-            );
+            console.log("🎉 =====================================");
+            console.log("🎉 PAYMENT SUCCEEDED!");
+            console.log("🎉 =====================================");
+            console.log("🔄 Step 3: Starting webhook wait process...");
 
             showToast(
-              "Payment successful! Your subscription is being activated...",
+              "🎉 Payment successful! Your subscription is being activated...",
               "success"
             );
 
             // Close modal immediately on success
             closePaymentModal();
 
-            // Wait for webhook processing, then refresh subscription data
+            // Enhanced subscription checking with more detailed logging
             let retryCount = 0;
-            const maxRetries = 6; // Try for up to 30 seconds
+            const maxRetries = 10; // Increased retries for better reliability
 
             const checkSubscriptionUpdate = async () => {
+              retryCount++;
+              console.log(`🔍 ==========================================`);
+              console.log(
+                `🔍 Subscription check attempt ${retryCount}/${maxRetries}`
+              );
+              console.log(`🔍 ==========================================`);
+
               try {
+                console.log("🔄 Loading fresh subscription data...");
                 await loadSubscriptionData();
+
+                console.log("📊 Current subscription state:");
+                console.log("     Current tier:", subscriptionData.tier);
+                console.log("     Target tier:", currentUpgradePlan.tier);
+                console.log("     Status:", subscriptionData.status);
+                console.log(
+                  "     Is subscribed:",
+                  subscriptionData.isSubscribed
+                );
+                console.log(
+                  "     Subscription ID:",
+                  subscriptionData.stripe_subscription_id
+                );
 
                 // Check if the user's tier has been updated
                 if (subscriptionData.tier === currentUpgradePlan.tier) {
+                  console.log("🎉 =====================================");
+                  console.log("🎉 TIER UPDATE DETECTED!");
+                  console.log("🎉 =====================================");
+                  console.log("✅ Old tier: free");
+                  console.log("✅ New tier:", subscriptionData.tier);
+                  console.log("✅ Period:", currentUpgradePlan.period);
+
                   updateSubscriptionDisplay();
                   showToast(
-                    `Welcome to ${currentUpgradePlan.tierInfo.name}! Your subscription is now active.`,
+                    `🎉 Welcome to ${currentUpgradePlan.tierInfo.name}! Your subscription is now active.`,
                     "success"
                   );
-                  console.log(
-                    "🎉 Subscription upgrade completed successfully!"
-                  );
+                  console.log("✅ COMPLETE: Subscription upgrade successful!");
                   return;
                 }
 
                 // If not updated yet and we haven't exceeded retries, try again
                 if (retryCount < maxRetries) {
-                  retryCount++;
                   console.log(
-                    `⏳ Waiting for subscription update... (${retryCount}/${maxRetries})`
+                    `⏳ Tier not updated yet. Waiting 3 seconds before retry...`
                   );
-                  setTimeout(checkSubscriptionUpdate, 5000); // Check again in 5 seconds
+                  setTimeout(checkSubscriptionUpdate, 3000); // Check every 3 seconds
                 } else {
+                  console.warn("⚠️ =====================================");
+                  console.warn("⚠️ MAX RETRIES REACHED");
+                  console.warn("⚠️ =====================================");
+                  console.warn("⚠️ Payment successful but tier not updated");
                   console.warn(
-                    "⚠️ Subscription update taking longer than expected"
+                    "⚠️ This may indicate a webhook processing delay"
                   );
                   showToast(
                     "Payment completed! Please refresh the page to see your updated subscription.",
@@ -1942,34 +2152,48 @@
                   );
                 }
               } catch (error) {
-                console.error("Error checking subscription update:", error);
+                console.error(
+                  `❌ Subscription check attempt ${retryCount} failed:`,
+                  error
+                );
                 if (retryCount >= maxRetries) {
                   showToast(
                     "Payment completed! Please refresh the page to see your updated subscription.",
                     "warning"
                   );
                 } else {
-                  retryCount++;
-                  setTimeout(checkSubscriptionUpdate, 5000);
+                  setTimeout(checkSubscriptionUpdate, 3000);
                 }
               }
             };
 
-            // Start checking for the subscription update
-            setTimeout(checkSubscriptionUpdate, 3000); // Wait 3 seconds before first check
+            // Start checking for the subscription update after 2 seconds
+            console.log("⏳ Starting subscription check in 2 seconds...");
+            setTimeout(checkSubscriptionUpdate, 2000);
           } else if (paymentIntent.status === "requires_action") {
             console.log("🔄 Payment requires additional action");
+            console.log("📋 Next action:", paymentIntent.next_action);
             showToast(
               "Payment requires additional verification. Please complete the authentication.",
               "warning"
             );
           } else {
+            console.error(
+              "❌ Unexpected payment status:",
+              paymentIntent.status
+            );
             throw new Error(
               `Payment was not completed. Status: ${paymentIntent.status}`
             );
           }
         } catch (error) {
-          console.error("💥 Payment submission error:", error);
+          console.error("💥 =====================================");
+          console.error("💥 PAYMENT SUBMISSION ERROR");
+          console.error("💥 =====================================");
+          console.error("💥 Error type:", typeof error);
+          console.error("💥 Error name:", error.name);
+          console.error("💥 Error message:", error.message);
+          console.error("💥 Error stack:", error.stack);
 
           // Show error in both toast and payment error element
           showToast(error.message || "Payment failed", "error");
@@ -1979,6 +2203,7 @@
           errorElement.style.display = "block";
         } finally {
           setPaymentLoading(false);
+          console.log("🏁 Payment submission process completed");
         }
       }
 
@@ -2129,6 +2354,7 @@
 
       // Toast notifications
       function showToast(message, type = "info", duration = 5000) {
+        console.log(`🍞 Toast: [${type}] ${message}`);
         const container = document.getElementById("toastContainer");
 
         const toast = document.createElement("div");
@@ -2163,13 +2389,16 @@
         }
       });
 
-      // Debug (Development Only)
+      // Enhanced Debug (Development Only)
       if (window.location.hostname === "localhost") {
-        console.log("💎 Subscription Page - FIXED Payment Flow");
+        console.log("🛠️ Development Mode - Debug Functions Available");
         window.subscriptionDebug = {
           userData: () => userData,
           subscriptionData: () => subscriptionData,
           stripe: () => stripe,
+          elements: () => elements,
+          paymentElement: () => paymentElement,
+          currentUpgradePlan: () => currentUpgradePlan,
           testToast: (message, type) => showToast(message, type),
           testPayment: (tier, period) => openPaymentModal(tier, period),
           testWebhookWait: () => {
@@ -2178,7 +2407,28 @@
               showToast("Webhook simulation complete!", "success");
             }, 5000);
           },
+          manualSubscriptionCheck: async () => {
+            console.log("🔄 Manual subscription check triggered");
+            await loadSubscriptionData();
+            updateSubscriptionDisplay();
+            console.log("✅ Manual subscription check complete");
+          },
+          simulateSuccessfulPayment: () => {
+            console.log("🎭 Simulating successful payment...");
+            showToast("Simulated payment successful!", "success");
+            closePaymentModal();
+          },
         };
+        console.log("🛠️ Available debug functions:");
+        console.log("   - window.subscriptionDebug.userData()");
+        console.log("   - window.subscriptionDebug.subscriptionData()");
+        console.log(
+          "   - window.subscriptionDebug.testPayment('essential', 'yearly')"
+        );
+        console.log("   - window.subscriptionDebug.manualSubscriptionCheck()");
+        console.log(
+          "   - window.subscriptionDebug.simulateSuccessfulPayment()"
+        );
       }
     </script>
   </body>
