@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <title>Sacred Questions | Mirror of Truth</title>
+
+    <style>
+      /* ═══════════════ MIRROR OF TRUTH - QUESTIONNAIRE ═══════════════ */
+
+      /* ╭─ RESET & FOUNDATION ────────────────────────────────────────────╮ */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+      }
+
+      body {
+        background: #020617;
+        color: #fff;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        line-height: 1.6;
+        overflow-x: hidden;
+        min-height: 100vh;
+        position: relative;
+        touch-action: manipulation;
+      }
+
+      /* ╭─ COSMIC BACKGROUND SYSTEM ──────────────────────────────────────╮ */
+      .cosmic-background {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .cosmic-gradient {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+            circle at 20% 30%,
+            rgba(59, 130, 246, 0.05) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 70%,
+            rgba(147, 51, 234, 0.04) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 50% 50%,
+            rgba(251, 191, 36, 0.03) 0%,
+            transparent 70%
+          );
+        animation: cosmicShift 80s ease-in-out infinite;
+      }
+
+      .starfield {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+            circle at 20% 30%,
+            rgba(255, 255, 255, 0.3) 0 1px,
+            transparent 2px
+          ),
+          radial-gradient(
+            circle at 60% 70%,
+            rgba(255, 255, 255, 0.25) 0 1px,
+            transparent 2px
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(255, 255, 255, 0.28) 0 1px,
+            transparent 2px
+          ),
+          radial-gradient(
+            circle at 40% 90%,
+            rgba(255, 255, 255, 0.22) 0 1px,
+            transparent 2px
+          );
+        background-size: 1200px 900px, 1600px 1100px, 900px 1300px,
+          1400px 1000px;
+        opacity: 0.08;
+        animation: starfieldDrift 180s linear infinite;
+      }
+
+      @keyframes cosmicShift {
+        0%,
+        100% {
+          transform: scale(1) rotate(0deg);
+        }
+        33% {
+          transform: scale(1.05) rotate(120deg);
+        }
+        66% {
+          transform: scale(0.98) rotate(240deg);
+        }
+      }
+
+      @keyframes starfieldDrift {
+        0% {
+          transform: translate(0, 0);
+        }
+        100% {
+          transform: translate(-60px, -60px);
+        }
+      }
+
+      /* ╭─ TONE-SPECIFIC BACKGROUNDS ─────────────────────────────────────╮ */
+      .tone-elements {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      .fusion-breath {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(251, 191, 36, 0.3) 0%,
+          rgba(245, 158, 11, 0.15) 30%,
+          rgba(217, 119, 6, 0.08) 60%,
+          transparent 80%
+        );
+        filter: blur(35px);
+        animation: fusionBreathe 25s ease-in-out infinite;
+      }
+
+      @keyframes fusionBreathe {
+        0%,
+        100% {
+          opacity: 0;
+          transform: scale(0.4) translate(0, 0);
+        }
+        25% {
+          opacity: 0.6;
+          transform: scale(1.1) translate(30px, -40px);
+        }
+        50% {
+          opacity: 0.8;
+          transform: scale(1.4) translate(-15px, 25px);
+        }
+        75% {
+          opacity: 0.5;
+          transform: scale(0.9) translate(40px, 15px);
+        }
+      }
+
+      .gentle-star {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 50%;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.7),
+          0 0 15px rgba(255, 255, 255, 0.4);
+        animation: gentleTwinkle 10s ease-in-out infinite;
+      }
+
+      @keyframes gentleTwinkle {
+        0%,
+        100% {
+          opacity: 0;
+          transform: scale(0.4);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.3);
+        }
+      }
+
+      .intense-swirl {
+        position: absolute;
+        width: clamp(180px, 35vw, 240px);
+        height: clamp(180px, 35vw, 240px);
+        background: radial-gradient(
+          circle at 30% 30%,
+          rgba(147, 51, 234, 0.35) 0%,
+          rgba(168, 85, 247, 0.18) 30%,
+          rgba(139, 92, 246, 0.1) 60%,
+          transparent 80%
+        );
+        filter: blur(30px);
+        border-radius: 50%;
+        animation: intenseSwirl 18s ease-in-out infinite;
+      }
+
+      @keyframes intenseSwirl {
+        0%,
+        100% {
+          opacity: 0;
+          transform: rotate(0deg) scale(0.2);
+        }
+        25% {
+          opacity: 0.7;
+          transform: rotate(180deg) scale(1.1);
+        }
+        50% {
+          opacity: 0.9;
+          transform: rotate(360deg) scale(1.4);
+        }
+        75% {
+          opacity: 0.6;
+          transform: rotate(540deg) scale(0.8);
+        }
+      }
+
+      /* ╭─ MAIN LAYOUT STRUCTURE ─────────────────────────────────────────╮ */
+      .main-container {
+        position: relative;
+        z-index: 10;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: clamp(1rem, 3vw, 2rem);
+      }
+
+      .content-wrapper {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      /* ╭─ NAVIGATION ──────────────────────────────────────────────────────╮ */
+      .back-link {
+        position: fixed;
+        top: clamp(1rem, 3vh, 2rem);
+        left: clamp(1rem, 3vw, 2rem);
+        z-index: 100;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: clamp(0.6rem, 2vh, 0.8rem) clamp(1rem, 3vw, 1.5rem);
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.08),
+          rgba(255, 255, 255, 0.03)
+        );
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50px;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        font-size: clamp(0.75rem, 2vw, 0.9rem);
+        font-weight: 400;
+        transition: all 0.3s ease;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        white-space: nowrap;
+      }
+
+      .back-link:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.12),
+          rgba(255, 255, 255, 0.06)
+        );
+        border-color: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.95);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      /* ╭─ TONE SELECTOR ──────────────────────────────────────────────────╮ */
+      .tone-selector {
+        margin-bottom: clamp(3rem, 5vw, 4rem);
+      }
+
+      .tone-label {
+        font-size: clamp(1.1rem, 3vw, 1.3rem);
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: clamp(1.5rem, 3vw, 2rem);
+        font-weight: 300;
+        letter-spacing: 0.8px;
+        position: relative;
+        text-align: center;
+      }
+
+      .tone-label::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+      }
+
+      .tone-buttons {
+        display: flex;
+        gap: clamp(1rem, 2.5vw, 1.5rem);
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .tone-button {
+        flex: 1;
+        min-width: 140px;
+        max-width: 220px;
+        padding: clamp(1rem, 2.5vw, 1.4rem) clamp(1.2rem, 3vw, 1.6rem);
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(25px) saturate(120%);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        color: rgba(255, 255, 255, 0.75);
+        font-size: clamp(0.9rem, 2.2vw, 1rem);
+        font-weight: 400;
+        letter-spacing: 0.4px;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 52px;
+      }
+
+      .tone-button::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+      }
+
+      .tone-button:hover::before {
+        transform: translateX(100%);
+      }
+
+      .tone-button:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.95);
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+      }
+
+      .tone-button:active {
+        transform: translateY(-1px) scale(0.98);
+      }
+
+      .tone-button.is-selected {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.25);
+        color: #fff;
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
+      }
+
+      .tone-button[data-tone="fusion"].is-selected {
+        border-color: rgba(251, 191, 36, 0.4);
+        background: rgba(251, 191, 36, 0.08);
+        box-shadow: 0 8px 25px rgba(251, 191, 36, 0.2);
+      }
+
+      .tone-button[data-tone="gentle"].is-selected {
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+      }
+
+      .tone-button[data-tone="intense"].is-selected {
+        border-color: rgba(147, 51, 234, 0.4);
+        background: rgba(147, 51, 234, 0.08);
+        box-shadow: 0 8px 25px rgba(147, 51, 234, 0.2);
+      }
+
+      /* ╭─ QUESTIONS FORM ─────────────────────────────────────────────────╮ */
+      .questions-form {
+        text-align: left;
+      }
+
+      .question-card {
+        margin-bottom: clamp(2.5rem, 4vw, 3.5rem);
+        padding: clamp(2rem, 4vw, 2.5rem) clamp(1.5rem, 3vw, 2rem);
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.04) 0%,
+          rgba(255, 255, 255, 0.015) 100%
+        );
+        backdrop-filter: blur(45px) saturate(130%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .question-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at 25% 50%,
+          rgba(255, 255, 255, 0.03) 0%,
+          transparent 60%
+        );
+        opacity: 0;
+        transition: opacity 0.6s ease;
+      }
+
+      .question-card:hover::before {
+        opacity: 1;
+      }
+
+      .question-card:hover {
+        border-color: rgba(255, 255, 255, 0.15);
+        transform: translateY(-4px);
+        box-shadow: 0 15px 50px rgba(255, 255, 255, 0.08);
+      }
+
+      .question-number {
+        font-size: clamp(0.7rem, 2vw, 0.8rem);
+        opacity: 0.45;
+        margin-bottom: clamp(1rem, 2vw, 1.2rem);
+        text-transform: uppercase;
+        letter-spacing: 2.5px;
+        color: rgba(255, 255, 255, 0.45);
+        font-weight: 600;
+        position: relative;
+      }
+
+      .question-number::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -4px;
+        width: 30px;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+      }
+
+      .question-title {
+        font-size: clamp(1.3rem, 4vw, 1.6rem);
+        margin-bottom: clamp(0.8rem, 1.5vw, 1rem);
+        line-height: 1.3;
+        color: rgba(255, 255, 255, 0.97);
+        font-weight: 300;
+        letter-spacing: 0.3px;
+        text-shadow: 0 2px 15px rgba(255, 255, 255, 0.05);
+      }
+
+      .question-subtitle {
+        font-size: clamp(0.9rem, 2.2vw, 1rem);
+        opacity: 0.6;
+        margin-bottom: clamp(1.5rem, 3vw, 2rem);
+        font-style: italic;
+        color: rgba(255, 255, 255, 0.6);
+        line-height: 1.4;
+        font-weight: 300;
+        letter-spacing: 0.2px;
+      }
+
+      /* ╭─ FORM INPUTS ────────────────────────────────────────────────────╮ */
+      .input-group {
+        position: relative;
+      }
+
+      .form-textarea {
+        width: 100%;
+        padding: clamp(1.4rem, 3vw, 1.6rem);
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.05) 0%,
+          rgba(255, 255, 255, 0.025) 100%
+        );
+        backdrop-filter: blur(25px) saturate(120%);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        color: #fff;
+        font-size: clamp(1rem, 2.2vw, 1.1rem);
+        font-family: inherit;
+        line-height: 1.6;
+        resize: vertical;
+        min-height: clamp(140px, 25vw, 180px);
+        transition: all 0.4s ease;
+        -webkit-appearance: none;
+        appearance: none;
+        box-sizing: border-box;
+      }
+
+      .form-textarea:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.3);
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.08) 0%,
+          rgba(255, 255, 255, 0.04) 100%
+        );
+        box-shadow: 0 0 40px rgba(255, 255, 255, 0.08),
+          inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        transform: translateY(-2px);
+      }
+
+      .form-textarea::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+        font-style: italic;
+        font-weight: 300;
+      }
+
+      /* Character Counter */
+      .char-counter {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0.8rem;
+        padding: 0 0.2rem;
+      }
+
+      .char-count {
+        font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+        color: rgba(255, 255, 255, 0.5);
+        font-weight: 400;
+        transition: all 0.3s ease;
+      }
+
+      .char-count.approaching-limit {
+        color: rgba(251, 191, 36, 0.8);
+        font-weight: 500;
+      }
+
+      .char-count.at-limit {
+        color: rgba(239, 68, 68, 0.9);
+        font-weight: 600;
+        animation: charPulse 2s ease-in-out infinite;
+      }
+
+      @keyframes charPulse {
+        0%,
+        100% {
+          opacity: 0.9;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      .char-progress {
+        width: 60px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .char-progress-bar {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          rgba(16, 185, 129, 0.8) 0%,
+          rgba(251, 191, 36, 0.8) 70%,
+          rgba(239, 68, 68, 0.9) 100%
+        );
+        border-radius: 2px;
+        transition: width 0.3s ease;
+        width: 0%;
+      }
+
+      /* ╭─ YES/NO BUTTONS ─────────────────────────────────────────────────╮ */
+      .choice-buttons {
+        display: flex;
+        gap: clamp(1rem, 2.5vw, 1.4rem);
+        margin-top: clamp(1rem, 2vw, 1.2rem);
+      }
+
+      .choice-button {
+        flex: 1;
+        padding: clamp(1rem, 2.5vw, 1.2rem);
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 16px;
+        color: rgba(255, 255, 255, 0.75);
+        font-size: clamp(1rem, 2.2vw, 1.1rem);
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 52px;
+      }
+
+      .choice-button::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+      }
+
+      .choice-button:hover::before {
+        transform: translateX(100%);
+      }
+
+      .choice-button:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.95);
+        transform: translateY(-2px) scale(1.02);
+      }
+
+      .choice-button:active {
+        transform: translateY(0) scale(0.98);
+      }
+
+      .choice-button.is-selected {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+        color: #fff;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.12);
+        transform: scale(1.05);
+      }
+
+      /* ╭─ DATE INPUT ──────────────────────────────────────────────────────╮ */
+      .date-container {
+        opacity: 0;
+        visibility: hidden;
+        height: 0;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        gap: clamp(1rem, 2.5vw, 1.5rem);
+        margin-top: clamp(1.5rem, 3vw, 2rem);
+        padding: 0 clamp(1rem, 2.5vw, 1.4rem);
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition: all 0.4s ease;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 10;
+      }
+
+      .date-container.is-visible {
+        opacity: 1;
+        visibility: visible;
+        height: auto;
+        padding: clamp(1rem, 2.5vw, 1.4rem);
+        animation: dateSlideIn 0.6s ease;
+      }
+
+      @keyframes dateSlideIn {
+        from {
+          opacity: 0;
+          transform: translateY(15px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .date-label {
+        color: rgba(255, 255, 255, 0.85);
+        font-weight: 500;
+        font-size: clamp(0.9rem, 2.2vw, 1rem);
+        min-width: fit-content;
+        pointer-events: none;
+        user-select: none;
+      }
+
+      .date-input {
+        flex: 1;
+        min-width: 180px;
+        padding: clamp(0.8rem, 2vw, 1rem);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        color: #fff;
+        font-family: inherit;
+        font-size: clamp(0.9rem, 2vw, 1rem);
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 20;
+        pointer-events: auto;
+        cursor: pointer;
+      }
+
+      .date-input:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      }
+
+      .date-input:hover {
+        border-color: rgba(255, 255, 255, 0.25);
+        background: rgba(255, 255, 255, 0.07);
+      }
+
+      /* ╭─ SUBMIT BUTTON ──────────────────────────────────────────────────╮ */
+      .submit-button {
+        width: 100%;
+        margin-top: clamp(3rem, 5vw, 4rem);
+        padding: clamp(1.4rem, 3vw, 1.8rem) clamp(2rem, 4vw, 2.5rem);
+        font-size: clamp(1.1rem, 2.8vw, 1.3rem);
+        font-weight: 500;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0.06) 100%
+        );
+        backdrop-filter: blur(30px) saturate(120%);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 24px;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        position: relative;
+        overflow: hidden;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        min-height: 64px;
+      }
+
+      .submit-button::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.15),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.8s ease;
+      }
+
+      .submit-button:hover::before {
+        transform: translateX(100%);
+      }
+
+      .submit-button:hover:not(:disabled) {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.15) 0%,
+          rgba(255, 255, 255, 0.08) 100%
+        );
+        border-color: rgba(255, 255, 255, 0.35);
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 20px 60px rgba(255, 255, 255, 0.15);
+        letter-spacing: 1.5px;
+      }
+
+      .submit-button:active:not(:disabled) {
+        transform: translateY(-2px) scale(0.98);
+      }
+
+      .submit-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* ╭─ LOADING SECTION ────────────────────────────────────────────────╮ */
+      .loading-section {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: clamp(2rem, 4vw, 3rem);
+        padding: clamp(3rem, 6vw, 4rem);
+        text-align: center;
+      }
+
+      .loading-circle {
+        width: clamp(140px, 30vw, 180px);
+        height: clamp(140px, 30vw, 180px);
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.15) 0%,
+          rgba(255, 255, 255, 0.05) 40%,
+          rgba(255, 255, 255, 0.02) 70%,
+          transparent 85%
+        );
+        animation: breatheLoading 4.5s ease-in-out infinite;
+        position: relative;
+        box-shadow: 0 0 60px rgba(255, 255, 255, 0.1),
+          inset 0 0 30px rgba(255, 255, 255, 0.05);
+      }
+
+      .loading-circle::after {
+        content: "";
+        position: absolute;
+        inset: 25px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0.03) 50%,
+          transparent 75%
+        );
+        animation: breatheInner 4.5s ease-in-out infinite;
+      }
+
+      @keyframes breatheLoading {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.7;
+        }
+        50% {
+          transform: scale(1.15);
+          opacity: 1;
+        }
+      }
+
+      @keyframes breatheInner {
+        0%,
+        100% {
+          transform: scale(1) rotate(0deg);
+          opacity: 0.5;
+        }
+        50% {
+          transform: scale(1.3) rotate(180deg);
+          opacity: 0.9;
+        }
+      }
+
+      .loading-text {
+        font-size: clamp(1.1rem, 3vw, 1.4rem);
+        font-weight: 300;
+        opacity: 0.8;
+        text-align: center;
+        letter-spacing: 1px;
+        color: rgba(255, 255, 255, 0.85);
+        animation: loadingPulse 3s ease-in-out infinite;
+      }
+
+      @keyframes loadingPulse {
+        0%,
+        100% {
+          opacity: 0.6;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      /* ╭─ RESPONSIVE DESIGN ──────────────────────────────────────────────╮ */
+      @media (max-width: 768px) {
+        .main-container {
+          padding: clamp(0.5rem, 2vw, 1rem);
+        }
+
+        .tone-buttons {
+          flex-direction: column;
+          gap: clamp(1rem, 2vw, 1.2rem);
+        }
+
+        .tone-button {
+          min-width: auto;
+          max-width: none;
+        }
+
+        .choice-buttons {
+          flex-direction: column;
+          gap: clamp(1rem, 2vw, 1.2rem);
+        }
+
+        .date-container {
+          flex-direction: column;
+          align-items: stretch;
+          gap: clamp(1rem, 2vw, 1.2rem);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .question-card {
+          padding: clamp(1.2rem, 2.5vw, 1.6rem) clamp(0.8rem, 2vw, 1.2rem);
+          margin-bottom: clamp(1.5rem, 2.5vw, 2rem);
+          border-radius: 18px;
+        }
+
+        .form-textarea {
+          padding: clamp(1.2rem, 2.5vw, 1.4rem);
+          min-height: clamp(120px, 22vw, 150px);
+        }
+      }
+
+      /* ╭─ ACCESSIBILITY ──────────────────────────────────────────────────╮ */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      .tone-button:focus-visible,
+      .choice-button:focus-visible,
+      .form-textarea:focus-visible,
+      .submit-button:focus-visible {
+        outline: 2px solid rgba(255, 255, 255, 0.6);
+        outline-offset: 2px;
+      }
+
+      .date-container.is-visible .date-input {
+        pointer-events: auto !important;
+        cursor: pointer !important;
+        position: relative !important;
+        z-index: 100 !important;
+      }
+
+      .date-container.is-visible
+        .date-input::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        opacity: 0.8;
+        filter: invert(1);
+      }
+
+      /* ╭─ UTILITY CLASSES ────────────────────────────────────────────────╮ */
+      .is-hidden {
+        display: none !important;
+      }
+      .is-visible {
+        display: block !important;
+      }
+      .loading {
+        display: flex !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Cosmic Background -->
+    <div class="cosmic-background">
+      <div class="cosmic-gradient"></div>
+      <div class="starfield"></div>
+    </div>
+
+    <!-- Tone-specific Background Elements -->
+    <div class="tone-elements" id="toneElements"></div>
+
+    <!-- Navigation -->
+    <a href="/" class="back-link">
+      <span>←</span>
+      <span>Return to Portal</span>
+    </a>
+
+    <!-- Main Container -->
+    <div class="main-container">
+      <div class="content-wrapper">
+        <!-- Questions Section -->
+        <section class="mirror-section" id="questionsSection">
+          <!-- Tone Selector -->
+          <div class="tone-selector">
+            <div class="tone-label">Choose the voice of your reflection</div>
+            <div class="tone-buttons">
+              <button
+                class="tone-button is-selected"
+                data-tone="fusion"
+                type="button"
+              >
+                Let the Mirror Breathe
+              </button>
+              <button class="tone-button" data-tone="gentle" type="button">
+                Gentle Clarity
+              </button>
+              <button class="tone-button" data-tone="intense" type="button">
+                Luminous Fire
+              </button>
+            </div>
+          </div>
+
+          <!-- Questions Form -->
+          <form class="questions-form" id="reflectionForm">
+            <!-- Question 1: Dream -->
+            <div class="question-card">
+              <div class="question-number">Question 1</div>
+              <h3 class="question-title">What is your dream?</h3>
+              <p class="question-subtitle">
+                Choose just one — the one that calls you most right now.
+              </p>
+              <div class="input-group">
+                <textarea
+                  id="dreamInput"
+                  name="dream"
+                  class="form-textarea"
+                  placeholder="Write the dream that calls you..."
+                  data-min="1"
+                  data-max="3200"
+                  required
+                ></textarea>
+                <div class="char-counter">
+                  <div class="char-count" id="dreamCount">
+                    0 / 3200 characters
+                  </div>
+                  <div class="char-progress">
+                    <div class="char-progress-bar" id="dreamProgress"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Question 2: Plan -->
+            <div class="question-card">
+              <div class="question-number">Question 2</div>
+              <h3 class="question-title">
+                What is your plan for achieving this dream?
+              </h3>
+              <p class="question-subtitle">
+                Write what you already know. It's okay if it's unclear.
+              </p>
+              <div class="input-group">
+                <textarea
+                  id="planInput"
+                  name="plan"
+                  class="form-textarea"
+                  placeholder="Describe any plan (or absence of plan)..."
+                  data-min="1"
+                  data-max="4000"
+                  required
+                ></textarea>
+                <div class="char-counter">
+                  <div class="char-count" id="planCount">
+                    0 / 4000 characters
+                  </div>
+                  <div class="char-progress">
+                    <div class="char-progress-bar" id="planProgress"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Question 3: Date -->
+            <div class="question-card">
+              <div class="question-number">Question 3</div>
+              <h3 class="question-title">
+                Have you set a definite date for fulfilling your dream?
+              </h3>
+              <div class="choice-buttons">
+                <button class="choice-button" type="button" data-value="yes">
+                  Yes
+                </button>
+                <button class="choice-button" type="button" data-value="no">
+                  No
+                </button>
+              </div>
+              <input type="hidden" name="hasDate" required />
+              <div class="date-container" id="dateContainer">
+                <label class="date-label">What is the date?</label>
+                <input type="date" class="date-input" name="dreamDate" />
+              </div>
+            </div>
+
+            <!-- Question 4: Relationship -->
+            <div class="question-card">
+              <div class="question-number">Question 4</div>
+              <h3 class="question-title">
+                What is your current relationship with this dream?
+              </h3>
+              <p class="question-subtitle">
+                Do you believe you'll achieve it? Why or why not?
+              </p>
+              <div class="input-group">
+                <textarea
+                  id="relationshipInput"
+                  name="relationship"
+                  class="form-textarea"
+                  placeholder="How do you relate to this dream now?"
+                  data-min="1"
+                  data-max="4000"
+                  required
+                ></textarea>
+                <div class="char-counter">
+                  <div class="char-count" id="relationshipCount">
+                    0 / 4000 characters
+                  </div>
+                  <div class="char-progress">
+                    <div
+                      class="char-progress-bar"
+                      id="relationshipProgress"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Question 5: Offering -->
+            <div class="question-card">
+              <div class="question-number">Question 5</div>
+              <h3 class="question-title">
+                What are you willing to give in return?
+              </h3>
+              <p class="question-subtitle">
+                Energy, focus, love, time — what will you offer to this dream?
+              </p>
+              <div class="input-group">
+                <textarea
+                  id="offeringInput"
+                  name="offering"
+                  class="form-textarea"
+                  placeholder="What will you offer in return?"
+                  data-min="1"
+                  data-max="2400"
+                  required
+                ></textarea>
+                <div class="char-counter">
+                  <div class="char-count" id="offeringCount">
+                    0 / 2400 characters
+                  </div>
+                  <div class="char-progress">
+                    <div class="char-progress-bar" id="offeringProgress"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="submit-button" id="submitButton">
+              Receive Your Reflection
+            </button>
+          </form>
+        </section>
+
+        <!-- Loading Section -->
+        <section class="loading-section" id="loadingSection">
+          <div class="loading-circle"></div>
+          <div class="loading-text">Reflecting your truth...</div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      /* ═══════════════ MIRROR QUESTIONNAIRE - COMPLETE REWRITE ═══════════════ */
+
+      "use strict";
+
+      // ╭─ GLOBAL STATE MANAGER ─────────────────────────────────────────────╮
+      class QuestionnaireState {
+        constructor() {
+          this.currentTone = "fusion";
+          this.isSubmitting = false;
+          this.isRestoringForm = false;
+          this.userData = null;
+          this.authToken = null;
+          this.characterCounters = new Map();
+          this.currentUserId = null;
+        }
+
+        getUserStateKey() {
+          if (!this.currentUserId) return null;
+          return `mirror_form_state_${this.currentUserId}`;
+        }
+
+        clearAllFormStates() {
+          try {
+            Object.keys(sessionStorage).forEach((key) => {
+              if (key.startsWith("mirror_form_state")) {
+                sessionStorage.removeItem(key);
+              }
+            });
+            console.log("🧹 All form states cleared for security");
+          } catch (error) {
+            console.warn("Failed to clear form states:", error);
+          }
+        }
+
+        setCurrentUser(userId, userData) {
+          const previousUserId = this.currentUserId;
+          this.currentUserId = userId;
+          this.userData = userData;
+
+          if (previousUserId && previousUserId !== userId) {
+            console.log(
+              "🔒 User changed - clearing all form states for security"
+            );
+            this.clearAllFormStates();
+          }
+        }
+
+        saveFormState(data) {
+          if (this.isRestoringForm || !this.currentUserId) return;
+
+          const stateKey = this.getUserStateKey();
+          if (!stateKey) return;
+
+          try {
+            const stateData = {
+              ...data,
+              timestamp: Date.now(),
+              userId: this.currentUserId,
+            };
+
+            sessionStorage.setItem(stateKey, JSON.stringify(stateData));
+            console.log("💾 Form state saved for user:", this.currentUserId);
+          } catch (error) {
+            console.warn("Session storage failed:", error);
+          }
+        }
+
+        loadFormState() {
+          if (!this.currentUserId) return null;
+
+          const stateKey = this.getUserStateKey();
+          if (!stateKey) return null;
+
+          try {
+            const data = sessionStorage.getItem(stateKey);
+            if (!data) return null;
+
+            const parsedData = JSON.parse(data);
+
+            if (parsedData.userId !== this.currentUserId) {
+              console.warn("🚨 Security: State user ID mismatch, clearing");
+              sessionStorage.removeItem(stateKey);
+              return null;
+            }
+
+            return parsedData;
+          } catch (error) {
+            console.warn("Session storage load failed:", error);
+            return null;
+          }
+        }
+
+        clearCurrentUserFormState() {
+          if (!this.currentUserId) return;
+
+          const stateKey = this.getUserStateKey();
+          if (!stateKey) return;
+
+          try {
+            sessionStorage.removeItem(stateKey);
+            console.log("🧹 Current user form state cleared");
+          } catch (error) {
+            console.warn("Failed to clear current user form state:", error);
+          }
+        }
+      }
+
+      // ╭─ TONE BACKGROUND MANAGER ──────────────────────────────────────────╮
+      class ToneManager {
+        constructor() {
+          this.currentElements = [];
+          this.container = document.getElementById("toneElements");
+        }
+
+        setTone(tone) {
+          this.clearElements();
+          document.body.className = document.body.className.replace(
+            /tone-\w+/g,
+            ""
+          );
+          document.body.classList.add(`tone-${tone}`);
+          this.createToneElements(tone);
+        }
+
+        clearElements() {
+          this.currentElements.forEach((el) => el.remove());
+          this.currentElements = [];
+        }
+
+        createToneElements(tone) {
+          if (tone === "fusion") {
+            this.createFusionElements();
+          } else if (tone === "gentle") {
+            this.createGentleElements();
+          } else if (tone === "intense") {
+            this.createIntenseElements();
+          }
+        }
+
+        createFusionElements() {
+          for (let i = 0; i < 6; i++) {
+            const breath = document.createElement("div");
+            breath.className = "fusion-breath";
+            breath.style.cssText = `
+              width: ${200 + Math.random() * 140}px;
+              height: ${200 + Math.random() * 140}px;
+              left: ${Math.random() * 100}%;
+              top: ${Math.random() * 100}%;
+              animation-delay: ${i * 4.2}s;
+              animation-duration: ${20 + Math.random() * 10}s;
+            `;
+            this.container.appendChild(breath);
+            this.currentElements.push(breath);
+          }
+        }
+
+        createGentleElements() {
+          for (let i = 0; i < 35; i++) {
+            const star = document.createElement("div");
+            star.className = "gentle-star";
+            star.style.cssText = `
+              left: ${Math.random() * 100}%;
+              top: ${Math.random() * 100}%;
+              animation-delay: ${Math.random() * 10}s;
+              animation-duration: ${8 + Math.random() * 6}s;
+            `;
+            this.container.appendChild(star);
+            this.currentElements.push(star);
+          }
+        }
+
+        createIntenseElements() {
+          for (let i = 0; i < 7; i++) {
+            const swirl = document.createElement("div");
+            swirl.className = "intense-swirl";
+            swirl.style.cssText = `
+              left: ${Math.random() * 100}%;
+              top: ${Math.random() * 100}%;
+              animation-delay: ${i * 3.5}s;
+              animation-duration: ${15 + Math.random() * 10}s;
+            `;
+            this.container.appendChild(swirl);
+            this.currentElements.push(swirl);
+          }
+        }
+      }
+
+      // ╭─ CHARACTER COUNTER COMPONENT ──────────────────────────────────────╮
+      class CharacterCounter {
+        constructor(textarea, countElement, progressElement) {
+          this.textarea = textarea;
+          this.countElement = countElement;
+          this.progressElement = progressElement;
+          this.min = parseInt(textarea.dataset.min) || 0;
+          this.max = parseInt(textarea.dataset.max) || 1000;
+          this.init();
+        }
+
+        init() {
+          this.textarea.addEventListener("input", () => this.update());
+          this.update();
+        }
+
+        update() {
+          const length = this.textarea.value.length;
+          const percentage = (length / this.max) * 100;
+
+          this.countElement.textContent = `${length} / ${this.max} characters`;
+          this.progressElement.style.width = `${Math.min(percentage, 100)}%`;
+
+          this.countElement.classList.remove("approaching-limit", "at-limit");
+          if (length >= this.max) {
+            this.countElement.classList.add("at-limit");
+          } else if (length >= this.max * 0.8) {
+            this.countElement.classList.add("approaching-limit");
+          }
+
+          const isValid = this.textarea.required ? length > 0 : true;
+          this.textarea.style.borderColor =
+            this.textarea.required && length === 0
+              ? "rgba(239, 68, 68, 0.4)"
+              : "";
+
+          return { length, isValid, percentage };
+        }
+      }
+
+      // ╭─ MAIN APPLICATION CLASS ───────────────────────────────────────────╮
+      class QuestionnaireApplication {
+        constructor() {
+          this.state = new QuestionnaireState();
+          this.toneManager = new ToneManager();
+        }
+
+        async init() {
+          console.log("🪞 Initializing Questionnaire...");
+
+          try {
+            await this.initializeAuthentication();
+            this.setupComponents();
+            this.setupEventListeners();
+            this.setupSecurityCleanup();
+            this.initializeTone();
+            this.restoreFormState();
+
+            console.log("✨ Questionnaire initialization complete");
+          } catch (error) {
+            console.error("💥 Initialization failed:", error);
+            this.handleInitializationError(error);
+          }
+        }
+
+        async initializeAuthentication() {
+          const urlParams = new URLSearchParams(window.location.search);
+          const mode = urlParams.get("mode");
+          const premium = urlParams.get("premium");
+
+          this.state.clearAllFormStates();
+          this.state.authToken = localStorage.getItem("mirror_auth_token");
+
+          if (mode === "creator") {
+            const userData = {
+              isCreator: true,
+              name: "Ahiya",
+              email: "ahiya.butman@gmail.com",
+              tier: "premium",
+              id: "creator_ahiya",
+            };
+            this.state.setCurrentUser(userData.id, userData);
+          } else if (mode === "user") {
+            const userData = {
+              name: "Test User",
+              email: "test@example.com",
+              tier: premium === "true" ? "premium" : "essential",
+              testMode: true,
+              id: `test_user_${Date.now()}`,
+            };
+            this.state.setCurrentUser(userData.id, userData);
+          } else if (!this.state.authToken) {
+            this.redirectToAuth("Authentication required for reflections");
+            return;
+          } else {
+            try {
+              const userData = await this.verifyAuthToken();
+              this.state.setCurrentUser(userData.id, userData);
+            } catch (error) {
+              this.redirectToAuth(
+                "Authentication failed, please sign in again"
+              );
+              return;
+            }
+          }
+
+          console.log("🔐 Authentication complete:", {
+            user: this.state.userData?.name || "Anonymous",
+            tier: this.state.userData?.tier || "unknown",
+            userId: this.state.currentUserId,
+          });
+        }
+
+        async verifyAuthToken() {
+          const response = await fetch("/api/auth", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${this.state.authToken}`,
+            },
+            body: JSON.stringify({ action: "verify-token" }),
+          });
+
+          const result = await response.json();
+          if (!result.success || !result.user) {
+            throw new Error("Token verification failed");
+          }
+
+          return result.user;
+        }
+
+        redirectToAuth(message) {
+          alert(message);
+          const returnUrl = encodeURIComponent(
+            window.location.pathname + window.location.search
+          );
+          window.location.href = `/auth/signin?returnTo=${returnUrl}`;
+        }
+
+        setupComponents() {
+          console.log("🔧 Setting up components...");
+
+          document.querySelectorAll(".form-textarea").forEach((textarea) => {
+            const countElement =
+              textarea.parentElement.querySelector(".char-count");
+            const progressElement =
+              textarea.parentElement.querySelector(".char-progress-bar");
+
+            if (countElement && progressElement) {
+              const counter = new CharacterCounter(
+                textarea,
+                countElement,
+                progressElement
+              );
+              this.state.characterCounters.set(textarea.id, counter);
+            }
+          });
+
+          console.log("✅ Components setup complete");
+        }
+
+        setupEventListeners() {
+          console.log("👂 Setting up event listeners...");
+
+          // Tone selection
+          document.querySelectorAll(".tone-button").forEach((button) => {
+            button.addEventListener("click", (e) => {
+              e.preventDefault();
+              this.handleToneSelection(button.dataset.tone);
+            });
+          });
+
+          // Choice buttons (Yes/No)
+          document.querySelectorAll(".choice-button").forEach((button) => {
+            button.addEventListener("click", (e) => {
+              e.preventDefault();
+              this.handleChoiceSelection(button);
+            });
+          });
+
+          // Form submission
+          document
+            .getElementById("reflectionForm")
+            .addEventListener("submit", (e) => {
+              this.handleFormSubmission(e);
+            });
+
+          // Form state saving
+          document.querySelectorAll(".form-textarea").forEach((textarea) => {
+            textarea.addEventListener(
+              "input",
+              this.debounce(() => {
+                this.saveFormState();
+              }, 1000)
+            );
+          });
+
+          // Date input handling
+          document.querySelectorAll(".date-input").forEach((dateInput) => {
+            dateInput.addEventListener("click", (e) => {
+              e.stopPropagation();
+              dateInput.focus();
+            });
+
+            dateInput.addEventListener("change", () => {
+              this.saveFormState();
+            });
+          });
+
+          console.log("✅ Event listeners setup complete");
+        }
+
+        setupSecurityCleanup() {
+          window.addEventListener("beforeunload", () => {
+            console.log("🔒 Page unloading - clearing sensitive form data");
+            this.state.clearCurrentUserFormState();
+          });
+
+          document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+              console.log("🔒 Tab hidden - clearing form state for security");
+              this.state.clearCurrentUserFormState();
+            }
+          });
+        }
+
+        initializeTone() {
+          this.toneManager.setTone(this.state.currentTone);
+        }
+
+        handleToneSelection(tone) {
+          document.querySelectorAll(".tone-button").forEach((btn) => {
+            btn.classList.remove("is-selected");
+          });
+          document
+            .querySelector(`[data-tone="${tone}"]`)
+            .classList.add("is-selected");
+
+          this.state.currentTone = tone;
+          this.toneManager.setTone(tone);
+          this.saveFormState();
+        }
+
+        handleChoiceSelection(selectedButton) {
+          const container = selectedButton.parentElement;
+          const hiddenInput = container.parentElement.querySelector(
+            'input[type="hidden"]'
+          );
+          const dateContainer =
+            container.parentElement.querySelector(".date-container");
+          const dateInput = dateContainer.querySelector("input");
+
+          container.querySelectorAll(".choice-button").forEach((btn) => {
+            btn.classList.remove("is-selected");
+          });
+          selectedButton.classList.add("is-selected");
+
+          const value = selectedButton.dataset.value;
+          hiddenInput.value = value;
+
+          if (value === "yes") {
+            dateContainer.classList.add("is-visible");
+            dateInput.required = true;
+            setTimeout(() => {
+              dateInput.style.pointerEvents = "auto";
+              dateInput.style.position = "relative";
+              dateInput.style.zIndex = "30";
+            }, 100);
+          } else {
+            dateContainer.classList.remove("is-visible");
+            dateInput.required = false;
+            dateInput.value = "";
+          }
+
+          this.saveFormState();
+        }
+
+        async handleFormSubmission(e) {
+          e.preventDefault();
+
+          if (this.state.isSubmitting) {
+            console.log("⚠️ Form submission already in progress");
+            return;
+          }
+
+          console.log("📝 Processing form submission...");
+
+          // Validate all required fields
+          let isValid = true;
+          for (const [textareaId, counter] of this.state.characterCounters) {
+            const textarea = document.getElementById(textareaId);
+            if (textarea.value.trim().length === 0) {
+              isValid = false;
+              break;
+            }
+          }
+
+          if (!isValid) {
+            alert(
+              "Please fill in all required fields with your authentic response."
+            );
+            return;
+          }
+
+          // Prepare submission
+          this.state.isSubmitting = true;
+          const submitButton = document.getElementById("submitButton");
+          submitButton.disabled = true;
+          submitButton.textContent = "Creating your reflection...";
+
+          this.showLoadingSection();
+
+          try {
+            // Prepare payload
+            const formData = new FormData(e.target);
+            const payload = {
+              dream: formData.get("dream"),
+              plan: formData.get("plan"),
+              hasDate: formData.get("hasDate"),
+              dreamDate: formData.get("dreamDate"),
+              relationship: formData.get("relationship"),
+              offering: formData.get("offering"),
+              userName: this.state.userData?.name || "Friend",
+              userEmail: this.state.userData?.email || "",
+              language: "en",
+              isAdmin:
+                this.state.userData?.isCreator || this.state.userData?.testMode,
+              isCreator: this.state.userData?.isCreator,
+              isPremium:
+                this.state.userData?.tier === "premium" ||
+                this.state.userData?.isCreator,
+              tone: this.state.currentTone,
+            };
+
+            // Submit to API
+            const headers = { "Content-Type": "application/json" };
+            if (this.state.authToken) {
+              headers["Authorization"] = `Bearer ${this.state.authToken}`;
+            }
+
+            console.log("🔄 Sending reflection request...");
+            const response = await fetch("/api/reflection", {
+              method: "POST",
+              headers: headers,
+              body: JSON.stringify(payload),
+            });
+
+            const data = await response.json();
+
+            if (response.status === 403 && data.needsUpgrade) {
+              console.log("🚫 Reflection limit reached");
+              alert(data.message || "Reflection limit reached");
+              return;
+            }
+
+            if (!data.success) {
+              throw new Error(data.error || "Reflection failed");
+            }
+
+            console.log("✨ Reflection created successfully!");
+
+            // Clear form state for security
+            this.state.clearCurrentUserFormState();
+            console.log(
+              "🔒 Form state cleared for security after successful submission"
+            );
+
+            // Redirect to reflection output page
+            window.location.href = `/reflection/output?id=${data.reflectionId}`;
+          } catch (error) {
+            console.error("💥 Reflection creation failed:", error);
+            alert(
+              "A moment of silence… Your reflection is being prepared. Please try again soon."
+            );
+          } finally {
+            this.state.isSubmitting = false;
+            submitButton.disabled = false;
+            submitButton.textContent = "Receive Your Reflection";
+            this.hideLoadingSection();
+          }
+        }
+
+        showLoadingSection() {
+          document.getElementById("questionsSection").style.display = "none";
+          document.getElementById("loadingSection").classList.add("loading");
+        }
+
+        hideLoadingSection() {
+          document.getElementById("questionsSection").style.display = "block";
+          document.getElementById("loadingSection").classList.remove("loading");
+        }
+
+        saveFormState() {
+          if (this.state.isRestoringForm) return;
+
+          const form = document.getElementById("reflectionForm");
+          const formData = new FormData(form);
+
+          const state = {
+            dream: formData.get("dream") || "",
+            plan: formData.get("plan") || "",
+            hasDate: formData.get("hasDate") || "",
+            dreamDate: formData.get("dreamDate") || "",
+            relationship: formData.get("relationship") || "",
+            offering: formData.get("offering") || "",
+            tone: this.state.currentTone,
+            timestamp: Date.now(),
+          };
+
+          this.state.saveFormState(state);
+        }
+
+        restoreFormState() {
+          const savedState = this.state.loadFormState();
+          if (!savedState || !this.shouldRestoreState(savedState)) {
+            console.log("🧹 Not restoring form state - starting fresh");
+            return;
+          }
+
+          console.log("🔄 Restoring form state...");
+          this.state.isRestoringForm = true;
+
+          if (savedState.tone) {
+            this.handleToneSelection(savedState.tone);
+          }
+
+          Object.entries(savedState).forEach(([key, value]) => {
+            if (key === "tone" || key === "timestamp" || key === "userId")
+              return;
+
+            const field = document.querySelector(`[name="${key}"]`);
+            if (field) {
+              field.value = value;
+
+              if (key === "hasDate" && value) {
+                const choiceButton = document.querySelector(
+                  `[data-value="${value}"]`
+                );
+                if (choiceButton) {
+                  this.handleChoiceSelection(choiceButton);
+                }
+              }
+            }
+          });
+
+          this.state.characterCounters.forEach((counter) => counter.update());
+          this.state.isRestoringForm = false;
+          console.log("✅ Form state restored securely");
+        }
+
+        shouldRestoreState(savedState) {
+          const now = Date.now();
+          const stateAge = now - savedState.timestamp;
+          const maxAge = 2 * 60 * 60 * 1000; // 2 hours
+
+          if (savedState.userId !== this.state.currentUserId) {
+            console.log("🚨 Security: State user ID mismatch");
+            return false;
+          }
+
+          if (stateAge > maxAge) {
+            console.log("🕒 Form state too old, discarding");
+            return false;
+          }
+
+          const urlParams = new URLSearchParams(window.location.search);
+          if (
+            urlParams.get("fresh") === "true" ||
+            urlParams.get("new") === "true"
+          ) {
+            console.log("🆕 Fresh start requested via URL");
+            return false;
+          }
+
+          return true;
+        }
+
+        handleInitializationError(error) {
+          console.error("💥 Fatal initialization error:", error);
+          document.body.innerHTML = `
+            <div style="
+              position: fixed;
+              inset: 0;
+              background: #020617;
+              color: white;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-direction: column;
+              gap: 2rem;
+              text-align: center;
+              padding: 2rem;
+            ">
+              <h1 style="font-size: 2rem; margin: 0;">Mirror Temporarily Unavailable</h1>
+              <p style="margin: 0; opacity: 0.8;">The reflection portal is experiencing technical difficulties.</p>
+              <button onclick="window.location.reload()" style="
+                padding: 1rem 2rem;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 16px;
+                color: white;
+                cursor: pointer;
+                font-size: 1rem;
+              ">Try Again</button>
+            </div>
+          `;
+        }
+
+        debounce(func, wait) {
+          let timeout;
+          return function executedFunction(...args) {
+            const later = () => {
+              clearTimeout(timeout);
+              func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+          };
+        }
+      }
+
+      // ╭─ APPLICATION INITIALIZATION ───────────────────────────────────────╮
+      let questionnaireApp;
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initializeApp);
+      } else {
+        initializeApp();
+      }
+
+      function initializeApp() {
+        try {
+          questionnaireApp = new QuestionnaireApplication();
+          questionnaireApp.init();
+        } catch (error) {
+          console.error("💥 Failed to initialize Questionnaire:", error);
+        }
+      }
+
+      window.questionnaireApp = questionnaireApp;
+      console.log("🪞 Questionnaire script loaded and ready");
+    </script>
+  </body>
+</html>

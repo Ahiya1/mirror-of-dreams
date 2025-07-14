@@ -55,7 +55,11 @@
     },
     {
       "source": "/reflection",
-      "destination": "/mirror/reflection.html"
+      "destination": "/mirror/questionnaire.html"
+    },
+    {
+      "source": "/reflection/output",
+      "destination": "/mirror/output.html"
     },
     {
       "source": "/about",
