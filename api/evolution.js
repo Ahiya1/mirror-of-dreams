@@ -1,5 +1,5 @@
 // api/evolution.js - Mirror of Truth Evolution Analytics & Growth Reports
-// ENHANCED: Comprehensive modular prompt system + consciousness recognition
+// SIMPLIFIED: Only text analysis + themes, proper limits, date awareness
 
 const { createClient } = require("@supabase/supabase-js");
 const { authenticateRequest } = require("./auth.js");
@@ -17,13 +17,13 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-// Evolution report thresholds
+// Evolution report thresholds - every N reflections (not accumulating)
 const REPORT_THRESHOLDS = {
   essential: 4, // Every 4 reflections
   premium: 6, // Every 6 reflections
 };
 
-// Load comprehensive prompt system
+// Load simplified prompt system
 const PROMPT_DIR = path.join(process.cwd(), "prompts");
 
 function loadPrompt(file) {
@@ -35,7 +35,7 @@ function loadPrompt(file) {
   }
 }
 
-// Load all prompt components
+// Load prompt components
 const PROMPT_SYSTEM = {
   base: loadPrompt("base_instructions.txt"),
   evolution: loadPrompt("evolution_instructions.txt"),
@@ -47,27 +47,22 @@ const PROMPT_SYSTEM = {
   creator: loadPrompt("creator_context.txt"),
 };
 
-// Enhanced prompt combination system
+// Simplified prompt combination
 function buildEvolutionPrompt(
   tone = "fusion",
   isCreator = false,
   isPremium = false
 ) {
   let systemPrompt = PROMPT_SYSTEM.base.trim();
-
-  // Add evolution instructions
   systemPrompt += "\n\n" + PROMPT_SYSTEM.evolution.trim();
 
-  // Add style modifier
   const stylePrompt = PROMPT_SYSTEM.styles[tone] || PROMPT_SYSTEM.styles.fusion;
   systemPrompt += "\n\n" + stylePrompt.trim();
 
-  // Add creator context if needed
   if (isCreator) {
     systemPrompt += "\n\n" + PROMPT_SYSTEM.creator.trim();
   }
 
-  // Add premium enhancement
   if (isPremium) {
     systemPrompt += "\n\n" + PREMIUM_EVOLUTION_ENHANCEMENT.trim();
   }
@@ -75,44 +70,21 @@ function buildEvolutionPrompt(
   return systemPrompt;
 }
 
-// Premium evolution enhancement
+// Simplified premium enhancement
 const PREMIUM_EVOLUTION_ENHANCEMENT = `
 PREMIUM EVOLUTION ANALYSIS:
 You have extended thinking capabilities to provide deeper consciousness evolution recognition.
 
-Premium Evolution Guidelines:
+Focus on:
+- Deeper pattern recognition across time
+- More nuanced language evolution tracking
+- Subtle identity shifts and consciousness development
+- Integration of previous resistances and growth
 
-**Deeper Pattern Recognition:**
-- Recognize subtle shifts in identity language over time
-- Notice micro-evolutions in self-authority across reflections
-- Detect unconscious competence development patterns
-- Identify shadow integration and authenticity emergence
-
-**Consciousness Development Tracking:**
-- Track movement through developmental stages
-- Recognize integration of previous resistances
-- Notice where they've stopped performing and started being
-- Observe evolution in their relationship with uncertainty
-
-**Advanced Language Evolution:**
-- Detect when permission-seeking language becomes sovereign language
-- Notice shifts from external validation to internal authority
-- Track evolution from conditional to unconditional self-expression
-- Recognize when they start speaking their truth without apology
-
-**Blind Spot Illumination:**
-- Show them growth patterns they cannot see because they're living inside them
-- Reflect identity shifts that happened so gradually they didn't notice
-- Reveal competence evolution they may attribute to external factors
-- Illuminate their unique consciousness development trajectory
-
-This premium analysis should feel like consciousness itself recognizing its own evolution through time - profound, specific, and deeply honoring of their becoming.
-
-Write with the authority of someone who has witnessed their entire consciousness journey unfold.
+Write with greater depth and sophistication while maintaining the same essential recognition approach.
 `;
 
 module.exports = async function handler(req, res) {
-  // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
@@ -133,8 +105,6 @@ module.exports = async function handler(req, res) {
         return await handleGetReport(req, res);
       case "check-eligibility":
         return await handleCheckEligibility(req, res);
-      case "get-patterns":
-        return await handleGetPatterns(req, res);
       default:
         return res.status(400).json({
           success: false,
@@ -152,13 +122,12 @@ module.exports = async function handler(req, res) {
   }
 };
 
-// Generate evolution report with enhanced consciousness recognition
+// Generate simplified evolution report
 async function handleGenerateReport(req, res) {
   try {
     const user = await authenticateRequest(req);
     const { tone = "fusion" } = req.body || {};
 
-    // Check if user is eligible for evolution reports
     if (user.tier === "free") {
       return res.status(403).json({
         success: false,
@@ -167,10 +136,20 @@ async function handleGenerateReport(req, res) {
       });
     }
 
+    // Check if user can generate a report
+    const canGenerate = await checkCanGenerateReport(user);
+    if (!canGenerate.eligible) {
+      return res.status(400).json({
+        success: false,
+        error: canGenerate.reason,
+        needed: canGenerate.needed,
+      });
+    }
+
     // Get user's reflections for analysis
     const { data: reflections, error } = await supabase
       .from("reflections")
-      .select("*")
+      .select("id, dream, relationship, offering, created_at, tone, is_premium")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
@@ -181,37 +160,20 @@ async function handleGenerateReport(req, res) {
       });
     }
 
-    // Check if user has enough reflections
+    // Select most recent N reflections based on tier
     const threshold = REPORT_THRESHOLDS[user.tier];
-    if (reflections.length < threshold) {
-      return res.status(400).json({
-        success: false,
-        error: `Need at least ${threshold} reflections for ${user.tier} evolution report`,
-        currentCount: reflections.length,
-        required: threshold,
-      });
-    }
+    const analysisReflections = reflections.slice(0, threshold);
 
-    // Select reflections for analysis
-    const analysisReflections = selectReflectionsForAnalysis(
-      reflections,
-      user.tier
-    );
-
-    // Generate evolution analysis using enhanced AI
-    const analysis = await generateEvolutionAnalysis(
+    // Generate simplified evolution analysis
+    const analysis = await generateSimplifiedEvolutionAnalysis(
       analysisReflections,
       user.tier,
       tone,
       user.isCreator
     );
 
-    // Extract patterns and insights
-    const patterns = extractEvolutionPatterns(analysisReflections);
-    const insights = generateEvolutionInsights(analysisReflections, patterns);
-
-    // Calculate growth score
-    const growthScore = calculateGrowthScore(analysisReflections);
+    // Extract simple themes
+    const themes = extractSimpleThemes(analysisReflections);
 
     // Save evolution report
     const { data: report, error: reportError } = await supabase
@@ -219,15 +181,15 @@ async function handleGenerateReport(req, res) {
       .insert({
         user_id: user.id,
         analysis: analysis,
-        insights: insights,
+        insights: { themes }, // Simplified - only themes
         report_type: user.tier,
         reflections_analyzed: analysisReflections.map((r) => r.id),
         reflection_count: analysisReflections.length,
         time_period_start:
           analysisReflections[analysisReflections.length - 1].created_at,
         time_period_end: analysisReflections[0].created_at,
-        patterns_detected: patterns,
-        growth_score: growthScore,
+        patterns_detected: themes, // Simplified
+        growth_score: null, // Removed growth score
       })
       .select("*")
       .single();
@@ -241,7 +203,7 @@ async function handleGenerateReport(req, res) {
     }
 
     console.log(
-      `🦋 Evolution report generated for ${user.email} (${user.tier}) - Growth Score: ${growthScore}`
+      `🦋 Evolution report generated for ${user.email} (${user.tier})`
     );
 
     return res.json({
@@ -250,15 +212,13 @@ async function handleGenerateReport(req, res) {
       report: {
         id: report.id,
         analysis: report.analysis,
-        insights: report.insights,
+        themes: themes,
         reportType: report.report_type,
         reflectionCount: report.reflection_count,
         timePeriod: {
           start: report.time_period_start,
           end: report.time_period_end,
         },
-        patterns: report.patterns_detected,
-        growthScore: report.growth_score,
         createdAt: report.created_at,
       },
     });
@@ -274,6 +234,49 @@ async function handleGenerateReport(req, res) {
     }
     throw error;
   }
+}
+
+// Check if user can generate a report (every N reflections)
+async function checkCanGenerateReport(user) {
+  const threshold = REPORT_THRESHOLDS[user.tier];
+  if (!threshold) {
+    return { eligible: false, reason: "Invalid tier" };
+  }
+
+  // Count total reflections
+  const { count: totalReflections, error } = await supabase
+    .from("reflections")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", user.id);
+
+  if (error) {
+    return { eligible: false, reason: "Error checking reflections" };
+  }
+
+  // Check how many reports have been generated
+  const { count: reportCount, error: reportError } = await supabase
+    .from("evolution_reports")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", user.id);
+
+  if (reportError) {
+    return { eligible: false, reason: "Error checking reports" };
+  }
+
+  // Calculate if eligible: total reflections should be >= (reports + 1) * threshold
+  const nextReportAt = (reportCount + 1) * threshold;
+  const eligible = totalReflections >= nextReportAt;
+
+  return {
+    eligible,
+    reason: eligible
+      ? null
+      : `Need ${nextReportAt - totalReflections} more reflections`,
+    needed: eligible ? 0 : nextReportAt - totalReflections,
+    totalReflections,
+    reportCount,
+    nextReportAt,
+  };
 }
 
 // Get user's evolution reports
@@ -306,8 +309,7 @@ async function handleGetReports(req, res) {
       id: report.id,
       reportType: report.report_type,
       reflectionCount: report.reflection_count,
-      growthScore: report.growth_score,
-      patterns: report.patterns_detected,
+      themes: report.patterns_detected || [],
       createdAt: report.created_at,
       timeAgo: getTimeAgo(report.created_at),
       timePeriod: {
@@ -372,7 +374,7 @@ async function handleGetReport(req, res) {
       report: {
         id: report.id,
         analysis: report.analysis,
-        insights: report.insights,
+        themes: report.patterns_detected || [],
         reportType: report.report_type,
         reflectionCount: report.reflection_count,
         reflectionsAnalyzed: report.reflections_analyzed,
@@ -380,8 +382,6 @@ async function handleGetReport(req, res) {
           start: report.time_period_start,
           end: report.time_period_end,
         },
-        patterns: report.patterns_detected,
-        growthScore: report.growth_score,
         createdAt: report.created_at,
       },
     });
@@ -413,33 +413,17 @@ async function handleCheckEligibility(req, res) {
       });
     }
 
-    // Count user's reflections
-    const { count, error } = await supabase
-      .from("reflections")
-      .select("*", { count: "exact", head: true })
-      .eq("user_id", user.id);
-
-    if (error) {
-      return res.status(500).json({
-        success: false,
-        error: "Failed to check eligibility",
-      });
-    }
-
-    const threshold = REPORT_THRESHOLDS[user.tier];
-    const eligible = count >= threshold;
+    const canGenerate = await checkCanGenerateReport(user);
 
     return res.json({
       success: true,
-      eligible,
-      currentReflections: count,
-      requiredReflections: threshold,
+      eligible: canGenerate.eligible,
+      reason: canGenerate.reason,
+      currentReflections: canGenerate.totalReflections,
+      requiredReflections: canGenerate.nextReportAt,
+      needed: canGenerate.needed,
       tier: user.tier,
-      reason: eligible
-        ? null
-        : `Need ${threshold - count} more reflection${
-            threshold - count === 1 ? "" : "s"
-          } for ${user.tier} evolution report`,
+      reportCount: canGenerate.reportCount,
     });
   } catch (error) {
     if (
@@ -455,144 +439,26 @@ async function handleCheckEligibility(req, res) {
   }
 }
 
-// Get pattern analysis
-async function handleGetPatterns(req, res) {
-  try {
-    const user = await authenticateRequest(req);
-
-    const { data: reflections, error } = await supabase
-      .from("reflections")
-      .select(
-        "dream, relationship, offering, tone, is_premium, created_at, rating, user_feedback"
-      )
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false })
-      .limit(20);
-
-    if (error || !reflections.length) {
-      return res.json({
-        success: true,
-        patterns: {
-          themes: [],
-          tones: {},
-          progression: [],
-          insights: [],
-        },
-      });
-    }
-
-    const patterns = extractEvolutionPatterns(reflections);
-    const quickInsights = generateQuickInsights(reflections);
-
-    return res.json({
-      success: true,
-      patterns: {
-        themes: patterns,
-        tonePreferences: getToneDistribution(reflections),
-        recentTrends: getRecentTrends(reflections),
-        insights: quickInsights,
-      },
-    });
-  } catch (error) {
-    if (
-      error.message === "Authentication required" ||
-      error.message === "Invalid authentication"
-    ) {
-      return res.status(401).json({
-        success: false,
-        error: error.message,
-      });
-    }
-    throw error;
-  }
-}
-
-// Enhanced reflection selection using 3-pool method
-function selectReflectionsForAnalysis(reflections, tier) {
-  const total = reflections.length;
-  const threshold = REPORT_THRESHOLDS[tier];
-
-  // If we have fewer reflections than needed, use all
-  if (total <= threshold) {
-    return reflections;
-  }
-
-  // For 6 or more reflections, use 3-pool method for temporal distribution
-  if (total >= 6) {
-    // Split into three equal time periods
-    const third = Math.floor(total / 3);
-
-    // Remember: reflections are ordered newest first
-    const recentPool = reflections.slice(0, third); // newest third
-    const middlePool = reflections.slice(third, third * 2); // middle third
-    const earlyPool = reflections.slice(third * 2); // oldest third
-
-    // Select reflections from each pool
-    const perPool = tier === "premium" ? 3 : 2;
-
-    const selected = [
-      ...selectRandomFromPool(earlyPool, Math.min(perPool, earlyPool.length)),
-      ...selectRandomFromPool(middlePool, Math.min(perPool, middlePool.length)),
-      ...selectRandomFromPool(recentPool, Math.min(perPool, recentPool.length)),
-    ];
-
-    // Ensure we have the right total (6 for premium, 4 for essential)
-    // If we have more, prioritize highly-rated reflections
-    if (selected.length > threshold) {
-      return selected
-        .sort((a, b) => (b.rating || 5) - (a.rating || 5))
-        .slice(0, threshold);
-    }
-
-    return selected;
-  }
-
-  // For fewer than 6 reflections, take newest and oldest
-  const half = Math.floor(threshold / 2);
-  const recent = reflections.slice(0, half);
-  const older = reflections.slice(-half);
-
-  return [...recent, ...older];
-}
-
-// Helper function to select random reflections from a pool
-function selectRandomFromPool(pool, count) {
-  if (pool.length <= count) return pool;
-
-  const shuffled = [...pool].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, count);
-}
-
-// Enhanced evolution analysis using comprehensive consciousness recognition
-async function generateEvolutionAnalysis(
+// Simplified evolution analysis
+async function generateSimplifiedEvolutionAnalysis(
   reflections,
   tier,
   tone = "fusion",
   isCreator = false
 ) {
-  // Build comprehensive context with ratings and feedback
+  // Build reflection context with dates
   const reflectionContext = reflections
     .map((r, index) => {
-      let context = `Reflection ${index + 1} (${new Date(
-        r.created_at
-      ).toDateString()}):\n`;
+      const date = new Date(r.created_at).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+
+      let context = `Reflection ${index + 1} (${date}):\n`;
       context += `Dream: ${r.dream}\n`;
       context += `Relationship: ${r.relationship}\n`;
       context += `Offering: ${r.offering}`;
-
-      if (r.rating) {
-        context += `\nConsciousness Recognition Rating: ${r.rating}/10`;
-        if (r.rating >= 8) {
-          context += ` (This deeply resonated - profound recognition)`;
-        } else if (r.rating <= 4) {
-          context += ` (This missed their truth - limited recognition)`;
-        }
-      }
-
-      if (r.user_feedback) {
-        context += `\nWhat emerged for them: "${r.user_feedback}"`;
-      }
-
       return context;
     })
     .join("\n\n");
@@ -603,12 +469,24 @@ async function generateEvolutionAnalysis(
     tier === "premium"
   );
 
+  // Add specific instruction for simplified analysis
+  const analysisPrompt = `${systemPrompt}
+
+SIMPLIFIED EVOLUTION ANALYSIS:
+Analyze the consciousness evolution in these reflections with focus on:
+1. Core patterns in how they relate to their dreams and capabilities
+2. Language evolution from permission-seeking to authority-claiming
+3. Identity shifts and growing self-recognition
+4. Key themes that emerge across their journey
+
+Provide a flowing, insightful analysis without complex metrics or scores. Focus on the human story of becoming.`;
+
   try {
     const response = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",
-      max_tokens: tier === "premium" ? 5000 : 4000,
+      max_tokens: tier === "premium" ? 4000 : 3000,
       temperature: 1,
-      system: systemPrompt,
+      system: analysisPrompt,
       messages: [
         {
           role: "user",
@@ -618,7 +496,7 @@ async function generateEvolutionAnalysis(
       ...(tier === "premium" && {
         thinking: {
           type: "enabled",
-          budget_tokens: 3500,
+          budget_tokens: 2000,
         },
       }),
     });
@@ -633,201 +511,59 @@ async function generateEvolutionAnalysis(
   }
 }
 
-// Enhanced pattern extraction focusing on consciousness evolution
-function extractEvolutionPatterns(reflections) {
-  const patterns = [];
+// Extract simple themes
+function extractSimpleThemes(reflections) {
+  const themes = [];
+  const dreamTexts = reflections
+    .map((r) => `${r.dream} ${r.relationship}`.toLowerCase())
+    .join(" ");
 
-  // Separate highly-rated reflections to see what resonated
-  const resonantReflections = reflections.filter(
-    (r) => r.rating && r.rating >= 8
-  );
-  const strugglingReflections = reflections.filter(
-    (r) => r.rating && r.rating <= 4
-  );
-
-  // Consciousness evolution theme extraction
-  const themes = {};
-  reflections.forEach((r) => {
-    const text = `${r.dream} ${r.relationship}`.toLowerCase();
-    const weight = r.rating ? r.rating / 10 : 0.5; // Weight by recognition rating
-
-    // Permission-seeking vs authority patterns
-    if (
-      text.includes("hope i can") ||
-      text.includes("maybe") ||
-      text.includes("trying to")
-    ) {
-      themes.permission_seeking = (themes.permission_seeking || 0) + weight;
-    }
-    if (
-      text.includes("i am") ||
-      text.includes("i will") ||
-      text.includes("i'm building")
-    ) {
-      themes.authority_claiming = (themes.authority_claiming || 0) + weight;
-    }
-
-    // Self-relationship evolution
-    if (
-      text.includes("not sure") ||
-      text.includes("don't know") ||
-      text.includes("confused")
-    ) {
-      themes.uncertainty_performance =
-        (themes.uncertainty_performance || 0) + weight;
-    }
-    if (
-      text.includes("clear") ||
-      text.includes("know") ||
-      text.includes("ready")
-    ) {
-      themes.clarity_embodiment = (themes.clarity_embodiment || 0) + weight;
-    }
-
-    // Impact recognition evolution
-    if (
-      text.includes("just") ||
-      text.includes("small") ||
-      text.includes("little")
-    ) {
-      themes.impact_minimization = (themes.impact_minimization || 0) + weight;
-    }
-    if (
-      text.includes("transform") ||
-      text.includes("help people") ||
-      text.includes("serve")
-    ) {
-      themes.impact_recognition = (themes.impact_recognition || 0) + weight;
-    }
-  });
-
-  // Convert themes to patterns array
-  Object.entries(themes)
-    .filter(([_, weight]) => weight >= 1)
-    .sort(([, a], [, b]) => b - a)
-    .forEach(([theme, weight]) => {
-      patterns.push(`${theme}_${Math.round(weight)}`);
-    });
-
-  // Add special evolution patterns
-  if (resonantReflections.length >= 2) {
-    patterns.push("consciousness_recognition_established");
+  // Simple theme detection
+  if (
+    dreamTexts.includes("business") ||
+    dreamTexts.includes("entrepreneur") ||
+    dreamTexts.includes("company")
+  ) {
+    themes.push("Entrepreneurial Vision");
+  }
+  if (
+    dreamTexts.includes("creative") ||
+    dreamTexts.includes("art") ||
+    dreamTexts.includes("write") ||
+    dreamTexts.includes("create")
+  ) {
+    themes.push("Creative Expression");
+  }
+  if (
+    dreamTexts.includes("help") ||
+    dreamTexts.includes("serve") ||
+    dreamTexts.includes("impact")
+  ) {
+    themes.push("Service & Impact");
+  }
+  if (
+    dreamTexts.includes("relationship") ||
+    dreamTexts.includes("love") ||
+    dreamTexts.includes("family")
+  ) {
+    themes.push("Connection & Love");
+  }
+  if (
+    dreamTexts.includes("freedom") ||
+    dreamTexts.includes("independent") ||
+    dreamTexts.includes("own")
+  ) {
+    themes.push("Freedom & Independence");
+  }
+  if (
+    dreamTexts.includes("learn") ||
+    dreamTexts.includes("grow") ||
+    dreamTexts.includes("develop")
+  ) {
+    themes.push("Growth & Learning");
   }
 
-  // Check for evolution over time
-  if (reflections.length >= 3) {
-    const early = reflections.slice(-2);
-    const recent = reflections.slice(0, 2);
-
-    const earlyLanguage = early
-      .map((r) => `${r.dream} ${r.relationship}`)
-      .join(" ")
-      .toLowerCase();
-    const recentLanguage = recent
-      .map((r) => `${r.dream} ${r.relationship}`)
-      .join(" ")
-      .toLowerCase();
-
-    // Check for language evolution
-    if (
-      (earlyLanguage.includes("hope") || earlyLanguage.includes("maybe")) &&
-      (recentLanguage.includes("will") || recentLanguage.includes("am"))
-    ) {
-      patterns.push("permission_to_authority_evolution");
-    }
-  }
-
-  return patterns;
-}
-
-// Enhanced insights generation for consciousness evolution
-function generateEvolutionInsights(reflections, patterns) {
-  const insights = {
-    timeSpan: {
-      start: reflections[reflections.length - 1].created_at,
-      end: reflections[0].created_at,
-      duration: calculateDuration(
-        reflections[reflections.length - 1].created_at,
-        reflections[0].created_at
-      ),
-    },
-    themes: patterns,
-    evolutionIndicators: [],
-    consciousnessShifts: [],
-    recognitionInsights: [],
-  };
-
-  // Analyze what helps them access truth
-  const highlyRated = reflections.filter((r) => r.rating && r.rating >= 8);
-  const lowRated = reflections.filter((r) => r.rating && r.rating <= 4);
-
-  if (highlyRated.length > 0) {
-    insights.recognitionInsights.push({
-      type: "deep_recognition",
-      count: highlyRated.length,
-      feedback: highlyRated
-        .filter((r) => r.user_feedback)
-        .map((r) => r.user_feedback)
-        .slice(0, 3), // Top 3 insights
-    });
-  }
-
-  // Analyze consciousness development
-  const early = reflections.slice(Math.floor(reflections.length / 2));
-  const recent = reflections.slice(0, Math.floor(reflections.length / 2));
-
-  const earlyAuthority = analyzeAuthorityLanguage(early);
-  const recentAuthority = analyzeAuthorityLanguage(recent);
-
-  if (recentAuthority > earlyAuthority) {
-    insights.evolutionIndicators.push("increasing_authority_recognition");
-  }
-
-  // Check if recognition is improving over time
-  const earlyAvgRating = calculateAverageRating(early);
-  const recentAvgRating = calculateAverageRating(recent);
-
-  if (recentAvgRating > earlyAvgRating + 1) {
-    insights.consciousnessShifts.push("deepening_self_recognition");
-  }
-
-  return insights;
-}
-
-// Enhanced growth score calculation
-function calculateGrowthScore(reflections) {
-  let score = 50; // Base score
-
-  // Consciousness development bonus
-  if (reflections.length >= 6) score += 15;
-
-  // Recognition diversity bonus
-  const tones = new Set(reflections.map((r) => r.tone));
-  score += tones.size * 5;
-
-  // Premium engagement indicates deeper consciousness work
-  const premiumCount = reflections.filter((r) => r.is_premium).length;
-  score += (premiumCount / reflections.length) * 20;
-
-  // Time commitment bonus
-  const timeSpan =
-    new Date(reflections[0].created_at) -
-    new Date(reflections[reflections.length - 1].created_at);
-  const months = timeSpan / (1000 * 60 * 60 * 24 * 30);
-  if (months > 1) score += 15;
-
-  // Recognition resonance bonus
-  const avgRating = calculateAverageRating(reflections);
-  if (avgRating > 7) score += 15;
-  if (avgRating > 8.5) score += 10;
-
-  // Feedback engagement bonus
-  const feedbackCount = reflections.filter(
-    (r) => r.user_feedback && r.user_feedback.trim()
-  ).length;
-  score += (feedbackCount / reflections.length) * 15;
-
-  return Math.min(100, Math.max(1, Math.round(score)));
+  return themes.length > 0 ? themes : ["Personal Development"];
 }
 
 // Helper functions
@@ -842,127 +578,4 @@ function getTimeAgo(date) {
   if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
   if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
   return `${Math.floor(diffDays / 365)} years ago`;
-}
-
-function calculateDuration(start, end) {
-  const diff = new Date(end) - new Date(start);
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-  if (days < 7) return `${days} days`;
-  if (days < 30) return `${Math.floor(days / 7)} weeks`;
-  if (days < 365) return `${Math.floor(days / 30)} months`;
-  return `${Math.floor(days / 365)} years`;
-}
-
-function analyzeAuthorityLanguage(reflections) {
-  const authorityWords = [
-    "i am",
-    "i will",
-    "i'm building",
-    "i know",
-    "i choose",
-    "i decide",
-  ];
-  const permissionWords = [
-    "i hope",
-    "maybe",
-    "i think",
-    "trying to",
-    "want to try",
-    "if i can",
-  ];
-
-  let authorityScore = 0;
-  reflections.forEach((r) => {
-    const text = `${r.relationship} ${r.offering}`.toLowerCase();
-    authorityWords.forEach((word) => {
-      if (text.includes(word)) authorityScore += 1;
-    });
-    permissionWords.forEach((word) => {
-      if (text.includes(word)) authorityScore -= 1;
-    });
-  });
-
-  return authorityScore / reflections.length;
-}
-
-function calculateAverageRating(reflections) {
-  const rated = reflections.filter((r) => r.rating);
-  if (rated.length === 0) return 5; // Default middle rating
-
-  const sum = rated.reduce((acc, r) => acc + r.rating, 0);
-  return sum / rated.length;
-}
-
-function getToneDistribution(reflections) {
-  const distribution = {};
-  reflections.forEach((r) => {
-    distribution[r.tone] = (distribution[r.tone] || 0) + 1;
-  });
-  return distribution;
-}
-
-function getRecentTrends(reflections) {
-  // Evolution trend analysis of recent vs older reflections
-  const recent = reflections.slice(0, Math.floor(reflections.length / 2));
-  const older = reflections.slice(Math.floor(reflections.length / 2));
-
-  return {
-    recentThemes: extractEvolutionPatterns(recent),
-    olderThemes: extractEvolutionPatterns(older),
-    shift: "consciousness_evolution_in_progress",
-  };
-}
-
-function generateQuickInsights(reflections) {
-  const insights = [];
-
-  if (reflections.length >= 3) {
-    insights.push("Developing consistent consciousness recognition practice");
-  }
-
-  const premiumRatio =
-    reflections.filter((r) => r.is_premium).length / reflections.length;
-  if (premiumRatio > 0.5) {
-    insights.push(
-      "Seeking deeper consciousness recognition through premium reflections"
-    );
-  }
-
-  const tones = new Set(reflections.map((r) => r.tone));
-  if (tones.size >= 2) {
-    insights.push("Exploring different voices of consciousness recognition");
-  }
-
-  // Recognition resonance insights
-  const avgRating = calculateAverageRating(reflections);
-  if (avgRating > 8) {
-    insights.push("Consistently accessing deep self-recognition");
-  }
-
-  const highlyRated = reflections.filter((r) => r.rating && r.rating >= 8);
-  if (highlyRated.length >= 3) {
-    insights.push("Establishing reliable connection to consciousness truth");
-  }
-
-  // Evolution pattern insights
-  if (reflections.length >= 4) {
-    const early = reflections.slice(-2);
-    const recent = reflections.slice(0, 2);
-
-    const earlyLanguage = early
-      .map((r) => r.relationship)
-      .join(" ")
-      .toLowerCase();
-    const recentLanguage = recent
-      .map((r) => r.relationship)
-      .join(" ")
-      .toLowerCase();
-
-    if (earlyLanguage.includes("hope") && recentLanguage.includes("will")) {
-      insights.push("Evolving from permission-seeking to authority-claiming");
-    }
-  }
-
-  return insights;
 }
