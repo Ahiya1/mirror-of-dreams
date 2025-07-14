@@ -1218,7 +1218,7 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-      // Subscription Page Logic - Webhook-Only Approach
+      // Subscription Page Logic - FIXED Payment Flow
       let userData = null;
       let subscriptionData = null;
       let isLoading = false;
@@ -1714,6 +1714,11 @@
           paymentElement = null;
         }
 
+        if (elements) {
+          // elements.destroy(); // Remove this line as elements doesn't have a destroy method
+          elements = null;
+        }
+
         currentUpgradePlan = null;
         console.log("💳 Payment modal closed");
       }
@@ -1768,6 +1773,16 @@
 
       async function initializePaymentElement(clientSecret) {
         try {
+          // Clean up existing elements
+          if (paymentElement) {
+            paymentElement.destroy();
+            paymentElement = null;
+          }
+
+          if (elements) {
+            elements = null;
+          }
+
           // Create elements instance
           elements = stripe.elements({
             clientSecret: clientSecret,
@@ -1793,7 +1808,10 @@
             },
           });
 
-          // Mount payment element
+          // Clear existing content and mount payment element
+          const paymentElementContainer =
+            document.getElementById("payment-element");
+          paymentElementContainer.innerHTML = "";
           paymentElement.mount("#payment-element");
 
           // Handle events
@@ -1832,7 +1850,7 @@
         }
       }
 
-      // WEBHOOK-ONLY PAYMENT SUBMISSION
+      // FIXED: Payment Submission with proper error handling
       async function handlePaymentSubmit() {
         if (!stripe || !elements || !currentUpgradePlan) {
           showToast("Payment system not ready", "error");
@@ -1841,24 +1859,41 @@
 
         setPaymentLoading(true);
 
+        // Clear any existing errors
+        const errorElement = document.getElementById("payment-error");
+        errorElement.style.display = "none";
+
         try {
-          // Submit payment
+          console.log("🔄 Starting payment confirmation...");
+
+          // First, validate the payment element
+          const { error: submitError } = await elements.submit();
+
+          if (submitError) {
+            throw new Error(submitError.message);
+          }
+
+          console.log("✅ Payment element validated");
+
+          // Confirm payment with explicit return URL
           const { error, paymentIntent } = await stripe.confirmPayment({
             elements,
             confirmParams: {
               return_url: `${window.location.origin}/subscription?payment_success=true`,
             },
-            redirect: "if_required",
+            redirect: "if_required", // This prevents automatic redirects
           });
 
           if (error) {
+            console.error("Payment confirmation error:", error);
             throw new Error(error.message);
           }
 
+          console.log("💳 Payment Intent status:", paymentIntent.status);
+
           if (paymentIntent.status === "succeeded") {
-            // Payment successful - Webhook will handle subscription creation
             console.log(
-              "💳 Payment succeeded, webhook will create subscription..."
+              "✅ Payment succeeded! Webhook will handle the rest..."
             );
 
             showToast(
@@ -1866,34 +1901,81 @@
               "success"
             );
 
+            // Close modal immediately on success
+            closePaymentModal();
+
             // Wait for webhook processing, then refresh subscription data
-            setTimeout(async () => {
+            let retryCount = 0;
+            const maxRetries = 6; // Try for up to 30 seconds
+
+            const checkSubscriptionUpdate = async () => {
               try {
                 await loadSubscriptionData();
-                updateSubscriptionDisplay();
-                closePaymentModal();
-                showToast(
-                  "Subscription upgraded successfully! Welcome to your new plan.",
-                  "success"
-                );
+
+                // Check if the user's tier has been updated
+                if (subscriptionData.tier === currentUpgradePlan.tier) {
+                  updateSubscriptionDisplay();
+                  showToast(
+                    `Welcome to ${currentUpgradePlan.tierInfo.name}! Your subscription is now active.`,
+                    "success"
+                  );
+                  console.log(
+                    "🎉 Subscription upgrade completed successfully!"
+                  );
+                  return;
+                }
+
+                // If not updated yet and we haven't exceeded retries, try again
+                if (retryCount < maxRetries) {
+                  retryCount++;
+                  console.log(
+                    `⏳ Waiting for subscription update... (${retryCount}/${maxRetries})`
+                  );
+                  setTimeout(checkSubscriptionUpdate, 5000); // Check again in 5 seconds
+                } else {
+                  console.warn(
+                    "⚠️ Subscription update taking longer than expected"
+                  );
+                  showToast(
+                    "Payment completed! Please refresh the page to see your updated subscription.",
+                    "warning"
+                  );
+                }
               } catch (error) {
-                console.error("Error refreshing subscription data:", error);
-                // Still show success since payment went through
-                showToast(
-                  "Payment completed! Please refresh the page to see your updated subscription.",
-                  "warning"
-                );
+                console.error("Error checking subscription update:", error);
+                if (retryCount >= maxRetries) {
+                  showToast(
+                    "Payment completed! Please refresh the page to see your updated subscription.",
+                    "warning"
+                  );
+                } else {
+                  retryCount++;
+                  setTimeout(checkSubscriptionUpdate, 5000);
+                }
               }
-            }, 3000); // Give webhook time to process
+            };
+
+            // Start checking for the subscription update
+            setTimeout(checkSubscriptionUpdate, 3000); // Wait 3 seconds before first check
+          } else if (paymentIntent.status === "requires_action") {
+            console.log("🔄 Payment requires additional action");
+            showToast(
+              "Payment requires additional verification. Please complete the authentication.",
+              "warning"
+            );
           } else {
-            throw new Error("Payment was not completed successfully");
+            throw new Error(
+              `Payment was not completed. Status: ${paymentIntent.status}`
+            );
           }
         } catch (error) {
-          console.error("Payment submission error:", error);
+          console.error("💥 Payment submission error:", error);
+
+          // Show error in both toast and payment error element
           showToast(error.message || "Payment failed", "error");
 
-          const errorElement = document.getElementById("payment-error");
-          errorElement.textContent = error.message;
+          errorElement.textContent =
+            error.message || "Payment failed. Please try again.";
           errorElement.style.display = "block";
         } finally {
           setPaymentLoading(false);
@@ -2083,13 +2165,19 @@
 
       // Debug (Development Only)
       if (window.location.hostname === "localhost") {
-        console.log("💎 Subscription Page - Webhook-Only Payment Flow");
+        console.log("💎 Subscription Page - FIXED Payment Flow");
         window.subscriptionDebug = {
           userData: () => userData,
           subscriptionData: () => subscriptionData,
           stripe: () => stripe,
           testToast: (message, type) => showToast(message, type),
           testPayment: (tier, period) => openPaymentModal(tier, period),
+          testWebhookWait: () => {
+            showToast("Testing webhook wait simulation", "info");
+            setTimeout(() => {
+              showToast("Webhook simulation complete!", "success");
+            }, 5000);
+          },
         };
       }
     </script>
