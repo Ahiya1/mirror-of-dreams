@@ -14,7 +14,7 @@
     <script src="https://js.stripe.com/v3/"></script>
 
     <style>
-      /* Subscription Page - Condensed Design */
+      /* Subscription Page - COMPLETELY CONTAINED like Dashboard */
       * {
         margin: 0;
         padding: 0;
@@ -24,8 +24,7 @@
       html,
       body {
         height: 100vh;
-        overflow-x: hidden;
-        overflow-y: auto;
+        overflow: hidden; /* 🎯 CHANGED: No scrolling like dashboard */
         background: linear-gradient(
           135deg,
           #0f0f23 0%,
@@ -35,6 +34,8 @@
         );
         color: #fff;
         font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+        position: fixed; /* 🎯 ADDED: Like dashboard */
+        width: 100vw; /* 🎯 ADDED: Like dashboard */
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }
@@ -87,37 +88,37 @@
         }
       }
 
-      /* Navigation Bar */
+      /* Navigation Bar - Like Dashboard */
       .nav-bar {
-        position: sticky;
+        position: fixed; /* 🎯 CHANGED: From sticky to fixed */
         top: 0;
         left: 0;
         right: 0;
         z-index: 100;
-        height: 60px;
-        background: rgba(15, 15, 35, 0.9);
-        backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        height: clamp(60px, 8vh, 80px); /* 🎯 CHANGED: Like dashboard */
+        background: rgba(15, 15, 35, 0.8);
+        backdrop-filter: blur(30px) saturate(120%); /* 🎯 ENHANCED: Like dashboard */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 1.5rem;
+        padding: 0 clamp(1rem, 3vw, 2rem);
       }
 
       .nav-left {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: clamp(0.8rem, 2vw, 1.2rem);
       }
 
       .logo {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.6rem;
         text-decoration: none;
         color: rgba(255, 255, 255, 0.95);
         font-weight: 400;
-        font-size: 1rem;
+        font-size: clamp(0.9rem, 2.2vw, 1.1rem);
         transition: all 0.3s ease;
       }
 
@@ -127,7 +128,7 @@
       }
 
       .mirror-logo {
-        font-size: 1.3rem;
+        font-size: clamp(1.2rem, 3vw, 1.6rem);
         animation: logoGlow 4s ease-in-out infinite;
       }
 
@@ -143,20 +144,20 @@
 
       .nav-links {
         display: flex;
-        gap: 0.5rem;
+        gap: clamp(0.4rem, 1vw, 0.6rem);
       }
 
       .nav-link {
         display: flex;
         align-items: center;
-        gap: 0.3rem;
-        padding: 0.4rem 0.8rem;
+        gap: 0.4rem;
+        padding: clamp(0.4rem, 1vh, 0.6rem) clamp(0.8rem, 2vw, 1rem);
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 15px;
+        border-radius: 20px;
         color: rgba(255, 255, 255, 0.7);
         text-decoration: none;
-        font-size: 0.8rem;
+        font-size: clamp(0.7rem, 1.8vw, 0.85rem);
         font-weight: 300;
         transition: all 0.3s ease;
         white-space: nowrap;
@@ -179,17 +180,17 @@
         display: flex;
         align-items: center;
         gap: 0.4rem;
-        padding: 0.4rem 0.8rem;
+        padding: clamp(0.4rem, 1vh, 0.6rem) clamp(0.8rem, 2vw, 1rem);
         background: linear-gradient(
           135deg,
           rgba(16, 185, 129, 0.12),
           rgba(5, 150, 105, 0.08)
         );
         border: 1px solid rgba(16, 185, 129, 0.25);
-        border-radius: 15px;
+        border-radius: 20px;
         color: rgba(255, 255, 255, 0.9);
         text-decoration: none;
-        font-size: 0.8rem;
+        font-size: clamp(0.7rem, 1.8vw, 0.85rem);
         font-weight: 400;
         transition: all 0.3s ease;
         white-space: nowrap;
@@ -205,23 +206,52 @@
         transform: translateY(-1px);
       }
 
-      /* Main Container - Condensed */
+      /* Main Container - COMPLETELY CONTAINED */
       .subscription-main {
         position: relative;
         z-index: 10;
-        min-height: calc(100vh - 60px);
-        padding: 1rem 1.5rem;
+        height: 100vh; /* 🎯 CHANGED: Full viewport height */
+        padding-top: clamp(
+          60px,
+          8vh,
+          80px
+        ); /* 🎯 ADDED: Account for fixed nav */
         display: flex;
         flex-direction: column;
-        align-items: center;
+        overflow: hidden; /* 🎯 ADDED: Prevent overflow */
       }
 
       .subscription-container {
-        width: 100%;
-        max-width: 900px;
+        flex: 1; /* 🎯 CHANGED: Fill remaining space */
         display: flex;
         flex-direction: column;
-        gap: 1.2rem;
+        gap: clamp(0.8rem, 2vh, 1.2rem);
+        padding: clamp(0.8rem, 2vh, 1.5rem) clamp(1rem, 3vw, 2rem);
+        overflow-y: auto; /* 🎯 ADDED: Only this scrolls if needed */
+        overflow-x: hidden;
+        min-height: 0; /* 🎯 ADDED: Allow flex shrinking */
+      }
+
+      /* 🎯 ADDED: Custom scrollbar for container */
+      .subscription-container::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .subscription-container::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 3px;
+      }
+
+      .subscription-container::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 3px;
+      }
+
+      .subscription-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.25);
+      }
+
+      .subscription-container {
         animation: subscriptionAppear 0.8s ease-out;
       }
 
@@ -236,16 +266,17 @@
         }
       }
 
-      /* Header - Condensed */
+      /* Header - Compact */
       .subscription-header {
         text-align: center;
-        margin-bottom: 0.5rem;
+        margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
+        flex-shrink: 0; /* 🎯 ADDED: Don't shrink header */
       }
 
       .subscription-title {
-        font-size: 2rem;
+        font-size: clamp(1.8rem, 4vw, 2.2rem); /* 🎯 SMALLER: More compact */
         font-weight: 300;
-        margin-bottom: 0.3rem;
+        margin-bottom: clamp(0.2rem, 0.5vh, 0.4rem);
         line-height: 1.2;
         background: linear-gradient(
           135deg,
@@ -258,13 +289,13 @@
       }
 
       .subscription-subtitle {
-        font-size: 0.9rem;
+        font-size: clamp(0.8rem, 2vw, 0.9rem); /* 🎯 SMALLER: More compact */
         color: rgba(255, 255, 255, 0.7);
         font-weight: 300;
         line-height: 1.4;
       }
 
-      /* Subscription Cards - Condensed */
+      /* Subscription Cards - Compact */
       .subscription-card {
         background: linear-gradient(
           135deg,
@@ -273,11 +304,12 @@
         );
         backdrop-filter: blur(30px);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
-        padding: 1.5rem;
+        border-radius: clamp(14px, 2.8vw, 18px); /* 🎯 SMALLER: More compact */
+        padding: clamp(1.2rem, 2.5vh, 1.6rem); /* 🎯 SMALLER: More compact */
         position: relative;
         overflow: hidden;
         transition: all 0.3s ease;
+        flex-shrink: 0; /* 🎯 ADDED: Don't shrink cards */
       }
 
       .subscription-card:hover {
@@ -289,30 +321,30 @@
       .card-title {
         display: flex;
         align-items: center;
-        gap: 0.6rem;
-        font-size: 1.1rem;
+        gap: clamp(0.5rem, 1.2vw, 0.7rem);
+        font-size: clamp(1rem, 2.2vw, 1.2rem);
         font-weight: 400;
         color: rgba(255, 255, 255, 0.95);
-        margin-bottom: 1rem;
+        margin-bottom: clamp(0.8rem, 1.8vh, 1.2rem);
       }
 
       .card-icon {
-        font-size: 1.3rem;
+        font-size: clamp(1.2rem, 2.5vw, 1.4rem);
         opacity: 0.9;
       }
 
-      /* Status Display - Condensed */
+      /* Status Display - Compact */
       .status-display {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: clamp(0.8rem, 1.8vh, 1.2rem);
       }
 
       .status-main {
         display: grid;
         grid-template-columns: 1fr auto;
         align-items: start;
-        gap: 1rem;
+        gap: clamp(0.8rem, 2vw, 1.2rem);
       }
 
       .tier-info {
@@ -321,11 +353,11 @@
 
       .tier-badge {
         display: inline-block;
-        padding: 0.4rem 0.8rem;
+        padding: clamp(0.3rem, 0.8vh, 0.5rem) clamp(0.6rem, 1.5vw, 0.9rem);
         border-radius: 12px;
-        font-size: 0.8rem;
+        font-size: clamp(0.7rem, 1.8vw, 0.85rem);
         font-weight: 500;
-        margin-bottom: 0.4rem;
+        margin-bottom: clamp(0.3rem, 0.8vh, 0.5rem);
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }
@@ -354,7 +386,7 @@
       }
 
       .tier-description {
-        font-size: 0.85rem;
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
         color: rgba(255, 255, 255, 0.7);
         line-height: 1.4;
       }
@@ -364,41 +396,41 @@
       }
 
       .billing-amount {
-        font-size: 1.4rem;
+        font-size: clamp(1.2rem, 3vw, 1.5rem);
         font-weight: 600;
         color: rgba(255, 255, 255, 0.9);
-        margin-bottom: 0.2rem;
+        margin-bottom: clamp(0.1rem, 0.3vh, 0.2rem);
       }
 
       .billing-period {
-        font-size: 0.7rem;
+        font-size: clamp(0.65rem, 1.5vw, 0.75rem);
         color: rgba(255, 255, 255, 0.6);
-        margin-bottom: 0.4rem;
+        margin-bottom: clamp(0.3rem, 0.8vh, 0.5rem);
       }
 
       .next-billing {
-        font-size: 0.75rem;
+        font-size: clamp(0.7rem, 1.7vw, 0.8rem);
         color: rgba(255, 255, 255, 0.7);
       }
 
       /* Status Indicators */
       .status-indicators {
         display: flex;
-        gap: 1rem;
+        gap: clamp(0.8rem, 2vw, 1.2rem);
         flex-wrap: wrap;
       }
 
       .status-indicator {
         display: flex;
         align-items: center;
-        gap: 0.4rem;
-        font-size: 0.8rem;
+        gap: clamp(0.3rem, 0.8vw, 0.5rem);
+        font-size: clamp(0.75rem, 1.8vw, 0.85rem);
         color: rgba(255, 255, 255, 0.8);
       }
 
       .status-icon {
-        width: 10px;
-        height: 10px;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
       }
 
@@ -416,21 +448,21 @@
         background: #6b7280;
       }
 
-      /* Action Buttons - Condensed */
+      /* Action Buttons - Compact */
       .subscription-actions {
         display: flex;
-        gap: 0.8rem;
-        margin-top: 1rem;
+        gap: clamp(0.6rem, 1.5vw, 0.8rem);
+        margin-top: clamp(0.8rem, 1.8vh, 1.2rem);
         flex-wrap: wrap;
       }
 
       .action-button {
         flex: 1;
-        min-width: 140px;
-        padding: 0.7rem 1rem;
+        min-width: 120px;
+        padding: clamp(0.6rem, 1.5vh, 0.8rem) clamp(0.8rem, 2vw, 1.2rem);
         border: none;
         border-radius: 10px;
-        font-size: 0.85rem;
+        font-size: clamp(0.75rem, 1.8vw, 0.9rem);
         font-weight: 500;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -441,7 +473,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.4rem;
+        gap: clamp(0.3rem, 0.8vw, 0.5rem);
       }
 
       .action-button::before {
@@ -529,14 +561,14 @@
 
       /* Loading Spinner */
       .loading-spinner {
-        width: 14px;
-        height: 14px;
+        width: 12px;
+        height: 12px;
         border: 2px solid rgba(255, 255, 255, 0.3);
         border-radius: 50%;
         border-top-color: rgba(255, 255, 255, 0.9);
         animation: spin 1s linear infinite;
         display: inline-block;
-        margin-left: 0.4rem;
+        margin-left: clamp(0.3rem, 0.8vw, 0.5rem);
       }
 
       @keyframes spin {
@@ -545,7 +577,7 @@
         }
       }
 
-      /* Upgrade Options - Condensed Grid */
+      /* Upgrade Options - Compact */
       .upgrade-options {
         border-color: rgba(16, 185, 129, 0.2);
         background: linear-gradient(
@@ -557,12 +589,12 @@
 
       .upgrade-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: clamp(0.8rem, 2vw, 1.2rem);
       }
 
       .upgrade-option {
-        padding: 1.2rem;
+        padding: clamp(1rem, 2.2vh, 1.4rem);
         background: rgba(255, 255, 255, 0.03);
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 12px;
@@ -585,17 +617,17 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 0.6rem;
+        margin-bottom: clamp(0.5rem, 1.2vh, 0.7rem);
       }
 
       .option-name {
-        font-size: 1rem;
+        font-size: clamp(0.9rem, 2.2vw, 1.1rem);
         font-weight: 500;
         color: rgba(255, 255, 255, 0.95);
       }
 
       .option-price {
-        font-size: 1.1rem;
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
         font-weight: 600;
         color: rgba(16, 185, 129, 0.9);
       }
@@ -604,16 +636,16 @@
         list-style: none;
         padding: 0;
         margin: 0;
-        margin-bottom: 0.8rem;
+        margin-bottom: clamp(0.6rem, 1.5vh, 0.9rem);
       }
 
       .option-features li {
-        padding: 0.2rem 0;
-        font-size: 0.8rem;
+        padding: clamp(0.15rem, 0.4vh, 0.25rem) 0;
+        font-size: clamp(0.75rem, 1.8vw, 0.85rem);
         color: rgba(255, 255, 255, 0.8);
         display: flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: clamp(0.3rem, 0.8vw, 0.5rem);
       }
 
       .option-features li::before {
@@ -623,17 +655,17 @@
 
       .period-selector {
         display: flex;
-        gap: 0.4rem;
-        margin-bottom: 0.8rem;
+        gap: clamp(0.3rem, 0.8vw, 0.5rem);
+        margin-bottom: clamp(0.6rem, 1.5vh, 0.9rem);
       }
 
       .period-option {
         flex: 1;
-        padding: 0.4rem 0.6rem;
+        padding: clamp(0.3rem, 0.8vh, 0.5rem) clamp(0.5rem, 1.2vw, 0.7rem);
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 6px;
-        font-size: 0.7rem;
+        font-size: clamp(0.65rem, 1.5vw, 0.75rem);
         color: rgba(255, 255, 255, 0.7);
         cursor: pointer;
         transition: all 0.3s ease;
@@ -648,7 +680,7 @@
 
       .upgrade-button {
         width: 100%;
-        padding: 0.6rem 0.8rem;
+        padding: clamp(0.5rem, 1.2vh, 0.7rem) clamp(0.6rem, 1.5vw, 0.9rem);
         background: linear-gradient(
           135deg,
           rgba(16, 185, 129, 0.2),
@@ -657,7 +689,7 @@
         border: 1px solid rgba(16, 185, 129, 0.3);
         border-radius: 8px;
         color: rgba(110, 231, 183, 0.9);
-        font-size: 0.8rem;
+        font-size: clamp(0.75rem, 1.8vw, 0.85rem);
         font-weight: 500;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -674,7 +706,7 @@
         transform: translateY(-1px);
       }
 
-      /* Payment Modal - Condensed */
+      /* Payment Modal - Compact */
       .payment-modal-overlay {
         position: fixed;
         inset: 0;
@@ -687,7 +719,7 @@
         opacity: 0;
         visibility: hidden;
         transition: all 0.3s ease;
-        padding: 1rem;
+        padding: clamp(0.8rem, 2vh, 1.2rem);
       }
 
       .payment-modal-overlay.show {
@@ -704,10 +736,10 @@
         backdrop-filter: blur(30px);
         border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 16px;
-        padding: 1.5rem;
+        padding: clamp(1.2rem, 2.5vh, 1.8rem);
         width: 100%;
-        max-width: 450px;
-        max-height: 85vh;
+        max-width: 420px;
+        max-height: 80vh; /* 🎯 CHANGED: Constrain height */
         overflow-y: auto;
         position: relative;
         animation: modalSlide 0.3s ease-out;
@@ -728,19 +760,19 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 1.2rem;
+        margin-bottom: clamp(1rem, 2.2vh, 1.4rem);
       }
 
       .modal-title {
-        font-size: 1.3rem;
+        font-size: clamp(1.1rem, 2.5vw, 1.4rem);
         font-weight: 400;
         color: rgba(255, 255, 255, 0.95);
         margin: 0;
       }
 
       .modal-close {
-        width: 32px;
-        height: 32px;
+        width: 28px;
+        height: 28px;
         border: none;
         background: rgba(255, 255, 255, 0.1);
         border-radius: 50%;
@@ -750,7 +782,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1rem;
+        font-size: 0.9rem;
       }
 
       .modal-close:hover {
@@ -763,22 +795,22 @@
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 12px;
-        padding: 1.2rem;
-        margin-bottom: 1.2rem;
+        padding: clamp(1rem, 2.2vh, 1.4rem);
+        margin-bottom: clamp(1rem, 2.2vh, 1.4rem);
       }
 
       .plan-title {
-        font-size: 1.1rem;
+        font-size: clamp(1rem, 2.2vw, 1.2rem);
         font-weight: 500;
         color: rgba(255, 255, 255, 0.95);
-        margin-bottom: 0.4rem;
+        margin-bottom: clamp(0.3rem, 0.8vh, 0.5rem);
       }
 
       .plan-price {
-        font-size: 1.5rem;
+        font-size: clamp(1.3rem, 3vw, 1.6rem);
         font-weight: 600;
         color: rgba(16, 185, 129, 0.9);
-        margin-bottom: 0.6rem;
+        margin-bottom: clamp(0.5rem, 1.2vh, 0.7rem);
       }
 
       .plan-features {
@@ -787,15 +819,15 @@
         margin: 0;
         display: flex;
         flex-direction: column;
-        gap: 0.2rem;
+        gap: clamp(0.15rem, 0.4vh, 0.25rem);
       }
 
       .plan-features li {
-        font-size: 0.85rem;
+        font-size: clamp(0.8rem, 1.9vw, 0.9rem);
         color: rgba(255, 255, 255, 0.8);
         display: flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: clamp(0.3rem, 0.8vw, 0.5rem);
       }
 
       .plan-features li::before {
@@ -805,14 +837,14 @@
       }
 
       .payment-section {
-        margin-bottom: 1.2rem;
+        margin-bottom: clamp(1rem, 2.2vh, 1.4rem);
       }
 
       .payment-section h4 {
-        font-size: 1rem;
+        font-size: clamp(0.9rem, 2vw, 1.1rem);
         font-weight: 400;
         color: rgba(255, 255, 255, 0.9);
-        margin-bottom: 0.8rem;
+        margin-bottom: clamp(0.6rem, 1.5vh, 0.9rem);
       }
 
       /* Stripe Elements Styling */
@@ -820,8 +852,8 @@
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 8px;
-        padding: 0.8rem;
-        margin-bottom: 0.8rem;
+        padding: clamp(0.6rem, 1.5vh, 0.9rem);
+        margin-bottom: clamp(0.6rem, 1.5vh, 0.9rem);
         transition: all 0.3s ease;
       }
 
@@ -836,23 +868,23 @@
 
       .payment-error {
         color: rgba(248, 113, 113, 0.9);
-        font-size: 0.8rem;
-        margin-top: 0.4rem;
-        margin-bottom: 0.8rem;
+        font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+        margin-top: clamp(0.3rem, 0.8vh, 0.5rem);
+        margin-bottom: clamp(0.6rem, 1.5vh, 0.9rem);
         display: none;
       }
 
       .payment-actions {
         display: flex;
-        gap: 0.8rem;
+        gap: clamp(0.6rem, 1.5vw, 0.9rem);
       }
 
       .payment-button {
         flex: 1;
-        padding: 0.8rem 1rem;
+        padding: clamp(0.7rem, 1.8vh, 1rem) clamp(0.8rem, 2vw, 1.2rem);
         border: none;
         border-radius: 10px;
-        font-size: 0.9rem;
+        font-size: clamp(0.8rem, 1.9vw, 0.95rem);
         font-weight: 500;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -860,7 +892,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.4rem;
+        gap: clamp(0.3rem, 0.8vw, 0.5rem);
         position: relative;
         overflow: hidden;
       }
@@ -930,17 +962,17 @@
       /* Toast Notifications */
       .toast-container {
         position: fixed;
-        top: 80px;
-        right: 1.5rem;
+        top: clamp(80px, 12vh, 100px);
+        right: clamp(1rem, 3vw, 1.5rem);
         z-index: 1001;
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
-        max-width: 350px;
+        max-width: clamp(280px, 40vw, 350px);
       }
 
       .toast {
-        padding: 0.8rem 1rem;
+        padding: clamp(0.7rem, 1.8vh, 1rem) clamp(0.8rem, 2vw, 1.2rem);
         background: rgba(15, 15, 35, 0.95);
         backdrop-filter: blur(25px);
         border: 1px solid rgba(255, 255, 255, 0.12);
@@ -951,7 +983,7 @@
         opacity: 0;
         transition: all 0.3s ease;
         animation: toastSlide 0.3s ease-out forwards;
-        font-size: 0.85rem;
+        font-size: clamp(0.8rem, 1.9vw, 0.9rem);
         line-height: 1.4;
       }
 
@@ -997,7 +1029,7 @@
 
         .status-main {
           grid-template-columns: 1fr;
-          gap: 0.8rem;
+          gap: clamp(0.6rem, 1.5vh, 0.9rem);
         }
 
         .billing-info {
@@ -1006,7 +1038,7 @@
 
         .subscription-actions {
           flex-direction: column;
-          gap: 0.6rem;
+          gap: clamp(0.5rem, 1.2vh, 0.7rem);
         }
 
         .action-button {
@@ -1018,36 +1050,36 @@
         }
 
         .payment-modal {
-          margin: 0.5rem;
-          max-width: calc(100vw - 1rem);
+          margin: clamp(0.4rem, 1vh, 0.6rem);
+          max-width: calc(100vw - clamp(0.8rem, 2vh, 1.2rem));
         }
 
         .payment-actions {
           flex-direction: column;
-          gap: 0.6rem;
+          gap: clamp(0.5rem, 1.2vh, 0.7rem);
         }
       }
 
       @media (max-width: 480px) {
-        .subscription-main {
-          padding: 0.8rem 1rem;
+        .subscription-container {
+          padding: clamp(0.6rem, 1.5vh, 0.9rem) clamp(0.8rem, 2vw, 1.2rem);
         }
 
         .subscription-card {
-          padding: 1.2rem;
+          padding: clamp(1rem, 2.2vh, 1.4rem);
         }
 
         .nav-bar {
-          padding: 0 1rem;
+          padding: 0 clamp(0.8rem, 2vw, 1.2rem);
         }
 
         .status-indicators {
           flex-direction: column;
-          gap: 0.6rem;
+          gap: clamp(0.5rem, 1.2vh, 0.7rem);
         }
 
         .payment-modal {
-          padding: 1.2rem;
+          padding: clamp(1rem, 2.2vh, 1.4rem);
         }
       }
 
@@ -1067,6 +1099,58 @@
       * {
         outline: none !important;
         -webkit-tap-highlight-color: transparent;
+      }
+
+      /* 🎯 ADDED: High contrast mode support like dashboard */
+      @media (prefers-contrast: high) {
+        .subscription-card,
+        .nav-bar {
+          border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .card-title,
+        .subscription-title,
+        .nav-link {
+          color: rgba(255, 255, 255, 1);
+        }
+      }
+
+      /* 🎯 ADDED: Accessibility improvements like dashboard */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+
+        .cosmic-mirror {
+          animation: none !important;
+        }
+      }
+
+      /* 🎯 ADDED: iOS safe area handling like dashboard */
+      @supports (-webkit-touch-callout: none) {
+        .nav-bar {
+          padding-top: max(0px, env(safe-area-inset-top));
+        }
+
+        .subscription-container {
+          padding-left: max(clamp(1rem, 3vw, 2rem), env(safe-area-inset-left));
+          padding-right: max(
+            clamp(1rem, 3vw, 2rem),
+            env(safe-area-inset-right)
+          );
+          padding-bottom: max(
+            clamp(0.8rem, 2vh, 1.5rem),
+            env(safe-area-inset-bottom)
+          );
+        }
+
+        .toast-container {
+          right: max(clamp(1rem, 3vw, 1.5rem), env(safe-area-inset-right));
+        }
       }
     </style>
   </head>
@@ -1218,7 +1302,7 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-      // Subscription Page Logic - ENHANCED with Complete Debugging
+      // Subscription Page Logic - ENHANCED with Complete Debugging & Customer Portal Fix
       let userData = null;
       let subscriptionData = null;
       let isLoading = false;
@@ -1373,6 +1457,7 @@
                 status: subscriptionData.status,
                 isSubscribed: subscriptionData.isSubscribed,
                 canUpgrade: subscriptionData.canUpgrade,
+                hasStripeData: subscriptionData.hasStripeData, // 🎯 ADDED: Check if user has Stripe data
               });
             } else {
               throw new Error(data.error || "Failed to load subscription");
@@ -1394,6 +1479,7 @@
               userData.tier === "free" || userData.tier === "essential",
             currentPrice: 0,
             currency: "USD",
+            hasStripeData: false, // 🎯 ADDED: Default to false for fallback
           };
 
           console.log("⚠️ Using fallback subscription data:", subscriptionData);
@@ -1508,8 +1594,19 @@
         const actionsContainer = document.getElementById("subscriptionActions");
         actionsContainer.innerHTML = "";
 
-        // Customer Portal button (for paid users)
+        console.log("🔄 Updating subscription actions...");
+        console.log("📋 Subscription data for actions:", {
+          isSubscribed: subscriptionData.isSubscribed,
+          hasStripeData: subscriptionData.hasStripeData,
+          status: subscriptionData.status,
+          tier: subscriptionData.tier,
+        });
+
+        // 🎯 FIXED: Customer Portal button (only for users with Stripe data)
         if (subscriptionData.isSubscribed && subscriptionData.hasStripeData) {
+          console.log(
+            "✅ Adding Customer Portal button - user has Stripe data"
+          );
           const portalButton = createActionButton(
             "⚙️",
             "Manage Billing",
@@ -1517,6 +1614,13 @@
             () => openCustomerPortal()
           );
           actionsContainer.appendChild(portalButton);
+        } else if (
+          subscriptionData.isSubscribed &&
+          !subscriptionData.hasStripeData
+        ) {
+          console.log(
+            "⚠️ User is subscribed but has no Stripe data - no portal button"
+          );
         }
 
         // Cancel/Reactivate button
@@ -1550,6 +1654,8 @@
           );
           actionsContainer.appendChild(upgradeButton);
         }
+
+        console.log("✅ Subscription actions updated");
       }
 
       function updateUpgradeOptions() {
@@ -2285,12 +2391,29 @@
         }
       }
 
+      // 🎯 FIXED: Customer Portal with better error handling
       async function openCustomerPortal() {
+        console.log("🏪 =====================================");
+        console.log("🏪 OPENING CUSTOMER PORTAL");
+        console.log("🏪 =====================================");
+        console.log("🔍 User has Stripe data:", subscriptionData.hasStripeData);
+        console.log("🔍 User is subscribed:", subscriptionData.isSubscribed);
+
+        if (!subscriptionData.hasStripeData) {
+          console.error("❌ User has no Stripe customer data");
+          showToast(
+            "Billing portal is not available. Please contact support.",
+            "error"
+          );
+          return;
+        }
+
         setLoadingState(true);
 
         try {
           const token = localStorage.getItem("mirror_auth_token");
 
+          console.log("🔄 Requesting customer portal URL...");
           const response = await fetch("/api/subscriptions", {
             method: "POST",
             headers: {
@@ -2302,16 +2425,46 @@
             }),
           });
 
-          const data = await response.json();
+          console.log("📋 Portal response status:", response.status);
 
-          if (data.success) {
+          const data = await response.json();
+          console.log("📋 Portal response:", {
+            success: data.success,
+            hasPortalUrl: !!data.portalUrl,
+            error: data.error,
+          });
+
+          if (data.success && data.portalUrl) {
+            console.log("✅ Portal URL received, redirecting...");
             window.location.href = data.portalUrl;
           } else {
-            throw new Error(data.error || "Failed to open customer portal");
+            const errorMessage = data.error || "Failed to open customer portal";
+            console.error("❌ Portal error:", errorMessage);
+
+            // 🎯 ENHANCED: Better error messages
+            if (errorMessage.includes("customer")) {
+              showToast(
+                "Billing portal setup incomplete. Please contact support.",
+                "error"
+              );
+            } else if (errorMessage.includes("subscription")) {
+              showToast(
+                "No active subscription found. Please upgrade first.",
+                "error"
+              );
+            } else {
+              showToast(
+                "Unable to access billing portal. Please try again or contact support.",
+                "error"
+              );
+            }
           }
         } catch (error) {
-          console.error("Customer portal error:", error);
-          showToast(error.message || "Failed to open customer portal", "error");
+          console.error("💥 Customer portal error:", error);
+          showToast(
+            "Network error accessing billing portal. Please try again.",
+            "error"
+          );
         } finally {
           setLoadingState(false);
         }
@@ -2401,11 +2554,13 @@
           currentUpgradePlan: () => currentUpgradePlan,
           testToast: (message, type) => showToast(message, type),
           testPayment: (tier, period) => openPaymentModal(tier, period),
-          testWebhookWait: () => {
-            showToast("Testing webhook wait simulation", "info");
-            setTimeout(() => {
-              showToast("Webhook simulation complete!", "success");
-            }, 5000);
+          testCustomerPortal: () => openCustomerPortal(),
+          simulateStripeData: () => {
+            subscriptionData.hasStripeData = true;
+            updateSubscriptionDisplay();
+            console.log(
+              "✅ Simulated Stripe data - portal button should appear"
+            );
           },
           manualSubscriptionCheck: async () => {
             console.log("🔄 Manual subscription check triggered");
@@ -2413,22 +2568,11 @@
             updateSubscriptionDisplay();
             console.log("✅ Manual subscription check complete");
           },
-          simulateSuccessfulPayment: () => {
-            console.log("🎭 Simulating successful payment...");
-            showToast("Simulated payment successful!", "success");
-            closePaymentModal();
-          },
         };
         console.log("🛠️ Available debug functions:");
-        console.log("   - window.subscriptionDebug.userData()");
-        console.log("   - window.subscriptionDebug.subscriptionData()");
-        console.log(
-          "   - window.subscriptionDebug.testPayment('essential', 'yearly')"
-        );
+        console.log("   - window.subscriptionDebug.testCustomerPortal()");
+        console.log("   - window.subscriptionDebug.simulateStripeData()");
         console.log("   - window.subscriptionDebug.manualSubscriptionCheck()");
-        console.log(
-          "   - window.subscriptionDebug.simulateSuccessfulPayment()"
-        );
       }
     </script>
   </body>
