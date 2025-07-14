@@ -1442,7 +1442,7 @@
                   name="dream"
                   class="form-textarea"
                   placeholder="Write the dream that calls you..."
-                  data-min="200"
+                  data-min="1"
                   data-max="3200"
                   required
                 ></textarea>
@@ -1472,7 +1472,7 @@
                   name="plan"
                   class="form-textarea"
                   placeholder="Describe any plan (or absence of plan)..."
-                  data-min="300"
+                  data-min="1"
                   data-max="4000"
                   required
                 ></textarea>
@@ -1523,7 +1523,7 @@
                   name="relationship"
                   class="form-textarea"
                   placeholder="How do you relate to this dream now?"
-                  data-min="300"
+                  data-min="1"
                   data-max="4000"
                   required
                 ></textarea>
@@ -1556,7 +1556,7 @@
                   name="offering"
                   class="form-textarea"
                   placeholder="What will you offer in return?"
-                  data-min="200"
+                  data-min="1"
                   data-max="2400"
                   required
                 ></textarea>
@@ -1800,10 +1800,12 @@
             this.countElement.classList.add("approaching-limit");
           }
 
-          // Validation styling
-          const isValid = length >= this.min;
+          // Validation styling - just ensure field isn't empty if required
+          const isValid = this.textarea.required ? length > 0 : true;
           this.textarea.style.borderColor =
-            length > 0 && !isValid ? "rgba(239, 68, 68, 0.4)" : "";
+            this.textarea.required && length === 0
+              ? "rgba(239, 68, 68, 0.4)"
+              : "";
 
           return { length, isValid, percentage };
         }
@@ -2072,11 +2074,11 @@
 
           console.log("📝 Processing form submission...");
 
-          // Validate character counts
+          // Validate all required fields have content
           let isValid = true;
           for (const [textareaId, counter] of this.characterCounters) {
-            const stats = counter.getStats();
-            if (stats.current < stats.min) {
+            const textarea = document.getElementById(textareaId);
+            if (textarea.value.trim().length === 0) {
               isValid = false;
               break;
             }
@@ -2084,7 +2086,7 @@
 
           if (!isValid) {
             alert(
-              "Please ensure all questions meet the minimum character requirements."
+              "Please fill in all required fields with your authentic response."
             );
             return;
           }
