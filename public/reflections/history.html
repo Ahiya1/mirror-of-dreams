@@ -3,15 +3,958 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Favicon links - ADD THESE -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <title>Your Journey | Mirror of Truth</title>
-    <link rel="stylesheet" href="/shared/foundation.css" />
-    <link rel="stylesheet" href="/reflections/history.css" />
+
+    <style>
+      /* ═══════════════ REFLECTION HISTORY - CONSOLIDATED ═══════════════ */
+
+      /* ╭─ RESET & FOUNDATION ────────────────────────────────────────────╮ */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+      }
+
+      body {
+        background: linear-gradient(
+          135deg,
+          #0a0a1a 0%,
+          #151529 25%,
+          #1a1b3a 50%,
+          #0a0a1a 100%
+        );
+        color: #fff;
+        overflow-x: hidden;
+        min-height: 100vh;
+        position: relative;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+        line-height: 1.6;
+      }
+
+      /* ╭─ COSMIC BACKGROUND ──────────────────────────────────────────────╮ */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(
+            circle at 20% 30%,
+            rgba(59, 130, 246, 0.04) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 70%,
+            rgba(147, 51, 234, 0.03) 0%,
+            transparent 50%
+          );
+        z-index: 0;
+        animation: cosmicShift 60s ease-in-out infinite;
+      }
+
+      @keyframes cosmicShift {
+        0%,
+        100% {
+          transform: scale(1) rotate(0deg);
+        }
+        50% {
+          transform: scale(1.1) rotate(180deg);
+        }
+      }
+
+      /* ╭─ FLOATING MIRROR SHARDS ─────────────────────────────────────────╮ */
+      .mirrors-container {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .mirror-shard {
+        position: absolute;
+        width: clamp(30px, 6vw, 60px);
+        height: clamp(30px, 6vw, 60px);
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        animation: float 12s ease-in-out infinite;
+        opacity: 0.7;
+      }
+
+      .mirror-shard:nth-child(1) {
+        top: 15%;
+        left: 10%;
+        clip-path: polygon(
+          30% 0%,
+          70% 0%,
+          100% 30%,
+          70% 100%,
+          30% 100%,
+          0% 70%
+        );
+        animation-delay: 0s;
+      }
+
+      .mirror-shard:nth-child(2) {
+        top: 25%;
+        right: 15%;
+        clip-path: polygon(20% 0%, 80% 0%, 100% 60%, 40% 100%, 0% 40%);
+        animation-delay: 2s;
+      }
+
+      .mirror-shard:nth-child(3) {
+        top: 60%;
+        left: 20%;
+        clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 62%);
+        animation-delay: 4s;
+      }
+
+      .mirror-shard:nth-child(4) {
+        bottom: 30%;
+        right: 25%;
+        clip-path: polygon(
+          25% 0%,
+          75% 0%,
+          100% 50%,
+          75% 100%,
+          25% 100%,
+          0% 50%
+        );
+        animation-delay: 6s;
+      }
+
+      .mirror-shard:nth-child(5) {
+        top: 40%;
+        left: 50%;
+        clip-path: polygon(
+          50% 0%,
+          90% 20%,
+          100% 60%,
+          75% 100%,
+          25% 100%,
+          0% 60%,
+          10% 20%
+        );
+        animation-delay: 8s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+          opacity: 0.4;
+        }
+        33% {
+          transform: translateY(-20px) rotate(120deg);
+          opacity: 0.7;
+        }
+        66% {
+          transform: translateY(-10px) rotate(240deg);
+          opacity: 0.5;
+        }
+      }
+
+      /* ╭─ NAVIGATION ──────────────────────────────────────────────────────╮ */
+      .sacred-nav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(15, 15, 35, 0.85);
+        backdrop-filter: blur(30px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: clamp(0.8rem, 2vw, 1rem) 0;
+      }
+
+      .nav-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 clamp(1rem, 4vw, 2rem);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
+        font-weight: 400;
+        transition: all 0.3s ease;
+        min-height: 40px;
+        white-space: nowrap;
+      }
+
+      .nav-link:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.95);
+        transform: translateY(-1px);
+      }
+
+      .nav-title {
+        font-size: clamp(1.2rem, 4vw, 1.6rem);
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0;
+        text-align: center;
+        flex: 1;
+      }
+
+      /* ╭─ MAIN CONTAINER ──────────────────────────────────────────────────╮ */
+      .main-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: clamp(1rem, 4vw, 2rem);
+        position: relative;
+        z-index: 10;
+        min-height: calc(100vh - 80px);
+      }
+
+      /* ╭─ SEARCH & FILTERS ────────────────────────────────────────────────╮ */
+      .search-section {
+        margin-bottom: clamp(2rem, 5vw, 3rem);
+      }
+
+      .search-container {
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: clamp(1.5rem, 4vw, 2rem);
+      }
+
+      .search-input-group {
+        display: flex;
+        gap: 0.8rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .search-input {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        padding: 0.8rem 1rem;
+        color: #fff;
+        font-family: inherit;
+        font-size: clamp(0.9rem, 2vw, 1rem);
+        min-height: 48px;
+        transition: all 0.3s ease;
+      }
+
+      .search-input:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .search-input::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .search-btn {
+        padding: 0 1.2rem;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        color: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .search-btn:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+
+      .filter-group {
+        display: flex;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+      }
+
+      .filter-btn {
+        padding: 0.7rem 1.2rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
+        font-weight: 400;
+        white-space: nowrap;
+        font-family: inherit;
+      }
+
+      .filter-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .filter-btn.active {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+        color: #fff;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      }
+
+      /* ╭─ STATS OVERVIEW ──────────────────────────────────────────────────╮ */
+      .stats-section {
+        margin-bottom: clamp(2rem, 5vw, 3rem);
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: clamp(0.8rem, 2vw, 1.2rem);
+      }
+
+      .stat-card {
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: clamp(1rem, 3vw, 1.5rem);
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      .stat-card:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+
+      .stat-number {
+        font-size: clamp(1.4rem, 4vw, 2rem);
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.95);
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-label {
+        font-size: clamp(0.7rem, 2vw, 0.8rem);
+        opacity: 0.7;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+      }
+
+      /* ╭─ LOADING STATE ───────────────────────────────────────────────────╮ */
+      .loading-section {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        min-height: 300px;
+      }
+
+      .loading-section.is-visible {
+        display: flex;
+      }
+
+      .loading-content {
+        text-align: center;
+      }
+
+      .cosmic-loader {
+        width: clamp(80px, 20vw, 120px);
+        height: clamp(80px, 20vw, 120px);
+        margin: 0 auto 2rem;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0.02) 70%,
+          transparent 100%
+        );
+        animation: cosmicPulse 3s ease-in-out infinite;
+        position: relative;
+      }
+
+      .cosmic-loader::after {
+        content: "";
+        position: absolute;
+        inset: 20%;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.15) 0%,
+          transparent 70%
+        );
+        animation: cosmicSpin 6s linear infinite;
+      }
+
+      @keyframes cosmicPulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.7;
+        }
+        50% {
+          transform: scale(1.1);
+          opacity: 1;
+        }
+      }
+
+      @keyframes cosmicSpin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-text {
+        font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        opacity: 0.8;
+        font-weight: 300;
+      }
+
+      /* ╭─ EMPTY STATE ─────────────────────────────────────────────────────╮ */
+      .empty-section {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        min-height: 400px;
+      }
+
+      .empty-section.is-visible {
+        display: flex;
+      }
+
+      .empty-content {
+        text-align: center;
+        max-width: 400px;
+      }
+
+      .empty-icon {
+        font-size: clamp(3rem, 8vw, 4rem);
+        margin-bottom: 1.5rem;
+        opacity: 0.6;
+      }
+
+      .empty-title {
+        font-size: clamp(1.4rem, 4vw, 1.8rem);
+        font-weight: 300;
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .empty-subtitle {
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
+        opacity: 0.7;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+      }
+
+      .sacred-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 1rem 2rem;
+        background: linear-gradient(135deg, #10b981, #059669);
+        border: none;
+        border-radius: 16px;
+        color: white;
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .sacred-button:hover {
+        background: linear-gradient(135deg, #059669, #047857);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+      }
+
+      /* ╭─ TIMELINE ────────────────────────────────────────────────────────╮ */
+      .timeline-container {
+        position: relative;
+        margin-bottom: clamp(2rem, 5vw, 3rem);
+        display: none;
+      }
+
+      .timeline-container.is-visible {
+        display: block;
+      }
+
+      .timeline-line {
+        position: absolute;
+        left: clamp(1rem, 3vw, 2rem);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.3) 0%,
+          rgba(255, 255, 255, 0.1) 50%,
+          rgba(255, 255, 255, 0.3) 100%
+        );
+        z-index: 1;
+      }
+
+      .reflections-list {
+        position: relative;
+        z-index: 2;
+      }
+
+      .reflection-item {
+        position: relative;
+        margin-bottom: clamp(1.5rem, 4vw, 2rem);
+        margin-left: clamp(3rem, 6vw, 4rem);
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: clamp(1.5rem, 4vw, 2rem);
+        transition: all 0.4s ease;
+        cursor: pointer;
+        overflow: hidden;
+      }
+
+      .reflection-item:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(5px);
+        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.05);
+      }
+
+      .reflection-item::before {
+        content: "";
+        position: absolute;
+        left: clamp(-2.2rem, -5vw, -3.2rem);
+        top: 1.5rem;
+        width: 12px;
+        height: 12px;
+        background: rgba(255, 255, 255, 0.8);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      }
+
+      .reflection-premium::before {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+      }
+
+      .reflection-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        gap: 1rem;
+      }
+
+      .reflection-title {
+        font-size: clamp(1rem, 3vw, 1.2rem);
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0;
+        line-height: 1.4;
+        flex: 1;
+      }
+
+      .reflection-meta {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.3rem;
+      }
+
+      .reflection-date {
+        font-size: clamp(0.7rem, 2vw, 0.8rem);
+        opacity: 0.7;
+        font-weight: 500;
+      }
+
+      .reflection-tone {
+        padding: 0.3rem 0.8rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        font-size: clamp(0.7rem, 2vw, 0.75rem);
+        text-transform: capitalize;
+        font-weight: 500;
+      }
+
+      .reflection-tone.fusion {
+        background: rgba(251, 191, 36, 0.2);
+        color: #fbbf24;
+      }
+
+      .reflection-tone.gentle {
+        background: rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .reflection-tone.intense {
+        background: rgba(147, 51, 234, 0.2);
+        color: #a855f7;
+      }
+
+      .reflection-preview {
+        font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+        opacity: 0.8;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+      }
+
+      .reflection-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+
+      .reflection-stats {
+        display: flex;
+        gap: 1rem;
+        font-size: clamp(0.7rem, 2vw, 0.8rem);
+        opacity: 0.6;
+      }
+
+      .artifact-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.2rem 0.6rem;
+        background: rgba(251, 191, 36, 0.15);
+        border: 1px solid rgba(251, 191, 36, 0.3);
+        border-radius: 8px;
+        color: rgba(251, 191, 36, 0.9);
+        font-size: clamp(0.6rem, 1.5vw, 0.7rem);
+        font-weight: 500;
+      }
+
+      .premium-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.2rem 0.6rem;
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+        border-radius: 8px;
+        font-size: clamp(0.6rem, 1.5vw, 0.7rem);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+
+      /* ╭─ PAGINATION ──────────────────────────────────────────────────────╮ */
+      .pagination-container {
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin: clamp(2rem, 5vw, 3rem) 0;
+      }
+
+      .pagination-container.is-visible {
+        display: flex;
+      }
+
+      .pagination-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.8rem 1.2rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
+        font-family: inherit;
+      }
+
+      .pagination-btn:not(:disabled):hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+      }
+
+      .pagination-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      .pagination-info {
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
+        opacity: 0.7;
+        text-align: center;
+      }
+
+      /* ╭─ QUICK ACTIONS ───────────────────────────────────────────────────╮ */
+      .actions-section {
+        margin-top: clamp(3rem, 6vw, 4rem);
+      }
+
+      .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: clamp(1rem, 3vw, 1.5rem);
+      }
+
+      .action-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: clamp(1.5rem, 4vw, 2rem);
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.9);
+        transition: all 0.4s ease;
+      }
+
+      .action-card:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(255, 255, 255, 0.1);
+      }
+
+      .action-icon {
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        flex-shrink: 0;
+      }
+
+      .action-title {
+        font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        font-weight: 500;
+        margin: 0 0 0.3rem 0;
+      }
+
+      .action-subtitle {
+        font-size: clamp(0.7rem, 2vw, 0.8rem);
+        opacity: 0.7;
+        margin: 0;
+      }
+
+      .evolution-card:hover {
+        border-color: rgba(168, 85, 247, 0.3);
+      }
+
+      .reflect-card:hover {
+        border-color: rgba(251, 191, 36, 0.3);
+      }
+
+      /* ╭─ NO RESULTS STATE ────────────────────────────────────────────────╮ */
+      .no-results {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .no-results .empty-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.6;
+      }
+
+      .no-results h3 {
+        font-size: 1.2rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .no-results p {
+        opacity: 0.7;
+        margin-bottom: 1.5rem;
+      }
+
+      /* ╭─ MOBILE RESPONSIVE ───────────────────────────────────────────────╮ */
+      @media (max-width: 768px) {
+        .nav-content {
+          padding: 0 1rem;
+        }
+
+        .nav-link {
+          padding: 0.5rem 0.8rem;
+          font-size: 0.8rem;
+        }
+
+        .nav-title {
+          font-size: 1.2rem;
+        }
+
+        .search-input-group {
+          flex-direction: column;
+          gap: 0.8rem;
+        }
+
+        .filter-group {
+          justify-content: center;
+        }
+
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .reflection-item {
+          margin-left: 2.5rem;
+          padding: 1.2rem;
+        }
+
+        .reflection-item::before {
+          left: -1.7rem;
+        }
+
+        .reflection-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.8rem;
+        }
+
+        .reflection-meta {
+          align-items: flex-start;
+          flex-direction: row;
+          gap: 0.8rem;
+        }
+
+        .pagination-container {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .actions-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .timeline-line {
+          left: 1rem;
+        }
+
+        .reflection-footer {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.8rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .main-container {
+          padding: 1rem 0.5rem;
+        }
+
+        .search-container {
+          padding: 1rem;
+        }
+
+        .reflection-item {
+          margin-left: 2rem;
+          padding: 1rem;
+        }
+
+        .reflection-item::before {
+          left: -1.4rem;
+          width: 8px;
+          height: 8px;
+        }
+
+        .timeline-line {
+          left: 0.8rem;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .filter-group {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 0.6rem;
+        }
+      }
+
+      /* ╭─ ACCESSIBILITY & MOTION ─────────────────────────────────────────╮ */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      @media (prefers-contrast: high) {
+        .reflection-item {
+          border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .filter-btn.active {
+          background: rgba(255, 255, 255, 0.25);
+        }
+      }
+
+      /* ╭─ TOUCH INTERACTIONS ──────────────────────────────────────────────╮ */
+      @media (hover: none) {
+        .reflection-item:active {
+          transform: scale(0.98);
+          transition: transform 0.1s ease;
+        }
+
+        .action-card:active {
+          transform: scale(0.98);
+          transition: transform 0.1s ease;
+        }
+      }
+
+      /* ╭─ UTILITY CLASSES ─────────────────────────────────────────────────╮ */
+      .hidden {
+        display: none !important;
+      }
+
+      .loading {
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      .fade-in {
+        animation: fadeIn 0.6s ease forwards;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
   </head>
 
   <body>
@@ -32,7 +975,7 @@
           <span>Dashboard</span>
         </a>
         <h1 class="nav-title">Your Journey</h1>
-        <a href="/mirror/reflection" class="nav-link reflect-link">
+        <a href="/reflection" class="nav-link reflect-link">
           <span>✨</span>
           <span>Reflect Again</span>
         </a>
@@ -48,7 +991,7 @@
             <input
               type="text"
               id="searchInput"
-              class="sacred-input search-input"
+              class="search-input"
               placeholder="Search your reflections..."
             />
             <button class="search-btn" id="searchBtn">
@@ -91,7 +1034,7 @@
       </section>
 
       <!-- Loading State -->
-      <section class="loading-section hidden" id="loadingSection">
+      <section class="loading-section" id="loadingSection">
         <div class="loading-content">
           <div class="cosmic-loader"></div>
           <p class="loading-text">Gathering your reflections...</p>
@@ -99,14 +1042,14 @@
       </section>
 
       <!-- Empty State -->
-      <section class="empty-section hidden" id="emptySection">
+      <section class="empty-section" id="emptySection">
         <div class="empty-content">
           <div class="empty-icon">🪞</div>
           <h2 class="empty-title">Your journey awaits</h2>
           <p class="empty-subtitle">
             Begin with your first reflection to see your evolution unfold
           </p>
-          <a href="/mirror/reflection" class="sacred-button primary">
+          <a href="/reflection" class="sacred-button">
             <span>✨</span>
             <span>Start Your First Reflection</span>
           </a>
@@ -115,7 +1058,7 @@
 
       <!-- Reflections Timeline -->
       <section class="timeline-section" id="timelineSection">
-        <div class="timeline-container">
+        <div class="timeline-container" id="timelineContainer">
           <div class="timeline-line"></div>
           <div class="reflections-list" id="reflectionsList">
             <!-- Reflections will be populated here -->
@@ -146,7 +1089,7 @@
               <p class="action-subtitle">See your growth patterns</p>
             </div>
           </a>
-          <a href="/mirror/reflection" class="action-card reflect-card">
+          <a href="/reflection" class="action-card reflect-card">
             <div class="action-icon">✨</div>
             <div class="action-content">
               <h3 class="action-title">New Reflection</h3>
@@ -157,6 +1100,565 @@
       </section>
     </main>
 
-    <script src="/reflections/history.js"></script>
+    <script>
+      /* ═══════════════ REFLECTION HISTORY - COMPLETE SCRIPT ═══════════════ */
+
+      "use strict";
+
+      let authToken = null;
+      let currentUser = null;
+      let reflections = [];
+      let filteredReflections = [];
+      let currentPage = 1;
+      let totalPages = 1;
+      let currentFilter = "all";
+      let currentSearch = "";
+      let isLoading = false;
+
+      const ITEMS_PER_PAGE = 10;
+
+      /* ═══ INITIALIZATION ═══ */
+      window.addEventListener("load", async () => {
+        await checkAuthentication();
+        setupEventListeners();
+        await loadReflections();
+        animateEntrance();
+      });
+
+      /* ═══ AUTHENTICATION ═══ */
+      async function checkAuthentication() {
+        authToken = localStorage.getItem("mirror_auth_token");
+
+        if (!authToken) {
+          window.location.href =
+            "/auth/signin?redirect=" +
+            encodeURIComponent(window.location.pathname);
+          return;
+        }
+
+        try {
+          const response = await fetch("/api/auth", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+            body: JSON.stringify({ action: "verify-token" }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || !data.success) {
+            localStorage.removeItem("mirror_auth_token");
+            window.location.href = "/auth/signin";
+            return;
+          }
+
+          currentUser = data.user;
+          console.log("🪞 Authenticated user:", currentUser.email);
+        } catch (error) {
+          console.error("Auth verification failed:", error);
+          localStorage.removeItem("mirror_auth_token");
+          window.location.href = "/auth/signin";
+        }
+      }
+
+      /* ═══ EVENT LISTENERS ═══ */
+      function setupEventListeners() {
+        const searchInput = document.getElementById("searchInput");
+        const searchBtn = document.getElementById("searchBtn");
+
+        searchInput.addEventListener("input", debounce(handleSearch, 500));
+        searchBtn.addEventListener("click", handleSearch);
+
+        document.querySelectorAll(".filter-btn").forEach((btn) => {
+          btn.addEventListener("click", () => handleFilter(btn.dataset.filter));
+        });
+
+        document
+          .getElementById("prevBtn")
+          .addEventListener("click", () => changePage(currentPage - 1));
+        document
+          .getElementById("nextBtn")
+          .addEventListener("click", () => changePage(currentPage + 1));
+
+        searchInput.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            handleSearch();
+          }
+        });
+      }
+
+      /* ═══ DATA LOADING ═══ */
+      async function loadReflections() {
+        if (isLoading) return;
+
+        setLoading(true);
+
+        try {
+          const response = await fetch("/api/reflections", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+            body: JSON.stringify({
+              action: "get-history",
+              page: 1,
+              limit: 100,
+              sortBy: "created_at",
+              sortOrder: "desc",
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || !data.success) {
+            throw new Error(data.error || "Failed to load reflections");
+          }
+
+          reflections = data.reflections || [];
+
+          // Add timeAgo formatting and check for artifacts
+          reflections = reflections.map((reflection) => ({
+            ...reflection,
+            timeAgo: formatDate(reflection.created_at),
+            hasArtifact: false, // We'll check this later if needed
+          }));
+
+          filteredReflections = [...reflections];
+
+          displayStats();
+          applyCurrentFilters();
+
+          if (reflections.length === 0) {
+            showEmptyState();
+          } else {
+            hideEmptyState();
+            renderReflections();
+          }
+        } catch (error) {
+          console.error("Failed to load reflections:", error);
+          showError(
+            "Unable to load your reflections. Please try refreshing the page."
+          );
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      /* ═══ SEARCH & FILTERING ═══ */
+      function handleSearch() {
+        const searchInput = document.getElementById("searchInput");
+        currentSearch = searchInput.value.trim().toLowerCase();
+        currentPage = 1;
+        applyCurrentFilters();
+      }
+
+      function handleFilter(filter) {
+        document.querySelectorAll(".filter-btn").forEach((btn) => {
+          btn.classList.remove("active");
+        });
+
+        document
+          .querySelector(`[data-filter="${filter}"]`)
+          .classList.add("active");
+
+        currentFilter = filter;
+        currentPage = 1;
+        applyCurrentFilters();
+      }
+
+      function applyCurrentFilters() {
+        let filtered = [...reflections];
+
+        // Apply search filter
+        if (currentSearch) {
+          filtered = filtered.filter(
+            (reflection) =>
+              reflection.title?.toLowerCase().includes(currentSearch) ||
+              reflection.dream?.toLowerCase().includes(currentSearch) ||
+              reflection.ai_response?.toLowerCase().includes(currentSearch)
+          );
+        }
+
+        // Apply category filter
+        if (currentFilter !== "all") {
+          if (currentFilter === "premium") {
+            filtered = filtered.filter((reflection) => reflection.is_premium);
+          } else {
+            filtered = filtered.filter(
+              (reflection) => reflection.tone === currentFilter
+            );
+          }
+        }
+
+        filteredReflections = filtered;
+        totalPages = Math.ceil(filteredReflections.length / ITEMS_PER_PAGE);
+
+        renderReflections();
+        updatePagination();
+      }
+
+      /* ═══ RENDERING ═══ */
+      function renderReflections() {
+        const container = document.getElementById("reflectionsList");
+
+        if (filteredReflections.length === 0) {
+          container.innerHTML = `
+            <div class="no-results">
+              <div class="empty-icon">🔍</div>
+              <h3>No reflections found</h3>
+              <p>Try adjusting your search or filters</p>
+            </div>
+          `;
+          document
+            .getElementById("timelineContainer")
+            .classList.remove("is-visible");
+          return;
+        }
+
+        document
+          .getElementById("timelineContainer")
+          .classList.add("is-visible");
+
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        const endIndex = startIndex + ITEMS_PER_PAGE;
+        const pageReflections = filteredReflections.slice(startIndex, endIndex);
+
+        container.innerHTML = pageReflections
+          .map(
+            (reflection) => `
+            <div class="reflection-item ${
+              reflection.is_premium ? "reflection-premium" : ""
+            } fade-in" 
+                 onclick="viewReflection('${reflection.id}')"
+                 data-reflection-id="${reflection.id}">
+              
+              <div class="reflection-header">
+                <h3 class="reflection-title">${escapeHtml(
+                  reflection.title || "Untitled Reflection"
+                )}</h3>
+                <div class="reflection-meta">
+                  <div class="reflection-date">${reflection.timeAgo}</div>
+                  <div class="reflection-tone ${reflection.tone}">${
+              reflection.tone
+            }</div>
+                </div>
+              </div>
+
+              <div class="reflection-preview">
+                ${truncateText(stripHtml(reflection.dream), 120)}
+              </div>
+
+              <div class="reflection-footer">
+                <div class="reflection-stats">
+                  <span>${reflection.word_count || 0} words</span>
+                  <span>•</span>
+                  <span>${reflection.estimated_read_time || 1} min read</span>
+                  ${
+                    reflection.view_count
+                      ? `<span>•</span><span>${reflection.view_count} views</span>`
+                      : ""
+                  }
+                </div>
+                <div class="reflection-badges">
+                  ${
+                    reflection.hasArtifact
+                      ? '<div class="artifact-indicator"><span>🎨</span><span>Artifact</span></div>'
+                      : ""
+                  }
+                  ${
+                    reflection.is_premium
+                      ? '<div class="premium-badge">✨ Premium</div>'
+                      : ""
+                  }
+                </div>
+              </div>
+            </div>
+          `
+          )
+          .join("");
+
+        // Animate items in
+        setTimeout(() => {
+          container
+            .querySelectorAll(".reflection-item")
+            .forEach((item, index) => {
+              setTimeout(() => {
+                item.style.opacity = "0";
+                item.style.transform = "translateY(20px)";
+                item.style.transition = "all 0.6s ease";
+
+                requestAnimationFrame(() => {
+                  item.style.opacity = "1";
+                  item.style.transform = "translateY(0)";
+                });
+              }, index * 100);
+            });
+        }, 100);
+      }
+
+      function displayStats() {
+        const totalElement = document.getElementById("totalReflections");
+        const monthElement = document.getElementById("thisMonthCount");
+        const wordsElement = document.getElementById("totalWords");
+        const depthElement = document.getElementById("averageDepth");
+
+        if (!totalElement) return;
+
+        const total = reflections.length;
+        const currentMonth = new Date().toISOString().slice(0, 7);
+        const thisMonth = reflections.filter(
+          (r) => r.created_at && r.created_at.startsWith(currentMonth)
+        ).length;
+
+        const totalWords = reflections.reduce(
+          (sum, r) => sum + (r.word_count || 0),
+          0
+        );
+        const averageWords = total > 0 ? Math.round(totalWords / total) : 0;
+
+        animateNumber(totalElement, total);
+        animateNumber(monthElement, thisMonth);
+        animateNumber(wordsElement, totalWords, true);
+
+        if (averageWords > 0) {
+          depthElement.textContent = `${averageWords}w`;
+        } else {
+          depthElement.textContent = "—";
+        }
+      }
+
+      function updatePagination() {
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const paginationInfo = document.getElementById("paginationInfo");
+        const paginationContainer = document.getElementById(
+          "paginationContainer"
+        );
+
+        prevBtn.disabled = currentPage <= 1;
+        nextBtn.disabled = currentPage >= totalPages;
+
+        if (totalPages <= 1) {
+          paginationInfo.textContent = `${
+            filteredReflections.length
+          } reflection${filteredReflections.length === 1 ? "" : "s"}`;
+          paginationContainer.classList.remove("is-visible");
+        } else {
+          paginationInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+          paginationContainer.classList.add("is-visible");
+        }
+      }
+
+      function changePage(page) {
+        if (page < 1 || page > totalPages || page === currentPage) return;
+
+        currentPage = page;
+        renderReflections();
+        updatePagination();
+
+        document.getElementById("timelineSection").scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+
+      /* ═══ NAVIGATION ═══ */
+      function viewReflection(reflectionId) {
+        if (!reflectionId) return;
+        window.location.href = `/reflections/view?id=${reflectionId}`;
+      }
+
+      /* ═══ UI STATES ═══ */
+      function setLoading(loading) {
+        isLoading = loading;
+        const loadingSection = document.getElementById("loadingSection");
+        const timelineSection = document.getElementById("timelineSection");
+        const statsSection = document.getElementById("statsSection");
+
+        if (loading) {
+          loadingSection.classList.add("is-visible");
+          timelineSection.style.display = "none";
+          statsSection.classList.add("loading");
+        } else {
+          loadingSection.classList.remove("is-visible");
+          timelineSection.style.display = "block";
+          statsSection.classList.remove("loading");
+        }
+      }
+
+      function showEmptyState() {
+        const emptySection = document.getElementById("emptySection");
+        const timelineSection = document.getElementById("timelineSection");
+        const statsSection = document.getElementById("statsSection");
+
+        emptySection.classList.add("is-visible");
+        timelineSection.style.display = "none";
+        statsSection.style.display = "none";
+      }
+
+      function hideEmptyState() {
+        const emptySection = document.getElementById("emptySection");
+        const timelineSection = document.getElementById("timelineSection");
+        const statsSection = document.getElementById("statsSection");
+
+        emptySection.classList.remove("is-visible");
+        timelineSection.style.display = "block";
+        statsSection.style.display = "block";
+      }
+
+      function showError(message) {
+        const container = document.getElementById("reflectionsList");
+        if (container) {
+          container.innerHTML = `
+            <div class="no-results">
+              <div class="empty-icon">⚡</div>
+              <h3>Something went wrong</h3>
+              <p>${escapeHtml(message)}</p>
+              <button class="sacred-button" onclick="window.location.reload()">
+                Try Again
+              </button>
+            </div>
+          `;
+        }
+      }
+
+      /* ═══ ANIMATIONS ═══ */
+      function animateEntrance() {
+        const sections = [
+          document.querySelector(".search-section"),
+          document.querySelector(".stats-section"),
+          document.querySelector(".timeline-section"),
+        ].filter(Boolean);
+
+        sections.forEach((section, index) => {
+          section.style.opacity = "0";
+          section.style.transform = "translateY(20px)";
+
+          setTimeout(() => {
+            section.style.transition = "all 0.8s ease";
+            section.style.opacity = "1";
+            section.style.transform = "translateY(0)";
+          }, index * 200);
+        });
+      }
+
+      function animateNumber(element, target, useK = false) {
+        const duration = 1500;
+        const start = 0;
+        const startTime = performance.now();
+
+        function update(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+
+          const easeOut = 1 - Math.pow(1 - progress, 3);
+          const current = Math.round(start + (target - start) * easeOut);
+
+          if (useK && current >= 1000) {
+            element.textContent = `${(current / 1000).toFixed(1)}k`;
+          } else {
+            element.textContent = current.toLocaleString();
+          }
+
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          }
+        }
+
+        requestAnimationFrame(update);
+      }
+
+      /* ═══ UTILITY FUNCTIONS ═══ */
+      function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
+
+      function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      function stripHtml(html) {
+        const div = document.createElement("div");
+        div.innerHTML = html;
+        return div.textContent || div.innerText || "";
+      }
+
+      function truncateText(text, maxLength) {
+        if (!text) return "";
+        if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength).trim() + "...";
+      }
+
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 0) return "Today";
+        if (diffDays === 1) return "Yesterday";
+        if (diffDays < 7) return `${diffDays} days ago`;
+        if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+        if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
+
+        return date.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        });
+      }
+
+      /* ═══ KEYBOARD SHORTCUTS ═══ */
+      document.addEventListener("keydown", (e) => {
+        if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")
+          return;
+
+        switch (e.key) {
+          case "/":
+            e.preventDefault();
+            document.getElementById("searchInput").focus();
+            break;
+          case "r":
+            if (e.ctrlKey || e.metaKey) return;
+            e.preventDefault();
+            window.location.href = "/reflection";
+            break;
+          case "ArrowLeft":
+            if (currentPage > 1) {
+              e.preventDefault();
+              changePage(currentPage - 1);
+            }
+            break;
+          case "ArrowRight":
+            if (currentPage < totalPages) {
+              e.preventDefault();
+              changePage(currentPage + 1);
+            }
+            break;
+        }
+      });
+
+      /* ═══ ERROR HANDLING ═══ */
+      window.addEventListener("error", (e) => {
+        console.error("JavaScript error:", e.error);
+      });
+
+      window.addEventListener("unhandledrejection", (e) => {
+        console.error("Unhandled promise rejection:", e.reason);
+      });
+    </script>
   </body>
 </html>
