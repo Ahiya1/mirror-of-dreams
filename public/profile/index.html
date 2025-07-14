@@ -11,7 +11,7 @@
     <title>Your Inner Sanctuary | Mirror of Truth</title>
 
     <style>
-      /* Profile Page - Mystical Configuration Panel */
+      /* Profile Page - Mesmerizing 2x2 Grid Layout */
       * {
         margin: 0;
         padding: 0;
@@ -37,8 +37,8 @@
         -moz-osx-font-smoothing: grayscale;
       }
 
-      /* Subtle Cosmic Background */
-      .cosmic-background {
+      /* Cosmic Mirror Shards - Matching Dashboard */
+      .cosmic-mirrors {
         position: fixed;
         inset: 0;
         pointer-events: none;
@@ -52,33 +52,43 @@
         backdrop-filter: blur(25px);
         border: 1px solid rgba(255, 255, 255, 0.1);
         box-shadow: 0 8px 32px rgba(255, 255, 255, 0.05);
-        animation: cosmicFloat 18s ease-in-out infinite;
+        animation: cosmicFloat 20s ease-in-out infinite;
         transition: all 0.4s ease;
       }
 
       .cosmic-mirror:nth-child(1) {
-        width: clamp(20px, 3vw, 30px);
-        height: clamp(20px, 3vw, 30px);
-        top: 15%;
-        right: 15%;
-        clip-path: polygon(50% 0%, 85% 25%, 100% 75%, 60% 100%, 0% 50%);
+        width: clamp(20px, 3vw, 35px);
+        height: clamp(20px, 3vw, 35px);
+        top: 8%;
+        left: 12%;
+        clip-path: polygon(30% 0%, 85% 15%, 100% 70%, 45% 100%, 0% 65%);
         animation-delay: 0s;
-        animation-duration: 20s;
-      }
-
-      .cosmic-mirror:nth-child(2) {
-        width: clamp(15px, 2.5vw, 25px);
-        height: clamp(15px, 2.5vw, 25px);
-        top: 60%;
-        left: 10%;
-        clip-path: polygon(25% 0%, 100% 25%, 75% 100%, 0% 75%);
-        animation-delay: 6s;
         animation-duration: 22s;
       }
 
+      .cosmic-mirror:nth-child(2) {
+        width: clamp(15px, 2.5vw, 28px);
+        height: clamp(15px, 2.5vw, 28px);
+        top: 15%;
+        right: 18%;
+        clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+        animation-delay: 3s;
+        animation-duration: 18s;
+      }
+
       .cosmic-mirror:nth-child(3) {
-        width: clamp(18px, 3.2vw, 28px);
-        height: clamp(18px, 3.2vw, 28px);
+        width: clamp(25px, 4vw, 40px);
+        height: clamp(25px, 4vw, 40px);
+        top: 35%;
+        left: 8%;
+        clip-path: polygon(25% 0%, 100% 25%, 75% 100%, 0% 75%);
+        animation-delay: 6s;
+        animation-duration: 25s;
+      }
+
+      .cosmic-mirror:nth-child(4) {
+        width: clamp(18px, 3.2vw, 32px);
+        height: clamp(18px, 3.2vw, 32px);
         bottom: 20%;
         right: 25%;
         clip-path: polygon(20% 0%, 80% 20%, 100% 80%, 20% 100%, 0% 80%);
@@ -93,18 +103,49 @@
           opacity: 0.3;
         }
         25% {
-          transform: translateY(-10px) translateX(5px) rotate(90deg) scale(1.05);
-          opacity: 0.5;
+          transform: translateY(-15px) translateX(8px) rotate(90deg) scale(1.1);
+          opacity: 0.6;
         }
         50% {
-          transform: translateY(-5px) translateX(-8px) rotate(180deg)
-            scale(0.95);
-          opacity: 0.7;
+          transform: translateY(-8px) translateX(-12px) rotate(180deg)
+            scale(0.9);
+          opacity: 0.8;
         }
         75% {
-          transform: translateY(-12px) translateX(3px) rotate(270deg)
-            scale(1.02);
-          opacity: 0.4;
+          transform: translateY(-20px) translateX(5px) rotate(270deg)
+            scale(1.05);
+          opacity: 0.5;
+        }
+      }
+
+      /* Enhanced shimmer effect */
+      .cosmic-mirror::after {
+        content: "";
+        position: absolute;
+        inset: -20%;
+        background: linear-gradient(
+          45deg,
+          rgba(147, 51, 234, 0.2) 0%,
+          transparent 30%,
+          rgba(59, 130, 246, 0.15) 60%,
+          transparent 100%
+        );
+        animation: cosmicShimmer 12s linear infinite;
+        mix-blend-mode: overlay;
+        border-radius: inherit;
+      }
+
+      @keyframes cosmicShimmer {
+        0% {
+          transform: translateX(-100%) translateY(-100%) rotate(-45deg);
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateX(200%) translateY(200%) rotate(-45deg);
+          opacity: 0;
         }
       }
 
@@ -120,20 +161,20 @@
         position: absolute;
         width: 2px;
         height: 2px;
-        background: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.4);
         border-radius: 50%;
-        animation: particleFloat 12s linear infinite;
+        animation: particleFloat 15s linear infinite;
       }
 
       .cosmic-particle:nth-child(1) {
-        left: 25%;
+        left: 15%;
         animation-delay: 0s;
         background: rgba(147, 51, 234, 0.3);
       }
 
       .cosmic-particle:nth-child(2) {
         left: 75%;
-        animation-delay: 4s;
+        animation-delay: 8s;
         background: rgba(59, 130, 246, 0.3);
       }
 
@@ -282,43 +323,29 @@
         height: 100vh;
         padding-top: clamp(60px, 8vh, 80px);
         display: flex;
-        align-items: center;
-        justify-content: center;
-        padding-left: clamp(1rem, 3vw, 2rem);
-        padding-right: clamp(1rem, 3vw, 2rem);
-        padding-bottom: clamp(2rem, 4vh, 3rem);
+        flex-direction: column;
       }
 
       .profile-container {
-        width: 100%;
-        max-width: 600px;
+        flex: 1;
         display: flex;
         flex-direction: column;
-        gap: clamp(1.5rem, 3vh, 2rem);
-        animation: profileAppear 1s ease-out;
+        padding: clamp(0.8rem, 2vh, 1.5rem) clamp(1rem, 3vw, 2rem);
+        gap: clamp(0.8rem, 2vh, 1.2rem);
+        overflow: hidden;
       }
 
-      @keyframes profileAppear {
-        from {
-          opacity: 0;
-          transform: translateY(30px) scale(0.98);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
-      }
-
-      /* Header */
+      /* Header Section - Compact */
       .profile-header {
+        flex-shrink: 0;
         text-align: center;
-        margin-bottom: clamp(0.5rem, 1vh, 1rem);
+        margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
       }
 
       .profile-title {
-        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        font-size: clamp(1.6rem, 3.5vw, 2.2rem);
         font-weight: 300;
-        margin-bottom: clamp(0.3rem, 0.8vh, 0.5rem);
+        margin-bottom: clamp(0.2rem, 0.5vh, 0.3rem);
         line-height: 1.2;
         background: linear-gradient(
           135deg,
@@ -331,26 +358,64 @@
       }
 
       .profile-subtitle {
-        font-size: clamp(0.85rem, 2vw, 1rem);
+        font-size: clamp(0.75rem, 1.8vw, 0.9rem);
         color: rgba(255, 255, 255, 0.7);
         font-weight: 300;
         line-height: 1.4;
+      }
+
+      /* Profile Grid - 2x2 Layout */
+      .profile-grid {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: clamp(0.8rem, 2vh, 1.2rem);
+        min-height: 0;
       }
 
       /* Profile Cards */
       .profile-card {
         background: linear-gradient(
           135deg,
-          rgba(255, 255, 255, 0.08) 0%,
-          rgba(255, 255, 255, 0.03) 100%
+          rgba(255, 255, 255, 0.05) 0%,
+          rgba(255, 255, 255, 0.02) 100%
         );
         backdrop-filter: blur(40px) saturate(120%);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: clamp(16px, 3vw, 24px);
-        padding: clamp(1.5rem, 3vh, 2rem);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: clamp(14px, 2.8vw, 20px);
+        padding: clamp(1rem, 2.5vh, 1.4rem);
         position: relative;
         overflow: hidden;
         transition: all 0.4s ease;
+        animation: cardFloat 0.8s ease-out;
+        animation-fill-mode: backwards;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .profile-card:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .profile-card:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .profile-card:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+      .profile-card:nth-child(4) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes cardFloat {
+        from {
+          opacity: 0;
+          transform: translateY(30px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
       }
 
       .profile-card::before {
@@ -359,10 +424,10 @@
         inset: 1px;
         background: linear-gradient(
           135deg,
-          rgba(255, 255, 255, 0.04) 0%,
+          rgba(255, 255, 255, 0.06) 0%,
           rgba(255, 255, 255, 0.01) 100%
         );
-        border-radius: clamp(15px, 3vw, 23px);
+        border-radius: clamp(13px, 2.8vw, 19px);
         pointer-events: none;
         opacity: 0;
         transition: opacity 0.3s ease;
@@ -374,28 +439,57 @@
 
       .profile-card:hover {
         border-color: rgba(255, 255, 255, 0.15);
-        transform: translateY(-2px);
-        box-shadow: 0 12px 40px rgba(255, 255, 255, 0.06);
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(255, 255, 255, 0.06);
+      }
+
+      /* Card Headers */
+      .card-header {
+        display: flex;
+        align-items: center;
+        gap: clamp(0.4rem, 1vw, 0.6rem);
+        margin-bottom: clamp(0.8rem, 2vh, 1.2rem);
+        position: relative;
+        z-index: 2;
+        flex-shrink: 0;
       }
 
       .card-title {
-        display: flex;
-        align-items: center;
-        gap: clamp(0.5rem, 1.2vw, 0.8rem);
-        font-size: clamp(1rem, 2.5vw, 1.3rem);
+        font-size: clamp(0.9rem, 2.2vw, 1.1rem);
         font-weight: 400;
         color: rgba(255, 255, 255, 0.95);
-        margin-bottom: clamp(1rem, 2vh, 1.5rem);
+        margin: 0;
       }
 
       .card-icon {
-        font-size: clamp(1.2rem, 3vw, 1.6rem);
+        font-size: clamp(1rem, 2.5vw, 1.3rem);
         opacity: 0.9;
+        animation: iconGlow 3s ease-in-out infinite;
       }
 
-      /* Form Styling */
+      @keyframes iconGlow {
+        0%,
+        100% {
+          filter: drop-shadow(0 0 4px rgba(147, 51, 234, 0.3));
+        }
+        50% {
+          filter: drop-shadow(0 0 8px rgba(147, 51, 234, 0.5));
+        }
+      }
+
+      /* Card Content */
+      .card-content {
+        position: relative;
+        z-index: 2;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+
+      /* Form Styling - Compact */
       .form-group {
-        margin-bottom: clamp(1rem, 2vh, 1.5rem);
+        margin-bottom: clamp(0.8rem, 2vh, 1rem);
       }
 
       .form-group:last-child {
@@ -404,30 +498,32 @@
 
       .form-label {
         display: block;
-        font-size: clamp(0.8rem, 2vw, 0.9rem);
+        font-size: clamp(0.7rem, 1.7vw, 0.8rem);
         color: rgba(255, 255, 255, 0.8);
-        margin-bottom: clamp(0.3rem, 0.8vh, 0.5rem);
+        margin-bottom: clamp(0.2rem, 0.5vh, 0.3rem);
         font-weight: 400;
       }
 
-      .form-input {
+      .form-input,
+      .form-select {
         width: 100%;
-        padding: clamp(0.8rem, 2vh, 1rem) clamp(1rem, 2.5vw, 1.2rem);
+        padding: clamp(0.6rem, 1.5vh, 0.8rem) clamp(0.8rem, 2vw, 1rem);
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: clamp(10px, 2vw, 14px);
+        border-radius: clamp(8px, 1.6vw, 12px);
         color: rgba(255, 255, 255, 0.9);
-        font-size: clamp(0.85rem, 2.1vw, 1rem);
+        font-size: clamp(0.7rem, 1.8vw, 0.85rem);
         font-family: inherit;
         transition: all 0.3s ease;
         backdrop-filter: blur(10px);
       }
 
-      .form-input:focus {
+      .form-input:focus,
+      .form-select:focus {
         outline: none;
         border-color: rgba(147, 51, 234, 0.5);
         background: rgba(255, 255, 255, 0.08);
-        box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+        box-shadow: 0 0 0 2px rgba(147, 51, 234, 0.1);
       }
 
       .form-input::placeholder {
@@ -435,24 +531,7 @@
       }
 
       .form-select {
-        width: 100%;
-        padding: clamp(0.8rem, 2vh, 1rem) clamp(1rem, 2.5vw, 1.2rem);
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: clamp(10px, 2vw, 14px);
-        color: rgba(255, 255, 255, 0.9);
-        font-size: clamp(0.85rem, 2.1vw, 1rem);
-        font-family: inherit;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(10px);
         cursor: pointer;
-      }
-
-      .form-select:focus {
-        outline: none;
-        border-color: rgba(147, 51, 234, 0.5);
-        background: rgba(255, 255, 255, 0.08);
-        box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
       }
 
       .form-select option {
@@ -460,25 +539,28 @@
         color: #fff;
       }
 
-      /* Form Actions */
+      /* Compact Form Actions */
       .form-actions {
-        display: flex;
-        gap: clamp(0.8rem, 2vw, 1rem);
-        margin-top: clamp(1.5rem, 3vh, 2rem);
+        margin-top: clamp(0.8rem, 2vh, 1.2rem);
+        flex-shrink: 0;
       }
 
       .form-button {
-        flex: 1;
-        padding: clamp(0.8rem, 2vh, 1rem) clamp(1.2rem, 3vw, 1.5rem);
+        width: 100%;
+        padding: clamp(0.6rem, 1.5vh, 0.8rem) clamp(0.8rem, 2vw, 1.2rem);
         border: none;
-        border-radius: clamp(10px, 2vw, 14px);
-        font-size: clamp(0.85rem, 2.1vw, 1rem);
+        border-radius: clamp(8px, 1.6vw, 12px);
+        font-size: clamp(0.7rem, 1.8vw, 0.85rem);
         font-weight: 500;
         cursor: pointer;
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
         font-family: inherit;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
       }
 
       .form-button::before {
@@ -520,47 +602,6 @@
         box-shadow: 0 8px 25px rgba(147, 51, 234, 0.2);
       }
 
-      .form-button.secondary {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        color: rgba(255, 255, 255, 0.8);
-      }
-
-      .form-button.secondary:hover {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.25);
-        transform: translateY(-2px);
-      }
-
-      .form-button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        transform: none;
-      }
-
-      .form-button:disabled:hover {
-        transform: none;
-        box-shadow: none;
-      }
-
-      /* Danger Zone */
-      .danger-zone {
-        border-color: rgba(239, 68, 68, 0.2);
-        background: linear-gradient(
-          135deg,
-          rgba(239, 68, 68, 0.05) 0%,
-          rgba(220, 38, 38, 0.02) 100%
-        );
-      }
-
-      .danger-zone .card-title {
-        color: rgba(248, 113, 113, 0.9);
-      }
-
-      .danger-zone .card-icon {
-        color: rgba(248, 113, 113, 0.8);
-      }
-
       .form-button.danger {
         background: linear-gradient(
           135deg,
@@ -582,23 +623,124 @@
         box-shadow: 0 8px 25px rgba(239, 68, 68, 0.2);
       }
 
-      .danger-description {
-        font-size: clamp(0.8rem, 2vw, 0.9rem);
+      .form-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .form-button:disabled:hover {
+        transform: none;
+        box-shadow: none;
+      }
+
+      /* Danger Zone Card */
+      .danger-zone {
+        border-color: rgba(239, 68, 68, 0.2);
+        background: linear-gradient(
+          135deg,
+          rgba(239, 68, 68, 0.05) 0%,
+          rgba(220, 38, 38, 0.02) 100%
+        );
+      }
+
+      .danger-zone .card-title {
+        color: rgba(248, 113, 113, 0.9);
+      }
+
+      .danger-zone .card-icon {
+        color: rgba(248, 113, 113, 0.8);
+      }
+
+      /* Account Overview */
+      .account-overview {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(0.6rem, 1.5vh, 0.8rem);
+        flex: 1;
+      }
+
+      .overview-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: clamp(0.4rem, 1vh, 0.6rem) clamp(0.6rem, 1.5vw, 0.8rem);
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: clamp(6px, 1.2vw, 8px);
+        transition: all 0.3s ease;
+      }
+
+      .overview-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .overview-label {
+        font-size: clamp(0.7rem, 1.7vw, 0.8rem);
         color: rgba(255, 255, 255, 0.7);
-        line-height: 1.5;
-        margin-bottom: clamp(1rem, 2vh, 1.5rem);
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+
+      .overview-value {
+        font-size: clamp(0.7rem, 1.7vw, 0.8rem);
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .tier-badge {
+        display: inline-block;
+        padding: clamp(0.2rem, 0.5vh, 0.3rem) clamp(0.4rem, 1vw, 0.6rem);
+        border-radius: clamp(4px, 0.8vw, 6px);
+        font-size: clamp(0.6rem, 1.5vw, 0.7rem);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .tier-badge.free {
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .tier-badge.essential {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.2),
+          rgba(5, 150, 105, 0.15)
+        );
+        color: rgba(110, 231, 183, 0.9);
+      }
+
+      .tier-badge.premium {
+        background: linear-gradient(
+          135deg,
+          rgba(245, 158, 11, 0.2),
+          rgba(217, 119, 6, 0.15)
+        );
+        color: rgba(251, 191, 36, 0.9);
+      }
+
+      .tier-badge.creator {
+        background: linear-gradient(
+          135deg,
+          rgba(147, 51, 234, 0.2),
+          rgba(99, 102, 241, 0.15)
+        );
+        color: rgba(196, 181, 253, 0.9);
       }
 
       /* Loading Spinner */
       .loading-spinner {
-        width: 16px;
-        height: 16px;
+        width: 14px;
+        height: 14px;
         border: 2px solid rgba(255, 255, 255, 0.3);
         border-radius: 50%;
         border-top-color: rgba(255, 255, 255, 0.9);
         animation: spin 1s linear infinite;
         display: inline-block;
-        margin-left: 0.5rem;
       }
 
       @keyframes spin {
@@ -661,29 +803,68 @@
       }
 
       /* Mobile Responsive */
-      @media (max-width: 768px) {
+      @media (max-width: 1024px) {
+        .profile-grid {
+          grid-template-columns: 1fr;
+          grid-template-rows: repeat(4, minmax(180px, 1fr));
+        }
+
         .nav-links {
           display: none;
         }
+      }
 
-        .profile-container {
-          gap: clamp(1.2rem, 2.5vh, 1.8rem);
+      @media (max-width: 768px) {
+        html,
+        body {
+          overflow-y: auto;
+          height: auto;
+          min-height: 100vh;
+          position: static;
         }
 
-        .form-actions {
-          flex-direction: column;
-          gap: clamp(0.6rem, 1.5vh, 0.8rem);
+        .nav-bar {
+          position: sticky;
+          height: clamp(50px, 7vh, 60px);
+        }
+
+        .profile-main {
+          height: auto;
+          min-height: calc(100vh - clamp(50px, 7vh, 60px));
+          padding-top: 0;
+        }
+
+        .profile-container {
+          padding: clamp(0.8rem, 2vh, 1.2rem);
+          gap: clamp(0.8rem, 2vh, 1.2rem);
+        }
+
+        .profile-grid {
+          grid-template-columns: 1fr;
+          grid-template-rows: none;
+          grid-auto-rows: minmax(160px, auto);
+        }
+
+        .profile-card {
+          padding: clamp(0.8rem, 2vh, 1.2rem);
         }
       }
 
       @media (max-width: 480px) {
-        .profile-main {
-          padding-left: clamp(0.8rem, 2vw, 1.2rem);
-          padding-right: clamp(0.8rem, 2vw, 1.2rem);
+        .profile-container {
+          padding: clamp(0.6rem, 1.5vh, 1rem);
+        }
+
+        .nav-bar {
+          padding: 0 clamp(0.8rem, 2vw, 1.2rem);
         }
 
         .profile-card {
-          padding: clamp(1.2rem, 2.5vh, 1.6rem);
+          padding: clamp(0.7rem, 1.8vh, 1rem);
+        }
+
+        .back-link span:last-child {
+          display: none;
         }
       }
 
@@ -717,8 +898,9 @@
   </head>
 
   <body>
-    <!-- Cosmic Background -->
-    <div class="cosmic-background">
+    <!-- Cosmic Mirror Shards -->
+    <div class="cosmic-mirrors">
+      <div class="cosmic-mirror"></div>
       <div class="cosmic-mirror"></div>
       <div class="cosmic-mirror"></div>
       <div class="cosmic-mirror"></div>
@@ -773,170 +955,240 @@
           </p>
         </div>
 
-        <!-- Personal Information -->
-        <div class="profile-card">
-          <h2 class="card-title">
-            <span class="card-icon">✨</span>
-            Personal Information
-          </h2>
-
-          <form id="personalInfoForm">
-            <div class="form-group">
-              <label for="userName" class="form-label">Display Name</label>
-              <input
-                type="text"
-                id="userName"
-                name="userName"
-                class="form-input"
-                placeholder="How shall we address you?"
-                required
-              />
+        <!-- Profile Grid -->
+        <div class="profile-grid">
+          <!-- Personal Information Card -->
+          <div class="profile-card">
+            <div class="card-header">
+              <span class="card-icon">✨</span>
+              <h3 class="card-title">Personal Information</h3>
             </div>
 
-            <div class="form-group">
-              <label for="userTimezone" class="form-label">Timezone</label>
-              <select id="userTimezone" name="userTimezone" class="form-select">
-                <option value="">Select your timezone...</option>
-                <option value="America/New_York">Eastern Time (EST/EDT)</option>
-                <option value="America/Chicago">Central Time (CST/CDT)</option>
-                <option value="America/Denver">Mountain Time (MST/MDT)</option>
-                <option value="America/Los_Angeles">
-                  Pacific Time (PST/PDT)
-                </option>
-                <option value="Europe/London">London (GMT/BST)</option>
-                <option value="Europe/Paris">Paris (CET/CEST)</option>
-                <option value="Asia/Tokyo">Tokyo (JST)</option>
-                <option value="Australia/Sydney">Sydney (AEST/AEDT)</option>
-                <option value="UTC">UTC</option>
-              </select>
+            <div class="card-content">
+              <form id="personalInfoForm">
+                <div class="form-group">
+                  <label for="userName" class="form-label">Display Name</label>
+                  <input
+                    type="text"
+                    id="userName"
+                    name="userName"
+                    class="form-input"
+                    placeholder="How shall we address you?"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="userTimezone" class="form-label">Timezone</label>
+                  <select
+                    id="userTimezone"
+                    name="userTimezone"
+                    class="form-select"
+                  >
+                    <option value="">Select your timezone...</option>
+                    <option value="America/New_York">
+                      Eastern Time (EST/EDT)
+                    </option>
+                    <option value="America/Chicago">
+                      Central Time (CST/CDT)
+                    </option>
+                    <option value="America/Denver">
+                      Mountain Time (MST/MDT)
+                    </option>
+                    <option value="America/Los_Angeles">
+                      Pacific Time (PST/PDT)
+                    </option>
+                    <option value="Europe/London">London (GMT/BST)</option>
+                    <option value="Europe/Paris">Paris (CET/CEST)</option>
+                    <option value="Asia/Tokyo">Tokyo (JST)</option>
+                    <option value="Australia/Sydney">Sydney (AEST/AEDT)</option>
+                    <option value="UTC">UTC</option>
+                  </select>
+                </div>
+
+                <div class="form-actions">
+                  <button
+                    type="submit"
+                    class="form-button primary"
+                    id="savePersonalBtn"
+                  >
+                    <span>Save Changes</span>
+                    <span
+                      class="loading-spinner"
+                      id="personalSpinner"
+                      style="display: none"
+                    ></span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Security Card -->
+          <div class="profile-card">
+            <div class="card-header">
+              <span class="card-icon">🔐</span>
+              <h3 class="card-title">Security</h3>
             </div>
 
-            <div class="form-actions">
-              <button
-                type="submit"
-                class="form-button primary"
-                id="savePersonalBtn"
-              >
-                <span>Save Changes</span>
-                <span
-                  class="loading-spinner"
-                  id="personalSpinner"
-                  style="display: none"
-                ></span>
-              </button>
+            <div class="card-content">
+              <form id="changePasswordForm">
+                <div class="form-group">
+                  <label for="currentPassword" class="form-label"
+                    >Current Password</label
+                  >
+                  <input
+                    type="password"
+                    id="currentPassword"
+                    name="currentPassword"
+                    class="form-input"
+                    placeholder="Enter current password"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="newPassword" class="form-label"
+                    >New Password</label
+                  >
+                  <input
+                    type="password"
+                    id="newPassword"
+                    name="newPassword"
+                    class="form-input"
+                    placeholder="Enter new password"
+                    required
+                    minlength="6"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="confirmPassword" class="form-label"
+                    >Confirm Password</label
+                  >
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    class="form-input"
+                    placeholder="Confirm new password"
+                    required
+                    minlength="6"
+                  />
+                </div>
+
+                <div class="form-actions">
+                  <button
+                    type="submit"
+                    class="form-button primary"
+                    id="changePasswordBtn"
+                  >
+                    <span>Update Password</span>
+                    <span
+                      class="loading-spinner"
+                      id="passwordSpinner"
+                      style="display: none"
+                    ></span>
+                  </button>
+                </div>
+              </form>
             </div>
-          </form>
-        </div>
+          </div>
 
-        <!-- Change Password -->
-        <div class="profile-card">
-          <h2 class="card-title">
-            <span class="card-icon">🔐</span>
-            Change Password
-          </h2>
-
-          <form id="changePasswordForm">
-            <div class="form-group">
-              <label for="currentPassword" class="form-label"
-                >Current Password</label
-              >
-              <input
-                type="password"
-                id="currentPassword"
-                name="currentPassword"
-                class="form-input"
-                placeholder="Enter your current password"
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="newPassword" class="form-label">New Password</label>
-              <input
-                type="password"
-                id="newPassword"
-                name="newPassword"
-                class="form-input"
-                placeholder="Enter your new password"
-                required
-                minlength="6"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="confirmPassword" class="form-label"
-                >Confirm New Password</label
-              >
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                class="form-input"
-                placeholder="Confirm your new password"
-                required
-                minlength="6"
-              />
-            </div>
-
-            <div class="form-actions">
-              <button
-                type="submit"
-                class="form-button primary"
-                id="changePasswordBtn"
-              >
-                <span>Update Password</span>
-                <span
-                  class="loading-spinner"
-                  id="passwordSpinner"
-                  style="display: none"
-                ></span>
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Danger Zone -->
-        <div class="profile-card danger-zone">
-          <h2 class="card-title">
-            <span class="card-icon">⚠️</span>
-            Danger Zone
-          </h2>
-
-          <p class="danger-description">
-            This action will permanently delete your account and all associated
-            data. This cannot be undone.
-          </p>
-
-          <form id="deleteAccountForm">
-            <div class="form-group">
-              <label for="deletePassword" class="form-label"
-                >Confirm Password</label
-              >
-              <input
-                type="password"
-                id="deletePassword"
-                name="deletePassword"
-                class="form-input"
-                placeholder="Enter your password to confirm deletion"
-                required
-              />
+          <!-- Account Overview Card -->
+          <div class="profile-card">
+            <div class="card-header">
+              <span class="card-icon">📊</span>
+              <h3 class="card-title">Account Overview</h3>
             </div>
 
-            <div class="form-actions">
-              <button
-                type="submit"
-                class="form-button danger"
-                id="deleteAccountBtn"
-              >
-                <span>Delete Account</span>
-                <span
-                  class="loading-spinner"
-                  id="deleteSpinner"
-                  style="display: none"
-                ></span>
-              </button>
+            <div class="card-content">
+              <div class="account-overview">
+                <div class="overview-item">
+                  <div class="overview-label">
+                    <span>💎</span>
+                    <span>Plan</span>
+                  </div>
+                  <div class="overview-value">
+                    <div class="tier-badge" id="accountTierBadge">Free</div>
+                  </div>
+                </div>
+
+                <div class="overview-item">
+                  <div class="overview-label">
+                    <span>📧</span>
+                    <span>Email</span>
+                  </div>
+                  <div class="overview-value" id="accountEmail">Loading...</div>
+                </div>
+
+                <div class="overview-item">
+                  <div class="overview-label">
+                    <span>📅</span>
+                    <span>Member Since</span>
+                  </div>
+                  <div class="overview-value" id="memberSince">Loading...</div>
+                </div>
+
+                <div class="overview-item">
+                  <div class="overview-label">
+                    <span>🌙</span>
+                    <span>Total Reflections</span>
+                  </div>
+                  <div class="overview-value" id="totalReflections">0</div>
+                </div>
+
+                <div class="overview-item">
+                  <div class="overview-label">
+                    <span>📊</span>
+                    <span>This Month</span>
+                  </div>
+                  <div class="overview-value" id="monthlyUsage">0</div>
+                </div>
+              </div>
             </div>
-          </form>
+          </div>
+
+          <!-- Danger Zone Card -->
+          <div class="profile-card danger-zone">
+            <div class="card-header">
+              <span class="card-icon">⚠️</span>
+              <h3 class="card-title">Danger Zone</h3>
+            </div>
+
+            <div class="card-content">
+              <form id="deleteAccountForm">
+                <div class="form-group">
+                  <label for="deletePassword" class="form-label"
+                    >Confirm Password</label
+                  >
+                  <input
+                    type="password"
+                    id="deletePassword"
+                    name="deletePassword"
+                    class="form-input"
+                    placeholder="Enter password to confirm deletion"
+                    required
+                  />
+                </div>
+
+                <div class="form-actions">
+                  <button
+                    type="submit"
+                    class="form-button danger"
+                    id="deleteAccountBtn"
+                  >
+                    <span>Delete Account</span>
+                    <span
+                      class="loading-spinner"
+                      id="deleteSpinner"
+                      style="display: none"
+                    ></span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </main>
@@ -945,7 +1197,7 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-      // Profile Page Logic - Mystical Configuration Panel
+      // Profile Page Logic - Mesmerizing 2x2 Grid Layout
       let userData = null;
       let isLoading = false;
 
@@ -955,7 +1207,7 @@
       async function initializeProfile() {
         try {
           await authenticateAndLoadUser();
-          populateProfileForm();
+          populateProfileData();
           setupFormHandlers();
           console.log("🪞 Profile page initialized");
         } catch (error) {
@@ -1000,12 +1252,35 @@
         }
       }
 
-      // Populate form with user data
-      function populateProfileForm() {
+      // Populate form and account overview with user data
+      function populateProfileData() {
         if (!userData) return;
 
+        // Personal info form
         document.getElementById("userName").value = userData.name || "";
         document.getElementById("userTimezone").value = userData.timezone || "";
+
+        // Account overview
+        const tierBadge = document.getElementById("accountTierBadge");
+        tierBadge.textContent =
+          userData.tier.charAt(0).toUpperCase() + userData.tier.slice(1);
+        tierBadge.className = `tier-badge ${userData.tier}`;
+
+        document.getElementById("accountEmail").textContent = userData.email;
+        document.getElementById("totalReflections").textContent =
+          userData.total_reflections || 0;
+        document.getElementById("monthlyUsage").textContent =
+          userData.reflection_count_this_month || 0;
+
+        // Format member since date
+        if (userData.created_at) {
+          const memberDate = new Date(userData.created_at);
+          document.getElementById("memberSince").textContent =
+            memberDate.toLocaleDateString("en-US", {
+              month: "short",
+              year: "numeric",
+            });
+        }
       }
 
       // Setup form handlers
@@ -1185,7 +1460,7 @@
         if (!confirmed) return;
 
         const finalConfirm = confirm(
-          "This will permanently delete all your reflections and data. Type 'DELETE' to confirm."
+          "This will permanently delete all your reflections and data. This cannot be reversed."
         );
 
         if (!finalConfirm) return;
@@ -1308,7 +1583,7 @@
 
       // Debug (Development Only)
       if (window.location.hostname === "localhost") {
-        console.log("🪞 Profile Page - Mystical Configuration Panel");
+        console.log("🪞 Profile Page - Mesmerizing 2x2 Grid Layout");
         window.profileDebug = {
           userData: () => userData,
           testToast: (message, type) => showToast(message, type),
