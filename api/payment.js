@@ -1,4 +1,4 @@
-// API: Payment - Simplified for Existing User Upgrades (Updated with Webhook Routing)
+// API: Payment - Enhanced with In-Page Payment Intent Support
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const { createClient } = require("@supabase/supabase-js");
@@ -84,16 +84,27 @@ module.exports = async function handler(req, res) {
       const { action } = body;
       console.log(`📝 POST request with action: ${action}`);
 
-      if (action === "create-upgrade-checkout") {
-        // Add body to req for handler
-        req.body = body;
-        return await handleCreateUpgradeCheckout(req, res);
-      } else {
-        console.log(`❌ Unknown POST action: ${action}`);
-        return res.status(400).json({
-          success: false,
-          error: "Invalid action",
-        });
+      // Add body to req for handlers
+      req.body = body;
+
+      switch (action) {
+        case "create-upgrade-checkout":
+          return await handleCreateUpgradeCheckout(req, res);
+        case "create-payment-intent":
+          return await handleCreatePaymentIntent(req, res);
+        case "confirm-payment":
+          return await handleConfirmPayment(req, res);
+        default:
+          console.log(`❌ Unknown POST action: ${action}`);
+          return res.status(400).json({
+            success: false,
+            error: "Invalid action",
+            availableActions: [
+              "create-upgrade-checkout",
+              "create-payment-intent",
+              "confirm-payment",
+            ],
+          });
       }
     }
 
@@ -174,7 +185,7 @@ async function handleGetConfig(req, res) {
   }
 }
 
-// Create Stripe Checkout Session for existing user upgrade
+// Create Stripe Checkout Session for existing user upgrade (Legacy)
 async function handleCreateUpgradeCheckout(req, res) {
   try {
     // Authenticate the user
@@ -229,7 +240,7 @@ async function handleCreateUpgradeCheckout(req, res) {
       ],
       customer_email: user.email,
       metadata: {
-        type: "upgrade", // Mark as upgrade webhook
+        type: "upgrade",
         userId: user.id,
         email: user.email,
         tier: tier,
@@ -237,7 +248,7 @@ async function handleCreateUpgradeCheckout(req, res) {
         upgradeExistingUser: "true",
       },
       success_url: `${getBaseUrl()}/dashboard?upgrade_success=true`,
-      cancel_url: `${getBaseUrl()}/upgrade?canceled=true`,
+      cancel_url: `${getBaseUrl()}/subscription?canceled=true`,
       allow_promotion_codes: true,
       billing_address_collection: "auto",
       tax_id_collection: {
@@ -273,7 +284,223 @@ async function handleCreateUpgradeCheckout(req, res) {
   }
 }
 
-// Stripe webhook handler with routing (NEW: Added routing logic)
+// NEW: Create Payment Intent for in-page payments
+async function handleCreatePaymentIntent(req, res) {
+  try {
+    // Authenticate the user
+    const user = await authenticateRequest(req);
+    const { tier, period, amount } = req.body;
+
+    console.log(
+      `💳 Creating Payment Intent: ${user.email} → ${tier} (${period}) - $${amount}`
+    );
+
+    // Validation
+    if (!["essential", "premium"].includes(tier)) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid subscription tier",
+      });
+    }
+
+    if (!["monthly", "yearly"].includes(period)) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid subscription period",
+      });
+    }
+
+    if (!amount || amount <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid amount",
+      });
+    }
+
+    // Check if user already has this tier or higher
+    if (
+      user.tier === tier ||
+      (user.tier === "premium" && tier === "essential")
+    ) {
+      return res.status(400).json({
+        success: false,
+        error: "User already has this tier or higher",
+      });
+    }
+
+    // Get the correct price ID for subscription creation
+    const priceId = getPriceId(tier, period);
+
+    if (!priceId) {
+      return res.status(500).json({
+        success: false,
+        error: "Price configuration missing",
+      });
+    }
+
+    // Create or get Stripe customer
+    let customerId = user.stripe_customer_id;
+
+    if (!customerId) {
+      const customer = await stripe.customers.create({
+        email: user.email,
+        name: user.name,
+        metadata: {
+          userId: user.id,
+          tier: user.tier,
+        },
+      });
+
+      customerId = customer.id;
+
+      // Update user with customer ID
+      await supabase
+        .from("users")
+        .update({ stripe_customer_id: customerId })
+        .eq("id", user.id);
+
+      console.log(
+        `👤 Created Stripe customer: ${customerId} for ${user.email}`
+      );
+    }
+
+    // Create Payment Intent
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount * 100), // Convert to cents
+      currency: "usd",
+      customer: customerId,
+      automatic_payment_methods: {
+        enabled: true,
+      },
+      metadata: {
+        type: "subscription_upgrade",
+        userId: user.id,
+        email: user.email,
+        tier: tier,
+        period: period,
+        priceId: priceId,
+        upgradeExistingUser: "true",
+      },
+      description: `Mirror of Truth ${
+        tier.charAt(0).toUpperCase() + tier.slice(1)
+      } subscription (${period})`,
+    });
+
+    console.log(
+      `✅ Payment Intent created: ${paymentIntent.id} for ${user.email}`
+    );
+
+    return res.json({
+      success: true,
+      paymentIntent: {
+        id: paymentIntent.id,
+        client_secret: paymentIntent.client_secret,
+        amount: paymentIntent.amount,
+        currency: paymentIntent.currency,
+        status: paymentIntent.status,
+      },
+    });
+  } catch (error) {
+    if (
+      error.message === "Authentication required" ||
+      error.message === "Invalid authentication"
+    ) {
+      return res.status(401).json({
+        success: false,
+        error: error.message,
+      });
+    }
+
+    console.error("Payment Intent creation error:", error);
+    return res.status(500).json({
+      success: false,
+      error: error.message || "Failed to create payment intent",
+    });
+  }
+}
+
+// NEW: Confirm payment and create subscription
+async function handleConfirmPayment(req, res) {
+  try {
+    const user = await authenticateRequest(req);
+    const { paymentIntentId } = req.body;
+
+    if (!paymentIntentId) {
+      return res.status(400).json({
+        success: false,
+        error: "Payment Intent ID is required",
+      });
+    }
+
+    // Retrieve the payment intent
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+
+    if (paymentIntent.status !== "succeeded") {
+      return res.status(400).json({
+        success: false,
+        error: "Payment not completed",
+      });
+    }
+
+    // Extract metadata
+    const { tier, period, priceId } = paymentIntent.metadata;
+
+    if (!tier || !period || !priceId) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid payment metadata",
+      });
+    }
+
+    // Create subscription
+    const subscription = await stripe.subscriptions.create({
+      customer: paymentIntent.customer,
+      items: [{ price: priceId }],
+      metadata: {
+        userId: user.id,
+        tier: tier,
+        period: period,
+        upgradeType: "payment_intent",
+      },
+    });
+
+    // Update user in database
+    await upgradeUserFromPaymentIntent(user.id, tier, period, subscription);
+
+    console.log(
+      `✅ Subscription created from Payment Intent: ${subscription.id} for ${user.email}`
+    );
+
+    return res.json({
+      success: true,
+      message: "Payment confirmed and subscription created",
+      subscription: {
+        id: subscription.id,
+        tier: tier,
+        period: period,
+        status: subscription.status,
+      },
+    });
+  } catch (error) {
+    if (
+      error.message === "Authentication required" ||
+      error.message === "Invalid authentication"
+    ) {
+      return res.status(401).json({
+        success: false,
+        error: error.message,
+      });
+    }
+
+    console.error("Payment confirmation error:", error);
+    return res.status(500).json({
+      success: false,
+      error: error.message || "Failed to confirm payment",
+    });
+  }
+}
+
+// Stripe webhook handler with routing (Enhanced with Payment Intent support)
 async function handleStripeWebhook(req, res) {
   console.log("🪝 Webhook received - Headers:", req.headers);
 
@@ -315,29 +542,23 @@ async function handleStripeWebhook(req, res) {
   console.log(`📦 Event ID: ${event.id}`);
 
   try {
-    // NEW: Route webhook based on session metadata
-    if (event.type === "checkout.session.completed") {
-      const session = event.data.object;
-      const webhookType = session.metadata?.type;
-
-      console.log(`🔀 Routing webhook type: ${webhookType}`);
-
-      if (webhookType === "gift") {
-        console.log("🎁 Routing to gift webhook handler");
-        return await routeToGiftWebhook(event, res);
-      } else if (
-        webhookType === "upgrade" ||
-        session.metadata?.upgradeExistingUser === "true"
-      ) {
-        console.log("🚀 Processing upgrade webhook");
-        return await handleUpgradeWebhookEvents(event, res);
-      } else {
-        console.log("⚠️ Unknown webhook type, processing as upgrade");
-        return await handleUpgradeWebhookEvents(event, res);
-      }
-    } else {
-      // Handle other webhook events as upgrade-related
-      return await handleUpgradeWebhookEvents(event, res);
+    // Enhanced routing for different event types
+    switch (event.type) {
+      case "checkout.session.completed":
+        return await handleCheckoutWebhook(event, res);
+      case "payment_intent.succeeded":
+        return await handlePaymentIntentWebhook(event, res);
+      case "customer.subscription.updated":
+        return await handleSubscriptionUpdated(event, res);
+      case "customer.subscription.deleted":
+        return await handleSubscriptionDeleted(event, res);
+      case "invoice.payment_succeeded":
+        return await handlePaymentSucceeded(event, res);
+      case "invoice.payment_failed":
+        return await handlePaymentFailed(event, res);
+      default:
+        console.log(`⚠️ Unhandled Stripe event: ${event.type}`);
+        return res.status(200).json({ received: true, handled: false });
     }
   } catch (error) {
     console.error("❌ Stripe webhook error:", error);
@@ -345,7 +566,85 @@ async function handleStripeWebhook(req, res) {
   }
 }
 
-// NEW: Route gift webhooks to gifting API
+// NEW: Handle Payment Intent webhooks
+async function handlePaymentIntentWebhook(event, res) {
+  try {
+    const paymentIntent = event.data.object;
+    const { type, userId, tier, period, priceId } = paymentIntent.metadata;
+
+    console.log(`💳 Payment Intent succeeded: ${paymentIntent.id}`);
+    console.log(`📋 Metadata:`, paymentIntent.metadata);
+
+    // Check if this is a subscription upgrade
+    if (
+      type === "subscription_upgrade" &&
+      userId &&
+      tier &&
+      period &&
+      priceId
+    ) {
+      console.log(`🚀 Processing subscription upgrade for user: ${userId}`);
+
+      // Create subscription
+      const subscription = await stripe.subscriptions.create({
+        customer: paymentIntent.customer,
+        items: [{ price: priceId }],
+        metadata: {
+          userId: userId,
+          tier: tier,
+          period: period,
+          upgradeType: "payment_intent",
+          paymentIntentId: paymentIntent.id,
+        },
+      });
+
+      // Update user in database
+      await upgradeUserFromPaymentIntent(userId, tier, period, subscription);
+
+      console.log(
+        `✅ Subscription created: ${subscription.id} for user: ${userId}`
+      );
+    } else {
+      console.log(`ℹ️ Payment Intent not for subscription upgrade, skipping`);
+    }
+
+    return res
+      .status(200)
+      .json({ received: true, processed: "payment_intent" });
+  } catch (error) {
+    console.error("❌ Payment Intent webhook error:", error);
+    return res.status(500).json({ error: "Payment Intent processing failed" });
+  }
+}
+
+// Enhanced: Handle Checkout Session webhooks with routing
+async function handleCheckoutWebhook(event, res) {
+  try {
+    const session = event.data.object;
+    const webhookType = session.metadata?.type;
+
+    console.log(`🔀 Routing checkout webhook type: ${webhookType}`);
+
+    if (webhookType === "gift") {
+      console.log("🎁 Routing to gift webhook handler");
+      return await routeToGiftWebhook(event, res);
+    } else if (
+      webhookType === "upgrade" ||
+      session.metadata?.upgradeExistingUser === "true"
+    ) {
+      console.log("🚀 Processing upgrade checkout webhook");
+      return await handleUpgradeCheckoutCompleted(event, res);
+    } else {
+      console.log("⚠️ Unknown checkout webhook type, processing as upgrade");
+      return await handleUpgradeCheckoutCompleted(event, res);
+    }
+  } catch (error) {
+    console.error("❌ Checkout webhook error:", error);
+    return res.status(500).json({ error: "Checkout processing failed" });
+  }
+}
+
+// Route gift webhooks to gifting API
 async function routeToGiftWebhook(event, res) {
   try {
     console.log("🎁 Forwarding gift webhook to gifting API");
@@ -357,7 +656,7 @@ async function routeToGiftWebhook(event, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Stripe-Signature": event.id, // Use event ID as signature for internal routing
+        "Stripe-Signature": event.id,
       },
       body: JSON.stringify({
         type: "webhook_forward",
@@ -384,45 +683,8 @@ async function routeToGiftWebhook(event, res) {
   }
 }
 
-// Handle upgrade-related webhook events
-async function handleUpgradeWebhookEvents(event, res) {
-  try {
-    // Handle different webhook events
-    switch (event.type) {
-      case "checkout.session.completed":
-        console.log("🎉 Processing upgrade checkout.session.completed");
-        await handleCheckoutSessionCompleted(event);
-        break;
-      case "customer.subscription.updated":
-        console.log("🔄 Processing customer.subscription.updated");
-        await handleSubscriptionUpdated(event);
-        break;
-      case "customer.subscription.deleted":
-        console.log("❌ Processing customer.subscription.deleted");
-        await handleSubscriptionDeleted(event);
-        break;
-      case "invoice.payment_succeeded":
-        console.log("💰 Processing invoice.payment_succeeded");
-        await handlePaymentSucceeded(event);
-        break;
-      case "invoice.payment_failed":
-        console.log("💸 Processing invoice.payment_failed");
-        await handlePaymentFailed(event);
-        break;
-      default:
-        console.log(`⚠️ Unhandled Stripe event: ${event.type}`);
-    }
-
-    console.log("✅ Upgrade webhook processed successfully");
-    return res.status(200).json({ received: true });
-  } catch (error) {
-    console.error("❌ Upgrade webhook processing error:", error);
-    return res.status(500).json({ error: "Upgrade webhook processing failed" });
-  }
-}
-
-// Webhook event handlers (existing upgrade logic)
-async function handleCheckoutSessionCompleted(event) {
+// Handle upgrade checkout completion (Legacy)
+async function handleUpgradeCheckoutCompleted(event, res) {
   try {
     const session = event.data.object;
     const { userId, email, tier, period, upgradeExistingUser } =
@@ -431,7 +693,6 @@ async function handleCheckoutSessionCompleted(event) {
     console.log(`🎉 Checkout completed: ${email} → ${tier} (${period})`);
 
     if (upgradeExistingUser === "true" && userId) {
-      // Upgrade existing user
       console.log(`⬆️ Upgrading existing user: ${userId}`);
       await upgradeExistingUser(userId, tier, period, session);
     } else {
@@ -440,12 +701,75 @@ async function handleCheckoutSessionCompleted(event) {
     }
 
     console.log(`✅ Checkout processing completed for: ${email}`);
+    return res
+      .status(200)
+      .json({ received: true, processed: "upgrade_checkout" });
   } catch (error) {
     console.error("❌ Error handling checkout completion:", error);
+    return res.status(500).json({ error: "Checkout completion failed" });
   }
 }
 
-// Upgrade existing user (existing logic)
+// NEW: Upgrade user from Payment Intent
+async function upgradeUserFromPaymentIntent(
+  userId,
+  tier,
+  period,
+  subscription
+) {
+  try {
+    const startDate = new Date();
+    const expiryDate = new Date(startDate);
+    if (period === "monthly") {
+      expiryDate.setMonth(expiryDate.getMonth() + 1);
+    } else {
+      expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+    }
+
+    const { data: updatedUser, error } = await supabase
+      .from("users")
+      .update({
+        tier: tier,
+        subscription_status: "active",
+        subscription_period: period,
+        stripe_subscription_id: subscription.id,
+        stripe_customer_id: subscription.customer,
+        subscription_started_at: startDate.toISOString(),
+        subscription_expires_at: expiryDate.toISOString(),
+      })
+      .eq("id", userId)
+      .select("email, name")
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to upgrade user: ${error.message}`);
+    }
+
+    console.log(`✅ User upgraded via Payment Intent: ${updatedUser.email}`);
+
+    // Send upgrade confirmation email
+    try {
+      await fetch(`${getBaseUrl()}/api/communication`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "send-upgrade-confirmation",
+          email: updatedUser.email,
+          name: updatedUser.name,
+          tier: tier,
+          period: period,
+        }),
+      });
+    } catch (emailError) {
+      console.warn("Upgrade email failed:", emailError);
+    }
+  } catch (error) {
+    console.error("Error upgrading user from Payment Intent:", error);
+    throw error;
+  }
+}
+
+// Upgrade existing user (Legacy)
 async function upgradeExistingUser(userId, tier, period, session) {
   try {
     const startDate = new Date();
@@ -499,7 +823,7 @@ async function upgradeExistingUser(userId, tier, period, session) {
   }
 }
 
-// NEW: Fallback gift checkout handler (simplified)
+// Fallback gift checkout handler (simplified)
 async function handleGiftCheckoutCompleted(event) {
   try {
     const session = event.data.object;
@@ -507,19 +831,18 @@ async function handleGiftCheckoutCompleted(event) {
       `🎁 Fallback: Processing gift checkout completion for session ${session.id}`
     );
 
-    // Basic logging - full processing should happen in gifting API
     if (session.metadata?.gift_code) {
       console.log(`🎁 Gift code: ${session.metadata.gift_code}`);
     }
 
-    // This is a fallback - the gifting API should handle the full logic
     console.log("🎁 Gift checkout completed (fallback handler)");
   } catch (error) {
     console.error("❌ Error in fallback gift handler:", error);
   }
 }
 
-async function handleSubscriptionUpdated(event) {
+// Existing webhook handlers (Enhanced with better response handling)
+async function handleSubscriptionUpdated(event, res) {
   try {
     const subscription = event.data.object;
     const customerId = subscription.customer;
@@ -545,12 +868,17 @@ async function handleSubscriptionUpdated(event) {
     } else {
       console.log(`🔄 Subscription updated: ${subscription.id} → ${status}`);
     }
+
+    return res
+      .status(200)
+      .json({ received: true, processed: "subscription_updated" });
   } catch (error) {
     console.error("Error handling subscription update:", error);
+    return res.status(500).json({ error: "Subscription update failed" });
   }
 }
 
-async function handleSubscriptionDeleted(event) {
+async function handleSubscriptionDeleted(event, res) {
   try {
     const subscription = event.data.object;
     const customerId = subscription.customer;
@@ -568,12 +896,17 @@ async function handleSubscriptionDeleted(event) {
     } else {
       console.log(`❌ Subscription canceled: ${subscription.id}`);
     }
+
+    return res
+      .status(200)
+      .json({ received: true, processed: "subscription_deleted" });
   } catch (error) {
     console.error("Error handling subscription deletion:", error);
+    return res.status(500).json({ error: "Subscription deletion failed" });
   }
 }
 
-async function handlePaymentSucceeded(event) {
+async function handlePaymentSucceeded(event, res) {
   try {
     const invoice = event.data.object;
     console.log(`💰 Payment succeeded: ${invoice.id}`);
@@ -592,12 +925,17 @@ async function handlePaymentSucceeded(event) {
         console.log(`✅ Subscription reactivated for payment: ${invoice.id}`);
       }
     }
+
+    return res
+      .status(200)
+      .json({ received: true, processed: "payment_succeeded" });
   } catch (error) {
     console.error("Error handling payment success:", error);
+    return res.status(500).json({ error: "Payment success handling failed" });
   }
 }
 
-async function handlePaymentFailed(event) {
+async function handlePaymentFailed(event, res) {
   try {
     const invoice = event.data.object;
     console.log(`💸 Payment failed: ${invoice.id}`);
@@ -616,8 +954,13 @@ async function handlePaymentFailed(event) {
         console.log(`⚠️ Subscription marked past due: ${invoice.subscription}`);
       }
     }
+
+    return res
+      .status(200)
+      .json({ received: true, processed: "payment_failed" });
   } catch (error) {
     console.error("Error handling payment failure:", error);
+    return res.status(500).json({ error: "Payment failure handling failed" });
   }
 }
 

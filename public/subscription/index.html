@@ -10,8 +10,11 @@
     <link rel="manifest" href="/site.webmanifest" />
     <title>Your Consciousness Journey | Mirror of Truth</title>
 
+    <!-- Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
+
     <style>
-      /* Subscription Page - Conscious Journey Management */
+      /* Subscription Page - Conscious Journey Management with In-Page Payments */
       * {
         margin: 0;
         padding: 0;
@@ -708,6 +711,7 @@
         list-style: none;
         padding: 0;
         margin: 0;
+        margin-bottom: clamp(0.8rem, 2vh, 1.2rem);
       }
 
       .option-features li {
@@ -722,6 +726,312 @@
       .option-features li::before {
         content: "✨";
         font-size: 0.8em;
+      }
+
+      .period-selector {
+        display: flex;
+        gap: clamp(0.4rem, 1vw, 0.6rem);
+        margin-bottom: clamp(0.8rem, 2vh, 1.2rem);
+      }
+
+      .period-option {
+        flex: 1;
+        padding: clamp(0.4rem, 1vh, 0.6rem) clamp(0.6rem, 1.5vw, 0.8rem);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: clamp(6px, 1.2vw, 8px);
+        font-size: clamp(0.7rem, 1.7vw, 0.8rem);
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+
+      .period-option.selected {
+        background: rgba(16, 185, 129, 0.15);
+        border-color: rgba(16, 185, 129, 0.3);
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .upgrade-button {
+        width: 100%;
+        padding: clamp(0.6rem, 1.5vh, 0.8rem) clamp(0.8rem, 2vw, 1.2rem);
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.2),
+          rgba(5, 150, 105, 0.15)
+        );
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: clamp(8px, 1.6vw, 10px);
+        color: rgba(110, 231, 183, 0.9);
+        font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: inherit;
+      }
+
+      .upgrade-button:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.3),
+          rgba(5, 150, 105, 0.2)
+        );
+        border-color: rgba(16, 185, 129, 0.4);
+        transform: translateY(-1px);
+      }
+
+      /* Payment Modal */
+      .payment-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(20px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        padding: clamp(1rem, 2vh, 2rem);
+      }
+
+      .payment-modal-overlay.show {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .payment-modal {
+        background: linear-gradient(
+          135deg,
+          rgba(15, 15, 35, 0.95) 0%,
+          rgba(26, 26, 46, 0.95) 100%
+        );
+        backdrop-filter: blur(40px) saturate(120%);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: clamp(16px, 3vw, 24px);
+        padding: clamp(1.5rem, 3vh, 2rem);
+        width: 100%;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        animation: modalSlide 0.3s ease-out;
+      }
+
+      @keyframes modalSlide {
+        from {
+          opacity: 0;
+          transform: translateY(30px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: clamp(1.2rem, 2.5vh, 1.8rem);
+      }
+
+      .modal-title {
+        font-size: clamp(1.2rem, 3vw, 1.6rem);
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0;
+      }
+
+      .modal-close {
+        width: clamp(32px, 6vw, 40px);
+        height: clamp(32px, 6vw, 40px);
+        border: none;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(0.9rem, 2vw, 1.1rem);
+      }
+
+      .modal-close:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.9);
+        transform: scale(1.05);
+      }
+
+      .plan-summary {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: clamp(12px, 2.4vw, 16px);
+        padding: clamp(1rem, 2vh, 1.4rem);
+        margin-bottom: clamp(1.2rem, 2.5vh, 1.8rem);
+      }
+
+      .plan-title {
+        font-size: clamp(1rem, 2.5vw, 1.3rem);
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.95);
+        margin-bottom: clamp(0.4rem, 1vh, 0.6rem);
+      }
+
+      .plan-price {
+        font-size: clamp(1.4rem, 3.5vw, 1.8rem);
+        font-weight: 600;
+        color: rgba(16, 185, 129, 0.9);
+        margin-bottom: clamp(0.6rem, 1.5vh, 0.8rem);
+      }
+
+      .plan-features {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: clamp(0.2rem, 0.5vh, 0.3rem);
+      }
+
+      .plan-features li {
+        font-size: clamp(0.8rem, 1.9vw, 0.9rem);
+        color: rgba(255, 255, 255, 0.8);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .plan-features li::before {
+        content: "✓";
+        color: rgba(16, 185, 129, 0.8);
+        font-weight: 600;
+      }
+
+      .payment-section {
+        margin-bottom: clamp(1.2rem, 2.5vh, 1.8rem);
+      }
+
+      .payment-section h4 {
+        font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: clamp(0.8rem, 2vh, 1.2rem);
+      }
+
+      /* Stripe Elements Styling */
+      .stripe-element {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: clamp(8px, 1.6vw, 12px);
+        padding: clamp(0.8rem, 2vh, 1rem);
+        margin-bottom: clamp(0.8rem, 2vh, 1.2rem);
+        transition: all 0.3s ease;
+      }
+
+      .stripe-element.focused {
+        border-color: rgba(16, 185, 129, 0.5);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+      }
+
+      .stripe-element.invalid {
+        border-color: rgba(239, 68, 68, 0.5);
+      }
+
+      .payment-error {
+        color: rgba(248, 113, 113, 0.9);
+        font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+        margin-top: clamp(0.4rem, 1vh, 0.6rem);
+        margin-bottom: clamp(0.8rem, 2vh, 1.2rem);
+        display: none;
+      }
+
+      .payment-actions {
+        display: flex;
+        gap: clamp(0.8rem, 2vw, 1rem);
+      }
+
+      .payment-button {
+        flex: 1;
+        padding: clamp(0.8rem, 2vh, 1rem) clamp(1.2rem, 3vw, 1.5rem);
+        border: none;
+        border-radius: clamp(10px, 2vw, 14px);
+        font-size: clamp(0.85rem, 2.1vw, 1rem);
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: inherit;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .payment-button::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+      }
+
+      .payment-button:hover::before {
+        transform: translateX(100%);
+      }
+
+      .payment-button.primary {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.2),
+          rgba(5, 150, 105, 0.15)
+        );
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: rgba(110, 231, 183, 0.9);
+      }
+
+      .payment-button.primary:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.3),
+          rgba(5, 150, 105, 0.2)
+        );
+        border-color: rgba(16, 185, 129, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+      }
+
+      .payment-button.secondary {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .payment-button.secondary:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+      }
+
+      .payment-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .payment-button:disabled:hover {
+        transform: none;
+        box-shadow: none;
       }
 
       /* Toast Notifications */
@@ -815,6 +1125,16 @@
         .upgrade-grid {
           grid-template-columns: 1fr;
         }
+
+        .payment-modal {
+          margin: clamp(0.5rem, 1vh, 1rem);
+          max-width: calc(100vw - clamp(1rem, 2vh, 2rem));
+        }
+
+        .payment-actions {
+          flex-direction: column;
+          gap: clamp(0.6rem, 1.5vh, 0.8rem);
+        }
       }
 
       @media (max-width: 480px) {
@@ -830,6 +1150,10 @@
         .status-indicators {
           flex-direction: column;
           gap: clamp(0.6rem, 1.5vh, 0.8rem);
+        }
+
+        .payment-modal {
+          padding: clamp(1.2rem, 2.5vh, 1.6rem);
         }
       }
 
@@ -848,7 +1172,10 @@
       .action-button:focus-visible,
       .nav-link:focus-visible,
       .back-link:focus-visible,
-      .upgrade-option:focus-visible {
+      .upgrade-option:focus-visible,
+      .upgrade-button:focus-visible,
+      .payment-button:focus-visible,
+      .modal-close:focus-visible {
         outline: 2px solid rgba(147, 51, 234, 0.6);
         outline-offset: 2px;
       }
@@ -971,14 +1298,58 @@
       </div>
     </main>
 
+    <!-- Payment Modal -->
+    <div class="payment-modal-overlay" id="paymentModalOverlay">
+      <div class="payment-modal">
+        <div class="modal-header">
+          <h3 class="modal-title" id="modalTitle">Upgrade Your Journey</h3>
+          <button class="modal-close" id="modalClose">×</button>
+        </div>
+
+        <div class="plan-summary" id="planSummary">
+          <div class="plan-title" id="planTitle">Essential Plan</div>
+          <div class="plan-price" id="planPrice">$4.99/month</div>
+          <ul class="plan-features" id="planFeatures">
+            <!-- Features will be populated by JavaScript -->
+          </ul>
+        </div>
+
+        <div class="payment-section">
+          <h4>Payment Information</h4>
+          <div id="payment-element" class="stripe-element">
+            <!-- Stripe Payment Element will be mounted here -->
+          </div>
+          <div class="payment-error" id="payment-error"></div>
+        </div>
+
+        <div class="payment-actions">
+          <button class="payment-button secondary" id="cancelPayment">
+            Cancel
+          </button>
+          <button class="payment-button primary" id="confirmPayment">
+            <span>Complete Payment</span>
+            <span
+              class="loading-spinner"
+              id="paymentSpinner"
+              style="display: none"
+            ></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Toast Notifications -->
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-      // Subscription Page Logic - Conscious Journey Management
+      // Subscription Page Logic - In-Page Stripe Payment Integration
       let userData = null;
       let subscriptionData = null;
       let isLoading = false;
+      let stripe = null;
+      let elements = null;
+      let paymentElement = null;
+      let currentPaymentIntent = null;
 
       // Initialize on load
       window.addEventListener("load", initializeSubscription);
@@ -986,12 +1357,32 @@
       async function initializeSubscription() {
         try {
           await authenticateAndLoadUser();
+          await initializeStripe();
           await loadSubscriptionData();
           updateSubscriptionDisplay();
+          setupEventListeners();
           console.log("💎 Subscription page initialized");
         } catch (error) {
           console.error("Subscription initialization failed:", error);
           handleAuthenticationError();
+        }
+      }
+
+      // Initialize Stripe
+      async function initializeStripe() {
+        try {
+          const configResponse = await fetch("/api/payment?action=config");
+          const configData = await configResponse.json();
+
+          if (!configData.success) {
+            throw new Error("Failed to load Stripe configuration");
+          }
+
+          stripe = Stripe(configData.config.publishableKey);
+          console.log("✅ Stripe initialized");
+        } catch (error) {
+          console.error("Stripe initialization error:", error);
+          throw error;
         }
       }
 
@@ -1074,6 +1465,38 @@
             currency: "USD",
           };
         }
+      }
+
+      // Setup event listeners
+      function setupEventListeners() {
+        // Modal close events
+        document
+          .getElementById("modalClose")
+          .addEventListener("click", closePaymentModal);
+        document
+          .getElementById("cancelPayment")
+          .addEventListener("click", closePaymentModal);
+
+        // Click outside modal to close
+        document
+          .getElementById("paymentModalOverlay")
+          .addEventListener("click", (e) => {
+            if (e.target.id === "paymentModalOverlay") {
+              closePaymentModal();
+            }
+          });
+
+        // Escape key to close modal
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            closePaymentModal();
+          }
+        });
+
+        // Payment confirmation
+        document
+          .getElementById("confirmPayment")
+          .addEventListener("click", handlePaymentSubmit);
       }
 
       // Update subscription display
@@ -1184,7 +1607,7 @@
             "✨",
             "Upgrade to Essential",
             "primary",
-            () => (window.location.href = "/register?tier=essential")
+            () => openPaymentModal("essential", "monthly")
           );
           actionsContainer.appendChild(upgradeButton);
         }
@@ -1246,8 +1669,8 @@
           tiers.push({
             name: "Essential",
             tier: "essential",
-            price: "$4.99/month",
-            yearlyPrice: "$49.99/year",
+            monthlyPrice: 4.99,
+            yearlyPrice: 49.99,
             features: [
               "5 reflections per month",
               "Complete reflection history",
@@ -1260,8 +1683,8 @@
           tiers.push({
             name: "Premium",
             tier: "premium",
-            price: "$9.99/month",
-            yearlyPrice: "$99.99/year",
+            monthlyPrice: 9.99,
+            yearlyPrice: 99.99,
             features: [
               "10 reflections per month",
               "Extended AI thinking",
@@ -1273,8 +1696,8 @@
           tiers.push({
             name: "Premium",
             tier: "premium",
-            price: "$9.99/month",
-            yearlyPrice: "$99.99/year",
+            monthlyPrice: 9.99,
+            yearlyPrice: 99.99,
             features: [
               "10 reflections per month",
               "Extended AI thinking",
@@ -1302,24 +1725,284 @@
           tier.recommended ? "recommended" : ""
         }`;
 
+        // Default to monthly
+        let selectedPeriod = "monthly";
+        let currentPrice = tier.monthlyPrice;
+
         option.innerHTML = `
           <div class="option-header">
             <div class="option-name">${tier.name}</div>
-            <div class="option-price">${tier.price}</div>
+            <div class="option-price" data-monthly="$${
+              tier.monthlyPrice
+            }/month" data-yearly="$${
+          tier.yearlyPrice
+        }/year">$${currentPrice}/month</div>
           </div>
           <ul class="option-features">
             ${tier.features.map((feature) => `<li>${feature}</li>`).join("")}
           </ul>
+          <div class="period-selector">
+            <div class="period-option selected" data-period="monthly">Monthly</div>
+            <div class="period-option" data-period="yearly">Yearly <small>(save 17%)</small></div>
+          </div>
+          <button class="upgrade-button">Upgrade to ${tier.name}</button>
         `;
 
-        option.onclick = () => {
-          window.location.href = `/register?tier=${tier.tier}`;
-        };
+        // Period selector functionality
+        const periodOptions = option.querySelectorAll(".period-option");
+        const priceDisplay = option.querySelector(".option-price");
+        const upgradeButton = option.querySelector(".upgrade-button");
+
+        periodOptions.forEach((periodOption) => {
+          periodOption.addEventListener("click", () => {
+            periodOptions.forEach((p) => p.classList.remove("selected"));
+            periodOption.classList.add("selected");
+            selectedPeriod = periodOption.dataset.period;
+
+            if (selectedPeriod === "yearly") {
+              priceDisplay.textContent = priceDisplay.dataset.yearly;
+              currentPrice = tier.yearlyPrice;
+            } else {
+              priceDisplay.textContent = priceDisplay.dataset.monthly;
+              currentPrice = tier.monthlyPrice;
+            }
+          });
+        });
+
+        // Upgrade button functionality
+        upgradeButton.addEventListener("click", () => {
+          openPaymentModal(tier.tier, selectedPeriod, currentPrice);
+        });
 
         return option;
       }
 
-      // Action handlers
+      // Payment Modal Functions
+      async function openPaymentModal(tier, period, price) {
+        try {
+          setLoadingState(true);
+
+          // Get tier info for display
+          const tierInfo = getTierInfo(tier);
+          const tierData = getUpgradeTiers().find((t) => t.tier === tier);
+
+          if (!tierData) {
+            throw new Error("Invalid tier selected");
+          }
+
+          // Calculate actual price
+          const actualPrice =
+            period === "yearly" ? tierData.yearlyPrice : tierData.monthlyPrice;
+
+          // Create Payment Intent
+          const paymentIntent = await createPaymentIntent(
+            tier,
+            period,
+            actualPrice
+          );
+
+          currentPaymentIntent = paymentIntent;
+
+          // Update modal content
+          updateModalContent(tierInfo, tierData, period, actualPrice);
+
+          // Initialize Stripe Elements
+          await initializePaymentElement(paymentIntent.client_secret);
+
+          // Show modal
+          document.getElementById("paymentModalOverlay").classList.add("show");
+
+          console.log(`💳 Payment modal opened for ${tier} (${period})`);
+        } catch (error) {
+          console.error("Payment modal error:", error);
+          showToast(error.message || "Failed to open payment modal", "error");
+        } finally {
+          setLoadingState(false);
+        }
+      }
+
+      function closePaymentModal() {
+        document.getElementById("paymentModalOverlay").classList.remove("show");
+
+        // Clean up payment element
+        if (paymentElement) {
+          paymentElement.destroy();
+          paymentElement = null;
+        }
+
+        currentPaymentIntent = null;
+        console.log("💳 Payment modal closed");
+      }
+
+      function updateModalContent(tierInfo, tierData, period, price) {
+        document.getElementById(
+          "modalTitle"
+        ).textContent = `Upgrade to ${tierInfo.name}`;
+        document.getElementById(
+          "planTitle"
+        ).textContent = `${tierInfo.name} Plan`;
+        document.getElementById("planPrice").textContent = `$${price}/${
+          period === "yearly" ? "year" : "month"
+        }`;
+
+        const featuresContainer = document.getElementById("planFeatures");
+        featuresContainer.innerHTML = tierData.features
+          .map((feature) => `<li>${feature}</li>`)
+          .join("");
+      }
+
+      async function createPaymentIntent(tier, period, amount) {
+        try {
+          const token = localStorage.getItem("mirror_auth_token");
+
+          const response = await fetch("/api/payment", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              action: "create-payment-intent",
+              tier: tier,
+              period: period,
+              amount: amount,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!data.success) {
+            throw new Error(data.error || "Failed to create payment intent");
+          }
+
+          return data.paymentIntent;
+        } catch (error) {
+          console.error("Payment intent creation error:", error);
+          throw error;
+        }
+      }
+
+      async function initializePaymentElement(clientSecret) {
+        try {
+          // Create elements instance
+          elements = stripe.elements({
+            clientSecret: clientSecret,
+            appearance: {
+              theme: "night",
+              variables: {
+                colorPrimary: "#10b981",
+                colorBackground: "rgba(255, 255, 255, 0.05)",
+                colorText: "rgba(255, 255, 255, 0.9)",
+                colorDanger: "#ef4444",
+                fontFamily: "Inter, system-ui, sans-serif",
+                spacingUnit: "4px",
+                borderRadius: "8px",
+              },
+            },
+          });
+
+          // Create payment element
+          paymentElement = elements.create("payment", {
+            layout: {
+              type: "tabs",
+              defaultCollapsed: false,
+            },
+          });
+
+          // Mount payment element
+          paymentElement.mount("#payment-element");
+
+          // Handle events
+          paymentElement.on("ready", () => {
+            console.log("💳 Payment element ready");
+          });
+
+          paymentElement.on("focus", () => {
+            document.getElementById("payment-element").classList.add("focused");
+          });
+
+          paymentElement.on("blur", () => {
+            document
+              .getElementById("payment-element")
+              .classList.remove("focused");
+          });
+
+          paymentElement.on("change", (event) => {
+            const errorElement = document.getElementById("payment-error");
+            if (event.error) {
+              errorElement.textContent = event.error.message;
+              errorElement.style.display = "block";
+              document
+                .getElementById("payment-element")
+                .classList.add("invalid");
+            } else {
+              errorElement.style.display = "none";
+              document
+                .getElementById("payment-element")
+                .classList.remove("invalid");
+            }
+          });
+        } catch (error) {
+          console.error("Payment element initialization error:", error);
+          throw error;
+        }
+      }
+
+      async function handlePaymentSubmit() {
+        if (!stripe || !elements || !currentPaymentIntent) {
+          showToast("Payment system not ready", "error");
+          return;
+        }
+
+        setPaymentLoading(true);
+
+        try {
+          // Submit payment
+          const { error, paymentIntent } = await stripe.confirmPayment({
+            elements,
+            confirmParams: {
+              return_url: `${window.location.origin}/subscription?payment_success=true`,
+            },
+            redirect: "if_required",
+          });
+
+          if (error) {
+            throw new Error(error.message);
+          }
+
+          if (paymentIntent.status === "succeeded") {
+            // Payment successful
+            showToast(
+              "Payment successful! Upgrading your account...",
+              "success"
+            );
+
+            // Wait a moment for webhook processing
+            setTimeout(async () => {
+              await loadSubscriptionData();
+              updateSubscriptionDisplay();
+              closePaymentModal();
+              showToast(
+                "Subscription upgraded successfully! Welcome to your new plan.",
+                "success"
+              );
+            }, 2000);
+          } else {
+            throw new Error("Payment was not completed successfully");
+          }
+        } catch (error) {
+          console.error("Payment submission error:", error);
+          showToast(error.message || "Payment failed", "error");
+
+          const errorElement = document.getElementById("payment-error");
+          errorElement.textContent = error.message;
+          errorElement.style.display = "block";
+        } finally {
+          setPaymentLoading(false);
+        }
+      }
+
+      // Action handlers (existing functions)
       async function cancelSubscription() {
         const confirmed = confirm(
           "Are you sure you want to cancel your subscription? You'll retain access until the end of your current billing period."
@@ -1429,7 +2112,7 @@
         }
       }
 
-      // Loading state
+      // Loading states
       function setLoadingState(loading) {
         isLoading = loading;
 
@@ -1437,6 +2120,20 @@
         buttons.forEach((button) => {
           button.disabled = loading;
         });
+      }
+
+      function setPaymentLoading(loading) {
+        const confirmButton = document.getElementById("confirmPayment");
+        const spinner = document.getElementById("paymentSpinner");
+
+        confirmButton.disabled = loading;
+        spinner.style.display = loading ? "inline-block" : "none";
+
+        if (loading) {
+          confirmButton.querySelector("span").textContent = "Processing...";
+        } else {
+          confirmButton.querySelector("span").textContent = "Complete Payment";
+        }
       }
 
       // Authentication error handler
@@ -1473,13 +2170,28 @@
         }, duration);
       }
 
+      // Check for payment success in URL
+      window.addEventListener("load", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get("payment_success") === "true") {
+          showToast(
+            "Payment completed successfully! Your subscription has been upgraded.",
+            "success"
+          );
+          // Clean URL
+          window.history.replaceState({}, document.title, "/subscription");
+        }
+      });
+
       // Debug (Development Only)
       if (window.location.hostname === "localhost") {
-        console.log("💎 Subscription Page - Conscious Journey Management");
+        console.log("💎 Subscription Page - In-Page Stripe Payment");
         window.subscriptionDebug = {
           userData: () => userData,
           subscriptionData: () => subscriptionData,
+          stripe: () => stripe,
           testToast: (message, type) => showToast(message, type),
+          testPayment: (tier, period) => openPaymentModal(tier, period),
         };
       }
     </script>
