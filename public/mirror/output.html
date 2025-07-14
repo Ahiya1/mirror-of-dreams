@@ -393,26 +393,90 @@
         overflow: hidden;
       }
 
+      /* ╭─ ENHANCED MARKDOWN STYLES ──────────────────────────────────────────╮ */
       .mirror-response {
         background: rgba(255, 255, 255, 0.97);
         color: #1a1a2e;
         padding: clamp(2.5rem, 5vw, 3.5rem) clamp(2rem, 4vw, 3rem);
         border-radius: 24px;
         box-shadow: 0 15px 60px rgba(0, 0, 0, 0.25);
+        position: relative;
         font-size: clamp(1.05rem, 2.5vw, 1.2rem);
         line-height: 1.7;
         font-weight: 300;
+      }
+
+      /* ═══ MARKDOWN TYPOGRAPHY ═══ */
+
+      /* Headers */
+      .mirror-response h1,
+      .mirror-response h2,
+      .mirror-response h3,
+      .mirror-response h4,
+      .mirror-response h5,
+      .mirror-response h6 {
+        font-weight: 600;
+        margin: 2rem 0 1rem 0;
+        line-height: 1.3;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
         position: relative;
       }
 
+      .mirror-response h1 {
+        font-size: clamp(1.8rem, 4vw, 2.2rem);
+        margin-top: 0;
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .mirror-response h1::after {
+        content: "";
+        position: absolute;
+        bottom: -0.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #667eea, transparent);
+        border-radius: 1px;
+      }
+
+      .mirror-response h2 {
+        font-size: clamp(1.4rem, 3.2vw, 1.7rem);
+        margin-top: 2.5rem;
+        padding-left: 1rem;
+        border-left: 3px solid rgba(102, 126, 234, 0.3);
+      }
+
+      .mirror-response h3 {
+        font-size: clamp(1.2rem, 2.8vw, 1.4rem);
+        color: #4a5568;
+        -webkit-text-fill-color: #4a5568;
+      }
+
+      .mirror-response h4,
+      .mirror-response h5,
+      .mirror-response h6 {
+        font-size: clamp(1.1rem, 2.5vw, 1.2rem);
+        color: #5a5a6b;
+        -webkit-text-fill-color: #5a5a6b;
+      }
+
+      /* Paragraphs */
       .mirror-response p {
-        margin: 0 0 1.8rem 0;
+        margin: 0 0 1.5rem 0;
+        text-align: justify;
+        hyphens: auto;
       }
 
       .mirror-response p:last-child {
         margin-bottom: 0;
       }
 
+      /* Strong and emphasis */
       .mirror-response strong {
         font-weight: 600;
         color: #16213e;
@@ -426,7 +490,268 @@
       .mirror-response em {
         font-style: italic;
         color: #4a5568;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        position: relative;
+      }
+
+      .mirror-response strong em,
+      .mirror-response em strong {
+        background: linear-gradient(135deg, #764ba2, #667eea);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 600;
+        font-style: italic;
+      }
+
+      /* Lists */
+      .mirror-response ul,
+      .mirror-response ol {
+        margin: 1.5rem 0;
+        padding-left: 0;
+        list-style: none;
+      }
+
+      .mirror-response ul li,
+      .mirror-response ol li {
+        margin: 0.8rem 0;
+        padding-left: 2rem;
+        position: relative;
+        line-height: 1.6;
+      }
+
+      .mirror-response ul li::before {
+        content: "✦";
+        position: absolute;
+        left: 0.5rem;
+        color: #667eea;
+        font-weight: bold;
+        font-size: 0.9rem;
+      }
+
+      .mirror-response ol {
+        counter-reset: custom-counter;
+      }
+
+      .mirror-response ol li {
+        counter-increment: custom-counter;
+      }
+
+      .mirror-response ol li::before {
+        content: counter(custom-counter);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1.5rem;
+        height: 1.5rem;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      /* Nested lists */
+      .mirror-response ul ul,
+      .mirror-response ol ol,
+      .mirror-response ul ol,
+      .mirror-response ol ul {
+        margin: 0.5rem 0;
+        padding-left: 1.5rem;
+      }
+
+      .mirror-response ul ul li::before {
+        content: "◦";
+        color: #764ba2;
+      }
+
+      /* Blockquotes */
+      .mirror-response blockquote {
+        margin: 2rem 0;
+        padding: 1.5rem 2rem;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.05));
+        border-left: 4px solid #667eea;
+        border-radius: 0 16px 16px 0;
+        position: relative;
+        font-style: italic;
+        color: #4a5568;
+      }
+
+      .mirror-response blockquote::before {
+        content: """;
+        position: absolute;
+        top: 0.5rem;
+        left: 0.5rem;
+        font-size: 2rem;
+        color: #667eea;
+        opacity: 0.3;
+        font-family: Georgia, serif;
+      }
+
+      .mirror-response blockquote p {
+        margin: 0;
+        padding-left: 1rem;
+      }
+
+      /* Code */
+      .mirror-response code {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        padding: 0.2rem 0.4rem;
+        border-radius: 6px;
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+        font-size: 0.9em;
+        border: 1px solid rgba(102, 126, 234, 0.2);
+      }
+
+      .mirror-response pre {
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        color: #e2e8f0;
+        padding: 1.5rem;
+        border-radius: 12px;
+        overflow-x: auto;
+        margin: 1.5rem 0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+      }
+
+      .mirror-response pre::before {
+        content: "Code";
+        position: absolute;
+        top: 0.5rem;
+        right: 1rem;
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.5);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .mirror-response pre code {
+        background: none;
+        color: inherit;
+        padding: 0;
+        border: none;
+        border-radius: 0;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      /* Horizontal rules */
+      .mirror-response hr {
+        border: none;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.3), transparent);
+        margin: 2.5rem 0;
+        position: relative;
+      }
+
+      .mirror-response hr::after {
+        content: "✦";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(255, 255, 255, 0.97);
+        color: #667eea;
+        padding: 0 1rem;
+        font-size: 0.8rem;
+      }
+
+      /* Links */
+      .mirror-response a {
+        color: #667eea;
+        text-decoration: none;
+        position: relative;
+        border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .mirror-response a:hover {
+        color: #764ba2;
+        border-bottom-color: #764ba2;
+      }
+
+      /* Tables */
+      .mirror-response table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 2rem 0;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .mirror-response table th,
+      .mirror-response table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+      }
+
+      .mirror-response table th {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.08));
+        font-weight: 600;
+        color: #16213e;
+      }
+
+      .mirror-response table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .mirror-response table tr:hover {
+        background: rgba(102, 126, 234, 0.05);
+      }
+
+      /* Special elements */
+      .mirror-response mark {
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(245, 158, 11, 0.2));
+        color: #16213e;
+        padding: 0.1rem 0.3rem;
+        border-radius: 4px;
+      }
+
+      .mirror-response del {
+        color: #a0a0a0;
+        text-decoration-color: rgba(239, 68, 68, 0.6);
+      }
+
+      .mirror-response ins {
+        background: rgba(16, 185, 129, 0.1);
+        color: #16213e;
+        text-decoration: none;
+        padding: 0.1rem 0.2rem;
+        border-radius: 3px;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .mirror-response {
+          padding: clamp(1.5rem, 3vw, 2rem);
+          font-size: clamp(1rem, 2.2vw, 1.1rem);
+        }
+
+        .mirror-response ul li,
+        .mirror-response ol li {
+          padding-left: 1.5rem;
+        }
+
+        .mirror-response blockquote {
+          padding: 1rem 1.5rem;
+          margin: 1.5rem 0;
+        }
+
+        .mirror-response table {
+          font-size: 0.9rem;
+        }
+
+        .mirror-response table th,
+        .mirror-response table td {
+          padding: 0.75rem 0.5rem;
+        }
       }
 
       /* ╭─ ARTIFACT SECTION ───────────────────────────────────────────────╮ */
@@ -1189,9 +1514,164 @@
     </div>
 
     <script>
+      /* ═══════════════ ENHANCED MARKDOWN PARSER ═══════════════ */
+
+      class EnhancedMarkdownParser {
+        constructor() {
+          this.rules = [
+            // Headers (must come before other rules)
+            { pattern: /^### (.*$)/gm, replacement: "<h3>$1</h3>" },
+            { pattern: /^## (.*$)/gm, replacement: "<h2>$1</h2>" },
+            { pattern: /^# (.*$)/gm, replacement: "<h1>$1</h1>" },
+
+            // Horizontal rules
+            { pattern: /^---$/gm, replacement: "<hr>" },
+            { pattern: /^\*\*\*$/gm, replacement: "<hr>" },
+
+            // Blockquotes
+            {
+              pattern: /^> (.*)$/gm,
+              replacement: "<blockquote><p>$1</p></blockquote>",
+            },
+
+            // Code blocks (must come before inline code)
+            {
+              pattern: /```([\s\S]*?)```/g,
+              replacement: "<pre><code>$1</code></pre>",
+            },
+
+            // Inline code
+            { pattern: /`([^`]+)`/g, replacement: "<code>$1</code>" },
+
+            // Bold and italic combinations
+            {
+              pattern: /\*\*\*(.*?)\*\*\*/g,
+              replacement: "<strong><em>$1</em></strong>",
+            },
+            {
+              pattern: /\_\_\_(.*?)\_\_\_/g,
+              replacement: "<strong><em>$1</em></strong>",
+            },
+
+            // Bold
+            { pattern: /\*\*(.*?)\*\*/g, replacement: "<strong>$1</strong>" },
+            { pattern: /\_\_(.*?)\_\_/g, replacement: "<strong>$1</strong>" },
+
+            // Italic
+            { pattern: /\*(.*?)\*/g, replacement: "<em>$1</em>" },
+            { pattern: /\_(.*?)\_/g, replacement: "<em>$1</em>" },
+
+            // Strikethrough
+            { pattern: /~~(.*?)~~/g, replacement: "<del>$1</del>" },
+
+            // Highlight/mark
+            { pattern: /==(.*?)==/g, replacement: "<mark>$1</mark>" },
+
+            // Links
+            {
+              pattern: /\[([^\]]+)\]\(([^)]+)\)/g,
+              replacement: '<a href="$2">$1</a>',
+            },
+
+            // Unordered lists
+            { pattern: /^\* (.*)$/gm, replacement: "<li>$1</li>" },
+            { pattern: /^- (.*)$/gm, replacement: "<li>$1</li>" },
+            { pattern: /^\+ (.*)$/gm, replacement: "<li>$1</li>" },
+
+            // Ordered lists
+            { pattern: /^\d+\. (.*)$/gm, replacement: "<li>$1</li>" },
+
+            // Line breaks
+            { pattern: /\n\n/g, replacement: "</p><p>" },
+          ];
+        }
+
+        parse(markdown) {
+          if (!markdown || typeof markdown !== "string") {
+            return "<p>No content available</p>";
+          }
+
+          let html = markdown.trim();
+
+          // Apply all markdown rules
+          this.rules.forEach((rule) => {
+            html = html.replace(rule.pattern, rule.replacement);
+          });
+
+          // Post-process lists
+          html = this.processLists(html);
+
+          // Clean up blockquotes
+          html = this.cleanupBlockquotes(html);
+
+          // Wrap in paragraph tags if not already wrapped
+          if (
+            !html.includes("<p>") &&
+            !html.includes("<h1>") &&
+            !html.includes("<h2>") &&
+            !html.includes("<h3>")
+          ) {
+            html = `<p>${html}</p>`;
+          } else if (!html.startsWith("<")) {
+            html = `<p>${html}`;
+          }
+
+          // Ensure proper paragraph closing
+          if (!html.endsWith("</p>") && !html.endsWith(">")) {
+            html += "</p>";
+          }
+
+          return html;
+        }
+
+        processLists(html) {
+          // Wrap consecutive list items in ul/ol tags
+
+          // Unordered lists
+          html = html.replace(
+            /(<li>.*?<\/li>)(\s*<li>.*?<\/li>)*/g,
+            (match) => {
+              return `<ul>${match}</ul>`;
+            }
+          );
+
+          // Fix nested unordered lists within ordered content
+          html = html.replace(
+            /<ul>(<li>.*?<\/li>)<\/ul>/g,
+            (match, content) => {
+              // Check if this is actually an ordered list by looking for numbers
+              const hasNumbers = /^\d+\./.test(content.replace(/<\/?li>/g, ""));
+              if (hasNumbers) {
+                return `<ol>${content}</ol>`;
+              }
+              return match;
+            }
+          );
+
+          return html;
+        }
+
+        cleanupBlockquotes(html) {
+          // Merge consecutive blockquotes
+          html = html.replace(
+            /(<blockquote><p>.*?<\/p><\/blockquote>)\s*(<blockquote><p>.*?<\/p><\/blockquote>)/g,
+            (match, first, second) => {
+              const firstContent = first.replace(/<\/?blockquote>|<\/?p>/g, "");
+              const secondContent = second.replace(
+                /<\/?blockquote>|<\/?p>/g,
+                ""
+              );
+              return `<blockquote><p>${firstContent} ${secondContent}</p></blockquote>`;
+            }
+          );
+
+          return html;
+        }
+      }
+
       /* ═══════════════ REFLECTION OUTPUT - COMPLETE SCRIPT ═══════════════ */
 
-      "use strict";
+      ("use strict");
 
       // ╭─ GLOBAL STATE MANAGER ─────────────────────────────────────────────╮
       class ReflectionOutputState {
@@ -1201,6 +1681,7 @@
           this.currentReflectionId = null;
           this.currentReflection = null;
           this.artifactData = null;
+          this.markdownParser = new EnhancedMarkdownParser();
         }
 
         setCurrentUser(userId, userData) {
@@ -1334,7 +1815,6 @@
               headers["Authorization"] = `Bearer ${this.state.authToken}`;
             }
 
-            // FIXED: Use the correct API format that matches your reflections.js
             const response = await fetch(`/api/reflections`, {
               method: "POST",
               headers: headers,
@@ -1375,16 +1855,20 @@
         displayReflection() {
           if (!this.state.currentReflection) return;
 
-          // Display the mirror's response
           const responseElement = document.getElementById("mirrorResponse");
+
           if (this.state.currentReflection.ai_response) {
-            responseElement.innerHTML =
-              this.state.currentReflection.ai_response;
+            // Parse markdown and display beautifully formatted content
+            const parsedContent = this.state.markdownParser.parse(
+              this.state.currentReflection.ai_response
+            );
+            responseElement.innerHTML = parsedContent;
           } else {
-            responseElement.textContent = "No reflection content available.";
+            responseElement.innerHTML =
+              "<p>No reflection content available.</p>";
           }
 
-          console.log("✅ Reflection displayed successfully");
+          console.log("✅ Reflection displayed with enhanced markdown support");
         }
 
         async checkExistingArtifact() {
@@ -1787,7 +2271,9 @@
       }
 
       window.reflectionOutputApp = reflectionOutputApp;
-      console.log("🪞 Reflection Output script loaded and ready");
+      console.log(
+        "🪞 Reflection Output script loaded with enhanced markdown support"
+      );
     </script>
   </body>
 </html>
