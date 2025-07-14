@@ -899,63 +899,94 @@ async function handlePaymentIntentWebhook(event, res) {
         `👤 [${webhookId}]   Stripe Customer: ${existingUser.stripe_customer_id}`
       );
 
-      // Step 3: Attach payment method to customer (NEW FIX)
+      // Step 3: Attach payment method to customer (GRACEFUL HANDLING)
       log(
         "info",
-        `🔍 [${webhookId}] Step 3: Attaching payment method to customer...`
+        `🔍 [${webhookId}] Step 3: Attempting to attach payment method to customer...`
       );
 
-      // Get the payment method from the successful PaymentIntent
       const paymentMethodId = paymentIntent.payment_method;
 
       if (!paymentMethodId) {
         log(
-          "error",
-          `❌ [${webhookId}] No payment method found on PaymentIntent`
+          "warn",
+          `⚠️ [${webhookId}] No payment method found on PaymentIntent, continuing without attachment`
         );
-        throw new Error("No payment method found on PaymentIntent");
-      }
+      } else {
+        log("info", `💳 [${webhookId}] Payment Method ID: ${paymentMethodId}`);
 
-      log("info", `💳 [${webhookId}] Payment Method ID: ${paymentMethodId}`);
-
-      // Attach the payment method to the customer
-      try {
-        await stripe.paymentMethods.attach(paymentMethodId, {
-          customer: paymentIntent.customer,
-        });
-        log("info", `✅ [${webhookId}] Payment method attached to customer`);
-      } catch (attachError) {
-        if (
-          attachError.code === "resource_missing" ||
-          attachError.message?.includes("already been attached")
-        ) {
+        // Try to attach the payment method, but don't fail if it doesn't work
+        try {
+          await stripe.paymentMethods.attach(paymentMethodId, {
+            customer: paymentIntent.customer,
+          });
           log(
             "info",
-            `⚠️ [${webhookId}] Payment method already attached, continuing...`
+            `✅ [${webhookId}] Payment method attached to customer successfully`
           );
-        } else {
-          throw attachError;
+
+          // Try to set it as default if attachment succeeded
+          try {
+            await stripe.customers.update(paymentIntent.customer, {
+              invoice_settings: {
+                default_payment_method: paymentMethodId,
+              },
+            });
+            log(
+              "info",
+              `✅ [${webhookId}] Payment method set as default for customer`
+            );
+          } catch (defaultError) {
+            log(
+              "warn",
+              `⚠️ [${webhookId}] Could not set default payment method (non-critical):`,
+              defaultError.message
+            );
+          }
+        } catch (attachError) {
+          log(
+            "warn",
+            `⚠️ [${webhookId}] Payment method attachment failed (non-critical):`,
+            attachError.message
+          );
+
+          // Common reasons for attachment failure:
+          if (attachError.message?.includes("previously used")) {
+            log(
+              "info",
+              `💡 [${webhookId}] This is likely due to test card reuse - continuing without attachment`
+            );
+          } else if (attachError.message?.includes("already been attached")) {
+            log(
+              "info",
+              `💡 [${webhookId}] Payment method already attached - continuing`
+            );
+          }
+
+          // Even if attachment fails, try to set it as default (might work if already attached)
+          try {
+            await stripe.customers.update(paymentIntent.customer, {
+              invoice_settings: {
+                default_payment_method: paymentMethodId,
+              },
+            });
+            log(
+              "info",
+              `✅ [${webhookId}] Payment method set as default despite attachment failure`
+            );
+          } catch (defaultError) {
+            log(
+              "warn",
+              `⚠️ [${webhookId}] Could not set default payment method either - will create subscription without default payment method`
+            );
+          }
         }
       }
 
-      // Set it as the default payment method for subscriptions
-      try {
-        await stripe.customers.update(paymentIntent.customer, {
-          invoice_settings: {
-            default_payment_method: paymentMethodId,
-          },
-        });
-        log(
-          "info",
-          `✅ [${webhookId}] Payment method set as default for customer`
-        );
-      } catch (defaultError) {
-        log(
-          "warn",
-          `⚠️ [${webhookId}] Could not set default payment method:`,
-          defaultError.message
-        );
-      }
+      log(
+        "info",
+        `🔍 [${webhookId}] Step 4: Creating Stripe subscription with trial to avoid double charging...`
+      );
 
       // Step 4: Create Stripe subscription with trial period to avoid double charging
       log(
