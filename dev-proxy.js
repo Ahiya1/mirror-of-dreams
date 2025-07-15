@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -12,13 +13,21 @@ const BACKEND_TARGETS = {
 
 const BACKEND_TARGET = BACKEND_TARGETS[process.env.BACKEND_MODE || "local"];
 
+// Check if React build exists
+const REACT_BUILD_DIR = path.join(__dirname, "dist");
+const hasReactBuild = fs.existsSync(REACT_BUILD_DIR);
+
 console.log(`🔄 Proxying API calls to: ${BACKEND_TARGET}`);
 console.log(`📁 Serving static files from: public/`);
+console.log(`⚛️  React build available: ${hasReactBuild ? "Yes" : "No"}`);
 console.log(`🌐 Development server starting on: http://localhost:${PORT}`);
 
 // Request logging middleware
 app.use((req, res, next) => {
-  console.log(`📥 ${req.method} ${req.url}`);
+  const isAPI = req.url.startsWith("/api");
+  const isMirror = req.url.startsWith("/mirror");
+  const emoji = isAPI ? "🔀" : isMirror ? "⚛️ " : "📁";
+  console.log(`${emoji} ${req.method} ${req.url}`);
   next();
 });
 
@@ -26,22 +35,19 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// SIMPLE MANUAL PROXY for /api routes (instead of http-proxy-middleware)
+// MANUAL PROXY for /api routes
 app.use("/api", async (req, res) => {
   try {
-    // IMPORTANT: req.url is the path AFTER /api, so we need to add /api back
     const fullPath = "/api" + req.url;
     console.log(
       `🔀 Manual proxy: ${req.method} ${fullPath} -> ${BACKEND_TARGET}${fullPath}`
     );
 
-    // Prepare the fetch request with CLEAN headers (this is the fix!)
     const fetchOptions = {
       method: req.method,
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        // Only copy specific safe headers, not all headers
         ...(req.headers.authorization && {
           Authorization: req.headers.authorization,
         }),
@@ -51,26 +57,19 @@ app.use("/api", async (req, res) => {
       },
     };
 
-    // Add body for POST/PUT requests
     if (req.method === "POST" || req.method === "PUT") {
       fetchOptions.body = JSON.stringify(req.body);
-      console.log(`📤 Sending body:`, req.body);
-      console.log(`📤 Stringified body:`, fetchOptions.body);
     }
 
-    // Make the request to backend WITH the full /api path
     const response = await fetch(`${BACKEND_TARGET}${fullPath}`, fetchOptions);
     const data = await response.text();
 
     console.log(
       `📥 Backend response: ${response.status} ${response.statusText}`
     );
-    console.log(`📥 Response data:`, data.substring(0, 200));
 
-    // Forward the response
     res.status(response.status);
 
-    // Copy response headers (be selective)
     response.headers.forEach((value, key) => {
       if (
         ![
@@ -84,7 +83,6 @@ app.use("/api", async (req, res) => {
       }
     });
 
-    // Send the response data
     res.send(data);
   } catch (error) {
     console.error("❌ Manual proxy error:", error.message);
@@ -96,29 +94,68 @@ app.use("/api", async (req, res) => {
   }
 });
 
-// Test route
+// REACT ROUTES - Simplified single entry point
+const serveReactApp = (req, res) => {
+  if (hasReactBuild) {
+    const filePath = path.join(REACT_BUILD_DIR, "index.html");
+    if (fs.existsSync(filePath)) {
+      console.log(`⚛️  Serving React: index.html`);
+      res.sendFile(filePath);
+    } else {
+      console.log(`⚠️  React file not found, falling back to static`);
+      fallbackToStatic(req, res);
+    }
+  } else {
+    console.log(`⚠️  No React build, serving static for: ${req.url}`);
+    fallbackToStatic(req, res);
+  }
+};
+
+const fallbackToStatic = (req, res) => {
+  const url = req.url;
+  let staticFile;
+
+  if (url.includes("questionnaire")) {
+    staticFile = "mirror/questionnaire.html";
+  } else if (url.includes("output")) {
+    staticFile = "mirror/output.html";
+  } else {
+    staticFile = "mirror/questionnaire.html";
+  }
+
+  const fullPath = path.join(__dirname, "public", staticFile);
+  console.log(`📁 Fallback static: ${staticFile}`);
+  res.sendFile(fullPath);
+};
+
+// Mirror routes - All mirror routes serve the same React app
+app.get("/mirror", serveReactApp);
+app.get("/mirror/", serveReactApp);
+app.get("/mirror/questionnaire", serveReactApp);
+app.get("/mirror/output", serveReactApp);
+
+// Test route for development
 app.get("/test-proxy", (req, res) => {
   res.json({
     message: "Proxy server is working",
     backend: BACKEND_TARGET,
+    reactBuild: hasReactBuild,
     timestamp: new Date().toISOString(),
   });
 });
 
-// HTML route handler
+// STATIC ROUTES - All other routes serve static HTML
 const serveHtml = (htmlPath) => (req, res) => {
   const fullPath = path.join(__dirname, "public", htmlPath);
-  console.log(`📄 Serving: ${htmlPath}`);
+  console.log(`📄 Serving static: ${htmlPath}`);
   res.sendFile(fullPath);
 };
 
-// HTML routes
+// Static HTML routes
 app.get("/", serveHtml("portal/index.html"));
 app.get("/portal", serveHtml("portal/index.html"));
 app.get("/auth", serveHtml("auth/signin.html"));
 app.get("/auth/signin", serveHtml("auth/signin.html"));
-app.get("/mirror/questionnaire", serveHtml("mirror/questionnaire.html"));
-app.get("/mirror/output", serveHtml("mirror/output.html"));
 app.get("/dashboard", serveHtml("dashboard/index.html"));
 app.get("/reflections/history", serveHtml("reflections/history.html"));
 app.get("/reflections/view", serveHtml("reflections/view.html"));
@@ -134,7 +171,13 @@ app.get("/profile", serveHtml("profile/index.html"));
 app.get("/examples", serveHtml("examples/index.html"));
 app.get("/transition/breathing", serveHtml("transition/breathing.html"));
 
-// Static files LAST
+// Serve React build assets if available
+if (hasReactBuild) {
+  app.use("/assets", express.static(path.join(REACT_BUILD_DIR, "assets")));
+  console.log(`📦 Serving React assets from: ${REACT_BUILD_DIR}/assets`);
+}
+
+// Serve static files from public directory LAST
 app.use(
   express.static(path.join(__dirname, "public"), {
     index: false,
@@ -160,12 +203,15 @@ app.listen(PORT, () => {
   console.log(
     `   http://localhost:${PORT}/api/health (backend health - via proxy)`
   );
-  console.log(`\n💡 To change backend target:`);
+  console.log(`\n⚛️  React Experience (Single Entry Point):`);
+  console.log(`   http://localhost:${PORT}/mirror/questionnaire (React app)`);
+  console.log(`   http://localhost:${PORT}/mirror/output (React app)`);
+  console.log(`\n💡 Commands:`);
   console.log(
-    `   npm run dev                           (local backend - default)`
+    `   npm run dev                  (this server - static + React fallback)`
   );
-  console.log(`   BACKEND_MODE=vercel npm run dev       (deployed Vercel)`);
-  console.log(`   BACKEND_MODE=railway npm run dev      (Railway backend)`);
+  console.log(`   npm run dev:react           (React dev server on :3002)`);
+  console.log(`   npm run build               (build React for production)`);
   console.log(`\n🌐 Visit: http://localhost:${PORT}`);
   console.log(`📊 Static files served from: public/\n`);
 });
