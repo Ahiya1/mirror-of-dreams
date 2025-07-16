@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import AuthLayout from "./AuthLayout";
 import SigninForm from "./SigninForm";
 import SignupForm from "./SignupForm";
+import { storageService } from "../../services/storage.service";
 
 /**
  * Main auth application component that handles routing between signin and signup
@@ -46,8 +47,8 @@ const AuthApp = () => {
    * @param {Object} result - Auth result from API
    */
   const handleAuthSuccess = (result) => {
-    // Store auth data
-    localStorage.setItem("mirror_auth_token", result.token);
+    // Store auth data using storage service
+    storageService.setAuthToken(result.token);
     localStorage.setItem("mirrorVerifiedUser", JSON.stringify(result.user));
 
     // Add celebration effect for signup
@@ -63,7 +64,6 @@ const AuthApp = () => {
       currentPage === "signup" ? 2500 : 1000
     );
   };
-
   /**
    * Create celebration effect for successful signup
    */

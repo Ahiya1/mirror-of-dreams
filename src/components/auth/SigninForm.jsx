@@ -156,7 +156,7 @@ const SigninForm = ({ onSuccess, onSwitchToSignup }) => {
       )}
 
       {/* Signin Form */}
-      <div className="signin-form" onSubmit={handleSubmit}>
+      <form className="signin-form" onSubmit={handleSubmit}>
         {/* Email Field */}
         <div className="form-group">
           <label htmlFor="signin-email" className="form-label">
@@ -206,7 +206,11 @@ const SigninForm = ({ onSuccess, onSwitchToSignup }) => {
         </div>
 
         {/* Submit Button */}
-        <button type="submit" className="submit-button" disabled={isLoading}>
+        <button
+          type="submit"
+          className="cosmic-button cosmic-button--primary"
+          disabled={isLoading}
+        >
           {isLoading ? (
             <span className="button-loading">
               <div className="loading-spinner"></div>
@@ -216,7 +220,7 @@ const SigninForm = ({ onSuccess, onSwitchToSignup }) => {
             <span className="button-text">Continue Your Journey</span>
           )}
         </button>
-      </div>
+      </form>
 
       {/* Footer */}
       <div className="signin-footer">
