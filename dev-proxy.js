@@ -28,6 +28,7 @@ app.use((req, res, next) => {
   const isMirror = req.url.startsWith("/mirror");
   const isDashboard = req.url.startsWith("/dashboard");
   const isAuth = req.url.startsWith("/auth");
+  const isPortal = req.url === "/" || req.url === "/portal";
   const emoji = isAPI
     ? "🔀"
     : isMirror
@@ -36,6 +37,8 @@ app.use((req, res, next) => {
     ? "📊"
     : isAuth
     ? "🔐"
+    : isPortal
+    ? "🪞"
     : "📁";
   console.log(`${emoji} ${req.method} ${req.url}`);
   next();
@@ -104,7 +107,7 @@ app.use("/api", async (req, res) => {
   }
 });
 
-// REACT ROUTES - Enhanced with auth support
+// REACT ROUTES - Enhanced with portal support
 const serveReactApp = (req, res) => {
   if (hasReactBuild) {
     const filePath = path.join(REACT_BUILD_DIR, "index.html");
@@ -125,7 +128,9 @@ const fallbackToStatic = (req, res) => {
   const url = req.url;
   let staticFile;
 
-  if (url.includes("dashboard")) {
+  if (url === "/" || url === "/portal") {
+    staticFile = "portal/index.html"; // Fallback to static portal if React not available
+  } else if (url.includes("dashboard")) {
     staticFile = "dashboard/index.html";
   } else if (
     url.includes("auth") ||
@@ -138,13 +143,17 @@ const fallbackToStatic = (req, res) => {
   } else if (url.includes("output")) {
     staticFile = "mirror/output.html";
   } else {
-    staticFile = "mirror/questionnaire.html";
+    staticFile = "portal/index.html"; // Default to portal
   }
 
   const fullPath = path.join(__dirname, "public", staticFile);
   console.log(`📁 Fallback static: ${staticFile}`);
   res.sendFile(fullPath);
 };
+
+// PORTAL ROUTES - Serve React app for portal (NEW)
+app.get("/", serveReactApp);
+app.get("/portal", serveReactApp);
 
 // AUTH ROUTES - Serve React app for all auth pages
 app.get("/auth", serveReactApp);
@@ -162,6 +171,17 @@ app.get("/mirror/output", serveReactApp);
 // Dashboard routes - Serve React app for dashboard
 app.get("/dashboard", serveReactApp);
 
+// Legacy redirects for old auth routes
+app.get("/register", (req, res) => {
+  res.redirect(301, "/auth/register");
+});
+app.get("/signin", (req, res) => {
+  res.redirect(301, "/auth/signin");
+});
+app.get("/signup", (req, res) => {
+  res.redirect(301, "/auth/signup");
+});
+
 // Test route for development
 app.get("/test-proxy", (req, res) => {
   res.json({
@@ -169,19 +189,24 @@ app.get("/test-proxy", (req, res) => {
     backend: BACKEND_TARGET,
     reactBuild: hasReactBuild,
     timestamp: new Date().toISOString(),
+    routes: {
+      portal: "React (/)",
+      auth: "React (/auth/*)",
+      mirror: "React (/mirror/*)",
+      dashboard: "React (/dashboard)",
+      static: "Static HTML (others)",
+    },
   });
 });
 
-// STATIC ROUTES - All other routes serve static HTML
+// STATIC ROUTES - Remaining routes serve static HTML
 const serveHtml = (htmlPath) => (req, res) => {
   const fullPath = path.join(__dirname, "public", htmlPath);
   console.log(`📄 Serving static: ${htmlPath}`);
   res.sendFile(fullPath);
 };
 
-// Static HTML routes
-app.get("/", serveHtml("portal/index.html"));
-app.get("/portal", serveHtml("portal/index.html"));
+// Static HTML routes (non-React pages)
 app.get("/reflections/history", serveHtml("reflections/history.html"));
 app.get("/reflections/view", serveHtml("reflections/view.html"));
 app.get("/subscription", serveHtml("subscription/index.html"));
@@ -212,7 +237,7 @@ if (hasReactBuild) {
   );
 
   // Serve assets from all React app paths
-  const reactPaths = ["/mirror", "/dashboard", "/auth"];
+  const reactPaths = ["/", "/portal", "/mirror", "/dashboard", "/auth"];
   reactPaths.forEach((basePath) => {
     app.use(
       `${basePath}/assets`,
@@ -257,20 +282,25 @@ app.listen(PORT, () => {
   console.log(
     `   http://localhost:${PORT}/api/health (backend health - via proxy)`
   );
-  console.log(`\n⚛️  React Experience (Single Entry Point):`);
-  console.log(`   http://localhost:${PORT}/auth/signin (React auth)`);
-  console.log(`   http://localhost:${PORT}/auth/signup (React auth)`);
-  console.log(`   http://localhost:${PORT}/mirror/questionnaire (React app)`);
-  console.log(`   http://localhost:${PORT}/mirror/output (React app)`);
-  console.log(`   http://localhost:${PORT}/dashboard (Dashboard React app)`);
-  console.log(`\n💡 Commands:`);
+  console.log(`\n⚛️  React Experience:`);
+  console.log(`   http://localhost:${PORT}/ (Portal - React)`);
+  console.log(`   http://localhost:${PORT}/portal (Portal - React)`);
+  console.log(`   http://localhost:${PORT}/auth/signin (Auth - React)`);
+  console.log(`   http://localhost:${PORT}/auth/signup (Auth - React)`);
   console.log(
-    `   npm run dev                  (this server - static + React fallback)`
+    `   http://localhost:${PORT}/mirror/questionnaire (Mirror - React)`
   );
+  console.log(`   http://localhost:${PORT}/dashboard (Dashboard - React)`);
+  console.log(`\n📄 Static HTML (Remaining):`);
+  console.log(`   http://localhost:${PORT}/about (About page)`);
+  console.log(`   http://localhost:${PORT}/subscription (Subscription)`);
+  console.log(`   http://localhost:${PORT}/examples (Examples)`);
+  console.log(`\n💡 Commands:`);
+  console.log(`   npm run dev                  (this server - static + React)`);
   console.log(`   npm run dev:react           (React dev server on :3002)`);
   console.log(`   npm run build               (build React for production)`);
   console.log(`\n🌐 Visit: http://localhost:${PORT}`);
-  console.log(`📊 Static files served from: public/\n`);
+  console.log(`📊 Portal now served via React!\n`);
 });
 
 module.exports = app;
