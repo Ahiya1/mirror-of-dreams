@@ -1,4 +1,4 @@
-// services/auth.service.js - Authentication API service (CLEANED)
+// services/auth.service.js - Authentication API service (FIXED)
 
 import { apiClient } from "./api";
 import { storageService } from "./storage.service";
@@ -6,11 +6,55 @@ import { API_ENDPOINTS } from "../utils/constants";
 
 class AuthService {
   /**
+   * Handle URL-based authentication (creator mode, test mode, etc.)
+   * @param {URLSearchParams} urlParams - URL search parameters
+   * @returns {Object|null} - Special user object or null
+   */
+  handleUrlAuthentication(urlParams) {
+    console.log("🔍 AuthService: Checking URL authentication");
+
+    // Creator mode authentication
+    if (urlParams.get("mode") === "creator") {
+      console.log("🔍 AuthService: Creator mode detected");
+      return {
+        id: "creator",
+        name: "Creator",
+        email: "creator@mirroroftruth.xyz",
+        tier: "premium",
+        isCreator: true,
+        isAdmin: true,
+        testMode: false,
+        token: "creator_mode_token",
+      };
+    }
+
+    // Test mode authentication
+    const testTier = urlParams.get("test");
+    if (testTier) {
+      console.log(`🔍 AuthService: Test mode detected: ${testTier}`);
+      return {
+        id: `test_${testTier}`,
+        name: `Test User (${testTier})`,
+        email: `test-${testTier}@mirroroftruth.xyz`,
+        tier: testTier,
+        isCreator: false,
+        isAdmin: false,
+        testMode: true,
+        token: `test_${testTier}_token`,
+      };
+    }
+
+    return null;
+  }
+
+  /**
    * Sign up new user
    * @param {Object} userData - User registration data
    * @returns {Promise<Object>} - Auth response with user and token
    */
   async signup(userData) {
+    console.log("🔍 AuthService: Starting signup for", userData.email);
+
     const { email, password, name, tier = "free", language = "en" } = userData;
 
     const response = await apiClient.post(API_ENDPOINTS.AUTH, {
@@ -23,6 +67,7 @@ class AuthService {
     });
 
     if (response.success && response.token) {
+      console.log("✅ AuthService: Signup successful, storing token");
       storageService.setAuthToken(response.token);
     }
 
@@ -35,6 +80,8 @@ class AuthService {
    * @returns {Promise<Object>} - Auth response with user and token
    */
   async signin(credentials) {
+    console.log("🔍 AuthService: Starting signin for", credentials.email);
+
     const { email, password } = credentials;
 
     const response = await apiClient.post(API_ENDPOINTS.AUTH, {
@@ -44,6 +91,7 @@ class AuthService {
     });
 
     if (response.success && response.token) {
+      console.log("✅ AuthService: Signin successful, storing token");
       storageService.setAuthToken(response.token);
     }
 
@@ -55,6 +103,8 @@ class AuthService {
    * @returns {Promise<Object>} - Sign out response
    */
   async signout() {
+    console.log("🔍 AuthService: Signing out user");
+
     try {
       const response = await apiClient.post(API_ENDPOINTS.AUTH, {
         action: "signout",
@@ -62,10 +112,14 @@ class AuthService {
 
       // Clear local storage regardless of API response
       this.clearSession();
+      console.log("✅ AuthService: Signout complete, session cleared");
 
       return response;
     } catch (error) {
       // Clear session even if API call fails
+      console.log(
+        "⚠️ AuthService: Signout API failed, clearing session anyway"
+      );
       this.clearSession();
       throw error;
     }
@@ -78,6 +132,11 @@ class AuthService {
   async verifyToken() {
     const token = storageService.getAuthToken();
 
+    console.log(
+      "🔍 AuthService: Verifying token",
+      token ? "exists" : "missing"
+    );
+
     if (!token) {
       throw new Error("No token found");
     }
@@ -87,10 +146,12 @@ class AuthService {
     });
 
     if (!response.success || !response.user) {
+      console.log("❌ AuthService: Token verification failed");
       this.clearSession();
       throw new Error("Token verification failed");
     }
 
+    console.log("✅ AuthService: Token verified for", response.user.email);
     return response.user;
   }
 
@@ -99,6 +160,8 @@ class AuthService {
    * @returns {Promise<Object>} - Current user data
    */
   async getCurrentUser() {
+    console.log("🔍 AuthService: Getting current user");
+
     const response = await apiClient.post(API_ENDPOINTS.AUTH, {
       action: "get-user",
     });
@@ -172,7 +235,10 @@ class AuthService {
    * @returns {boolean} - Whether user has valid token
    */
   isAuthenticated() {
-    return !!storageService.getAuthToken();
+    const token = storageService.getAuthToken();
+    const isAuth = !!token;
+    console.log("🔍 AuthService: isAuthenticated check:", isAuth);
+    return isAuth;
   }
 
   /**
@@ -187,8 +253,17 @@ class AuthService {
    * Clear user session data
    */
   clearSession() {
+    console.log("🔍 AuthService: Clearing session data");
     storageService.removeAuthToken();
     storageService.clearAllFormStates();
+
+    // Also clear legacy storage
+    try {
+      localStorage.removeItem("mirrorVerifiedUser");
+      localStorage.removeItem("mirror_auth_token");
+    } catch (error) {
+      console.warn("Failed to clear legacy storage:", error);
+    }
   }
 
   /**
@@ -213,6 +288,7 @@ class AuthService {
    * @returns {Object} - Formatted error response
    */
   handleAuthError(error) {
+    console.log("❌ AuthService: Handling auth error:", error.message);
     this.clearSession();
 
     const errorResponse = {
@@ -227,7 +303,7 @@ class AuthService {
       errorResponse.message = "Access denied";
     } else if (error.status === 429) {
       errorResponse.message = "Too many requests. Please wait and try again.";
-    } else if (error.isNetworkError()) {
+    } else if (error.isNetworkError && error.isNetworkError()) {
       errorResponse.message = "Network error. Please check your connection.";
     }
 
@@ -239,14 +315,18 @@ class AuthService {
    * @returns {Promise<Object|null>} - Current user or null
    */
   async refreshAuth() {
+    console.log("🔍 AuthService: Refreshing auth state");
+
     try {
       if (!this.isAuthenticated()) {
         return null;
       }
 
       const user = await this.verifyToken();
+      console.log("✅ AuthService: Auth refresh successful");
       return user;
     } catch (error) {
+      console.log("❌ AuthService: Auth refresh failed:", error.message);
       this.clearSession();
       return null;
     }
@@ -259,6 +339,8 @@ class AuthService {
    */
   scheduleTokenRefresh(interval = 15 * 60 * 1000) {
     // 15 minutes
+    console.log("🔍 AuthService: Scheduling token refresh");
+
     const refreshInterval = setInterval(async () => {
       try {
         await this.refreshAuth();
@@ -268,7 +350,10 @@ class AuthService {
     }, interval);
 
     // Return cleanup function
-    return () => clearInterval(refreshInterval);
+    return () => {
+      console.log("🔍 AuthService: Cleaning up token refresh");
+      clearInterval(refreshInterval);
+    };
   }
 }
 

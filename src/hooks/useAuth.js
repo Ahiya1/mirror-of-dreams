@@ -1,4 +1,4 @@
-// hooks/useAuth.js - Authentication hook
+// hooks/useAuth.js - Authentication hook (FIXED)
 
 import { useState, useEffect, useCallback } from "react";
 import { authService } from "../services/auth.service";
@@ -19,6 +19,7 @@ export const useAuth = () => {
    * Initialize authentication state
    */
   const initializeAuth = useCallback(async () => {
+    console.log("🔍 useAuth: Initializing authentication");
     setIsLoading(true);
     setError(null);
 
@@ -28,6 +29,10 @@ export const useAuth = () => {
       const specialUser = authService.handleUrlAuthentication(urlParams);
 
       if (specialUser) {
+        console.log(
+          "✅ useAuth: Special user authenticated",
+          specialUser.email
+        );
         setUser(specialUser);
         setIsAuthenticated(true);
         setIsLoading(false);
@@ -36,18 +41,25 @@ export const useAuth = () => {
 
       // Check for existing token
       if (!authService.isAuthenticated()) {
+        console.log("🔍 useAuth: No token found, user not authenticated");
         setUser(null);
         setIsAuthenticated(false);
         setIsLoading(false);
         return;
       }
 
+      console.log("🔍 useAuth: Token found, verifying...");
+
       // Verify existing token
       const userData = await authService.verifyToken();
+      console.log(
+        "✅ useAuth: Token verified, user authenticated",
+        userData.email
+      );
       setUser(userData);
       setIsAuthenticated(true);
     } catch (error) {
-      console.warn("Auth initialization failed:", error);
+      console.warn("❌ useAuth: Auth initialization failed:", error.message);
       authService.clearSession();
       setUser(null);
       setIsAuthenticated(false);
@@ -57,6 +69,7 @@ export const useAuth = () => {
       }
     } finally {
       setIsLoading(false);
+      console.log("🔍 useAuth: Auth initialization complete");
     }
   }, []);
 
@@ -66,6 +79,7 @@ export const useAuth = () => {
    * @returns {Promise<Object>} - Sign in result
    */
   const signin = useCallback(async (credentials) => {
+    console.log("🔍 useAuth: Starting signin");
     setIsLoading(true);
     setError(null);
 
@@ -73,12 +87,14 @@ export const useAuth = () => {
       const response = await authService.signin(credentials);
 
       if (response.success && response.user) {
+        console.log("✅ useAuth: Signin successful", response.user.email);
         setUser(response.user);
         setIsAuthenticated(true);
       }
 
       return response;
     } catch (error) {
+      console.error("❌ useAuth: Signin failed:", error.message);
       const errorMessage =
         error instanceof ApiError ? error.getUserMessage() : "Sign in failed";
 
@@ -97,6 +113,7 @@ export const useAuth = () => {
    * @returns {Promise<Object>} - Sign up result
    */
   const signup = useCallback(async (userData) => {
+    console.log("🔍 useAuth: Starting signup");
     setIsLoading(true);
     setError(null);
 
@@ -104,12 +121,14 @@ export const useAuth = () => {
       const response = await authService.signup(userData);
 
       if (response.success && response.user) {
+        console.log("✅ useAuth: Signup successful", response.user.email);
         setUser(response.user);
         setIsAuthenticated(true);
       }
 
       return response;
     } catch (error) {
+      console.error("❌ useAuth: Signup failed:", error.message);
       const errorMessage =
         error instanceof ApiError ? error.getUserMessage() : "Sign up failed";
 
@@ -127,6 +146,7 @@ export const useAuth = () => {
    * @returns {Promise<void>}
    */
   const signout = useCallback(async () => {
+    console.log("🔍 useAuth: Starting signout");
     setIsLoading(true);
 
     try {
@@ -136,6 +156,7 @@ export const useAuth = () => {
       // Continue with local cleanup even if API fails
     } finally {
       // Always clear local state
+      console.log("✅ useAuth: Signout complete");
       setUser(null);
       setIsAuthenticated(false);
       setError(null);
@@ -307,9 +328,10 @@ export const useAuth = () => {
    * @param {string} returnTo - URL to return to after auth
    */
   const redirectToAuth = useCallback((returnTo = null) => {
-    const redirectUrl = authService.getAuthRedirectUrl(
-      returnTo || window.location.pathname + window.location.search
-    );
+    const currentPath =
+      returnTo || window.location.pathname + window.location.search;
+    const redirectUrl = authService.getAuthRedirectUrl(currentPath);
+    console.log("🔍 useAuth: Redirecting to auth:", redirectUrl);
     window.location.href = redirectUrl;
   }, []);
 
@@ -322,16 +344,30 @@ export const useAuth = () => {
 
   // Initialize auth on mount
   useEffect(() => {
+    console.log("🔍 useAuth: Component mounted, initializing auth");
     initializeAuth();
   }, [initializeAuth]);
 
   // Set up token refresh schedule
   useEffect(() => {
     if (isAuthenticated && !user?.testMode && !user?.isCreator) {
+      console.log("🔍 useAuth: Setting up token refresh");
       const cleanup = authService.scheduleTokenRefresh();
       return cleanup;
     }
   }, [isAuthenticated, user?.testMode, user?.isCreator]);
+
+  // Debug logging
+  useEffect(() => {
+    if (process.env.NODE_ENV === "development") {
+      console.log("🔍 useAuth: State update", {
+        isAuthenticated,
+        userEmail: user?.email,
+        isLoading,
+        error,
+      });
+    }
+  }, [isAuthenticated, user, isLoading, error]);
 
   return {
     // State

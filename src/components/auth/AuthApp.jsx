@@ -47,23 +47,42 @@ const AuthApp = () => {
    * @param {Object} result - Auth result from API
    */
   const handleAuthSuccess = (result) => {
-    // Store auth data using storage service
-    storageService.setAuthToken(result.token);
-    localStorage.setItem("mirrorVerifiedUser", JSON.stringify(result.user));
+    console.log("🔍 AuthApp: handleAuthSuccess called", result);
+
+    // Use storage service to properly store auth data
+    if (result.token) {
+      storageService.setAuthToken(result.token);
+      console.log("✅ AuthApp: Token stored via storageService");
+    }
+
+    // Store user data in a compatible way
+    if (result.user) {
+      // Store in the legacy format for backward compatibility
+      localStorage.setItem("mirrorVerifiedUser", JSON.stringify(result.user));
+      console.log("✅ AuthApp: User data stored");
+    }
 
     // Add celebration effect for signup
     if (currentPage === "signup") {
       createCelebrationEffect();
     }
 
-    // Redirect to dashboard
+    // Get return URL from query params
+    const urlParams = new URLSearchParams(window.location.search);
+    const returnTo = urlParams.get("returnTo") || "/dashboard";
+
+    console.log(`🔍 AuthApp: Redirecting to ${returnTo}`);
+
+    // Redirect to destination
     setTimeout(
       () => {
-        window.location.href = "/dashboard";
+        // Force a full page reload to ensure auth state is properly initialized
+        window.location.href = returnTo;
       },
       currentPage === "signup" ? 2500 : 1000
     );
   };
+
   /**
    * Create celebration effect for successful signup
    */
