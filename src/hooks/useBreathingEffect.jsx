@@ -1,6 +1,6 @@
 // hooks/useBreathingEffect.js - Subtle breathing animations for living interfaces
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, forwardRef } from "react";
 
 /**
  * Custom hook for creating subtle breathing animations that make elements feel alive
@@ -10,65 +10,49 @@ import { useState, useEffect, useCallback, useRef } from 'react';
  */
 export const useBreathingEffect = (duration = 4000, options = {}) => {
   const {
-    intensity = 0.02,        // Scale intensity (0.02 = 2% scale change)
-    opacityChange = 0.1,     // Opacity change amount
-    easing = 'ease-in-out',  // CSS easing function
-    delay = 0,               // Initial delay
-    pauseOnHover = true,     // Pause animation on hover
-    reduceMotion = true      // Respect prefers-reduced-motion
+    intensity = 0.02, // Scale intensity (0.02 = 2% scale change)
+    opacityChange = 0.1, // Opacity change amount
+    easing = "ease-in-out", // CSS easing function
+    delay = 0, // Initial delay
+    pauseOnHover = true, // Pause animation on hover
+    reduceMotion = true, // Respect prefers-reduced-motion
   } = options;
 
   const [isActive, setIsActive] = useState(duration > 0);
   const [isPaused, setIsPaused] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const animationRef = useRef(null);
+  const animationNameRef = useRef(
+    `breathing-${Math.random().toString(36).substr(2, 9)}`
+  );
 
   /**
    * Check if user prefers reduced motion
    */
   const prefersReducedMotion = useRef(
-    typeof window !== 'undefined' && 
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
   );
 
   /**
-   * Generate breathing animation styles
+   * Inject CSS keyframes into document
    */
-  const getAnimationStyles = useCallback(() => {
-    if (!isActive || duration <= 0 || (reduceMotion && prefersReducedMotion.current)) {
-      return {
-        animation: 'none',
-        transform: 'none',
-        opacity: 1
-      };
+  const injectKeyframes = useCallback(() => {
+    if (
+      !isActive ||
+      duration <= 0 ||
+      (reduceMotion && prefersReducedMotion.current)
+    ) {
+      return;
     }
 
-    const shouldPause = pauseOnHover && isHovered;
-    const animationName = `breathing-${Math.random().toString(36).substr(2, 9)}`;
-    const playState = shouldPause || isPaused ? 'paused' : 'running';
-
-    return {
-      animation: `${animationName} ${duration}ms ${easing} ${delay}ms infinite`,
-      animationPlayState: playState,
-      transformOrigin: 'center center',
-      '--breathing-intensity': intensity,
-      '--breathing-opacity': opacityChange
-    };
-  }, [isActive, duration, easing, delay, intensity, opacityChange, isPaused, isHovered, pauseOnHover, reduceMotion]);
-
-  /**
-   * Generate CSS keyframes for breathing animation
-   */
-  const generateKeyframes = useCallback(() => {
-    if (!isActive || duration <= 0) return '';
-
-    const animationName = `breathing-${Math.random().toString(36).substr(2, 9)}`;
+    const animationName = animationNameRef.current;
     const scaleMax = 1 + intensity;
     const scaleMin = 1 - intensity;
-    const opacityMax = 1 + opacityChange;
-    const opacityMin = 1 - opacityChange;
+    const opacityMax = Math.min(1, 1 + opacityChange);
+    const opacityMin = Math.max(0, 1 - opacityChange);
 
-    return `
+    const keyframes = `
       @keyframes ${animationName} {
         0%, 100% {
           transform: scale(${scaleMin});
@@ -80,7 +64,55 @@ export const useBreathingEffect = (duration = 4000, options = {}) => {
         }
       }
     `;
-  }, [isActive, duration, intensity, opacityChange]);
+
+    // Check if keyframes already exist
+    const existingStyle = document.getElementById(`breathing-${animationName}`);
+    if (!existingStyle) {
+      const style = document.createElement("style");
+      style.id = `breathing-${animationName}`;
+      style.textContent = keyframes;
+      document.head.appendChild(style);
+
+      // Store reference for cleanup
+      animationRef.current = style;
+    }
+  }, [isActive, duration, intensity, opacityChange, reduceMotion]);
+
+  /**
+   * Generate breathing animation styles
+   */
+  const getAnimationStyles = useCallback(() => {
+    if (
+      !isActive ||
+      duration <= 0 ||
+      (reduceMotion && prefersReducedMotion.current)
+    ) {
+      return {
+        animation: "none",
+        transform: "none",
+        opacity: 1,
+      };
+    }
+
+    const shouldPause = pauseOnHover && isHovered;
+    const animationName = animationNameRef.current;
+    const playState = shouldPause || isPaused ? "paused" : "running";
+
+    return {
+      animation: `${animationName} ${duration}ms ${easing} ${delay}ms infinite`,
+      animationPlayState: playState,
+      transformOrigin: "center center",
+    };
+  }, [
+    isActive,
+    duration,
+    easing,
+    delay,
+    isPaused,
+    isHovered,
+    pauseOnHover,
+    reduceMotion,
+  ]);
 
   /**
    * Start breathing animation
@@ -115,7 +147,7 @@ export const useBreathingEffect = (duration = 4000, options = {}) => {
    * Toggle breathing animation
    */
   const toggleBreathing = useCallback(() => {
-    setIsActive(prev => !prev);
+    setIsActive((prev) => !prev);
   }, []);
 
   /**
@@ -140,7 +172,7 @@ export const useBreathingEffect = (duration = 4000, options = {}) => {
 
     return {
       onMouseEnter: handleMouseEnter,
-      onMouseLeave: handleMouseLeave
+      onMouseLeave: handleMouseLeave,
     };
   }, [pauseOnHover, handleMouseEnter, handleMouseLeave]);
 
@@ -156,45 +188,64 @@ export const useBreathingEffect = (duration = 4000, options = {}) => {
   }, [duration]);
 
   /**
+   * Inject keyframes when animation becomes active
+   */
+  useEffect(() => {
+    if (isActive) {
+      injectKeyframes();
+    }
+  }, [isActive, injectKeyframes]);
+
+  /**
    * Listen for reduced motion preference changes
    */
   useEffect(() => {
-    if (typeof window === 'undefined' || !reduceMotion) return;
+    if (typeof window === "undefined" || !reduceMotion) return;
 
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
     const handleChange = (e) => {
       prefersReducedMotion.current = e.matches;
       // Force re-render to update animation
-      setIsActive(prev => prev);
+      setIsActive((prev) => prev);
     };
 
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
   }, [reduceMotion]);
+
+  /**
+   * Cleanup on unmount
+   */
+  useEffect(() => {
+    return () => {
+      if (animationRef.current) {
+        animationRef.current.remove();
+      }
+    };
+  }, []);
 
   return {
     // Animation styles
     ...getAnimationStyles(),
-    
+
     // Control functions
     startBreathing,
     stopBreathing,
     pauseBreathing,
     resumeBreathing,
     toggleBreathing,
-    
+
     // Event handlers
     ...getHoverHandlers(),
-    
+
     // State
     isActive,
     isPaused,
     isHovered,
-    
+
     // Utilities
-    generateKeyframes,
-    prefersReducedMotion: prefersReducedMotion.current
+    prefersReducedMotion: prefersReducedMotion.current,
   };
 };
 
@@ -205,7 +256,7 @@ export const useBreathingEffect = (duration = 4000, options = {}) => {
  * @returns {React.Component} - Wrapped component with breathing effect
  */
 export const withBreathingEffect = (Component, breathingOptions = {}) => {
-  return React.forwardRef((props, ref) => {
+  return forwardRef((props, ref) => {
     const { duration = 4000, ...otherProps } = props;
     const breathing = useBreathingEffect(duration, breathingOptions);
 
@@ -215,9 +266,11 @@ export const withBreathingEffect = (Component, breathingOptions = {}) => {
         {...otherProps}
         style={{
           ...props.style,
-          ...breathing
+          animation: breathing.animation,
+          animationPlayState: breathing.animationPlayState,
+          transformOrigin: breathing.transformOrigin,
         }}
-        {...breathing.getHoverHandlers()}
+        {...breathing}
       />
     );
   });
@@ -232,45 +285,45 @@ export const BREATHING_PRESETS = {
     duration: 4000,
     intensity: 0.015,
     opacityChange: 0.05,
-    easing: 'ease-in-out',
-    pauseOnHover: true
+    easing: "ease-in-out",
+    pauseOnHover: true,
   },
-  
+
   // Gentle breathing for backgrounds
   background: {
     duration: 8000,
     intensity: 0.01,
     opacityChange: 0.03,
-    easing: 'ease-in-out',
-    pauseOnHover: false
+    easing: "ease-in-out",
+    pauseOnHover: false,
   },
-  
+
   // Prominent breathing for focus elements
   focus: {
     duration: 3000,
     intensity: 0.03,
     opacityChange: 0.15,
-    easing: 'ease-in-out',
-    pauseOnHover: true
+    easing: "ease-in-out",
+    pauseOnHover: true,
   },
-  
+
   // Slow breathing for meditation-like elements
   meditation: {
     duration: 6000,
     intensity: 0.02,
     opacityChange: 0.1,
-    easing: 'ease-in-out',
-    pauseOnHover: false
+    easing: "ease-in-out",
+    pauseOnHover: false,
   },
-  
+
   // Fast breathing for active elements
   active: {
     duration: 2000,
     intensity: 0.025,
     opacityChange: 0.12,
-    easing: 'ease-in-out',
-    pauseOnHover: true
-  }
+    easing: "ease-in-out",
+    pauseOnHover: true,
+  },
 };
 
 /**
@@ -279,7 +332,7 @@ export const BREATHING_PRESETS = {
  * @param {Object} overrides - Options to override preset
  * @returns {Object} - Breathing animation hook result
  */
-export const createBreathingEffect = (preset = 'card', overrides = {}) => {
+export const createBreathingEffect = (preset = "card", overrides = {}) => {
   const config = BREATHING_PRESETS[preset];
   if (!config) {
     console.warn(`Breathing preset "${preset}" not found. Using default.`);
@@ -300,13 +353,13 @@ export const generateBreathingCSS = (className, options = {}) => {
     duration = 4000,
     intensity = 0.02,
     opacityChange = 0.1,
-    easing = 'ease-in-out'
+    easing = "ease-in-out",
   } = options;
 
   const scaleMax = 1 + intensity;
   const scaleMin = 1 - intensity;
-  const opacityMax = 1 + opacityChange;
-  const opacityMin = 1 - opacityChange;
+  const opacityMax = Math.min(1, 1 + opacityChange);
+  const opacityMin = Math.max(0, 1 - opacityChange);
 
   return `
     .${className} {
