@@ -1,4 +1,4 @@
-// hooks/useArtifact.js - Artifact creation and management hook
+// hooks/useArtifact.js - Fixed artifact creation and management hook
 
 import { useState, useEffect, useCallback } from "react";
 import { reflectionService } from "../services/reflection.service";
@@ -26,18 +26,21 @@ export const useArtifact = (reflectionId, authToken) => {
     setError(null);
 
     try {
+      console.log(`🔍 Checking for existing artifact: ${reflectionId}`);
       const existingArtifact = await reflectionService.checkExistingArtifact(
         reflectionId
       );
 
       if (existingArtifact) {
+        console.log(`✅ Found existing artifact:`, existingArtifact);
         setArtifactData(existingArtifact);
         setArtifactState("preview");
       } else {
+        console.log(`📝 No existing artifact found`);
         setArtifactState("create");
       }
     } catch (error) {
-      console.log("No existing artifact found:", error);
+      console.log("📝 No existing artifact found:", error.message);
       setArtifactState("create");
     }
   }, [reflectionId]);
@@ -56,13 +59,15 @@ export const useArtifact = (reflectionId, authToken) => {
     setIsLoading(true);
 
     try {
+      console.log(`🎨 Creating artifact for reflection: ${reflectionId}`);
       const artifact = await reflectionService.createArtifact(reflectionId);
 
+      console.log(`✨ Artifact created successfully:`, artifact);
       setArtifactData(artifact);
       setArtifactState("preview");
       return true;
     } catch (error) {
-      console.error("Artifact creation failed:", error);
+      console.error("🔥 Artifact creation failed:", error);
 
       const errorMessage =
         error instanceof ApiError
@@ -180,7 +185,7 @@ export const useArtifact = (reflectionId, authToken) => {
   }, []);
 
   /**
-   * Download artifact image
+   * Download artifact image with CORS handling
    */
   const downloadArtifact = useCallback(async () => {
     if (!artifactData?.image_url) {
@@ -189,26 +194,79 @@ export const useArtifact = (reflectionId, authToken) => {
     }
 
     try {
-      const response = await fetch(artifactData.image_url);
+      console.log(`📥 Starting download from: ${artifactData.image_url}`);
+
+      // Try direct fetch first
+      let response;
+      try {
+        response = await fetch(artifactData.image_url, {
+          mode: "cors",
+          credentials: "omit",
+        });
+      } catch (corsError) {
+        console.warn("CORS fetch failed, trying no-cors mode:", corsError);
+
+        // Fallback: try no-cors mode (won't work for download but we can try)
+        response = await fetch(artifactData.image_url, {
+          mode: "no-cors",
+        });
+      }
+
+      if (!response.ok && response.type !== "opaque") {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
       const blob = await response.blob();
 
+      // Create download link
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
       link.download = `mirror-artifact-${Date.now()}.png`;
+      link.style.display = "none";
 
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
       window.URL.revokeObjectURL(url);
+
+      console.log(`✅ Download completed successfully`);
       return true;
     } catch (error) {
-      console.error("Download failed:", error);
-      setError("Failed to download artifact");
-      return false;
+      console.error("🔥 Download failed:", error);
+
+      // Fallback: open in new tab
+      try {
+        window.open(artifactData.image_url, "_blank");
+        alert("📥 Opening image in new tab. You can save it from there.");
+        return true;
+      } catch (fallbackError) {
+        console.error("Fallback failed:", fallbackError);
+        setError(
+          "Unable to download. Please try right-clicking the image and selecting 'Save image as...'"
+        );
+        return false;
+      }
     }
   }, [artifactData]);
+
+  /**
+   * Validate artifact URL accessibility
+   */
+  const validateArtifactUrl = useCallback(async (url) => {
+    try {
+      const response = await fetch(url, {
+        method: "HEAD",
+        mode: "cors",
+        credentials: "omit",
+      });
+      return response.ok;
+    } catch (error) {
+      console.warn("URL validation failed:", error);
+      return false;
+    }
+  }, []);
 
   /**
    * Get artifact creation status text
@@ -220,7 +278,7 @@ export const useArtifact = (reflectionId, authToken) => {
       case "create":
         return "Ready to create your artifact";
       case "loading":
-        return "Creating your artifact...";
+        return "Creating your sacred artwork...";
       case "preview":
         return "Your artifact is ready";
       case "error":
@@ -282,6 +340,20 @@ export const useArtifact = (reflectionId, authToken) => {
     checkExistingArtifact();
   }, [checkExistingArtifact]);
 
+  // Validate artifact URL when artifact data changes
+  useEffect(() => {
+    if (artifactData?.image_url && artifactState === "preview") {
+      validateArtifactUrl(artifactData.image_url).then((isValid) => {
+        if (!isValid) {
+          console.warn(
+            "Artifact URL may not be accessible:",
+            artifactData.image_url
+          );
+        }
+      });
+    }
+  }, [artifactData, artifactState, validateArtifactUrl]);
+
   return {
     // State
     artifactState,
@@ -302,6 +374,7 @@ export const useArtifact = (reflectionId, authToken) => {
     // Utilities
     getStatusText,
     getProgress,
+    validateArtifactUrl,
 
     // Status checks
     canCreate: artifactState === "create",

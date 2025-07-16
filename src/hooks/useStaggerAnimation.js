@@ -1,347 +1,274 @@
-// hooks/useStaggerAnimation.js - Coordinated entrance animations for dashboard elements
+// src/hooks/useStaggerAnimation.js - Coordinated entrance animations for dashboard cards
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 /**
- * Custom hook for creating staggered entrance animations
- * @param {Array} elements - Array of elements to animate
- * @param {number} baseDelay - Base delay in milliseconds
- * @param {number} staggerDelay - Delay between each element in milliseconds
- * @param {Object} options - Animation options
- * @returns {Array} - Elements with calculated animation delays
+ * Hook for coordinated stagger animations across multiple elements
+ * @param {number} itemCount - Number of items to animate
+ * @param {Object} options - Animation configuration
+ * @returns {Object} - Animation state and controls
  */
-export const useStaggerAnimation = (
-  elements = [],
-  baseDelay = 0,
-  staggerDelay = 150,
-  options = {}
-) => {
+export const useStaggerAnimation = (itemCount = 0, options = {}) => {
   const {
-    duration = 800,
-    easing = "ease-out",
-    threshold = 0.1,
-    once = true,
-    enabled = true,
+    delay = 100, // Base delay between items (ms)
+    duration = 600, // Animation duration (ms)
+    easing = "ease-out", // CSS easing function
+    threshold = 0.1, // Intersection observer threshold
+    triggerOnce = true, // Only trigger animation once
+    enabled = true, // Enable/disable animations
   } = options;
 
-  const [animationStates, setAnimationStates] = useState({});
-  const [isInView, setIsInView] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [animatedItems, setAnimatedItems] = useState(new Set());
+  const containerRef = useRef(null);
+  const observerRef = useRef(null);
+  const timeoutsRef = useRef([]);
+  const mountedRef = useRef(true);
 
   /**
-   * Calculate staggered delays for elements
+   * Check if user prefers reduced motion
    */
-  const staggeredElements = useMemo(() => {
-    if (!enabled || !elements.length) {
-      return elements.map((element) => ({
-        ...element,
-        delay: 0,
-        shouldAnimate: false,
-      }));
-    }
-
-    return elements.map((element, index) => ({
-      ...element,
-      delay: baseDelay + index * staggerDelay,
-      shouldAnimate: isInView || !once,
-      animationDuration: duration,
-      animationEasing: easing,
-    }));
-  }, [
-    elements,
-    baseDelay,
-    staggerDelay,
-    isInView,
-    once,
-    enabled,
-    duration,
-    easing,
-  ]);
+  const prefersReducedMotion = useCallback(() => {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }, []);
 
   /**
-   * Handle intersection observer for viewport detection
+   * Start stagger animation sequence
    */
-  const handleIntersection = useCallback(
-    (entries) => {
-      const entry = entries[0];
-      if (entry.isIntersecting && entry.intersectionRatio >= threshold) {
-        setIsInView(true);
+  const startAnimation = useCallback(() => {
+    if (!enabled || !mountedRef.current) return;
+
+    // Clear any existing timeouts
+    timeoutsRef.current.forEach(clearTimeout);
+    timeoutsRef.current = [];
+
+    // If reduced motion, animate all at once
+    if (prefersReducedMotion()) {
+      const allItems = new Set();
+      for (let i = 0; i < itemCount; i++) {
+        allItems.add(i);
       }
-    },
-    [threshold]
-  );
-
-  /**
-   * Set up intersection observer
-   */
-  useEffect(() => {
-    if (!enabled || !once) {
-      setIsInView(true);
+      setAnimatedItems(allItems);
       return;
     }
 
-    const observer = new IntersectionObserver(handleIntersection, {
-      threshold,
-      rootMargin: "50px",
-    });
+    // Stagger animations
+    for (let i = 0; i < itemCount; i++) {
+      const timeout = setTimeout(() => {
+        if (mountedRef.current) {
+          setAnimatedItems((prev) => new Set([...prev, i]));
+        }
+      }, i * delay);
 
-    // Observe the document body or a specific container
-    const target = document.body;
-    if (target) {
-      observer.observe(target);
+      timeoutsRef.current.push(timeout);
     }
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [handleIntersection, threshold, enabled, once]);
+  }, [itemCount, delay, enabled, prefersReducedMotion]);
 
   /**
-   * Track animation completion for each element
+   * Reset animation state
    */
-  const markAnimationComplete = useCallback((elementId) => {
-    setAnimationStates((prev) => ({
-      ...prev,
-      [elementId]: "complete",
-    }));
+  const resetAnimation = useCallback(() => {
+    timeoutsRef.current.forEach(clearTimeout);
+    timeoutsRef.current = [];
+    setAnimatedItems(new Set());
+    setIsVisible(false);
   }, []);
 
   /**
-   * Check if all animations are complete
+   * Trigger animation manually
    */
-  const allAnimationsComplete = useMemo(() => {
-    return staggeredElements.every(
-      (element) => animationStates[element.id] === "complete"
-    );
-  }, [staggeredElements, animationStates]);
+  const triggerAnimation = useCallback(() => {
+    if (!isVisible) {
+      setIsVisible(true);
+    }
+    startAnimation();
+  }, [isVisible, startAnimation]);
 
   /**
-   * Reset animations
+   * Get animation styles for an item
    */
-  const resetAnimations = useCallback(() => {
-    setAnimationStates({});
-    setIsInView(false);
-  }, []);
+  const getItemStyles = useCallback(
+    (index) => {
+      const isAnimated = animatedItems.has(index);
+      const animationDelay =
+        enabled && !prefersReducedMotion() ? index * delay : 0;
 
-  /**
-   * Get animation styles for a specific element
-   */
-  const getAnimationStyles = useCallback(
-    (elementId) => {
-      const element = staggeredElements.find((el) => el.id === elementId);
-      if (!element || !element.shouldAnimate) {
+      const baseStyles = {
+        transition: `all ${duration}ms ${easing}`,
+        transitionDelay: `${animationDelay}ms`,
+      };
+
+      if (!enabled || prefersReducedMotion()) {
         return {
+          ...baseStyles,
           opacity: 1,
-          transform: "translateY(0)",
+          transform: "translateY(0) scale(1)",
         };
       }
 
-      const isComplete = animationStates[elementId] === "complete";
+      if (!isVisible || !isAnimated) {
+        return {
+          ...baseStyles,
+          opacity: 0,
+          transform: "translateY(30px) scale(0.95)",
+        };
+      }
 
       return {
-        opacity: isComplete ? 1 : 0,
-        transform: isComplete ? "translateY(0)" : "translateY(20px)",
-        transition: `opacity ${element.animationDuration}ms ${element.animationEasing} ${element.delay}ms, transform ${element.animationDuration}ms ${element.animationEasing} ${element.delay}ms`,
-        animationFillMode: "forwards",
+        ...baseStyles,
+        opacity: 1,
+        transform: "translateY(0) scale(1)",
       };
     },
-    [staggeredElements, animationStates]
+    [
+      animatedItems,
+      isVisible,
+      delay,
+      duration,
+      easing,
+      enabled,
+      prefersReducedMotion,
+    ]
   );
 
   /**
-   * Get CSS animation class for a specific element
+   * Get animation classes for an item
    */
-  const getAnimationClass = useCallback(
-    (elementId) => {
-      const element = staggeredElements.find((el) => el.id === elementId);
-      if (!element || !element.shouldAnimate) {
-        return "";
-      }
+  const getItemClasses = useCallback(
+    (index) => {
+      const classes = ["stagger-item"];
 
-      const isComplete = animationStates[elementId] === "complete";
-      const classes = ["stagger-animate"];
-
-      if (isComplete) {
-        classes.push("stagger-animate--complete");
+      if (isVisible && animatedItems.has(index)) {
+        classes.push("stagger-item--visible");
       }
 
       return classes.join(" ");
     },
-    [staggeredElements, animationStates]
+    [isVisible, animatedItems]
   );
 
   /**
-   * Create animation sequence for CSS animations
+   * Check if item is animated
    */
-  const createAnimationSequence = useCallback(() => {
-    return staggeredElements.map((element) => ({
-      elementId: element.id,
-      delay: element.delay,
-      duration: element.animationDuration,
-      easing: element.animationEasing,
-      keyframes: {
-        from: {
-          opacity: 0,
-          transform: "translateY(20px) scale(0.95)",
-        },
-        to: {
-          opacity: 1,
-          transform: "translateY(0) scale(1)",
-        },
-      },
-    }));
-  }, [staggeredElements]);
+  const isItemAnimated = useCallback(
+    (index) => {
+      return animatedItems.has(index);
+    },
+    [animatedItems]
+  );
 
   /**
-   * Start animations manually
+   * Check if all items are animated
    */
-  const startAnimations = useCallback(() => {
-    if (!enabled) return;
-
-    staggeredElements.forEach((element) => {
-      setTimeout(() => {
-        setAnimationStates((prev) => ({
-          ...prev,
-          [element.id]: "animating",
-        }));
-
-        // Mark as complete after animation duration
-        setTimeout(() => {
-          setAnimationStates((prev) => ({
-            ...prev,
-            [element.id]: "complete",
-          }));
-        }, element.animationDuration);
-      }, element.delay);
-    });
-  }, [enabled, staggeredElements]);
+  const areAllItemsAnimated = useCallback(() => {
+    return animatedItems.size === itemCount;
+  }, [animatedItems.size, itemCount]);
 
   /**
-   * Auto-start animations when in view
+   * Get animation progress (0-1)
    */
+  const getProgress = useCallback(() => {
+    if (itemCount === 0) return 1;
+    return animatedItems.size / itemCount;
+  }, [animatedItems.size, itemCount]);
+
+  // Set up intersection observer
   useEffect(() => {
-    if (isInView && enabled) {
-      startAnimations();
+    if (
+      !enabled ||
+      !containerRef.current ||
+      typeof IntersectionObserver === "undefined"
+    ) {
+      // Fallback for environments without IntersectionObserver
+      setIsVisible(true);
+      startAnimation();
+      return;
     }
-  }, [isInView, enabled, startAnimations]);
+
+    const container = containerRef.current;
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !isVisible) {
+            setIsVisible(true);
+
+            if (triggerOnce) {
+              observerRef.current?.unobserve(entry.target);
+            }
+          }
+        });
+      },
+      {
+        threshold,
+        rootMargin: "50px",
+      }
+    );
+
+    observerRef.current.observe(container);
+
+    return () => {
+      if (observerRef.current && container) {
+        observerRef.current.unobserve(container);
+      }
+    };
+  }, [enabled, threshold, triggerOnce, isVisible, startAnimation]);
+
+  // Start animation when visible
+  useEffect(() => {
+    if (isVisible && enabled) {
+      startAnimation();
+    }
+  }, [isVisible, enabled, startAnimation]);
+
+  // Handle reduced motion preference changes
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const handleChange = () => {
+      if (isVisible) {
+        startAnimation();
+      }
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [isVisible, startAnimation]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+      timeoutsRef.current.forEach(clearTimeout);
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
 
   return {
-    // Staggered elements with delays
-    elements: staggeredElements,
+    // Refs
+    containerRef,
 
-    // Animation state
-    isInView,
-    allAnimationsComplete,
-    animationStates,
+    // State
+    isVisible,
+    animatedItems,
+    isComplete: areAllItemsAnimated(),
+    progress: getProgress(),
 
-    // Helper functions
-    getAnimationStyles,
-    getAnimationClass,
-    createAnimationSequence,
+    // Item helpers
+    getItemStyles,
+    getItemClasses,
+    isItemAnimated,
 
-    // Control functions
-    startAnimations,
-    resetAnimations,
-    markAnimationComplete,
+    // Controls
+    triggerAnimation,
+    resetAnimation,
+    startAnimation,
 
     // Configuration
-    totalDuration:
-      staggeredElements.length > 0
-        ? Math.max(
-            ...staggeredElements.map((el) => el.delay + el.animationDuration)
-          )
-        : 0,
+    delay,
+    duration,
+    enabled: enabled && !prefersReducedMotion(),
   };
 };
-
-/**
- * Higher-order component for wrapping elements with stagger animation
- * @param {React.Component} Component - Component to wrap
- * @param {Object} animationOptions - Animation options
- * @returns {React.Component} - Wrapped component with stagger animation
- */
-export const withStaggerAnimation = (Component, animationOptions = {}) => {
-  return React.forwardRef((props, ref) => {
-    const { elements = [], ...otherProps } = props;
-    const animation = useStaggerAnimation(elements, 0, 150, animationOptions);
-
-    return (
-      <Component
-        ref={ref}
-        {...otherProps}
-        staggerAnimation={animation}
-        elements={animation.elements}
-      />
-    );
-  });
-};
-
-/**
- * Preset animation configurations
- */
-export const STAGGER_PRESETS = {
-  // Fast entrance for dashboard cards
-  dashboard: {
-    baseDelay: 100,
-    staggerDelay: 150,
-    duration: 600,
-    easing: "cubic-bezier(0.4, 0, 0.2, 1)",
-  },
-
-  // Gentle entrance for content sections
-  content: {
-    baseDelay: 0,
-    staggerDelay: 100,
-    duration: 800,
-    easing: "ease-out",
-  },
-
-  // Elegant entrance for menu items
-  menu: {
-    baseDelay: 0,
-    staggerDelay: 50,
-    duration: 400,
-    easing: "ease-out",
-  },
-
-  // Smooth entrance for list items
-  list: {
-    baseDelay: 0,
-    staggerDelay: 80,
-    duration: 500,
-    easing: "ease-out",
-  },
-};
-
-/**
- * Utility function to create staggered CSS animations
- * @param {Array} elements - Elements to animate
- * @param {string} preset - Preset name
- * @returns {string} - CSS animation styles
- */
-export const generateStaggerCSS = (elements, preset = "dashboard") => {
-  const config = STAGGER_PRESETS[preset];
-  if (!config) return "";
-
-  return elements
-    .map((element, index) => {
-      const delay = config.baseDelay + index * config.staggerDelay;
-
-      return `
-      .stagger-${element.id} {
-        opacity: 0;
-        transform: translateY(20px) scale(0.95);
-        animation: staggerEntrance ${config.duration}ms ${config.easing} ${delay}ms forwards;
-      }
-      
-      @keyframes staggerEntrance {
-        to {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
-      }
-    `;
-    })
-    .join("\n");
-};
-
-export default useStaggerAnimation;

@@ -1,4 +1,4 @@
-// services/reflection.service.js - Reflection API service
+// services/reflection.service.js - Reflection API service with fixed artifact support
 
 import { apiClient } from "./api";
 import { API_ENDPOINTS } from "../utils/constants";
@@ -210,15 +210,32 @@ class ReflectionService {
    * @returns {Promise<Object>} - Artifact creation response
    */
   async createArtifact(reflectionId) {
-    const response = await apiClient.post(API_ENDPOINTS.ARTIFACT, {
-      reflectionId,
-    });
+    console.log(`🎨 Creating artifact for reflection: ${reflectionId}`);
 
-    if (!response.success) {
-      throw new Error(response.error || "Failed to create artifact");
+    try {
+      // Use the direct artifact endpoint (not action-based)
+      const response = await apiClient.requestWithTimeout(
+        "/api/artifact",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ reflectionId }),
+        },
+        60000 // 60 second timeout
+      );
+
+      if (!response.success) {
+        throw new Error(response.error || "Failed to create artifact");
+      }
+
+      console.log(`✨ Artifact created successfully:`, response.artifact);
+      return response.artifact;
+    } catch (error) {
+      console.error("🔥 Artifact creation failed:", error);
+      throw error;
     }
-
-    return response.artifact;
   }
 
   /**
@@ -228,19 +245,69 @@ class ReflectionService {
    */
   async checkExistingArtifact(reflectionId) {
     try {
+      console.log(`🔍 Checking for existing artifact: ${reflectionId}`);
+
+      // Try the direct check endpoint first
+      try {
+        const response = await apiClient.get(
+          `/api/artifact/check/${reflectionId}`
+        );
+
+        if (response.success && response.artifact) {
+          console.log(
+            `✅ Found existing artifact via direct endpoint:`,
+            response.artifact
+          );
+          return response.artifact;
+        }
+      } catch (directError) {
+        console.log(
+          `📝 Direct endpoint check failed, trying action-based:`,
+          directError.message
+        );
+      }
+
+      // Fallback to action-based approach if your backend uses that pattern
       const response = await apiClient.post(API_ENDPOINTS.ARTIFACT, {
         action: "check-existing",
         reflectionId,
       });
 
       if (response.success && response.artifact) {
+        console.log(
+          `✅ Found existing artifact via action:`,
+          response.artifact
+        );
         return response.artifact;
       }
 
+      console.log(`📝 No existing artifact found`);
       return null;
     } catch (error) {
-      // No existing artifact found
+      console.log(`📝 No existing artifact found:`, error.message);
       return null;
+    }
+  }
+
+  /**
+   * Get artifact download URL (for CORS-friendly downloads)
+   * @param {string} artifactId - Artifact ID
+   * @returns {Promise<string>} - Download URL
+   */
+  async getArtifactDownloadUrl(artifactId) {
+    try {
+      const response = await apiClient.get(
+        `/api/artifact/${artifactId}/download`
+      );
+
+      if (!response.success) {
+        throw new Error(response.error || "Failed to get download URL");
+      }
+
+      return response.downloadUrl;
+    } catch (error) {
+      console.error("Failed to get artifact download URL:", error);
+      throw error;
     }
   }
 
@@ -372,6 +439,57 @@ class ReflectionService {
   }
 
   /**
+   * Test API connectivity and configuration
+   * @returns {Promise<Object>} - Connection status and debug info
+   */
+  async testConnection() {
+    try {
+      const response = await apiClient.get("/api/debug");
+      return response;
+    } catch (error) {
+      console.error("API connection test failed:", error);
+      return {
+        success: false,
+        error: error.message,
+        timestamp: new Date().toISOString(),
+      };
+    }
+  }
+
+  /**
+   * Validate artifact URL accessibility
+   * @param {string} url - Artifact URL to validate
+   * @returns {Promise<boolean>} - Whether the URL is accessible
+   */
+  async validateArtifactUrl(url) {
+    try {
+      if (!url) return false;
+
+      const response = await fetch(url, {
+        method: "HEAD",
+        mode: "cors",
+        credentials: "omit",
+      });
+
+      return response.ok;
+    } catch (error) {
+      console.warn("Artifact URL validation failed:", error);
+
+      // Try no-cors as fallback
+      try {
+        await fetch(url, {
+          method: "HEAD",
+          mode: "no-cors",
+        });
+        // If no-cors doesn't throw, the URL probably exists
+        return true;
+      } catch (noCorsError) {
+        return false;
+      }
+    }
+  }
+
+  /**
    * Validate reflection data before submission
    * @param {Object} reflectionData - Reflection data to validate
    * @returns {Object} - Validation result
@@ -449,6 +567,20 @@ class ReflectionService {
       day: "numeric",
       year: diffDays > 365 ? "numeric" : undefined,
     });
+  }
+
+  /**
+   * Clear any cached data
+   */
+  clearCache() {
+    // Clear any cached reflection data
+    if (typeof localStorage !== "undefined") {
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith("reflection_") || key.startsWith("artifact_")) {
+          localStorage.removeItem(key);
+        }
+      });
+    }
   }
 }
 

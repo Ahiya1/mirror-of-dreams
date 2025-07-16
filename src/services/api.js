@@ -1,6 +1,7 @@
-// services/api.js - Base API client with common configurations
+// services/api.js - Base API client with common configurations (FIXED)
 
 import { STORAGE_KEYS, RESPONSE_MESSAGES } from "../utils/constants";
+import { storageService } from "./storage.service";
 
 class ApiClient {
   constructor(baseURL = "") {
@@ -15,7 +16,8 @@ class ApiClient {
    * @returns {Object} - Authorization header object
    */
   getAuthHeaders() {
-    const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+    // FIX: Use storageService instead of direct localStorage access
+    const token = storageService.getAuthToken();
     return token ? { Authorization: `Bearer ${token}` } : {};
   }
 

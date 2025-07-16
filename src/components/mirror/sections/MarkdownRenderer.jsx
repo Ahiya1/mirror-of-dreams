@@ -1,4 +1,4 @@
-// components/mirror/sections/MarkdownRenderer.jsx - Enhanced markdown parser and renderer
+// components/mirror/sections/MarkdownRenderer.jsx - Fixed markdown parser and renderer
 
 import React, { useMemo } from "react";
 
@@ -17,6 +17,32 @@ const MarkdownRenderer = ({ content = "", options = {}, className = "" }) => {
     enhanceAccessibility = true,
     addTableOfContents = false,
   } = options;
+
+  // Helper functions defined outside useMemo to avoid scope issues
+  const generateId = (title) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  };
+
+  const escapeHtml = (text) => {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  };
+
+  const sanitizeHtmlContent = (html) => {
+    if (!allowHtml) {
+      return html;
+    }
+
+    // Remove potentially dangerous elements and attributes
+    const dangerousElements = /<script[^>]*>[\s\S]*?<\/script>/gi;
+    const dangerousAttributes = /on\w+="[^"]*"/gi;
+
+    return html.replace(dangerousElements, "").replace(dangerousAttributes, "");
+  };
 
   /**
    * Parse and render markdown content
@@ -159,41 +185,14 @@ const MarkdownRenderer = ({ content = "", options = {}, className = "" }) => {
     }
 
     return html;
-  }, [content, allowHtml, sanitizeHtml]);
-
-  /**
-   * Generate heading ID for accessibility
-   */
-  const generateId = (title) => {
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "");
-  };
-
-  /**
-   * Escape HTML special characters
-   */
-  const escapeHtml = (text) => {
-    const div = document.createElement("div");
-    div.textContent = text;
-    return div.innerHTML;
-  };
-
-  /**
-   * Basic HTML sanitization
-   */
-  const sanitizeHtmlContent = (html) => {
-    if (!allowHtml) {
-      return html;
-    }
-
-    // Remove potentially dangerous elements and attributes
-    const dangerousElements = /<script[^>]*>[\s\S]*?<\/script>/gi;
-    const dangerousAttributes = /on\w+="[^"]*"/gi;
-
-    return html.replace(dangerousElements, "").replace(dangerousAttributes, "");
-  };
+  }, [
+    content,
+    allowHtml,
+    sanitizeHtml,
+    generateId,
+    escapeHtml,
+    sanitizeHtmlContent,
+  ]);
 
   /**
    * Handle link clicks for accessibility announcements
@@ -211,7 +210,9 @@ const MarkdownRenderer = ({ content = "", options = {}, className = "" }) => {
       document.body.appendChild(announcement);
 
       setTimeout(() => {
-        document.body.removeChild(announcement);
+        if (document.body.contains(announcement)) {
+          document.body.removeChild(announcement);
+        }
       }, 1000);
     }
   };
@@ -230,46 +231,46 @@ const MarkdownRenderer = ({ content = "", options = {}, className = "" }) => {
         .markdown-content {
           background: rgba(255, 255, 255, 0.97);
           color: #1a1a2e;
-          padding: var(--space-2xl) var(--space-xl);
-          border-radius: var(--card-radius);
-          box-shadow: var(--shadow-xl);
+          padding: var(--space-2xl, 2rem) var(--space-xl, 1.5rem);
+          border-radius: var(--card-radius, 12px);
+          box-shadow: var(--shadow-xl, 0 25px 50px rgba(0, 0, 0, 0.25));
           position: relative;
-          font-size: var(--text-base);
-          line-height: var(--leading-loose);
-          font-weight: var(--font-light);
-          max-width: var(--prose-max-width);
+          font-size: var(--text-base, 1rem);
+          line-height: var(--leading-loose, 1.75);
+          font-weight: var(--font-light, 300);
+          max-width: var(--prose-max-width, 65ch);
           animation: contentReveal 0.6s ease-out;
         }
 
         .markdown-content :global(h1),
         .markdown-content :global(h2),
         .markdown-content :global(h3) {
-          font-weight: var(--font-semibold);
+          font-weight: var(--font-semibold, 600);
           margin: 2rem 0 1rem 0;
-          line-height: var(--leading-tight);
+          line-height: var(--leading-tight, 1.25);
           background: linear-gradient(135deg, #667eea, #764ba2);
           -webkit-background-clip: text;
           background-clip: text;
           -webkit-text-fill-color: transparent;
-          scroll-margin-top: var(--space-xl);
+          scroll-margin-top: var(--space-xl, 1.5rem);
         }
 
         .markdown-content :global(h1) {
-          font-size: var(--text-2xl);
+          font-size: var(--text-2xl, 1.5rem);
           margin-top: 0;
           text-align: center;
           margin-bottom: 2rem;
         }
 
         .markdown-content :global(h2) {
-          font-size: var(--text-xl);
+          font-size: var(--text-xl, 1.25rem);
           margin-top: 2.5rem;
           padding-left: 1rem;
           border-left: 3px solid rgba(102, 126, 234, 0.3);
         }
 
         .markdown-content :global(h3) {
-          font-size: var(--text-lg);
+          font-size: var(--text-lg, 1.125rem);
           margin-top: 2rem;
         }
 
@@ -280,7 +281,7 @@ const MarkdownRenderer = ({ content = "", options = {}, className = "" }) => {
         }
 
         .markdown-content :global(strong) {
-          font-weight: var(--font-semibold);
+          font-weight: var(--font-semibold, 600);
           color: #16213e;
           background: linear-gradient(135deg, #667eea, #764ba2);
           -webkit-background-clip: text;
@@ -297,20 +298,32 @@ const MarkdownRenderer = ({ content = "", options = {}, className = "" }) => {
           background: rgba(102, 126, 234, 0.1);
           color: #667eea;
           padding: 0.125rem 0.25rem;
-          border-radius: var(--radius-sm);
-          font-family: var(--font-family-mono);
+          border-radius: var(--radius-sm, 4px);
+          font-family: var(
+            --font-family-mono,
+            "Menlo",
+            "Monaco",
+            "Consolas",
+            monospace
+          );
           font-size: 0.9em;
         }
 
         .markdown-content :global(pre) {
           background: rgba(0, 0, 0, 0.05);
           border: 1px solid rgba(0, 0, 0, 0.1);
-          border-radius: var(--radius-lg);
-          padding: var(--space-4);
-          margin: var(--space-4) 0;
+          border-radius: var(--radius-lg, 8px);
+          padding: var(--space-4, 1rem);
+          margin: var(--space-4, 1rem) 0;
           overflow-x: auto;
-          font-family: var(--font-family-mono);
-          font-size: var(--text-sm);
+          font-family: var(
+            --font-family-mono,
+            "Menlo",
+            "Monaco",
+            "Consolas",
+            monospace
+          );
+          font-size: var(--text-sm, 0.875rem);
         }
 
         .markdown-content :global(pre code) {
@@ -322,10 +335,10 @@ const MarkdownRenderer = ({ content = "", options = {}, className = "" }) => {
 
         .markdown-content :global(blockquote) {
           border-left: 4px solid rgba(102, 126, 234, 0.3);
-          margin: var(--space-4) 0;
-          padding: var(--space-4) var(--space-6);
+          margin: var(--space-4, 1rem) 0;
+          padding: var(--space-4, 1rem) var(--space-6, 1.5rem);
           background: rgba(102, 126, 234, 0.05);
-          border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+          border-radius: 0 var(--radius-lg, 8px) var(--radius-lg, 8px) 0;
           font-style: italic;
         }
 
@@ -335,20 +348,20 @@ const MarkdownRenderer = ({ content = "", options = {}, className = "" }) => {
 
         .markdown-content :global(ul),
         .markdown-content :global(ol) {
-          margin: var(--space-4) 0;
-          padding-left: var(--space-6);
+          margin: var(--space-4, 1rem) 0;
+          padding-left: var(--space-6, 1.5rem);
         }
 
         .markdown-content :global(li) {
-          margin: var(--space-2) 0;
-          line-height: var(--leading-relaxed);
+          margin: var(--space-2, 0.5rem) 0;
+          line-height: var(--leading-relaxed, 1.625);
         }
 
         .markdown-content :global(a) {
           color: #667eea;
           text-decoration: underline;
           text-decoration-color: rgba(102, 126, 234, 0.3);
-          transition: var(--transition-fast);
+          transition: var(--transition-fast, all 0.15s ease);
         }
 
         .markdown-content :global(a:hover) {
@@ -357,9 +370,9 @@ const MarkdownRenderer = ({ content = "", options = {}, className = "" }) => {
         }
 
         .markdown-content :global(a:focus) {
-          outline: var(--focus-ring);
-          outline-offset: var(--focus-ring-offset);
-          border-radius: var(--radius-sm);
+          outline: var(--focus-ring, 2px solid rgba(66, 153, 225, 0.5));
+          outline-offset: var(--focus-ring-offset, 2px);
+          border-radius: var(--radius-sm, 4px);
         }
 
         .markdown-content :global(hr) {
@@ -371,18 +384,18 @@ const MarkdownRenderer = ({ content = "", options = {}, className = "" }) => {
             rgba(102, 126, 234, 0.3),
             transparent
           );
-          margin: var(--space-8) 0;
+          margin: var(--space-8, 2rem) 0;
         }
 
         .markdown-content :global(mark) {
           background: rgba(251, 191, 36, 0.2);
           color: #1a1a2e;
           padding: 0.125rem 0.25rem;
-          border-radius: var(--radius-sm);
+          border-radius: var(--radius-sm, 4px);
         }
 
         .markdown-content :global(del) {
-          opacity: var(--opacity-60);
+          opacity: var(--opacity-60, 0.6);
           text-decoration-color: rgba(239, 68, 68, 0.5);
         }
 
@@ -399,30 +412,30 @@ const MarkdownRenderer = ({ content = "", options = {}, className = "" }) => {
 
         @media (max-width: 768px) {
           .markdown-content {
-            padding: var(--space-lg) var(--space-md);
-            font-size: var(--text-sm);
+            padding: var(--space-lg, 1.5rem) var(--space-md, 1rem);
+            font-size: var(--text-sm, 0.875rem);
           }
 
           .markdown-content :global(h1) {
-            font-size: var(--text-xl);
+            font-size: var(--text-xl, 1.25rem);
           }
 
           .markdown-content :global(h2) {
-            font-size: var(--text-lg);
-            padding-left: var(--space-3);
+            font-size: var(--text-lg, 1.125rem);
+            padding-left: var(--space-3, 0.75rem);
           }
 
           .markdown-content :global(h3) {
-            font-size: var(--text-base);
+            font-size: var(--text-base, 1rem);
           }
 
           .markdown-content :global(ul),
           .markdown-content :global(ol) {
-            padding-left: var(--space-4);
+            padding-left: var(--space-4, 1rem);
           }
 
           .markdown-content :global(blockquote) {
-            padding: var(--space-3) var(--space-4);
+            padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
           }
         }
 
