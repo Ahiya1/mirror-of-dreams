@@ -55,6 +55,7 @@ const Dashboard = () => {
   // UI state
   const [showToast, setShowToast] = useState(null);
   const [isPageVisible, setIsPageVisible] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
 
   // Check for creator mode
   const isCreatorMode = searchParams.get("mode") === "creator";
@@ -142,6 +143,22 @@ const Dashboard = () => {
     setShowToast(null);
   }, []);
 
+  /**
+   * Handle user dropdown toggle
+   */
+  const handleUserDropdownToggle = useCallback(() => {
+    setShowUserDropdown((prev) => !prev);
+  }, []);
+
+  /**
+   * Handle logout
+   */
+  const handleLogout = useCallback(() => {
+    // Add logout logic here
+    setShowUserDropdown(false);
+    navigate("/auth/signin");
+  }, [navigate]);
+
   // Page visibility effect
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -194,6 +211,18 @@ const Dashboard = () => {
     window.addEventListener("focus", handleFocus);
     return () => window.removeEventListener("focus", handleFocus);
   }, [hasData, dashboardLoading, handleRefreshData]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showUserDropdown && !event.target.closest(".dashboard-nav__user")) {
+        setShowUserDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showUserDropdown]);
 
   // Show loading state while auth is initializing
   if (authLoading) {
@@ -310,7 +339,10 @@ const Dashboard = () => {
 
           {/* User menu */}
           <div className="dashboard-nav__user">
-            <button className="dashboard-nav__user-btn">
+            <button
+              className="dashboard-nav__user-btn"
+              onClick={handleUserDropdownToggle}
+            >
               <span className="dashboard-nav__avatar">
                 {isCreatorMode
                   ? "🌟"
@@ -325,10 +357,54 @@ const Dashboard = () => {
                   ? "Creator"
                   : user?.name?.split(" ")[0] || "Friend"}
               </span>
-              <span className="dashboard-nav__dropdown">▼</span>
             </button>
 
-            {/* User dropdown menu would go here */}
+            {/* User dropdown menu */}
+            {showUserDropdown && (
+              <div className="dashboard-nav__dropdown-menu">
+                <div className="dropdown-header">
+                  <div className="dropdown-user-info">
+                    <span className="dropdown-user-name">
+                      {user?.name || "User"}
+                    </span>
+                    <span className="dropdown-user-email">
+                      {user?.email || "user@example.com"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="dropdown-section">
+                  <a href="/profile" className="dropdown-item">
+                    <span>👤</span>
+                    <span>Profile</span>
+                  </a>
+                  <a href="/settings" className="dropdown-item">
+                    <span>⚙️</span>
+                    <span>Settings</span>
+                  </a>
+                  {user?.tier !== "premium" && (
+                    <a href="/subscription" className="dropdown-item">
+                      <span>💎</span>
+                      <span>Upgrade</span>
+                    </a>
+                  )}
+                </div>
+
+                <div className="dropdown-section">
+                  <a href="/help" className="dropdown-item">
+                    <span>❓</span>
+                    <span>Help & Support</span>
+                  </a>
+                  <button
+                    className="dropdown-item dropdown-item--logout"
+                    onClick={handleLogout}
+                  >
+                    <span>🚪</span>
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </nav>
