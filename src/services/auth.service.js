@@ -1,8 +1,8 @@
-// services/auth.service.js - Authentication API service
+// services/auth.service.js - Authentication API service (CLEANED)
 
 import { apiClient } from "./api";
 import { storageService } from "./storage.service";
-import { API_ENDPOINTS, DEFAULT_USER } from "../utils/constants";
+import { API_ENDPOINTS } from "../utils/constants";
 
 class AuthService {
   /**
@@ -189,67 +189,6 @@ class AuthService {
   clearSession() {
     storageService.removeAuthToken();
     storageService.clearAllFormStates();
-  }
-
-  /**
-   * Initialize special mode user (creator/test)
-   * @param {string} mode - 'creator' or 'user'
-   * @param {Object} params - Additional parameters
-   * @returns {Object} - Mock user data
-   */
-  initializeSpecialMode(mode, params = {}) {
-    if (mode === "creator") {
-      return {
-        isCreator: true,
-        name: "Ahiya",
-        email: "ahiya.butman@gmail.com",
-        tier: "premium",
-        id: "creator_ahiya",
-        subscriptionStatus: "active",
-        reflectionCountThisMonth: 0,
-        totalReflections: 0,
-        isAdmin: false,
-        language: "en",
-      };
-    }
-
-    if (mode === "user") {
-      const { premium } = params;
-      return {
-        name: "Test User",
-        email: "test@example.com",
-        tier: premium === "true" ? "premium" : "essential",
-        testMode: true,
-        id: `test_user_${Date.now()}`,
-        subscriptionStatus: "active",
-        reflectionCountThisMonth: 0,
-        totalReflections: 0,
-        isCreator: false,
-        isAdmin: false,
-        language: "en",
-      };
-    }
-
-    return DEFAULT_USER;
-  }
-
-  /**
-   * Handle authentication from URL parameters
-   * @param {URLSearchParams} urlParams - URL search parameters
-   * @returns {Object|null} - Special mode user or null
-   */
-  handleUrlAuthentication(urlParams) {
-    const mode = urlParams.get("mode");
-
-    if (mode === "creator" || mode === "user") {
-      // Clear any existing sessions for security
-      this.clearSession();
-
-      const premium = urlParams.get("premium");
-      return this.initializeSpecialMode(mode, { premium });
-    }
-
-    return null;
   }
 
   /**

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useFeedback } from "../../../hooks/useFeedback";
-import CharacterCounter from "../../shared/CharacterCounter";
+import CharacterCounter from "../shared/CharacterCounter";
 
 /**
  * Feedback section component for collecting reflection feedback

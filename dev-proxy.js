@@ -26,7 +26,17 @@ console.log(`🌐 Development server starting on: http://localhost:${PORT}`);
 app.use((req, res, next) => {
   const isAPI = req.url.startsWith("/api");
   const isMirror = req.url.startsWith("/mirror");
-  const emoji = isAPI ? "🔀" : isMirror ? "⚛️ " : "📁";
+  const isDashboard = req.url.startsWith("/dashboard");
+  const isAuth = req.url.startsWith("/auth");
+  const emoji = isAPI
+    ? "🔀"
+    : isMirror
+    ? "⚛️ "
+    : isDashboard
+    ? "📊"
+    : isAuth
+    ? "🔐"
+    : "📁";
   console.log(`${emoji} ${req.method} ${req.url}`);
   next();
 });
@@ -94,7 +104,7 @@ app.use("/api", async (req, res) => {
   }
 });
 
-// REACT ROUTES - Simplified single entry point
+// REACT ROUTES - Enhanced with auth support
 const serveReactApp = (req, res) => {
   if (hasReactBuild) {
     const filePath = path.join(REACT_BUILD_DIR, "index.html");
@@ -115,7 +125,15 @@ const fallbackToStatic = (req, res) => {
   const url = req.url;
   let staticFile;
 
-  if (url.includes("questionnaire")) {
+  if (url.includes("dashboard")) {
+    staticFile = "dashboard/index.html";
+  } else if (
+    url.includes("auth") ||
+    url.includes("signin") ||
+    url.includes("signup")
+  ) {
+    staticFile = "auth/signin.html"; // Fallback to HTML auth for now
+  } else if (url.includes("questionnaire")) {
     staticFile = "mirror/questionnaire.html";
   } else if (url.includes("output")) {
     staticFile = "mirror/output.html";
@@ -128,11 +146,21 @@ const fallbackToStatic = (req, res) => {
   res.sendFile(fullPath);
 };
 
+// AUTH ROUTES - Serve React app for all auth pages
+app.get("/auth", serveReactApp);
+app.get("/auth/", serveReactApp);
+app.get("/auth/signin", serveReactApp);
+app.get("/auth/signup", serveReactApp);
+app.get("/auth/register", serveReactApp);
+
 // Mirror routes - All mirror routes serve the same React app
 app.get("/mirror", serveReactApp);
 app.get("/mirror/", serveReactApp);
 app.get("/mirror/questionnaire", serveReactApp);
 app.get("/mirror/output", serveReactApp);
+
+// Dashboard routes - Serve React app for dashboard
+app.get("/dashboard", serveReactApp);
 
 // Test route for development
 app.get("/test-proxy", (req, res) => {
@@ -154,9 +182,6 @@ const serveHtml = (htmlPath) => (req, res) => {
 // Static HTML routes
 app.get("/", serveHtml("portal/index.html"));
 app.get("/portal", serveHtml("portal/index.html"));
-app.get("/auth", serveHtml("auth/signin.html"));
-app.get("/auth/signin", serveHtml("auth/signin.html"));
-app.get("/dashboard", serveHtml("dashboard/index.html"));
 app.get("/reflections/history", serveHtml("reflections/history.html"));
 app.get("/reflections/view", serveHtml("reflections/view.html"));
 app.get("/subscription", serveHtml("subscription/index.html"));
@@ -173,7 +198,36 @@ app.get("/transition/breathing", serveHtml("transition/breathing.html"));
 
 // Serve React build assets if available
 if (hasReactBuild) {
-  app.use("/assets", express.static(path.join(REACT_BUILD_DIR, "assets")));
+  app.use(
+    "/assets",
+    express.static(path.join(REACT_BUILD_DIR, "assets"), {
+      setHeaders: (res, filePath) => {
+        if (filePath.endsWith(".css")) {
+          res.setHeader("Content-Type", "text/css");
+        } else if (filePath.endsWith(".js")) {
+          res.setHeader("Content-Type", "application/javascript");
+        }
+      },
+    })
+  );
+
+  // Serve assets from all React app paths
+  const reactPaths = ["/mirror", "/dashboard", "/auth"];
+  reactPaths.forEach((basePath) => {
+    app.use(
+      `${basePath}/assets`,
+      express.static(path.join(REACT_BUILD_DIR, "assets"), {
+        setHeaders: (res, filePath) => {
+          if (filePath.endsWith(".css")) {
+            res.setHeader("Content-Type", "text/css");
+          } else if (filePath.endsWith(".js")) {
+            res.setHeader("Content-Type", "application/javascript");
+          }
+        },
+      })
+    );
+  });
+
   console.log(`📦 Serving React assets from: ${REACT_BUILD_DIR}/assets`);
 }
 
@@ -204,8 +258,11 @@ app.listen(PORT, () => {
     `   http://localhost:${PORT}/api/health (backend health - via proxy)`
   );
   console.log(`\n⚛️  React Experience (Single Entry Point):`);
+  console.log(`   http://localhost:${PORT}/auth/signin (React auth)`);
+  console.log(`   http://localhost:${PORT}/auth/signup (React auth)`);
   console.log(`   http://localhost:${PORT}/mirror/questionnaire (React app)`);
   console.log(`   http://localhost:${PORT}/mirror/output (React app)`);
+  console.log(`   http://localhost:${PORT}/dashboard (Dashboard React app)`);
   console.log(`\n💡 Commands:`);
   console.log(
     `   npm run dev                  (this server - static + React fallback)`

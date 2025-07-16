@@ -1,7 +1,7 @@
 // components/shared/ToneSelector.jsx - Enhanced tone selector component
 
 import React, { useCallback } from "react";
-import { TONES } from "../../utils/constants";
+import { TONES } from "../../../utils/constants";
 
 /**
  * Enhanced tone selector with improved accessibility and haptic feedback

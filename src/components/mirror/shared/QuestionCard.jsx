@@ -2,8 +2,8 @@
 
 import React, { useCallback, useMemo } from "react";
 import CharacterCounter from "./CharacterCounter";
-import { validateField } from "../../utils/validation";
-import { QUESTION_LIMITS } from "../../utils/constants";
+import { validateField } from "../../../utils/validation";
+import { QUESTION_LIMITS } from "../../../utils/constants";
 
 /**
  * Enhanced question card component with validation and accessibility

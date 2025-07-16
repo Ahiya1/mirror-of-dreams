@@ -1,7 +1,7 @@
 // components/shared/CharacterCounter.jsx - Enhanced character counter component
 
 import React, { useMemo } from "react";
-import { getCharacterStats } from "../../utils/validation";
+import { getCharacterStats } from "../../../utils/validation";
 
 /**
  * Enhanced character counter with visual progress and warnings

@@ -1,9 +1,18 @@
-// components/index.js - Centralized component exports
+// components/index.js - Centralized component exports (UPDATED)
+
+// Auth components
+export { default as AuthApp } from "./auth/AuthApp";
+export { default as AuthLayout } from "./auth/AuthLayout";
+export { default as SigninForm } from "./auth/SigninForm";
+export { default as SignupForm } from "./auth/SignupForm";
 
 // Mirror components
 export { default as MirrorApp } from "./mirror/MirrorApp";
 export { default as Questionnaire } from "./mirror/Questionnaire";
 export { default as Output } from "./mirror/Output";
+
+// Dashboard components
+export { default as Dashboard } from "./dashboard/Dashboard";
 
 // Mirror sections
 export { default as ArtifactSection } from "./mirror/sections/ArtifactSection";

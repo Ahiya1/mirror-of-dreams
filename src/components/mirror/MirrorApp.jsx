@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Questionnaire from "./Questionnaire";
 import Output from "./Output";
-import CosmicBackground from "./CosmicBackground";
-import ToneElements from "./ToneElements";
-import ToneSelector from "./ToneSelector";
-import QuestionCard from "./QuestionCard";
-import CharacterCounter from "./CharacterCounter";
+import CosmicBackground from "../shared/CosmicBackground";
+import ToneElements from "./shared/ToneElements";
+import ToneSelector from "./shared/ToneSelector";
+import QuestionCard from "./shared/QuestionCard";
+import CharacterCounter from "./shared/CharacterCounter";
 
 // Mirror App Component that handles routing between questionnaire and output
 const MirrorApp = () => {

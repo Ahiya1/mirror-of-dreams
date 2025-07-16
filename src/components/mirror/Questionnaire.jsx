@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import CosmicBackground from "../shared/CosmicBackground";
-import ToneElements from "../shared/ToneElements";
-import ToneSelector from "../shared/ToneSelector";
-import QuestionCard from "../shared/QuestionCard";
+import ToneElements from "./shared/ToneElements";
+import ToneSelector from "./shared/ToneSelector";
+import QuestionCard from "./shared/QuestionCard";
 import { useAuth } from "../../hooks/useAuth";
 import { useFormPersistence } from "../../hooks/useFormPersistence";
 import { reflectionService } from "../../services/reflection.service";
