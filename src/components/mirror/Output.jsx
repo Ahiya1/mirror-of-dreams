@@ -1,4 +1,4 @@
-// components/mirror/Output.jsx - Refactored with new architecture
+// components/mirror/Output.jsx - Clean and Spacious
 
 import React, { useState, useEffect } from "react";
 import CosmicBackground from "../shared/CosmicBackground";
@@ -7,53 +7,32 @@ import FeedbackSection from "./sections/FeedbackSection";
 import MarkdownRenderer from "./sections/MarkdownRenderer";
 import { useAuth } from "../../hooks/useAuth";
 import { reflectionService } from "../../services/reflection.service";
-import { RESPONSE_MESSAGES } from "../../utils/constants";
 
-/**
- * Enhanced output component with clean architecture
- */
 const Output = () => {
-  // Authentication state
-  const {
-    user,
-    isLoading: isAuthLoading,
-    isAuthenticated,
-    error: authError,
-    redirectToAuth,
-  } = useAuth();
+  const { user, isLoading: isAuthLoading } = useAuth();
 
-  // Component state
   const [isLoading, setIsLoading] = useState(true);
   const [reflection, setReflection] = useState(null);
   const [reflectionId, setReflectionId] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [error, setError] = useState(null);
+  const [reflectionVisible, setReflectionVisible] = useState(false);
 
-  /**
-   * Initialize component and load reflection
-   */
   useEffect(() => {
     initializeComponent();
   }, [user]);
 
-  /**
-   * Show feedback after delay
-   */
   useEffect(() => {
-    if (reflection && !showFeedback) {
+    if (reflection && !reflectionVisible) {
       const timer = setTimeout(() => {
-        setShowFeedback(true);
-      }, 3000);
+        setReflectionVisible(true);
+      }, 500);
       return () => clearTimeout(timer);
     }
-  }, [reflection, showFeedback]);
+  }, [reflection, reflectionVisible]);
 
-  /**
-   * Initialize component
-   */
   const initializeComponent = async () => {
     try {
-      // Get reflection ID from URL
       const urlParams = new URLSearchParams(window.location.search);
       const id = urlParams.get("id");
 
@@ -63,10 +42,8 @@ const Output = () => {
 
       setReflectionId(id);
 
-      // Wait for authentication to complete
       if (isAuthLoading) return;
 
-      // Load reflection data
       await loadReflection(id);
     } catch (error) {
       console.error("Component initialization failed:", error);
@@ -76,9 +53,6 @@ const Output = () => {
     }
   };
 
-  /**
-   * Load reflection data
-   */
   const loadReflection = async (id) => {
     try {
       const reflectionData = await reflectionService.getReflection(id);
@@ -89,9 +63,31 @@ const Output = () => {
     }
   };
 
-  /**
-   * Email reflection to user
-   */
+  const copyReflection = async () => {
+    if (!reflection?.ai_response) {
+      alert("No reflection to copy.");
+      return;
+    }
+
+    try {
+      // Remove HTML tags for clean text copy
+      const cleanText = reflection.ai_response.replace(/<[^>]*>/g, "");
+      await navigator.clipboard.writeText(cleanText);
+      alert("✅ Reflection copied to clipboard!");
+    } catch (error) {
+      console.error("Copy failed:", error);
+
+      // Fallback for older browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = reflection.ai_response.replace(/<[^>]*>/g, "");
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      alert("✅ Reflection copied to clipboard!");
+    }
+  };
+
   const emailReflection = async () => {
     if (!user || !reflection) {
       alert("Unable to send email at this time.");
@@ -114,141 +110,50 @@ const Output = () => {
     }
   };
 
-  /**
-   * Handle feedback completion
-   */
-  const handleFeedbackComplete = () => {
-    setShowFeedback(false);
+  const handleFeedbackToggle = () => {
+    setShowFeedback(!showFeedback);
   };
 
-  /**
-   * Navigate to new reflection
-   */
   const startNewReflection = () => {
     window.location.href = "/mirror/questionnaire?fresh=true";
   };
 
-  /**
-   * Navigate to reflection history
-   */
   const viewReflectionHistory = () => {
     window.location.href = "/reflections/history";
   };
 
-  /**
-   * Navigate to about page
-   */
-  const viewAbout = () => {
-    window.location.href = "/about";
-  };
-
-  // Show loading while authenticating
-  if (isAuthLoading) {
+  if (isAuthLoading || isLoading) {
     return (
       <div className="mirror-container">
         <CosmicBackground />
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "var(--space-2xl)",
-            padding: "var(--space-2xl)",
-            textAlign: "center",
-          }}
-        >
-          <div className="loading-circle" />
-          <div className="loading-text">Preparing your reflection...</div>
+        <div className="loading-state">
+          <div className="mirror-frame">
+            <div className="mirror-surface loading">
+              <div className="loading-spinner"></div>
+              <div className="loading-text">Surfacing your reflection...</div>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
-  // Show auth error
-  if (authError) {
-    return (
-      <div className="mirror-container">
-        <CosmicBackground />
-        <div
-          style={{
-            textAlign: "center",
-            color: "var(--cosmic-text)",
-            padding: "var(--space-2xl)",
-          }}
-        >
-          <h1
-            style={{
-              fontSize: "var(--text-3xl)",
-              marginBottom: "var(--space-lg)",
-            }}
-          >
-            Authentication Required
-          </h1>
-          <p style={{ marginBottom: "var(--space-xl)", opacity: 0.8 }}>
-            {authError}
-          </p>
-          <button
-            className="cosmic-button cosmic-button--primary"
-            onClick={() => redirectToAuth()}
-          >
-            Sign In to Continue
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Show general error
   if (error) {
     return (
       <div className="mirror-container">
         <CosmicBackground />
-        <div
-          style={{
-            textAlign: "center",
-            color: "var(--cosmic-text)",
-            padding: "var(--space-2xl)",
-          }}
-        >
-          <h1
-            style={{
-              fontSize: "var(--text-3xl)",
-              marginBottom: "var(--space-lg)",
-            }}
-          >
-            Reflection Unavailable
-          </h1>
-          <p style={{ marginBottom: "var(--space-xl)", opacity: 0.8 }}>
-            {error}
-          </p>
-          <button
-            className="cosmic-button cosmic-button--primary"
-            onClick={startNewReflection}
-          >
-            Try New Reflection
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Show loading
-  if (isLoading) {
-    return (
-      <div className="mirror-container">
-        <CosmicBackground />
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "var(--space-2xl)",
-            padding: "var(--space-2xl)",
-            textAlign: "center",
-          }}
-        >
-          <div className="loading-circle" />
-          <div className="loading-text">Preparing your reflection...</div>
+        <div className="error-state">
+          <div className="mirror-frame">
+            <div className="mirror-surface error">
+              <div className="error-content">
+                <span className="error-icon">⚠</span>
+                <span className="error-message">{error}</span>
+                <button className="simple-button" onClick={startNewReflection}>
+                  Try New Reflection
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -264,219 +169,516 @@ const Output = () => {
         <span>Return to Portal</span>
       </a>
 
-      <div className="mirror-content">
-        {/* Artifact Call-to-Action Banner */}
-        <div className="artifact-cta-banner">
-          <div className="artifact-cta-icon">✨</div>
-          <div className="artifact-cta-title">
-            Transform Your Truth Into Art
-          </div>
-          <div className="artifact-cta-subtitle">
-            Create a beautiful visual artifact from your reflection
-          </div>
-          <div className="artifact-cta-description">
-            See your personalized artwork below
-          </div>
-        </div>
+      <div className="content-wrapper">
+        {/* Square Mirror */}
+        <div className="mirror-frame">
+          <div className="mirror-surface">
+            {/* Mirror reflections */}
+            <div className="mirror-glow-top"></div>
+            <div className="mirror-glow-center"></div>
 
-        {/* Admin/Test Mode Notice */}
-        {(user?.isCreator || user?.testMode) && (
-          <div className="admin-notice">
-            <span>
-              ✨{" "}
-              {user.isCreator
-                ? "Creator mode — unlimited premium reflections"
-                : `Test mode — ${user.tier} reflection`}
-            </span>
-          </div>
-        )}
+            {/* Reflection content - NO BACKGROUND */}
+            <div
+              className={`reflection-text ${
+                reflectionVisible ? "visible" : ""
+              }`}
+            >
+              <MarkdownRenderer
+                content={reflection?.ai_response}
+                options={{
+                  cleanGold: true,
+                  noBackground: true,
+                }}
+              />
+            </div>
 
-        {/* Reflection Content */}
-        <div className="reflection-content-section">
-          <MarkdownRenderer
-            content={reflection?.ai_response}
-            options={{
-              enhanceAccessibility: true,
-              sanitizeHtml: true,
-            }}
-          />
+            {/* Subtle shimmer */}
+            <div className="mirror-shimmer"></div>
+          </div>
         </div>
 
         {/* Artifact Section */}
         <ArtifactSection
           reflectionId={reflectionId}
           authToken={user?.token || null}
+          simple={true}
         />
 
         {/* Action Buttons */}
-        <div className="action-buttons-section">
+        <div className="action-grid">
           <button
-            className="cosmic-button"
-            onClick={emailReflection}
-            disabled={!user?.email}
-            title={
-              !user?.email
-                ? "Email address required"
-                : "Email reflection to yourself"
-            }
+            className="action-button"
+            onClick={copyReflection}
+            title="Copy reflection"
           >
-            <span>📧</span>
-            <span>Mail Reflection</span>
+            <span className="button-icon">📋</span>
+            <span>Copy Text</span>
           </button>
 
           <button
-            className="cosmic-button cosmic-button--gentle"
-            onClick={startNewReflection}
+            className="action-button"
+            onClick={emailReflection}
+            disabled={!user?.email}
+            title="Email reflection"
           >
-            <span>🆕</span>
+            <span className="button-icon">📧</span>
+            <span>Send Email</span>
+          </button>
+
+          <button
+            className="action-button"
+            onClick={startNewReflection}
+            title="New reflection"
+          >
+            <span className="button-icon">✨</span>
             <span>New Reflection</span>
           </button>
 
-          <button className="cosmic-button" onClick={viewReflectionHistory}>
-            <span>📚</span>
+          <button
+            className="action-button"
+            onClick={viewReflectionHistory}
+            title="View history"
+          >
+            <span className="button-icon">📖</span>
             <span>Your Journey</span>
           </button>
 
-          <button className="cosmic-button" onClick={viewAbout}>
-            <span>🤲</span>
-            <span>Who created this?</span>
+          <button
+            className="action-button"
+            onClick={handleFeedbackToggle}
+            title="Feedback"
+          >
+            <span className="button-icon">💭</span>
+            <span>Feedback</span>
           </button>
         </div>
 
-        {/* Feedback Section */}
+        {/* Feedback */}
         {showFeedback && (
           <FeedbackSection
             reflectionId={reflectionId}
             authToken={user?.token || null}
-            onComplete={handleFeedbackComplete}
+            onComplete={() => setShowFeedback(false)}
+            clean={true}
           />
         )}
       </div>
 
-      {/* Component Styles */}
       <style jsx>{`
-        .artifact-cta-banner {
-          margin-top: var(--space-2xl);
-          margin-bottom: var(--space-xl);
-          padding: var(--space-xl);
-          background: linear-gradient(
-            135deg,
-            rgba(251, 191, 36, 0.08) 0%,
-            rgba(245, 158, 11, 0.04) 100%
-          );
-          backdrop-filter: blur(25px);
-          border: 1px solid rgba(251, 191, 36, 0.2);
-          border-radius: 20px;
-          text-align: center;
+        .mirror-container {
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 3rem 2rem;
+        }
+
+        .back-link {
+          position: fixed;
+          top: 2rem;
+          left: 2rem;
+          z-index: 100;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.75rem 1.25rem;
+          background: rgba(255, 255, 255, 0.08);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          border-radius: 25px;
+          color: rgba(255, 255, 255, 0.8);
+          text-decoration: none;
+          font-size: 0.9rem;
+          transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+          background: rgba(255, 255, 255, 0.12);
+          color: white;
+          transform: translateY(-1px);
+        }
+
+        .content-wrapper {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 4rem;
+          width: 100%;
+          max-width: 1000px;
+        }
+
+        .loading-state,
+        .error-state {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 80vh;
+        }
+
+        .mirror-frame {
           position: relative;
-          overflow: hidden;
-          animation: artifactGlow 4s ease-in-out infinite;
+          width: clamp(500px, 60vw, 700px);
+          height: clamp(500px, 60vw, 700px);
+          aspect-ratio: 1;
+          padding: 3rem;
+          background: radial-gradient(
+            circle at 30% 30%,
+            rgba(255, 215, 0, 0.08) 0%,
+            rgba(255, 215, 0, 0.04) 40%,
+            transparent 80%
+          );
+          border-radius: 20px;
+          animation: frameGlow 6s ease-in-out infinite;
         }
 
-        .artifact-cta-icon {
-          font-size: var(--text-3xl);
-          margin-bottom: var(--space-md);
-        }
-
-        .artifact-cta-title {
-          font-size: var(--text-xl);
-          font-weight: var(--font-medium);
-          color: var(--fusion-primary);
-          margin-bottom: var(--space-xs);
-        }
-
-        .artifact-cta-subtitle {
-          font-size: var(--text-base);
-          color: var(--cosmic-text-secondary);
-          margin-bottom: var(--space-xs);
-        }
-
-        .artifact-cta-description {
-          font-size: var(--text-sm);
-          color: var(--cosmic-text-muted);
-          font-style: italic;
-        }
-
-        .admin-notice {
-          background: rgba(168, 85, 247, 0.1);
-          border: 1px solid rgba(168, 85, 247, 0.25);
-          color: #d8b4fe;
-          padding: var(--space-md) var(--space-lg);
-          border-radius: var(--radius-xl);
-          margin-bottom: var(--space-xl);
-          font-size: var(--text-sm);
-          font-weight: var(--font-normal);
-          letter-spacing: 0.3px;
-          text-align: center;
-        }
-
-        .reflection-content-section {
-          margin-bottom: var(--space-xl);
-        }
-
-        .action-buttons-section {
-          margin-top: var(--space-2xl);
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-          gap: var(--space-md);
-        }
-
-        .loading-text {
-          font-size: var(--text-lg);
-          font-weight: var(--font-light);
-          opacity: 0.8;
-          letter-spacing: 1px;
-          color: var(--cosmic-text-secondary);
-          animation: loadingPulse 3s ease-in-out infinite;
-        }
-
-        @keyframes artifactGlow {
+        @keyframes frameGlow {
           0%,
           100% {
-            background: linear-gradient(
-              135deg,
-              rgba(251, 191, 36, 0.08) 0%,
-              rgba(245, 158, 11, 0.04) 100%
-            );
-            border-color: rgba(251, 191, 36, 0.2);
+            box-shadow: 0 0 80px rgba(255, 215, 0, 0.15),
+              0 0 160px rgba(255, 215, 0, 0.08);
           }
           50% {
-            background: linear-gradient(
-              135deg,
-              rgba(251, 191, 36, 0.12) 0%,
-              rgba(245, 158, 11, 0.06) 100%
-            );
-            border-color: rgba(251, 191, 36, 0.3);
+            box-shadow: 0 0 100px rgba(255, 215, 0, 0.2),
+              0 0 180px rgba(255, 215, 0, 0.12);
           }
         }
 
-        @keyframes loadingPulse {
+        .mirror-surface {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.1) 0%,
+            rgba(255, 255, 255, 0.15) 20%,
+            rgba(255, 255, 255, 0.08) 80%,
+            rgba(255, 255, 255, 0.05) 100%
+          );
+          backdrop-filter: blur(25px);
+          border: 2px solid rgba(255, 255, 255, 0.2);
+          border-radius: 15px;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 3rem;
+        }
+
+        .mirror-surface.loading {
+          background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.05) 0%,
+            rgba(255, 255, 255, 0.1) 50%,
+            rgba(255, 255, 255, 0.05) 100%
+          );
+        }
+
+        .mirror-surface.error {
+          background: linear-gradient(
+            135deg,
+            rgba(239, 68, 68, 0.08) 0%,
+            rgba(239, 68, 68, 0.12) 50%,
+            rgba(239, 68, 68, 0.08) 100%
+          );
+          border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .mirror-glow-top {
+          position: absolute;
+          top: 8%;
+          left: 20%;
+          width: 60%;
+          height: 25%;
+          background: radial-gradient(
+            ellipse,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0.1) 60%,
+            transparent 80%
+          );
+          border-radius: 50%;
+          animation: glowShift 8s ease-in-out infinite;
+        }
+
+        .mirror-glow-center {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 30%;
+          height: 30%;
+          background: radial-gradient(
+            circle,
+            rgba(255, 255, 255, 0.05) 0%,
+            rgba(255, 255, 255, 0.02) 50%,
+            transparent 80%
+          );
+          border-radius: 50%;
+          animation: breathe 12s ease-in-out infinite;
+        }
+
+        @keyframes glowShift {
           0%,
           100% {
+            transform: scale(1);
             opacity: 0.6;
+          }
+          50% {
+            transform: scale(1.05);
+            opacity: 0.8;
+          }
+        }
+
+        @keyframes breathe {
+          0%,
+          100% {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 0.3;
+          }
+          50% {
+            transform: translate(-50%, -50%) scale(1.1);
+            opacity: 0.5;
+          }
+        }
+
+        .mirror-shimmer {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            45deg,
+            transparent 40%,
+            rgba(255, 255, 255, 0.1) 50%,
+            transparent 60%
+          );
+          animation: shimmer 8s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+          0% {
+            transform: translateX(-100%) translateY(-100%);
+            opacity: 0;
           }
           50% {
             opacity: 1;
           }
+          100% {
+            transform: translateX(100%) translateY(100%);
+            opacity: 0;
+          }
+        }
+
+        .loading-spinner {
+          width: 60px;
+          height: 60px;
+          border: 3px solid rgba(255, 215, 0, 0.3);
+          border-top: 3px solid rgba(255, 215, 0, 0.8);
+          border-radius: 50%;
+          animation: spin 1.5s linear infinite;
+          margin-bottom: 2rem;
+        }
+
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+
+        .loading-text {
+          font-size: 1.1rem;
+          color: rgba(255, 215, 0, 0.8);
+          text-align: center;
+        }
+
+        .error-content {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 1.5rem;
+          text-align: center;
+        }
+
+        .error-icon {
+          font-size: 2.5rem;
+          color: rgba(239, 68, 68, 0.8);
+        }
+
+        .error-message {
+          color: rgba(239, 68, 68, 0.9);
+          font-size: 1.1rem;
+        }
+
+        .reflection-text {
+          width: 100%;
+          height: 100%;
+          overflow-y: auto;
+          scrollbar-width: thin;
+          scrollbar-color: rgba(255, 215, 0, 0.3) transparent;
+          opacity: 0;
+          transform: translateY(20px);
+          transition: all 0.8s ease;
+          z-index: 10;
+          position: relative;
+        }
+
+        .reflection-text.visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        .reflection-text::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        .reflection-text::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        .reflection-text::-webkit-scrollbar-thumb {
+          background: rgba(255, 215, 0, 0.3);
+          border-radius: 3px;
+        }
+
+        .action-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+          gap: 1.5rem;
+          width: 100%;
+          max-width: 800px;
+        }
+
+        .action-button {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.75rem;
+          padding: 1.5rem 1rem;
+          background: rgba(255, 255, 255, 0.06);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 15px;
+          color: rgba(255, 255, 255, 0.8);
+          font-size: 0.9rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          font-family: inherit;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .action-button::before {
+          content: "";
+          position: absolute;
+          top: 8%;
+          left: 15%;
+          width: 70%;
+          height: 30%;
+          background: radial-gradient(
+            ellipse,
+            rgba(255, 255, 255, 0.3) 0%,
+            rgba(255, 255, 255, 0.1) 60%,
+            transparent 80%
+          );
+          border-radius: 50%;
+          transform: rotate(-15deg);
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          pointer-events: none;
+        }
+
+        .action-button:hover::before {
+          opacity: 1;
+        }
+
+        .action-button:hover {
+          background: rgba(255, 255, 255, 0.1);
+          transform: translateY(-3px);
+          box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+          color: white;
+        }
+
+        .action-button:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          transform: none;
+        }
+
+        .button-icon {
+          font-size: 1.4rem;
+        }
+
+        .simple-button {
+          padding: 1rem 2rem;
+          background: rgba(255, 215, 0, 0.8);
+          border: none;
+          border-radius: 25px;
+          color: rgba(15, 23, 42, 0.9);
+          font-size: 1rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          font-family: inherit;
+        }
+
+        .simple-button:hover {
+          background: rgba(255, 215, 0, 0.9);
+          transform: translateY(-2px);
         }
 
         @media (max-width: 768px) {
-          .action-buttons-section {
-            grid-template-columns: 1fr;
+          .mirror-container {
+            padding: 2rem 1rem;
           }
 
-          .artifact-cta-banner {
-            padding: var(--space-lg);
+          .content-wrapper {
+            gap: 3rem;
+          }
+
+          .mirror-frame {
+            width: clamp(350px, 85vw, 500px);
+            height: clamp(350px, 85vw, 500px);
+            padding: 2rem;
+          }
+
+          .mirror-surface {
+            padding: 2rem;
+          }
+
+          .action-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .back-link {
+            top: 1rem;
+            left: 1rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .mirror-frame {
+            width: clamp(300px, 90vw, 400px);
+            height: clamp(300px, 90vw, 400px);
+            padding: 1.5rem;
+          }
+
+          .action-grid {
+            grid-template-columns: 1fr;
           }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .artifact-cta-banner {
+          .mirror-frame,
+          .mirror-glow-top,
+          .mirror-glow-center,
+          .mirror-shimmer,
+          .loading-spinner {
             animation: none;
           }
 
-          .loading-text {
-            animation: none;
+          .action-button:hover {
+            transform: none;
           }
         }
       `}</style>

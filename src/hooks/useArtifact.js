@@ -1,133 +1,160 @@
-// hooks/useArtifact.js - Fixed artifact creation and management hook
+// hooks/useArtifact.js - Updated for manual creation only
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { reflectionService } from "../services/reflection.service";
-import { ApiError } from "../services/api";
 
 /**
- * Artifact management hook for creating and managing reflection artifacts
- * @param {string} reflectionId - Reflection ID
- * @param {string} authToken - Authentication token
- * @returns {Object} - Artifact state and methods
+ * Enhanced artifact hook with manual creation only
+ * No automatic checking or creation unless explicitly requested
  */
-export const useArtifact = (reflectionId, authToken) => {
-  const [artifactState, setArtifactState] = useState("checking"); // 'checking', 'create', 'loading', 'preview', 'error'
+export const useArtifact = (reflectionId, authToken, options = {}) => {
+  const {
+    autoCheck = false, // Disabled by default now
+    autoCreate = false, // Never auto-create
+    timeout = 60000, // 60 second timeout
+  } = options;
+
+  // State
+  const [artifactState, setArtifactState] = useState("idle"); // idle, checking, creating, success, error
   const [artifactData, setArtifactData] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Refs for cleanup
+  const abortControllerRef = useRef(null);
+  const timeoutRef = useRef(null);
+
   /**
-   * Check for existing artifact
+   * Check for existing artifact (only when explicitly called)
    */
   const checkExistingArtifact = useCallback(async () => {
-    if (!reflectionId) return;
-
-    setArtifactState("checking");
-    setError(null);
+    if (!reflectionId) return null;
 
     try {
-      console.log(`🔍 Checking for existing artifact: ${reflectionId}`);
+      setArtifactState("checking");
+      setIsLoading(true);
+      setError(null);
+
       const existingArtifact = await reflectionService.checkExistingArtifact(
         reflectionId
       );
 
       if (existingArtifact) {
-        console.log(`✅ Found existing artifact:`, existingArtifact);
         setArtifactData(existingArtifact);
-        setArtifactState("preview");
+        setArtifactState("success");
+        return existingArtifact;
       } else {
-        console.log(`📝 No existing artifact found`);
-        setArtifactState("create");
+        setArtifactState("idle");
+        return null;
       }
     } catch (error) {
-      console.log("📝 No existing artifact found:", error.message);
-      setArtifactState("create");
-    }
-  }, [reflectionId]);
-
-  /**
-   * Create new artifact
-   */
-  const createArtifact = useCallback(async () => {
-    if (!reflectionId) {
-      setError("No reflection found to create artifact from.");
-      return false;
-    }
-
-    setArtifactState("loading");
-    setError(null);
-    setIsLoading(true);
-
-    try {
-      console.log(`🎨 Creating artifact for reflection: ${reflectionId}`);
-      const artifact = await reflectionService.createArtifact(reflectionId);
-
-      console.log(`✨ Artifact created successfully:`, artifact);
-      setArtifactData(artifact);
-      setArtifactState("preview");
-      return true;
-    } catch (error) {
-      console.error("🔥 Artifact creation failed:", error);
-
-      const errorMessage =
-        error instanceof ApiError
-          ? error.getUserMessage()
-          : "Failed to create artifact. Please try again.";
-
-      setError(errorMessage);
+      console.error("Failed to check existing artifact:", error);
+      setError(error.message || "Failed to check for existing artifact");
       setArtifactState("error");
-      return false;
+      return null;
     } finally {
       setIsLoading(false);
     }
   }, [reflectionId]);
 
   /**
+   * Create new artifact (manual only)
+   */
+  const createArtifact = useCallback(async () => {
+    if (!reflectionId) {
+      throw new Error("No reflection ID provided");
+    }
+
+    // Cancel any existing request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    // Create new abort controller
+    abortControllerRef.current = new AbortController();
+
+    try {
+      setArtifactState("creating");
+      setIsLoading(true);
+      setError(null);
+
+      // Set timeout
+      timeoutRef.current = setTimeout(() => {
+        abortControllerRef.current?.abort();
+        setError("Artifact creation timed out");
+        setArtifactState("error");
+        setIsLoading(false);
+      }, timeout);
+
+      const newArtifact = await reflectionService.createArtifact(reflectionId);
+
+      // Clear timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+
+      setArtifactData(newArtifact);
+      setArtifactState("success");
+      return newArtifact;
+    } catch (error) {
+      // Clear timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+
+      if (error.name === "AbortError") {
+        setError("Artifact creation was cancelled");
+      } else {
+        setError(error.message || "Failed to create artifact");
+      }
+
+      setArtifactState("error");
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [reflectionId, timeout]);
+
+  /**
    * Regenerate artifact (create new one)
    */
   const regenerateArtifact = useCallback(async () => {
-    const confirmed = window.confirm(
-      "Are you sure you want to create a new artifact? This will replace your current one."
-    );
-
-    if (!confirmed) return false;
-
+    // Clear existing artifact data first
     setArtifactData(null);
-    setArtifactState("create");
+    setArtifactState("idle");
 
-    return await createArtifact();
+    // Create new artifact
+    return createArtifact();
   }, [createArtifact]);
 
   /**
-   * Share artifact via Web Share API or clipboard
+   * Share artifact
    */
   const shareArtifact = useCallback(async () => {
-    if (!artifactData?.image_url) {
-      setError("No artifact to share");
-      return false;
+    if (!artifactData) {
+      throw new Error("No artifact to share");
     }
 
-    const url = artifactData.image_url;
-    const shareData = {
-      title: "My Mirror of Truth Artifact",
-      text: "Check out my personalized reflection artifact",
-      url: url,
-    };
-
     try {
-      // Try Web Share API first (mobile)
-      if (
-        navigator.share &&
-        navigator.canShare &&
-        navigator.canShare(shareData)
-      ) {
-        await navigator.share(shareData);
+      const shareUrl = artifactData.share_url || artifactData.image_url;
+
+      if (navigator.share) {
+        await navigator.share({
+          title: "My Sacred Artifact",
+          text: "Check out my reflection artifact from Mirror of Truth",
+          url: shareUrl,
+        });
+        return true;
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(shareUrl);
+        return true;
+      } else {
+        // Fallback: show share URL
+        prompt("Copy this link to share:", shareUrl);
         return true;
       }
-
-      // Fallback to clipboard
-      await copyToClipboard(url);
-      return true;
     } catch (error) {
       console.error("Share failed:", error);
       setError("Failed to share artifact");
@@ -136,177 +163,40 @@ export const useArtifact = (reflectionId, authToken) => {
   }, [artifactData]);
 
   /**
-   * Copy URL to clipboard
-   * @param {string} text - Text to copy
-   */
-  const copyToClipboard = useCallback(async (text) => {
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(text);
-        alert("🔗 Link copied to clipboard");
-      } else {
-        // Fallback for older browsers
-        fallbackCopy(text);
-      }
-    } catch (error) {
-      console.error("Clipboard copy failed:", error);
-      fallbackCopy(text);
-    }
-  }, []);
-
-  /**
-   * Fallback copy method for older browsers
-   * @param {string} text - Text to copy
-   */
-  const fallbackCopy = useCallback((text) => {
-    const textArea = document.createElement("textarea");
-    textArea.value = text;
-    textArea.style.position = "fixed";
-    textArea.style.left = "-999999px";
-    textArea.style.top = "-999999px";
-
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-
-    try {
-      const successful = document.execCommand("copy");
-      if (successful) {
-        alert("🔗 Link copied to clipboard");
-      } else {
-        alert("❌ Unable to copy link");
-      }
-    } catch (error) {
-      console.error("Fallback copy failed:", error);
-      alert("❌ Unable to copy link");
-    }
-
-    document.body.removeChild(textArea);
-  }, []);
-
-  /**
-   * Download artifact image with CORS handling
+   * Download artifact
    */
   const downloadArtifact = useCallback(async () => {
-    if (!artifactData?.image_url) {
-      setError("No artifact to download");
-      return false;
+    if (!artifactData) {
+      throw new Error("No artifact to download");
     }
 
     try {
-      console.log(`📥 Starting download from: ${artifactData.image_url}`);
+      const downloadUrl = artifactData.download_url || artifactData.image_url;
 
-      // Try direct fetch first
-      let response;
-      try {
-        response = await fetch(artifactData.image_url, {
-          mode: "cors",
-          credentials: "omit",
-        });
-      } catch (corsError) {
-        console.warn("CORS fetch failed, trying no-cors mode:", corsError);
-
-        // Fallback: try no-cors mode (won't work for download but we can try)
-        response = await fetch(artifactData.image_url, {
-          mode: "no-cors",
-        });
-      }
-
-      if (!response.ok && response.type !== "opaque") {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const blob = await response.blob();
-
-      // Create download link
-      const url = window.URL.createObjectURL(blob);
+      // Try direct download first
       const link = document.createElement("a");
-      link.href = url;
-      link.download = `mirror-artifact-${Date.now()}.png`;
+      link.href = downloadUrl;
+      link.download = `sacred-artifact-${Date.now()}.jpg`;
       link.style.display = "none";
 
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
-      window.URL.revokeObjectURL(url);
-
-      console.log(`✅ Download completed successfully`);
       return true;
     } catch (error) {
-      console.error("🔥 Download failed:", error);
+      console.error("Download failed:", error);
 
       // Fallback: open in new tab
       try {
         window.open(artifactData.image_url, "_blank");
-        alert("📥 Opening image in new tab. You can save it from there.");
         return true;
       } catch (fallbackError) {
-        console.error("Fallback failed:", fallbackError);
-        setError(
-          "Unable to download. Please try right-clicking the image and selecting 'Save image as...'"
-        );
+        setError("Failed to download artifact");
         return false;
       }
     }
   }, [artifactData]);
-
-  /**
-   * Validate artifact URL accessibility
-   */
-  const validateArtifactUrl = useCallback(async (url) => {
-    try {
-      const response = await fetch(url, {
-        method: "HEAD",
-        mode: "cors",
-        credentials: "omit",
-      });
-      return response.ok;
-    } catch (error) {
-      console.warn("URL validation failed:", error);
-      return false;
-    }
-  }, []);
-
-  /**
-   * Get artifact creation status text
-   */
-  const getStatusText = useCallback(() => {
-    switch (artifactState) {
-      case "checking":
-        return "Checking for existing artifact...";
-      case "create":
-        return "Ready to create your artifact";
-      case "loading":
-        return "Creating your sacred artwork...";
-      case "preview":
-        return "Your artifact is ready";
-      case "error":
-        return "Error creating artifact";
-      default:
-        return "";
-    }
-  }, [artifactState]);
-
-  /**
-   * Get artifact creation progress
-   */
-  const getProgress = useCallback(() => {
-    switch (artifactState) {
-      case "checking":
-        return 25;
-      case "create":
-        return 0;
-      case "loading":
-        return 75;
-      case "preview":
-        return 100;
-      case "error":
-        return 0;
-      default:
-        return 0;
-    }
-  }, [artifactState]);
 
   /**
    * Clear error state
@@ -314,45 +204,98 @@ export const useArtifact = (reflectionId, authToken) => {
   const clearError = useCallback(() => {
     setError(null);
     if (artifactState === "error") {
-      setArtifactState("create");
+      setArtifactState("idle");
     }
   }, [artifactState]);
 
   /**
-   * Retry artifact creation
+   * Retry creation after error
    */
   const retryCreation = useCallback(async () => {
     clearError();
-    return await createArtifact();
+    return createArtifact();
   }, [clearError, createArtifact]);
 
   /**
-   * Reset artifact state
+   * Get status text for UI
    */
-  const resetArtifact = useCallback(() => {
-    setArtifactData(null);
-    setError(null);
-    setArtifactState("create");
+  const getStatusText = useCallback(() => {
+    switch (artifactState) {
+      case "checking":
+        return "Checking for artifact...";
+      case "creating":
+        return "Weaving your sacred artifact...";
+      case "success":
+        return "Artifact ready";
+      case "error":
+        return "Creation failed";
+      default:
+        return "Ready to create";
+    }
+  }, [artifactState]);
+
+  /**
+   * Computed state helpers
+   */
+  const canCreate = artifactState === "idle" && !isLoading;
+  const isCreating = artifactState === "creating";
+  const hasArtifact = artifactState === "success" && artifactData;
+  const hasError = artifactState === "error";
+
+  /**
+   * Auto-check on mount (only if enabled)
+   */
+  useEffect(() => {
+    if (autoCheck && reflectionId && authToken && artifactState === "idle") {
+      checkExistingArtifact();
+    }
+  }, [
+    autoCheck,
+    reflectionId,
+    authToken,
+    artifactState,
+    checkExistingArtifact,
+  ]);
+
+  /**
+   * Cleanup on unmount
+   */
+  useEffect(() => {
+    return () => {
+      // Cancel any pending requests
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+
+      // Clear timeouts
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, []);
 
-  // Initialize artifact check
+  /**
+   * Validate artifact URL when artifact data changes
+   */
   useEffect(() => {
-    checkExistingArtifact();
-  }, [checkExistingArtifact]);
-
-  // Validate artifact URL when artifact data changes
-  useEffect(() => {
-    if (artifactData?.image_url && artifactState === "preview") {
-      validateArtifactUrl(artifactData.image_url).then((isValid) => {
-        if (!isValid) {
-          console.warn(
-            "Artifact URL may not be accessible:",
-            artifactData.image_url
-          );
-        }
-      });
+    if (artifactData?.image_url) {
+      // Validate URL accessibility (non-blocking)
+      reflectionService
+        .validateArtifactUrl(artifactData.image_url)
+        .then((isValid) => {
+          if (!isValid) {
+            console.warn(
+              "Artifact URL may not be accessible:",
+              artifactData.image_url
+            );
+            // Don't set error state, just warn
+          }
+        })
+        .catch((error) => {
+          console.warn("Failed to validate artifact URL:", error);
+        });
     }
-  }, [artifactData, artifactState, validateArtifactUrl]);
+  }, [artifactData]);
 
   return {
     // State
@@ -366,20 +309,19 @@ export const useArtifact = (reflectionId, authToken) => {
     regenerateArtifact,
     shareArtifact,
     downloadArtifact,
-    copyToClipboard,
-    retryCreation,
-    resetArtifact,
     clearError,
+    retryCreation,
+    checkExistingArtifact,
 
-    // Utilities
+    // Helpers
     getStatusText,
-    getProgress,
-    validateArtifactUrl,
 
-    // Status checks
-    canCreate: artifactState === "create",
-    isCreating: artifactState === "loading",
-    hasArtifact: artifactState === "preview" && !!artifactData,
-    hasError: artifactState === "error",
+    // Computed state
+    canCreate,
+    isCreating,
+    hasArtifact,
+    hasError,
   };
 };
+
+export default useArtifact;
