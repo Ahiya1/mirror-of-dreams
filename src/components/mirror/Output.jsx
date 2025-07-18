@@ -1,4 +1,4 @@
-// components/mirror/Output.jsx - Clean and Spacious
+// components/mirror/Output.jsx - Updated with reflection routes
 
 import React, { useState, useEffect } from "react";
 import CosmicBackground from "../shared/CosmicBackground";
@@ -115,7 +115,7 @@ const Output = () => {
   };
 
   const startNewReflection = () => {
-    window.location.href = "/mirror/questionnaire?fresh=true";
+    window.location.href = "/reflection?fresh=true";
   };
 
   const viewReflectionHistory = () => {
@@ -164,9 +164,9 @@ const Output = () => {
       <CosmicBackground />
 
       {/* Back Navigation */}
-      <a href="/" className="back-link">
+      <a href="/dashboard" className="back-link">
         <span>←</span>
-        <span>Return to Portal</span>
+        <span>Return to Dashboard</span>
       </a>
 
       <div className="content-wrapper">

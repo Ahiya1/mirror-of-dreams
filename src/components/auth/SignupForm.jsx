@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { apiClient } from "../../services/api";
 
 /**
- * Beautiful signup form component converted from HTML register page
+ * Compact signup form optimized for no-scroll experience
  * @param {Object} props - Component props
  * @param {Function} props.onSuccess - Success callback
  * @param {Function} props.onSwitchToSignin - Switch to signin callback
@@ -20,7 +20,7 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
   const [passwordHint, setPasswordHint] = useState({
-    text: "Password must be at least 6 characters",
+    text: "6+ characters",
     isValid: false,
   });
 
@@ -65,19 +65,17 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
   const handlePasswordValidation = (password) => {
     if (password.length === 0) {
       setPasswordHint({
-        text: "Password must be at least 6 characters",
+        text: "6+ characters",
         isValid: false,
       });
     } else if (password.length >= 6) {
       setPasswordHint({
-        text: "Strong password!",
+        text: "Perfect!",
         isValid: true,
       });
     } else {
       setPasswordHint({
-        text: `${6 - password.length} more character${
-          6 - password.length === 1 ? "" : "s"
-        } needed`,
+        text: `${6 - password.length} more`,
         isValid: false,
       });
     }
@@ -96,22 +94,22 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
 
     // Validation
     if (!name || !email || !password || !confirmPassword) {
-      showMessage("Please fill in all fields to continue", "error");
+      showMessage("Please fill in all fields", "error");
       return;
     }
 
     if (!validateEmail(email)) {
-      showMessage("Please enter a valid email address", "error");
+      showMessage("Please enter a valid email", "error");
       return;
     }
 
     if (password.length < 6) {
-      showMessage("Password must be at least 6 characters", "error");
+      showMessage("Password must be 6+ characters", "error");
       return;
     }
 
     if (password !== confirmPassword) {
-      showMessage("Passwords do not match", "error");
+      showMessage("Passwords don't match", "error");
       return;
     }
 
@@ -128,10 +126,7 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
       });
 
       if (response.success) {
-        showMessage(
-          "Welcome to your consciousness journey! Your free account is ready.",
-          "success"
-        );
+        showMessage("Account created! Welcome aboard.", "success");
         onSuccess(response);
       } else {
         throw new Error(response.error || "Account creation failed");
@@ -144,9 +139,9 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
       if (error.status === 400) {
         errorMessage = error.message || "Invalid information provided.";
       } else if (error.status === 409) {
-        errorMessage = "An account with this email already exists.";
+        errorMessage = "Email already registered.";
       } else if (error.status === 429) {
-        errorMessage = "Too many attempts. Please wait a moment and try again.";
+        errorMessage = "Too many attempts. Please wait.";
       } else if (error.message) {
         errorMessage = error.message;
       }
@@ -168,7 +163,7 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
     if (type === "error") {
       setTimeout(() => {
         setMessage({ text: "", type: "" });
-      }, 5000);
+      }, 4000);
     }
   };
 
@@ -344,7 +339,7 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
           {isLoading ? (
             <span className="button-loading">
               <div className="loading-spinner"></div>
-              <span>Creating your sacred space...</span>
+              <span>Creating...</span>
             </span>
           ) : (
             <span className="button-text">Create Free Account</span>
@@ -361,7 +356,7 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
           onClick={onSwitchToSignin}
         >
           <span>🔑</span>
-          <span>Sign in to your journey</span>
+          <span>Sign in</span>
         </button>
       </div>
 
@@ -370,17 +365,19 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
         .signup-form-container {
           display: flex;
           flex-direction: column;
-          gap: clamp(0.7rem, 1.4vh, 1rem);
+          gap: clamp(0.4rem, 0.8vh, 0.6rem);
           width: 100%;
           position: relative;
+          height: 100%;
+          justify-content: space-between;
         }
 
         .free-badge {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          gap: 0.3rem;
-          padding: clamp(0.25rem, 0.6vh, 0.4rem) clamp(0.6rem, 1.5vw, 0.9rem);
+          gap: 0.25rem;
+          padding: clamp(0.2rem, 0.4vh, 0.3rem) clamp(0.5rem, 1.2vw, 0.7rem);
           background: linear-gradient(
             135deg,
             rgba(16, 185, 129, 0.12),
@@ -389,51 +386,52 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
           border: 1px solid rgba(16, 185, 129, 0.2);
           border-radius: 50px;
           color: rgba(110, 231, 183, 0.9);
-          font-size: clamp(0.6rem, 1.2vw, 0.7rem);
+          font-size: clamp(0.55rem, 1.1vw, 0.65rem);
           font-weight: 500;
           text-transform: uppercase;
           letter-spacing: 1px;
-          margin-bottom: clamp(0.2rem, 0.4vh, 0.3rem);
           animation: badgeGlow 4s ease-in-out infinite;
           align-self: center;
+          flex-shrink: 0;
         }
 
         @keyframes badgeGlow {
           0%,
           100% {
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
           }
           50% {
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+            box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
           }
         }
 
         .signup-form {
           display: flex;
           flex-direction: column;
-          gap: clamp(0.8rem, 1.6vh, 1.1rem);
+          gap: clamp(0.5rem, 1vh, 0.7rem);
           width: 100%;
           position: relative;
+          flex: 1;
         }
 
         .form-group {
           position: relative;
           display: flex;
           flex-direction: column;
-          gap: clamp(0.2rem, 0.4vh, 0.3rem);
+          gap: clamp(0.15rem, 0.3vh, 0.2rem);
         }
 
         .form-label {
-          font-size: clamp(0.7rem, 1.4vw, 0.8rem);
+          font-size: clamp(0.65rem, 1.3vw, 0.75rem);
           color: rgba(255, 255, 255, 0.8);
           font-weight: 400;
           letter-spacing: 0.3px;
-          margin-bottom: clamp(0.1rem, 0.2vh, 0.15rem);
+          margin-bottom: clamp(0.05rem, 0.1vh, 0.1rem);
         }
 
         .form-input {
           width: 100%;
-          padding: clamp(0.8rem, 1.5vh, 1rem) clamp(1rem, 2vw, 1.2rem);
+          padding: clamp(0.6rem, 1.2vh, 0.8rem) clamp(0.8rem, 1.8vw, 1rem);
           background: linear-gradient(
             135deg,
             rgba(255, 255, 255, 0.06) 0%,
@@ -441,9 +439,9 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
           );
           backdrop-filter: blur(15px) saturate(120%);
           border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: clamp(8px, 1.6vw, 12px);
+          border-radius: clamp(6px, 1.4vw, 10px);
           color: #fff;
-          font-size: clamp(0.8rem, 1.6vw, 0.95rem);
+          font-size: clamp(0.75rem, 1.5vw, 0.85rem);
           font-family: inherit;
           transition: all 0.4s ease;
           font-weight: 300;
@@ -460,9 +458,9 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
             rgba(255, 255, 255, 0.08) 0%,
             rgba(147, 51, 234, 0.04) 100%
           );
-          box-shadow: 0 0 25px rgba(147, 51, 234, 0.15),
+          box-shadow: 0 0 20px rgba(147, 51, 234, 0.15),
             0 4px 20px rgba(0, 0, 0, 0.12);
-          transform: translateY(-2px) scale(1.01);
+          transform: translateY(-1px);
         }
 
         .form-input::placeholder {
@@ -478,12 +476,12 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
         }
 
         .password-input {
-          padding-right: clamp(2.8rem, 6vw, 3.8rem);
+          padding-right: clamp(2.4rem, 5.5vw, 3.2rem);
         }
 
         .password-toggle {
           position: absolute;
-          right: clamp(0.8rem, 1.8vw, 1rem);
+          right: clamp(0.6rem, 1.5vw, 0.8rem);
           top: 50%;
           transform: translateY(-50%);
           background: rgba(255, 255, 255, 0.08);
@@ -491,17 +489,17 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
           border: 1px solid rgba(255, 255, 255, 0.12);
           color: rgba(255, 255, 255, 0.7);
           cursor: pointer;
-          padding: clamp(0.35rem, 0.7vh, 0.45rem);
-          border-radius: clamp(6px, 1.2vw, 8px);
+          padding: clamp(0.25rem, 0.5vh, 0.35rem);
+          border-radius: clamp(4px, 1vw, 6px);
           transition: all 0.3s ease;
-          font-size: clamp(0.8rem, 1.8vw, 1rem);
+          font-size: clamp(0.7rem, 1.6vw, 0.9rem);
           display: flex;
           align-items: center;
           justify-content: center;
           touch-action: manipulation;
           -webkit-tap-highlight-color: transparent;
-          width: clamp(2rem, 4vw, 2.5rem);
-          height: clamp(2rem, 4vw, 2.5rem);
+          width: clamp(1.6rem, 3.5vw, 2rem);
+          height: clamp(1.6rem, 3.5vw, 2rem);
         }
 
         .password-toggle:hover {
@@ -516,19 +514,19 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
         }
 
         .password-hint {
-          font-size: clamp(0.6rem, 1.2vw, 0.7rem);
+          font-size: clamp(0.55rem, 1.1vw, 0.65rem);
           color: rgba(255, 255, 255, 0.5);
           font-style: italic;
           display: flex;
           align-items: center;
-          gap: 0.3rem;
-          margin-top: clamp(0.15rem, 0.3vh, 0.2rem);
+          gap: 0.2rem;
+          margin-top: clamp(0.1rem, 0.2vh, 0.15rem);
           transition: all 0.3s ease;
         }
 
         .password-hint::before {
           content: "💡";
-          font-size: 0.8em;
+          font-size: 0.7em;
           opacity: 0.7;
         }
 
@@ -542,7 +540,7 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
 
         .submit-button {
           width: 100%;
-          padding: clamp(0.9rem, 1.8vh, 1.2rem);
+          padding: clamp(0.7rem, 1.4vh, 0.9rem);
           background: linear-gradient(
             135deg,
             rgba(147, 51, 234, 0.15) 0%,
@@ -551,9 +549,9 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
           );
           backdrop-filter: blur(15px);
           border: 1px solid rgba(147, 51, 234, 0.3);
-          border-radius: clamp(8px, 1.6vw, 12px);
+          border-radius: clamp(6px, 1.4vw, 10px);
           color: rgba(196, 181, 253, 0.95);
-          font-size: clamp(0.8rem, 1.7vw, 0.95rem);
+          font-size: clamp(0.75rem, 1.5vw, 0.85rem);
           font-weight: 500;
           cursor: pointer;
           transition: all 0.4s ease;
@@ -567,9 +565,10 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
           align-items: center;
           justify-content: center;
           text-align: center;
-          margin-top: clamp(0.2rem, 0.5vh, 0.4rem);
-          min-height: clamp(40px, 6vh, 50px);
+          margin-top: clamp(0.15rem, 0.3vh, 0.25rem);
+          min-height: clamp(36px, 5vh, 44px);
           box-shadow: 0 6px 25px rgba(147, 51, 234, 0.12);
+          flex-shrink: 0;
         }
 
         .submit-button::before {
@@ -598,8 +597,8 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
             rgba(147, 51, 234, 0.22) 100%
           );
           border-color: rgba(147, 51, 234, 0.45);
-          transform: translateY(-3px) scale(1.02);
-          box-shadow: 0 12px 35px rgba(147, 51, 234, 0.2);
+          transform: translateY(-2px);
+          box-shadow: 0 10px 30px rgba(147, 51, 234, 0.2);
           color: rgba(196, 181, 253, 1);
         }
 
@@ -610,19 +609,19 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
         }
 
         .submit-button:active:not(:disabled) {
-          transform: translateY(-1px) scale(0.98);
+          transform: translateY(-1px);
         }
 
         .button-loading {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: clamp(0.4rem, 1vw, 0.6rem);
+          gap: clamp(0.3rem, 0.8vw, 0.5rem);
         }
 
         .loading-spinner {
-          width: clamp(12px, 2.5vw, 16px);
-          height: clamp(12px, 2.5vw, 16px);
+          width: clamp(10px, 2vw, 14px);
+          height: clamp(10px, 2vw, 14px);
           border: 2px solid rgba(255, 255, 255, 0.2);
           border-radius: 50%;
           border-top-color: rgba(255, 255, 255, 0.8);
@@ -644,31 +643,32 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: clamp(0.4rem, 0.8vh, 0.6rem);
-          margin-top: clamp(0.6rem, 1.2vh, 0.9rem);
+          gap: clamp(0.25rem, 0.5vh, 0.4rem);
+          margin-top: clamp(0.3rem, 0.6vh, 0.5rem);
+          flex-shrink: 0;
         }
 
         .signin-text {
           color: rgba(255, 255, 255, 0.6);
-          font-size: clamp(0.7rem, 1.4vw, 0.8rem);
+          font-size: clamp(0.6rem, 1.2vw, 0.7rem);
           line-height: 1.2;
           font-weight: 300;
-          margin-bottom: clamp(0.15rem, 0.3vh, 0.2rem);
+          margin-bottom: clamp(0.1rem, 0.2vh, 0.15rem);
         }
 
         .switch-link {
           display: inline-flex;
           align-items: center;
-          gap: clamp(0.3rem, 0.8vw, 0.5rem);
+          gap: clamp(0.25rem, 0.6vw, 0.4rem);
           color: rgba(255, 255, 255, 0.8);
           background: rgba(255, 255, 255, 0.05);
           backdrop-filter: blur(15px);
           border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: clamp(8px, 1.6vw, 12px);
-          padding: clamp(0.6rem, 1.2vh, 0.8rem) clamp(1.1rem, 2.5vw, 1.5rem);
+          border-radius: clamp(6px, 1.4vw, 10px);
+          padding: clamp(0.4rem, 0.8vh, 0.6rem) clamp(0.8rem, 2vw, 1.2rem);
           transition: all 0.4s ease;
           font-weight: 400;
-          font-size: clamp(0.7rem, 1.4vw, 0.8rem);
+          font-size: clamp(0.6rem, 1.2vw, 0.7rem);
           touch-action: manipulation;
           -webkit-tap-highlight-color: transparent;
           white-space: nowrap;
@@ -699,21 +699,22 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
           background: rgba(255, 255, 255, 0.08);
           border-color: rgba(255, 255, 255, 0.15);
           color: rgba(255, 255, 255, 0.95);
-          transform: translateY(-2px) scale(1.02);
+          transform: translateY(-1px);
         }
 
         .message {
-          padding: clamp(0.6rem, 1.2vh, 0.8rem);
-          border-radius: clamp(8px, 1.5vw, 10px);
-          font-size: clamp(0.7rem, 1.4vw, 0.8rem);
+          padding: clamp(0.4rem, 0.8vh, 0.6rem);
+          border-radius: clamp(6px, 1.2vw, 8px);
+          font-size: clamp(0.6rem, 1.2vw, 0.7rem);
           text-align: center;
           opacity: 0;
-          transform: translateY(-15px);
+          transform: translateY(-10px);
           transition: all 0.4s ease;
           font-weight: 300;
-          margin-bottom: clamp(0.5rem, 1vh, 0.7rem);
+          margin-bottom: clamp(0.3rem, 0.6vh, 0.5rem);
           position: relative;
           backdrop-filter: blur(15px);
+          flex-shrink: 0;
         }
 
         .message.show {
@@ -744,27 +745,68 @@ const SignupForm = ({ onSuccess, onSwitchToSignin }) => {
         /* Responsive Design */
         @media (max-width: 768px) {
           .form-input {
-            padding: clamp(0.7rem, 1.3vh, 0.9rem);
+            padding: clamp(0.55rem, 1.1vh, 0.7rem);
           }
 
           .password-toggle {
-            width: clamp(1.8rem, 3.5vw, 2.2rem);
-            height: clamp(1.8rem, 3.5vw, 2.2rem);
-            right: clamp(0.6rem, 1.4vw, 0.9rem);
+            width: clamp(1.4rem, 3vw, 1.8rem);
+            height: clamp(1.4rem, 3vw, 1.8rem);
+            right: clamp(0.5rem, 1.2vw, 0.7rem);
           }
 
           .password-input {
-            padding-right: clamp(2.5rem, 5vw, 3.2rem);
+            padding-right: clamp(2.1rem, 4.5vw, 2.8rem);
           }
         }
 
         @media (max-width: 480px) {
           .form-input {
-            padding: clamp(0.6rem, 1.2vh, 0.8rem);
+            padding: clamp(0.5rem, 1vh, 0.65rem);
           }
 
           .submit-button {
-            padding: clamp(0.8rem, 1.5vh, 1rem);
+            padding: clamp(0.6rem, 1.2vh, 0.8rem);
+          }
+        }
+
+        @media (max-height: 600px) {
+          .signup-form-container {
+            gap: clamp(0.3rem, 0.6vh, 0.5rem);
+          }
+
+          .signup-form {
+            gap: clamp(0.4rem, 0.8vh, 0.6rem);
+          }
+
+          .form-group {
+            gap: clamp(0.1rem, 0.2vh, 0.15rem);
+          }
+        }
+
+        @media (max-height: 500px) and (orientation: landscape) {
+          .signup-form-container {
+            gap: clamp(0.2rem, 0.4vh, 0.3rem);
+          }
+
+          .signup-form {
+            gap: clamp(0.3rem, 0.6vh, 0.5rem);
+          }
+
+          .form-group {
+            gap: clamp(0.05rem, 0.1vh, 0.1rem);
+          }
+
+          .form-input {
+            padding: clamp(0.4rem, 0.8vh, 0.55rem);
+          }
+
+          .submit-button {
+            padding: clamp(0.5rem, 1vh, 0.7rem);
+            min-height: clamp(32px, 4vh, 38px);
+          }
+
+          .password-hint {
+            margin-top: clamp(0.05rem, 0.1vh, 0.1rem);
           }
         }
 

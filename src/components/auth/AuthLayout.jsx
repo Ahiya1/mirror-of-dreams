@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 /**
- * Luxurious auth layout with cosmic background matching the register page design
+ * Compact auth layout optimized for no-scroll signup experience
  * @param {Object} props - Component props
  * @param {React.ReactNode} props.children - Child components
  * @param {string} props.title - Page title
@@ -195,34 +195,31 @@ const AuthLayout = ({
           display: flex;
           flex-direction: column;
           align-items: center;
-          justify-content: flex-start;
-          padding: clamp(0.8rem, 2vh, 1.2rem) clamp(1rem, 3vw, 2rem)
-            clamp(4rem, 12vh, 8rem);
-          gap: clamp(0.5rem, 1vh, 0.8rem);
-          max-height: 100vh;
+          justify-content: center;
+          padding: clamp(0.4rem, 1vh, 0.6rem) clamp(1rem, 3vw, 2rem);
+          gap: clamp(0.3rem, 0.6vh, 0.5rem);
           overflow: hidden;
         }
 
         .back-navigation {
-          width: 100%;
-          display: flex;
-          justify-content: flex-start;
-          flex-shrink: 0;
-          margin-bottom: clamp(0.3rem, 0.6vh, 0.5rem);
+          position: absolute;
+          top: clamp(0.8rem, 2vh, 1.2rem);
+          left: clamp(1rem, 3vw, 2rem);
+          z-index: 20;
         }
 
         .back-link {
           display: inline-flex;
           align-items: center;
-          gap: clamp(0.3rem, 0.8vw, 0.5rem);
-          padding: clamp(0.5rem, 1vh, 0.7rem) clamp(0.9rem, 2vw, 1.2rem);
+          gap: clamp(0.25rem, 0.6vw, 0.4rem);
+          padding: clamp(0.4rem, 0.8vh, 0.6rem) clamp(0.8rem, 1.8vw, 1rem);
           background: rgba(255, 255, 255, 0.05);
           backdrop-filter: blur(15px) saturate(120%);
           border: 1px solid rgba(255, 255, 255, 0.08);
           border-radius: 50px;
           color: rgba(255, 255, 255, 0.8);
           text-decoration: none;
-          font-size: clamp(0.7rem, 1.4vw, 0.8rem);
+          font-size: clamp(0.65rem, 1.3vw, 0.75rem);
           font-weight: 300;
           transition: all 0.4s ease;
           touch-action: manipulation;
@@ -260,7 +257,7 @@ const AuthLayout = ({
         }
 
         .back-arrow {
-          font-size: clamp(0.8rem, 1.6vw, 1rem);
+          font-size: clamp(0.7rem, 1.4vw, 0.9rem);
           transition: transform 0.3s ease;
         }
 
@@ -274,10 +271,10 @@ const AuthLayout = ({
           align-items: center;
           justify-content: center;
           width: 100%;
-          max-width: clamp(360px, 40vw, 450px);
-          gap: clamp(0.7rem, 1.4vh, 1rem);
+          max-width: clamp(340px, 38vw, 420px);
+          gap: clamp(0.4rem, 0.8vh, 0.6rem);
           position: relative;
-          flex-shrink: 0;
+          height: auto;
         }
 
         .auth-header {
@@ -285,13 +282,13 @@ const AuthLayout = ({
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: clamp(0.4rem, 0.8vh, 0.6rem);
-          margin-bottom: 0;
+          gap: clamp(0.2rem, 0.4vh, 0.3rem);
+          margin-bottom: clamp(0.2rem, 0.4vh, 0.3rem);
         }
 
         .mirror-icon {
-          font-size: clamp(1.8rem, 4vw, 2.2rem);
-          margin-bottom: clamp(0.1rem, 0.3vh, 0.2rem);
+          font-size: clamp(1.4rem, 3vw, 1.8rem);
+          margin-bottom: clamp(0.05rem, 0.1vh, 0.1rem);
           display: block;
           animation: ${prefersReducedMotion
             ? "none"
@@ -312,9 +309,9 @@ const AuthLayout = ({
         }
 
         .auth-title {
-          font-size: clamp(1.4rem, 3vw, 1.8rem);
+          font-size: clamp(1.2rem, 2.6vw, 1.6rem);
           font-weight: 300;
-          margin-bottom: clamp(0.1rem, 0.3vh, 0.2rem);
+          margin-bottom: clamp(0.05rem, 0.1vh, 0.1rem);
           background: linear-gradient(
             135deg,
             rgba(255, 255, 255, 0.95) 0%,
@@ -329,7 +326,7 @@ const AuthLayout = ({
         }
 
         .auth-subtitle {
-          font-size: clamp(0.8rem, 1.6vw, 0.95rem);
+          font-size: clamp(0.7rem, 1.4vw, 0.85rem);
           color: rgba(255, 255, 255, 0.7);
           font-weight: 300;
           line-height: 1.2;
@@ -339,46 +336,52 @@ const AuthLayout = ({
         .auth-form-container {
           width: 100%;
           position: relative;
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
           .auth-container {
-            padding: clamp(0.6rem, 1.5vh, 1rem) clamp(1rem, 2vw, 1.5rem)
-              clamp(3rem, 10vh, 6rem);
-            gap: clamp(0.4rem, 0.8vh, 0.6rem);
+            padding: clamp(0.3rem, 0.8vh, 0.5rem) clamp(0.8rem, 2vw, 1.2rem);
+            gap: clamp(0.25rem, 0.5vh, 0.4rem);
           }
 
           .auth-content-section {
-            max-width: 90vw;
-            gap: clamp(0.6rem, 1.2vh, 0.8rem);
+            max-width: 92vw;
+            gap: clamp(0.3rem, 0.6vh, 0.5rem);
+          }
+
+          .back-navigation {
+            top: clamp(0.5rem, 1.2vh, 0.8rem);
+            left: clamp(0.8rem, 2vw, 1.2rem);
           }
         }
 
         @media (max-height: 700px) {
           .auth-container {
-            padding: clamp(0.4rem, 1vh, 0.6rem) clamp(1rem, 2vw, 1.5rem)
-              clamp(2.5rem, 8vh, 5rem);
-            gap: clamp(0.3rem, 0.6vh, 0.4rem);
+            gap: clamp(0.2rem, 0.4vh, 0.3rem);
           }
 
           .auth-content-section {
-            gap: clamp(0.5rem, 1vh, 0.7rem);
+            gap: clamp(0.25rem, 0.5vh, 0.4rem);
           }
 
           .auth-header {
-            gap: clamp(0.3rem, 0.6vh, 0.4rem);
+            gap: clamp(0.15rem, 0.3vh, 0.25rem);
+            margin-bottom: clamp(0.1rem, 0.2vh, 0.2rem);
           }
 
           .mirror-icon {
-            font-size: clamp(1.5rem, 3vw, 1.9rem);
+            font-size: clamp(1.2rem, 2.5vw, 1.5rem);
           }
         }
 
         @media (max-width: 480px) {
           .auth-container {
-            padding: clamp(0.5rem, 1.2vh, 0.8rem) clamp(0.8rem, 1.8vw, 1.2rem)
-              clamp(2rem, 8vh, 4rem);
+            padding: clamp(0.25rem, 0.6vh, 0.4rem) clamp(0.6rem, 1.5vw, 1rem);
           }
 
           .auth-content-section {
@@ -386,45 +389,49 @@ const AuthLayout = ({
           }
 
           .back-link {
-            padding: clamp(0.4rem, 0.8vh, 0.6rem) clamp(0.7rem, 1.8vw, 1rem);
+            padding: clamp(0.3rem, 0.6vh, 0.5rem) clamp(0.6rem, 1.5vw, 0.8rem);
           }
         }
 
         @media (max-height: 600px) {
           .auth-container {
-            padding: clamp(0.3rem, 0.6vh, 0.4rem) clamp(0.8rem, 1.8vw, 1.2rem)
-              clamp(1.5rem, 6vh, 3rem);
-            gap: clamp(0.2rem, 0.4vh, 0.3rem);
+            gap: clamp(0.15rem, 0.3vh, 0.25rem);
           }
 
           .auth-header {
-            gap: clamp(0.2rem, 0.4vh, 0.3rem);
+            gap: clamp(0.1rem, 0.2vh, 0.15rem);
+            margin-bottom: clamp(0.05rem, 0.1vh, 0.1rem);
           }
         }
 
         @media (max-height: 500px) and (orientation: landscape) {
           .auth-container {
-            padding: clamp(0.2rem, 0.4vh, 0.3rem) clamp(0.8rem, 1.8vw, 1.2rem)
-              clamp(1rem, 4vh, 2rem);
-            gap: clamp(0.15rem, 0.3vh, 0.2rem);
+            padding: clamp(0.2rem, 0.4vh, 0.3rem) clamp(0.6rem, 1.5vw, 1rem);
+            gap: clamp(0.1rem, 0.2vh, 0.15rem);
           }
 
           .auth-header {
-            gap: clamp(0.15rem, 0.3vh, 0.2rem);
+            gap: clamp(0.05rem, 0.1vh, 0.1rem);
+            margin-bottom: clamp(0.05rem, 0.1vh, 0.05rem);
           }
 
           .mirror-icon {
-            font-size: clamp(1.2rem, 2.5vw, 1.5rem);
-            margin-bottom: clamp(0.05rem, 0.1vh, 0.1rem);
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            margin-bottom: clamp(0.02rem, 0.05vh, 0.05rem);
           }
 
           .auth-title {
-            font-size: clamp(1.2rem, 2.5vw, 1.5rem);
-            margin-bottom: clamp(0.05rem, 0.1vh, 0.1rem);
+            font-size: clamp(1rem, 2.2vw, 1.3rem);
+            margin-bottom: clamp(0.02rem, 0.05vh, 0.05rem);
           }
 
           .auth-subtitle {
-            font-size: clamp(0.65rem, 1.3vw, 0.8rem);
+            font-size: clamp(0.6rem, 1.2vw, 0.75rem);
+          }
+
+          .back-navigation {
+            top: clamp(0.3rem, 0.8vh, 0.5rem);
+            left: clamp(0.5rem, 1.2vw, 0.8rem);
           }
         }
 
@@ -447,7 +454,7 @@ const AuthLayout = ({
         @supports (-webkit-touch-callout: none) {
           .auth-container {
             padding-top: max(
-              clamp(0.8rem, 2vh, 1.2rem),
+              clamp(0.4rem, 1vh, 0.6rem),
               env(safe-area-inset-top)
             );
             padding-left: max(
@@ -459,8 +466,19 @@ const AuthLayout = ({
               env(safe-area-inset-right)
             );
             padding-bottom: max(
-              clamp(4rem, 12vh, 8rem),
+              clamp(0.4rem, 1vh, 0.6rem),
               env(safe-area-inset-bottom)
+            );
+          }
+
+          .back-navigation {
+            top: max(
+              clamp(0.8rem, 2vh, 1.2rem),
+              env(safe-area-inset-top) + 0.5rem
+            );
+            left: max(
+              clamp(1rem, 3vw, 2rem),
+              env(safe-area-inset-left) + 0.5rem
             );
           }
         }

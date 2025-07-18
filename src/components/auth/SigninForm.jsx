@@ -299,7 +299,7 @@ const SigninForm = ({ onSuccess, onSwitchToSignup }) => {
           );
           box-shadow: 0 0 25px rgba(147, 51, 234, 0.15),
             0 4px 20px rgba(0, 0, 0, 0.12);
-          transform: translateY(-2px) scale(1.01);
+          transform: translateY(-2px);
         }
 
         .form-input::placeholder {
@@ -410,7 +410,7 @@ const SigninForm = ({ onSuccess, onSwitchToSignup }) => {
             rgba(147, 51, 234, 0.22) 100%
           );
           border-color: rgba(147, 51, 234, 0.45);
-          transform: translateY(-3px) scale(1.02);
+          transform: translateY(-3px);
           box-shadow: 0 12px 35px rgba(147, 51, 234, 0.2);
           color: rgba(196, 181, 253, 1);
         }
@@ -422,7 +422,7 @@ const SigninForm = ({ onSuccess, onSwitchToSignup }) => {
         }
 
         .submit-button:active:not(:disabled) {
-          transform: translateY(-1px) scale(0.98);
+          transform: translateY(-1px);
         }
 
         .button-loading {
@@ -511,7 +511,7 @@ const SigninForm = ({ onSuccess, onSwitchToSignup }) => {
           background: rgba(255, 255, 255, 0.08);
           border-color: rgba(255, 255, 255, 0.15);
           color: rgba(255, 255, 255, 0.95);
-          transform: translateY(-2px) scale(1.02);
+          transform: translateY(-2px);
         }
 
         .message {

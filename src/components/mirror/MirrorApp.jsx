@@ -7,7 +7,7 @@ import ToneSelector from "./shared/ToneSelector";
 import QuestionCard from "./shared/QuestionCard";
 import CharacterCounter from "./shared/CharacterCounter";
 
-// Mirror App Component that handles routing between questionnaire and output
+// Reflection App Component that handles routing between questionnaire and output
 const MirrorApp = () => {
   const [currentPage, setCurrentPage] = useState("questionnaire");
 
@@ -16,21 +16,37 @@ const MirrorApp = () => {
     const path = window.location.pathname;
     const searchParams = new URLSearchParams(window.location.search);
 
+    // Check for output page - either /reflection/output or has id parameter
     if (path.includes("/output") || searchParams.get("id")) {
       setCurrentPage("output");
     } else {
+      // Default to questionnaire for /reflection
       setCurrentPage("questionnaire");
+    }
+
+    // Debug logging for development
+    if (window.location.hostname === "localhost") {
+      console.log("🪞 MirrorApp route detection:");
+      console.log(`   Path: ${path}`);
+      console.log(`   Search params: ${searchParams.toString()}`);
+      console.log(
+        `   Current page: ${
+          path.includes("/output") || searchParams.get("id")
+            ? "output"
+            : "questionnaire"
+        }`
+      );
     }
   }, []);
 
   // Inject the enhanced mirror styles
   useEffect(() => {
     // Create and inject the CSS if it doesn't exist
-    if (!document.getElementById("mirror-enhanced-styles")) {
+    if (!document.getElementById("reflection-enhanced-styles")) {
       const styleElement = document.createElement("style");
-      styleElement.id = "mirror-enhanced-styles";
+      styleElement.id = "reflection-enhanced-styles";
       styleElement.textContent = `
-        /* Enhanced Mirror Styles - Imported */
+        /* Enhanced Reflection Styles - Imported */
         :root {
           --cosmic-bg: #020617;
           --cosmic-text: #ffffff;
@@ -704,7 +720,7 @@ const MirrorApp = () => {
   }, []);
 
   return (
-    <div id="mirror-app">
+    <div id="reflection-app">
       {currentPage === "questionnaire" && <Questionnaire />}
       {currentPage === "output" && <Output />}
     </div>

@@ -1,4 +1,4 @@
-// src/main.jsx - Updated with portal routing support
+// src/main.jsx - Updated with reflection routing
 
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -31,15 +31,14 @@ const App = () => {
         <Route path="/auth/signup" element={<AuthApp />} />
         <Route path="/auth/register" element={<AuthApp />} />
 
-        {/* Mirror routes */}
-        <Route path="/mirror" element={<MirrorApp />} />
-        <Route path="/mirror/questionnaire" element={<MirrorApp />} />
-        <Route path="/mirror/output" element={<MirrorApp />} />
+        {/* Reflection routes (renamed from mirror) */}
+        <Route path="/reflection" element={<MirrorApp />} />
+        <Route path="/reflection/output" element={<MirrorApp />} />
 
         {/* Dashboard routes */}
         <Route path="/dashboard" element={<Dashboard />} />
 
-        {/* Redirect old routes to new structure */}
+        {/* Redirect old auth routes */}
         <Route
           path="/register"
           element={<Navigate to="/auth/register" replace />}
@@ -51,6 +50,17 @@ const App = () => {
         <Route
           path="/signup"
           element={<Navigate to="/auth/signup" replace />}
+        />
+
+        {/* Redirect legacy mirror routes to reflection */}
+        <Route path="/mirror" element={<Navigate to="/reflection" replace />} />
+        <Route
+          path="/mirror/questionnaire"
+          element={<Navigate to="/reflection" replace />}
+        />
+        <Route
+          path="/mirror/output"
+          element={<Navigate to="/reflection/output" replace />}
         />
       </Routes>
     </Router>
@@ -70,8 +80,11 @@ if (window.location.hostname === "localhost") {
   console.log("📍 Available routes:");
   console.log("   / (Portal)");
   console.log("   /auth/* (Authentication)");
-  console.log("   /mirror/* (Mirror Experience)");
+  console.log("   /reflection (Reflection Questionnaire)");
+  console.log("   /reflection/output (Reflection Output)");
   console.log("   /dashboard (Dashboard)");
+  console.log("🔄 Legacy redirects:");
+  console.log("   /mirror/* → /reflection/*");
 
   // Expose debug utilities
   window.mirrorDebug = {
@@ -80,7 +93,9 @@ if (window.location.hostname === "localhost") {
       window.location.pathname === "/" ||
       window.location.pathname === "/portal",
     isDashboard: window.location.pathname === "/dashboard",
-    isMirror: window.location.pathname.startsWith("/mirror"),
+    isReflection: window.location.pathname.startsWith("/reflection"),
     isAuth: window.location.pathname.startsWith("/auth"),
+    // Legacy
+    isMirror: window.location.pathname.startsWith("/mirror"), // For backward compatibility
   };
 }

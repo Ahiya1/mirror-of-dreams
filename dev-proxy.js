@@ -25,20 +25,20 @@ console.log(`🌐 Development server starting on: http://localhost:${PORT}`);
 // Request logging middleware
 app.use((req, res, next) => {
   const isAPI = req.url.startsWith("/api");
-  const isMirror = req.url.startsWith("/mirror");
+  const isReflection = req.url.startsWith("/reflection");
   const isDashboard = req.url.startsWith("/dashboard");
   const isAuth = req.url.startsWith("/auth");
   const isPortal = req.url === "/" || req.url === "/portal";
   const emoji = isAPI
     ? "🔀"
-    : isMirror
-    ? "⚛️ "
+    : isReflection
+    ? "🪞"
     : isDashboard
     ? "📊"
     : isAuth
     ? "🔐"
     : isPortal
-    ? "🪞"
+    ? "🌟"
     : "📁";
   console.log(`${emoji} ${req.method} ${req.url}`);
   next();
@@ -107,7 +107,7 @@ app.use("/api", async (req, res) => {
   }
 });
 
-// REACT ROUTES - Enhanced with portal support
+// REACT ROUTES - Enhanced with reflection support
 const serveReactApp = (req, res) => {
   if (hasReactBuild) {
     const filePath = path.join(REACT_BUILD_DIR, "index.html");
@@ -129,7 +129,7 @@ const fallbackToStatic = (req, res) => {
   let staticFile;
 
   if (url === "/" || url === "/portal") {
-    staticFile = "portal/index.html"; // Fallback to static portal if React not available
+    staticFile = "portal/index.html";
   } else if (url.includes("dashboard")) {
     staticFile = "dashboard/index.html";
   } else if (
@@ -137,13 +137,12 @@ const fallbackToStatic = (req, res) => {
     url.includes("signin") ||
     url.includes("signup")
   ) {
-    staticFile = "auth/signin.html"; // Fallback to HTML auth for now
-  } else if (url.includes("questionnaire")) {
+    staticFile = "auth/signin.html";
+  } else if (url.includes("reflection")) {
+    // Fallback for reflection routes - prefer React but fallback to mirror HTML
     staticFile = "mirror/questionnaire.html";
-  } else if (url.includes("output")) {
-    staticFile = "mirror/output.html";
   } else {
-    staticFile = "portal/index.html"; // Default to portal
+    staticFile = "portal/index.html";
   }
 
   const fullPath = path.join(__dirname, "public", staticFile);
@@ -151,7 +150,7 @@ const fallbackToStatic = (req, res) => {
   res.sendFile(fullPath);
 };
 
-// PORTAL ROUTES - Serve React app for portal (NEW)
+// PORTAL ROUTES - Serve React app for portal
 app.get("/", serveReactApp);
 app.get("/portal", serveReactApp);
 
@@ -162,16 +161,15 @@ app.get("/auth/signin", serveReactApp);
 app.get("/auth/signup", serveReactApp);
 app.get("/auth/register", serveReactApp);
 
-// Mirror routes - All mirror routes serve the same React app
-app.get("/mirror", serveReactApp);
-app.get("/mirror/", serveReactApp);
-app.get("/mirror/questionnaire", serveReactApp);
-app.get("/mirror/output", serveReactApp);
+// REFLECTION ROUTES - All reflection routes serve the React app
+app.get("/reflection", serveReactApp);
+app.get("/reflection/", serveReactApp);
+app.get("/reflection/output", serveReactApp);
 
-// Dashboard routes - Serve React app for dashboard
+// DASHBOARD ROUTES - Serve React app for dashboard
 app.get("/dashboard", serveReactApp);
 
-// Legacy redirects for old auth routes
+// Legacy redirects for old routes
 app.get("/register", (req, res) => {
   res.redirect(301, "/auth/register");
 });
@@ -180,6 +178,19 @@ app.get("/signin", (req, res) => {
 });
 app.get("/signup", (req, res) => {
   res.redirect(301, "/auth/signup");
+});
+
+// Legacy mirror redirects to reflection
+app.get("/mirror", (req, res) => {
+  res.redirect(301, "/reflection");
+});
+app.get("/mirror/questionnaire", (req, res) => {
+  res.redirect(301, "/reflection");
+});
+app.get("/mirror/output", (req, res) => {
+  const query = req.url.includes("?") ? req.url.split("?")[1] : "";
+  const newUrl = query ? `/reflection/output?${query}` : "/reflection/output";
+  res.redirect(301, newUrl);
 });
 
 // Test route for development
@@ -192,7 +203,7 @@ app.get("/test-proxy", (req, res) => {
     routes: {
       portal: "React (/)",
       auth: "React (/auth/*)",
-      mirror: "React (/mirror/*)",
+      reflection: "React (/reflection/*)",
       dashboard: "React (/dashboard)",
       static: "Static HTML (others)",
     },
@@ -237,7 +248,7 @@ if (hasReactBuild) {
   );
 
   // Serve assets from all React app paths
-  const reactPaths = ["/", "/portal", "/mirror", "/dashboard", "/auth"];
+  const reactPaths = ["/", "/portal", "/reflection", "/dashboard", "/auth"];
   reactPaths.forEach((basePath) => {
     app.use(
       `${basePath}/assets`,
@@ -287,20 +298,23 @@ app.listen(PORT, () => {
   console.log(`   http://localhost:${PORT}/portal (Portal - React)`);
   console.log(`   http://localhost:${PORT}/auth/signin (Auth - React)`);
   console.log(`   http://localhost:${PORT}/auth/signup (Auth - React)`);
-  console.log(
-    `   http://localhost:${PORT}/mirror/questionnaire (Mirror - React)`
-  );
+  console.log(`   http://localhost:${PORT}/reflection (Reflection - React)`);
+  console.log(`   http://localhost:${PORT}/reflection/output (Output - React)`);
   console.log(`   http://localhost:${PORT}/dashboard (Dashboard - React)`);
   console.log(`\n📄 Static HTML (Remaining):`);
   console.log(`   http://localhost:${PORT}/about (About page)`);
   console.log(`   http://localhost:${PORT}/subscription (Subscription)`);
   console.log(`   http://localhost:${PORT}/examples (Examples)`);
+  console.log(`\n🔄 Legacy Redirects:`);
+  console.log(`   /mirror/* → /reflection/*`);
+  console.log(`   /register → /auth/register`);
+  console.log(`   /signin → /auth/signin`);
   console.log(`\n💡 Commands:`);
   console.log(`   npm run dev                  (this server - static + React)`);
   console.log(`   npm run dev:react           (React dev server on :3002)`);
   console.log(`   npm run build               (build React for production)`);
   console.log(`\n🌐 Visit: http://localhost:${PORT}`);
-  console.log(`📊 Portal now served via React!\n`);
+  console.log(`🪞 Reflection experience now served via React!\n`);
 });
 
 module.exports = app;

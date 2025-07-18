@@ -1,4 +1,4 @@
-// components/mirror/Questionnaire.jsx - Refactored with new architecture
+// components/mirror/Questionnaire.jsx - Updated with reflection routes
 
 import React, { useState, useEffect } from "react";
 import CosmicBackground from "../shared/CosmicBackground";
@@ -159,8 +159,8 @@ const Questionnaire = () => {
     try {
       const response = await reflectionService.createReflection(reflectionData);
 
-      // Redirect to output page
-      window.location.href = `/mirror/output?id=${response.reflectionId}`;
+      // Redirect to output page with new reflection route
+      window.location.href = `/reflection/output?id=${response.reflectionId}`;
 
       return response;
     } catch (error) {
@@ -301,7 +301,7 @@ const Questionnaire = () => {
       {/* Back Navigation */}
       <a href="/" className="back-link">
         <span>←</span>
-        <span>Return to Portal</span>
+        <span>Return to Dashboard</span>
       </a>
 
       <div className="mirror-content">
