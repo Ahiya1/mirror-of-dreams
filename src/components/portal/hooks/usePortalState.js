@@ -1,6 +1,7 @@
-// src/components/portal/hooks/usePortalState.js - Portal state management
+// src/components/portal/hooks/usePortalState.js - Portal state management (FIXED)
 
 import { useState, useEffect, useCallback } from "react";
+import { storageService } from "../../../services/storage.service"; // ADD THIS IMPORT
 
 /**
  * Portal state management hook
@@ -15,7 +16,8 @@ export const usePortalState = () => {
    * Detect user authentication state and usage data
    */
   const detectUserState = useCallback(async () => {
-    const token = localStorage.getItem("mirror_auth_token");
+    // FIX: Use storageService instead of direct localStorage access
+    const token = storageService.getAuthToken();
 
     if (!token) {
       setUserState({ authenticated: false });
@@ -56,8 +58,9 @@ export const usePortalState = () => {
 
         console.log("✅ User authenticated:", result.user.email);
       } else {
-        localStorage.removeItem("mirror_auth_token");
-        localStorage.removeItem("mirrorVerifiedUser");
+        // FIX: Use storageService for cleanup
+        storageService.removeAuthToken();
+        localStorage.removeItem("mirrorVerifiedUser"); // Keep legacy cleanup
         setUserState({ authenticated: false });
       }
     } catch (error) {
@@ -73,7 +76,8 @@ export const usePortalState = () => {
    */
   const handleSignOut = useCallback(async () => {
     try {
-      const token = localStorage.getItem("mirror_auth_token");
+      // FIX: Use storageService to get token
+      const token = storageService.getAuthToken();
       if (token) {
         await fetch("/api/auth", {
           method: "POST",
@@ -88,8 +92,9 @@ export const usePortalState = () => {
       console.error("Sign out error:", error);
     }
 
-    localStorage.removeItem("mirror_auth_token");
-    localStorage.removeItem("mirrorVerifiedUser");
+    // FIX: Use storageService for cleanup
+    storageService.removeAuthToken();
+    localStorage.removeItem("mirrorVerifiedUser"); // Keep legacy cleanup
     window.location.reload();
   }, []);
 

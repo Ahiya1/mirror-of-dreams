@@ -299,7 +299,7 @@ const Questionnaire = () => {
       <ToneElements tone={selectedTone} />
 
       {/* Back Navigation */}
-      <a href="/" className="back-link">
+      <a href="/dashboard" className="back-link">
         <span>←</span>
         <span>Return to Dashboard</span>
       </a>
