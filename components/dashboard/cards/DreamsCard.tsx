@@ -1,0 +1,394 @@
+'use client';
+
+import React from 'react';
+import Link from 'next/link';
+import DashboardCard, {
+  CardHeader,
+  CardTitle,
+  CardContent,
+  HeaderAction,
+} from '@/components/dashboard/shared/DashboardCard';
+import { trpc } from '@/lib/trpc';
+
+interface DreamsCardProps {
+  animated?: boolean;
+  className?: string;
+}
+
+/**
+ * Active dreams card showing up to 3 active dreams
+ */
+const DreamsCard: React.FC<DreamsCardProps> = ({ animated = true, className = '' }) => {
+  // Fetch active dreams from tRPC
+  const { data: dreams, isLoading, error } = trpc.dreams.list.useQuery({
+    status: 'active',
+    includeStats: true,
+  });
+
+  const { data: limits } = trpc.dreams.getLimits.useQuery();
+
+  const activeDreams = dreams?.slice(0, 3) || [];
+
+  // Category emoji mapping
+  const categoryEmoji: Record<string, string> = {
+    health: '🏃',
+    career: '💼',
+    relationships: '❤️',
+    financial: '💰',
+    personal_growth: '🌱',
+    creative: '🎨',
+    spiritual: '🙏',
+    entrepreneurial: '🚀',
+    educational: '📚',
+    other: '⭐',
+  };
+
+  // Empty state component
+  const EmptyState = () => (
+    <div className="empty-state">
+      <div className="empty-icon">✨</div>
+      <h4>Dream Big</h4>
+      <p>Create your first dream and begin your journey of intentional growth.</p>
+      <Link href="/dreams" className="cosmic-button cosmic-button--primary">
+        <span>✨</span>
+        <span>Create Dream</span>
+      </Link>
+    </div>
+  );
+
+  // Loading state component
+  const LoadingState = () => (
+    <div className="loading-dreams">
+      <div className="cosmic-spinner" />
+      <span>Loading your dreams...</span>
+    </div>
+  );
+
+  return (
+    <DashboardCard
+      className={`dreams-card ${className}`}
+      isLoading={isLoading}
+      hasError={!!error}
+      animated={animated}
+      animationDelay={100}
+      hoverable={true}
+    >
+      <CardHeader>
+        <CardTitle icon="✨">Active Dreams</CardTitle>
+        <HeaderAction href="/dreams">
+          View All <span>→</span>
+        </HeaderAction>
+      </CardHeader>
+
+      <CardContent>
+        {isLoading ? (
+          <LoadingState />
+        ) : activeDreams.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <div className="dreams-list">
+            {activeDreams.map((dream: any, index: number) => {
+              const emoji = categoryEmoji[dream.category || 'other'] || '⭐';
+              const daysLeft = dream.daysLeft;
+
+              return (
+                <Link
+                  key={dream.id}
+                  href={`/dreams/${dream.id}`}
+                  className="dream-item"
+                  style={{
+                    animationDelay: animated ? `${index * 100}ms` : undefined,
+                  }}
+                >
+                  <div className="dream-item__icon">{emoji}</div>
+                  <div className="dream-item__content">
+                    <div className="dream-item__title">{dream.title}</div>
+                    <div className="dream-item__meta">
+                      {daysLeft !== null && daysLeft !== undefined && (
+                        <span className={`dream-item__days ${
+                          daysLeft < 0
+                            ? 'dream-item__days--overdue'
+                            : daysLeft <= 7
+                            ? 'dream-item__days--soon'
+                            : 'dream-item__days--normal'
+                        }`}>
+                          {daysLeft < 0
+                            ? `${Math.abs(daysLeft)}d overdue`
+                            : daysLeft === 0
+                            ? 'Today!'
+                            : `${daysLeft}d left`}
+                        </span>
+                      )}
+                      <span className="dream-item__reflections">
+                        {dream.reflectionCount || 0} reflections
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Dream limit indicator */}
+        {!isLoading && limits && (
+          <div className="dream-limit">
+            {limits.dreamsUsed} / {limits.dreamsLimit === 999999 ? '∞' : limits.dreamsLimit} dreams
+          </div>
+        )}
+      </CardContent>
+
+      {/* Card-specific styles */}
+      <style jsx>{`
+        .dreams-list {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-3);
+          flex: 1;
+          min-height: 150px;
+        }
+
+        .dream-item {
+          display: flex;
+          align-items: center;
+          gap: var(--space-3);
+          padding: var(--space-3);
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: var(--radius-lg);
+          text-decoration: none;
+          color: var(--cosmic-text);
+          transition: all 0.2s ease;
+          animation: dreamSlideIn 0.4s ease-out forwards;
+          opacity: 0;
+        }
+
+        @keyframes dreamSlideIn {
+          from {
+            opacity: 0;
+            transform: translateX(-8px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        .dream-item:hover {
+          background: rgba(255, 255, 255, 0.05);
+          border-color: rgba(139, 92, 246, 0.3);
+          transform: translateX(4px);
+        }
+
+        .dream-item__icon {
+          font-size: 1.75rem;
+          flex-shrink: 0;
+        }
+
+        .dream-item__content {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .dream-item__title {
+          font-size: var(--text-sm);
+          font-weight: var(--font-medium);
+          color: var(--cosmic-text);
+          margin-bottom: var(--space-1);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .dream-item__meta {
+          display: flex;
+          gap: var(--space-3);
+          font-size: var(--text-xs);
+          color: var(--cosmic-text-muted);
+        }
+
+        .dream-item__days {
+          font-weight: var(--font-medium);
+        }
+
+        .dream-item__days--overdue {
+          color: #ef4444;
+        }
+
+        .dream-item__days--soon {
+          color: #fbbf24;
+        }
+
+        .dream-item__days--normal {
+          color: #34d399;
+        }
+
+        .dream-item__reflections {
+          color: rgba(139, 92, 246, 0.9);
+        }
+
+        .dream-limit {
+          margin-top: var(--space-3);
+          padding-top: var(--space-3);
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
+          text-align: center;
+          font-size: var(--text-xs);
+          color: var(--cosmic-text-muted);
+          font-weight: var(--font-medium);
+        }
+
+        .empty-state {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          padding: var(--space-xl) var(--space-lg);
+          gap: var(--space-4);
+          flex: 1;
+          min-height: 200px;
+        }
+
+        .empty-icon {
+          font-size: 3rem;
+          opacity: 0.6;
+          animation: emptyFloat 3s ease-in-out infinite;
+          margin-bottom: var(--space-2);
+        }
+
+        @keyframes emptyFloat {
+          0%,
+          100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-8px);
+          }
+        }
+
+        .empty-state h4 {
+          font-size: var(--text-lg);
+          font-weight: var(--font-normal);
+          margin: 0;
+          color: var(--cosmic-text);
+          line-height: var(--leading-tight);
+        }
+
+        .empty-state p {
+          font-size: var(--text-sm);
+          margin: 0;
+          color: var(--cosmic-text-muted);
+          line-height: var(--leading-relaxed);
+          max-width: 280px;
+        }
+
+        .loading-dreams {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: var(--space-4);
+          padding: var(--space-xl);
+          color: var(--cosmic-text-muted);
+          text-align: center;
+          flex: 1;
+          min-height: 200px;
+        }
+
+        .cosmic-spinner {
+          width: 32px;
+          height: 32px;
+          border: 2px solid rgba(255, 255, 255, 0.1);
+          border-radius: 50%;
+          border-top-color: rgba(147, 51, 234, 0.7);
+          border-right-color: rgba(59, 130, 246, 0.5);
+          animation: cosmicSpin 1.5s linear infinite;
+          position: relative;
+        }
+
+        .cosmic-spinner::after {
+          content: '';
+          position: absolute;
+          inset: 6px;
+          border: 1px solid rgba(16, 185, 129, 0.3);
+          border-radius: 50%;
+          border-left-color: transparent;
+          border-bottom-color: transparent;
+          animation: cosmicSpin 2s linear infinite reverse;
+        }
+
+        @keyframes cosmicSpin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+
+        .loading-dreams span {
+          font-size: var(--text-sm);
+          color: var(--cosmic-text-secondary);
+          font-weight: var(--font-light);
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+          .dreams-list {
+            gap: var(--space-2);
+          }
+
+          .dream-item {
+            padding: var(--space-2);
+          }
+
+          .dream-item__icon {
+            font-size: 1.5rem;
+          }
+
+          .empty-state {
+            padding: var(--space-lg) var(--space-md);
+          }
+
+          .empty-icon {
+            font-size: 2.5rem;
+          }
+
+          .empty-state h4 {
+            font-size: var(--text-base);
+          }
+
+          .empty-state p {
+            font-size: var(--text-xs);
+          }
+        }
+
+        @media (max-width: 480px) {
+          .loading-dreams {
+            padding: var(--space-lg) var(--space-sm);
+          }
+
+          .empty-state {
+            padding: var(--space-md);
+            gap: var(--space-3);
+          }
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+          .empty-icon,
+          .cosmic-spinner,
+          .dream-item {
+            animation: none !important;
+          }
+
+          .cosmic-spinner::after {
+            animation: none !important;
+          }
+        }
+      `}</style>
+    </DashboardCard>
+  );
+};
+
+export default DreamsCard;

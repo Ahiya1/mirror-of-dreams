@@ -211,8 +211,8 @@ export const usePortalState = () => {
   const getTaglinesConfig = useCallback((): Taglines => {
     if (!userState?.authenticated) {
       return {
-        main: "Stop asking what to do.<br />See who you already are.",
-        sub: "<strong>Start completely free.</strong> Your truth awaits.",
+        main: "Your dreams hold the mirror<br />to who you're becoming.",
+        sub: "<strong>Start completely free.</strong> Begin your journey.",
       };
     }
 
@@ -221,28 +221,28 @@ export const usePortalState = () => {
 
     if (user.isCreator || user.isAdmin) {
       return {
-        main: "Sacred creator space<br/>awaits your truth.",
-        sub: "<strong>Unlimited reflections</strong> for the mirror maker.",
+        main: "Dream without limits.<br/>Reflect without bounds.",
+        sub: "<strong>Unlimited access</strong> to craft your vision.",
       };
     }
 
     if (usage && usage.canReflect) {
       return {
-        main: "Ready for your next<br/>moment of truth?",
-        sub: "<strong>Your reflection awaits.</strong> Continue your journey.",
+        main: "Which dream calls to you<br/>in this moment?",
+        sub: "<strong>Your next reflection awaits.</strong> Continue dreaming.",
       };
     }
 
     if (usage && !usage.canReflect) {
       return {
-        main: "Your journey continues<br/>beyond limits.",
+        main: "Your dreams deserve<br/>deeper exploration.",
         sub: "<strong>Upgrade to reflect</strong> again this month.",
       };
     }
 
     return {
-      main: "See how far<br/>you've traveled.",
-      sub: "<strong>Your reflections</strong> hold your evolution.",
+      main: "See how your dreams<br/>have evolved.",
+        sub: "<strong>Your reflections</strong> tell the story.",
     };
   }, [userState]);
 

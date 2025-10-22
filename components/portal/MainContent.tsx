@@ -54,7 +54,7 @@ const MainContent: React.FC<MainContentProps> = ({
   return (
     <main className={`main-content ${className}`}>
       <section className="center-container">
-        <h1 className="title">The Mirror of Truth</h1>
+        <h1 className="title">The Mirror of Dreams</h1>
 
         {/* Button Group */}
         <ButtonGroup
