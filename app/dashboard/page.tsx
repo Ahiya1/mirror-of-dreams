@@ -26,6 +26,7 @@ import WelcomeSection from '@/components/dashboard/shared/WelcomeSection';
 import DashboardGrid from '@/components/dashboard/shared/DashboardGrid';
 import UsageCard from '@/components/dashboard/cards/UsageCard';
 import ReflectionsCard from '@/components/dashboard/cards/ReflectionsCard';
+import DreamsCard from '@/components/dashboard/cards/DreamsCard';
 import EvolutionCard from '@/components/dashboard/cards/EvolutionCard';
 import SubscriptionCard from '@/components/dashboard/cards/SubscriptionCard';
 import '@/styles/dashboard.css';
@@ -44,8 +45,8 @@ export default function DashboardPage() {
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [isPageVisible, setIsPageVisible] = useState(false);
 
-  // Stagger animation for grid cards (4 cards, 150ms delay between each)
-  const { containerRef, getItemStyles } = useStaggerAnimation(4, {
+  // Stagger animation for grid cards (5 cards, 150ms delay between each)
+  const { containerRef, getItemStyles } = useStaggerAnimation(5, {
     delay: 150,
     duration: 800,
     triggerOnce: true,
@@ -230,7 +231,7 @@ export default function DashboardPage() {
         <div className="dashboard-nav__left">
           <Link href="/" className="dashboard-nav__logo">
             <span className="dashboard-nav__logo-icon">🪞</span>
-            <span className="dashboard-nav__logo-text">Mirror of Truth</span>
+            <span className="dashboard-nav__logo-text">Mirror of Dreams</span>
           </Link>
 
           <div className="dashboard-nav__links">
@@ -242,10 +243,17 @@ export default function DashboardPage() {
               <span>Journey</span>
             </Link>
             <Link
-              href="/reflection"
+              href="/dreams"
               className="dashboard-nav__link"
             >
               <span>✨</span>
+              <span>Dreams</span>
+            </Link>
+            <Link
+              href="/reflection"
+              className="dashboard-nav__link"
+            >
+              <span>🪞</span>
               <span>Reflect</span>
             </Link>
             {(user?.isCreator || user?.isAdmin) && (
@@ -380,13 +388,18 @@ export default function DashboardPage() {
               <ReflectionsCard animated={true} />
             </div>
 
-            {/* Card 3: Evolution Card - Fetches own data */}
+            {/* Card 3: Dreams Card - Fetches own data */}
             <div style={getItemStyles(2)}>
+              <DreamsCard animated={true} />
+            </div>
+
+            {/* Card 4: Evolution Card - Fetches own data */}
+            <div style={getItemStyles(3)}>
               <EvolutionCard animated={true} />
             </div>
 
-            {/* Card 4: Subscription Card - Fetches own data */}
-            <div style={getItemStyles(3)}>
+            {/* Card 5: Subscription Card - Fetches own data */}
+            <div style={getItemStyles(4)}>
               <SubscriptionCard animated={true} />
             </div>
           </DashboardGrid>
@@ -786,8 +799,7 @@ export default function DashboardPage() {
 
         .dashboard-grid {
           display: grid;
-          grid-template-columns: 1fr 1fr;
-          grid-template-rows: 1fr 1fr;
+          grid-template-columns: repeat(3, 1fr);
           gap: var(--space-xl);
           min-height: 500px;
         }
@@ -1063,10 +1075,16 @@ export default function DashboardPage() {
         }
 
         /* Mobile responsive */
+        @media (max-width: 1200px) {
+          .dashboard-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+
         @media (max-width: 1024px) {
           .dashboard-grid {
             grid-template-columns: 1fr;
-            grid-template-rows: repeat(4, minmax(200px, auto));
+            grid-template-rows: repeat(5, minmax(200px, auto));
           }
 
           .dashboard-nav__links {

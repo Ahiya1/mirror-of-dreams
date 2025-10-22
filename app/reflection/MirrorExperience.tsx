@@ -30,13 +30,21 @@ export default function MirrorExperience() {
 
   // Determine view mode from URL
   const reflectionId = searchParams.get('id');
+  const dreamIdFromUrl = searchParams.get('dreamId'); // Pre-selected dream from URL
   const initialMode: ViewMode = reflectionId ? 'output' : 'questionnaire';
 
   const [viewMode, setViewMode] = useState<ViewMode>(initialMode);
-  const [currentStep, setCurrentStep] = useState(1); // 1-5 questions, 6 = tone, 7 = submitting
+  const [currentStep, setCurrentStep] = useState(dreamIdFromUrl ? 1 : 0); // 0 = dream selection, 1-5 questions, 6 = tone
+  const [selectedDreamId, setSelectedDreamId] = useState<string>(dreamIdFromUrl || '');
   const [selectedTone, setSelectedTone] = useState<ToneId>('fusion');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mirrorGlow, setMirrorGlow] = useState(false);
+
+  // Fetch user's dreams for selection
+  const { data: dreams } = trpc.dreams.list.useQuery({
+    status: 'active',
+    includeStats: true,
+  }, { enabled: viewMode === 'questionnaire' });
 
   const [formData, setFormData] = useState<FormData>({
     dream: '',
@@ -73,23 +81,30 @@ export default function MirrorExperience() {
   };
 
   const handleNext = () => {
+    // Validate dream selection at step 0
+    if (currentStep === 0 && !selectedDreamId) {
+      alert('Please select a dream to continue');
+      return;
+    }
     if (currentStep < 6) {
       setCurrentStep(prev => prev + 1);
     }
   };
 
   const handleBack = () => {
-    if (currentStep > 1) {
+    if (currentStep > 0) {
       setCurrentStep(prev => prev - 1);
     }
   };
 
   const handleSubmit = () => {
+    if (!selectedDreamId) {
+      alert('Please select a dream');
+      return;
+    }
     setIsSubmitting(true);
-    // TODO: Replace with actual dream selection
-    // For now, this will need a dream to be created first
     createReflection.mutate({
-      dreamId: '00000000-0000-0000-0000-000000000000', // Placeholder - will be replaced with real dream selection
+      dreamId: selectedDreamId,
       dream: formData.dream,
       plan: formData.plan,
       hasDate: formData.hasDate as 'yes' | 'no',
@@ -139,8 +154,22 @@ export default function MirrorExperience() {
     },
   ];
 
-  const currentQuestion = questions[currentStep - 1];
+  const currentQuestion = currentStep > 0 ? questions[currentStep - 1] : null;
   const progress = (currentStep / 6) * 100;
+
+  // Category emoji mapping for dreams
+  const categoryEmoji: Record<string, string> = {
+    health: '🏃',
+    career: '💼',
+    relationships: '❤️',
+    financial: '💰',
+    personal_growth: '🌱',
+    creative: '🎨',
+    spiritual: '🙏',
+    entrepreneurial: '🚀',
+    educational: '📚',
+    other: '⭐',
+  };
 
   return (
     <div className="mirror-experience">
@@ -207,7 +236,83 @@ export default function MirrorExperience() {
           {/* Mirror frame that glows */}
           <div className={`mirror-frame ${mirrorGlow ? 'glowing' : ''}`}>
             <div className="mirror-surface">
-              {currentStep <= 5 ? (
+              {currentStep === 0 ? (
+                /* Dream selection view */
+                <div className="question-view">
+                  <div className="progress-ring">
+                    <svg className="progress-svg" viewBox="0 0 120 120">
+                      <circle
+                        className="progress-background"
+                        cx="60"
+                        cy="60"
+                        r="54"
+                      />
+                      <text
+                        className="progress-text"
+                        x="60"
+                        y="65"
+                        textAnchor="middle"
+                      >
+                        ✨
+                      </text>
+                    </svg>
+                  </div>
+
+                  <h2 className="question-text">Which dream are you reflecting on?</h2>
+
+                  <div className="dream-selection-list">
+                    {dreams && dreams.length > 0 ? (
+                      dreams.map((dream: any) => {
+                        const emoji = categoryEmoji[dream.category || 'other'] || '⭐';
+                        const isSelected = selectedDreamId === dream.id;
+
+                        return (
+                          <button
+                            key={dream.id}
+                            className={`dream-selection-item ${isSelected ? 'selected' : ''}`}
+                            onClick={() => setSelectedDreamId(dream.id)}
+                          >
+                            <div className="dream-selection-icon">{emoji}</div>
+                            <div className="dream-selection-content">
+                              <div className="dream-selection-title">{dream.title}</div>
+                              {dream.daysLeft !== null && dream.daysLeft !== undefined && (
+                                <div className="dream-selection-meta">
+                                  {dream.daysLeft < 0
+                                    ? `${Math.abs(dream.daysLeft)}d overdue`
+                                    : dream.daysLeft === 0
+                                    ? 'Today!'
+                                    : `${dream.daysLeft}d left`}
+                                </div>
+                              )}
+                            </div>
+                            {isSelected && <div className="selection-check">✓</div>}
+                          </button>
+                        );
+                      })
+                    ) : (
+                      <div className="no-dreams">
+                        <p>No active dreams yet.</p>
+                        <button
+                          className="create-dream-button"
+                          onClick={() => router.push('/dreams')}
+                        >
+                          Create Your First Dream
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="navigation-buttons">
+                    <button
+                      className="nav-button nav-button--next"
+                      onClick={handleNext}
+                      disabled={!selectedDreamId}
+                    >
+                      Continue
+                    </button>
+                  </div>
+                </div>
+              ) : currentStep <= 5 ? (
                 /* Question view */
                 <div className="question-view">
                   <div className="progress-ring">
@@ -939,6 +1044,102 @@ export default function MirrorExperience() {
             transform: scale(1.3) rotate(180deg);
             opacity: 0.9;
           }
+        }
+
+        /* Dream selection styles */
+        .dream-selection-list {
+          max-width: 600px;
+          margin: var(--space-xl) auto;
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-3);
+          max-height: 400px;
+          overflow-y: auto;
+          padding: var(--space-2);
+        }
+
+        .dream-selection-item {
+          display: flex;
+          align-items: center;
+          gap: var(--space-4);
+          padding: var(--space-4);
+          background: rgba(255, 255, 255, 0.03);
+          border: 2px solid rgba(255, 255, 255, 0.1);
+          border-radius: var(--radius-xl);
+          cursor: pointer;
+          transition: all 0.3s ease;
+          width: 100%;
+          text-align: left;
+        }
+
+        .dream-selection-item:hover {
+          background: rgba(255, 255, 255, 0.05);
+          border-color: rgba(139, 92, 246, 0.4);
+          transform: translateX(4px);
+        }
+
+        .dream-selection-item.selected {
+          background: rgba(139, 92, 246, 0.15);
+          border-color: rgba(139, 92, 246, 0.6);
+          box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+        }
+
+        .dream-selection-icon {
+          font-size: 2rem;
+          flex-shrink: 0;
+        }
+
+        .dream-selection-content {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .dream-selection-title {
+          font-size: var(--text-base);
+          font-weight: var(--font-medium);
+          color: var(--cosmic-text);
+          margin-bottom: var(--space-1);
+        }
+
+        .dream-selection-meta {
+          font-size: var(--text-sm);
+          color: rgba(139, 92, 246, 0.9);
+        }
+
+        .selection-check {
+          font-size: 1.5rem;
+          color: rgba(139, 92, 246, 1);
+          flex-shrink: 0;
+        }
+
+        .no-dreams {
+          text-align: center;
+          padding: var(--space-2xl);
+        }
+
+        .no-dreams p {
+          color: var(--cosmic-text-muted);
+          margin-bottom: var(--space-lg);
+          font-size: var(--text-base);
+        }
+
+        .create-dream-button {
+          padding: var(--space-3) var(--space-6);
+          background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(59, 130, 246, 0.25));
+          border: 2px solid rgba(139, 92, 246, 0.4);
+          border-radius: var(--radius-full);
+          color: rgba(139, 92, 246, 1);
+          font-size: var(--text-base);
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        .create-dream-button:hover {
+          background: linear-gradient(135deg, rgba(139, 92, 246, 0.35), rgba(59, 130, 246, 0.35));
+          border-color: rgba(139, 92, 246, 0.6);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4);
         }
 
         @media (max-width: 768px) {
