@@ -260,3 +260,42 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- =====================================================
 -- Migration Complete
 -- =====================================================
+
+-- 7. Create increment_usage_counter helper function
+CREATE OR REPLACE FUNCTION increment_usage_counter(
+  p_user_id UUID,
+  p_month DATE,
+  p_counter_name TEXT
+) RETURNS VOID AS $$
+BEGIN
+  -- Insert or update usage tracking record
+  INSERT INTO public.usage_tracking (user_id, month)
+  VALUES (p_user_id, p_month)
+  ON CONFLICT (user_id, month) DO NOTHING;
+
+  -- Increment the specific counter
+  CASE p_counter_name
+    WHEN 'reflections' THEN
+      UPDATE public.usage_tracking
+      SET reflections = reflections + 1
+      WHERE user_id = p_user_id AND month = p_month;
+    WHEN 'evolution_dream_specific' THEN
+      UPDATE public.usage_tracking
+      SET evolution_dream_specific = evolution_dream_specific + 1
+      WHERE user_id = p_user_id AND month = p_month;
+    WHEN 'evolution_cross_dream' THEN
+      UPDATE public.usage_tracking
+      SET evolution_cross_dream = evolution_cross_dream + 1
+      WHERE user_id = p_user_id AND month = p_month;
+    WHEN 'visualizations_dream_specific' THEN
+      UPDATE public.usage_tracking
+      SET visualizations_dream_specific = visualizations_dream_specific + 1
+      WHERE user_id = p_user_id AND month = p_month;
+    WHEN 'visualizations_cross_dream' THEN
+      UPDATE public.usage_tracking
+      SET visualizations_cross_dream = visualizations_cross_dream + 1
+      WHERE user_id = p_user_id AND month = p_month;
+  END CASE;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
