@@ -1,4 +1,4 @@
-// app/dreams/page.tsx - Dreams list page
+// app/dreams/page.tsx - Dreams list page with glass components
 
 'use client';
 
@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { trpc } from '@/lib/trpc';
 import { DreamCard } from '@/components/dreams/DreamCard';
 import { CreateDreamModal } from '@/components/dreams/CreateDreamModal';
+import { CosmicLoader, GlowButton, GlassCard, GradientText } from '@/components/ui/glass';
 
 export default function DreamsPage() {
   const router = useRouter();
@@ -40,104 +41,96 @@ export default function DreamsPage() {
 
   if (isLoading) {
     return (
-      <div className="dreams-page">
-        <div className="dreams-page__loading">
-          <div className="spinner">✨</div>
-          <p>Loading your dreams...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
+        <div className="flex flex-col items-center gap-4">
+          <CosmicLoader size="lg" />
+          <p className="text-white/60 text-sm">Loading your dreams...</p>
         </div>
-        <style jsx>{`
-          .dreams-page {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
-            padding: 2rem;
-          }
-          .dreams-page__loading {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 50vh;
-            color: white;
-            gap: 1rem;
-          }
-          .spinner {
-            font-size: 3rem;
-            animation: spin 2s linear infinite;
-          }
-          @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-          }
-        `}</style>
       </div>
     );
   }
 
   return (
-    <div className="dreams-page">
-      <div className="dreams-page__container">
+    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-4 sm:p-8">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="dreams-page__header">
-          <div>
-            <h1 className="dreams-page__title">Your Dreams</h1>
-            <p className="dreams-page__subtitle">
-              Track and reflect on your life's aspirations
-            </p>
+        <GlassCard variant="elevated" className="mb-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <GradientText gradient="cosmic" className="text-3xl sm:text-4xl font-bold mb-2">
+                Your Dreams
+              </GradientText>
+              <p className="text-white/70 text-base sm:text-lg">
+                Track and reflect on your life's aspirations
+              </p>
+            </div>
+            <GlowButton
+              variant="primary"
+              size="md"
+              onClick={() => setIsCreateModalOpen(true)}
+              disabled={limits && !limits.canCreate}
+              className="w-full sm:w-auto whitespace-nowrap"
+            >
+              + Create Dream
+            </GlowButton>
           </div>
-          <button
-            onClick={() => setIsCreateModalOpen(true)}
-            disabled={limits && !limits.canCreate}
-            className="dreams-page__create-btn"
-          >
-            + Create Dream
-          </button>
-        </div>
+        </GlassCard>
 
         {/* Limits Info */}
         {limits && (
-          <div className="dreams-page__limits">
-            <span className="dreams-page__limits-text">
-              {limits.dreamsUsed} / {limits.dreamsLimit === 999999 ? '∞' : limits.dreamsLimit} dreams
-            </span>
-            {!limits.canCreate && (
-              <span className="dreams-page__limits-warning">
-                Upgrade to create more dreams
+          <GlassCard
+            variant="default"
+            glowColor="purple"
+            className="mb-6 border-l-4 border-mirror-purple/60"
+          >
+            <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+              <span className="text-white/90 font-medium">
+                {limits.dreamsUsed} / {limits.dreamsLimit === 999999 ? '∞' : limits.dreamsLimit} dreams
               </span>
-            )}
-          </div>
+              {!limits.canCreate && (
+                <span className="text-mirror-warning text-sm">
+                  Upgrade to create more dreams
+                </span>
+              )}
+            </div>
+          </GlassCard>
         )}
 
         {/* Status Filter */}
-        <div className="dreams-page__filters">
-          <button
+        <div className="flex gap-3 mb-6 flex-wrap">
+          <GlowButton
+            variant={statusFilter === 'active' ? 'primary' : 'secondary'}
+            size="sm"
             onClick={() => setStatusFilter('active')}
-            className={`filter-btn ${statusFilter === 'active' ? 'active' : ''}`}
           >
             ✨ Active
-          </button>
-          <button
+          </GlowButton>
+          <GlowButton
+            variant={statusFilter === 'achieved' ? 'primary' : 'secondary'}
+            size="sm"
             onClick={() => setStatusFilter('achieved')}
-            className={`filter-btn ${statusFilter === 'achieved' ? 'active' : ''}`}
           >
             🎉 Achieved
-          </button>
-          <button
+          </GlowButton>
+          <GlowButton
+            variant={statusFilter === 'archived' ? 'primary' : 'secondary'}
+            size="sm"
             onClick={() => setStatusFilter('archived')}
-            className={`filter-btn ${statusFilter === 'archived' ? 'active' : ''}`}
           >
             📦 Archived
-          </button>
-          <button
+          </GlowButton>
+          <GlowButton
+            variant={statusFilter === undefined ? 'primary' : 'secondary'}
+            size="sm"
             onClick={() => setStatusFilter(undefined)}
-            className={`filter-btn ${statusFilter === undefined ? 'active' : ''}`}
           >
             All
-          </button>
+          </GlowButton>
         </div>
 
         {/* Dreams Grid */}
         {dreams && dreams.length > 0 ? (
-          <div className="dreams-page__grid">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {dreams.map((dream: any) => (
               <DreamCard
                 key={dream.id}
@@ -157,20 +150,24 @@ export default function DreamsPage() {
             ))}
           </div>
         ) : (
-          <div className="dreams-page__empty">
-            <div className="empty-state">
-              <div className="empty-state__icon">🌟</div>
-              <h2 className="empty-state__title">No dreams yet</h2>
-              <p className="empty-state__description">
+          <div className="flex justify-center items-center min-h-[50vh]">
+            <GlassCard variant="elevated" className="text-center max-w-md">
+              <div className="text-6xl mb-4">🌟</div>
+              <GradientText gradient="cosmic" className="text-2xl font-bold mb-4">
+                No dreams yet
+              </GradientText>
+              <p className="text-white/60 text-base mb-6 leading-relaxed">
                 Create your first dream to begin your journey of reflection and growth.
               </p>
-              <button
+              <GlowButton
+                variant="primary"
+                size="lg"
                 onClick={() => setIsCreateModalOpen(true)}
-                className="empty-state__btn"
+                className="w-full"
               >
                 Create Your First Dream
-              </button>
-            </div>
+              </GlowButton>
+            </GlassCard>
           </div>
         )}
       </div>
@@ -181,188 +178,6 @@ export default function DreamsPage() {
         onClose={() => setIsCreateModalOpen(false)}
         onSuccess={handleCreateSuccess}
       />
-
-      <style jsx>{`
-        .dreams-page {
-          min-height: 100vh;
-          background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
-          padding: 2rem;
-        }
-
-        .dreams-page__container {
-          max-width: 1400px;
-          margin: 0 auto;
-        }
-
-        .dreams-page__header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          margin-bottom: 2rem;
-          gap: 2rem;
-        }
-
-        .dreams-page__title {
-          font-size: 2.5rem;
-          font-weight: 700;
-          color: white;
-          margin: 0;
-          background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .dreams-page__subtitle {
-          color: rgba(255, 255, 255, 0.7);
-          margin-top: 0.5rem;
-          font-size: 1.1rem;
-        }
-
-        .dreams-page__create-btn {
-          padding: 1rem 2rem;
-          background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-          color: white;
-          border: none;
-          border-radius: 12px;
-          font-size: 1rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          white-space: nowrap;
-        }
-
-        .dreams-page__create-btn:hover:not(:disabled) {
-          transform: translateY(-2px);
-          box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
-        }
-
-        .dreams-page__create-btn:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-
-        .dreams-page__limits {
-          display: flex;
-          gap: 1rem;
-          align-items: center;
-          margin-bottom: 1.5rem;
-          padding: 1rem;
-          background: rgba(139, 92, 246, 0.1);
-          border: 1px solid rgba(139, 92, 246, 0.2);
-          border-radius: 8px;
-        }
-
-        .dreams-page__limits-text {
-          color: rgba(255, 255, 255, 0.9);
-          font-weight: 500;
-        }
-
-        .dreams-page__limits-warning {
-          color: #fbbf24;
-          font-size: 0.875rem;
-        }
-
-        .dreams-page__filters {
-          display: flex;
-          gap: 0.75rem;
-          margin-bottom: 2rem;
-          flex-wrap: wrap;
-        }
-
-        .filter-btn {
-          padding: 0.5rem 1.25rem;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 8px;
-          color: rgba(255, 255, 255, 0.7);
-          cursor: pointer;
-          transition: all 0.2s ease;
-          font-size: 0.95rem;
-        }
-
-        .filter-btn:hover {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .filter-btn.active {
-          background: rgba(139, 92, 246, 0.2);
-          border-color: rgba(139, 92, 246, 0.4);
-          color: white;
-        }
-
-        .dreams-page__grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-          gap: 1.5rem;
-        }
-
-        .dreams-page__empty {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          min-height: 50vh;
-        }
-
-        .empty-state {
-          text-align: center;
-          max-width: 500px;
-        }
-
-        .empty-state__icon {
-          font-size: 5rem;
-          margin-bottom: 1rem;
-        }
-
-        .empty-state__title {
-          font-size: 2rem;
-          color: white;
-          margin-bottom: 1rem;
-        }
-
-        .empty-state__description {
-          color: rgba(255, 255, 255, 0.6);
-          font-size: 1.1rem;
-          margin-bottom: 2rem;
-          line-height: 1.6;
-        }
-
-        .empty-state__btn {
-          padding: 1rem 2rem;
-          background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-          color: white;
-          border: none;
-          border-radius: 12px;
-          font-size: 1rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-
-        .empty-state__btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
-        }
-
-        @media (max-width: 768px) {
-          .dreams-page {
-            padding: 1rem;
-          }
-
-          .dreams-page__header {
-            flex-direction: column;
-          }
-
-          .dreams-page__title {
-            font-size: 2rem;
-          }
-
-          .dreams-page__grid {
-            grid-template-columns: 1fr;
-          }
-        }
-      `}</style>
     </div>
   );
 }

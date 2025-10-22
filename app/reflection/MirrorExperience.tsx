@@ -2,9 +2,13 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Check } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/hooks/useAuth';
 import CosmicBackground from '@/components/shared/CosmicBackground';
+import { GlassCard, GlowButton, ProgressOrbs, CosmicLoader, GlassInput } from '@/components/ui/glass';
+import { cn } from '@/lib/utils';
 import type { ToneId } from '@/lib/utils/constants';
 import { QUESTION_LIMITS } from '@/lib/utils/constants';
 
@@ -233,32 +237,28 @@ export default function MirrorExperience() {
 
       {viewMode === 'questionnaire' ? (
         <div className="questionnaire-container">
-          {/* Mirror frame that glows */}
-          <div className={`mirror-frame ${mirrorGlow ? 'glowing' : ''}`}>
+          {/* Mirror frame with GlassCard */}
+          <GlassCard
+            variant="elevated"
+            glassIntensity="strong"
+            className={cn(
+              'p-12 rounded-[30px] transition-all duration-800',
+              mirrorGlow && 'border-mirror-gold/60 shadow-[0_0_120px_rgba(251,191,36,0.4)]'
+            )}
+            animated={false}
+          >
             <div className="mirror-surface">
               {currentStep === 0 ? (
                 /* Dream selection view */
                 <div className="question-view">
-                  <div className="progress-ring">
-                    <svg className="progress-svg" viewBox="0 0 120 120">
-                      <circle
-                        className="progress-background"
-                        cx="60"
-                        cy="60"
-                        r="54"
-                      />
-                      <text
-                        className="progress-text"
-                        x="60"
-                        y="65"
-                        textAnchor="middle"
-                      >
-                        ✨
-                      </text>
-                    </svg>
+                  {/* Progress Orbs - Show as inactive for step 0 */}
+                  <div className="flex justify-center mb-6">
+                    <div className="text-5xl">✨</div>
                   </div>
 
-                  <h2 className="question-text">Which dream are you reflecting on?</h2>
+                  <h2 className="text-center mb-8 text-2xl md:text-3xl font-light bg-gradient-to-r from-mirror-purple via-mirror-violet to-mirror-blue bg-clip-text text-transparent">
+                    Which dream are you reflecting on?
+                  </h2>
 
                   <div className="dream-selection-list">
                     {dreams && dreams.length > 0 ? (
@@ -267,193 +267,262 @@ export default function MirrorExperience() {
                         const isSelected = selectedDreamId === dream.id;
 
                         return (
-                          <button
+                          <div
                             key={dream.id}
-                            className={`dream-selection-item ${isSelected ? 'selected' : ''}`}
                             onClick={() => setSelectedDreamId(dream.id)}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                setSelectedDreamId(dream.id);
+                              }
+                            }}
                           >
-                            <div className="dream-selection-icon">{emoji}</div>
-                            <div className="dream-selection-content">
-                              <div className="dream-selection-title">{dream.title}</div>
-                              {dream.daysLeft !== null && dream.daysLeft !== undefined && (
-                                <div className="dream-selection-meta">
-                                  {dream.daysLeft < 0
-                                    ? `${Math.abs(dream.daysLeft)}d overdue`
-                                    : dream.daysLeft === 0
-                                    ? 'Today!'
-                                    : `${dream.daysLeft}d left`}
-                                </div>
+                            <GlassCard
+                              variant={isSelected ? 'elevated' : 'default'}
+                              glowColor={isSelected ? 'purple' : undefined}
+                              hoverable
+                              className={cn(
+                                'cursor-pointer transition-all',
+                                isSelected && 'border-mirror-purple/60'
                               )}
-                            </div>
-                            {isSelected && <div className="selection-check">✓</div>}
-                          </button>
+                            >
+                              <div className="flex items-center gap-4">
+                                <span className="text-4xl flex-shrink-0">{emoji}</span>
+                                <div className="flex-1 min-w-0">
+                                  <h3 className="mb-1 text-lg font-medium bg-gradient-to-r from-mirror-purple to-mirror-blue bg-clip-text text-transparent">
+                                    {dream.title}
+                                  </h3>
+                                  {dream.daysLeft !== null && dream.daysLeft !== undefined && (
+                                    <p className="text-sm text-mirror-purple/90">
+                                      {dream.daysLeft < 0
+                                        ? `${Math.abs(dream.daysLeft)}d overdue`
+                                        : dream.daysLeft === 0
+                                        ? 'Today!'
+                                        : `${dream.daysLeft}d left`}
+                                    </p>
+                                  )}
+                                </div>
+                                {isSelected && (
+                                  <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    className="text-mirror-purple flex-shrink-0"
+                                  >
+                                    <Check className="h-6 w-6" />
+                                  </motion.div>
+                                )}
+                              </div>
+                            </GlassCard>
+                          </div>
                         );
                       })
                     ) : (
-                      <div className="no-dreams">
-                        <p>No active dreams yet.</p>
-                        <button
-                          className="create-dream-button"
+                      <GlassCard variant="elevated" className="text-center">
+                        <p className="text-white/70 mb-6">No active dreams yet.</p>
+                        <GlowButton
+                          variant="primary"
+                          size="md"
                           onClick={() => router.push('/dreams')}
                         >
                           Create Your First Dream
-                        </button>
-                      </div>
+                        </GlowButton>
+                      </GlassCard>
                     )}
                   </div>
 
-                  <div className="navigation-buttons">
-                    <button
-                      className="nav-button nav-button--next"
+                  <div className="flex justify-center mt-8">
+                    <GlowButton
+                      variant="primary"
+                      size="lg"
                       onClick={handleNext}
                       disabled={!selectedDreamId}
+                      className="min-w-[200px]"
                     >
-                      Continue
-                    </button>
+                      Continue →
+                    </GlowButton>
                   </div>
                 </div>
               ) : currentStep <= 5 ? (
                 /* Question view */
                 <div className="question-view">
-                  <div className="progress-ring">
-                    <svg className="progress-svg" viewBox="0 0 120 120">
-                      <circle
-                        className="progress-background"
-                        cx="60"
-                        cy="60"
-                        r="54"
-                      />
-                      <circle
-                        className="progress-bar"
-                        cx="60"
-                        cy="60"
-                        r="54"
-                        style={{
-                          strokeDasharray: `${2 * Math.PI * 54}`,
-                          strokeDashoffset: `${2 * Math.PI * 54 * (1 - progress / 100)}`,
-                        }}
-                      />
-                      <text
-                        className="progress-text"
-                        x="60"
-                        y="65"
-                        textAnchor="middle"
-                      >
-                        {currentStep}/5
-                      </text>
-                    </svg>
+                  {/* Progress Orbs */}
+                  <div className="flex justify-center mb-8">
+                    <ProgressOrbs steps={5} currentStep={currentStep - 1} />
                   </div>
 
-                  <h2 className="question-text">{currentQuestion?.text}</h2>
+                  <h2 className="text-center mb-8 text-2xl md:text-3xl font-light bg-gradient-to-r from-mirror-purple via-mirror-violet to-mirror-blue bg-clip-text text-transparent">
+                    {currentQuestion?.text}
+                  </h2>
 
                   {currentQuestion?.type === 'choice' ? (
-                    <div className="choice-buttons">
+                    <div className="grid grid-cols-2 gap-4 mb-8">
                       {currentQuestion.choices?.map(choice => (
-                        <button
+                        <GlowButton
                           key={choice}
-                          className={`choice-button ${formData.hasDate === choice ? 'selected' : ''}`}
+                          variant={formData.hasDate === choice ? 'primary' : 'secondary'}
+                          size="lg"
                           onClick={() => {
                             handleFieldChange('hasDate', choice);
                             setTimeout(handleNext, 300);
                           }}
+                          className="w-full uppercase tracking-wider"
                         >
                           {choice}
-                        </button>
+                        </GlowButton>
                       ))}
                     </div>
                   ) : (
-                    <div className="answer-container">
-                      <textarea
-                        className="answer-input"
-                        value={(formData as any)[currentQuestion?.id || 'dream']}
-                        onChange={(e) => handleFieldChange(currentQuestion?.id as keyof FormData, e.target.value)}
-                        placeholder={currentQuestion?.placeholder}
-                        maxLength={currentQuestion?.limit}
-                        rows={6}
-                      />
-                      <div className="character-counter">
-                        {(formData as any)[currentQuestion?.id || 'dream']?.length || 0} / {currentQuestion?.limit}
-                      </div>
-                    </div>
+                    <GlassInput
+                      variant="textarea"
+                      value={(formData as any)[currentQuestion?.id || 'dream']}
+                      onChange={(value) => handleFieldChange(currentQuestion?.id as keyof FormData, value)}
+                      placeholder={currentQuestion?.placeholder}
+                      maxLength={currentQuestion?.limit}
+                      showCounter={true}
+                      rows={6}
+                    />
                   )}
 
-                  <div className="navigation-buttons">
+                  <div className="flex gap-4 justify-center mt-8">
                     {currentStep > 1 && (
-                      <button className="nav-button back" onClick={handleBack}>
+                      <GlowButton
+                        variant="ghost"
+                        size="md"
+                        onClick={handleBack}
+                        className="min-w-[120px]"
+                      >
                         ← Back
-                      </button>
+                      </GlowButton>
                     )}
-                    <button
-                      className="nav-button next"
+                    <GlowButton
+                      variant="primary"
+                      size="md"
                       onClick={handleNext}
                       disabled={!((formData as any)[currentQuestion?.id || 'dream'])}
+                      className="min-w-[200px]"
                     >
                       {currentStep === 5 ? 'Choose Tone →' : 'Continue →'}
-                    </button>
+                    </GlowButton>
                   </div>
                 </div>
               ) : (
                 /* Tone selection */
                 <div className="tone-view">
-                  <h2 className="tone-title">Choose Your Reflection Tone</h2>
-                  <p className="tone-subtitle">How shall the mirror speak to you?</p>
+                  <h2 className="text-center mb-4 text-2xl md:text-3xl font-light bg-gradient-to-r from-mirror-purple via-mirror-violet to-mirror-blue bg-clip-text text-transparent">
+                    Choose Your Reflection Tone
+                  </h2>
+                  <p className="text-center text-white/70 mb-8">How shall the mirror speak to you?</p>
 
-                  <div className="tone-options">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                     {[
-                      { id: 'fusion' as ToneId, name: 'Sacred Fusion', desc: 'Balanced wisdom and warmth', color: '#fbbf24' },
-                      { id: 'gentle' as ToneId, name: 'Gentle Clarity', desc: 'Compassionate and nurturing', color: '#ffffff' },
-                      { id: 'intense' as ToneId, name: 'Luminous Intensity', desc: 'Direct and transformative', color: '#9333ea' },
-                    ].map(tone => (
-                      <button
-                        key={tone.id}
-                        className={`tone-card ${selectedTone === tone.id ? 'selected' : ''}`}
-                        onClick={() => setSelectedTone(tone.id)}
-                        style={{ '--tone-color': tone.color } as React.CSSProperties}
-                      >
-                        <div className="tone-icon" style={{ color: tone.color }}>✨</div>
-                        <h3 className="tone-name">{tone.name}</h3>
-                        <p className="tone-desc">{tone.desc}</p>
-                      </button>
-                    ))}
+                      { id: 'fusion' as ToneId, name: 'Sacred Fusion', desc: 'Balanced wisdom and warmth', emoji: '⚡', glowColor: 'cosmic' as const },
+                      { id: 'gentle' as ToneId, name: 'Gentle Clarity', desc: 'Compassionate and nurturing', emoji: '🌸', glowColor: 'blue' as const },
+                      { id: 'intense' as ToneId, name: 'Luminous Intensity', desc: 'Direct and transformative', emoji: '🔥', glowColor: 'purple' as const },
+                    ].map(tone => {
+                      const isSelected = selectedTone === tone.id
+
+                      return (
+                        <div
+                          key={tone.id}
+                          onClick={() => setSelectedTone(tone.id)}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              setSelectedTone(tone.id);
+                            }
+                          }}
+                        >
+                          <GlassCard
+                            variant={isSelected ? 'elevated' : 'default'}
+                            glowColor={isSelected ? tone.glowColor : undefined}
+                            hoverable
+                            className={cn(
+                              'cursor-pointer transition-all text-center',
+                              isSelected && 'border-2'
+                            )}
+                          >
+                            <div className="space-y-3 py-4">
+                              <div className="text-5xl">{tone.emoji}</div>
+                              <h3 className={cn(
+                                'text-lg font-medium',
+                                isSelected && 'bg-gradient-to-r from-mirror-purple to-mirror-blue bg-clip-text text-transparent'
+                              )}>
+                                {tone.name}
+                              </h3>
+                              <p className="text-sm text-white/60">{tone.desc}</p>
+                            </div>
+                          </GlassCard>
+                        </div>
+                      )
+                    })}
                   </div>
 
-                  <div className="submit-container">
-                    <button className="nav-button back" onClick={handleBack}>
+                  <div className="flex gap-4 justify-center mt-8">
+                    <GlowButton
+                      variant="ghost"
+                      size="md"
+                      onClick={handleBack}
+                      className="min-w-[120px]"
+                    >
                       ← Back
-                    </button>
-                    <button
-                      className="submit-button"
+                    </GlowButton>
+                    <GlowButton
+                      variant="primary"
+                      size="lg"
                       onClick={handleSubmit}
                       disabled={isSubmitting}
+                      className="min-w-[250px]"
                     >
-                      {isSubmitting ? 'Creating your reflection...' : 'Gaze into the Mirror ✨'}
-                    </button>
+                      {isSubmitting ? (
+                        <span className="flex items-center gap-2">
+                          <CosmicLoader size="sm" />
+                          Creating...
+                        </span>
+                      ) : (
+                        <>
+                          <span className="mr-2">🪞</span>
+                          Gaze into the Mirror
+                        </>
+                      )}
+                    </GlowButton>
                   </div>
                 </div>
               )}
             </div>
-          </div>
+          </GlassCard>
         </div>
       ) : (
         /* Output view */
         <div className="output-container">
           {reflectionLoading ? (
-            <div className="loading-mirror">
-              <div className="cosmic-spinner" />
-              <p>Revealing your reflection...</p>
+            <div className="flex flex-col items-center justify-center gap-6 py-20">
+              <CosmicLoader size="lg" />
+              <p className="text-white/70 text-lg">Revealing your reflection...</p>
             </div>
           ) : reflection ? (
-            <div className="reflection-output">
-              <div className="mirror-frame">
-                <div className="mirror-surface">
-                  <div className="reflection-content">
-                    <h1 className="reflection-title">Your Reflection</h1>
-                    <div
-                      className="reflection-text"
-                      dangerouslySetInnerHTML={{ __html: reflection.aiResponse }}
-                    />
-                    <button
-                      className="new-reflection-button"
+            <GlassCard
+              variant="elevated"
+              glassIntensity="strong"
+              className="p-12 rounded-[30px]"
+              animated={false}
+            >
+              <div className="mirror-surface">
+                <div className="reflection-content">
+                  <h1 className="text-center mb-8 text-4xl md:text-5xl font-semibold bg-gradient-to-r from-[#fbbf24] to-[#9333ea] bg-clip-text text-transparent">
+                    Your Reflection
+                  </h1>
+                  <div
+                    className="reflection-text"
+                    dangerouslySetInnerHTML={{ __html: reflection.aiResponse }}
+                  />
+                  <div className="flex justify-center mt-8">
+                    <GlowButton
+                      variant="primary"
+                      size="lg"
                       onClick={() => {
                         setViewMode('questionnaire');
                         setCurrentStep(1);
@@ -468,12 +537,13 @@ export default function MirrorExperience() {
                         router.push('/reflection');
                       }}
                     >
+                      <span className="mr-2">✨</span>
                       Create New Reflection
-                    </button>
+                    </GlowButton>
                   </div>
                 </div>
               </div>
-            </div>
+            </GlassCard>
           ) : null}
         </div>
       )}
@@ -627,42 +697,6 @@ export default function MirrorExperience() {
           padding: var(--space-xl);
         }
 
-        .mirror-frame {
-          position: relative;
-          padding: var(--space-2xl);
-          background: linear-gradient(135deg,
-            rgba(255, 255, 255, 0.1) 0%,
-            rgba(255, 255, 255, 0.05) 50%,
-            rgba(255, 255, 255, 0.1) 100%
-          );
-          backdrop-filter: blur(40px) saturate(150%);
-          border: 2px solid rgba(255, 255, 255, 0.2);
-          border-radius: 30px;
-          box-shadow:
-            0 0 80px rgba(255, 255, 255, 0.1),
-            inset 0 0 80px rgba(255, 255, 255, 0.03);
-          transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-          animation: mirror-entrance 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .mirror-frame.glowing {
-          border-color: rgba(251, 191, 36, 0.6);
-          box-shadow:
-            0 0 120px rgba(251, 191, 36, 0.4),
-            inset 0 0 80px rgba(251, 191, 36, 0.1);
-        }
-
-        @keyframes mirror-entrance {
-          from {
-            opacity: 0;
-            transform: scale(0.9) rotateX(10deg);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1) rotateX(0deg);
-          }
-        }
-
         .mirror-surface {
           background: rgba(0, 0, 0, 0.3);
           border-radius: 20px;
@@ -692,259 +726,10 @@ export default function MirrorExperience() {
           }
         }
 
-        .progress-ring {
-          margin: 0 auto var(--space-xl);
-          width: 120px;
-          height: 120px;
-        }
-
-        .progress-svg {
-          transform: rotate(-90deg);
-        }
-
-        .progress-background {
-          fill: none;
-          stroke: rgba(255, 255, 255, 0.1);
-          stroke-width: 3;
-        }
-
-        .progress-bar {
-          fill: none;
-          stroke: url(#progress-gradient);
-          stroke-width: 3;
-          stroke-linecap: round;
-          transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .progress-text {
-          fill: rgba(255, 255, 255, 0.9);
-          font-size: 24px;
-          font-weight: 600;
-          transform: rotate(90deg);
-          transform-origin: center;
-        }
-
-        .question-text {
-          font-size: clamp(1.5rem, 4vw, 2rem);
-          font-weight: 300;
-          color: rgba(255, 255, 255, 0.95);
-          text-align: center;
-          margin-bottom: var(--space-xl);
-          line-height: 1.4;
-        }
-
-        .answer-container {
-          width: 100%;
-          margin-bottom: var(--space-lg);
-        }
-
-        .answer-input {
-          width: 100%;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          border-radius: 16px;
-          padding: var(--space-lg);
-          color: rgba(255, 255, 255, 0.95);
-          font-size: var(--text-lg);
-          font-family: inherit;
-          line-height: 1.6;
-          resize: none;
-          transition: all 0.3s ease;
-        }
-
-        .answer-input:focus {
-          outline: none;
-          border-color: rgba(251, 191, 36, 0.5);
-          background: rgba(255, 255, 255, 0.08);
-          box-shadow: 0 0 30px rgba(251, 191, 36, 0.2);
-        }
-
-        .answer-input::placeholder {
-          color: rgba(255, 255, 255, 0.4);
-        }
-
-        .character-counter {
-          text-align: right;
-          color: rgba(255, 255, 255, 0.5);
-          font-size: var(--text-sm);
-          margin-top: var(--space-sm);
-        }
-
-        .choice-buttons {
-          display: flex;
-          gap: var(--space-lg);
-          margin-bottom: var(--space-xl);
-        }
-
-        .choice-button {
-          flex: 1;
-          padding: var(--space-lg) var(--space-xl);
-          background: rgba(255, 255, 255, 0.05);
-          border: 2px solid rgba(255, 255, 255, 0.15);
-          border-radius: 16px;
-          color: rgba(255, 255, 255, 0.9);
-          font-size: var(--text-lg);
-          font-weight: 500;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-          cursor: pointer;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .choice-button:hover {
-          background: rgba(255, 255, 255, 0.1);
-          border-color: rgba(255, 255, 255, 0.3);
-          transform: translateY(-2px);
-        }
-
-        .choice-button.selected {
-          background: rgba(251, 191, 36, 0.2);
-          border-color: rgba(251, 191, 36, 0.6);
-          box-shadow: 0 0 30px rgba(251, 191, 36, 0.3);
-        }
-
-        .navigation-buttons,
-        .submit-container {
-          display: flex;
-          gap: var(--space-md);
-          justify-content: center;
-          margin-top: var(--space-xl);
-        }
-
-        .nav-button {
-          position: relative;
-          padding: var(--space-md) var(--space-xl);
-          background: rgba(255, 255, 255, 0.08);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 12px;
-          color: rgba(255, 255, 255, 0.9);
-          font-size: var(--text-base);
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          overflow: hidden;
-        }
-
-        .nav-button::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-          transform: translateX(-100%);
-          transition: transform 0.6s ease;
-        }
-
-        .nav-button:hover::before {
-          transform: translateX(100%);
-        }
-
-        .nav-button:hover:not(:disabled) {
-          background: rgba(255, 255, 255, 0.12);
-          transform: translateY(-2px);
-          box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
-        }
-
-        .nav-button:disabled {
-          opacity: 0.4;
-          cursor: not-allowed;
-        }
-
-        .nav-button.next,
-        .submit-button {
-          background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(251, 191, 36, 0.2));
-          border-color: rgba(251, 191, 36, 0.5);
-          color: rgba(251, 191, 36, 1);
-        }
-
-        .submit-button {
-          position: relative;
-          padding: var(--space-lg) var(--space-2xl);
-          font-size: var(--text-lg);
-          overflow: hidden;
-        }
-
-        .nav-button.next:hover,
-        .submit-button:hover:not(:disabled) {
-          background: linear-gradient(135deg, rgba(251, 191, 36, 0.4), rgba(251, 191, 36, 0.3));
-          box-shadow: 0 15px 40px rgba(251, 191, 36, 0.3);
-          transform: translateY(-3px) scale(1.02);
-        }
-
-        .tone-title {
-          font-size: var(--text-2xl);
-          font-weight: 300;
-          text-align: center;
-          margin-bottom: var(--space-md);
-        }
-
-        .tone-subtitle {
-          text-align: center;
-          color: rgba(255, 255, 255, 0.7);
-          margin-bottom: var(--space-2xl);
-        }
-
-        .tone-options {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: var(--space-lg);
-          margin-bottom: var(--space-2xl);
-        }
-
-        .tone-card {
-          padding: var(--space-xl);
-          background: rgba(255, 255, 255, 0.05);
-          border: 2px solid rgba(255, 255, 255, 0.1);
-          border-radius: 20px;
-          cursor: pointer;
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-          text-align: center;
-        }
-
-        .tone-card:hover {
-          background: rgba(255, 255, 255, 0.08);
-          transform: translateY(-4px);
-        }
-
-        .tone-card.selected {
-          border-color: var(--tone-color);
-          background: linear-gradient(135deg,
-            color-mix(in srgb, var(--tone-color) 15%, transparent),
-            color-mix(in srgb, var(--tone-color) 5%, transparent)
-          );
-          box-shadow: 0 0 40px color-mix(in srgb, var(--tone-color) 30%, transparent);
-        }
-
-        .tone-icon {
-          font-size: 3rem;
-          margin-bottom: var(--space-md);
-        }
-
-        .tone-name {
-          font-size: var(--text-lg);
-          font-weight: 500;
-          margin-bottom: var(--space-sm);
-        }
-
-        .tone-desc {
-          font-size: var(--text-sm);
-          color: rgba(255, 255, 255, 0.6);
-        }
 
         .reflection-content {
           text-align: left;
           max-width: 700px;
-        }
-
-        .reflection-title {
-          font-size: var(--text-3xl);
-          font-weight: 600;
-          margin-bottom: var(--space-2xl);
-          text-align: center;
-          background: linear-gradient(135deg, #fbbf24, #9333ea);
-          -webkit-background-clip: text;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-          line-height: 1.3;
         }
 
         .reflection-text {
@@ -970,81 +755,6 @@ export default function MirrorExperience() {
           color: rgba(255, 255, 255, 0.8);
         }
 
-        .new-reflection-button {
-          padding: var(--space-lg) var(--space-2xl);
-          background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(251, 191, 36, 0.2));
-          border: 1px solid rgba(251, 191, 36, 0.5);
-          border-radius: 12px;
-          color: rgba(251, 191, 36, 1);
-          font-size: var(--text-lg);
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-
-        .new-reflection-button:hover {
-          background: linear-gradient(135deg, rgba(251, 191, 36, 0.4), rgba(251, 191, 36, 0.3));
-          box-shadow: 0 0 30px rgba(251, 191, 36, 0.3);
-          transform: translateY(-2px);
-        }
-
-        .loading-mirror {
-          text-align: center;
-          padding: var(--space-2xl);
-        }
-
-        .cosmic-spinner {
-          width: clamp(140px, 30vw, 180px);
-          height: clamp(140px, 30vw, 180px);
-          border-radius: 50%;
-          background: radial-gradient(
-            circle,
-            rgba(251, 191, 36, 0.15) 0%,
-            rgba(251, 191, 36, 0.05) 40%,
-            rgba(251, 191, 36, 0.02) 70%,
-            transparent 85%
-          );
-          animation: breatheLoading 4.5s ease-in-out infinite;
-          position: relative;
-          box-shadow: 0 0 60px rgba(251, 191, 36, 0.2), inset 0 0 30px rgba(251, 191, 36, 0.1);
-          margin: 0 auto var(--space-lg);
-        }
-
-        .cosmic-spinner::after {
-          content: "";
-          position: absolute;
-          inset: 25px;
-          border-radius: 50%;
-          background: radial-gradient(
-            circle,
-            rgba(251, 191, 36, 0.2) 0%,
-            rgba(251, 191, 36, 0.08) 50%,
-            transparent 75%
-          );
-          animation: breatheInner 4.5s ease-in-out infinite;
-        }
-
-        @keyframes breatheLoading {
-          0%, 100% {
-            transform: scale(1);
-            opacity: 0.7;
-          }
-          50% {
-            transform: scale(1.15);
-            opacity: 1;
-          }
-        }
-
-        @keyframes breatheInner {
-          0%, 100% {
-            transform: scale(1) rotate(0deg);
-            opacity: 0.5;
-          }
-          50% {
-            transform: scale(1.3) rotate(180deg);
-            opacity: 0.9;
-          }
-        }
 
         /* Dream selection styles */
         .dream-selection-list {
@@ -1058,114 +768,12 @@ export default function MirrorExperience() {
           padding: var(--space-2);
         }
 
-        .dream-selection-item {
-          display: flex;
-          align-items: center;
-          gap: var(--space-4);
-          padding: var(--space-4);
-          background: rgba(255, 255, 255, 0.03);
-          border: 2px solid rgba(255, 255, 255, 0.1);
-          border-radius: var(--radius-xl);
-          cursor: pointer;
-          transition: all 0.3s ease;
-          width: 100%;
-          text-align: left;
-        }
-
-        .dream-selection-item:hover {
-          background: rgba(255, 255, 255, 0.05);
-          border-color: rgba(139, 92, 246, 0.4);
-          transform: translateX(4px);
-        }
-
-        .dream-selection-item.selected {
-          background: rgba(139, 92, 246, 0.15);
-          border-color: rgba(139, 92, 246, 0.6);
-          box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
-        }
-
-        .dream-selection-icon {
-          font-size: 2rem;
-          flex-shrink: 0;
-        }
-
-        .dream-selection-content {
-          flex: 1;
-          min-width: 0;
-        }
-
-        .dream-selection-title {
-          font-size: var(--text-base);
-          font-weight: var(--font-medium);
-          color: var(--cosmic-text);
-          margin-bottom: var(--space-1);
-        }
-
-        .dream-selection-meta {
-          font-size: var(--text-sm);
-          color: rgba(139, 92, 246, 0.9);
-        }
-
-        .selection-check {
-          font-size: 1.5rem;
-          color: rgba(139, 92, 246, 1);
-          flex-shrink: 0;
-        }
-
-        .no-dreams {
-          text-align: center;
-          padding: var(--space-2xl);
-        }
-
-        .no-dreams p {
-          color: var(--cosmic-text-muted);
-          margin-bottom: var(--space-lg);
-          font-size: var(--text-base);
-        }
-
-        .create-dream-button {
-          padding: var(--space-3) var(--space-6);
-          background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(59, 130, 246, 0.25));
-          border: 2px solid rgba(139, 92, 246, 0.4);
-          border-radius: var(--radius-full);
-          color: rgba(139, 92, 246, 1);
-          font-size: var(--text-base);
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-
-        .create-dream-button:hover {
-          background: linear-gradient(135deg, rgba(139, 92, 246, 0.35), rgba(59, 130, 246, 0.35));
-          border-color: rgba(139, 92, 246, 0.6);
-          transform: translateY(-2px);
-          box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4);
-        }
-
         @media (max-width: 768px) {
-          .mirror-frame {
-            padding: var(--space-lg);
-          }
-
           .mirror-surface {
             padding: var(--space-lg);
           }
-
-          .tone-options {
-            grid-template-columns: 1fr;
-          }
         }
       `}</style>
-
-      {/* SVG defs for gradients */}
-      <svg width="0" height="0">
-        <defs>
-          <linearGradient id="progress-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#fbbf24" />
-            <stop offset="100%" stopColor="#9333ea" />
-          </linearGradient>
-        </defs>
-      </svg>
     </div>
   );
 }

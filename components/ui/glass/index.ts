@@ -4,6 +4,7 @@
 export { GlassCard } from './GlassCard';
 export { GlowButton } from './GlowButton';
 export { GradientText } from './GradientText';
+export { GlassInput } from './GlassInput';
 
 // Complex Components
 export { DreamCard } from './DreamCard';

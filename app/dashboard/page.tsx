@@ -18,9 +18,18 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, AlertTriangle } from 'lucide-react';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useAuth } from '@/hooks/useAuth';
 import { useStaggerAnimation } from '@/hooks/useStaggerAnimation';
+import {
+  GlassCard,
+  GlowButton,
+  CosmicLoader,
+  GlowBadge,
+  GradientText
+} from '@/components/ui/glass';
 import CosmicBackground from '@/components/shared/CosmicBackground';
 import WelcomeSection from '@/components/dashboard/shared/WelcomeSection';
 import DashboardGrid from '@/components/dashboard/shared/DashboardGrid';
@@ -29,6 +38,7 @@ import ReflectionsCard from '@/components/dashboard/cards/ReflectionsCard';
 import DreamsCard from '@/components/dashboard/cards/DreamsCard';
 import EvolutionCard from '@/components/dashboard/cards/EvolutionCard';
 import SubscriptionCard from '@/components/dashboard/cards/SubscriptionCard';
+import { cn } from '@/lib/utils';
 import '@/styles/dashboard.css';
 
 export default function DashboardPage() {
@@ -172,9 +182,9 @@ export default function DashboardPage() {
     return (
       <div className="dashboard" style={{ opacity: isPageVisible ? 1 : 0 }}>
         <CosmicBackground />
-        <div className="dashboard-loading">
-          <div className="cosmic-spinner" />
-          <p className="loading-text">Loading your dashboard...</p>
+        <div className="flex flex-col items-center justify-center min-h-screen gap-4 z-10 relative">
+          <CosmicLoader size="lg" />
+          <p className="text-white/60 text-sm">Loading your dashboard...</p>
         </div>
       </div>
     );
@@ -195,28 +205,34 @@ export default function DashboardPage() {
       <div className="dashboard" style={{ opacity: isPageVisible ? 1 : 0 }}>
         <CosmicBackground />
 
-        <div className="dashboard-error">
-          <div className="dashboard-error__content">
-            <div className="dashboard-error__icon">⚠️</div>
-            <h2>Unable to load dashboard</h2>
-            <p>{dashboardData.error}</p>
-            <div className="dashboard-error__actions">
-              <button
-                className="cosmic-button cosmic-button--primary"
+        <div className="fixed inset-0 flex items-center justify-center z-[1000] px-6">
+          <GlassCard variant="elevated" className="max-w-md w-full text-center p-8">
+            <div className="text-6xl mb-6 opacity-80">⚠️</div>
+            <GradientText gradient="cosmic" className="mb-4 text-2xl font-semibold">
+              Unable to load dashboard
+            </GradientText>
+            <p className="text-white/70 text-base mb-8 leading-relaxed">
+              {dashboardData.error}
+            </p>
+            <div className="flex gap-3 justify-center">
+              <GlowButton
+                variant="secondary"
+                size="md"
                 onClick={handleRefreshData}
               >
-                <span>🔄</span>
-                <span>Try Again</span>
-              </button>
-              <button
-                className="cosmic-button cosmic-button--secondary"
+                <span className="text-xl">🔄</span>
+                Try Again
+              </GlowButton>
+              <GlowButton
+                variant="primary"
+                size="md"
                 onClick={() => router.push('/reflection')}
               >
-                <span>✨</span>
-                <span>Create Reflection</span>
-              </button>
+                <span className="text-xl">✨</span>
+                Create Reflection
+              </GlowButton>
             </div>
-          </div>
+          </GlassCard>
         </div>
       </div>
     );
@@ -227,130 +243,143 @@ export default function DashboardPage() {
       <CosmicBackground />
 
       {/* Navigation */}
-      <nav className="dashboard-nav">
-        <div className="dashboard-nav__left">
-          <Link href="/" className="dashboard-nav__logo">
-            <span className="dashboard-nav__logo-icon">🪞</span>
-            <span className="dashboard-nav__logo-text">Mirror of Dreams</span>
-          </Link>
+      <GlassCard
+        variant="elevated"
+        glassIntensity="strong"
+        hoverable={false}
+        className="fixed top-0 left-0 right-0 z-[100] rounded-none border-b border-white/10"
+      >
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+          {/* Left section */}
+          <div className="flex items-center gap-8">
+            <Link href="/" className="flex items-center gap-3 text-white/90 hover:text-white transition-all hover:-translate-y-0.5 text-lg font-normal">
+              <span className="text-2xl animate-glow-pulse">🪞</span>
+              <span className="hidden md:inline">Mirror of Dreams</span>
+            </Link>
 
-          <div className="dashboard-nav__links">
-            <Link
-              href="/dashboard"
-              className="dashboard-nav__link dashboard-nav__link--active"
-            >
-              <span>🏠</span>
-              <span>Journey</span>
-            </Link>
-            <Link
-              href="/dreams"
-              className="dashboard-nav__link"
-            >
-              <span>✨</span>
-              <span>Dreams</span>
-            </Link>
-            <Link
-              href="/reflection"
-              className="dashboard-nav__link"
-            >
-              <span>🪞</span>
-              <span>Reflect</span>
-            </Link>
-            {(user?.isCreator || user?.isAdmin) && (
-              <Link href="/admin" className="dashboard-nav__link">
-                <span>⚡</span>
-                <span>Admin</span>
+            <div className="hidden lg:flex gap-2">
+              <Link href="/dashboard" className="dashboard-nav-link dashboard-nav-link--active">
+                <span>🏠</span>
+                <span>Journey</span>
               </Link>
-            )}
+              <Link href="/dreams" className="dashboard-nav-link">
+                <span>✨</span>
+                <span>Dreams</span>
+              </Link>
+              <Link href="/reflection" className="dashboard-nav-link">
+                <span>🪞</span>
+                <span>Reflect</span>
+              </Link>
+              {(user?.isCreator || user?.isAdmin) && (
+                <Link href="/admin" className="dashboard-nav-link">
+                  <span>⚡</span>
+                  <span>Admin</span>
+                </Link>
+              )}
+            </div>
           </div>
-        </div>
 
-        <div className="dashboard-nav__right">
-          {/* Upgrade button for free users */}
-          {user?.tier === 'free' && (
-            <Link href="/subscription" className="dashboard-nav__upgrade">
-              <span>💎</span>
-              <span>Upgrade</span>
-            </Link>
-          )}
+          {/* Right section */}
+          <div className="flex items-center gap-4">
+            {/* Upgrade button for free users */}
+            {user?.tier === 'free' && (
+              <GlowButton
+                variant="primary"
+                size="sm"
+                onClick={() => router.push('/subscription')}
+                className="hidden sm:flex"
+              >
+                <span className="text-lg">💎</span>
+                <span className="hidden md:inline">Upgrade</span>
+              </GlowButton>
+            )}
 
-          {/* Refresh button */}
-          <button
-            className="dashboard-nav__refresh"
-            onClick={handleRefreshData}
-            disabled={dashboardData.isLoading}
-            title="Refresh dashboard"
-          >
-            <span className={dashboardData.isLoading ? 'animate-spin' : ''}>🔄</span>
-          </button>
-
-          {/* User menu */}
-          <div className="dashboard-nav__user">
+            {/* Refresh button */}
             <button
-              className="dashboard-nav__user-btn"
-              onClick={handleUserDropdownToggle}
+              onClick={handleRefreshData}
+              disabled={dashboardData.isLoading}
+              title="Refresh dashboard"
+              className="flex items-center justify-center w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span className="dashboard-nav__avatar">
-                {user?.tier === 'premium'
-                  ? '💎'
-                  : user?.tier === 'essential'
-                  ? '✨'
-                  : '👤'}
-              </span>
-              <span className="dashboard-nav__name">
-                {user?.name?.split(' ')[0] || 'Friend'}
-              </span>
+              <span className={cn('text-lg', dashboardData.isLoading && 'animate-spin')}>🔄</span>
             </button>
 
-            {/* User dropdown menu */}
-            {showUserDropdown && (
-              <div className="dashboard-nav__dropdown-menu">
-                <div className="dropdown-header">
-                  <div className="dropdown-user-info">
-                    <span className="dropdown-user-name">
-                      {user?.name || 'User'}
-                    </span>
-                    <span className="dropdown-user-email">
-                      {user?.email || 'user@example.com'}
-                    </span>
-                  </div>
-                </div>
+            {/* User menu */}
+            <div className="relative dashboard-nav__user">
+              <button
+                onClick={handleUserDropdownToggle}
+                className="flex items-center gap-3 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-all"
+              >
+                <span className="text-lg">
+                  {user?.tier === 'premium' ? '💎' : user?.tier === 'essential' ? '✨' : '👤'}
+                </span>
+                <span className="hidden sm:inline text-sm text-white">
+                  {user?.name?.split(' ')[0] || 'Friend'}
+                </span>
+              </button>
 
-                <div className="dropdown-section">
-                  <Link href="/profile" className="dropdown-item">
-                    <span>👤</span>
-                    <span>Profile</span>
-                  </Link>
-                  <Link href="/settings" className="dropdown-item">
-                    <span>⚙️</span>
-                    <span>Settings</span>
-                  </Link>
-                  {user?.tier !== 'premium' && (
-                    <Link href="/subscription" className="dropdown-item">
-                      <span>💎</span>
-                      <span>Upgrade</span>
-                    </Link>
-                  )}
-                </div>
-
-                <div className="dropdown-section">
-                  <Link href="/help" className="dropdown-item">
-                    <span>❓</span>
-                    <span>Help & Support</span>
-                  </Link>
-                  <button
-                    className="dropdown-item dropdown-item--logout"
-                    onClick={handleLogout}
+              {/* User dropdown menu */}
+              <AnimatePresence>
+                {showUserDropdown && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.2 }}
                   >
-                    <span>🚪</span>
-                    <span>Sign Out</span>
-                  </button>
-                </div>
-              </div>
-            )}
+                    <GlassCard
+                      variant="elevated"
+                      className="absolute top-[calc(100%+8px)] right-0 min-w-[240px] overflow-hidden"
+                    >
+                      {/* Header */}
+                      <div className="px-4 py-4 border-b border-white/10">
+                        <div className="text-sm font-medium text-white">
+                          {user?.name || 'User'}
+                        </div>
+                        <div className="text-xs text-white/60">
+                          {user?.email || 'user@example.com'}
+                        </div>
+                      </div>
+
+                      {/* Menu sections */}
+                      <div className="p-2 border-b border-white/10">
+                        <Link href="/profile" className="dashboard-dropdown-item">
+                          <span>👤</span>
+                          <span>Profile</span>
+                        </Link>
+                        <Link href="/settings" className="dashboard-dropdown-item">
+                          <span>⚙️</span>
+                          <span>Settings</span>
+                        </Link>
+                        {user?.tier !== 'premium' && (
+                          <Link href="/subscription" className="dashboard-dropdown-item">
+                            <span>💎</span>
+                            <span>Upgrade</span>
+                          </Link>
+                        )}
+                      </div>
+
+                      <div className="p-2">
+                        <Link href="/help" className="dashboard-dropdown-item">
+                          <span>❓</span>
+                          <span>Help & Support</span>
+                        </Link>
+                        <button
+                          onClick={handleLogout}
+                          className="dashboard-dropdown-item text-red-400/90 hover:bg-red-500/10 w-full text-left"
+                        >
+                          <span>🚪</span>
+                          <span>Sign Out</span>
+                        </button>
+                      </div>
+                    </GlassCard>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
-      </nav>
+      </GlassCard>
 
       {/* Main content */}
       <main className="dashboard-main">
@@ -359,17 +388,19 @@ export default function DashboardPage() {
           <WelcomeSection dashboardData={welcomeSectionData} />
 
         {/* Quick Action: Reflect Now Button */}
-        <div className="quick-actions">
-          <button
-            className="reflect-now-button"
+        <div className="flex flex-col items-center gap-3 mb-8">
+          <GlowButton
+            variant="primary"
+            size="lg"
             onClick={handleReflectNow}
             disabled={!dashboardData.usage?.canReflect}
+            className="w-full sm:w-auto"
           >
-            <span className="button-icon">✨</span>
-            <span className="button-text">Reflect Now</span>
-          </button>
+            <span className="text-2xl">✨</span>
+            Reflect Now
+          </GlowButton>
           {!dashboardData.usage?.canReflect && (
-            <p className="action-hint">
+            <p className="text-sm text-white/60 italic">
               Upgrade to Premium for unlimited reflections
             </p>
           )}
@@ -408,57 +439,71 @@ export default function DashboardPage() {
       </main>
 
       {/* Toast notifications */}
-      {showToast && (
-        <div className={`dashboard-toast dashboard-toast--${showToast.type}`}>
-          <div className="dashboard-toast__content">
-            <span className="dashboard-toast__icon">
-              {showToast.type === 'success'
-                ? '✅'
-                : showToast.type === 'error'
-                ? '❌'
-                : showToast.type === 'warning'
-                ? '⚠️'
-                : 'ℹ️'}
-            </span>
-            <span className="dashboard-toast__message">
-              {showToast.message}
-            </span>
-          </div>
-          <button
-            className="dashboard-toast__close"
-            onClick={handleDismissToast}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ duration: 0.3 }}
+            className="fixed bottom-6 right-6 z-[1000] min-w-[320px] max-w-md"
           >
-            ×
-          </button>
-        </div>
-      )}
+            <GlassCard variant="elevated" className="flex items-center gap-3">
+              <GlowBadge variant={showToast.type}>
+                {showToast.type === 'success' && '✅'}
+                {showToast.type === 'error' && '❌'}
+                {showToast.type === 'warning' && '⚠️'}
+                {showToast.type === 'info' && 'ℹ️'}
+              </GlowBadge>
+              <span className="flex-1 text-sm text-white/90">
+                {showToast.message}
+              </span>
+              <button
+                onClick={handleDismissToast}
+                className="text-white/60 hover:text-white transition-colors"
+                aria-label="Close notification"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </GlassCard>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Error banner for non-critical errors */}
       {dashboardData.error && hasData && (
-        <div className="dashboard-error-banner">
-          <div className="dashboard-error-banner__content">
-            <span className="dashboard-error-banner__icon">⚠️</span>
-            <span className="dashboard-error-banner__message">
-              Some data may be outdated. Last refresh failed.
-            </span>
-          </div>
-          <button
-            className="dashboard-error-banner__action"
-            onClick={handleRefreshData}
-          >
-            Retry
-          </button>
-          <button
-            className="dashboard-error-banner__close"
-            onClick={handleClearError}
-          >
-            ×
-          </button>
+        <div className="fixed top-[80px] left-1/2 -translate-x-1/2 z-[500] min-w-[320px] max-w-[600px] mt-4 px-4">
+          <GlassCard variant="elevated" className="border-l-4 border-yellow-500/60">
+            <div className="flex items-start gap-3">
+              <GlowBadge variant="warning">
+                <AlertTriangle className="h-4 w-4" />
+              </GlowBadge>
+              <div className="flex-1">
+                <p className="text-sm text-white/90">
+                  Some data may be outdated. Last refresh failed.
+                </p>
+              </div>
+              <GlowButton
+                variant="ghost"
+                size="sm"
+                onClick={handleRefreshData}
+              >
+                Retry
+              </GlowButton>
+              <button
+                onClick={handleClearError}
+                className="text-white/60 hover:text-white transition-colors"
+                aria-label="Dismiss error"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </GlassCard>
         </div>
       )}
 
-      {/* Component styles */}
-      <style jsx>{`
+      {/* Minimal custom styles for dashboard nav links and dropdown items */}
+      <style jsx global>{`
         .dashboard {
           position: relative;
           min-height: 100vh;
@@ -467,267 +512,49 @@ export default function DashboardPage() {
           transition: opacity 0.6s ease-out;
         }
 
-        .dashboard-loading {
-          position: fixed;
-          inset: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: var(--space-lg);
-          z-index: var(--z-content);
-        }
-
-        .cosmic-spinner {
-          width: 60px;
-          height: 60px;
-          border: 3px solid rgba(255, 255, 255, 0.1);
-          border-top-color: rgba(251, 191, 36, 0.8);
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
-        }
-
-        .loading-text {
-          color: rgba(255, 255, 255, 0.7);
-          font-size: var(--text-lg);
-        }
-
-        .dashboard-nav {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          z-index: var(--z-navigation);
-          height: clamp(60px, 8vh, 80px);
-          background: rgba(15, 15, 35, 0.85);
-          backdrop-filter: blur(30px) saturate(120%);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        .dashboard-nav-link {
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          padding: 0 var(--space-lg);
-        }
-
-        .dashboard-nav__left {
-          display: flex;
-          align-items: center;
-          gap: var(--space-xl);
-        }
-
-        .dashboard-nav__logo {
-          display: flex;
-          align-items: center;
-          gap: var(--space-3);
-          text-decoration: none;
-          color: var(--cosmic-text);
-          font-size: var(--text-lg);
-          font-weight: var(--font-normal);
-          transition: var(--transition-smooth);
-        }
-
-        .dashboard-nav__logo:hover {
-          color: rgba(255, 255, 255, 1);
-          transform: translateY(-1px);
-        }
-
-        .dashboard-nav__logo-icon {
-          font-size: var(--text-xl);
-          animation: glow 4s ease-in-out infinite;
-        }
-
-        .dashboard-nav__links {
-          display: flex;
-          gap: var(--space-2);
-        }
-
-        .dashboard-nav__link {
-          display: flex;
-          align-items: center;
-          gap: var(--space-2);
-          padding: var(--space-2) var(--space-4);
+          gap: 0.5rem;
+          padding: 0.5rem 1rem;
           background: rgba(255, 255, 255, 0.04);
           border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: var(--radius-full);
+          border-radius: 9999px;
           color: rgba(255, 255, 255, 0.7);
           text-decoration: none;
-          font-size: var(--text-sm);
-          font-weight: var(--font-light);
-          transition: var(--transition-smooth);
+          font-size: 0.875rem;
+          font-weight: 300;
+          transition: all 0.3s ease;
           white-space: nowrap;
         }
 
-        .dashboard-nav__link:hover,
-        .dashboard-nav__link--active {
+        .dashboard-nav-link:hover,
+        .dashboard-nav-link--active {
           background: rgba(255, 255, 255, 0.08);
           border-color: rgba(255, 255, 255, 0.15);
           color: rgba(255, 255, 255, 0.9);
           transform: translateY(-1px);
         }
 
-        .dashboard-nav__right {
+        .dashboard-dropdown-item {
           display: flex;
           align-items: center;
-          gap: var(--space-4);
-        }
-
-        .dashboard-nav__upgrade {
-          display: flex;
-          align-items: center;
-          gap: var(--space-2);
-          padding: var(--space-2) var(--space-4);
-          background: var(--fusion-bg);
-          border: 1px solid var(--fusion-border);
-          border-radius: var(--radius-full);
-          color: var(--fusion-primary);
-          text-decoration: none;
-          font-size: var(--text-sm);
-          font-weight: var(--font-medium);
-          transition: var(--transition-smooth);
-        }
-
-        .dashboard-nav__upgrade:hover {
-          background: var(--fusion-hover);
-          transform: translateY(-1px);
-          box-shadow: 0 4px 15px var(--fusion-glow);
-        }
-
-        .dashboard-nav__refresh {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 40px;
-          height: 40px;
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 50%;
-          color: var(--cosmic-text-muted);
-          cursor: pointer;
-          transition: var(--transition-smooth);
-        }
-
-        .dashboard-nav__refresh:hover {
-          background: rgba(255, 255, 255, 0.08);
-          color: var(--cosmic-text);
-        }
-
-        .dashboard-nav__refresh:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-
-        .dashboard-nav__user {
-          position: relative;
-        }
-
-        .dashboard-nav__user-btn {
-          display: flex;
-          align-items: center;
-          gap: var(--space-3);
-          padding: var(--space-2) var(--space-4);
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: var(--radius-full);
-          color: var(--cosmic-text);
-          cursor: pointer;
-          transition: var(--transition-smooth);
-        }
-
-        .dashboard-nav__user-btn:hover {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .dashboard-nav__avatar {
-          font-size: var(--text-lg);
-        }
-
-        .dashboard-nav__name {
-          font-size: var(--text-sm);
-        }
-
-        .dashboard-nav__dropdown-menu {
-          position: absolute;
-          top: calc(100% + 8px);
-          right: 0;
-          min-width: 240px;
-          background: rgba(15, 15, 35, 0.95);
-          backdrop-filter: blur(30px) saturate(120%);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          border-radius: var(--radius-xl);
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-          overflow: hidden;
-          animation: slideDown 0.2s ease-out;
-        }
-
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-8px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .dropdown-header {
-          padding: var(--space-4);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .dropdown-user-info {
-          display: flex;
-          flex-direction: column;
-          gap: var(--space-1);
-        }
-
-        .dropdown-user-name {
-          font-size: var(--text-sm);
-          font-weight: var(--font-medium);
-          color: var(--cosmic-text);
-        }
-
-        .dropdown-user-email {
-          font-size: var(--text-xs);
-          color: var(--cosmic-text-muted);
-        }
-
-        .dropdown-section {
-          padding: var(--space-2);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .dropdown-section:last-child {
-          border-bottom: none;
-        }
-
-        .dropdown-item {
-          display: flex;
-          align-items: center;
-          gap: var(--space-3);
-          padding: var(--space-3) var(--space-4);
+          gap: 0.75rem;
+          padding: 0.75rem 1rem;
           background: transparent;
           border: none;
-          border-radius: var(--radius-lg);
+          border-radius: 0.5rem;
           color: var(--cosmic-text);
           text-decoration: none;
-          font-size: var(--text-sm);
+          font-size: 0.875rem;
           cursor: pointer;
-          transition: var(--transition-smooth);
+          transition: all 0.3s ease;
           width: 100%;
           text-align: left;
         }
 
-        .dropdown-item:hover {
+        .dashboard-dropdown-item:hover {
           background: rgba(255, 255, 255, 0.08);
-        }
-
-        .dropdown-item--logout {
-          color: rgba(255, 100, 100, 0.9);
-        }
-
-        .dropdown-item--logout:hover {
-          background: rgba(255, 100, 100, 0.1);
         }
 
         .dashboard-main {
@@ -746,57 +573,6 @@ export default function DashboardPage() {
           gap: var(--space-xl);
         }
 
-        .quick-actions {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: var(--space-md);
-          margin-bottom: var(--space-lg);
-        }
-
-        .reflect-now-button {
-          padding: var(--space-lg) var(--space-2xl);
-          background: linear-gradient(135deg, rgba(251, 191, 36, 0.25), rgba(147, 51, 234, 0.25));
-          border: 2px solid rgba(251, 191, 36, 0.4);
-          border-radius: var(--radius-full);
-          color: rgba(251, 191, 36, 1);
-          font-size: var(--text-lg);
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-          display: flex;
-          align-items: center;
-          gap: var(--space-3);
-          box-shadow: 0 4px 20px rgba(251, 191, 36, 0.2);
-        }
-
-        .reflect-now-button:hover:not(:disabled) {
-          background: linear-gradient(135deg, rgba(251, 191, 36, 0.35), rgba(147, 51, 234, 0.35));
-          border-color: rgba(251, 191, 36, 0.6);
-          transform: translateY(-2px);
-          box-shadow: 0 8px 30px rgba(251, 191, 36, 0.4);
-        }
-
-        .reflect-now-button:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-
-        .button-icon {
-          font-size: var(--text-xl);
-        }
-
-        .button-text {
-          font-weight: 600;
-          letter-spacing: 0.5px;
-        }
-
-        .action-hint {
-          font-size: var(--text-sm);
-          color: var(--cosmic-text-muted);
-          font-style: italic;
-        }
-
         .dashboard-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
@@ -807,271 +583,6 @@ export default function DashboardPage() {
         .dashboard-grid__item {
           position: relative;
           min-height: 280px;
-        }
-
-        .dashboard-error {
-          position: fixed;
-          inset: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: var(--z-modal);
-          padding: var(--space-xl);
-        }
-
-        .dashboard-error__content {
-          max-width: 500px;
-          text-align: center;
-          background: var(--glass-bg);
-          border: 1px solid var(--glass-border);
-          border-radius: var(--radius-3xl);
-          padding: var(--space-2xl);
-        }
-
-        .dashboard-error__icon {
-          font-size: 4rem;
-          margin-bottom: var(--space-lg);
-          opacity: 0.8;
-        }
-
-        .dashboard-error__content h2 {
-          font-size: var(--text-xl);
-          font-weight: var(--font-normal);
-          color: var(--cosmic-text);
-          margin-bottom: var(--space-md);
-        }
-
-        .dashboard-error__content p {
-          font-size: var(--text-base);
-          color: var(--cosmic-text-secondary);
-          margin-bottom: var(--space-xl);
-          line-height: var(--leading-relaxed);
-        }
-
-        .dashboard-error__actions {
-          display: flex;
-          gap: var(--space-md);
-          justify-content: center;
-        }
-
-        .cosmic-button {
-          display: inline-flex;
-          align-items: center;
-          gap: var(--space-2);
-          padding: var(--space-3) var(--space-5);
-          border-radius: var(--radius-full);
-          font-size: var(--text-sm);
-          font-weight: var(--font-medium);
-          cursor: pointer;
-          transition: var(--transition-smooth);
-          border: 1px solid;
-        }
-
-        .cosmic-button--primary {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(255, 255, 255, 0.12);
-          color: var(--cosmic-text);
-        }
-
-        .cosmic-button--primary:hover {
-          background: rgba(255, 255, 255, 0.12);
-          transform: translateY(-1px);
-        }
-
-        .cosmic-button--secondary {
-          background: var(--fusion-bg);
-          border-color: var(--fusion-border);
-          color: var(--fusion-primary);
-        }
-
-        .cosmic-button--secondary:hover {
-          background: var(--fusion-hover);
-          transform: translateY(-1px);
-          box-shadow: 0 4px 15px var(--fusion-glow);
-        }
-
-        .dashboard-toast {
-          position: fixed;
-          bottom: var(--space-xl);
-          right: var(--space-xl);
-          z-index: var(--z-toast);
-          min-width: 320px;
-          max-width: 480px;
-          background: rgba(15, 15, 35, 0.95);
-          backdrop-filter: blur(30px) saturate(120%);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          border-radius: var(--radius-xl);
-          padding: var(--space-4);
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: var(--space-4);
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-          animation: slideInUp 0.3s ease-out;
-        }
-
-        @keyframes slideInUp {
-          from {
-            opacity: 0;
-            transform: translateY(16px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .dashboard-toast--success {
-          border-left: 3px solid #4ade80;
-        }
-
-        .dashboard-toast--error {
-          border-left: 3px solid #ef4444;
-        }
-
-        .dashboard-toast--warning {
-          border-left: 3px solid #fbbf24;
-        }
-
-        .dashboard-toast--info {
-          border-left: 3px solid #60a5fa;
-        }
-
-        .dashboard-toast__content {
-          display: flex;
-          align-items: center;
-          gap: var(--space-3);
-          flex: 1;
-        }
-
-        .dashboard-toast__icon {
-          font-size: var(--text-lg);
-          flex-shrink: 0;
-        }
-
-        .dashboard-toast__message {
-          font-size: var(--text-sm);
-          color: var(--cosmic-text);
-          line-height: var(--leading-relaxed);
-        }
-
-        .dashboard-toast__close {
-          width: 24px;
-          height: 24px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: rgba(255, 255, 255, 0.08);
-          border: none;
-          border-radius: 50%;
-          color: var(--cosmic-text-muted);
-          font-size: var(--text-lg);
-          cursor: pointer;
-          transition: var(--transition-smooth);
-          flex-shrink: 0;
-        }
-
-        .dashboard-toast__close:hover {
-          background: rgba(255, 255, 255, 0.12);
-          color: var(--cosmic-text);
-        }
-
-        .dashboard-error-banner {
-          position: fixed;
-          top: clamp(60px, 8vh, 80px);
-          left: 50%;
-          transform: translateX(-50%);
-          z-index: var(--z-notification);
-          min-width: 320px;
-          max-width: 600px;
-          background: rgba(251, 191, 36, 0.15);
-          backdrop-filter: blur(30px) saturate(120%);
-          border: 1px solid rgba(251, 191, 36, 0.3);
-          border-radius: var(--radius-xl);
-          padding: var(--space-4);
-          display: flex;
-          align-items: center;
-          gap: var(--space-4);
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-          animation: slideDown 0.3s ease-out;
-          margin-top: var(--space-4);
-        }
-
-        .dashboard-error-banner__content {
-          display: flex;
-          align-items: center;
-          gap: var(--space-3);
-          flex: 1;
-        }
-
-        .dashboard-error-banner__icon {
-          font-size: var(--text-lg);
-          flex-shrink: 0;
-        }
-
-        .dashboard-error-banner__message {
-          font-size: var(--text-sm);
-          color: var(--cosmic-text);
-          line-height: var(--leading-relaxed);
-        }
-
-        .dashboard-error-banner__action {
-          padding: var(--space-2) var(--space-4);
-          background: rgba(251, 191, 36, 0.2);
-          border: 1px solid rgba(251, 191, 36, 0.4);
-          border-radius: var(--radius-lg);
-          color: var(--cosmic-text);
-          font-size: var(--text-sm);
-          font-weight: var(--font-medium);
-          cursor: pointer;
-          transition: var(--transition-smooth);
-        }
-
-        .dashboard-error-banner__action:hover {
-          background: rgba(251, 191, 36, 0.3);
-        }
-
-        .dashboard-error-banner__close {
-          width: 24px;
-          height: 24px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: rgba(255, 255, 255, 0.08);
-          border: none;
-          border-radius: 50%;
-          color: var(--cosmic-text-muted);
-          font-size: var(--text-lg);
-          cursor: pointer;
-          transition: var(--transition-smooth);
-          flex-shrink: 0;
-        }
-
-        .dashboard-error-banner__close:hover {
-          background: rgba(255, 255, 255, 0.12);
-          color: var(--cosmic-text);
-        }
-
-        .animate-spin {
-          animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        @keyframes glow {
-          0%, 100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.7;
-          }
         }
 
         /* Mobile responsive */
@@ -1086,47 +597,17 @@ export default function DashboardPage() {
             grid-template-columns: 1fr;
             grid-template-rows: repeat(5, minmax(200px, auto));
           }
-
-          .dashboard-nav__links {
-            display: none;
-          }
         }
 
         @media (max-width: 768px) {
           .dashboard-container {
             padding: var(--space-md);
           }
-
-          .dashboard-nav {
-            padding: 0 var(--space-md);
-          }
-
-          .dashboard-nav__logo-text,
-          .dashboard-nav__name {
-            display: none;
-          }
-
-          .dashboard-toast {
-            left: var(--space-md);
-            right: var(--space-md);
-            min-width: auto;
-          }
-
-          .dashboard-error-banner {
-            left: var(--space-md);
-            right: var(--space-md);
-            transform: none;
-            min-width: auto;
-          }
         }
 
         @media (max-width: 480px) {
           .dashboard-container {
             padding: var(--space-sm);
-          }
-
-          .dashboard-nav__upgrade span:last-child {
-            display: none;
           }
         }
       `}</style>
