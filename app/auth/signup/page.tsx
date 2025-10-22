@@ -114,7 +114,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="auth-page">
+    <div className="auth-screen">
       <CosmicBackground />
 
       <div className="auth-container">
