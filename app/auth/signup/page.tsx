@@ -4,8 +4,6 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { trpc } from '@/lib/trpc';
-import CosmicBackground from '@/components/shared/CosmicBackground';
-import '@/styles/auth.css';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -18,17 +16,18 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [passwordHint, setPasswordHint] = useState({
-    text: '6+ characters',
-    isValid: false,
-  });
+  const [message, setMessage] = useState({ text: '', type: '' });
 
   const signupMutation = trpc.auth.signup.useMutation({
     onSuccess: () => {
-      router.push('/dashboard');
+      setMessage({ text: 'Account created! Redirecting...', type: 'success' });
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 1000);
     },
     onError: (error) => {
       setErrors({ submit: error.message });
+      setMessage({ text: error.message, type: 'error' });
     },
   });
 
@@ -43,29 +42,8 @@ export default function SignupPage() {
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
-
-    // Handle password validation
-    if (name === 'password') {
-      handlePasswordValidation(value);
-    }
-  };
-
-  const handlePasswordValidation = (password: string) => {
-    if (password.length === 0) {
-      setPasswordHint({
-        text: '6+ characters',
-        isValid: false,
-      });
-    } else if (password.length >= 6) {
-      setPasswordHint({
-        text: 'Perfect!',
-        isValid: true,
-      });
-    } else {
-      setPasswordHint({
-        text: `${6 - password.length} more`,
-        isValid: false,
-      });
+    if (message.text) {
+      setMessage({ text: '', type: '' });
     }
   };
 
@@ -114,159 +92,190 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="auth-screen">
-      <CosmicBackground />
-
-      <div className="auth-container">
-        <h1 className="auth-title">Create Account</h1>
-
-        {/* Free Badge */}
-        <div className="free-badge">
-          <span>✨</span>
-          <span>Free Forever</span>
-        </div>
-
-        <form onSubmit={handleSubmit} className="auth-form">
-          {/* Name Field */}
-          <div className="form-field">
-            <label htmlFor="name" className="form-label">
-              Your name
-            </label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              className={`form-input ${errors.name ? 'error' : ''}`}
-              placeholder="Enter your full name"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-              autoComplete="name"
-            />
-            {errors.name && <span className="error-message">{errors.name}</span>}
-          </div>
-
-          {/* Email Field */}
-          <div className="form-field">
-            <label htmlFor="email" className="form-label">
-              Your email
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              className={`form-input ${errors.email ? 'error' : ''}`}
-              placeholder="Enter your email address"
-              value={formData.email}
-              onChange={handleInputChange}
-              required
-              autoComplete="email"
-            />
-            {errors.email && <span className="error-message">{errors.email}</span>}
-          </div>
-
-          {/* Password Field */}
-          <div className="form-field">
-            <label htmlFor="password" className="form-label">
-              Choose a password
-            </label>
-            <div className="password-container">
-              <input
-                id="password"
-                name="password"
-                type={showPassword ? 'text' : 'password'}
-                className={`form-input password-input ${errors.password ? 'error' : ''}`}
-                placeholder="Create a secure password"
-                value={formData.password}
-                onChange={handleInputChange}
-                required
-                autoComplete="new-password"
-                minLength={6}
-              />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={togglePasswordVisibility}
-                aria-label="Toggle password visibility"
-              >
-                <span>{showPassword ? '🙈' : '👁️'}</span>
-              </button>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Auth Card */}
+        <div className="backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl p-8 shadow-2xl">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-white mb-2">Create Account</h1>
+            <p className="text-white/60">Start your journey of self-discovery</p>
+            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-500/30">
+              <span>✨</span>
+              <span className="text-sm text-purple-300">Free Forever</span>
             </div>
-            <div className={`password-hint ${passwordHint.isValid ? 'valid' : ''}`}>
-              {passwordHint.text}
-            </div>
-            {errors.password && (
-              <span className="error-message">{errors.password}</span>
-            )}
           </div>
 
-          {/* Confirm Password Field */}
-          <div className="form-field">
-            <label htmlFor="confirmPassword" className="form-label">
-              Confirm password
-            </label>
-            <div className="password-container">
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type={showConfirmPassword ? 'text' : 'password'}
-                className={`form-input password-input ${
-                  errors.confirmPassword ? 'error' : ''
-                }`}
-                placeholder="Confirm your password"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                required
-                autoComplete="new-password"
-                minLength={6}
-              />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={toggleConfirmPasswordVisibility}
-                aria-label="Toggle password visibility"
-              >
-                <span>{showConfirmPassword ? '🙈' : '👁️'}</span>
-              </button>
-            </div>
-            {errors.confirmPassword && (
-              <span className="error-message">{errors.confirmPassword}</span>
-            )}
-          </div>
-
-          {/* Submit Error */}
-          {errors.submit && (
-            <div className="error-banner" role="alert">
-              {errors.submit}
+          {/* Messages */}
+          {message.text && (
+            <div
+              className={`mb-4 p-3 rounded-lg text-sm ${
+                message.type === 'error'
+                  ? 'bg-red-500/20 border border-red-500/30 text-red-300'
+                  : 'bg-green-500/20 border border-green-500/30 text-green-300'
+              }`}
+            >
+              {message.text}
             </div>
           )}
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="submit-button"
-            disabled={signupMutation.isPending}
-          >
-            {signupMutation.isPending ? (
-              <span className="button-loading">
-                <div className="loading-spinner" />
-                <span>Creating...</span>
-              </span>
-            ) : (
-              <span className="button-text">Create Free Account</span>
-            )}
-          </button>
-        </form>
+          {/* Signup Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Name Field */}
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-white/80 mb-2">
+                Your name
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                className={`w-full px-4 py-3 rounded-lg bg-white/5 border ${
+                  errors.name ? 'border-red-500/50' : 'border-white/10'
+                } text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all`}
+                placeholder="Enter your full name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                autoComplete="name"
+              />
+              {errors.name && <p className="mt-1 text-sm text-red-400">{errors.name}</p>}
+            </div>
 
-        {/* Footer */}
-        <div className="auth-footer">
-          <p className="signin-text">Already have an account?</p>
-          <Link href="/auth/signin" className="switch-link">
-            <span>🔑</span>
-            <span>Sign in</span>
-          </Link>
+            {/* Email Field */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-white/80 mb-2">
+                Your email
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                className={`w-full px-4 py-3 rounded-lg bg-white/5 border ${
+                  errors.email ? 'border-red-500/50' : 'border-white/10'
+                } text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all`}
+                placeholder="Enter your email address"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+                autoComplete="email"
+              />
+              {errors.email && <p className="mt-1 text-sm text-red-400">{errors.email}</p>}
+            </div>
+
+            {/* Password Field */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-white/80 mb-2">
+                Choose a password
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  className={`w-full px-4 py-3 rounded-lg bg-white/5 border ${
+                    errors.password ? 'border-red-500/50' : 'border-white/10'
+                  } text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all pr-12`}
+                  placeholder="Create a secure password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  required
+                  autoComplete="new-password"
+                  minLength={6}
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60 transition-colors"
+                  aria-label="Toggle password visibility"
+                >
+                  <span className="text-xl">{showPassword ? '🙈' : '👁️'}</span>
+                </button>
+              </div>
+              <div className="mt-1 text-xs text-white/40">
+                {formData.password.length === 0
+                  ? '6+ characters'
+                  : formData.password.length >= 6
+                  ? '✓ Perfect!'
+                  : `${6 - formData.password.length} more`}
+              </div>
+              {errors.password && <p className="mt-1 text-sm text-red-400">{errors.password}</p>}
+            </div>
+
+            {/* Confirm Password Field */}
+            <div>
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-white/80 mb-2"
+              >
+                Confirm password
+              </label>
+              <div className="relative">
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  className={`w-full px-4 py-3 rounded-lg bg-white/5 border ${
+                    errors.confirmPassword ? 'border-red-500/50' : 'border-white/10'
+                  } text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all pr-12`}
+                  placeholder="Confirm your password"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  required
+                  autoComplete="new-password"
+                  minLength={6}
+                />
+                <button
+                  type="button"
+                  onClick={toggleConfirmPasswordVisibility}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60 transition-colors"
+                  aria-label="Toggle password visibility"
+                >
+                  <span className="text-xl">{showConfirmPassword ? '🙈' : '👁️'}</span>
+                </button>
+              </div>
+              {errors.confirmPassword && (
+                <p className="mt-1 text-sm text-red-400">{errors.confirmPassword}</p>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={signupMutation.isPending}
+            >
+              {signupMutation.isPending ? (
+                <span className="flex items-center justify-center gap-2">
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span>Creating...</span>
+                </span>
+              ) : (
+                'Create Free Account'
+              )}
+            </button>
+          </form>
+
+          {/* Footer */}
+          <div className="mt-6 text-center">
+            <p className="text-white/60 text-sm">
+              Already have an account?{' '}
+              <Link
+                href="/auth/signin"
+                className="text-purple-400 hover:text-purple-300 transition-colors font-medium"
+              >
+                Sign in
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
+
+      <style jsx>{`
+        .min-h-screen {
+          background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f0f23 100%);
+        }
+      `}</style>
     </div>
   );
 }
