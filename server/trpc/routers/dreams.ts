@@ -103,6 +103,17 @@ async function checkDreamLimit(userId: string, userTier: string): Promise<boolea
   return (count || 0) < limit;
 }
 
+function calculateDaysLeft(targetDate: string | null): number | null {
+  if (!targetDate) return null;
+  const target = new Date(targetDate);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  target.setHours(0, 0, 0, 0);
+  const diffTime = target.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays;
+}
+
 async function getDreamWithStats(dreamId: string, userId: string) {
   // Get dream
   const { data: dream, error: dreamError } = await supabase
@@ -135,6 +146,7 @@ async function getDreamWithStats(dreamId: string, userId: string) {
 
   return {
     ...dream,
+    daysLeft: calculateDaysLeft(dream.target_date),
     reflectionCount: reflectionCount || 0,
     lastReflectionAt: lastReflection?.created_at || null,
   };
@@ -244,6 +256,7 @@ export const dreamsRouter = router({
 
           return {
             ...dream,
+            daysLeft: calculateDaysLeft(dream.target_date),
             reflectionCount: reflectionCount || 0,
             lastReflectionAt: lastReflection?.created_at || null,
           };
@@ -253,7 +266,11 @@ export const dreamsRouter = router({
       return dreamsWithStats;
     }
 
-    return data || [];
+    // Even without stats, add daysLeft
+    return (data || []).map((dream) => ({
+      ...dream,
+      daysLeft: calculateDaysLeft(dream.target_date),
+    }));
   }),
 
   // Get single dream by ID

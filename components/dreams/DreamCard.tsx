@@ -71,7 +71,7 @@ export function DreamCard({
 
   const daysLeftText = getDaysLeftText();
   const daysLeftColor =
-    daysLeft === null
+    daysLeft === null || daysLeft === undefined
       ? ''
       : daysLeft < 0
       ? 'text-red-600'

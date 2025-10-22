@@ -86,7 +86,10 @@ export default function MirrorExperience() {
 
   const handleSubmit = () => {
     setIsSubmitting(true);
+    // TODO: Replace with actual dream selection
+    // For now, this will need a dream to be created first
     createReflection.mutate({
+      dreamId: '00000000-0000-0000-0000-000000000000', // Placeholder - will be replaced with real dream selection
       dream: formData.dream,
       plan: formData.plan,
       hasDate: formData.hasDate as 'yes' | 'no',
