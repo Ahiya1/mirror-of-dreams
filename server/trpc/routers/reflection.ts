@@ -36,6 +36,7 @@ export const reflectionRouter = router({
     .input(createReflectionSchema)
     .mutation(async ({ ctx, input }) => {
       const {
+        dreamId,
         dream,
         plan,
         hasDate,
@@ -86,9 +87,9 @@ export const reflectionRouter = router({
 
 Please mirror back what you see, in a flowing reflection I can return to months from now.`;
 
-      // Call Claude API
+      // Call Claude API (using Sonnet 4.5)
       const requestConfig: any = {
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-5-20250929',
         temperature: 1,
         max_tokens: shouldUsePremium ? 6000 : 4000,
         system: systemPromptWithDate,
@@ -133,6 +134,7 @@ Please mirror back what you see, in a flowing reflection I can return to months 
         .from('reflections')
         .insert({
           user_id: ctx.user.id,
+          dream_id: dreamId, // Link to dream
           dream,
           plan,
           has_date: hasDate,
