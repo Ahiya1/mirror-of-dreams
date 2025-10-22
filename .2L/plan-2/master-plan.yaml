@@ -1,0 +1,125 @@
+plan_id: plan-2
+created_at: 2025-10-23T05:30:00Z
+status: PLANNED
+total_iterations: 3
+
+strategy: |
+  Frontend-only magical redesign using glassmorphism, gradients, and animations.
+  All explorers recommend 3 iterations with clear dependency chain:
+
+  1. Design System Foundation (BLOCKS everything) - Install dependencies, build reusable components
+  2. Core Pages (Dashboard, Dreams, Reflection) - Apply design system to most-used pages
+  3. Secondary Pages + Polish (Evolution, Visualizations) - Complete redesign and optimize
+
+  Key priorities:
+  - Performance-first (60fps animations, <100ms paint times)
+  - Accessibility built-in (WCAG AA, reduced motion support)
+  - Incremental approach to minimize risk
+  - Consistent blue/purple magical theme across all pages
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 19
+    name: "Design System Foundation"
+    vision: "Build reusable glass components, install Framer Motion, extend Tailwind config"
+    scope: |
+      Install Dependencies:
+      - Framer Motion 11.x for animations
+      - Lucide React for icons (optional)
+
+      Tailwind Configuration:
+      - Extend colors (15+ blue/purple shades)
+      - Add gradients (cosmic, primary, dream)
+      - Glass effects (backdrop-blur, shadows)
+      - Animation variants
+
+      Build 10 Reusable Components:
+      1. GlassCard - Base glass card with blur backdrop
+      2. GlowButton - Primary/secondary/ghost variants
+      3. CosmicLoader - Animated gradient ring loader
+      4. DreamCard - Dream display with gradient border
+      5. GradientText - Gradient text component
+      6. GlassModal - Modal with glass overlay
+      7. FloatingNav - Glass navigation bar
+      8. ProgressOrbs - Multi-step progress indicator
+      9. GlowBadge - Status badges with glow
+      10. AnimatedBackground - Subtle animated gradient
+
+      Testing:
+      - Build component showcase page
+      - Test performance on mobile
+      - Verify browser compatibility (Chrome, Safari, Firefox)
+    status: PENDING
+    dependencies: []
+
+  - iteration_id: 2
+    global_iteration: 20
+    name: "Core Pages Redesign"
+    vision: "Apply magical design system to Dashboard, Dreams, and Reflection pages"
+    scope: |
+      Dashboard Page Redesign:
+      - Hero section with gradient text and glow
+      - Animated stats cards (dreams/reflections counts)
+      - Glass cards for quick actions
+      - Glowing "Reflect Now" CTA with pulse
+      - Recent activity timeline
+
+      Dreams Page Redesign:
+      - Masonry grid layout with glass dream cards
+      - Gradient borders based on category
+      - Hover elevation + glow expansion
+      - Create modal with glass overlay and multi-step progress
+      - Category icons with dreamy designs
+      - Status badges with glow effects
+
+      Reflection Flow Redesign:
+      - Multi-step form with progress orbs
+      - Glassmorphic input fields with focus glow
+      - Dream selection using visual cards (not dropdown)
+      - Cosmic loading animation during AI generation
+      - Glass container with gradient text for AI response
+      - Smooth transitions between steps
+
+      Testing:
+      - User flow testing (create dream → reflect → view)
+      - Performance benchmarks (Lighthouse >90)
+      - Mobile responsive validation
+    status: PENDING
+    dependencies: [1]
+
+  - iteration_id: 3
+    global_iteration: 21
+    name: "Secondary Pages & Polish"
+    vision: "Complete Evolution/Visualizations redesign and optimize entire experience"
+    scope: |
+      Evolution Reports Page:
+      - Timeline view with glowing progress line
+      - Glass report cards with gradient accents
+      - Generate buttons with glow pulse animation
+      - Report detail with typography hierarchy and gradient headings
+
+      Visualizations Page:
+      - Style selection cards with large icons and hover glow
+      - Active style with gradient border glow
+      - Full-width glass container for visualization display
+      - Background animated gradient matching visualization style
+
+      Global Polish:
+      - Add all micro-interactions (hover, focus, scale effects)
+      - Implement page transitions with Framer Motion
+      - Scroll effects (navbar blur, parallax gradients)
+      - Reveal animations (fade-in-up on scroll)
+
+      Optimization & Testing:
+      - Cross-browser testing (Chrome, Safari, Firefox)
+      - Performance optimization (reduce blur budget if needed)
+      - Accessibility audit (contrast, keyboard nav, reduced motion)
+      - Visual regression testing
+      - Final Lighthouse audit (target >90 all categories)
+
+      Documentation:
+      - Component usage guide
+      - Animation patterns reference
+      - Color palette documentation
+    status: PENDING
+    dependencies: [2]

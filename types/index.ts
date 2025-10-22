@@ -20,3 +20,6 @@ export * from './api';
 
 // Validation schemas
 export * from './schemas';
+
+// Glass component types
+export * from './glass-components';

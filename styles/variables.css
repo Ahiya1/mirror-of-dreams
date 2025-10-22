@@ -23,6 +23,21 @@
   --glass-hover-border: rgba(255, 255, 255, 0.2);
   --glass-focus-border: rgba(255, 255, 255, 0.3);
 
+  /* Glass Design System Extensions */
+  --glass-blur-sm: 8px;
+  --glass-blur-md: 16px;
+  --glass-blur-lg: 24px;
+
+  --glass-bg-subtle: rgba(255, 255, 255, 0.03);
+  --glass-bg-medium: rgba(255, 255, 255, 0.05);
+  --glass-bg-strong: rgba(255, 255, 255, 0.08);
+
+  --glass-border-hover: rgba(255, 255, 255, 0.2);
+
+  --mirror-transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --mirror-transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --mirror-transition-slow: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+
   /* ╭─ TONE COLORS ─────────────────────────────────────────────────────╮ */
   /* Sacred Fusion */
   --fusion-primary: rgba(251, 191, 36, 0.95);
