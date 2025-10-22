@@ -6,6 +6,7 @@ import { reflectionsRouter } from './reflections';
 import { reflectionRouter } from './reflection';
 import { usersRouter } from './users';
 import { evolutionRouter } from './evolution';
+import { visualizationsRouter } from './visualizations';
 import { artifactRouter } from './artifact';
 import { subscriptionsRouter } from './subscriptions';
 import { adminRouter } from './admin';
@@ -18,6 +19,7 @@ export const appRouter = router({
   reflection: reflectionRouter, // AI generation
   users: usersRouter,
   evolution: evolutionRouter,
+  visualizations: visualizationsRouter,
   artifact: artifactRouter,
   subscriptions: subscriptionsRouter,
   admin: adminRouter,
