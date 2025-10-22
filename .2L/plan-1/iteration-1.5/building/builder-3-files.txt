@@ -1,0 +1,14 @@
+# Builder-3 Created Files
+
+## Pages (3 files)
+/home/ahiya/mirror-of-dreams/app/reflection/page.tsx
+/home/ahiya/mirror-of-dreams/app/reflection/output/page.tsx
+/home/ahiya/mirror-of-dreams/app/auth/signup/page.tsx
+
+## Components (4 files)
+/home/ahiya/mirror-of-dreams/components/reflection/QuestionStep.tsx
+/home/ahiya/mirror-of-dreams/components/reflection/ToneSelection.tsx
+/home/ahiya/mirror-of-dreams/components/reflection/ProgressIndicator.tsx
+/home/ahiya/mirror-of-dreams/components/reflection/CharacterCounter.tsx
+
+## Total: 7 files
