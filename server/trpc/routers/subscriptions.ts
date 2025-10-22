@@ -23,10 +23,21 @@ export const subscriptionsRouter = router({
       .single();
 
     if (error) {
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to get subscription status',
-      });
+      console.error('Subscription status query error:', error);
+      // Return default free tier status for local development
+      return {
+        tier: 'free',
+        status: null,
+        period: null,
+        isActive: false,
+        isSubscribed: false,
+        isCanceled: false,
+        nextBilling: null,
+        stripeSubscriptionId: null,
+        stripeCustomerId: null,
+        startedAt: null,
+        expiresAt: null,
+      };
     }
 
     const isActive = subscription.subscription_status === 'active';
