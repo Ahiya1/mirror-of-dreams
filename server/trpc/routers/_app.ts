@@ -9,9 +9,11 @@ import { evolutionRouter } from './evolution';
 import { artifactRouter } from './artifact';
 import { subscriptionsRouter } from './subscriptions';
 import { adminRouter } from './admin';
+import { dreamsRouter } from './dreams';
 
 export const appRouter = router({
   auth: authRouter,
+  dreams: dreamsRouter,
   reflections: reflectionsRouter,
   reflection: reflectionRouter, // AI generation
   users: usersRouter,

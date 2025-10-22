@@ -38,6 +38,7 @@ export const deleteAccountSchema = z.object({
 // ============================================
 
 export const createReflectionSchema = z.object({
+  dreamId: z.string().uuid(), // REQUIRED: dream ID to link reflection to
   dream: z.string().min(1).max(3200),
   plan: z.string().min(1).max(4000),
   hasDate: z.enum(['yes', 'no']),
