@@ -230,6 +230,78 @@ export const adminRouter = router({
         message: `User tier updated to ${tier}`,
       };
     }),
+
+  // Get API usage stats (Iteration 3)
+  getApiUsageStats: creatorProcedure
+    .input(
+      z.object({
+        month: z.string().optional(), // Format: YYYY-MM
+      })
+    )
+    .query(async ({ input }) => {
+      // Default to current month
+      const targetMonth = input.month || new Date().toISOString().slice(0, 7);
+      const monthStart = `${targetMonth}-01`;
+      const nextMonth = new Date(monthStart);
+      nextMonth.setMonth(nextMonth.getMonth() + 1);
+      const monthEnd = nextMonth.toISOString().slice(0, 10);
+
+      // Get all API usage for the month
+      const { data: usageLogs, error } = await supabase
+        .from('api_usage_log')
+        .select('*')
+        .gte('created_at', monthStart)
+        .lt('created_at', monthEnd)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch API usage logs',
+        });
+      }
+
+      // Calculate totals
+      const totalCost = usageLogs?.reduce((sum, log) => sum + parseFloat(String(log.cost_usd || 0)), 0) || 0;
+      const totalInputTokens = usageLogs?.reduce((sum, log) => sum + (log.input_tokens || 0), 0) || 0;
+      const totalOutputTokens = usageLogs?.reduce((sum, log) => sum + (log.output_tokens || 0), 0) || 0;
+      const totalThinkingTokens = usageLogs?.reduce((sum, log) => sum + (log.thinking_tokens || 0), 0) || 0;
+
+      // Group by operation type
+      const byOperationType: Record<string, { count: number; cost: number; inputTokens: number; outputTokens: number; thinkingTokens: number }> = {};
+
+      usageLogs?.forEach((log) => {
+        const opType = log.operation_type || 'unknown';
+        if (!byOperationType[opType]) {
+          byOperationType[opType] = {
+            count: 0,
+            cost: 0,
+            inputTokens: 0,
+            outputTokens: 0,
+            thinkingTokens: 0,
+          };
+        }
+        byOperationType[opType].count++;
+        byOperationType[opType].cost += parseFloat(String(log.cost_usd || 0));
+        byOperationType[opType].inputTokens += log.input_tokens || 0;
+        byOperationType[opType].outputTokens += log.output_tokens || 0;
+        byOperationType[opType].thinkingTokens += log.thinking_tokens || 0;
+      });
+
+      return {
+        month: targetMonth,
+        summary: {
+          totalCost,
+          totalOperations: usageLogs?.length || 0,
+          totalInputTokens,
+          totalOutputTokens,
+          totalThinkingTokens,
+          totalTokens: totalInputTokens + totalOutputTokens + totalThinkingTokens,
+        },
+        byOperationType,
+        recentLogs: usageLogs?.slice(0, 100) || [],
+      };
+    }),
 });
 
 export type AdminRouter = typeof adminRouter;
