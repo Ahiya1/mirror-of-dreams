@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✨ Mirror of Dreams - Orchestration Portal</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Cormorant Garamond', serif;
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      background-attachment: fixed;
+      color: #e8d7ff;
+      padding: 30px;
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Starfield background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        radial-gradient(2px 2px at 20% 30%, white, transparent),
+        radial-gradient(2px 2px at 60% 70%, white, transparent),
+        radial-gradient(1px 1px at 50% 50%, white, transparent),
+        radial-gradient(1px 1px at 80% 10%, white, transparent),
+        radial-gradient(2px 2px at 90% 60%, white, transparent),
+        radial-gradient(1px 1px at 33% 80%, white, transparent),
+        radial-gradient(1px 1px at 75% 40%, white, transparent);
+      background-size: 200% 200%;
+      opacity: 0.4;
+      animation: twinkle 8s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+
+    /* Floating moon */
+    .moon {
+      position: fixed;
+      top: 40px;
+      right: 60px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fff9e6 0%, #f4e8d0 100%);
+      box-shadow:
+        0 0 40px rgba(255, 249, 230, 0.6),
+        0 0 80px rgba(255, 249, 230, 0.3),
+        inset -10px -10px 20px rgba(0, 0, 0, 0.1);
+      animation: float 6s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Header - Mirror Portal */
+    .header {
+      background: linear-gradient(135deg, rgba(147, 112, 219, 0.15) 0%, rgba(138, 43, 226, 0.15) 100%);
+      border: 2px solid rgba(186, 147, 255, 0.3);
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 30px;
+      backdrop-filter: blur(10px);
+      box-shadow:
+        0 8px 32px rgba(147, 112, 219, 0.2),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0.05),
+        transparent
+      );
+      animation: shimmer 6s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    .header h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 42px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #fff9e6 0%, #d4b3ff 50%, #9d7bff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 30px rgba(186, 147, 255, 0.5);
+      position: relative;
+      z-index: 1;
+    }
+
+    .header-subtitle {
+      font-size: 18px;
+      color: #c4b0e6;
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    .header-info {
+      display: flex;
+      gap: 25px;
+      flex-wrap: wrap;
+      font-size: 15px;
+    }
+
+    .header-info span {
+      color: #b8a0d6;
+      background: rgba(147, 112, 219, 0.1);
+      padding: 5px 15px;
+      border-radius: 20px;
+      border: 1px solid rgba(186, 147, 255, 0.2);
+    }
+
+    .header-info strong {
+      color: #e8d7ff;
+      font-weight: 600;
+    }
+
+    /* Metrics - Dream Stats */
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .metric {
+      background: linear-gradient(135deg, rgba(75, 0, 130, 0.2) 0%, rgba(138, 43, 226, 0.2) 100%);
+      border: 2px solid rgba(186, 147, 255, 0.25);
+      border-radius: 15px;
+      padding: 25px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(147, 112, 219, 0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 30px rgba(147, 112, 219, 0.3);
+    }
+
+    .metric::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .metric:hover::before {
+      opacity: 1;
+    }
+
+    .metric-label {
+      font-size: 13px;
+      color: #b8a0d6;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      font-family: 'Cinzel', serif;
+    }
+
+    .metric-value {
+      font-size: 36px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #d4b3ff 0%, #9d7bff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Section - Dream Chambers */
+    .section {
+      background: linear-gradient(135deg, rgba(75, 0, 130, 0.15) 0%, rgba(138, 43, 226, 0.15) 100%);
+      border: 2px solid rgba(186, 147, 255, 0.25);
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 25px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(147, 112, 219, 0.15);
+    }
+
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #d4b3ff;
+      border-bottom: 2px solid rgba(186, 147, 255, 0.3);
+      padding-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Active Agents - Dream Weavers */
+    .agent-item {
+      padding: 15px;
+      background: linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(75, 0, 130, 0.1) 100%);
+      border: 1px solid rgba(186, 147, 255, 0.2);
+      border-radius: 10px;
+      margin-bottom: 12px;
+      transition: all 0.3s ease;
+      border-left: 4px solid #9d7bff;
+    }
+
+    .agent-item:hover {
+      background: linear-gradient(135deg, rgba(138, 43, 226, 0.2) 0%, rgba(75, 0, 130, 0.2) 100%);
+      border-left-color: #d4b3ff;
+      transform: translateX(5px);
+    }
+
+    .agent-item strong {
+      color: #b8a0ff;
+      font-size: 17px;
+    }
+
+    .agent-duration {
+      color: #9d8bb8;
+      font-size: 13px;
+      font-style: italic;
+      margin-top: 5px;
+    }
+
+    /* MCP Status - Arcane Servers */
+    .mcp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+    }
+
+    .mcp-item {
+      padding: 15px;
+      background: linear-gradient(135deg, rgba(75, 0, 130, 0.15) 0%, rgba(138, 43, 226, 0.15) 100%);
+      border: 1px solid rgba(186, 147, 255, 0.25);
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .mcp-item:hover {
+      background: linear-gradient(135deg, rgba(75, 0, 130, 0.25) 0%, rgba(138, 43, 226, 0.25) 100%);
+      transform: scale(1.05);
+    }
+
+    .mcp-status {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #3fb950 0%, #2ea043 100%);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(63, 185, 80, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Event Log - Dream Stream */
+    .event-log {
+      max-height: 600px;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+
+    .event-item {
+      padding: 12px;
+      border-bottom: 1px solid rgba(186, 147, 255, 0.15);
+      font-size: 14px;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+
+    .event-item:hover {
+      background: linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(75, 0, 130, 0.1) 100%);
+      border-left-color: #9d7bff;
+      padding-left: 15px;
+    }
+
+    .event-timestamp {
+      color: #9d8bb8;
+      font-size: 11px;
+      margin-right: 12px;
+      font-family: monospace;
+    }
+
+    .event-type {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 600;
+      margin-right: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .event-type-plan_start {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+    }
+    .event-type-iteration_start {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+    }
+    .event-type-phase_change {
+      background: linear-gradient(135deg, #a371f7 0%, #8e44ad 100%);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(163, 113, 247, 0.4);
+    }
+    .event-type-agent_spawn,
+    .event-type-agent_start {
+      background: linear-gradient(135deg, #3fb950 0%, #2ea043 100%);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(63, 185, 80, 0.4);
+    }
+    .event-type-agent_complete {
+      background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+      color: #000;
+      box-shadow: 0 2px 8px rgba(86, 171, 47, 0.4);
+    }
+    .event-type-validation_result {
+      background: linear-gradient(135deg, #f85149 0%, #c53030 100%);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(248, 81, 73, 0.4);
+    }
+    .event-type-iteration_complete {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: #000;
+      box-shadow: 0 2px 8px rgba(79, 172, 254, 0.4);
+    }
+    .event-type-cost_update {
+      background: linear-gradient(135deg, #ffa657 0%, #ff7730 100%);
+      color: #000;
+      box-shadow: 0 2px 8px rgba(255, 166, 87, 0.4);
+    }
+
+    .event-data {
+      color: #e8d7ff;
+      font-size: 14px;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 30px;
+      color: #9d8bb8;
+      font-size: 13px;
+      font-style: italic;
+      border-top: 1px solid rgba(186, 147, 255, 0.2);
+      margin-top: 20px;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 12, 41, 0.5);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #9d7bff 0%, #7b5fc9 100%);
+      border-radius: 10px;
+      border: 2px solid rgba(15, 12, 41, 0.5);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #b8a0ff 0%, #9d7bff 100%);
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding: 15px;
+      }
+
+      .moon {
+        width: 60px;
+        height: 60px;
+        top: 20px;
+        right: 20px;
+      }
+
+      .header h1 {
+        font-size: 28px;
+      }
+
+      .header-subtitle {
+        font-size: 14px;
+      }
+
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .mcp-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-title {
+        font-size: 20px;
+      }
+    }
+
+    /* Pulse animation for active status */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .status-active {
+      animation: pulse 2s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+  <div class="moon"></div>
+
+  <div class="container">
+    <!-- Header - Mirror Portal -->
+    <div class="header">
+      <h1>✨ Mirror of Dreams</h1>
+      <div class="header-subtitle">~ Orchestration Portal ~</div>
+      <div class="header-info">
+        <span><strong>🌙 Dream State:</strong> <span id="status">Awakening...</span></span>
+        <span><strong>🔮 Phase:</strong> <span id="phase">-</span></span>
+        <span><strong>⭐ Iteration:</strong> <span id="iteration">-</span></span>
+      </div>
+    </div>
+
+    <!-- Metrics - Dream Statistics -->
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-label">⏳ Time Dreaming</div>
+        <div class="metric-value" id="elapsed-time">0s</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">📜 Reflections</div>
+        <div class="metric-value" id="total-events">0</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">🌟 Dream Weavers</div>
+        <div class="metric-value" id="active-agents">0</div>
+      </div>
+    </div>
+
+    <!-- Active Agents - Dream Weavers -->
+    <div class="section">
+      <div class="section-title">🌟 Active Dream Weavers</div>
+      <div id="active-agents-list">
+        <p style="color: #9d8bb8; font-style: italic;">The dreamscape rests in stillness...</p>
+      </div>
+    </div>
+
+    <!-- MCP Status - Arcane Servers -->
+    <div class="section">
+      <div class="section-title">🔮 Arcane Portals</div>
+      <div class="mcp-grid">
+        <div class="mcp-item">
+          <span>🎭 Playwright</span>
+          <span class="mcp-status">Active</span>
+        </div>
+        <div class="mcp-item">
+          <span>🌐 Chrome DevTools</span>
+          <span class="mcp-status">Active</span>
+        </div>
+        <div class="mcp-item">
+          <span>💾 Supabase Local</span>
+          <span class="mcp-status">Active</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Event Log - Dream Stream -->
+    <div class="section">
+      <div class="section-title">💫 Dream Stream <span style="font-size: 14px; color: #9d8bb8; font-family: 'Cormorant Garamond', serif; font-weight: 300;">(Last 50 Visions)</span></div>
+      <div class="event-log" id="event-log">
+        <p style="color: #9d8bb8; padding: 15px; font-style: italic;">Gazing into the mirror, waiting for visions to emerge...</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      Portal manifested on 2025-10-22 | Reflecting from ../events.jsonl | Vision refresh: 2s
+      <br>
+      <span style="font-size: 11px; margin-top: 5px; display: inline-block;">
+        "In dreams, we find reflections of our deepest truths..."
+      </span>
+    </div>
+  </div>
+
+  <script>
+    // Configuration
+    const EVENTS_PATH = '../events.jsonl';
+    const POLL_INTERVAL = 2000; // 2 seconds
+    const MAX_EVENTS_DISPLAY = 50;
+
+    // State
+    let allEvents = [];
+    let activeAgents = new Map();
+    let startTime = null;
+    let currentPhase = null;
+    let currentIteration = null;
+
+    // Format timestamp for display
+    function formatTimestamp(isoString) {
+      const date = new Date(isoString);
+      return date.toLocaleTimeString('en-US', { hour12: false });
+    }
+
+    // Calculate elapsed time
+    function updateElapsedTime() {
+      if (!startTime) return;
+      const now = new Date();
+      const elapsed = Math.floor((now - startTime) / 1000);
+      const hours = Math.floor(elapsed / 3600);
+      const minutes = Math.floor((elapsed % 3600) / 60);
+      const seconds = elapsed % 60;
+
+      let display = '';
+      if (hours > 0) display += `${hours}h `;
+      if (minutes > 0 || hours > 0) display += `${minutes}m `;
+      display += `${seconds}s`;
+
+      document.getElementById('elapsed-time').textContent = display;
+    }
+
+    // Render event in log
+    function renderEvent(event) {
+      const eventLog = document.getElementById('event-log');
+
+      // Remove "waiting" message on first event
+      if (eventLog.querySelector('p')) {
+        eventLog.innerHTML = '';
+      }
+
+      const eventItem = document.createElement('div');
+      eventItem.className = 'event-item';
+
+      const timestamp = document.createElement('span');
+      timestamp.className = 'event-timestamp';
+      timestamp.textContent = formatTimestamp(event.timestamp);
+
+      const type = document.createElement('span');
+      type.className = `event-type event-type-${event.event_type}`;
+      type.textContent = event.event_type.replace(/_/g, ' ').toUpperCase();
+
+      const data = document.createElement('span');
+      data.className = 'event-data';
+      data.textContent = event.data;
+
+      eventItem.appendChild(timestamp);
+      eventItem.appendChild(type);
+      eventItem.appendChild(data);
+
+      // Insert at top (newest first)
+      eventLog.insertBefore(eventItem, eventLog.firstChild);
+
+      // Limit display to MAX_EVENTS_DISPLAY
+      while (eventLog.children.length > MAX_EVENTS_DISPLAY) {
+        eventLog.removeChild(eventLog.lastChild);
+      }
+    }
+
+    // Update active agents list
+    function updateActiveAgents() {
+      const container = document.getElementById('active-agents-list');
+
+      if (activeAgents.size === 0) {
+        container.innerHTML = '<p style="color: #9d8bb8; font-style: italic;">The dreamscape rests in stillness...</p>';
+        return;
+      }
+
+      container.innerHTML = '';
+      activeAgents.forEach((agent, agentId) => {
+        const item = document.createElement('div');
+        item.className = 'agent-item';
+
+        const now = new Date();
+        const elapsed = Math.floor((now - agent.startTime) / 1000);
+
+        item.innerHTML = `
+          <strong>${agentId}</strong>: ${agent.task}
+          <div class="agent-duration">Weaving for ${elapsed}s</div>
+        `;
+
+        container.appendChild(item);
+      });
+    }
+
+    // Process event and update state
+    function processEvent(event) {
+      // Update metrics based on event type
+      switch (event.event_type) {
+        case 'plan_start':
+          startTime = new Date(event.timestamp);
+          const statusEl = document.getElementById('status');
+          statusEl.textContent = 'Dreaming';
+          statusEl.className = 'status-active';
+          break;
+
+        case 'iteration_start':
+          currentIteration = event.data.match(/Iteration (\d+)/)?.[1] || '-';
+          document.getElementById('iteration').textContent = currentIteration;
+          break;
+
+        case 'phase_change':
+          currentPhase = event.data.replace('Phase: ', '').replace('Starting ', '');
+          document.getElementById('phase').textContent = currentPhase;
+          break;
+
+        case 'agent_spawn':
+        case 'agent_start':
+          activeAgents.set(event.agent_id, {
+            task: event.data,
+            startTime: new Date(event.timestamp)
+          });
+          break;
+
+        case 'agent_complete':
+          activeAgents.delete(event.agent_id);
+          break;
+
+        case 'iteration_complete':
+          const completeStatusEl = document.getElementById('status');
+          completeStatusEl.textContent = 'Vision Complete';
+          completeStatusEl.className = '';
+          break;
+      }
+
+      // Update displays
+      document.getElementById('total-events').textContent = allEvents.length;
+      document.getElementById('active-agents').textContent = activeAgents.size;
+      updateActiveAgents();
+      renderEvent(event);
+    }
+
+    // Poll events file
+    async function pollEvents() {
+      try {
+        const response = await fetch(EVENTS_PATH);
+        if (!response.ok) throw new Error('Failed to fetch events');
+
+        const text = await response.text();
+        const lines = text.trim().split('\n').filter(line => line);
+
+        // Process only new events
+        if (lines.length > allEvents.length) {
+          const newLines = lines.slice(allEvents.length);
+          newLines.forEach(line => {
+            try {
+              const event = JSON.parse(line);
+              allEvents.push(event);
+              processEvent(event);
+            } catch (e) {
+              console.error('Invalid JSON:', line, e);
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Polling error:', error);
+        document.getElementById('status').textContent = 'Mirror clouded';
+      }
+
+      // Update elapsed time
+      updateElapsedTime();
+    }
+
+    // Initialize polling
+    pollEvents(); // Initial load
+    setInterval(pollEvents, POLL_INTERVAL);
+    setInterval(updateElapsedTime, 1000); // Update time every second
+  </script>
+</body>
+</html>

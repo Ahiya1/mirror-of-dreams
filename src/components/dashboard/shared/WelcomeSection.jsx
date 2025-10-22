@@ -183,9 +183,9 @@ const WelcomeSection = ({ dashboardData, className = "" }) => {
     } else {
       actions.push({
         type: "secondary",
-        href: "/gifting",
-        icon: "🎁",
-        text: "Gift Reflection",
+        href: "/reflections",
+        icon: "📚",
+        text: "View Journey",
         disabled: false,
       });
     }

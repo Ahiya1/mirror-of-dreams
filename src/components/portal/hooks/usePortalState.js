@@ -166,10 +166,10 @@ export const usePortalState = () => {
           text: "Start Free Forever",
         },
         {
-          href: "/gifting",
-          className: "gift-button",
-          icon: "🎁",
-          text: "Gift a Reflection",
+          href: "/subscription",
+          className: "explore-button",
+          icon: "💎",
+          text: "Explore Plans",
         },
       ];
     }
@@ -195,12 +195,12 @@ export const usePortalState = () => {
         text: "Upgrade Now",
       });
     } else {
-      // Show gift button if user can still reflect or has unlimited
+      // Show reflections button if user can still reflect or has unlimited
       buttons.push({
-        href: "/gifting",
-        className: "gift-button",
-        icon: "🎁",
-        text: "Gift a Reflection",
+        href: "/reflections",
+        className: "reflections-button",
+        icon: "📚",
+        text: "View Journey",
       });
     }
 

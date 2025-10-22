@@ -1,0 +1,271 @@
+INTEGRATION ROUND 1 - VISUAL DIAGRAM
+================================================================================
+
+BUILDER OUTPUTS (6 total)
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐   ┌──────────────┐│
+│  │  Builder-1   │   │  Builder-2   │   │  Builder-3   │   │  Builder-4   ││
+│  │              │   │              │   │              │   │              ││
+│  │  TypeScript  │   │    tRPC      │   │   Next.js    │   │     API      ││
+│  │  Foundation  │   │Infrastructure│   │  Foundation  │   │  Migration   ││
+│  │     +        │   │      +       │   │   (SPLIT)    │   │              ││
+│  │Gift Deletion │   │     Auth     │   │              │   │  8 Routers   ││
+│  │              │   │              │   │              │   │              ││
+│  │  COMPLETE    │   │  COMPLETE    │   │    SPLIT     │   │  COMPLETE    ││
+│  └──────┬───────┘   └──────┬───────┘   └──────┬───────┘   └──────┬───────┘│
+│         │                  │                  │                  │         │
+│         │                  │         ┌────────┴────────┐         │         │
+│         │                  │         │                 │         │         │
+│         │                  │   ┌─────▼─────┐    ┌─────▼─────┐   │         │
+│         │                  │   │Builder-3A │    │Builder-3B │   │         │
+│         │                  │   │Component  │    │/reflections│   │         │
+│         │                  │   │Migration  │    │   Route   │   │         │
+│         │                  │   │ Critical  │    │    Full   │   │         │
+│         │                  │   │   Path    │    │  Feature  │   │         │
+│         │                  │   │ COMPLETE  │    │ COMPLETE  │   │         │
+│         │                  │   └───────────┘    └───────────┘   │         │
+│         │                  │                                     │         │
+└─────────┼──────────────────┼─────────────────────────────────────┼─────────┘
+          │                  │                                     │
+          │                  │                                     │
+          └──────────────────┴─────────────────────────────────────┘
+                                         │
+                                         ▼
+                          ┌──────────────────────────────┐
+                          │  INTEGRATION ZONES (4)       │
+                          │                              │
+                          │  Sequential Execution        │
+                          │  by Integrator-1             │
+                          └──────────────────────────────┘
+                                         │
+        ┌────────────────────────────────┼────────────────────────────────┐
+        │                                │                                │
+        ▼                                ▼                                ▼
+┌───────────────┐              ┌───────────────┐              ┌───────────────┐
+│   Zone 1      │              │   Zone 2      │              │   Zone 3      │
+│               │              │               │              │               │
+│  TypeScript   │──15 min──▶   │     tRPC      │──30 min──▶   │   Next.js     │
+│  Foundation   │              │Infrastructure │              │  Integration  │
+│               │              │               │              │               │
+│   Builder-1   │              │  Builder-2 +  │              │ Builder-2,3,  │
+│               │              │  Builder-4    │              │   3A, 3B      │
+│               │              │               │              │               │
+│   Risk: LOW   │              │ Risk: MEDIUM  │              │ Risk: MEDIUM  │
+│               │              │               │              │               │
+│  • Copy types │              │ • Copy tRPC   │              │ • Copy Next.js│
+│  • Copy       │              │   core        │              │   config      │
+│    tsconfig   │              │ • Copy 8      │              │ • Merge root  │
+│  • Copy       │              │   routers     │              │   layout      │
+│    migration  │              │ • MERGE       │              │ • Copy pages  │
+│               │              │   _app.ts     │              │ • Copy client │
+│               │              │               │              │   setup       │
+└───────────────┘              └───────────────┘              └───────────────┘
+                                                                       │
+                                                                       │
+                                              ┌────────────────────────┘
+                                              │
+                                              ▼
+                                    ┌───────────────┐
+                                    │   Zone 4      │
+                                    │               │
+                             15 min │ Dependencies  │
+                                    │               │
+                                    │  All Builders │
+                                    │               │
+                                    │  Risk: LOW    │
+                                    │               │
+                                    │ • MERGE       │
+                                    │   package.json│
+                                    │ • npm install │
+                                    └───────┬───────┘
+                                            │
+                                            ▼
+                                  ┌──────────────────┐
+                                  │  Independent     │
+                                  │  Features        │
+                                  │  (10 min)        │
+                                  └─────────┬────────┘
+                                            │
+                                            ▼
+                                  ┌──────────────────┐
+                                  │   Validation     │
+                                  │   (20 min)       │
+                                  │                  │
+                                  │ • TypeScript     │
+                                  │   compile        │
+                                  │ • Next.js build  │
+                                  │ • Test routes    │
+                                  │ • Test tRPC      │
+                                  └─────────┬────────┘
+                                            │
+                                            ▼
+                              ┌─────────────────────────┐
+                              │  INTEGRATED CODEBASE    │
+                              │                         │
+                              │  ✓ TypeScript strict    │
+                              │  ✓ tRPC (8 routers)     │
+                              │  ✓ Next.js 14           │
+                              │  ✓ All components       │
+                              │  ✓ Reflections route    │
+                              │  ✓ 0 TypeScript errors  │
+                              │  ✓ Builds successfully  │
+                              │                         │
+                              │  Ready for ivalidator   │
+                              └─────────────────────────┘
+
+================================================================================
+CRITICAL MERGE POINTS
+================================================================================
+
+File: server/trpc/routers/_app.ts
+┌─────────────────────────────────────┐
+│ Builder-2 creates:                  │
+│   export const appRouter = router({ │
+│     auth: authRouter,               │  ──┐
+│   });                               │    │
+└─────────────────────────────────────┘    │  MERGE
+                                           │  ════▶
+┌─────────────────────────────────────┐    │
+│ Builder-4 adds 7 routers:           │    │
+│   - reflections                     │  ──┘
+│   - reflection                      │
+│   - users                           │
+│   - evolution                       │
+│   - artifact                        │
+│   - subscriptions                   │
+│   - admin                           │
+└─────────────────────────────────────┘
+                ║
+                ▼
+┌─────────────────────────────────────────────┐
+│ Final merged version:                       │
+│   export const appRouter = router({         │
+│     auth: authRouter,         // Builder-2  │
+│     reflections: reflections, // Builder-4  │
+│     reflection: reflection,   // Builder-4  │
+│     users: users,             // Builder-4  │
+│     evolution: evolution,     // Builder-4  │
+│     artifact: artifact,       // Builder-4  │
+│     subscriptions: subs,      // Builder-4  │
+│     admin: admin,             // Builder-4  │
+│   });                                       │
+└─────────────────────────────────────────────┘
+
+================================================================================
+
+File: app/layout.tsx
+┌─────────────────────────────────────┐
+│ Builder-3 creates structure:        │
+│   <html>                            │  ──┐
+│     <body>                          │    │
+│       {children}                    │    │
+│     </body>                         │    │
+│   </html>                           │    │
+└─────────────────────────────────────┘    │  Builder-2
+                                           │  adds wrapper
+┌─────────────────────────────────────┐    │  ════▶
+│ Builder-2 adds TRPCProvider:        │    │
+│   import TRPCProvider              │  ──┘
+│   <TRPCProvider>                    │
+│     {children}                      │
+│   </TRPCProvider>                   │
+└─────────────────────────────────────┘
+                ║
+                ▼
+┌─────────────────────────────────────────────┐
+│ RESOLUTION: Use Builder-2's version         │
+│ (it already includes the provider wrapper)  │
+└─────────────────────────────────────────────┘
+
+================================================================================
+
+File: package.json
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│  Builder-1   │  │  Builder-2   │  │  Builder-3   │  │  Builder-4   │
+│              │  │              │  │              │  │              │
+│ typescript   │  │ @trpc/*      │  │ next         │  │ @anthropic/* │
+│ @types/*     │  │ @tanstack/*  │  │ tailwindcss  │  │ stripe       │
+│ zod          │  │ superjson    │  │              │  │              │
+└──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘
+       │                 │                 │                 │
+       └─────────────────┴─────────────────┴─────────────────┘
+                                 │
+                                 ▼
+                    ┌─────────────────────────┐
+                    │  Merge all dependencies │
+                    │  Remove duplicates      │
+                    │  Update scripts         │
+                    └─────────────────────────┘
+
+================================================================================
+TIMELINE VISUALIZATION
+================================================================================
+
+Hour 0                                            Hour 2.25
+│────────────────────────────────────────────────────────│
+│                                                        │
+├─ Zone 1 ──┤                                           │
+│ (15 min)  │                                           │
+│           │                                           │
+│           ├───────── Zone 2 ─────────┤               │
+│           │         (30 min)         │               │
+│           │                          │               │
+│           │                          ├─────── Zone 3 ───────┤
+│           │                          │       (45 min)       │
+│           │                          │                      │
+│           │                          │                      ├─Z4─┤Indep│Val │
+│           │                          │                      │15min│10min│20m │
+│           │                          │                      │     │     │    │
+└───────────┴──────────────────────────┴──────────────────────┴─────┴─────┴────┘
+
+Total: ~2 hours 15 minutes
+
+================================================================================
+FILE OWNERSHIP MAP
+================================================================================
+
+types/*                  → Builder-1 (11 files)
+tsconfig.json            → Builder-1
+server/trpc/trpc.ts      → Builder-2
+server/trpc/context.ts   → Builder-2
+server/trpc/middleware.ts → Builder-2
+server/trpc/routers/auth.ts → Builder-2
+server/trpc/routers/*.ts → Builder-4 (7 routers)
+server/lib/supabase.ts   → Builder-2
+server/lib/prompts.ts    → Builder-4
+app/layout.tsx           → Builder-2 (with provider) ★
+app/*/page.tsx           → Builder-3 (foundation)
+app/auth/signin/page.tsx → Builder-3A (completed) ★
+app/reflections/*        → Builder-3B (completed) ★
+components/shared/*      → Builder-3A
+components/reflections/* → Builder-3B
+lib/trpc.ts              → Builder-2
+lib/utils.ts             → Builder-3
+next.config.js           → Builder-3
+tailwind.config.ts       → Builder-3
+
+★ = Completed implementations (not placeholders)
+
+================================================================================
+SUCCESS METRICS
+================================================================================
+
+Pre-Integration:
+  • 6 builder reports complete
+  • ~50 new files to merge
+  • 3 critical merge points identified
+
+Post-Integration:
+  ✓ 0 TypeScript errors
+  ✓ Next.js builds successfully
+  ✓ All routes accessible
+  ✓ tRPC endpoint responds
+  ✓ Authentication flow works
+  ✓ Reflection creation works
+  ✓ Reflections list displays
+  ✓ No duplicate dependencies
+
+Ready for: ivalidator → Deployment
+
+================================================================================

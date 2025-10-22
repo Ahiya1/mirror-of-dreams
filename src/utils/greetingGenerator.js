@@ -465,9 +465,9 @@ export const getMotivationalCTA = (user, usage) => {
       icon: "✨",
     },
     secondary: {
-      text: "Gift Reflection",
-      action: "/gifting",
-      icon: "🎁",
+      text: "View Journey",
+      action: "/reflections",
+      icon: "📚",
     },
   };
 };

@@ -1,0 +1,446 @@
+# Master Plan for Mirror of Dreams
+# Created: 2025-10-22T00:00:00Z
+# Plan ID: plan-1
+
+plan_id: plan-1
+created_at: "2025-10-22T00:00:00Z"
+vision_file: .2L/plan-1/vision.md
+
+# Plan Status
+status: PLANNED
+
+# Iteration Strategy
+iteration_strategy: multi
+total_iterations: 4
+
+# Project Context
+project_context: |
+  Mirror of Dreams is a reflection-based personal development platform transforming life goals
+  into achievable reality through AI-powered reflection. Users organize dreams, reflect using a
+  5-question framework, and receive AI-generated evolution reports with temporal pattern recognition.
+
+  Core Innovation: Fixed thresholds with tiered context quality (all users unlock reports at 4
+  reflections, but premium tiers get deeper analysis via 9-21 reflections analyzed vs 4 for free).
+
+  Current State: Working reflection flow exists (Mirror of Truth prototype) with basic auth,
+  reflections, and AI integration. Needs architectural hardening, dreams layer, evolution reports,
+  and monetization to match vision.
+
+# Admin User Specification
+admin_user:
+  email: "ahiya.butman@gmail.com"
+  name: "Ahiya Butman"
+  tier: "premium"
+  is_admin: true
+  is_creator: true
+  setup_iteration: iteration-1
+
+# Visual Rebrand Specification (Iteration 1)
+rebrand:
+  from: "Mirror of Truth"
+  to: "Mirror of Dreams"
+  color_palette:
+    primary: "Mystic Purple"
+    secondary: "Deep Blue"
+    accent: "Glowing Purple"
+  theme: "Dreamy, mysterious, joyful cosmic theme with maintained mirror accuracy"
+  elements:
+    - Purple gradients for dreamy atmosphere
+    - Deep blue cosmic backgrounds for depth
+    - Glowing effects for magical feel
+    - Preserved mirror shards for accuracy symbolism
+
+# Global Iteration Numbering
+# Starting from iteration-1 (first iteration for this plan)
+
+iterations:
+  - iteration_id: iteration-1
+    iteration_number: 1
+    phase_name: "Harden Mirror of Truth"
+    vision: "All existing features operational on TypeScript + tRPC architecture"
+
+    scope:
+      - "Migrate from JavaScript to TypeScript (strict mode)"
+      - "Migrate from Express to tRPC with shared types"
+      - "Migrate from Vite to Next.js 14 (App Router) if applicable"
+      - "Ensure existing reflection flow works perfectly"
+      - "Set up tRPC router structure for all endpoints"
+      - "Configure TypeScript build system and type checking"
+      - "Test all existing features on new stack"
+      - "Maintain existing UI/UX (no visual changes yet)"
+
+    dependencies:
+      iteration_dependencies: []
+      external_dependencies:
+        - "Next.js 14"
+        - "tRPC v10+"
+        - "TypeScript 5+"
+        - "Existing Supabase database"
+        - "Existing Anthropic Claude API integration"
+
+    success_criteria:
+      - "Existing reflection flow works without errors"
+      - "TypeScript strict mode passes with no errors"
+      - "tRPC procedures have full type safety (frontend ↔ backend)"
+      - "All API calls use tRPC client"
+      - "Build succeeds with no warnings"
+      - "User can sign in and create reflections"
+
+    estimated_duration_hours: 7
+    risk_level: MEDIUM
+
+    status: NOT_STARTED
+
+    technical_notes: |
+      - Copy existing Express endpoints to tRPC procedures
+      - Maintain exact same business logic (no feature changes)
+      - Use @trpc/server and @trpc/client
+      - Set up shared types in /types directory
+      - Ensure authentication works with tRPC context
+      - Migration should not break existing data
+
+    parallel_builders:
+      - "Builder 1: Next.js migration (Vite → Next.js App Router)"
+      - "Builder 2: TypeScript conversion (JavaScript → TypeScript strict)"
+      - "Builder 3: tRPC setup (Express endpoints → tRPC procedures)"
+      - "Builder 4: Shared type definitions and type safety validation"
+
+  - iteration_id: iteration-2
+    iteration_number: 2
+    phase_name: "Dreams + Mirror of Dreams Rebrand"
+    vision: "Dreams as first-class citizens with mystic purple/blue visual identity"
+
+    scope:
+      - "Database: Add dreams table with GENERATED days_left column"
+      - "Database: Add dream_id FK to reflections table, migrate existing data"
+      - "tRPC: Dreams router (create, list, get, update, updateStatus, delete)"
+      - "UI: DreamCard, DreamList, CreateDreamForm, DreamDetailPage components"
+      - "UI: Update reflection flow to select dream before reflecting"
+      - "Dashboard: Dreams-first layout (dreams grid prominent)"
+      - "Tier limits: Enforce dream limits (2/5/7/unlimited by tier)"
+      - "Rebrand: 'Mirror of Truth' → 'Mirror of Dreams' across all UI"
+      - "Design: Mystic purple on deep blue color palette"
+      - "Design: Updated landing page, dashboard, components with new theme"
+      - "Migration: Upgrade to claude-sonnet-4-5-20250929 model"
+      - "Admin: Create admin user ahiya.butman@gmail.com with full access"
+
+    dependencies:
+      iteration_dependencies:
+        - iteration-1
+      external_dependencies:
+        - "Supabase PostgreSQL"
+        - "Claude Sonnet 4.5 model"
+        - "Tailwind CSS for styling"
+
+    success_criteria:
+      - "Admin user can create/edit/delete dreams within tier limits"
+      - "Reflections successfully link to specific dreams"
+      - "Dashboard shows dreams grid with reflection counts"
+      - "Visual rebrand complete (purple/blue theme across all pages)"
+      - "Claude Sonnet 4.5 generates reflections successfully"
+      - "Mobile responsive dream management"
+      - "Data migration preserves all existing reflections"
+      - "Admin user ahiya.butman@gmail.com can log in with Premium tier"
+
+    estimated_duration_hours: 5
+    risk_level: MEDIUM
+
+    status: NOT_STARTED
+
+    technical_notes: |
+      Dreams table schema:
+      - id (uuid PK)
+      - user_id (uuid FK)
+      - title (text)
+      - description (text)
+      - target_date (date, optional)
+      - days_left (int, GENERATED ALWAYS AS target_date - CURRENT_DATE)
+      - status (enum: active/achieved/archived/released)
+      - category (text)
+      - priority (int)
+      - created_at, updated_at, achieved_at, archived_at
+
+      Migration strategy:
+      - Add dreams table
+      - Create default dream for existing users ("My Journey")
+      - Add dream_id FK to reflections (nullable initially)
+      - Link existing reflections to default dreams
+      - Make dream_id NOT NULL after migration
+
+      Claude Sonnet 4.5 migration:
+      - Update model string to "claude-sonnet-4-5-20250929"
+      - Test reflection generation with new model
+      - Verify output quality and cost tracking
+
+    parallel_builders:
+      - "Builder 1: Database schema + migration + admin user creation"
+      - "Builder 2: Dreams tRPC router + tier limits enforcement"
+      - "Builder 3: Dreams UI components + reflection linking"
+      - "Builder 4: Visual rebrand (CSS, landing page, dashboard) + Claude 4.5"
+
+  - iteration_id: iteration-3
+    iteration_number: 3
+    phase_name: "Evolution + Visualizations (AI Features)"
+    vision: "Admin can use all AI-powered features with temporal distribution"
+
+    scope:
+      - "Core: Temporal context distribution algorithm (3 time periods)"
+      - "Database: evolution_reports table with reflections_analyzed array"
+      - "Database: visualizations table with style and artifact_url"
+      - "Database: api_usage_log table for cost tracking"
+      - "tRPC: evolution.generateReport (dream-specific + cross-dream)"
+      - "tRPC: visualizations.generate (3 styles: achievement/journey/synthesis)"
+      - "AI: Evolution report prompts with extended thinking (Optimal/Premium)"
+      - "AI: Visualization prompts for 3 different styles"
+      - "UI: Evolution report generation modal with temporal preview"
+      - "UI: Evolution report display (3-period analysis, patterns, growth metrics)"
+      - "UI: Visualization generation modal with style selection"
+      - "UI: Visualization display (immersive narrative + optional artwork)"
+      - "Config: TIER_LIMITS configuration for all tiers"
+      - "Logic: Capability checks (canGenerateEvolution, canGenerateVisualization)"
+      - "Tracking: Monthly usage limits enforcement"
+      - "Admin: Basic admin dashboard (cost tracking, usage stats)"
+
+    dependencies:
+      iteration_dependencies:
+        - iteration-2
+      external_dependencies:
+        - "Anthropic Claude Sonnet 4.5 API"
+        - "Dreams table with reflections"
+
+    success_criteria:
+      - "Admin generates evolution report after 4 reflections on a dream"
+      - "Temporal distribution selects correct reflections (Early/Middle/Recent)"
+      - "Free tier analyzes 4 reflections, Optimal analyzes 9, Premium analyzes 12"
+      - "Extended thinking works for Optimal/Premium tiers"
+      - "Admin generates visualizations in all 3 styles"
+      - "Cross-dream analysis works after 12 total reflections"
+      - "Monthly limits enforced (evolution reports, visualizations)"
+      - "Basic admin dashboard shows cost tracking and usage stats"
+      - "API usage logged with token counts and cost per operation"
+
+    estimated_duration_hours: 6
+    risk_level: HIGH
+
+    status: NOT_STARTED
+
+    technical_notes: |
+      Temporal Distribution Algorithm:
+      1. Sort reflections by created_at ASC
+      2. Divide timeline into 3 equal periods (Early/Middle/Recent)
+      3. Calculate reflections needed per period: contextLimit / 3
+      4. Select evenly-spaced reflections from each period
+      5. Return distributed set showing growth over time
+
+      Context limits by tier:
+      - Free: 4 dream-specific, 0 cross-dream
+      - Essential: 6 dream-specific, 12 cross-dream
+      - Optimal: 9 dream-specific, 21 cross-dream
+      - Premium: 12 dream-specific, 30 cross-dream
+
+      Thresholds (same for all tiers):
+      - Dream-specific: Every 4 reflections
+      - Cross-dream: Every 12 total reflections
+
+      Extended thinking:
+      - Enabled for Optimal and Premium tiers
+      - thinking.budget_tokens: 5000
+      - Adds ~$0.02-0.04 per operation
+
+      Cost tracking:
+      - Log every Anthropic API call
+      - Track input_tokens, output_tokens, thinking_tokens
+      - Calculate cost_usd based on pricing
+      - Display in admin dashboard
+
+    parallel_builders:
+      - "Builder 1: Temporal distribution service (core algorithm + tests)"
+      - "Builder 2: Evolution reports (tRPC router + AI prompts + UI)"
+      - "Builder 3: Visualizations (tRPC router + AI prompts + style selection + UI)"
+      - "Builder 4: Tier limits + capability checks + admin dashboard backend"
+
+  - iteration_id: iteration-4
+    iteration_number: 4
+    phase_name: "Production Ready"
+    vision: "Open to public users with monetization and full admin monitoring"
+
+    scope:
+      - "Auth: Public signup/login enabled (not just admin)"
+      - "Auth: Email verification flow"
+      - "Auth: Password reset functionality"
+      - "PayPal: Subscription plan creation (Essential/Optimal/Premium)"
+      - "PayPal: Subscription creation API with redirect flow"
+      - "PayPal: Webhook handler (signature verification, idempotency)"
+      - "PayPal: Event processing (CREATED, ACTIVATED, PAYMENT.COMPLETED, CANCELLED)"
+      - "Database: revenue_log table for payment tracking"
+      - "Database: monthly_usage_tracking enhancements"
+      - "UI: Subscription upgrade modal with tier comparison"
+      - "UI: Subscription management page (cancel, change tier)"
+      - "UI: Share image generation (server-side canvas/sharp)"
+      - "UI: Share customization (quote selection, design styles)"
+      - "Admin: Complete dashboard (revenue, MRR, profit margin)"
+      - "Admin: User feedback aggregation and CSV export"
+      - "Admin: Cost vs revenue tracking with alerts"
+      - "Automation: Monthly usage reset cron job"
+      - "Automation: Share image cleanup (24h expiration)"
+
+    dependencies:
+      iteration_dependencies:
+        - iteration-3
+      external_dependencies:
+        - "PayPal Subscriptions API"
+        - "Vercel Blob Storage (for share images)"
+        - "node-canvas or sharp library"
+        - "Email service (Gmail/Nodemailer or Resend)"
+
+    success_criteria:
+      - "New users can sign up and create accounts"
+      - "Users can upgrade from Free → Optimal via PayPal"
+      - "PayPal webhooks process correctly (<1% mismatch rate)"
+      - "Tier changes update immediately after payment confirmation"
+      - "Share images generate correctly (1080x1080 and 1080x1920)"
+      - "Share images match preview exactly"
+      - "Download works on iOS Safari and Android Chrome"
+      - "Admin dashboard shows real revenue and MRR"
+      - "Admin dashboard tracks profit margin (70%+ target)"
+      - "Monthly usage resets automatically on 1st of month"
+      - "Email receipts sent for payments"
+      - "Platform ready for public launch"
+
+    estimated_duration_hours: 7
+    risk_level: HIGH
+
+    status: NOT_STARTED
+
+    technical_notes: |
+      PayPal Integration:
+      - Create PayPal plans in dashboard (one-time setup)
+      - Store plan IDs in environment variables
+      - Webhook endpoint must verify signature
+      - Implement idempotency (prevent duplicate processing)
+      - Polling fallback if webhook delayed (30s timeout)
+
+      PayPal Events to Handle:
+      1. BILLING.SUBSCRIPTION.CREATED
+      2. BILLING.SUBSCRIPTION.ACTIVATED (upgrade tier immediately)
+      3. PAYMENT.SALE.COMPLETED (log revenue)
+      4. BILLING.SUBSCRIPTION.CANCELLED (downgrade tier)
+      5. BILLING.SUBSCRIPTION.SUSPENDED (payment failure, 3-day grace)
+
+      Share Image Generation:
+      - Use sharp library (lighter than node-canvas)
+      - 3 design styles: Minimal, Bold, Poetic
+      - 2 formats: 1080x1080 (square), 1080x1920 (story)
+      - Quote extraction from reflections/evolution/visualizations
+      - Temporary storage with 24h expiration
+      - Store in Vercel Blob Storage or Supabase Storage
+
+      Admin Dashboard Metrics:
+      - MRR (Monthly Recurring Revenue) by tier
+      - Total users by tier (Free/Essential/Optimal/Premium)
+      - Conversion rate (Free → Paid)
+      - Churn rate
+      - API costs by operation type
+      - Cost per user
+      - Profit margin percentage
+      - Feedback ratings and comments (anonymized)
+      - CSV export for accounting
+
+      Monthly Reset:
+      - Vercel cron or Supabase scheduled function
+      - Reset monthly_usage_tracking on 1st of month UTC
+      - Send usage summary emails (optional)
+
+    parallel_builders:
+      - "Builder 1: PayPal subscription integration (API + webhook + state sync)"
+      - "Builder 2: Share image generation (canvas/sharp + download flow)"
+      - "Builder 3: Admin dashboard backend (revenue/cost queries + aggregations)"
+      - "Builder 4: Admin dashboard UI + public signup + email notifications"
+
+# Global Metadata
+metadata:
+  total_estimated_hours: 25
+  overall_risk_level: MEDIUM-HIGH
+  requires_mvp_approval: true
+
+  # Key Technical Decisions
+  tech_stack:
+    frontend: "Next.js 14 (App Router) + React 18 + TypeScript"
+    backend: "tRPC v10+ with Next.js API routes"
+    database: "Supabase PostgreSQL"
+    ai: "Anthropic Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)"
+    payments: "PayPal Subscriptions API"
+    storage: "Vercel Blob Storage (share images)"
+    styling: "Tailwind CSS"
+
+  # Cost Projections
+  estimated_monthly_costs:
+    anthropic_api: "$487-$1,284 (100 active users, varies by tier mix)"
+    vercel_hosting: "$20 (Pro plan for 60s timeout)"
+    vercel_blob: "$0.50 (share image storage)"
+    supabase: "$25 (Pro plan)"
+    total: "$532-$1,329"
+
+  target_profit_margin: "70%+"
+
+  # Explorer Recommendations
+  exploration_summary:
+    architecture_complexity: "VERY COMPLEX - Full-stack SaaS with 12 major components"
+    dependency_risk: "MEDIUM-HIGH - AI costs, PayPal webhooks, database migration"
+    ux_complexity: "HIGH - 11 critical user journeys, tier differentiation UX"
+    recommended_approach: "Multi-iteration with careful testing between iterations"
+
+  # Key Risks and Mitigations
+  major_risks:
+    - risk: "Database migration from existing schema"
+      mitigation: "Comprehensive testing, backup/rollback plan, staged migration"
+    - risk: "Temporal distribution algorithm complexity"
+      mitigation: "Unit tests for all tier/context combinations, edge case handling"
+    - risk: "PayPal webhook reliability"
+      mitigation: "Webhook logging, polling fallback, manual reconciliation tool"
+    - risk: "AI cost explosion"
+      mitigation: "Strict limit enforcement, daily cost monitoring, alerts at $50/day"
+    - risk: "Tier differentiation UX confusion"
+      mitigation: "User testing after Iteration 2, clear value messaging"
+
+  # Timeline Expectations
+  timeline:
+    iteration_0: "2-3 days (6-8h build + 1 day testing)"
+    iteration_1: "1-2 days (4-5h build + 1 day testing)"
+    iteration_2: "2-3 days (5-6h build + 1-2 days testing)"
+    iteration_3: "3 days (6-7h build + 2 days testing)"
+    total: "~10 days (2 weeks)"
+    buffer: "+3-4 days for edge cases and refinement"
+
+  # Post-Launch Priorities
+  future_iterations:
+    - "Cross-dream visualizations (currently dream-specific only)"
+    - "PDF export for evolution reports (Optimal/Premium)"
+    - "Email notification system (reflection reminders, usage warnings)"
+    - "Dream categories and filtering"
+    - "Reflection search functionality"
+    - "Performance optimization (caching, query optimization)"
+    - "A/B testing for tier messaging"
+
+# Notes for Execution
+execution_notes: |
+  1. Each iteration should be fully tested before moving to next
+  2. Admin user (ahiya.butman@gmail.com) should test all features in Iterations 1-3
+  3. Iteration 2 is critical - temporal distribution must be perfect
+  4. PayPal sandbox testing required in Iteration 3
+  5. Cost tracking should start in Iteration 2 (log all API calls)
+  6. Visual rebrand in Iteration 1 affects all UI components
+  7. Claude Sonnet 4.5 migration in Iteration 1 - verify output quality
+  8. Mobile testing required for all iterations (60%+ users on mobile)
+
+  Builder Coordination:
+  - Each iteration has 4 parallel builders
+  - Builders work independently but share types/interfaces
+  - Integration testing after all builders complete
+  - User testing after integration testing passes
+
+  Success Metrics:
+  - Iteration 0: All existing features work on new stack
+  - Iteration 1: Dreams work + visual rebrand complete
+  - Iteration 2: Evolution reports show temporal distribution correctly
+  - Iteration 3: Revenue tracking matches PayPal dashboard
