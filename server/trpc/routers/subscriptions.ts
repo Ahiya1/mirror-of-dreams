@@ -15,7 +15,7 @@ export const subscriptionsRouter = router({
       .select(
         `
         tier, subscription_status, subscription_period,
-        stripe_subscription_id, stripe_customer_id,
+        subscription_id,
         subscription_started_at, subscription_expires_at
       `
       )
@@ -33,8 +33,7 @@ export const subscriptionsRouter = router({
         isSubscribed: false,
         isCanceled: false,
         nextBilling: null,
-        stripeSubscriptionId: null,
-        stripeCustomerId: null,
+        subscriptionId: null,
         startedAt: null,
         expiresAt: null,
       };
@@ -67,8 +66,7 @@ export const subscriptionsRouter = router({
       isSubscribed,
       isCanceled,
       nextBilling,
-      stripeSubscriptionId: subscription.stripe_subscription_id,
-      stripeCustomerId: subscription.stripe_customer_id,
+      subscriptionId: subscription.subscription_id,
       startedAt: subscription.subscription_started_at,
       expiresAt: subscription.subscription_expires_at,
     };

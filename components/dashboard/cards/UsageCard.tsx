@@ -75,10 +75,12 @@ const UsageCard: React.FC<UsageCardProps> = ({ animated = true, className = '' }
   // Animated counters for smooth number transitions
   const currentCountCounter = useAnimatedCounter(usageStats.currentCount, {
     duration: 1500,
+    easing: 'easeOut',
   });
 
   const totalReflectionsCounter = useAnimatedCounter(usageStats.totalReflections, {
     duration: 2000,
+    easing: 'easeOut',
   });
 
   // Get usage status and messaging
