@@ -31,7 +31,7 @@ import '@/styles/dashboard.css';
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const dashboardData = useDashboard();
 
   // Stagger animation for grid cards (4 cards, 150ms delay between each)
@@ -41,12 +41,12 @@ export default function DashboardPage() {
     triggerOnce: true,
   });
 
-  // Redirect to signin if not authenticated
+  // Redirect to signin if not authenticated (after auth check completes)
   React.useEffect(() => {
-    if (!isAuthenticated && !dashboardData.isLoading) {
+    if (!isAuthenticated && !authLoading && !dashboardData.isLoading) {
       router.push('/auth/signin');
     }
-  }, [isAuthenticated, dashboardData.isLoading, router]);
+  }, [isAuthenticated, authLoading, dashboardData.isLoading, router]);
 
   // Handle navigation to reflection page
   const handleReflectNow = () => {
@@ -74,7 +74,7 @@ export default function DashboardPage() {
   }, [dashboardData]);
 
   // Loading state - show skeleton while data loads
-  if (dashboardData.isLoading || !isAuthenticated) {
+  if (authLoading || dashboardData.isLoading || !isAuthenticated) {
     return (
       <div className="dashboard-container">
         <CosmicBackground />
