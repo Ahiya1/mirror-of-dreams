@@ -2327,25 +2327,3 @@ CREATE TABLE monthly_usage_tracking (
 );
 
 CREATE INDEX idx_usage_user_month ON monthly_usage_tracking(user_id, month_year);
-
--- API cost tracking
-CREATE TABLE api_usage_log (
-  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  operation_type text NOT NULL, -- 'reflection', 'evolution_report', 'visualization'
-  model_used text NOT NULL,
-  dream_id uuid REFERENCES dreams(id) ON DELETE SET NULL,
-  input_tokens int,
-  output_tokens int,
-  cost_usd numeric(10,4),
-  created_at timestamptz DEFAULT NOW()
-);
-
-CREATE INDEX idx_api_log_user ON api_usage_log(user_id);
-CREATE INDEX idx_api_log_created ON api_usage_log(created_at DESC);
-CREATE INDEX idx_api_log_operation ON api_usage_log(operation_type);
-```
-
----
-
-This comprehensive blueprint captures Sarah's complete 68-day journey through Mirror of Dreams, demonstrating every aspect of the user experience, backend processing, WHO/WHERE/WHAT/HOW pattern, fixed thresholds with tiered context, TypeScript + RPC architecture, and the complete technical implementation.

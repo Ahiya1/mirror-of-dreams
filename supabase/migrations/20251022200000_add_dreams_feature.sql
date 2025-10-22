@@ -16,12 +16,8 @@ CREATE TABLE public.dreams (
 
     -- Timeline
     target_date DATE,
-    days_left INTEGER GENERATED ALWAYS AS (
-        CASE
-            WHEN target_date IS NULL THEN NULL
-            ELSE target_date - CURRENT_DATE
-        END
-    ) STORED,
+    -- Note: days_left is calculated in application layer (not GENERATED column)
+    -- because CURRENT_DATE is not immutable in PostgreSQL
 
     -- Status Management
     status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'achieved', 'archived', 'released')),
