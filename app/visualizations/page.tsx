@@ -1,11 +1,40 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/hooks/useAuth';
-import { useRouter } from 'next/navigation';
+import {
+  GlassCard,
+  GlowButton,
+  CosmicLoader,
+  GradientText,
+  GlowBadge,
+} from '@/components/ui/glass';
+import { cn } from '@/lib/utils';
 
 type VisualizationStyle = 'achievement' | 'spiral' | 'synthesis';
+
+const visualizationStyles = [
+  {
+    id: 'achievement' as VisualizationStyle,
+    name: 'Achievement Path',
+    description: 'Linear journey showing progress like climbing steps or waypoints on a path',
+    icon: '🏔️',
+  },
+  {
+    id: 'spiral' as VisualizationStyle,
+    name: 'Growth Spiral',
+    description: 'Circular growth pattern showing deepening understanding in spiraling cycles',
+    icon: '🌀',
+  },
+  {
+    id: 'synthesis' as VisualizationStyle,
+    name: 'Synthesis Map',
+    description: 'Network of interconnected insights like a constellation or web',
+    icon: '🌌',
+  },
+];
 
 export default function VisualizationsPage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -65,140 +94,214 @@ export default function VisualizationsPage() {
     },
   };
 
+  // Loading state
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 flex items-center justify-center">
-        <div className="text-white">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
+        <div className="flex flex-col items-center gap-4">
+          <CosmicLoader size="lg" />
+          <p className="text-white/60 text-sm">Loading visualizations...</p>
+        </div>
       </div>
     );
   }
 
+  // Redirect to signin if not authenticated
   if (!user) {
     router.push('/auth/signin');
     return null;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
+        {/* Page Title */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Visualizations</h1>
-          <p className="text-purple-200">
+          <GradientText gradient="cosmic" className="text-3xl sm:text-4xl font-bold mb-2">
+            Dream Visualizations
+          </GradientText>
+          <p className="text-white/70">
             Poetic narrative visualizations of your personal growth journey
           </p>
         </div>
 
         {/* Generation Controls */}
-        <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 mb-8">
-          <h2 className="text-2xl font-semibold text-white mb-4">Create New Visualization</h2>
+        <GlassCard variant="elevated" className="mb-8">
+          <GradientText gradient="primary" className="text-2xl font-bold mb-6">
+            Create New Visualization
+          </GradientText>
 
+          {/* Tier Warning */}
           {user.tier === 'free' && !selectedDreamId ? (
-            <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-lg p-4 mb-4">
-              <p className="text-yellow-200">
-                Cross-dream visualizations require Essential tier or higher. You can still create dream-specific visualizations.
-              </p>
-            </div>
+            <GlassCard
+              variant="default"
+              className="border-l-4 border-yellow-500 mb-6"
+            >
+              <div className="flex items-center gap-3">
+                <GlowBadge variant="warning" glowing={true}>
+                  ⚡
+                </GlowBadge>
+                <div className="flex-1">
+                  <p className="text-white/90 font-medium text-sm">
+                    Cross-dream visualizations require Essential tier or higher. You can still create dream-specific visualizations.
+                  </p>
+                </div>
+              </div>
+            </GlassCard>
           ) : null}
 
           <div className="space-y-6">
-            {/* Dream Selection */}
-            <div>
-              <label className="block text-white font-medium mb-2">
-                Select Dream (optional - leave blank for cross-dream)
-              </label>
-              <select
-                value={selectedDreamId}
-                onChange={(e) => setSelectedDreamId(e.target.value)}
-                className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white"
-                disabled={generating}
-              >
-                <option value="">All Dreams (Cross-Dream Analysis)</option>
-                {dreamsData?.map((dream) => (
-                  <option key={dream.id} value={dream.id}>
-                    {dream.title} ({dream.reflection_count || 0} reflections)
-                  </option>
-                ))}
-              </select>
-            </div>
-
             {/* Style Selection */}
             <div>
-              <label className="block text-white font-medium mb-3">Choose Visualization Style</label>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {(Object.keys(styleDescriptions) as VisualizationStyle[]).map((style) => {
-                  const info = styleDescriptions[style];
-                  return (
-                    <button
-                      key={style}
-                      onClick={() => setSelectedStyle(style)}
-                      className={`p-4 rounded-lg border-2 transition-all text-left ${
-                        selectedStyle === style
-                          ? 'border-purple-400 bg-purple-500/20'
-                          : 'border-white/20 bg-white/5 hover:bg-white/10'
-                      }`}
-                      disabled={generating}
+              <GradientText gradient="primary" className="text-lg font-medium mb-4">
+                Choose Visualization Style
+              </GradientText>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {visualizationStyles.map((style) => (
+                  <GlassCard
+                    key={style.id}
+                    variant={selectedStyle === style.id ? 'elevated' : 'default'}
+                    hoverable={true}
+                    glowColor="purple"
+                    className={cn(
+                      'cursor-pointer text-center',
+                      selectedStyle === style.id && 'border-mirror-purple shadow-glow-lg'
+                    )}
+                    onClick={() => setSelectedStyle(style.id)}
+                  >
+                    <div className="text-4xl mb-3">{style.icon}</div>
+                    <GradientText
+                      gradient={selectedStyle === style.id ? 'cosmic' : 'primary'}
+                      className="text-base font-bold mb-2"
                     >
-                      <div className="text-3xl mb-2">{info.icon}</div>
-                      <h3 className="text-white font-semibold mb-1">{info.title}</h3>
-                      <p className="text-purple-200 text-sm">{info.description}</p>
-                    </button>
-                  );
-                })}
+                      {style.name}
+                    </GradientText>
+                    <p className="text-white/60 text-xs">
+                      {style.description}
+                    </p>
+                  </GlassCard>
+                ))}
+              </div>
+            </div>
+
+            {/* Dream Selection */}
+            <div>
+              <label className="block text-white/80 mb-3 font-medium">
+                Select Dream (optional - leave blank for cross-dream)
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                <GlowButton
+                  variant="secondary"
+                  size="md"
+                  onClick={() => setSelectedDreamId('')}
+                  className={cn(
+                    'text-left justify-start',
+                    selectedDreamId === '' && 'border-mirror-purple shadow-glow'
+                  )}
+                  disabled={generating}
+                >
+                  <div className="flex-1">
+                    <div className="text-white/90">All Dreams</div>
+                    <div className="text-xs text-white/50">Cross-Dream Analysis</div>
+                  </div>
+                </GlowButton>
+                {dreamsData?.map((dream) => (
+                  <GlowButton
+                    key={dream.id}
+                    variant="secondary"
+                    size="md"
+                    onClick={() => setSelectedDreamId(dream.id)}
+                    className={cn(
+                      'text-left justify-start',
+                      selectedDreamId === dream.id && 'border-mirror-purple shadow-glow'
+                    )}
+                    disabled={generating}
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="truncate text-white/90">{dream.title}</div>
+                      <div className="text-xs text-white/50">
+                        {dream.reflection_count || 0} reflections
+                      </div>
+                    </div>
+                  </GlowButton>
+                ))}
               </div>
             </div>
 
             {/* Generate Button */}
-            <button
+            <GlowButton
+              variant="primary"
+              size="lg"
               onClick={handleGenerate}
               disabled={generating}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed text-white px-6 py-4 rounded-lg font-medium text-lg transition-colors"
+              className="w-full"
             >
-              {generating ? 'Creating Visualization...' : 'Generate Visualization'}
-            </button>
+              {generating ? (
+                <span className="flex items-center gap-2">
+                  <CosmicLoader size="sm" />
+                  Creating Visualization...
+                </span>
+              ) : (
+                'Generate Visualization'
+              )}
+            </GlowButton>
           </div>
-        </div>
+        </GlassCard>
 
         {/* Visualizations List */}
-        <div className="bg-white/10 backdrop-blur-md rounded-lg p-6">
-          <h2 className="text-2xl font-semibold text-white mb-4">Your Visualizations</h2>
+        <GlassCard variant="elevated">
+          <GradientText gradient="primary" className="text-2xl font-bold mb-6">
+            Your Visualizations
+          </GradientText>
 
           {!visualizationsData || visualizationsData.items.length === 0 ? (
-            <p className="text-purple-200">No visualizations yet. Create your first one above!</p>
+            <p className="text-white/60">No visualizations yet. Create your first one above!</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {visualizationsData.items.map((viz: any) => (
-                <div
+                <GlassCard
                   key={viz.id}
-                  className="bg-white/5 border border-white/10 rounded-lg p-4 hover:bg-white/10 transition-colors cursor-pointer"
+                  variant="default"
+                  hoverable={true}
+                  glowColor="purple"
+                  className="cursor-pointer"
                   onClick={() => router.push(`/visualizations/${viz.id}`)}
                 >
-                  <div className="flex justify-between items-start mb-3">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-2xl">
-                          {styleDescriptions[viz.style as VisualizationStyle]?.icon}
-                        </span>
-                        <h3 className="text-lg font-medium text-white">
-                          {styleDescriptions[viz.style as VisualizationStyle]?.title}
-                        </h3>
-                      </div>
-                      <p className="text-sm text-purple-300">
-                        {viz.dreams?.title || 'Cross-Dream'} • {viz.reflection_count} reflections
-                      </p>
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl">
+                        {styleDescriptions[viz.style as VisualizationStyle]?.icon}
+                      </span>
+                      <GradientText gradient="cosmic" className="text-lg font-bold">
+                        {styleDescriptions[viz.style as VisualizationStyle]?.title}
+                      </GradientText>
                     </div>
-                    <span className="text-sm text-purple-300">
-                      {new Date(viz.created_at).toLocaleDateString()}
-                    </span>
+                    <GlowBadge variant="info">
+                      {viz.dreams ? '📊' : '🌌'}
+                    </GlowBadge>
                   </div>
-                  <p className="text-purple-200 text-sm line-clamp-3">
+
+                  <p className="text-white/50 text-sm mb-3">
+                    {viz.dreams?.title || 'Cross-Dream'} • {viz.reflection_count} reflections
+                  </p>
+
+                  <p className="text-white/70 text-sm line-clamp-3 mb-3">
                     {viz.narrative?.substring(0, 150)}...
                   </p>
-                </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-white/40">
+                      {new Date(viz.created_at).toLocaleDateString()}
+                    </span>
+                    <GlowButton variant="ghost" size="sm">
+                      View Full
+                    </GlowButton>
+                  </div>
+                </GlassCard>
               ))}
             </div>
           )}
-        </div>
+        </GlassCard>
       </div>
     </div>
   );

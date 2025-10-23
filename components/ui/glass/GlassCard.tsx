@@ -13,6 +13,7 @@ import type { GlassCardProps } from '@/types/glass-components';
  * @param glowColor - Glow color theme (purple | blue | cosmic | electric)
  * @param hoverable - Enable hover animations
  * @param animated - Enable entrance animations
+ * @param onClick - Click handler
  * @param className - Additional Tailwind classes
  * @param children - Card content
  */
@@ -22,6 +23,7 @@ export function GlassCard({
   glowColor = 'purple',
   hoverable = true,
   animated = true,
+  onClick,
   className,
   children,
 }: GlassCardProps) {
@@ -56,6 +58,7 @@ export function GlassCard({
       initial={shouldAnimate ? 'hidden' : false}
       animate={shouldAnimate ? 'visible' : false}
       whileHover={hoverable && !prefersReducedMotion ? 'hover' : undefined}
+      onClick={onClick}
       className={cn(
         // Base styles
         'rounded-xl p-6',

@@ -22,6 +22,8 @@ export interface GlassCardProps extends GlassBaseProps {
   variant?: 'default' | 'elevated' | 'inset';
   /** Enable hover animations */
   hoverable?: boolean;
+  /** Click handler */
+  onClick?: () => void;
   /** Card content */
   children: ReactNode;
 }
@@ -102,6 +104,8 @@ export interface CosmicLoaderProps {
   size?: 'sm' | 'md' | 'lg';
   /** Additional Tailwind classes */
   className?: string;
+  /** Custom loading message for screen readers */
+  label?: string;
 }
 
 /**

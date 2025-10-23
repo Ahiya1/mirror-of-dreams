@@ -34,6 +34,7 @@ export function GlassInput({
     'border-2 transition-all duration-300',
     'text-white placeholder:text-white/40',
     'focus:outline-none',
+    'focus:scale-[1.01]',
     'font-inherit',
     isFocused
       ? 'border-mirror-purple/60 shadow-[0_0_30px_rgba(168,85,247,0.2)]'

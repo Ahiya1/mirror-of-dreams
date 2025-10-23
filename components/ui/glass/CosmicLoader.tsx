@@ -9,8 +9,13 @@ import type { CosmicLoaderProps } from '@/types/glass-components';
  *
  * @param size - Loader size (sm | md | lg)
  * @param className - Additional Tailwind classes
+ * @param label - Custom loading message for screen readers
  */
-export function CosmicLoader({ size = 'md', className }: CosmicLoaderProps) {
+export function CosmicLoader({
+  size = 'md',
+  className,
+  label = 'Loading content',
+}: CosmicLoaderProps) {
   const prefersReducedMotion = useReducedMotion();
 
   const sizes = {
@@ -26,7 +31,11 @@ export function CosmicLoader({ size = 'md', className }: CosmicLoaderProps) {
   };
 
   return (
-    <div className={cn('flex items-center justify-center', className)}>
+    <div
+      className={cn('flex items-center justify-center', className)}
+      role="status"
+      aria-label={label}
+    >
       <motion.div
         animate={
           !prefersReducedMotion
@@ -52,6 +61,7 @@ export function CosmicLoader({ size = 'md', className }: CosmicLoaderProps) {
           'shadow-glow-purple'
         )}
       />
+      <span className="sr-only">{label}</span>
     </div>
   );
 }
