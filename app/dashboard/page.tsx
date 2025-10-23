@@ -299,6 +299,7 @@ export default function DashboardPage() {
               onClick={handleRefreshData}
               disabled={dashboardData.isLoading}
               title="Refresh dashboard"
+              aria-label="Refresh dashboard"
               className="flex items-center justify-center w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span className={cn('text-lg', dashboardData.isLoading && 'animate-spin')}>🔄</span>

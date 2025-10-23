@@ -18,6 +18,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        {/* Skip to main content link (accessibility) */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-mirror-purple focus:text-white focus:rounded-lg focus:shadow-glow"
+        >
+          Skip to main content
+        </a>
+
         {/* Cosmic background preserved from existing design */}
         <div className="cosmic-background">
           <div className="stars" />
@@ -25,9 +33,9 @@ export default function RootLayout({
 
         {/* Main content wrapped with tRPC provider */}
         <TRPCProvider>
-          <div className="relative z-10">
+          <main id="main-content" className="relative z-10">
             {children}
-          </div>
+          </main>
         </TRPCProvider>
       </body>
     </html>

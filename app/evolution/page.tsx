@@ -1,9 +1,17 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/hooks/useAuth';
-import { useRouter } from 'next/navigation';
+import {
+  GlassCard,
+  GlowButton,
+  CosmicLoader,
+  GradientText,
+  GlowBadge,
+} from '@/components/ui/glass';
+import { cn } from '@/lib/utils';
 
 export default function EvolutionPage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -66,142 +74,222 @@ export default function EvolutionPage() {
     generateCrossDreamEvolution.mutate();
   };
 
+  // Loading state
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 flex items-center justify-center">
-        <div className="text-white">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
+        <div className="flex flex-col items-center gap-4">
+          <CosmicLoader size="lg" />
+          <p className="text-white/60 text-sm">Loading your evolution reports...</p>
+        </div>
       </div>
     );
   }
 
+  // Redirect to signin if not authenticated
   if (!user) {
     router.push('/auth/signin');
     return null;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
+        {/* Page Title */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Evolution Reports</h1>
-          <p className="text-purple-200">
+          <GradientText gradient="cosmic" className="text-3xl sm:text-4xl font-bold mb-2">
+            Evolution Reports
+          </GradientText>
+          <p className="text-white/70">
             AI-powered insights into your growth journey across time
           </p>
         </div>
 
         {/* Generation Controls */}
-        <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 mb-8">
-          <h2 className="text-2xl font-semibold text-white mb-4">Generate New Report</h2>
+        <GlassCard variant="elevated" className="mb-8">
+          <GradientText gradient="primary" className="text-2xl font-bold mb-6">
+            Generate New Report
+          </GradientText>
 
           {user.tier === 'free' ? (
-            <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-lg p-4">
-              <p className="text-yellow-200">
-                Evolution reports are available for Essential tier and higher.
-                <button
+            <GlassCard
+              variant="elevated"
+              glowColor="purple"
+              className="border-l-4 border-yellow-500"
+            >
+              <div className="flex items-center gap-3">
+                <GlowBadge variant="warning" glowing={true}>
+                  ⚡
+                </GlowBadge>
+                <div className="flex-1">
+                  <p className="text-white/90 font-medium">Upgrade to Essential</p>
+                  <p className="text-white/70 text-sm">
+                    Evolution reports are available for Essential tier and higher.
+                  </p>
+                </div>
+                <GlowButton
+                  variant="primary"
+                  size="sm"
                   onClick={() => router.push('/dashboard')}
-                  className="ml-2 underline hover:text-yellow-100"
                 >
-                  Upgrade now
-                </button>
-              </p>
-            </div>
+                  Upgrade Now
+                </GlowButton>
+              </div>
+            </GlassCard>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-6">
               {/* Dream-Specific Report */}
-              <div className="border border-white/20 rounded-lg p-4">
-                <h3 className="text-lg font-medium text-white mb-2">Dream-Specific Report</h3>
-                <p className="text-purple-200 text-sm mb-4">
+              <GlassCard variant="default">
+                <GradientText gradient="primary" className="text-lg font-medium mb-2">
+                  Dream-Specific Report
+                </GradientText>
+                <p className="text-white/60 text-sm mb-4">
                   Analyze your evolution on a single dream (requires 4+ reflections)
                 </p>
-                <div className="flex gap-3">
-                  <select
-                    value={selectedDreamId}
-                    onChange={(e) => setSelectedDreamId(e.target.value)}
-                    className="flex-1 bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
-                    disabled={generating}
-                  >
-                    <option value="">Select a dream...</option>
+
+                {/* Dream Selection Buttons */}
+                <div className="mb-4">
+                  <label className="block text-white/80 mb-3 font-medium text-sm">
+                    Select Dream
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {dreamsData?.map((dream) => (
-                      <option key={dream.id} value={dream.id}>
-                        {dream.title} ({dream.reflection_count || 0} reflections)
-                      </option>
+                      <GlowButton
+                        key={dream.id}
+                        variant="secondary"
+                        size="md"
+                        onClick={() => setSelectedDreamId(dream.id)}
+                        className={cn(
+                          'text-left justify-start',
+                          selectedDreamId === dream.id && 'border-mirror-purple shadow-glow'
+                        )}
+                        disabled={generating}
+                      >
+                        <div className="flex-1 min-w-0">
+                          <div className="truncate text-white/90">{dream.title}</div>
+                          <div className="text-xs text-white/50">
+                            {dream.reflection_count || 0} reflections
+                          </div>
+                        </div>
+                      </GlowButton>
                     ))}
-                  </select>
-                  <button
-                    onClick={handleGenerateDreamEvolution}
-                    disabled={generating || !selectedDreamId}
-                    className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-6 py-2 rounded-lg font-medium transition-colors"
-                  >
-                    {generating ? 'Generating...' : 'Generate'}
-                  </button>
+                  </div>
                 </div>
-              </div>
+
+                <GlowButton
+                  variant="primary"
+                  size="lg"
+                  onClick={handleGenerateDreamEvolution}
+                  disabled={generating || !selectedDreamId}
+                  className="w-full"
+                >
+                  {generating ? (
+                    <span className="flex items-center gap-2">
+                      <CosmicLoader size="sm" />
+                      Generating...
+                    </span>
+                  ) : (
+                    'Generate Dream Report'
+                  )}
+                </GlowButton>
+              </GlassCard>
 
               {/* Cross-Dream Report */}
-              <div className="border border-white/20 rounded-lg p-4">
-                <h3 className="text-lg font-medium text-white mb-2">Cross-Dream Report</h3>
-                <p className="text-purple-200 text-sm mb-4">
+              <GlassCard variant="default">
+                <GradientText gradient="primary" className="text-lg font-medium mb-2">
+                  Cross-Dream Report
+                </GradientText>
+                <p className="text-white/60 text-sm mb-4">
                   Analyze patterns across all your dreams (requires 12+ total reflections)
                 </p>
-                <button
+
+                <GlowButton
+                  variant="primary"
+                  size="lg"
                   onClick={handleGenerateCrossDreamEvolution}
                   disabled={generating}
-                  className="bg-pink-600 hover:bg-pink-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                  className="w-full"
                 >
-                  {generating ? 'Generating...' : 'Generate Cross-Dream Report'}
-                </button>
-              </div>
+                  {generating ? (
+                    <span className="flex items-center gap-2">
+                      <CosmicLoader size="sm" />
+                      Generating...
+                    </span>
+                  ) : (
+                    'Generate Cross-Dream Report'
+                  )}
+                </GlowButton>
+              </GlassCard>
 
               {/* Eligibility Info */}
               {eligibility && !eligibility.eligible && (
-                <div className="bg-blue-500/20 border border-blue-500/50 rounded-lg p-4">
-                  <p className="text-blue-200">{eligibility.reason}</p>
-                </div>
+                <GlassCard
+                  variant="default"
+                  className="border-l-4 border-blue-500"
+                >
+                  <div className="flex items-center gap-3">
+                    <GlowBadge variant="info">ℹ️</GlowBadge>
+                    <p className="text-white/80 text-sm">{eligibility.reason}</p>
+                  </div>
+                </GlassCard>
               )}
             </div>
           )}
-        </div>
+        </GlassCard>
 
         {/* Reports List */}
-        <div className="bg-white/10 backdrop-blur-md rounded-lg p-6">
-          <h2 className="text-2xl font-semibold text-white mb-4">Your Reports</h2>
+        <GlassCard variant="elevated">
+          <GradientText gradient="primary" className="text-2xl font-bold mb-6">
+            Your Reports
+          </GradientText>
 
           {!reportsData || reportsData.reports.length === 0 ? (
-            <p className="text-purple-200">No evolution reports yet. Generate your first one above!</p>
+            <p className="text-white/60">No evolution reports yet. Generate your first one above!</p>
           ) : (
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {reportsData.reports.map((report: any) => (
-                <div
+                <GlassCard
                   key={report.id}
-                  className="bg-white/5 border border-white/10 rounded-lg p-4 hover:bg-white/10 transition-colors cursor-pointer"
+                  variant="default"
+                  hoverable={true}
+                  glowColor="purple"
+                  className="cursor-pointer"
                   onClick={() => router.push(`/evolution/${report.id}`)}
                 >
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h3 className="text-lg font-medium text-white">
-                        {report.report_category === 'dream-specific' ? (
-                          <>{report.dreams?.title || 'Dream Report'}</>
-                        ) : (
-                          'Cross-Dream Analysis'
-                        )}
-                      </h3>
-                      <p className="text-sm text-purple-300">
-                        {report.reflection_count} reflections analyzed
-                      </p>
-                    </div>
-                    <span className="text-sm text-purple-300">
-                      {new Date(report.created_at).toLocaleDateString()}
-                    </span>
+                  <div className="flex items-start justify-between mb-3">
+                    <GradientText gradient="cosmic" className="text-lg font-bold flex-1">
+                      {report.report_category === 'dream-specific' ? (
+                        <>{report.dreams?.title || 'Dream Report'}</>
+                      ) : (
+                        'Cross-Dream Analysis'
+                      )}
+                    </GradientText>
+                    <GlowBadge variant="info">
+                      {report.report_category === 'dream-specific' ? '📊' : '🌌'}
+                    </GlowBadge>
                   </div>
-                  <p className="text-purple-200 text-sm line-clamp-2">
+
+                  <p className="text-white/50 text-sm mb-3">
+                    {report.reflection_count} reflections analyzed
+                  </p>
+
+                  <p className="text-white/70 text-sm line-clamp-2 mb-3">
                     {report.evolution?.substring(0, 200)}...
                   </p>
-                </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-white/40">
+                      {new Date(report.created_at).toLocaleDateString()}
+                    </span>
+                    <GlowButton variant="ghost" size="sm">
+                      View Details
+                    </GlowButton>
+                  </div>
+                </GlassCard>
               ))}
             </div>
           )}
-        </div>
+        </GlassCard>
       </div>
     </div>
   );
