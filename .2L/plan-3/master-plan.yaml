@@ -112,7 +112,7 @@ iterations:
       - Multiple visualization styles (only Achievement for MVP)
       - Report editing
       - PDF export
-    status: PENDING
+    status: COMPLETE
     dependencies: [1]
 
   - iteration_id: 3

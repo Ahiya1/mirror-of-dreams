@@ -7,6 +7,7 @@ import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/hooks/useAuth';
 import { GradientText } from '@/components/ui/glass/GradientText';
 import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
+import { AppNavigation } from '@/components/shared/AppNavigation';
 
 export default function EvolutionReportPage() {
   const params = useParams();
@@ -42,6 +43,8 @@ export default function EvolutionReportPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 p-8">
+      <AppNavigation currentPage="evolution" />
+
       <div className="max-w-4xl mx-auto">
         {/* Back Button */}
         <button

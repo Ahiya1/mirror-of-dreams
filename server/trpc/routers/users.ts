@@ -10,6 +10,28 @@ import { userRowToUser } from '@/types/user';
 import type { UserRow } from '@/types/user';
 
 export const usersRouter = router({
+  // Complete onboarding for new users
+  completeOnboarding: protectedProcedure.mutation(async ({ ctx }) => {
+    const { data, error } = await supabase
+      .from('users')
+      .update({
+        onboarding_completed: true,
+        onboarding_completed_at: new Date().toISOString(),
+      })
+      .eq('id', ctx.user.id)
+      .select()
+      .single();
+
+    if (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to complete onboarding',
+      });
+    }
+
+    return { success: true, user: userRowToUser(data as UserRow) };
+  }),
+
   // Get user profile with comprehensive data
   getProfile: protectedProcedure.query(async ({ ctx }) => {
     const { data: userProfile, error } = await supabase

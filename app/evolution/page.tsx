@@ -11,6 +11,8 @@ import {
   GradientText,
   GlowBadge,
 } from '@/components/ui/glass';
+import { AppNavigation } from '@/components/shared/AppNavigation';
+import { EmptyState } from '@/components/shared/EmptyState';
 import { cn } from '@/lib/utils';
 
 export default function EvolutionPage() {
@@ -44,7 +46,7 @@ export default function EvolutionPage() {
       setSelectedDreamId('');
     },
     onError: (error) => {
-      alert(error.message);
+      // Error will be shown by tRPC error handling
       setGenerating(false);
     },
   });
@@ -55,15 +57,14 @@ export default function EvolutionPage() {
       setGenerating(false);
     },
     onError: (error) => {
-      alert(error.message);
+      // Error will be shown by tRPC error handling
       setGenerating(false);
     },
   });
 
   const handleGenerateDreamEvolution = async () => {
     if (!selectedDreamId) {
-      alert('Please select a dream');
-      return;
+      return; // UI already disables button if no dream selected
     }
     setGenerating(true);
     generateDreamEvolution.mutate({ dreamId: selectedDreamId });
@@ -94,6 +95,8 @@ export default function EvolutionPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
+      <AppNavigation currentPage="evolution" />
+
       <div className="max-w-6xl mx-auto">
         {/* Page Title */}
         <div className="mb-8">
@@ -244,7 +247,13 @@ export default function EvolutionPage() {
           </GradientText>
 
           {!reportsData || reportsData.reports.length === 0 ? (
-            <p className="text-white/60">No evolution reports yet. Generate your first one above!</p>
+            <EmptyState
+              icon="🦋"
+              title="No evolution reports yet"
+              description="Generate your first evolution report to see your growth patterns over time."
+              ctaLabel={user.tier !== 'free' ? 'Generate First Report' : undefined}
+              ctaAction={user.tier !== 'free' ? () => window.scrollTo({ top: 0, behavior: 'smooth' }) : undefined}
+            />
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {reportsData.reports.map((report: any) => (

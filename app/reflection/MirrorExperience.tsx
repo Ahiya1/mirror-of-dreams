@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Check } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/contexts/ToastContext';
 import CosmicBackground from '@/components/shared/CosmicBackground';
 import { GlassCard, GlowButton, ProgressOrbs, CosmicLoader, GlassInput } from '@/components/ui/glass';
 import { cn } from '@/lib/utils';
@@ -31,6 +32,7 @@ export default function MirrorExperience() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, isAuthenticated } = useAuth();
+  const toast = useToast();
 
   // Determine view mode from URL
   const reflectionId = searchParams.get('id');
@@ -75,7 +77,7 @@ export default function MirrorExperience() {
       }, 1000);
     },
     onError: (error) => {
-      alert(`Error: ${error.message}`);
+      toast.error(`Error: ${error.message}`);
       setIsSubmitting(false);
     },
   });
@@ -87,7 +89,7 @@ export default function MirrorExperience() {
   const handleNext = () => {
     // Validate dream selection at step 0
     if (currentStep === 0 && !selectedDreamId) {
-      alert('Please select a dream to continue');
+      toast.warning('Please select a dream to continue');
       return;
     }
     if (currentStep < 6) {
@@ -103,7 +105,7 @@ export default function MirrorExperience() {
 
   const handleSubmit = () => {
     if (!selectedDreamId) {
-      alert('Please select a dream');
+      toast.warning('Please select a dream');
       return;
     }
     setIsSubmitting(true);

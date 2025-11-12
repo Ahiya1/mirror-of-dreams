@@ -212,7 +212,7 @@ export const usePortalState = () => {
     if (!userState?.authenticated) {
       return {
         main: "Your dreams hold the mirror<br />to who you're becoming.",
-        sub: "<strong>Start completely free.</strong> Begin your journey.",
+        sub: "<strong>Start completely free.</strong> 90-second guided setup.",
       };
     }
 

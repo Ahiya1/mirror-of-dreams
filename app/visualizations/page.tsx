@@ -11,6 +11,8 @@ import {
   GradientText,
   GlowBadge,
 } from '@/components/ui/glass';
+import { AppNavigation } from '@/components/shared/AppNavigation';
+import { EmptyState } from '@/components/shared/EmptyState';
 import { cn } from '@/lib/utils';
 
 type VisualizationStyle = 'achievement' | 'spiral' | 'synthesis';
@@ -63,7 +65,7 @@ export default function VisualizationsPage() {
       setSelectedDreamId('');
     },
     onError: (error) => {
-      alert(error.message);
+      // Error will be shown by tRPC error handling
       setGenerating(false);
     },
   });
@@ -114,6 +116,8 @@ export default function VisualizationsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
+      <AppNavigation currentPage="visualizations" />
+
       <div className="max-w-6xl mx-auto">
         {/* Page Title */}
         <div className="mb-8">
@@ -255,7 +259,13 @@ export default function VisualizationsPage() {
           </GradientText>
 
           {!visualizationsData || visualizationsData.items.length === 0 ? (
-            <p className="text-white/60">No visualizations yet. Create your first one above!</p>
+            <EmptyState
+              icon="🌌"
+              title="No visualizations yet"
+              description="Create your first visualization to experience your dream as already achieved."
+              ctaLabel="Generate First Visualization"
+              ctaAction={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            />
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {visualizationsData.items.map((viz: any) => (

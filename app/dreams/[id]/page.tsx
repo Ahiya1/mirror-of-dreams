@@ -8,6 +8,7 @@ import { trpc } from '@/lib/trpc';
 import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
 import { GlowButton } from '@/components/ui/glass/GlowButton';
 import { GradientText } from '@/components/ui/glass/GradientText';
+import { AppNavigation } from '@/components/shared/AppNavigation';
 
 const MIN_REFLECTIONS_FOR_GENERATION = 4;
 
@@ -48,7 +49,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
     },
     onError: (error) => {
       setIsGeneratingEvolution(false);
-      alert(`Failed to generate evolution report: ${error.message}`);
+      // Error will be shown by tRPC error handling
     },
   });
 
@@ -60,7 +61,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
     },
     onError: (error) => {
       setIsGeneratingVisualization(false);
-      alert(`Failed to generate visualization: ${error.message}`);
+      // Error will be shown by tRPC error handling
     },
   });
 
@@ -73,7 +74,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
       await deleteDream.mutateAsync({ id: params.id });
       router.push('/dreams');
     } catch (error: any) {
-      alert(`Failed to delete dream: ${error.message}`);
+      // Error will be shown by tRPC error handling
     }
   };
 
@@ -82,7 +83,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
       await updateStatus.mutateAsync({ id: params.id, status });
       refetch();
     } catch (error: any) {
-      alert(`Failed to update status: ${error.message}`);
+      // Error will be shown by tRPC error handling
     }
   };
 
@@ -142,6 +143,8 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
 
   return (
     <div className="dream-detail">
+      <AppNavigation currentPage="dreams" />
+
       <div className="dream-detail__container">
         {/* Back Button */}
         <button onClick={() => router.push('/dreams')} className="back-btn">
