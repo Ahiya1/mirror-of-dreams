@@ -58,7 +58,7 @@ iterations:
       - Evolution/Visualization UI (iteration 2)
       - Landing page (iteration 3)
       - Mobile optimization
-    status: PENDING
+    status: COMPLETE
     dependencies: []
 
   - iteration_id: 2

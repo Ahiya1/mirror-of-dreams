@@ -37,6 +37,7 @@ import UsageCard from '@/components/dashboard/cards/UsageCard';
 import ReflectionsCard from '@/components/dashboard/cards/ReflectionsCard';
 import DreamsCard from '@/components/dashboard/cards/DreamsCard';
 import EvolutionCard from '@/components/dashboard/cards/EvolutionCard';
+import VisualizationCard from '@/components/dashboard/cards/VisualizationCard';
 import SubscriptionCard from '@/components/dashboard/cards/SubscriptionCard';
 import { cn } from '@/lib/utils';
 import '@/styles/dashboard.css';
@@ -55,8 +56,8 @@ export default function DashboardPage() {
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [isPageVisible, setIsPageVisible] = useState(false);
 
-  // Stagger animation for grid cards (5 cards, 150ms delay between each)
-  const { containerRef, getItemStyles } = useStaggerAnimation(5, {
+  // Stagger animation for grid cards (6 cards, 150ms delay between each)
+  const { containerRef, getItemStyles } = useStaggerAnimation(6, {
     delay: 150,
     duration: 800,
     triggerOnce: true,
@@ -360,8 +361,13 @@ export default function DashboardPage() {
               <EvolutionCard animated={true} />
             </div>
 
-            {/* Card 5: Subscription Card - Fetches own data */}
+            {/* Card 5: Visualization Card - Fetches own data */}
             <div style={getItemStyles(4)}>
+              <VisualizationCard animated={true} />
+            </div>
+
+            {/* Card 6: Subscription Card - Fetches own data */}
+            <div style={getItemStyles(5)}>
               <SubscriptionCard animated={true} />
             </div>
           </DashboardGrid>

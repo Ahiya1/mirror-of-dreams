@@ -1,14 +1,21 @@
-// app/dreams/[id]/page.tsx - Dream detail page
+// app/dreams/[id]/page.tsx - Dream detail page with Evolution & Visualization generation
 
 'use client';
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { trpc } from '@/lib/trpc';
+import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
+import { GlowButton } from '@/components/ui/glass/GlowButton';
+import { GradientText } from '@/components/ui/glass/GradientText';
+
+const MIN_REFLECTIONS_FOR_GENERATION = 4;
 
 export default function DreamDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
+  const [isGeneratingEvolution, setIsGeneratingEvolution] = useState(false);
+  const [isGeneratingVisualization, setIsGeneratingVisualization] = useState(false);
 
   // Fetch dream
   const { data: dream, isLoading, refetch } = trpc.dreams.get.useQuery({ id: params.id });
@@ -21,13 +28,41 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
     sortOrder: 'desc',
   });
 
-  // Filter reflections by dream_id (we'll need to add this filter to the backend)
+  // Filter reflections by dream_id
   const dreamReflections = reflections?.items?.filter(
     (r: any) => r.dream_id === params.id
   ) || [];
 
+  const reflectionCount = dreamReflections.length;
+  const isEligibleForGeneration = reflectionCount >= MIN_REFLECTIONS_FOR_GENERATION;
+  const remainingReflections = Math.max(0, MIN_REFLECTIONS_FOR_GENERATION - reflectionCount);
+
   const deleteDream = trpc.dreams.delete.useMutation();
   const updateStatus = trpc.dreams.updateStatus.useMutation();
+
+  // Evolution generation mutation
+  const generateEvolution = trpc.evolution.generateDreamEvolution.useMutation({
+    onSuccess: (data) => {
+      setIsGeneratingEvolution(false);
+      router.push(`/evolution/${data.evolutionId}`);
+    },
+    onError: (error) => {
+      setIsGeneratingEvolution(false);
+      alert(`Failed to generate evolution report: ${error.message}`);
+    },
+  });
+
+  // Visualization generation mutation
+  const generateVisualization = trpc.visualizations.generate.useMutation({
+    onSuccess: (data) => {
+      setIsGeneratingVisualization(false);
+      router.push(`/visualizations/${data.visualization.id}`);
+    },
+    onError: (error) => {
+      setIsGeneratingVisualization(false);
+      alert(`Failed to generate visualization: ${error.message}`);
+    },
+  });
 
   const handleDelete = async () => {
     if (!confirm('Are you sure you want to delete this dream? This cannot be undone.')) {
@@ -51,12 +86,25 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
     }
   };
 
+  const handleGenerateEvolution = () => {
+    setIsGeneratingEvolution(true);
+    generateEvolution.mutate({ dreamId: params.id });
+  };
+
+  const handleGenerateVisualization = () => {
+    setIsGeneratingVisualization(true);
+    generateVisualization.mutate({
+      dreamId: params.id,
+      style: 'achievement',
+    });
+  };
+
   if (isLoading) {
     return (
       <div className="dream-detail">
         <div className="loading">
-          <div className="spinner">✨</div>
-          <p>Loading dream...</p>
+          <CosmicLoader size="lg" label="Loading dream..." />
+          <p className="loading-text">Loading dream...</p>
         </div>
       </div>
     );
@@ -141,6 +189,122 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
           </div>
         )}
 
+        {/* Evolution Report Generation Section */}
+        <div className="dream-detail__ai-section">
+          <h2 className="section-title">
+            <span className="title-icon">🦋</span>
+            <GradientText gradient="cosmic" className="title-gradient">
+              Evolution Report
+            </GradientText>
+          </h2>
+
+          {isGeneratingEvolution ? (
+            <div className="ai-loading-state">
+              <CosmicLoader size="lg" label="Generating evolution report..." />
+              <div className="loading-messages">
+                <p className="loading-message-primary">
+                  Analyzing your journey across time...
+                </p>
+                <p className="loading-message-secondary">
+                  This takes approximately 30-45 seconds
+                </p>
+                <p className="loading-message-warning">
+                  Don't close this tab
+                </p>
+              </div>
+            </div>
+          ) : isEligibleForGeneration ? (
+            <div className="ai-eligible-state">
+              <p className="eligible-message">
+                ✨ You have {reflectionCount} reflections. Generate an evolution report to see your growth patterns!
+              </p>
+              <GlowButton
+                variant="primary"
+                size="lg"
+                onClick={handleGenerateEvolution}
+                className="ai-generate-btn"
+              >
+                <span className="btn-icon">🦋</span>
+                Generate Evolution Report
+              </GlowButton>
+            </div>
+          ) : (
+            <div className="ai-ineligible-state">
+              <p className="ineligible-message">
+                You have {reflectionCount} reflection{reflectionCount !== 1 ? 's' : ''}.
+                Create {remainingReflections} more to unlock evolution reports.
+              </p>
+              <div className="progress-bar-container">
+                <div
+                  className="progress-bar-fill"
+                  style={{ width: `${(reflectionCount / MIN_REFLECTIONS_FOR_GENERATION) * 100}%` }}
+                />
+              </div>
+              <p className="progress-text">
+                {reflectionCount} of {MIN_REFLECTIONS_FOR_GENERATION} reflections needed
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Visualization Generation Section */}
+        <div className="dream-detail__ai-section">
+          <h2 className="section-title">
+            <span className="title-icon">🏔️</span>
+            <GradientText gradient="cosmic" className="title-gradient">
+              Visualization
+            </GradientText>
+          </h2>
+
+          {isGeneratingVisualization ? (
+            <div className="ai-loading-state">
+              <CosmicLoader size="lg" label="Generating visualization..." />
+              <div className="loading-messages">
+                <p className="loading-message-primary">
+                  Crafting your achievement narrative...
+                </p>
+                <p className="loading-message-secondary">
+                  This takes approximately 25-35 seconds
+                </p>
+                <p className="loading-message-warning">
+                  Don't close this tab
+                </p>
+              </div>
+            </div>
+          ) : isEligibleForGeneration ? (
+            <div className="ai-eligible-state">
+              <p className="eligible-message">
+                ✨ Generate a visualization to experience your dream as already achieved!
+              </p>
+              <GlowButton
+                variant="primary"
+                size="lg"
+                onClick={handleGenerateVisualization}
+                className="ai-generate-btn"
+              >
+                <span className="btn-icon">🏔️</span>
+                Generate Visualization
+              </GlowButton>
+            </div>
+          ) : (
+            <div className="ai-ineligible-state">
+              <p className="ineligible-message">
+                You have {reflectionCount} reflection{reflectionCount !== 1 ? 's' : ''}.
+                Create {remainingReflections} more to unlock visualizations.
+              </p>
+              <div className="progress-bar-container">
+                <div
+                  className="progress-bar-fill"
+                  style={{ width: `${(reflectionCount / MIN_REFLECTIONS_FOR_GENERATION) * 100}%` }}
+                />
+              </div>
+              <p className="progress-text">
+                {reflectionCount} of {MIN_REFLECTIONS_FOR_GENERATION} reflections needed
+              </p>
+            </div>
+          )}
+        </div>
+
         {/* Status Actions */}
         <div className="dream-detail__status-actions">
           <h2 className="section-title">Update Status</h2>
@@ -179,7 +343,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
         {/* Reflections */}
         <div className="dream-detail__reflections">
           <h2 className="section-title">
-            Reflections ({dream.reflectionCount || 0})
+            Reflections ({reflectionCount})
           </h2>
           {dreamReflections.length > 0 ? (
             <div className="reflections-list">
@@ -342,6 +506,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
         }
 
         .dream-detail__description,
+        .dream-detail__ai-section,
         .dream-detail__status-actions,
         .dream-detail__reflections {
           background: rgba(255, 255, 255, 0.03);
@@ -351,17 +516,123 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
           margin-bottom: 2rem;
         }
 
+        .dream-detail__ai-section {
+          background: rgba(139, 92, 246, 0.05);
+          border: 1px solid rgba(139, 92, 246, 0.15);
+        }
+
         .section-title {
           font-size: 1.25rem;
           font-weight: 600;
           color: white;
           margin: 0 0 1rem 0;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .title-icon {
+          font-size: 1.5rem;
+        }
+
+        .title-gradient {
+          font-size: 1.25rem;
+          font-weight: 600;
         }
 
         .description-text {
           color: rgba(255, 255, 255, 0.8);
           line-height: 1.7;
           font-size: 1.05rem;
+        }
+
+        /* AI Generation States */
+        .ai-loading-state {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 2rem;
+          gap: 1.5rem;
+        }
+
+        .loading-messages {
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .loading-message-primary {
+          color: rgba(167, 139, 250, 1);
+          font-size: 1.125rem;
+          font-weight: 500;
+        }
+
+        .loading-message-secondary {
+          color: rgba(139, 92, 246, 0.8);
+          font-size: 0.875rem;
+        }
+
+        .loading-message-warning {
+          color: rgba(255, 255, 255, 0.6);
+          font-size: 0.75rem;
+          font-style: italic;
+        }
+
+        .ai-eligible-state {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .eligible-message {
+          color: rgba(255, 255, 255, 0.9);
+          font-size: 1rem;
+          line-height: 1.6;
+        }
+
+        .ai-generate-btn {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+        }
+
+        .btn-icon {
+          font-size: 1.25rem;
+        }
+
+        .ai-ineligible-state {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .ineligible-message {
+          color: rgba(167, 139, 250, 0.9);
+          font-size: 1rem;
+        }
+
+        .progress-bar-container {
+          width: 100%;
+          height: 8px;
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 999px;
+          overflow: hidden;
+        }
+
+        .progress-bar-fill {
+          height: 100%;
+          background: linear-gradient(90deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
+          border-radius: 999px;
+          transition: width 0.5s ease;
+        }
+
+        .progress-text {
+          color: rgba(255, 255, 255, 0.7);
+          font-size: 0.875rem;
+          text-align: center;
         }
 
         .status-buttons {
@@ -455,20 +726,12 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
           justify-content: center;
           min-height: 50vh;
           color: white;
+          gap: 1rem;
         }
 
-        .spinner {
-          font-size: 3rem;
-          animation: spin 2s linear infinite;
-        }
-
-        @keyframes spin {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
+        .loading-text {
+          color: rgba(255, 255, 255, 0.8);
+          font-size: 1.125rem;
         }
 
         @media (max-width: 768px) {
