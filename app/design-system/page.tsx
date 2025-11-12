@@ -127,7 +127,7 @@ export default function DesignSystemPage() {
               content="I found myself floating through a vast expanse of stars, each one whispering secrets of the universe. Colors I'd never seen before painted the void, and time seemed to lose all meaning..."
               date="October 23, 2025"
               tone="Mystical"
-              onClick={() => alert('Dream clicked!')}
+              onClick={() => console.log('Dream clicked!')}
             />
             <DreamCard
               title="The Mirror Realm"

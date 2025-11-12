@@ -3,6 +3,7 @@ import '@/styles/variables.css';  // First: CSS custom properties
 import '@/styles/animations.css'; // Second: Keyframe animations
 import '@/styles/globals.css';
 import { TRPCProvider } from '@/components/providers/TRPCProvider';
+import { ToastProvider } from '@/contexts/ToastContext';
 
 export const metadata: Metadata = {
   title: 'Mirror of Dreams - Reflect, Discover, Transform',
@@ -31,11 +32,13 @@ export default function RootLayout({
           <div className="stars" />
         </div>
 
-        {/* Main content wrapped with tRPC provider */}
+        {/* Main content wrapped with tRPC provider and Toast provider */}
         <TRPCProvider>
-          <main id="main-content" className="relative z-10">
-            {children}
-          </main>
+          <ToastProvider>
+            <main id="main-content" className="relative z-10">
+              {children}
+            </main>
+          </ToastProvider>
         </TRPCProvider>
       </body>
     </html>

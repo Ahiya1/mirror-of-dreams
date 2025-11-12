@@ -19,10 +19,20 @@ export default function SignupPage() {
   const [message, setMessage] = useState({ text: '', type: '' });
 
   const signupMutation = trpc.auth.signup.useMutation({
-    onSuccess: () => {
+    onSuccess: (data) => {
+      const { user, token } = data;
+
+      // Store token
+      localStorage.setItem('authToken', token);
+
       setMessage({ text: 'Account created! Redirecting...', type: 'success' });
       setTimeout(() => {
-        router.push('/dashboard');
+        // Check if onboarding needed (new users who are not admin/creator)
+        if (!user.onboardingCompleted && !user.isAdmin && !user.isCreator) {
+          router.push('/onboarding');
+        } else {
+          router.push('/dashboard');
+        }
       }, 1000);
     },
     onError: (error) => {

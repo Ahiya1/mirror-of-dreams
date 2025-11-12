@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { trpc } from '@/lib/trpc';
+import { useToast } from '@/contexts/ToastContext';
 import { FeedbackForm } from '@/components/reflections/FeedbackForm';
 
 interface ReflectionDetailPageProps {
@@ -14,6 +15,7 @@ interface ReflectionDetailPageProps {
 
 export default function ReflectionDetailPage({ params }: ReflectionDetailPageProps) {
   const router = useRouter();
+  const toast = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -367,7 +369,7 @@ export default function ReflectionDetailPage({ params }: ReflectionDetailPagePro
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText(reflection.aiResponse);
-                    alert('Reflection copied to clipboard!');
+                    toast.success('Reflection copied to clipboard!');
                   }}
                   className="w-full flex items-center justify-center gap-2 rounded-lg bg-slate-800/50 px-4 py-2.5 text-sm font-medium text-gray-200 hover:bg-slate-800 transition-colors"
                 >

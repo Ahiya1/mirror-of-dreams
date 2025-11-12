@@ -8,6 +8,8 @@ import { trpc } from '@/lib/trpc';
 import { DreamCard } from '@/components/dreams/DreamCard';
 import { CreateDreamModal } from '@/components/dreams/CreateDreamModal';
 import { CosmicLoader, GlowButton, GlassCard, GradientText } from '@/components/ui/glass';
+import { AppNavigation } from '@/components/shared/AppNavigation';
+import { EmptyState } from '@/components/shared/EmptyState';
 
 export default function DreamsPage() {
   const router = useRouter();
@@ -52,6 +54,8 @@ export default function DreamsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-4 sm:p-8">
+      <AppNavigation currentPage="dreams" />
+
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <GlassCard variant="elevated" className="mb-6">
@@ -150,25 +154,13 @@ export default function DreamsPage() {
             ))}
           </div>
         ) : (
-          <div className="flex justify-center items-center min-h-[50vh]">
-            <GlassCard variant="elevated" className="text-center max-w-md">
-              <div className="text-6xl mb-4">🌟</div>
-              <GradientText gradient="cosmic" className="text-2xl font-bold mb-4">
-                No dreams yet
-              </GradientText>
-              <p className="text-white/60 text-base mb-6 leading-relaxed">
-                Create your first dream to begin your journey of reflection and growth.
-              </p>
-              <GlowButton
-                variant="primary"
-                size="lg"
-                onClick={() => setIsCreateModalOpen(true)}
-                className="w-full"
-              >
-                Create Your First Dream
-              </GlowButton>
-            </GlassCard>
-          </div>
+          <EmptyState
+            icon="🌟"
+            title="No dreams yet"
+            description="Create your first dream to begin your journey of reflection and growth."
+            ctaLabel="Create Your First Dream"
+            ctaAction={() => setIsCreateModalOpen(true)}
+          />
         )}
       </div>
 

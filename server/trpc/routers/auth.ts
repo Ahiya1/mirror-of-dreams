@@ -86,8 +86,14 @@ export const authRouter = router({
 
       const token = jwt.sign(payload, JWT_SECRET);
 
+      // Include onboarding_completed flag (new users always need onboarding unless admin/creator)
+      const userResponse = userRowToUser(newUser);
+
       return {
-        user: userRowToUser(newUser),
+        user: {
+          ...userResponse,
+          onboardingCompleted: newUser.onboarding_completed || false,
+        },
         token,
         message: 'Account created successfully',
       };

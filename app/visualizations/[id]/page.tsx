@@ -5,6 +5,7 @@ import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/hooks/useAuth';
 import { GradientText } from '@/components/ui/glass/GradientText';
 import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
+import { AppNavigation } from '@/components/shared/AppNavigation';
 
 const styleInfo = {
   achievement: {
@@ -82,6 +83,8 @@ export default function VisualizationDetailPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 p-8">
+      <AppNavigation currentPage="visualizations" />
+
       <div className="max-w-5xl mx-auto">
         {/* Back Button */}
         <button

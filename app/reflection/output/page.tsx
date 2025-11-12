@@ -4,6 +4,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/contexts/ToastContext';
 import CosmicBackground from '@/components/shared/CosmicBackground';
 import '@/styles/mirror.css';
 
@@ -12,6 +13,7 @@ function ReflectionOutputContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user } = useAuth();
+  const toast = useToast();
 
   const reflectionId = searchParams.get('id');
   const [reflectionVisible, setReflectionVisible] = useState(false);
@@ -32,7 +34,7 @@ function ReflectionOutputContent() {
 
   const handleCopy = async () => {
     if (!reflection?.aiResponse) {
-      alert('No reflection to copy.');
+      toast.warning('No reflection to copy.');
       return;
     }
 
@@ -40,10 +42,10 @@ function ReflectionOutputContent() {
       // Remove HTML tags for clean text copy
       const cleanText = reflection.aiResponse.replace(/<[^>]*>/g, '');
       await navigator.clipboard.writeText(cleanText);
-      alert('✅ Reflection copied to clipboard!');
+      toast.success('Reflection copied to clipboard!');
     } catch (error) {
       console.error('Copy failed:', error);
-      alert('Failed to copy reflection');
+      toast.error('Failed to copy reflection');
     }
   };
 
