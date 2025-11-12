@@ -57,8 +57,8 @@ export function CosmicLoader({
           'rounded-full',
           sizes[size],
           borderSizes[size],
-          'border-transparent border-t-mirror-purple border-r-mirror-violet border-b-mirror-blue',
-          'shadow-glow-purple'
+          'border-transparent border-t-mirror-purple border-r-mirror-indigo border-b-mirror-violet',
+          'shadow-glow'
         )}
       />
       <span className="sr-only">{label}</span>

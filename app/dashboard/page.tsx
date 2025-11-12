@@ -44,7 +44,7 @@ import '@/styles/dashboard.css';
 export default function DashboardPage() {
   const router = useRouter();
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
-  const dashboardData = useDashboard();
+  const { refreshAll } = useDashboard();
 
   // UI state
   const [showToast, setShowToast] = useState<{
@@ -65,9 +65,9 @@ export default function DashboardPage() {
   /**
    * Handle data refresh
    */
-  const handleRefreshData = useCallback(async () => {
+  const handleRefreshData = useCallback(() => {
     try {
-      await dashboardData.refetch();
+      refreshAll();
       setShowToast({
         type: 'success',
         message: 'Dashboard refreshed successfully',
@@ -81,7 +81,7 @@ export default function DashboardPage() {
         duration: 5000,
       });
     }
-  }, [dashboardData]);
+  }, [refreshAll]);
 
   /**
    * Handle toast dismissal
@@ -147,38 +147,18 @@ export default function DashboardPage() {
 
   // Redirect to signin if not authenticated (after auth check completes)
   React.useEffect(() => {
-    if (!isAuthenticated && !authLoading && !dashboardData.isLoading) {
+    if (!isAuthenticated && !authLoading) {
       router.push('/auth/signin');
     }
-  }, [isAuthenticated, authLoading, dashboardData.isLoading, router]);
+  }, [isAuthenticated, authLoading, router]);
 
   // Handle navigation to reflection page
   const handleReflectNow = () => {
     router.push('/reflection');
   };
 
-  // Adapt dashboardData to WelcomeSection interface
-  const welcomeSectionData = React.useMemo(() => {
-    if (!dashboardData.usage) return undefined;
-
-    return {
-      usage: {
-        currentCount: dashboardData.usage.current,
-        limit: dashboardData.usage.limit,
-        totalReflections: dashboardData.usage.current, // Same as current for now
-        canReflect: dashboardData.usage.canReflect,
-      },
-      evolution: {
-        canGenerateNext: dashboardData.evolutionStatus?.canGenerate,
-        progress: {
-          needed: 0, // Placeholder
-        },
-      },
-    };
-  }, [dashboardData]);
-
-  // Loading state - show skeleton while data loads
-  if (authLoading || dashboardData.isLoading) {
+  // Loading state - show skeleton while auth loads
+  if (authLoading) {
     return (
       <div className="dashboard" style={{ opacity: isPageVisible ? 1 : 0 }}>
         <CosmicBackground />
@@ -193,49 +173,6 @@ export default function DashboardPage() {
   // Redirect to signin if not authenticated (but don't show loading)
   if (!isAuthenticated) {
     return null; // Let the useEffect handle the redirect
-  }
-
-  // Check if we have a critical error with no data
-  const hasData = !!(dashboardData.usage || dashboardData.reflections || dashboardData.evolutionStatus);
-  const hasCriticalError = dashboardData.error && !dashboardData.isLoading && !hasData;
-
-  // Error state (only if no data available)
-  if (hasCriticalError) {
-    return (
-      <div className="dashboard" style={{ opacity: isPageVisible ? 1 : 0 }}>
-        <CosmicBackground />
-
-        <div className="fixed inset-0 flex items-center justify-center z-[1000] px-6">
-          <GlassCard variant="elevated" className="max-w-md w-full text-center p-8">
-            <div className="text-6xl mb-6 opacity-80">⚠️</div>
-            <GradientText gradient="cosmic" className="mb-4 text-2xl font-semibold">
-              Unable to load dashboard
-            </GradientText>
-            <p className="text-white/70 text-base mb-8 leading-relaxed">
-              {dashboardData.error}
-            </p>
-            <div className="flex gap-3 justify-center">
-              <GlowButton
-                variant="secondary"
-                size="md"
-                onClick={handleRefreshData}
-              >
-                <span className="text-xl">🔄</span>
-                Try Again
-              </GlowButton>
-              <GlowButton
-                variant="primary"
-                size="md"
-                onClick={() => router.push('/reflection')}
-              >
-                <span className="text-xl">✨</span>
-                Create Reflection
-              </GlowButton>
-            </div>
-          </GlassCard>
-        </div>
-      </div>
-    );
   }
 
   return (
@@ -297,12 +234,11 @@ export default function DashboardPage() {
             {/* Refresh button */}
             <button
               onClick={handleRefreshData}
-              disabled={dashboardData.isLoading}
               title="Refresh dashboard"
               aria-label="Refresh dashboard"
-              className="flex items-center justify-center w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center justify-center w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-all"
             >
-              <span className={cn('text-lg', dashboardData.isLoading && 'animate-spin')}>🔄</span>
+              <span className="text-lg">🔄</span>
             </button>
 
             {/* User menu */}
@@ -386,7 +322,7 @@ export default function DashboardPage() {
       <main className="dashboard-main">
         <div className="dashboard-container">
           {/* Personalized Welcome Section */}
-          <WelcomeSection dashboardData={welcomeSectionData} />
+          <WelcomeSection />
 
         {/* Quick Action: Reflect Now Button */}
         <div className="flex flex-col items-center gap-3 mb-8">
@@ -394,22 +330,16 @@ export default function DashboardPage() {
             variant="primary"
             size="lg"
             onClick={handleReflectNow}
-            disabled={!dashboardData.usage?.canReflect}
             className="w-full sm:w-auto"
           >
             <span className="text-2xl">✨</span>
             Reflect Now
           </GlowButton>
-          {!dashboardData.usage?.canReflect && (
-            <p className="text-sm text-white/60 italic">
-              Upgrade to Premium for unlimited reflections
-            </p>
-          )}
         </div>
 
         {/* Dashboard Grid with Stagger Animation */}
         <div ref={containerRef} className="dashboard-grid-container">
-          <DashboardGrid isLoading={dashboardData.isLoading}>
+          <DashboardGrid isLoading={false}>
             {/* Card 1: Usage Card - Fetches own data */}
             <div style={getItemStyles(0)}>
               <UsageCard animated={true} />
@@ -471,37 +401,6 @@ export default function DashboardPage() {
         )}
       </AnimatePresence>
 
-      {/* Error banner for non-critical errors */}
-      {dashboardData.error && hasData && (
-        <div className="fixed top-[80px] left-1/2 -translate-x-1/2 z-[500] min-w-[320px] max-w-[600px] mt-4 px-4">
-          <GlassCard variant="elevated" className="border-l-4 border-yellow-500/60">
-            <div className="flex items-start gap-3">
-              <GlowBadge variant="warning">
-                <AlertTriangle className="h-4 w-4" />
-              </GlowBadge>
-              <div className="flex-1">
-                <p className="text-sm text-white/90">
-                  Some data may be outdated. Last refresh failed.
-                </p>
-              </div>
-              <GlowButton
-                variant="ghost"
-                size="sm"
-                onClick={handleRefreshData}
-              >
-                Retry
-              </GlowButton>
-              <button
-                onClick={handleClearError}
-                className="text-white/60 hover:text-white transition-colors"
-                aria-label="Dismiss error"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-          </GlassCard>
-        </div>
-      )}
 
       {/* Minimal custom styles for dashboard nav links and dropdown items */}
       <style jsx global>{`

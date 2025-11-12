@@ -7,7 +7,7 @@ import DashboardCard, {
   CardContent,
   CardActions,
 } from '@/components/dashboard/shared/DashboardCard';
-import { useDashboard } from '@/hooks/useDashboard';
+import { trpc } from '@/lib/trpc';
 
 interface EvolutionCardProps {
   animated?: boolean;
@@ -15,15 +15,16 @@ interface EvolutionCardProps {
 }
 
 /**
- * Evolution card component - Placeholder UI for evolution insights
- * Full evolution functionality deferred to Iteration 2
- * Migrated from: src/components/dashboard/cards/EvolutionCard.jsx
+ * Evolution card component - Fetches eligibility data independently
+ * Full evolution functionality deferred to Iteration 20
+ * Refactored: Builder-2 (Iteration 19) - Remove useDashboard dependency
  */
 const EvolutionCard: React.FC<EvolutionCardProps> = ({
   animated = true,
   className = '',
 }) => {
-  const { evolutionStatus, isLoading } = useDashboard();
+  // Fetch evolution eligibility directly
+  const { data: evolutionData, isLoading } = trpc.evolution.checkEligibility.useQuery();
 
   // Placeholder progress (will be real data in Iteration 2)
   const progress = {

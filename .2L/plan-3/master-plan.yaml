@@ -1,0 +1,178 @@
+plan_id: plan-3
+created_at: 2025-11-12T00:00:00Z
+status: PLANNED
+total_iterations: 3
+
+strategy: |
+  Transform Mirror of Dreams from partial implementation to cohesive, magical MVP through 3 focused iterations:
+
+  **Iteration 1 (Foundation):** Audit current state, create admin user, fix broken flows, establish solid foundation
+  **Iteration 2 (Integration):** Complete Evolution/Visualization UI, integrate dashboard, connect AI features end-to-end
+  **Iteration 3 (Polish):** Build onboarding flow, polish UX, test Sarah's journey, ensure magic is real
+
+  Each iteration validates through actual testing against Sarah's journey success criteria.
+  Vision emphasizes "essence over completeness" - prioritize one perfect user journey over feature breadth.
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 19
+    name: "Foundation Audit & Admin Setup"
+    vision: "Test what works, fix what's broken, create admin user, establish solid foundation"
+    scope: |
+      **PRIMARY GOAL:** Validate current state and establish stable foundation
+
+      **CRITICAL PATH:**
+      1. Create admin user (ahiya.butman@gmail.com / dream_lake)
+         - Use scripts/create-admin-user.js or create new script
+         - Verify is_admin and is_creator flags
+         - Test login and dashboard access
+
+      2. Test core flows end-to-end:
+         - Auth: Sign up → Sign in → Token persistence
+         - Dreams: Create → View in dashboard → Edit → Archive
+         - Reflections: Start flow → Answer 5 questions → AI response → Save
+         - Dashboard: Load all cards → Verify data consistency
+
+      3. Fix broken flows discovered during testing:
+         - Database connection issues
+         - tRPC router errors
+         - Missing frontend-backend connections
+         - Usage tracking bugs
+
+      4. Document current state:
+         - What works fully
+         - What's partially implemented
+         - What's missing entirely
+         - Integration gaps for iteration 2
+
+      **SUCCESS CRITERIA:**
+      - Admin user can sign in and access dashboard
+      - Dreams CRUD works end-to-end
+      - Reflection flow completes with AI response
+      - Dashboard displays accurate data
+      - Zero critical errors in console
+      - Clear documentation of gaps for next iteration
+
+      **OUT OF SCOPE:**
+      - Onboarding flow (iteration 3)
+      - Evolution/Visualization UI (iteration 2)
+      - Landing page (iteration 3)
+      - Mobile optimization
+    status: PENDING
+    dependencies: []
+
+  - iteration_id: 2
+    global_iteration: 20
+    name: "Evolution & Visualization Integration"
+    vision: "Complete AI feature UIs, integrate dashboard, enable Sarah's breakthrough moment"
+    scope: |
+      **PRIMARY GOAL:** Enable Sarah's Day 6 breakthrough (4th reflection → Evolution → Visualization)
+
+      **CRITICAL PATH:**
+      1. Evolution Report UI:
+         - /dreams/[dreamId] page: "Generate Evolution Report" button (if ≥4 reflections)
+         - CosmicLoader during AI generation (30s wait)
+         - /evolution/[reportId] page: Beautiful markdown display
+         - List all past reports for a dream
+         - Tier-based context (Free: 4 reflections, Optimal: 9)
+         - Usage limit enforcement and display
+
+      2. Visualization UI:
+         - /dreams/[dreamId] page: "Generate Visualization" button (if ≥4 reflections)
+         - Achievement narrative style (future-self perspective)
+         - /visualizations/[vizId] page: Immersive display
+         - List all past visualizations for a dream
+         - Monthly limit display (Free: 1, Optimal: 6)
+
+      3. Dashboard Integration:
+         - Recent Reflections section: Last 3 across all dreams
+         - Evolution Card: Latest report preview + "Generate" CTA
+         - Usage tracking display: Progress bars for all limits
+         - Dream cards: Quick actions (Reflect, Evolution, Visualize)
+         - Fix data consistency issues (consolidate queries)
+
+      4. Test Sarah's Journey Day 0-6:
+         - Create dream → 4 reflections → Generate evolution → Generate visualization
+         - Verify eligibility checks work
+         - Verify temporal distribution correct
+         - Verify AI responses feel "magical"
+         - Verify usage counters update
+
+      **SUCCESS CRITERIA:**
+      - User completes 4 reflections on a dream
+      - "Generate Evolution Report" appears and works
+      - Evolution report displays with genuine insights
+      - Visualization generates and feels immersive
+      - Dashboard shows all data consistently
+      - Usage limits enforced and displayed correctly
+      - Sarah's Day 6 breakthrough moment works perfectly
+
+      **OUT OF SCOPE:**
+      - Cross-dream (dream-agnostic) reports (explicitly not MVP)
+      - Multiple visualization styles (only Achievement for MVP)
+      - Report editing
+      - PDF export
+    status: PENDING
+    dependencies: [1]
+
+  - iteration_id: 3
+    global_iteration: 21
+    name: "Onboarding, Landing & Polish"
+    vision: "Complete Sarah's Journey with onboarding flow, landing page, and final polish"
+    scope: |
+      **PRIMARY GOAL:** Deliver complete end-to-end user journey from landing to breakthrough
+
+      **CRITICAL PATH:**
+      1. 3-Step Onboarding Flow:
+         - /onboarding page with step indicator
+         - Step 1: "Welcome to Mirror of Dreams" (explain consciousness companion concept)
+         - Step 2: "How Reflections Work" (explain 5-question flow and AI insights)
+         - Step 3: "Your Free Tier" (explain limits: 2 dreams, 4 reflections/month)
+         - Redirect to /dashboard after completion
+         - Skip button (optional)
+
+      2. Landing Page:
+         - / route: Beautiful cosmic aesthetic
+         - Hero: "Your consciousness companion"
+         - Value prop: Soft, glossy, sharp messaging
+         - "Start Free" CTA → /auth/signup
+         - Showcase evolution report example
+         - No complex marketing copy (keep it minimal)
+
+      3. Polish & Integration:
+         - Navigation: Consistent header/sidebar across all pages
+         - Loading states: CosmicLoader everywhere
+         - Error handling: Beautiful error messages
+         - Responsive design: Desktop focus, mobile acceptable
+         - Animations: Smooth transitions throughout
+
+      4. Test Sarah's Journey End-to-End:
+         - Landing → Signup → Onboarding → Create dream → 4 reflections → Evolution → Visualization
+         - Every step feels magical, not transactional
+         - Zero friction points
+         - Emotional impact at Day 6 breakthrough
+
+      5. Final Validation:
+         - TypeScript compilation passes
+         - No console errors
+         - All core flows tested manually
+         - Admin user works
+         - Deployable to Vercel
+
+      **SUCCESS CRITERIA:**
+      - New user sees landing page and understands value
+      - Onboarding explains product in 90 seconds
+      - Sarah's full journey (Day 0-8) works perfectly
+      - UI is cohesive and magical throughout
+      - Admin user has full access
+      - Zero critical bugs
+      - Ready to deploy
+
+      **OUT OF SCOPE:**
+      - Stripe payment integration (tier simulation only)
+      - Email notifications
+      - Social features
+      - Advanced analytics
+      - Mobile app
+    status: PENDING
+    dependencies: [1, 2]

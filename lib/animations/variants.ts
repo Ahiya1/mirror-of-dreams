@@ -164,3 +164,131 @@ export const slideUpVariants: Variants = {
     },
   },
 };
+
+/**
+ * Button animation with glow
+ */
+export const buttonVariants: Variants = {
+  rest: {
+    scale: 1,
+  },
+  hover: {
+    scale: 1.02,
+    transition: {
+      duration: 0.2,
+      ease: 'easeOut',
+    },
+  },
+  tap: {
+    scale: 0.98,
+  },
+};
+
+/**
+ * Progress orb animation
+ */
+export const orbVariants: Variants = {
+  inactive: {
+    scale: 1,
+    opacity: 0.5,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  active: {
+    scale: 1.2,
+    opacity: 1,
+    backgroundColor: 'rgba(139, 92, 246, 1)',
+    boxShadow: '0 0 20px rgba(139, 92, 246, 0.6)',
+    transition: {
+      duration: 0.3,
+      ease: 'easeOut',
+    },
+  },
+  complete: {
+    scale: 1,
+    opacity: 1,
+    backgroundColor: 'rgba(139, 92, 246, 0.8)',
+    transition: {
+      duration: 0.3,
+    },
+  },
+};
+
+/**
+ * Badge glow pulse
+ */
+export const badgeGlowVariants: Variants = {
+  rest: {
+    boxShadow: '0 0 10px rgba(139, 92, 246, 0.3)',
+  },
+  glow: {
+    boxShadow: [
+      '0 0 10px rgba(139, 92, 246, 0.3)',
+      '0 0 20px rgba(139, 92, 246, 0.6)',
+      '0 0 10px rgba(139, 92, 246, 0.3)',
+    ],
+    transition: {
+      duration: 2,
+      repeat: Infinity,
+      ease: 'easeInOut',
+    },
+  },
+};
+
+/**
+ * Scale pulse animation (for loaders)
+ */
+export const scalePulseVariants: Variants = {
+  animate: {
+    scale: [1, 1.1, 1],
+    opacity: [0.7, 1, 0.7],
+    transition: {
+      duration: 1.5,
+      repeat: Infinity,
+      ease: 'easeInOut',
+    },
+  },
+};
+
+/**
+ * Slide in from left
+ */
+export const slideInLeftVariants: Variants = {
+  hidden: { opacity: 0, x: -40 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.5,
+      ease: 'easeOut',
+    },
+  },
+};
+
+/**
+ * Slide in from right
+ */
+export const slideInRightVariants: Variants = {
+  hidden: { opacity: 0, x: 40 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.5,
+      ease: 'easeOut',
+    },
+  },
+};
+
+/**
+ * Float animation (for floating elements)
+ */
+export const floatVariants: Variants = {
+  animate: {
+    y: [-10, 10, -10],
+    transition: {
+      duration: 6,
+      repeat: Infinity,
+      ease: 'easeInOut',
+    },
+  },
+};

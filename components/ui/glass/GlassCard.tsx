@@ -30,27 +30,30 @@ export function GlassCard({
   const prefersReducedMotion = useReducedMotion();
   const shouldAnimate = animated && !prefersReducedMotion;
 
-  // Glass intensity mapping
+  // Crystal clarity mapping (sharp, minimal blur - 2px!)
   const blurClasses = {
-    subtle: 'backdrop-blur-glass-sm',
-    medium: 'backdrop-blur-glass',
-    strong: 'backdrop-blur-glass-lg',
+    subtle: 'backdrop-blur-crystal backdrop-saturate-crystal',
+    medium: 'backdrop-blur-crystal backdrop-saturate-crystal',
+    strong: 'backdrop-blur-crystal-soft backdrop-saturate-crystal',
   };
 
-  // Variant styling
+  // Variant styling - Living crystalline surfaces
   const variantClasses = {
-    default: 'bg-white/5 border border-white/10',
-    elevated: 'bg-white/8 border border-white/15 shadow-glow',
-    inset: 'bg-white/3 border border-white/5 shadow-inner',
+    default: 'crystal-glass mirror-corner warmth-ambient',
+    elevated: 'crystal-sharp mirror-top refraction-edge gold-seep-edge',
+    inset: 'crystal-ethereal mirror-corner',
   };
 
-  // Glow color mapping
+  // Glow behavior on hover (slow, reverent)
   const glowClasses = {
-    purple: 'hover:shadow-glow-lg hover:border-mirror-purple/30',
-    blue: 'hover:shadow-glow-electric hover:border-mirror-blue/30',
-    cosmic: 'hover:shadow-glow-lg hover:border-mirror-violet/30',
-    electric: 'hover:shadow-glow-electric hover:border-mirror-cyan/30',
+    purple: 'hover-glow',
+    blue: 'hover-glow',
+    cosmic: 'hover-glow hover-breathe',
+    electric: 'hover-glow',
   };
+
+  // Breathing variants (elevated cards breathe always)
+  const breathingClass = variant === 'elevated' ? 'breathe-slow' : '';
 
   return (
     <motion.div
@@ -60,17 +63,17 @@ export function GlassCard({
       whileHover={hoverable && !prefersReducedMotion ? 'hover' : undefined}
       onClick={onClick}
       className={cn(
-        // Base styles
+        // Base structure
         'rounded-xl p-6',
-        // Glass effect
-        blurClasses[glassIntensity],
-        'backdrop-saturate-glass',
-        // Variant
+        'relative',
+        // Crystal variant (includes all effects)
         variantClasses[variant],
-        // Hover effects
+        // Breathing (if elevated)
+        breathingClass,
+        // Hover reverence
         hoverable && glowClasses[glowColor],
-        // Transitions
-        'transition-all duration-300',
+        // Slow transitions (0.5s instead of 0.3s)
+        'transition-all duration-500',
         // Custom classes
         className
       )}

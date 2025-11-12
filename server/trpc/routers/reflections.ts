@@ -202,15 +202,17 @@ export const reflectionsRouter = router({
 
   // Check current usage status
   checkUsage: protectedProcedure.query(async ({ ctx }) => {
+    // Aligned with vision: Free tier gets 4 reflections/month
     const TIER_LIMITS = {
-      free: 1,
-      essential: 5,
-      premium: 10,
+      free: 4,        // Vision: 4 reflections/month for Free tier
+      essential: 10,   // Between free and optimal
+      optimal: 30,     // Vision: 30 reflections/month for Optimal tier
+      premium: 999999  // Unlimited for admin/creator
     };
 
     const limit = ctx.user.isCreator || ctx.user.isAdmin
       ? 999999
-      : TIER_LIMITS[ctx.user.tier];
+      : TIER_LIMITS[ctx.user.tier] || 0;
 
     const used = ctx.user.reflectionCountThisMonth;
     const remaining = Math.max(0, limit - used);

@@ -16,9 +16,9 @@ export function GradientText({
   children,
 }: GradientTextProps) {
   const gradientClasses = {
-    cosmic: 'bg-gradient-to-r from-mirror-purple via-mirror-violet to-mirror-blue',
-    primary: 'bg-gradient-to-r from-mirror-violet to-mirror-purple-deep',
-    dream: 'bg-gradient-to-r from-mirror-violet-light via-mirror-purple to-mirror-blue',
+    cosmic: 'bg-gradient-cosmic',
+    primary: 'bg-gradient-primary',
+    dream: 'bg-gradient-violet',
   };
 
   return (

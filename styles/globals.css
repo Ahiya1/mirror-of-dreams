@@ -23,7 +23,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #0f0f1e;
+  background-color: #0f0a1a;  /* Deep purple space */
   color: #ffffff;
   overflow-x: hidden;
 }
@@ -54,10 +54,524 @@ body {
   50% { opacity: 1; }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   MIRROR OF DREAMS - The Soul-Sigh Design System
+   Ancient amethyst crystal with whispers of eternal starlight
+   ═══════════════════════════════════════════════════════════════ */
+
+@layer components {
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     DEPTH LAYER 1: THE VOID (Far Plane)
+     Atmospheric purple nebula - slow drift, distant
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  .nebula-far {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at top, rgba(45, 27, 78, 0.6) 0%, rgba(26, 15, 46, 0.3) 50%, transparent 100%);
+    animation: drift 11s ease-in-out infinite;
+    z-index: 1;
+  }
+
+  .void-atmosphere {
+    background: radial-gradient(circle at center, rgba(18, 8, 40, 0.8) 0%, rgba(10, 4, 22, 0.95) 100%);
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     DEPTH LAYER 2: AMETHYST ENERGY (Mid Plane)
+     Ancient 10,000-year-old crystal - breathing, glowing, alive
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  .amethyst-core {
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.4) 0%, rgba(124, 58, 237, 0.2) 40%, rgba(124, 58, 237, 0.1) 70%, transparent 100%);
+    animation: glowBreathe 25s ease-in-out infinite;
+  }
+
+  .amethyst-breathing {
+    box-shadow:
+      inset 0 0 40px rgba(124, 58, 237, 0.4),
+      inset 0 0 20px rgba(124, 58, 237, 0.6),
+      0 0 60px rgba(124, 58, 237, 0.35),
+      0 0 120px rgba(124, 58, 237, 0.15);
+    animation: glowBreathe 25s ease-in-out infinite;
+  }
+
+  .amethyst-glow-multi {
+    box-shadow:
+      /* Inner core */
+      inset 0 0 40px rgba(124, 58, 237, 0.4),
+      /* Mid layer */
+      inset 0 0 80px rgba(124, 58, 237, 0.2),
+      /* Outer emanation */
+      0 0 40px rgba(124, 58, 237, 0.3),
+      0 0 80px rgba(124, 58, 237, 0.2),
+      /* Atmospheric */
+      0 0 120px rgba(124, 58, 237, 0.1);
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     DEPTH LAYER 3: MIRROR TRUTH (Near Plane)
+     Crystalline glass - sharp, clear, reflective
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  .crystal-glass {
+    /* DREAMY GLASS - Multi-layer gradients */
+    backdrop-filter: blur(40px) saturate(150%);
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, transparent 40%, rgba(147, 51, 234, 0.03) 70%, transparent 100%),
+      linear-gradient(225deg, rgba(99, 102, 241, 0.04) 0%, transparent 50%),
+      linear-gradient(315deg, rgba(168, 85, 247, 0.02) 0%, transparent 60%),
+      rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: mirrorFloat 12s ease-in-out infinite;
+  }
+
+  @keyframes mirrorFloat {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-3px);
+    }
+  }
+
+  .crystal-glass::before {
+    /* Animated gradient layer - always visible, subtle */
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 30% 40%, rgba(147, 51, 234, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 70% 60%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 40%, rgba(168, 85, 247, 0.05) 70%, transparent 100%);
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0.6;
+    animation: gradientShift 15s ease-in-out infinite;
+  }
+
+  @keyframes gradientShift {
+    0%, 100% {
+      opacity: 0.4;
+      transform: scale(1) rotate(0deg);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.05) rotate(2deg);
+    }
+  }
+
+  .crystal-glass::after {
+    /* Light sweep (diagonal) - slower */
+    content: "";
+    position: absolute;
+    inset: -20%;
+    background: linear-gradient(45deg, transparent 20%, rgba(255, 255, 255, 0.08) 40%, rgba(168, 85, 247, 0.05) 50%, rgba(255, 255, 255, 0.08) 60%, transparent 80%);
+    transform: translateX(-100%) rotate(-10deg);
+    transition: transform 1.2s ease;
+    pointer-events: none;
+  }
+
+  .crystal-glass:hover::before {
+    opacity: 1;
+  }
+
+  .crystal-glass:hover::after {
+    transform: translateX(100%) rotate(10deg);
+  }
+
+  .crystal-glass:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px) scale(1.01);
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.12),
+      0 0 60px rgba(147, 51, 234, 0.1);
+  }
+
+  .crystal-sharp {
+    /* ELEVATED DREAMY GLASS - Multi-layer + breathing */
+    backdrop-filter: blur(45px) saturate(160%);
+    background:
+      radial-gradient(ellipse at top left, rgba(147, 51, 234, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at bottom right, rgba(168, 85, 247, 0.06) 0%, transparent 50%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 30%, rgba(99, 102, 241, 0.04) 60%, transparent 100%),
+      linear-gradient(225deg, rgba(168, 85, 247, 0.03) 0%, transparent 50%),
+      rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: cardBreathing 8s ease-in-out infinite;
+  }
+
+  .crystal-sharp::before {
+    /* Living gradient - constantly shifting */
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 40% 30%, rgba(147, 51, 234, 0.12) 0%, transparent 40%),
+      radial-gradient(circle at 60% 70%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 80% 50%, rgba(168, 85, 247, 0.06) 0%, transparent 35%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, transparent 50%, rgba(147, 51, 234, 0.04) 100%);
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0.7;
+    animation: gradientDance 18s ease-in-out infinite;
+  }
+
+  @keyframes gradientDance {
+    0%, 100% {
+      opacity: 0.5;
+      transform: scale(1) rotate(0deg);
+    }
+    33% {
+      opacity: 0.8;
+      transform: scale(1.03) rotate(1deg);
+    }
+    66% {
+      opacity: 0.6;
+      transform: scale(1.02) rotate(-1deg);
+    }
+  }
+
+  .crystal-sharp::after {
+    /* Shimmer sweep - purple tinted */
+    content: "";
+    position: absolute;
+    inset: -30%;
+    background:
+      linear-gradient(60deg,
+        transparent 20%,
+        rgba(255, 255, 255, 0.1) 35%,
+        rgba(147, 51, 234, 0.08) 45%,
+        rgba(168, 85, 247, 0.06) 50%,
+        rgba(147, 51, 234, 0.08) 55%,
+        rgba(255, 255, 255, 0.1) 65%,
+        transparent 80%
+      );
+    transform: translateX(-100%) rotate(-15deg);
+    transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+  }
+
+  .crystal-sharp:hover::before {
+    opacity: 1;
+  }
+
+  .crystal-sharp:hover::after {
+    transform: translateX(100%) rotate(15deg);
+  }
+
+  .crystal-sharp:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-5px) scale(1.015);
+    box-shadow:
+      0 15px 50px rgba(0, 0, 0, 0.25),
+      0 0 0 1px rgba(255, 255, 255, 0.15),
+      0 0 80px rgba(147, 51, 234, 0.15),
+      0 0 120px rgba(147, 51, 234, 0.08);
+    will-change: transform;
+  }
+
+  @keyframes cardBreathing {
+    0%, 100% {
+      transform: scale(1) translateY(0);
+    }
+    50% {
+      transform: scale(1.008) translateY(-1px);
+    }
+  }
+
+  .crystal-ethereal {
+    /* SUBTLE GLASS - 25px blur */
+    backdrop-filter: blur(25px) saturate(120%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.025) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .crystal-ethereal::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+    pointer-events: none;
+  }
+
+  .crystal-ethereal:hover::before {
+    transform: translateX(100%);
+  }
+
+  .crystal-ethereal:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     GOLDEN PRESENCE (Ambient - Always There, Never Loud)
+     Eternal candlelight seeping through edges
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  .warmth-ambient {
+    position: relative;
+  }
+
+  .warmth-ambient::before {
+    content: '';
+    position: absolute;
+    left: 20%;
+    top: 30%;
+    width: clamp(220px, 45vw, 300px);
+    height: clamp(220px, 45vw, 300px);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.3) 0%, rgba(245, 158, 11, 0.15) 30%, rgba(217, 119, 6, 0.08) 60%, transparent 80%);
+    filter: blur(35px);
+    pointer-events: none;
+    animation: fusionBreathe 25s ease-in-out infinite;
+  }
+
+  @keyframes fusionBreathe {
+    0%, 100% {
+      opacity: 0;
+      transform: scale(0.4) translate(0, 0);
+    }
+    25% {
+      opacity: 0.6;
+      transform: scale(1.1) translate(30px, -40px);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.4) translate(-15px, 25px);
+    }
+    75% {
+      opacity: 0.5;
+      transform: scale(0.9) translate(40px, 15px);
+    }
+  }
+
+  .gold-seep-edge {
+    position: relative;
+  }
+
+  .gold-seep-edge::after {
+    content: '';
+    position: absolute;
+    right: 15%;
+    bottom: 25%;
+    width: clamp(180px, 35vw, 240px);
+    height: clamp(180px, 35vw, 240px);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.3) 0%, rgba(245, 158, 11, 0.15) 30%, rgba(217, 119, 6, 0.08) 60%, transparent 80%);
+    filter: blur(35px);
+    pointer-events: none;
+    animation: fusionBreathe 25s ease-in-out infinite;
+    animation-delay: -12s;
+  }
+
+  .warmth-glow {
+    box-shadow: 0 0 80px rgba(251, 191, 36, 0.05), 0 0 40px rgba(217, 119, 6, 0.03);
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     CAUSTIC LIGHT PATTERNS (Living Light)
+     Organic, dancing, pooling light
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  .caustic-purple {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .caustic-purple::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background: radial-gradient(ellipse 80% 50% at 50% 120%, rgba(124, 58, 237, 0.15), transparent);
+    animation: caustic 13s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .caustic-white {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .caustic-white::after {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background: radial-gradient(ellipse 70% 60% at 30% 40%, rgba(255, 255, 255, 0.1), transparent);
+    animation: light-dance 11s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     GRADIENT TEXT - Purple Cosmic Energy
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  .gradient-text-amethyst {
+    background: linear-gradient(135deg, #a855f7 0%, #7c3aed 50%, #6d28d9 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text-cosmic {
+    background: linear-gradient(135deg, #a855f7 0%, #6366f1 50%, #7c3aed 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text-ethereal {
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 50%, #6d28d9 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: breathe 7s ease-in-out infinite;
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     SPECULAR HIGHLIGHTS - Pure White Mirror Reflections
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  .mirror-top {
+    position: relative;
+  }
+
+  .mirror-top::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  }
+
+  .mirror-corner {
+    position: relative;
+  }
+
+  .mirror-corner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40%;
+    height: 40%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .refraction-edge {
+    position: relative;
+  }
+
+  .refraction-edge::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    bottom: 1px;
+    width: 2px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+    pointer-events: none;
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     BREATHING & FLOATING (Organic Motion)
+     Everything is alive, nothing static
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  .breathe {
+    animation: breathe 7s ease-in-out infinite;
+  }
+
+  .breathe-slow {
+    animation: breathe 10s ease-in-out infinite;
+  }
+
+  .float {
+    animation: float 9s ease-in-out infinite;
+  }
+
+  .float-slow {
+    animation: float 12s ease-in-out infinite;
+  }
+
+  .drift {
+    animation: drift 11s ease-in-out infinite;
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     PARALLAX DEPTH (Elements at different z-indices)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  .depth-far {
+    transform: translateZ(-100px) scale(1.1);
+    opacity: 0.6;
+  }
+
+  .depth-mid {
+    transform: translateZ(0px);
+    opacity: 0.9;
+  }
+
+  .depth-near {
+    transform: translateZ(50px) scale(0.95);
+    opacity: 1;
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     HOVER STATES (Reverent, Slow Transitions)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  .hover-glow {
+    transition: box-shadow 0.5s ease, transform 0.5s ease;
+  }
+
+  .hover-glow:hover {
+    box-shadow:
+      inset 0 0 50px rgba(124, 58, 237, 0.3),
+      0 0 60px rgba(124, 58, 237, 0.4),
+      0 0 100px rgba(124, 58, 237, 0.2);
+    transform: translateY(-2px);
+  }
+
+  .hover-breathe {
+    transition: transform 0.6s ease;
+  }
+
+  .hover-breathe:hover {
+    animation: breathe 4s ease-in-out infinite;
+  }
+}
+
 /* Utility classes */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Crystal border glow on focus (purple with white edge) */
+  .focus-glow:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow:
+      0 0 0 2px rgba(255, 255, 255, 0.2),
+      0 0 20px rgba(139, 92, 246, 0.4),
+      inset 0 0 20px rgba(139, 92, 246, 0.15);
   }
 
   /* Accessibility: Screen reader only content */
@@ -82,5 +596,18 @@ body {
     overflow: visible;
     clip: auto;
     white-space: normal;
+  }
+
+  /* Smooth transitions for hover effects */
+  .transition-glow {
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+
+  /* No select (for UI elements) */
+  .no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
 }

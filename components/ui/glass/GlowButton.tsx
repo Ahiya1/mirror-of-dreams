@@ -25,9 +25,9 @@ export function GlowButton({
   const prefersReducedMotion = useReducedMotion();
 
   const variants = {
-    primary: 'bg-gradient-primary text-white shadow-glow hover:shadow-glow-lg',
-    secondary: 'bg-white/10 text-white border border-white/20 hover:bg-white/15 hover:shadow-glow',
-    ghost: 'bg-transparent text-mirror-purple hover:bg-white/5 hover:text-mirror-violet',
+    primary: 'crystal-sharp amethyst-breathing text-white mirror-corner gold-seep-edge',
+    secondary: 'crystal-glass text-mirror-amethyst mirror-top hover-glow',
+    ghost: 'bg-transparent text-mirror-amethyst hover:crystal-ethereal hover-glow',
   };
 
   const sizes = {
@@ -43,12 +43,14 @@ export function GlowButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        // Base styles
+        // Base structure
         'rounded-lg font-medium',
-        'transition-all duration-300',
+        'relative',
+        // Slow reverent transitions
+        'transition-all duration-500',
         'disabled:opacity-50 disabled:cursor-not-allowed',
-        'focus:outline-none focus-visible:ring-2 focus-visible:ring-mirror-purple focus-visible:ring-offset-2',
-        // Variant
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-mirror-amethyst focus-visible:ring-offset-2',
+        // Variant (includes all effects)
         variants[variant],
         // Size
         sizes[size],
