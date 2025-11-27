@@ -153,10 +153,10 @@ export default function DreamsPage() {
           </div>
         ) : (
           <EmptyState
-            icon="✨"
-            title="Your Dream Journey Awaits"
-            description="Every great journey begins with a single dream. What will yours be?"
-            ctaLabel="Create My First Dream"
+            icon="🌱"
+            title="Dreams are the seeds of transformation"
+            description="Create your first dream to begin your journey of self-reflection and manifestation."
+            ctaLabel="Create Your First Dream"
             ctaAction={() => setIsCreateModalOpen(true)}
           />
         )}

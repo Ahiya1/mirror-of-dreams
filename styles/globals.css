@@ -484,41 +484,71 @@ body {
 
 /* Utility classes */
 @layer utilities {
-  /* Typography Scale Utilities */
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     TYPOGRAPHY SCALE UTILITIES
+     Semantic typography system for Mirror of Dreams
+     All sizes automatically responsive via CSS variables
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  /* Page Title (h1) - 35-48px
+   * Use for: Main page headings
+   * Example: <h1 className="text-h1 gradient-text-cosmic">Your Dashboard</h1>
+   */
   .text-h1 {
-    font-size: var(--text-4xl);
-    font-weight: var(--font-semibold);
-    line-height: var(--leading-tight);
+    font-size: var(--text-4xl);       /* 35-48px responsive */
+    font-weight: var(--font-semibold); /* 600 */
+    line-height: var(--leading-tight); /* 1.25 */
   }
 
+  /* Section Heading (h2) - 26-32px
+   * Use for: Major section headings
+   * Example: <h2 className="text-h2 text-white/90">Active Dreams</h2>
+   */
   .text-h2 {
-    font-size: var(--text-2xl);
-    font-weight: var(--font-semibold);
-    line-height: var(--leading-tight);
+    font-size: var(--text-2xl);       /* 26-32px responsive */
+    font-weight: var(--font-semibold); /* 600 */
+    line-height: var(--leading-tight); /* 1.25 */
   }
 
+  /* Subsection Heading (h3) - 21-26px
+   * Use for: Subsection headings, card titles
+   * Example: <h3 className="text-h3 text-white/80">Recent Reflections</h3>
+   */
   .text-h3 {
-    font-size: var(--text-xl);
-    font-weight: var(--font-medium);
-    line-height: var(--leading-snug);
+    font-size: var(--text-xl);        /* 21-26px responsive */
+    font-weight: var(--font-medium);   /* 500 */
+    line-height: var(--leading-snug);  /* 1.375 */
   }
 
+  /* Body Text - 17-18px
+   * Use for: Main content, paragraphs, descriptions
+   * Example: <p className="text-body text-white/70">Your reflection journey...</p>
+   * WCAG AA: Optimized for readability with 1.75 line-height
+   */
   .text-body {
-    font-size: var(--text-base);
-    font-weight: var(--font-normal);
-    line-height: var(--leading-relaxed);
+    font-size: var(--text-base);       /* 17-18px responsive */
+    font-weight: var(--font-normal);   /* 400 */
+    line-height: var(--leading-relaxed); /* 1.75 - optimal readability */
   }
 
+  /* Small Text - 14-16px
+   * Use for: Metadata, labels, timestamps
+   * Example: <span className="text-small text-white/60">Created 2 days ago</span>
+   */
   .text-small {
-    font-size: var(--text-sm);
-    font-weight: var(--font-normal);
-    line-height: var(--leading-normal);
+    font-size: var(--text-sm);        /* 14-16px responsive */
+    font-weight: var(--font-normal);  /* 400 */
+    line-height: var(--leading-normal); /* 1.5 */
   }
 
+  /* Tiny Text - 14-15px
+   * Use for: Captions, footnotes, very small labels
+   * Example: <span className="text-tiny text-white/50">Last updated: Nov 27</span>
+   */
   .text-tiny {
-    font-size: var(--text-xs);
-    font-weight: var(--font-normal);
-    line-height: var(--leading-snug);
+    font-size: var(--text-xs);        /* 14-15px responsive */
+    font-weight: var(--font-normal);  /* 400 */
+    line-height: var(--leading-snug); /* 1.375 */
   }
 
   .text-balance {
@@ -614,5 +644,14 @@ body {
   .status-box-warning {
     @apply bg-semantic-warning-light border-semantic-warning text-semantic-warning;
     @apply border backdrop-blur-md rounded-lg p-4;
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     NAVIGATION COMPENSATION
+     Compensates for fixed-position navigation at top of viewport
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  .pt-nav {
+    padding-top: var(--nav-height);
   }
 }

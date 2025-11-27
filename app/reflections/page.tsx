@@ -1,13 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { trpc } from '@/lib/trpc';
 import { type ReflectionTone } from '@/types/reflection';
 import { ReflectionCard } from '@/components/reflections/ReflectionCard';
 import { ReflectionFilters } from '@/components/reflections/ReflectionFilters';
+import { EmptyState } from '@/components/shared/EmptyState';
+import { AppNavigation } from '@/components/shared/AppNavigation';
 
 export default function ReflectionsPage() {
+  const router = useRouter();
+
   // Filter state
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
@@ -78,8 +83,10 @@ export default function ReflectionsPage() {
   const total = data?.total || 0;
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark">
+      <AppNavigation currentPage="reflection" />
+
+      <div className="max-w-6xl mx-auto pt-nav px-4 sm:px-8 pb-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
@@ -145,36 +152,19 @@ export default function ReflectionsPage() {
           />
         </div>
 
-        {/* Empty state */}
+        {/* Empty state - using enhanced EmptyState component */}
         {reflections.length === 0 && (
-          <div className="text-center py-16">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-500/10 mb-4">
-              <svg className="h-8 w-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold text-white mb-2">
-              {search || tone || isPremium !== undefined
-                ? 'No reflections found'
-                : 'No reflections yet'}
-            </h3>
-            <p className="text-gray-400 mb-6 max-w-md mx-auto">
-              {search || tone || isPremium !== undefined
-                ? 'Try adjusting your filters or search criteria'
-                : 'Start your journey by creating your first reflection'}
-            </p>
-            {!search && !tone && isPremium === undefined && (
-              <Link
-                href="/reflection"
-                className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:from-purple-700 hover:to-pink-700 transition-all"
-              >
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                Create Your First Reflection
-              </Link>
-            )}
-          </div>
+          <EmptyState
+            icon="💭"
+            title={search || tone || isPremium !== undefined
+              ? 'No reflections found'
+              : 'Reflection is how you water your dreams'}
+            description={search || tone || isPremium !== undefined
+              ? 'Try adjusting your filters or search criteria'
+              : 'Your reflection journey begins here. Take a moment to gaze into the mirror and explore your inner landscape.'}
+            ctaLabel={!search && !tone && isPremium === undefined ? 'Reflect Now' : undefined}
+            ctaAction={!search && !tone && isPremium === undefined ? () => router.push('/reflection') : undefined}
+          />
         )}
 
         {/* Reflections grid */}

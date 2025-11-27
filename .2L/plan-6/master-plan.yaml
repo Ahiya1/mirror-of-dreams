@@ -1,0 +1,348 @@
+plan_id: plan-6
+created_at: "2025-11-27T05:15:00Z"
+status: PLANNED
+total_iterations: 3
+complexity_assessment: COMPLEX
+
+# Master Plan Strategy
+
+strategy: |
+  Transform Mirror of Dreams from 5.8/10 to 10/10 complete experience through systematic polish.
+
+  CRITICAL INSIGHT from 4 master explorers:
+  - All explorers agree: 3-4 iteration approach
+  - ALL identified Navigation Overlap as BLOCKING ISSUE (must fix first)
+  - COMPLEX rating justified: 10 features, 87 acceptance criteria, 60-80 hours
+  - NO backend changes needed (purely presentation layer)
+  - Strong foundation: react-markdown installed, framer-motion solid, design system established
+
+  ITERATION STRATEGY:
+
+  Iteration 1 (Foundation - Days 1-3):
+    - Fix navigation overlap (BLOCKING)
+    - Establish spacing/typography/color systems (foundation for all other work)
+    - Deploy enhanced empty states (low complexity, high reach)
+    - Risk: HIGH but contained (navigation fix affects all pages)
+    - Builders: 2 (Navigation/Layout + Design System)
+
+  Iteration 2 (Core Experience - Days 4-8):
+    - Dashboard richness transformation (9/10 user impact)
+    - Reflection page depth & immersion (9/10 user impact)
+    - Individual reflection display enhancement
+    - Reflections collection view
+    - Risk: MEDIUM (complex data orchestration, subjective UX)
+    - Builders: 3 (Dashboard + Reflection Experience + Reflection Display)
+
+  Iteration 3 (Systematic Polish - Days 9-12):
+    - Micro-interactions & animations
+    - Typography & readability polish (audit + refinement)
+    - Color semantic audit
+    - QA & validation (accessibility, performance, cross-browser)
+    - Risk: LOW (mostly systematic application)
+    - Builders: 2 (Visual Polish + Interaction Polish)
+
+  PERFORMANCE BUDGET (Explorer 4 findings):
+  - Bundle: -110KB UNDER budget (code splitting + no new deps)
+  - LCP: 1.5-2.0s estimated (within 2.5s target)
+  - FID: 30-50ms estimated (well under 100ms target)
+  - Accessibility: Maintain WCAG AA (currently 70%, need remediation)
+
+  RISK MITIGATION:
+  - Navigation fix: Test ALL 8+ pages at 5 breakpoints before proceeding
+  - Dashboard: Batched tRPC queries (prevent 6-query waterfall)
+  - Markdown: Use react-markdown (already installed), prevent XSS
+  - Animations: Respect prefers-reduced-motion, 60fps target
+
+  SUCCESS DEFINITION:
+  - Navigation never hides content (10/10)
+  - Dashboard feels complete (9/10)
+  - Reflection experience sacred (10/10)
+  - Individual reflections shine (9/10)
+  - Overall product quality: 10/10
+
+# Iteration Breakdown
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 9
+    name: "Foundation & Infrastructure"
+    vision: "Fix blocking navigation issue, establish design system foundation, deploy empty states"
+    scope: |
+      PRIORITY: P0 - BLOCKING ISSUES
+
+      Features in this iteration:
+      1. Fix Navigation Overlap Issue (Feature 1)
+         - Add --nav-height CSS variable
+         - Update all pages with proper top padding
+         - Test on dashboard, dreams, reflections, evolution, visualizations
+         - Mobile: hamburger menu spacing
+         - Document pattern for future pages
+
+      2. Spacing & Layout System (Feature 10)
+         - Establish spacing scale: xs(4px) → 3xl(64px)
+         - Create CSS variables: --space-xs through --space-3xl
+         - Define container widths: dashboard(1200px), reflection-form(800px), reflection-display(720px)
+         - Responsive: reduce spacing 25% on mobile
+
+      3. Typography & Readability Polish (Feature 8)
+         - Heading hierarchy: h1(48px), h2(32px), h3(24px)
+         - Body text: base(18px), line-height 1.8
+         - Contrast: white(95%), muted(60%), very-muted(40%)
+         - Reading width: max 720px for reflection content
+         - Responsive: scale down 20% on mobile
+
+      4. Color & Semantic Meaning (Feature 9)
+         - Purple/Amethyst: primary actions, active states
+         - Gold: success moments, positive stats
+         - Blue: information, calm actions
+         - Red: errors, warnings
+         - Audit: all colors from semantic palette
+
+      5. Enhanced Empty States Across App (Feature 6)
+         - Dashboard: "Create your first dream", "Your first reflection awaits"
+         - Dreams page: "Dreams are the seeds of transformation"
+         - Reflections page: "Reflection is how you water your dreams"
+         - Evolution page: "Evolution insights unlock after 4 reflections" + progress (0/4)
+         - Visualizations page: "Visualizations appear after 4 reflections"
+         - Component: EmptyState.tsx (enhance existing)
+
+      RATIONALE:
+      - Navigation fix is BLOCKING - must complete before all other work can be properly tested
+      - Design system foundation (spacing, typography, color) required by all other features
+      - Empty states have LOW complexity but HIGH reach - quick wins across entire app
+
+      BUILDER ASSIGNMENTS:
+      - Builder-1: Navigation overlap + spacing system (tightly coupled)
+      - Builder-2: Typography + color semantic audit (systematic work)
+      - Builder-3: Enhanced empty states (reusable component + deployment)
+
+      SUCCESS CRITERIA:
+      - ALL pages have visible content (no navigation overlap)
+      - Design system documented (patterns.md)
+      - Empty states inviting and consistent
+      - Zero regressions in existing functionality
+    status: PENDING
+    dependencies: []
+    estimated_hours: 18-24
+
+  - iteration_id: 2
+    global_iteration: 10
+    name: "Core Experience Depth"
+    vision: "Transform dashboard into motivating hub, deepen reflection experience, honor individual reflections"
+    scope: |
+      PRIORITY: P0 - CORE VALUE PROPOSITION
+
+      Features in this iteration:
+      2. Dashboard Richness Transformation (Feature 2)
+         - Hero section: personalized greeting, "Reflect Now" CTA
+         - Active Dreams section: grid with dream cards (title, days remaining, reflection count)
+         - Recent Reflections section: last 3 reflections with snippets
+         - Progress indicators: "This month: X reflections"
+         - Insights preview: latest evolution snippet
+         - Visual hierarchy: primary → secondary → tertiary
+         - Responsive: mobile stacks, desktop 2-3 column grid
+         - Components: DashboardHero, DreamsGrid, RecentReflectionsCard, ProgressStats
+         - Data: tRPC batched queries (prevent 6-query waterfall)
+
+      3. Reflection Page Depth & Immersion (Feature 3)
+         - Visual atmosphere: darker background, centered narrow content (800px)
+         - Form presentation: guiding text above each question, progress indicator (1 of 4)
+         - Tone selection: visual cards (not buttons) with descriptions
+         - Submit moment: "Gaze into the Mirror" button central + cosmic animation
+         - Transitions: form → loading (fade + cosmic loader), loading → output (crossfade)
+         - Mobile: all questions on one scrollable page
+         - Components: ReflectionQuestionCard, ToneSelectionCard
+         - Animations: framer-motion state transitions (300-500ms)
+
+      4. Individual Reflection Display Enhancement (Feature 4)
+         - Layout: centered reading column (720px max-width)
+         - Content hierarchy: metadata → questions/answers → AI response
+         - AI response formatting: parse markdown (react-markdown), gradient headings, blockquote accents
+         - Typography: 18px body, line-height 1.8, proper heading hierarchy
+         - Visual accents: cosmic glow on AI container, dream badge, date muted
+         - Actions: back button, optional share/download (secondary)
+         - Components: ReflectionDisplay, AIResponseRenderer
+
+      5. Reflection Page Collection View (Feature 5)
+         - Header: "Your Reflections" + count, filter dropdown, sort options
+         - Reflection cards: dream badge, date, snippet (120 chars), tone indicator
+         - Click card → view full reflection, hover → lift + glow
+         - Empty state: "Your reflection journey begins here" + CTA
+         - Pagination: 20 per page (if >20 reflections)
+         - Responsive: desktop 2-3 column grid, mobile single column
+         - Components: ReflectionCard, ReflectionsFilter
+
+      RATIONALE:
+      - Dashboard is HOME - must feel complete to drive engagement (9/10 user impact)
+      - Reflection experience is SACRED CENTERPIECE - core value proposition (9/10 impact)
+      - Individual reflections and collection view complete the reflection lifecycle
+      - All depend on Iteration 1's design system foundation
+
+      BUILDER ASSIGNMENTS:
+      - Builder-1: Dashboard richness (7 sections, data orchestration, complex)
+      - Builder-2: Reflection page depth (form UX, state transitions, animations)
+      - Builder-3: Individual reflection display + collection view (markdown, filtering)
+
+      SUCCESS CRITERIA:
+      - Dashboard creates sense of home and progress
+      - Reflection flow feels sacred and immersive
+      - Past reflections beautiful and emotionally impactful
+      - All transitions smooth (300-500ms, 60fps)
+      - Performance: LCP < 2.5s, FID < 100ms maintained
+    status: PENDING
+    dependencies:
+      - iteration_id: 1
+        reason: "Requires design system foundation (spacing, typography, color) from Iteration 1"
+    estimated_hours: 24-32
+
+  - iteration_id: 3
+    global_iteration: 11
+    name: "Systematic Polish & QA"
+    vision: "Apply micro-interactions, validate accessibility, ensure production readiness"
+    scope: |
+      PRIORITY: P1 - FINISHING TOUCHES
+
+      Features in this iteration:
+      7. Micro-Interactions & Animations (Feature 7)
+         - Reflection form: textarea focus glow, character counter color shift (white → gold → red)
+         - Dashboard cards: hover lift + purple glow, click scale-down (0.98)
+         - Navigation: active page indicator, hover color transitions (200ms)
+         - Page transitions: all pages fade-in (300ms), route crossfade (150ms out, 300ms in)
+         - Loading states: CosmicLoader fade-in, 500ms minimum display
+         - Reduced motion: disable animations, keep opacity fades
+         - File: lib/animations/variants.ts (add inputFocusVariants, cardPressVariants, characterCounterVariants)
+
+      8. Typography & Readability Polish - AUDIT (already established in Iteration 1, now refine)
+         - Review: all headings use correct hierarchy
+         - Review: all body text has proper line-height
+         - Review: reading widths optimal (720px reflection content)
+         - Fix: any inconsistencies found
+
+      9. Color & Semantic Meaning - AUDIT (already established in Iteration 1, now enforce)
+         - Audit: all colors from semantic palette (no arbitrary Tailwind)
+         - Audit: contrast ratios WCAG AA (95% white minimum on dark)
+         - Fix: any violations (Explorer 4 found 60%→70% opacity needed)
+
+      10. Accessibility Validation
+          - Keyboard navigation: all interactive elements focusable, focus indicators visible
+          - Screen reader: ARIA labels on all icons/buttons, semantic HTML
+          - Color contrast: WCAG AA maintained (automated checks + manual review)
+          - Reduced motion: animations disabled except opacity (already in Iteration 3 Feature 7)
+          - Testing: Manual keyboard nav test, automated contrast checks
+
+      11. Performance Validation
+          - Code splitting: Implement lazy loading for dashboard sections (reduce 5.8MB main-app.js)
+          - LCP measurement: Lighthouse CI, target < 2.5s
+          - FID measurement: Chrome DevTools, target < 100ms
+          - Animation profiling: 60fps on all interactions
+          - Bundle size: Verify -110KB reduction vs current
+
+      12. Cross-Browser & Responsive Testing
+          - Browsers: Chrome, Firefox, Safari, Edge (latest versions)
+          - Breakpoints: 320px (mobile), 768px (tablet), 1024px (laptop), 1440px (desktop), 1920px (large)
+          - Test: All 3 user flows (new user, returning user, evolution)
+          - Fix: Any browser-specific issues
+
+      13. Final QA
+          - Smoke test: All features from vision.md acceptance criteria
+          - Regression test: Existing features still work (dreams, reflections, evolution)
+          - User flows: New user onboarding, returning user engagement, evolution unlock
+          - Edge cases: Empty states, loading states, error states
+          - Documentation: Update patterns.md with new patterns (navigation, markdown, empty states)
+
+      RATIONALE:
+      - Systematic polish makes everything feel cohesive and premium
+      - Accessibility and performance non-negotiable (maintain WCAG AA, LCP/FID budgets)
+      - QA ensures production readiness and zero regressions
+      - Lower risk than Iteration 2 (mostly systematic application)
+
+      BUILDER ASSIGNMENTS:
+      - Builder-1: Micro-interactions + animations (systematic application across all components)
+      - Builder-2: Accessibility + performance validation + cross-browser testing + QA
+
+      SUCCESS CRITERIA:
+      - All interactions feel premium (60fps, smooth)
+      - WCAG AA maintained (keyboard nav, screen reader, contrast)
+      - Performance budget met (LCP < 2.5s, FID < 100ms, bundle -110KB)
+      - Cross-browser compatible (Chrome, Firefox, Safari, Edge)
+      - Zero regressions (all existing features work)
+      - 10/10 overall product quality achieved
+    status: PENDING
+    dependencies:
+      - iteration_id: 2
+        reason: "Polish and validation apply to all features built in Iterations 1-2"
+    estimated_hours: 18-26
+
+# Technical Summary
+
+total_features: 10
+total_acceptance_criteria: 87
+estimated_total_hours: 60-82
+recommended_duration: "12 days (2 weeks full-time)"
+
+key_risks:
+  - risk: "Navigation fix breaking mobile experience"
+    severity: CRITICAL
+    probability: 60%
+    mitigation: "Test ALL pages at 5 breakpoints, create --nav-height variable, document pattern"
+
+  - risk: "Dashboard data fetching performance degradation"
+    severity: HIGH
+    probability: 50%
+    mitigation: "Batched tRPC queries, loading skeletons, LCP monitoring"
+
+  - risk: "Markdown rendering XSS vulnerabilities"
+    severity: CRITICAL
+    probability: 20%
+    mitigation: "Use react-markdown (already installed), security review"
+
+  - risk: "Animation performance on low-end devices"
+    severity: MEDIUM
+    probability: 40%
+    mitigation: "Respect prefers-reduced-motion, 60fps profiling, reduce particles on mobile"
+
+key_dependencies:
+  no_backend_changes: true
+  no_data_model_changes: true
+  existing_libraries:
+    - "react-markdown v10.1.0 (already installed)"
+    - "framer-motion v11.18.2 (already installed)"
+    - "remark-gfm (already installed)"
+  new_dependencies: []
+
+performance_budget:
+  bundle_size_delta: "-110KB (code splitting + no new deps)"
+  lcp_target: "< 2.5s"
+  fid_target: "< 100ms"
+  accessibility: "WCAG AA maintained"
+
+# Implementation Notes
+
+notes: |
+  CRITICAL SUCCESS FACTORS:
+
+  1. Navigation fix must be perfect - ALL pages properly padded, tested at 5 breakpoints
+  2. Dashboard & reflection UX subjective - require user feedback loops, iterate on feel
+  3. Performance monitoring from Day 1 - LCP, FID, bundle size tracked daily
+  4. Accessibility non-negotiable - keyboard nav, screen reader, contrast maintained
+  5. Document patterns as you build - future developers need navigation, markdown, empty state patterns
+
+  BUILDER COORDINATION:
+
+  - Iteration 1: 3 builders working in parallel (Navigation+Spacing, Typography+Color, Empty States)
+  - Iteration 2: 3 builders working in parallel (Dashboard, Reflection Experience, Reflection Display)
+  - Iteration 3: 2 builders working in parallel (Interactions, Validation+QA)
+
+  VALIDATION STRATEGY:
+
+  - After each iteration: Smoke test all features, verify no regressions
+  - Iteration 3: Comprehensive QA (all flows, all browsers, all breakpoints)
+  - User testing: Dashboard and reflection experience (subjective quality)
+
+  TIMELINE:
+
+  - Best case: 10 days
+  - Realistic case: 12 days ← RECOMMENDED
+  - Worst case: 15 days
+
+  APPROVED FOR EXECUTION - Master plan ready for iteration loop.
