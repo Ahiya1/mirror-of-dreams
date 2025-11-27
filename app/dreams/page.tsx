@@ -46,7 +46,7 @@ export default function DreamsPage() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
         <div className="flex flex-col items-center gap-4">
           <CosmicLoader size="lg" />
-          <p className="text-white/60 text-sm">Loading your dreams...</p>
+          <p className="text-small text-white/60">Loading your dreams...</p>
         </div>
       </div>
     );
@@ -61,10 +61,10 @@ export default function DreamsPage() {
         <GlassCard elevated className="mb-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <GradientText gradient="cosmic" className="text-3xl sm:text-4xl font-bold mb-2">
+              <GradientText gradient="cosmic" className="text-h1 mb-2">
                 Your Dreams
               </GradientText>
-              <p className="text-white/70 text-base sm:text-lg">
+              <p className="text-body text-white/70">
                 Track and reflect on your life's aspirations
               </p>
             </div>
@@ -90,7 +90,7 @@ export default function DreamsPage() {
                 {limits.dreamsUsed} / {limits.dreamsLimit === 999999 ? '∞' : limits.dreamsLimit} dreams
               </span>
               {!limits.canCreate && (
-                <span className="text-mirror-warning text-sm">
+                <span className="text-small text-mirror-warning">
                   Upgrade to create more dreams
                 </span>
               )}
@@ -153,10 +153,10 @@ export default function DreamsPage() {
           </div>
         ) : (
           <EmptyState
-            icon=""
-            title="No dreams yet"
-            description="Create your first dream to start reflecting and growing."
-            ctaLabel="Create Your First Dream"
+            icon="✨"
+            title="Your Dream Journey Awaits"
+            description="Every great journey begins with a single dream. What will yours be?"
+            ctaLabel="Create My First Dream"
             ctaAction={() => setIsCreateModalOpen(true)}
           />
         )}

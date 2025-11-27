@@ -119,24 +119,14 @@ export default function DashboardPage() {
 
         {/* Quick Action: Reflect Now Button - PRIMARY ACTION */}
         <div className="flex flex-col items-center gap-3 mb-8">
-          <button
+          <GlowButton
+            variant="cosmic"
+            size="lg"
             onClick={handleReflectNow}
-            className="
-              px-8 py-4
-              text-xl font-medium
-              bg-purple-600
-              text-white
-              rounded-lg
-              transition-opacity duration-200
-              hover:opacity-90
-              active:opacity-85
-              disabled:opacity-50 disabled:cursor-not-allowed
-              w-full sm:w-auto
-              min-w-[280px]
-            "
+            className="w-full sm:w-auto min-w-[280px]"
           >
-            Reflect Now
-          </button>
+            ✨ Reflect Now
+          </GlowButton>
         </div>
 
         {/* Dashboard Grid with Stagger Animation */}

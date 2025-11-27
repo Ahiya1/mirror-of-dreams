@@ -9,6 +9,7 @@ import DashboardCard, {
   HeaderAction,
 } from '@/components/dashboard/shared/DashboardCard';
 import ReflectionItem from '@/components/dashboard/shared/ReflectionItem';
+import { CosmicLoader } from '@/components/ui/glass';
 import { trpc } from '@/lib/trpc';
 
 interface ReflectionsCardProps {
@@ -43,7 +44,7 @@ const ReflectionsCard: React.FC<ReflectionsCardProps> = ({ animated = true, clas
   // Loading state component
   const LoadingState = () => (
     <div className="loading-reflections">
-      <div className="cosmic-spinner" />
+      <CosmicLoader size="md" label="Loading reflections" />
       <span>Loading reflections...</span>
     </div>
   );
@@ -152,37 +153,6 @@ const ReflectionsCard: React.FC<ReflectionsCardProps> = ({ animated = true, clas
           min-height: 200px;
         }
 
-        .cosmic-spinner {
-          width: 32px;
-          height: 32px;
-          border: 2px solid rgba(255, 255, 255, 0.1);
-          border-radius: 50%;
-          border-top-color: rgba(147, 51, 234, 0.7);
-          border-right-color: rgba(59, 130, 246, 0.5);
-          animation: cosmicSpin 1.5s linear infinite;
-          position: relative;
-        }
-
-        .cosmic-spinner::after {
-          content: '';
-          position: absolute;
-          inset: 6px;
-          border: 1px solid rgba(16, 185, 129, 0.3);
-          border-radius: 50%;
-          border-left-color: transparent;
-          border-bottom-color: transparent;
-          animation: cosmicSpin 2s linear infinite reverse;
-        }
-
-        @keyframes cosmicSpin {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-
         .loading-reflections span {
           font-size: var(--text-sm);
           color: var(--cosmic-text-secondary);
@@ -225,12 +195,7 @@ const ReflectionsCard: React.FC<ReflectionsCardProps> = ({ animated = true, clas
 
         /* Reduced motion support */
         @media (prefers-reduced-motion: reduce) {
-          .empty-icon,
-          .cosmic-spinner {
-            animation: none !important;
-          }
-
-          .cosmic-spinner::after {
+          .empty-icon {
             animation: none !important;
           }
         }

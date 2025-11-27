@@ -22,19 +22,19 @@ export default function EvolutionPage() {
   const [generating, setGenerating] = useState(false);
 
   // Fetch user's dreams for selection
-  const { data: dreamsData } = trpc.dreams.list.useQuery(
+  const { data: dreamsData, isLoading: dreamsLoading } = trpc.dreams.list.useQuery(
     { status: 'active' },
     { enabled: !!user }
   );
 
   // Fetch evolution reports
-  const { data: reportsData, refetch: refetchReports } = trpc.evolution.list.useQuery(
+  const { data: reportsData, isLoading: reportsLoading, refetch: refetchReports } = trpc.evolution.list.useQuery(
     { page: 1, limit: 20 },
     { enabled: !!user }
   );
 
   // Check eligibility
-  const { data: eligibility } = trpc.evolution.checkEligibility.useQuery(undefined, {
+  const { data: eligibility, isLoading: eligibilityLoading } = trpc.evolution.checkEligibility.useQuery(undefined, {
     enabled: !!user,
   });
 
@@ -75,13 +75,13 @@ export default function EvolutionPage() {
     generateCrossDreamEvolution.mutate();
   };
 
-  // Loading state
-  if (authLoading) {
+  // Loading state - show if auth OR queries are loading
+  if (authLoading || dreamsLoading || reportsLoading || eligibilityLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
         <div className="flex flex-col items-center gap-4">
-          <CosmicLoader size="lg" />
-          <p className="text-white/60 text-sm">Loading your evolution reports...</p>
+          <CosmicLoader size="lg" label="Loading evolution reports" />
+          <p className="text-small text-white/60">Loading your evolution reports...</p>
         </div>
       </div>
     );
@@ -100,17 +100,17 @@ export default function EvolutionPage() {
       <div className="max-w-6xl mx-auto">
         {/* Page Title */}
         <div className="mb-8">
-          <GradientText gradient="cosmic" className="text-3xl sm:text-4xl font-bold mb-2">
+          <GradientText gradient="cosmic" className="text-h1 mb-2">
             Evolution Reports
           </GradientText>
-          <p className="text-white/70">
+          <p className="text-body text-white/70">
             AI-powered insights into your growth journey across time
           </p>
         </div>
 
         {/* Generation Controls */}
         <GlassCard elevated className="mb-8">
-          <GradientText gradient="primary" className="text-2xl font-bold mb-6">
+          <GradientText gradient="primary" className="text-h2 mb-6">
             Generate New Report
           </GradientText>
 
@@ -125,7 +125,7 @@ export default function EvolutionPage() {
                 </GlowBadge>
                 <div className="flex-1">
                   <p className="text-white/90 font-medium">Upgrade to Essential</p>
-                  <p className="text-white/70 text-sm">
+                  <p className="text-small text-white/70">
                     Evolution reports are available for Essential tier and higher.
                   </p>
                 </div>
@@ -240,17 +240,17 @@ export default function EvolutionPage() {
 
         {/* Reports List */}
         <GlassCard elevated>
-          <GradientText gradient="primary" className="text-2xl font-bold mb-6">
+          <GradientText gradient="primary" className="text-h2 mb-6">
             Your Reports
           </GradientText>
 
           {!reportsData || reportsData.reports.length === 0 ? (
             <EmptyState
-              icon=""
-              title="No evolution reports yet"
-              description="Generate your first evolution report to see your growth patterns over time."
-              ctaLabel={user.tier !== 'free' ? 'Generate First Report' : undefined}
-              ctaAction={user.tier !== 'free' ? () => window.scrollTo({ top: 0, behavior: 'smooth' }) : undefined}
+              icon="🌱"
+              title="Your Growth Story Awaits"
+              description="With 12+ reflections, we can reveal the patterns in your transformation. Keep reflecting!"
+              ctaLabel="Reflect Now"
+              ctaAction={() => router.push('/reflection')}
             />
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

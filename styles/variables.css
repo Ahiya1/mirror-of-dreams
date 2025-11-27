@@ -139,9 +139,9 @@
     Consolas, "Courier New", monospace;
 
   /* Font Sizes - Responsive */
-  --text-xs: clamp(0.7rem, 1.8vw, 0.85rem);
+  --text-xs: clamp(0.85rem, 1.8vw, 0.9rem);
   --text-sm: clamp(0.9rem, 2.2vw, 1rem);
-  --text-base: clamp(1rem, 2.5vw, 1.2rem);
+  --text-base: clamp(1.05rem, 2.5vw, 1.15rem);
   --text-lg: clamp(1.1rem, 3vw, 1.4rem);
   --text-xl: clamp(1.3rem, 4vw, 1.6rem);
   --text-2xl: clamp(1.6rem, 4vw, 2rem);
@@ -165,7 +165,7 @@
   --leading-tight: 1.25;
   --leading-snug: 1.375;
   --leading-normal: 1.5;
-  --leading-relaxed: 1.625;
+  --leading-relaxed: 1.75;
   --leading-loose: 2;
 
   /* Letter Spacing */

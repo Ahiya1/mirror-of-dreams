@@ -46,13 +46,13 @@ export default function VisualizationsPage() {
   const [generating, setGenerating] = useState(false);
 
   // Fetch user's dreams for selection
-  const { data: dreamsData } = trpc.dreams.list.useQuery(
+  const { data: dreamsData, isLoading: dreamsLoading } = trpc.dreams.list.useQuery(
     { status: 'active' },
     { enabled: !!user }
   );
 
   // Fetch visualizations
-  const { data: visualizationsData, refetch: refetchVisualizations } = trpc.visualizations.list.useQuery(
+  const { data: visualizationsData, isLoading: visualizationsLoading, refetch: refetchVisualizations } = trpc.visualizations.list.useQuery(
     { page: 1, limit: 20 },
     { enabled: !!user }
   );
@@ -96,13 +96,13 @@ export default function VisualizationsPage() {
     },
   };
 
-  // Loading state
-  if (authLoading) {
+  // Loading state - show if auth OR queries are loading
+  if (authLoading || dreamsLoading || visualizationsLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
         <div className="flex flex-col items-center gap-4">
-          <CosmicLoader size="lg" />
-          <p className="text-white/60 text-sm">Loading visualizations...</p>
+          <CosmicLoader size="lg" label="Loading visualizations" />
+          <p className="text-small text-white/60">Loading visualizations...</p>
         </div>
       </div>
     );
@@ -121,17 +121,17 @@ export default function VisualizationsPage() {
       <div className="max-w-6xl mx-auto">
         {/* Page Title */}
         <div className="mb-8">
-          <GradientText gradient="cosmic" className="text-3xl sm:text-4xl font-bold mb-2">
+          <GradientText gradient="cosmic" className="text-h1 mb-2">
             Dream Visualizations
           </GradientText>
-          <p className="text-white/70">
+          <p className="text-body text-white/70">
             Poetic narrative visualizations of your personal growth journey
           </p>
         </div>
 
         {/* Generation Controls */}
         <GlassCard elevated className="mb-8">
-          <GradientText gradient="primary" className="text-2xl font-bold mb-6">
+          <GradientText gradient="primary" className="text-h2 mb-6">
             Create New Visualization
           </GradientText>
 
@@ -252,16 +252,16 @@ export default function VisualizationsPage() {
 
         {/* Visualizations List */}
         <GlassCard elevated>
-          <GradientText gradient="primary" className="text-2xl font-bold mb-6">
+          <GradientText gradient="primary" className="text-h2 mb-6">
             Your Visualizations
           </GradientText>
 
           {!visualizationsData || visualizationsData.items.length === 0 ? (
             <EmptyState
-              icon=""
-              title="No visualizations yet"
-              description="Create your first visualization to experience your dream as already achieved."
-              ctaLabel="Generate First Visualization"
+              icon="🌌"
+              title="See Your Dreams Come Alive"
+              description="Visualizations paint your future as if it's already here. Ready to glimpse your destiny?"
+              ctaLabel="Create First Visualization"
               ctaAction={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             />
           ) : (

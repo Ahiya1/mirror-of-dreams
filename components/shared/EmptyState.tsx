@@ -23,11 +23,11 @@ export function EmptyState({ icon, title, description, ctaLabel, ctaAction }: Em
   return (
     <div className="flex justify-center items-center min-h-[50vh]">
       <GlassCard elevated className="text-center max-w-md">
-        <div className="text-6xl mb-4">{icon}</div>
-        <GradientText gradient="cosmic" className="text-2xl font-bold mb-4">
+        <div className="text-6xl mb-md">{icon}</div>
+        <GradientText gradient="cosmic" className="text-h2 mb-md">
           {title}
         </GradientText>
-        <p className="text-white/60 text-base mb-6 leading-relaxed">
+        <p className="text-body text-white/60 mb-lg">
           {description}
         </p>
         {ctaLabel && ctaAction && (

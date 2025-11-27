@@ -9,6 +9,14 @@ const config: Config = {
     extend: {
       spacing: {
         'nav': '80px', // Navigation bar height for padding
+        // Responsive spacing variables mapped from variables.css
+        'xs': 'var(--space-xs)',   // clamp(0.5rem, 1vw, 0.75rem) = 8-12px
+        'sm': 'var(--space-sm)',   // clamp(0.75rem, 1.5vw, 1rem) = 12-16px
+        'md': 'var(--space-md)',   // clamp(1rem, 2.5vw, 1.5rem) = 16-24px
+        'lg': 'var(--space-lg)',   // clamp(1.5rem, 3vw, 2rem) = 24-32px
+        'xl': 'var(--space-xl)',   // clamp(2rem, 4vw, 3rem) = 32-48px
+        '2xl': 'var(--space-2xl)', // clamp(3rem, 6vw, 4rem) = 48-64px
+        '3xl': 'var(--space-3xl)', // clamp(4rem, 8vw, 6rem) = 64-96px
       },
       colors: {
         cosmic: {
