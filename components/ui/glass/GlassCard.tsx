@@ -18,6 +18,7 @@ export function GlassCard({
   onClick,
   className,
   children,
+  ...props
 }: GlassCardProps) {
   return (
     <div
@@ -31,11 +32,28 @@ export function GlassCard({
         'relative',
         // Elevated state (functional hierarchy)
         elevated && 'shadow-lg border-white/15',
-        // Interactive state (functional feedback - subtle lift only, no scale)
-        interactive && 'transition-transform duration-250 hover:-translate-y-0.5 cursor-pointer',
+        // Interactive state (enhanced hover with glow + border highlight)
+        interactive && [
+          'cursor-pointer',
+          'transition-all duration-250',
+          'hover:-translate-y-0.5',
+          'hover:shadow-[0_8px_30px_rgba(124,58,237,0.15)]',
+          'hover:border-purple-400/30',
+          'active:scale-[0.99]',
+          'focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2'
+        ],
         // Custom classes
         className
       )}
+      tabIndex={interactive ? 0 : props.tabIndex}
+      role={interactive ? 'button' : props.role}
+      onKeyDown={interactive && onClick ? (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      } : props.onKeyDown}
+      {...props}
     >
       {children}
     </div>

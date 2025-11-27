@@ -4,9 +4,9 @@ import { cn } from '@/lib/utils';
 import type { GlowButtonProps } from '@/types/glass-components';
 
 /**
- * GlowButton - Enhanced button with cosmic variant for entry points
+ * GlowButton - Enhanced button with cosmic and semantic variants
  *
- * @param variant - Button style variant (primary | secondary | ghost | cosmic)
+ * @param variant - Button style variant (primary | secondary | ghost | cosmic | success | danger | info)
  * @param size - Button size (sm | md | lg)
  * @param type - Button type (button | submit | reset)
  * @param onClick - Click handler
@@ -24,10 +24,21 @@ export function GlowButton({
   disabled = false,
 }: GlowButtonProps) {
   const variants = {
-    primary: 'bg-purple-600 text-white hover:opacity-90 active:opacity-85',
-    secondary:
-      'bg-transparent text-purple-600 border border-purple-600 hover:bg-purple-600/10 active:bg-purple-600/20',
-    ghost: 'bg-transparent text-gray-300 hover:text-purple-400',
+    primary: cn(
+      'bg-purple-600 text-white',
+      'hover:opacity-90 hover:-translate-y-0.5',
+      'active:scale-[0.98] active:opacity-80'
+    ),
+    secondary: cn(
+      'bg-transparent text-purple-600 border border-purple-600',
+      'hover:bg-purple-600/10 hover:-translate-y-0.5',
+      'active:scale-[0.98] active:bg-purple-600/20'
+    ),
+    ghost: cn(
+      'bg-transparent text-gray-300',
+      'hover:text-purple-400 hover:bg-white/5',
+      'active:scale-[0.98] active:bg-white/10'
+    ),
     cosmic: cn(
       'bg-gradient-to-br from-purple-500/15 via-indigo-500/12 to-purple-500/15',
       'border border-purple-500/30',
@@ -37,12 +48,30 @@ export function GlowButton({
       'hover:border-purple-500/45',
       'hover:-translate-y-0.5',
       'hover:shadow-[0_12px_35px_rgba(147,51,234,0.2)]',
+      'active:scale-[0.98]',
       'before:absolute before:inset-0',
       'before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent',
-      'before:-translate-x-full before:transition-transform',
+      'before:-translate-x-full before:transition-transform before:duration-500',
       'hover:before:translate-x-full',
-      'overflow-hidden',
-      '[&:hover::before]:duration-500'
+      'overflow-hidden'
+    ),
+    success: cn(
+      'bg-mirror-success text-white',
+      'hover:bg-mirror-success/90 hover:-translate-y-0.5',
+      'active:scale-[0.98] active:bg-mirror-success/80',
+      'focus-visible:ring-mirror-success'
+    ),
+    danger: cn(
+      'bg-mirror-error text-white',
+      'hover:bg-mirror-error/90 hover:-translate-y-0.5',
+      'active:scale-[0.98] active:bg-mirror-error/80',
+      'focus-visible:ring-mirror-error'
+    ),
+    info: cn(
+      'bg-mirror-info text-white',
+      'hover:bg-mirror-info/90 hover:-translate-y-0.5',
+      'active:scale-[0.98] active:bg-mirror-info/80',
+      'focus-visible:ring-mirror-info'
     ),
   };
 
@@ -61,8 +90,8 @@ export function GlowButton({
         // Base structure
         'rounded-lg font-medium',
         'relative',
-        // Fast transitions (200ms for opacity, 300ms for transform)
-        'transition-all duration-300',
+        // Fast transitions (200ms - snappy and responsive)
+        'transition-all duration-200',
         'disabled:opacity-50 disabled:cursor-not-allowed',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2',
         // Variant

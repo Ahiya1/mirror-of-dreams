@@ -17,24 +17,24 @@ export function GlowBadge({
 }: GlowBadgeProps) {
   const variants = {
     success: {
-      bg: 'bg-green-500/20',
-      text: 'text-green-500',
-      border: 'border-green-500/30',
+      bg: 'bg-mirror-success/20',
+      text: 'text-mirror-success',
+      border: 'border-mirror-success/30',
     },
     warning: {
-      bg: 'bg-yellow-500/20',
-      text: 'text-yellow-500',
-      border: 'border-yellow-500/30',
+      bg: 'bg-mirror-warning/20',
+      text: 'text-mirror-warning',
+      border: 'border-mirror-warning/30',
     },
     error: {
-      bg: 'bg-red-500/20',
-      text: 'text-red-500',
-      border: 'border-red-500/30',
+      bg: 'bg-mirror-error/20',
+      text: 'text-mirror-error',
+      border: 'border-mirror-error/30',
     },
     info: {
-      bg: 'bg-blue-500/20',
-      text: 'text-blue-500',
-      border: 'border-blue-500/30',
+      bg: 'bg-mirror-info/20',
+      text: 'text-mirror-info',
+      border: 'border-mirror-info/30',
     },
   };
 

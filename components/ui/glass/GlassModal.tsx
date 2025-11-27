@@ -1,13 +1,22 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import FocusLock from 'react-focus-lock';
 import { X } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import { modalOverlayVariants, modalContentVariants } from '@/lib/animations/variants';
 import { GlassCard } from './GlassCard';
 import type { GlassModalProps } from '@/types/glass-components';
 
 /**
- * GlassModal - Modal dialog with glass overlay and animated entrance
+ * GlassModal - Modal dialog with glass overlay, animated entrance, and focus trap
+ *
+ * Features:
+ * - Focus trap (Tab navigation contained within modal)
+ * - Auto-focus close button on open
+ * - Escape key closes modal
+ * - Return focus to trigger element on close
+ * - WCAG 2.4.3 compliant
  *
  * @param isOpen - Modal open state
  * @param onClose - Close handler
@@ -22,10 +31,35 @@ export function GlassModal({
   children,
   className,
 }: GlassModalProps) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Auto-focus close button when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      // Delay to allow modal animation to complete
+      const timer = setTimeout(() => {
+        closeButtonRef.current?.focus();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
+  // Handle Escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
+
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
+        <FocusLock returnFocus>
           {/* Overlay */}
           <motion.div
             variants={modalOverlayVariants}
@@ -45,6 +79,9 @@ export function GlassModal({
               exit="exit"
               onClick={(e) => e.stopPropagation()}
               className="w-full max-w-lg"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={title ? 'modal-title' : undefined}
             >
               <GlassCard
                 elevated
@@ -52,6 +89,7 @@ export function GlassModal({
               >
                 {/* Close Button */}
                 <button
+                  ref={closeButtonRef}
                   onClick={onClose}
                   className="absolute top-4 right-4 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
                   aria-label="Close modal"
@@ -61,7 +99,7 @@ export function GlassModal({
 
                 {/* Title */}
                 {title && (
-                  <h2 className="text-2xl font-bold text-white mb-4 pr-10">
+                  <h2 id="modal-title" className="text-2xl font-bold text-white mb-4 pr-10">
                     {title}
                   </h2>
                 )}
@@ -71,7 +109,7 @@ export function GlassModal({
               </GlassCard>
             </motion.div>
           </div>
-        </>
+        </FocusLock>
       )}
     </AnimatePresence>
   );

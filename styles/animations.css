@@ -752,3 +752,50 @@
     animation: none !important;
   }
 }
+
+/* ╭─ INPUT VALIDATION ANIMATIONS ───────────────────────────────────────╮ */
+
+/* Error shake animation - triggers on error state change */
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-4px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(4px);
+  }
+}
+
+/* Success checkmark animation - stroke-dashoffset animation */
+@keyframes checkmark {
+  0% {
+    stroke-dashoffset: 100;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+/* Utility classes for input validation */
+.animate-shake {
+  animation: shake 400ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+.animate-checkmark {
+  animation: checkmark 300ms ease-out forwards;
+}
+
+/* Respect reduced motion for validation animations */
+@media (prefers-reduced-motion: reduce) {
+  .animate-shake,
+  .animate-checkmark {
+    animation: none !important;
+  }
+}

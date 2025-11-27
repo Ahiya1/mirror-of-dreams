@@ -18,17 +18,17 @@ interface ToastProps {
 
 export function Toast({ type, message, onDismiss }: ToastProps) {
   const icons = {
-    success: <CheckCircle className="w-5 h-5 text-green-400" />,
-    error: <XCircle className="w-5 h-5 text-red-400" />,
-    warning: <AlertTriangle className="w-5 h-5 text-yellow-400" />,
-    info: <Info className="w-5 h-5 text-blue-400" />,
+    success: <CheckCircle className="w-5 h-5 text-mirror-success" />,
+    error: <XCircle className="w-5 h-5 text-mirror-error" />,
+    warning: <AlertTriangle className="w-5 h-5 text-mirror-warning" />,
+    info: <Info className="w-5 h-5 text-mirror-info" />,
   };
 
   const colors = {
-    success: 'border-green-500/30 bg-green-950/50',
-    error: 'border-red-500/30 bg-red-950/50',
-    warning: 'border-yellow-500/30 bg-yellow-950/50',
-    info: 'border-blue-500/30 bg-blue-950/50',
+    success: 'border-mirror-success/30 bg-mirror-success/10',
+    error: 'border-mirror-error/30 bg-mirror-error/10',
+    warning: 'border-mirror-warning/30 bg-mirror-warning/10',
+    info: 'border-mirror-info/30 bg-mirror-info/10',
   };
 
   return (

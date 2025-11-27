@@ -571,4 +571,48 @@ body {
     -ms-user-select: none;
     user-select: none;
   }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     SEMANTIC COLOR SYSTEM
+     Consistent semantic colors using mirror.* palette
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  /* Text Colors */
+  .text-semantic-success { @apply text-mirror-success; }
+  .text-semantic-error { @apply text-mirror-error; }
+  .text-semantic-info { @apply text-mirror-info; }
+  .text-semantic-warning { @apply text-mirror-warning; }
+
+  /* Background Colors (Light) */
+  .bg-semantic-success-light { @apply bg-mirror-success/10; }
+  .bg-semantic-error-light { @apply bg-mirror-error/10; }
+  .bg-semantic-info-light { @apply bg-mirror-info/10; }
+  .bg-semantic-warning-light { @apply bg-mirror-warning/10; }
+
+  /* Border Colors */
+  .border-semantic-success { @apply border-mirror-success/50; }
+  .border-semantic-error { @apply border-mirror-error/50; }
+  .border-semantic-info { @apply border-mirror-info/50; }
+  .border-semantic-warning { @apply border-mirror-warning/50; }
+
+  /* Status Box Patterns (Reusable) */
+  .status-box-success {
+    @apply bg-semantic-success-light border-semantic-success text-semantic-success;
+    @apply border backdrop-blur-md rounded-lg p-4;
+  }
+
+  .status-box-error {
+    @apply bg-semantic-error-light border-semantic-error text-semantic-error;
+    @apply border backdrop-blur-md rounded-lg p-4;
+  }
+
+  .status-box-info {
+    @apply bg-semantic-info-light border-semantic-info text-semantic-info;
+    @apply border backdrop-blur-md rounded-lg p-4;
+  }
+
+  .status-box-warning {
+    @apply bg-semantic-warning-light border-semantic-warning text-semantic-warning;
+    @apply border backdrop-blur-md rounded-lg p-4;
+  }
 }

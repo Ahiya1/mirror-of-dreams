@@ -44,6 +44,19 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
   }, []);
 
   /**
+   * Handle user dropdown keyboard navigation
+   */
+  const handleUserDropdownKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleUserDropdownToggle();
+    }
+    if (e.key === 'Escape') {
+      setShowUserDropdown(false);
+    }
+  }, [handleUserDropdownToggle]);
+
+  /**
    * Handle logout
    */
   const handleLogout = useCallback(() => {
@@ -179,9 +192,14 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
           <div className="relative dashboard-nav__user" ref={dropdownRef}>
             <button
               onClick={handleUserDropdownToggle}
+              onKeyDown={handleUserDropdownKeyDown}
               className="flex items-center gap-3 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-all"
+              aria-label="User menu"
+              aria-expanded={showUserDropdown}
+              aria-haspopup="true"
+              aria-controls="user-dropdown-menu"
             >
-              <span className="text-lg">
+              <span className="text-lg" aria-hidden="true">
                 {user?.tier === 'premium' ? '💎' : user?.tier === 'essential' ? '✨' : '👤'}
               </span>
               <span className="hidden sm:inline text-sm text-white">
@@ -197,6 +215,9 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.2 }}
+                  id="user-dropdown-menu"
+                  role="menu"
+                  aria-label="User menu options"
                 >
                   <GlassCard
                     elevated
@@ -253,6 +274,9 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
           <button
             onClick={() => setShowMobileMenu(!showMobileMenu)}
             className="lg:hidden p-2 rounded-lg bg-white/8 hover:bg-white/12 transition-all"
+            aria-label={showMobileMenu ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={showMobileMenu}
+            aria-controls="mobile-navigation"
           >
             {showMobileMenu ? (
               <X className="w-5 h-5 text-white" />
@@ -267,11 +291,14 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
       <AnimatePresence>
         {showMobileMenu && (
           <motion.nav
+            id="mobile-navigation"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
             className="lg:hidden mt-4 pt-4 border-t border-white/10 px-6 pb-4"
+            role="navigation"
+            aria-label="Mobile navigation"
           >
             <div className="flex flex-col gap-2">
               <Link

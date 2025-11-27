@@ -156,11 +156,11 @@ export default function SignInPage() {
           {/* Error/Success Message */}
           {message && (
             <div
-              className={`p-4 rounded-lg border backdrop-blur-md ${
+              className={
                 message.type === 'error'
-                  ? 'bg-red-500/10 border-red-500/50 text-red-200'
-                  : 'bg-green-500/10 border-green-500/50 text-green-200'
-              }`}
+                  ? 'status-box-error'
+                  : 'status-box-success'
+              }
             >
               {message.text}
             </div>

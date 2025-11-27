@@ -17,7 +17,7 @@ export interface GlassBaseProps {
 /**
  * Props for GlassCard component (simplified for restraint)
  */
-export interface GlassCardProps {
+export interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Elevated state (adds slight shadow and border highlight) */
   elevated?: boolean;
   /** Interactive state (enables subtle hover lift) */
@@ -35,7 +35,7 @@ export interface GlassCardProps {
  */
 export interface GlowButtonProps extends GlassBaseProps {
   /** Button style variant */
-  variant?: 'primary' | 'secondary' | 'ghost' | 'cosmic';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'cosmic' | 'success' | 'danger' | 'info';
   /** Button size */
   size?: 'sm' | 'md' | 'lg';
   /** Button type */
@@ -66,6 +66,8 @@ export interface GlassInputProps {
   label?: string;
   /** Error message */
   error?: string;
+  /** Success state (shows checkmark) */
+  success?: boolean;
   /** Maximum length */
   maxLength?: number;
   /** Show character counter */
