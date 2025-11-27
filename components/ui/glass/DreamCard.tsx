@@ -14,7 +14,8 @@ import type { DreamCardProps } from '@/types/glass-components';
  * @param date - Dream date (optional)
  * @param tone - Dream tone/category (optional)
  * @param onClick - Click handler (optional)
- * @param variant - Card variant (inherited from GlassCard)
+ * @param elevated - Elevated state (inherited from GlassCard)
+ * @param interactive - Interactive state (inherited from GlassCard)
  * @param className - Additional Tailwind classes
  */
 export function DreamCard({
@@ -23,10 +24,8 @@ export function DreamCard({
   date,
   tone,
   onClick,
-  variant = 'elevated',
-  glowColor = 'purple',
-  hoverable = true,
-  animated = true,
+  elevated = true,
+  interactive = true,
   className,
   ...props
 }: DreamCardProps) {
@@ -34,20 +33,17 @@ export function DreamCard({
 
   return (
     <GlassCard
-      variant={variant}
-      glowColor={glowColor}
-      hoverable={hoverable}
-      animated={animated}
+      elevated={elevated}
+      interactive={interactive}
+      onClick={onClick}
       className={cn(
-        'relative overflow-hidden cursor-pointer',
+        'relative overflow-hidden',
         'before:absolute before:inset-0 before:bg-gradient-dream before:opacity-20',
-        onClick && 'hover:scale-[1.01] active:scale-[0.99]',
         className
       )}
       {...props}
     >
       <motion.div
-        onClick={onClick}
         className="relative z-10"
         whileTap={onClick && !prefersReducedMotion ? { scale: 0.98 } : undefined}
       >

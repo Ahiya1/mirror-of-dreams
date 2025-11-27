@@ -176,7 +176,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
 
           <div className="header-actions">
             <button onClick={() => router.push(`/reflection?dreamId=${params.id}`)} className="btn-primary">
-              ✨ Reflect
+              Reflect
             </button>
             <button onClick={handleDelete} className="btn-danger">
               Delete
@@ -195,7 +195,6 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
         {/* Evolution Report Generation Section */}
         <div className="dream-detail__ai-section">
           <h2 className="section-title">
-            <span className="title-icon">🦋</span>
             <GradientText gradient="cosmic" className="title-gradient">
               Evolution Report
             </GradientText>
@@ -219,7 +218,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
           ) : isEligibleForGeneration ? (
             <div className="ai-eligible-state">
               <p className="eligible-message">
-                ✨ You have {reflectionCount} reflections. Generate an evolution report to see your growth patterns!
+                You have {reflectionCount} reflections. Generate an evolution report to see your growth patterns.
               </p>
               <GlowButton
                 variant="primary"
@@ -227,7 +226,6 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
                 onClick={handleGenerateEvolution}
                 className="ai-generate-btn"
               >
-                <span className="btn-icon">🦋</span>
                 Generate Evolution Report
               </GlowButton>
             </div>
@@ -253,7 +251,6 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
         {/* Visualization Generation Section */}
         <div className="dream-detail__ai-section">
           <h2 className="section-title">
-            <span className="title-icon">🏔️</span>
             <GradientText gradient="cosmic" className="title-gradient">
               Visualization
             </GradientText>
@@ -277,7 +274,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
           ) : isEligibleForGeneration ? (
             <div className="ai-eligible-state">
               <p className="eligible-message">
-                ✨ Generate a visualization to experience your dream as already achieved!
+                Generate a visualization to experience your dream as already achieved.
               </p>
               <GlowButton
                 variant="primary"
@@ -285,7 +282,6 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
                 onClick={handleGenerateVisualization}
                 className="ai-generate-btn"
               >
-                <span className="btn-icon">🏔️</span>
                 Generate Visualization
               </GlowButton>
             </div>
@@ -317,28 +313,28 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
               disabled={dream.status === 'active'}
               className="status-btn"
             >
-              ✨ Active
+              Active
             </button>
             <button
               onClick={() => handleStatusChange('achieved')}
               disabled={dream.status === 'achieved'}
               className="status-btn"
             >
-              🎉 Achieved
+              Achieved
             </button>
             <button
               onClick={() => handleStatusChange('archived')}
               disabled={dream.status === 'archived'}
               className="status-btn"
             >
-              📦 Archive
+              Archive
             </button>
             <button
               onClick={() => handleStatusChange('released')}
               disabled={dream.status === 'released'}
               className="status-btn"
             >
-              🕊️ Release
+              Release
             </button>
           </div>
         </div>
@@ -387,7 +383,10 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
         .dream-detail {
           min-height: 100vh;
           background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
-          padding: 2rem;
+          padding-top: 80px;
+          padding-left: 2rem;
+          padding-right: 2rem;
+          padding-bottom: 2rem;
         }
 
         .dream-detail__container {

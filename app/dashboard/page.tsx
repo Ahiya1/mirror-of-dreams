@@ -117,17 +117,26 @@ export default function DashboardPage() {
           {/* Personalized Welcome Section */}
           <WelcomeSection />
 
-        {/* Quick Action: Reflect Now Button */}
+        {/* Quick Action: Reflect Now Button - PRIMARY ACTION */}
         <div className="flex flex-col items-center gap-3 mb-8">
-          <GlowButton
-            variant="primary"
-            size="lg"
+          <button
             onClick={handleReflectNow}
-            className="w-full sm:w-auto"
+            className="
+              px-8 py-4
+              text-xl font-medium
+              bg-purple-600
+              text-white
+              rounded-lg
+              transition-opacity duration-200
+              hover:opacity-90
+              active:opacity-85
+              disabled:opacity-50 disabled:cursor-not-allowed
+              w-full sm:w-auto
+              min-w-[280px]
+            "
           >
-            <span className="text-2xl">✨</span>
             Reflect Now
-          </GlowButton>
+          </button>
         </div>
 
         {/* Dashboard Grid with Stagger Animation */}

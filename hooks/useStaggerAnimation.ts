@@ -23,7 +23,7 @@ export function useStaggerAnimation(
   itemCount: number,
   options: StaggerOptions = {}
 ): StaggerReturn {
-  const { delay = 100, duration = 600, triggerOnce = true } = options;
+  const { delay = 80, duration = 300, triggerOnce = true } = options;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);

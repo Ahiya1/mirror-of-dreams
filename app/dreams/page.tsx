@@ -53,12 +53,12 @@ export default function DreamsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-4 sm:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark pt-nav px-4 sm:px-8 pb-8">
       <AppNavigation currentPage="dreams" />
 
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <GlassCard variant="elevated" className="mb-6">
+        <GlassCard elevated className="mb-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <GradientText gradient="cosmic" className="text-3xl sm:text-4xl font-bold mb-2">
@@ -83,8 +83,6 @@ export default function DreamsPage() {
         {/* Limits Info */}
         {limits && (
           <GlassCard
-            variant="default"
-            glowColor="purple"
             className="mb-6 border-l-4 border-mirror-purple/60"
           >
             <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
@@ -107,21 +105,21 @@ export default function DreamsPage() {
             size="sm"
             onClick={() => setStatusFilter('active')}
           >
-            ✨ Active
+            Active
           </GlowButton>
           <GlowButton
             variant={statusFilter === 'achieved' ? 'primary' : 'secondary'}
             size="sm"
             onClick={() => setStatusFilter('achieved')}
           >
-            🎉 Achieved
+            Achieved
           </GlowButton>
           <GlowButton
             variant={statusFilter === 'archived' ? 'primary' : 'secondary'}
             size="sm"
             onClick={() => setStatusFilter('archived')}
           >
-            📦 Archived
+            Archived
           </GlowButton>
           <GlowButton
             variant={statusFilter === undefined ? 'primary' : 'secondary'}
@@ -155,9 +153,9 @@ export default function DreamsPage() {
           </div>
         ) : (
           <EmptyState
-            icon="🌟"
+            icon=""
             title="No dreams yet"
-            description="Create your first dream to begin your journey of reflection and growth."
+            description="Create your first dream to start reflecting and growing."
             ctaLabel="Create Your First Dream"
             ctaAction={() => setIsCreateModalOpen(true)}
           />

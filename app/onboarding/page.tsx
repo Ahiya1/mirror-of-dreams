@@ -75,7 +75,7 @@ export default function OnboardingPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-4">
       <AnimatedBackground />
 
-      <GlassCard className="max-w-2xl w-full p-8" variant="elevated">
+      <GlassCard className="max-w-2xl w-full p-8" elevated>
         {/* Progress Indicator */}
         <ProgressOrbs
           steps={steps.length}

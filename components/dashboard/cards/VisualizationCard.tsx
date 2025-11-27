@@ -49,7 +49,7 @@ const VisualizationCard: React.FC<VisualizationCardProps> = ({
       hoverable={true}
     >
       <CardHeader>
-        <CardTitle icon="🏔️">Visualizations</CardTitle>
+        <CardTitle>Visualizations</CardTitle>
       </CardHeader>
 
       <CardContent>
@@ -107,12 +107,10 @@ const VisualizationCard: React.FC<VisualizationCardProps> = ({
             /* Show Empty State */
             <div className="visualization-empty-state">
               <div className="viz-status">
-                <div className="status-icon">✨</div>
                 <div className="status-content">
                   <h5 className="status-title">Create Your First Visualization</h5>
                   <p className="status-message">
                     Generate your first visualization to experience your dream as already achieved.
-                    Immersive achievement narratives help you embody your future self.
                   </p>
                 </div>
               </div>
@@ -127,7 +125,6 @@ const VisualizationCard: React.FC<VisualizationCardProps> = ({
             className="cosmic-button cosmic-button--secondary"
             onClick={() => router.push('/visualizations')}
           >
-            <span>🏔️</span>
             <span>View All</span>
           </button>
         ) : (
@@ -135,7 +132,6 @@ const VisualizationCard: React.FC<VisualizationCardProps> = ({
             className="cosmic-button cosmic-button--primary"
             onClick={() => router.push('/visualizations')}
           >
-            <span>✨</span>
             <span>Create Visualization</span>
           </button>
         )}

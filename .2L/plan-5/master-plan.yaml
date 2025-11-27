@@ -1,0 +1,495 @@
+plan_id: plan-5
+created_at: 2025-11-27T07:30:00Z
+status: PLANNED
+total_iterations: 3
+complexity: COMPLEX
+
+strategy: |
+  Plan-5 transforms Mirror of Dreams from a functional but visually inconsistent product (4.5/10)
+  to a polished, cohesive branded experience (9/10) through systematic design overhaul.
+
+  **Critical Insight from Exploration:**
+  All 4 explorers agree: Entry points (landing, signin, signup) are BLOCKING - they currently
+  look like "3 different products" and destroy user trust in the first 60 seconds. This must be
+  fixed FIRST before any other polish work.
+
+  **Why 3 Iterations:**
+  - Explorer 1, 2, 3: All recommended 3 iterations (entry points → consistency → polish)
+  - Explorer 4: Recommended 4 iterations (split dashboard & delight into separate phases)
+  - Synthesis: 3 core iterations balances cohesion with validation checkpoints
+  - Entry points MUST be iteration 1 (all explorers unanimous)
+  - Dashboard polish can be merged into iteration 2 (medium scope)
+  - Optional 4th iteration for accessibility deep-dive if timeline allows
+
+  **Critical Path:**
+  1. Fix first impressions (landing + auth unification)
+  2. Fix in-app UX blockers (navigation, loading, readability)
+  3. Apply systematic consistency (typography, spacing, animations)
+  4. [OPTIONAL] Accessibility audit + micro-interactions polish
+
+  **Risk Mitigation:**
+  - Iteration 1 has highest risk (landing page performance, browser compatibility)
+  - All explorers flagged Safari backdrop-filter performance as medium risk
+  - Lighthouse CI monitoring recommended after each iteration
+  - Mobile testing throughout, not just at end
+  - 2-day buffer allocated for fixes
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 3
+    name: "First Impressions - Entry Points Transformation"
+    vision: "Unify landing, signin, and signup pages into cohesive branded experience that builds trust"
+    scope: |
+      **Objective:** Fix BLOCKING issue where first 3 pages look like different products
+
+      **Features (P0 - HIGHEST PRIORITY):**
+
+      1. **Landing Page Transformation** (Feature 1)
+         - Remove portal.css and MirrorShards background
+         - Implement CosmicBackground (match authenticated app aesthetic)
+         - Redesign hero section:
+           - Headline: "Your Dreams, Reflected" (or similar compelling copy)
+           - Subheadline explaining value proposition
+           - Large primary CTA: "Start Reflecting" (GlowButton)
+           - Secondary CTA: "Learn More"
+         - Add 3-4 feature highlight sections (GlassCards):
+           - "AI-Powered Reflections" - Explain mirror concept
+           - "Track Your Dreams" - Show dream management
+           - "Visualize Your Evolution" - Show analytics
+           - "Sacred Space" - Emphasize premium experience
+         - Use AppNavigation component (same as authenticated pages)
+         - Add footer with links (About, Privacy, Terms, Contact)
+         - Responsive design (mobile-first)
+         - Smooth scroll-triggered animations (Framer Motion)
+         - Consistent typography and spacing with app
+
+      2. **Unified Authentication Pages** (Feature 2)
+         - Rebuild signup page to match signin aesthetic
+         - Both pages use same component approach:
+           - CosmicBackground component
+           - GlassCard for form container
+           - GlassInput for all form fields
+           - GlowButton for primary actions
+           - Same loading states (CosmicLoader)
+           - Same error/success message styling
+         - Both pages have identical layout:
+           - Centered auth card (max-width 480px)
+           - Logo/brand at top
+           - Form in middle
+           - Switch link at bottom
+         - Mobile responsive (320px minimum width)
+         - Keyboard navigation support
+         - ARIA labels on all form fields
+
+      3. **Brand Consistency Across Entry Points** (Feature 3)
+         - All 3 pages (landing, signin, signup) use:
+           - Same cosmic color palette (purple/amethyst primary)
+           - Same glass morphism aesthetic
+           - Same button styles (GlowButton)
+           - Same typography scale
+           - Same spacing system
+         - Create shared navigation pattern
+         - Consistent CTA language ("Start Reflecting" not "Sign Up")
+         - Remove marketing jargon, use clear honest copy
+
+      4. **Reflection Loading Experience** (Feature 4)
+         - Add full-page loading overlay during reflection creation
+         - Use CosmicLoader with descriptive text:
+           - "Gazing into the mirror..." (first 3 seconds)
+           - "Crafting your reflection..." (after 3 seconds)
+         - Minimum display time: 500ms (prevent flash on fast networks)
+         - Fade in/out transitions (300ms)
+         - Disable submit button during processing
+         - Show success animation before redirect
+
+      5. **Navigation Layout Fix** (Feature 6)
+         - Calculate AppNavigation height (currently ~80px)
+         - Apply padding-top to all authenticated pages:
+           - Dashboard: Already has correct padding
+           - Dreams: Add padding-top
+           - Reflection: Add padding-top
+           - Evolution: Add padding-top
+           - Visualizations: Add padding-top
+           - Settings: Add padding-top
+         - Test scrolling behavior on all pages
+         - Verify mobile responsiveness (navigation collapses to hamburger)
+
+      6. **Reflection Text Readability** (Feature 7)
+         - Increase reflection output text contrast:
+           - Body text: text-white/90 (currently text-white/70)
+           - Headings: text-white/95
+           - Minimum 4.5:1 contrast ratio (WCAG AA)
+         - Increase font size:
+           - Body: 1.1rem minimum (currently 1rem)
+           - Line height: 1.8 (improved readability)
+         - Improve spacing:
+           - Paragraph spacing: 1.5rem between paragraphs
+           - Section spacing: 2rem between sections
+         - Test on mobile (no horizontal scroll, comfortable reading)
+
+      **Technical Changes:**
+      - app/page.tsx (landing page complete rebuild)
+      - app/auth/signin/page.tsx (refactor to use GlassCard/GlassInput)
+      - app/auth/signup/page.tsx (rebuild to match signin)
+      - app/reflection/MirrorExperience.tsx (add loading overlay)
+      - app/reflection/output/page.tsx (improve text contrast/spacing)
+      - app/dashboard/page.tsx (verify padding, no changes needed)
+      - app/dreams/page.tsx (add padding-top)
+      - app/evolution/page.tsx (add padding-top)
+      - app/visualizations/page.tsx (add padding-top)
+      - Remove: portal.css, auth.css (consolidate into globals.css)
+      - Update: styles/globals.css (add auth-specific styles if needed)
+
+      **Acceptance Criteria:**
+      - ✅ Landing page uses CosmicBackground (not portal.css)
+      - ✅ Landing has hero section with compelling copy and 2 CTAs
+      - ✅ Landing has 3-4 feature highlight cards (glass aesthetic)
+      - ✅ Landing is responsive (mobile-first, 320px minimum)
+      - ✅ Signin and signup pages are visually identical (same components)
+      - ✅ Both auth pages use GlassCard, GlassInput, GlowButton
+      - ✅ All 3 entry points share cosmic color palette and glass aesthetic
+      - ✅ Reflection creation shows full-page loading with CosmicLoader
+      - ✅ Reflection output text meets WCAG AA contrast (4.5:1)
+      - ✅ Reflection output text is readable (1.1rem, line-height 1.8)
+      - ✅ Navigation does not overlap content on any page
+      - ✅ All authenticated pages have correct padding-top
+      - ✅ Mobile responsiveness works on all pages (320px-768px-1024px+)
+      - ✅ Lighthouse Performance score maintained (90+)
+      - ✅ Lighthouse Accessibility score improved to 90+
+
+      **Estimated Duration:** 25-35 hours
+      - Landing page redesign: 10-14 hours (complex, high risk)
+      - Auth page unification: 6-8 hours (rebuild signup, refactor signin)
+      - Reflection loading overlay: 2-3 hours
+      - Navigation padding fix: 2-3 hours (systematic across 5 pages)
+      - Reflection readability: 2-3 hours
+      - Testing & validation: 3-4 hours (mobile, accessibility, performance)
+
+    status: PENDING
+    dependencies: []
+
+  - iteration_id: 2
+    global_iteration: 4
+    name: "In-App UX Polish - Systematic Consistency"
+    vision: "Apply design system consistently across all pages and establish loading/empty state patterns"
+    scope: |
+      **Objective:** Build on entry point foundation with systematic UX improvements
+
+      **Features (P0 + P1 Priority):**
+
+      7. **Dashboard Visual Hierarchy** (Feature 5)
+         - Enhance WelcomeSection:
+           - Make greeting more personalized (use user's first name)
+           - Add subtle time-based greeting (Good morning/afternoon/evening)
+           - Increase spacing around welcome section
+         - Make "Reflect Now" CTA hero element:
+           - Increase size (larger than current)
+           - Add subtle gradient glow effect
+           - Position prominently (above cards, visually dominant)
+         - Enhance dashboard cards:
+           - Use stagger animation (already exists, verify timing)
+           - Improve card spacing (consistent gaps)
+           - Add hover states (subtle lift + glow)
+         - Create clear visual hierarchy:
+           - Hero: Welcome + Reflect Now CTA
+           - Primary: Active dreams grid
+           - Secondary: Recent reflections + stats
+
+      8. **Consistent Loading States** (Feature 8)
+         - Apply CosmicLoader consistently across all tRPC queries:
+           - Dashboard: Dreams data, reflections data, user stats
+           - Dreams page: Dream list, dream details
+           - Evolution page: Analytics data
+           - Visualizations page: Chart data
+         - Set minimum display time: 300ms (prevent flash)
+         - Add descriptive loading text where appropriate
+         - Use skeleton screens for list views (optional enhancement)
+         - Ensure all loading states respect prefers-reduced-motion
+
+      9. **Enhanced Empty States** (Feature 9)
+         - Improve EmptyState component:
+           - Add personality to headlines
+           - Make CTAs more encouraging
+           - Use illustrations or emojis (not generic text)
+         - Apply to all pages:
+           - Dashboard: "No active dreams yet" → "Start your first dream journey"
+           - Dreams: "No dreams tracked" → "Capture your first dream"
+           - Reflections: "No reflections yet" → "Reflect on your first dream"
+           - Evolution: "Not enough data" → "Create more reflections to see your growth"
+           - Visualizations: "No visualizations" → "Visualize your dream patterns"
+         - Add contextual CTAs that match the page purpose
+
+      10. **Typography Enforcement** (Feature 10)
+          - Audit all pages for typography consistency:
+            - H1: 3rem (48px), font-weight 600
+            - H2: 2rem (32px), font-weight 600
+            - H3: 1.5rem (24px), font-weight 500
+            - Body: 1.1rem (17.6px), line-height 1.8
+            - Small: 0.9rem (14.4px), line-height 1.6
+          - Replace hardcoded font sizes with design system classes
+          - Ensure consistent font weights (400 for body, 500 for medium, 600 for bold)
+          - Fix any instances of overly small text (<0.9rem)
+          - Test readability on mobile (comfortable without zooming)
+
+      11. **Spacing & Layout Consistency** (Feature 11)
+          - Audit spacing across all pages:
+            - Card padding: --space-xl (32px) everywhere
+            - Section spacing: --space-8 (32px) or --space-12 (48px)
+            - Element gaps: --space-4 (16px) or --space-6 (24px)
+            - Page margins: Consistent on mobile (--space-4) and desktop (--space-8)
+          - Replace hardcoded spacing values with CSS variables
+          - Ensure consistent layout patterns (centered content, max-width containers)
+          - Fix any cramped or overly spacious sections
+
+      **Technical Changes:**
+      - components/dashboard/shared/WelcomeSection.tsx (enhance greeting)
+      - app/dashboard/page.tsx (hero CTA, card hierarchy)
+      - components/shared/EmptyState.tsx (add personality)
+      - All pages: Apply CosmicLoader to tRPC queries
+      - All pages: Typography audit and replacement
+      - All pages: Spacing audit and CSS variable application
+      - lib/animations/variants.ts (verify stagger timing)
+
+      **Acceptance Criteria:**
+      - ✅ Dashboard welcome section uses personalized greeting
+      - ✅ "Reflect Now" CTA is visually dominant hero element
+      - ✅ Dashboard cards have stagger animation and hover states
+      - ✅ All tRPC queries show CosmicLoader during data fetching
+      - ✅ Loading states have 300ms minimum display time
+      - ✅ All empty states have personality and encouraging CTAs
+      - ✅ Typography is consistent across all pages (H1-H3, body, small)
+      - ✅ No text smaller than 0.9rem anywhere
+      - ✅ Spacing uses CSS variables (no hardcoded px values)
+      - ✅ Card padding is consistent (32px everywhere)
+      - ✅ Section spacing is consistent (32-48px between sections)
+      - ✅ Mobile spacing is comfortable (no cramped layouts)
+      - ✅ Lighthouse Accessibility score 95+
+
+      **Estimated Duration:** 20-28 hours
+      - Dashboard visual hierarchy: 4-6 hours
+      - Consistent loading states: 4-6 hours (systematic across many queries)
+      - Enhanced empty states: 3-4 hours
+      - Typography enforcement: 4-6 hours (audit 16+ pages)
+      - Spacing consistency: 4-6 hours (audit and fix)
+      - Testing & validation: 3-4 hours
+
+    status: PENDING
+    dependencies:
+      - iteration_1
+
+  - iteration_id: 3
+    global_iteration: 5
+    name: "Delight Layer - Micro-Interactions & Accessibility"
+    vision: "Add polish through subtle interactions, semantic colors, page transitions, and accessibility compliance"
+    scope: |
+      **Objective:** Final polish layer that elevates experience from functional to delightful
+
+      **Features (P1 + P2 Priority):**
+
+      12. **Micro-Interactions** (Feature 12)
+          - Add button interactions:
+            - Hover: Subtle lift (translateY -2px) + glow increase
+            - Active: Slight press (scale 0.98)
+            - Focus: Visible focus ring (keyboard navigation)
+            - Transition: 200ms ease-out
+          - Add card interactions:
+            - Hover: Lift + subtle glow
+            - Click: Ripple effect (optional)
+          - Add input interactions:
+            - Focus: Border glow + label animation
+            - Error state: Shake animation + red border
+            - Success state: Green checkmark animation
+          - Ensure all interactions respect prefers-reduced-motion
+
+      13. **Page Transitions** (Feature 13)
+          - Implement smooth transitions between pages:
+            - Fade in on page load (300ms)
+            - Slide in from bottom for modals (400ms)
+            - Cross-fade between navigation pages (250ms)
+          - Use Framer Motion AnimatePresence
+          - Maintain 60fps performance (GPU-accelerated transforms)
+          - Respect prefers-reduced-motion (instant transitions if disabled)
+
+      14. **Color Semantics** (Feature 14)
+          - Apply semantic colors consistently:
+            - Purple/Amethyst (mirror.amethyst): Primary actions, brand elements
+            - Gold (mirror.gold): Success, achievements, premium features
+            - Blue (mirror.blue): Info messages, links
+            - Red (mirror.red): Errors, destructive actions
+            - Green: Success confirmations
+          - Update button variants:
+            - Primary: Purple gradient
+            - Success: Gold gradient
+            - Danger: Red gradient
+            - Info: Blue gradient
+          - Add semantic border colors for cards (optional status indicators)
+
+      15. **Accessibility Compliance** (Feature 15)
+          - WCAG 2.1 AA compliance checklist:
+            - ✅ All text meets 4.5:1 contrast ratio
+            - ✅ All interactive elements have focus states
+            - ✅ All images have alt text
+            - ✅ All form inputs have labels
+            - ✅ Keyboard navigation works everywhere
+            - ✅ ARIA labels on all buttons/icons
+            - ✅ No animations for prefers-reduced-motion users
+          - Run Lighthouse accessibility audit (target 95+)
+          - Run axe DevTools for detailed accessibility checks
+          - Test with keyboard-only navigation
+          - Test with screen reader (VoiceOver or NVDA)
+
+      **Optional Enhancements (if time allows):**
+      - Success animations after form submissions
+      - Confetti or sparkle effects for achievements
+      - Ambient background animations (floating particles)
+      - Sound effects for key interactions (mute by default)
+
+      **Technical Changes:**
+      - components/ui/glass/GlowButton.tsx (add micro-interactions)
+      - components/ui/glass/GlassCard.tsx (add hover states)
+      - components/ui/glass/GlassInput.tsx (add focus animations)
+      - app/layout.tsx (add page transition wrapper)
+      - lib/animations/variants.ts (add micro-interaction variants)
+      - All pages: Add semantic color usage
+      - All pages: Accessibility audit and fixes
+
+      **Acceptance Criteria:**
+      - ✅ All buttons have hover, active, and focus states
+      - ✅ Button transitions are smooth (200ms)
+      - ✅ Cards have subtle hover lift effect
+      - ✅ Form inputs have focus glow and animations
+      - ✅ Page transitions are smooth (300ms fade-in)
+      - ✅ Modal transitions slide in from bottom (400ms)
+      - ✅ All transitions respect prefers-reduced-motion
+      - ✅ Semantic colors applied consistently (purple=primary, gold=success, red=error)
+      - ✅ All text meets WCAG AA contrast (4.5:1)
+      - ✅ All interactive elements have visible focus states
+      - ✅ All form inputs have proper labels and ARIA attributes
+      - ✅ Keyboard navigation works on all pages
+      - ✅ Screen reader announces all important information
+      - ✅ Lighthouse Accessibility score 95+
+      - ✅ axe DevTools reports 0 critical/serious issues
+      - ✅ Lighthouse Performance maintained (90+)
+
+      **Estimated Duration:** 15-22 hours
+      - Micro-interactions implementation: 4-6 hours
+      - Page transitions setup: 3-4 hours
+      - Semantic color application: 2-3 hours
+      - Accessibility audit: 3-4 hours (testing takes time)
+      - Accessibility fixes: 2-3 hours (based on audit findings)
+      - Testing & validation: 2-3 hours
+
+    status: PENDING
+    dependencies:
+      - iteration_2
+
+explorer_synthesis: |
+  **Master Explorer Consensus:**
+
+  **Complexity Assessment:**
+  - Explorer 1: COMPLEX (15 features, 150+ criteria, multi-layer architectural impact, 60-80 hours)
+  - Explorer 2: COMPLEX (must unify 3 styling approaches, 20+ files, accessibility compliance, 60-90 hours)
+  - Explorer 3: COMPLEX (12 integration challenges, entry points BLOCKING, 90-120 hours)
+  - Explorer 4: MEDIUM (breadth not depth, 70+ files to touch, animation performance critical, 60-80 hours)
+  - **Synthesis: COMPLEX** (consensus from 3/4 explorers, high coordination requirement)
+
+  **Iteration Breakdown Recommendations:**
+  - Explorer 1: 3 iterations (Entry Points → Systematic Consistency → Polish & Delight)
+  - Explorer 2: 3 iterations (Foundation & Critical Entry Points → Visual Consistency → Delight Layer)
+  - Explorer 3: 3 iterations (First Impressions → In-App UX Fixes → Systematic Polish)
+  - Explorer 4: 4 iterations (Entry Points → Systematic Consistency → Dashboard & Journeys → Delight)
+  - **Synthesis: 3 iterations** (unanimous on entry points first, consensus on 3 core iterations)
+
+  **Critical Path Agreement:**
+  All explorers UNANIMOUSLY agree:
+  1. **Entry points (landing, signin, signup) MUST be iteration 1** - BLOCKING user trust
+  2. Landing/signin/signup currently look like "3 different products" (portal.css, styled-jsx, Tailwind)
+  3. First impressions determine conversion - cannot proceed with polish until foundation is solid
+  4. Reflection loading feedback is P0 (no user feedback during 3-5 second AI processing)
+  5. Navigation layout fix affects all authenticated pages (systematic issue)
+  6. Typography and spacing must be enforced systematically (not ad-hoc)
+
+  **Risk Factors Identified:**
+  - **HIGH RISK:** Landing page performance regression (new hero section, animations could slow LCP >3s)
+  - **HIGH RISK:** Browser compatibility - Safari backdrop-filter performance on older devices
+  - **HIGH RISK:** Styling refactoring scope - 3 different approaches must be unified without breaking
+  - **MEDIUM RISK:** Mobile responsive testing - 45+ scenarios across 3 device sizes
+  - **MEDIUM RISK:** Animation performance - Framer Motion can cause jank if misused (60fps target)
+  - **MEDIUM RISK:** Accessibility compliance - WCAG 2.1 AA adds constraint layer
+  - **MEDIUM RISK:** Scope creep - "while we're at it" syndrome during design iteration
+  - **LOW RISK:** Performance regression - well-optimized stack, minimal bundle size impact
+
+  **Technology Stack Consensus:**
+  All explorers agree: NO framework changes, NO new dependencies needed
+  - Next.js 14 (App Router) ✓
+  - React 18.3.1 ✓
+  - Tailwind CSS 3.4.1 ✓
+  - Framer Motion 11.18.2 ✓ (60KB gzipped acceptable for animation-heavy app)
+  - Glass component library ✓ (11 components already exist)
+  - CSS design system ✓ (variables.css, tailwind.config.ts comprehensive)
+
+  **Success Criteria Alignment:**
+  - Landing page uses CosmicBackground (not portal.css)
+  - Auth pages visually identical (both use GlassCard/GlassInput)
+  - All 3 entry points share cosmic aesthetic
+  - Reflection creation has full-page loading feedback
+  - Navigation does not overlap content
+  - Typography/spacing consistent everywhere
+  - WCAG 2.1 AA compliance (Lighthouse 95+)
+  - Performance maintained (Lighthouse 90+)
+  - 60fps animation target
+
+notes: |
+  **Why 3 Iterations (Not 4):**
+
+  Explorer 4 recommended 4 iterations: "Entry Points → Systematic Consistency → Dashboard & Journeys → Delight"
+  - Valid point: Dashboard enhancement is medium scope (4-6 hours), could be separate iteration
+  - Risk: Adds iteration overhead (extra planning + validation phases)
+  - Risk: Delays accessibility work to iteration 4 (should be higher priority)
+
+  Explorers 1, 2, 3 recommended 3 iterations: "Entry Points → Consistency → Polish"
+  - Valid point: Dashboard is part of systematic UX improvements (fits iteration 2)
+  - Valid point: 3 iterations maintains thematic cohesion (first impressions → in-app → delight)
+  - Valid point: Accessibility should be integrated throughout, not deferred
+
+  **3-iteration synthesis:**
+  - Iteration 1: Entry points + critical UX fixes (navigation, loading, readability)
+  - Iteration 2: Systematic consistency (loading states, empty states, typography, spacing, dashboard)
+  - Iteration 3: Delight layer (micro-interactions, page transitions, color semantics, accessibility audit)
+  - Allows validation checkpoint after entry points (highest risk)
+  - Merges dashboard into iteration 2 (medium scope, natural fit with UX improvements)
+  - Total time similar (60-85 hours vs 60-80 hours)
+
+  **Critical Performance Monitoring:**
+  - Run Lighthouse CI after each iteration (catch regressions early)
+  - Performance budget: LCP < 2.5s, FID < 100ms, CLS < 0.1
+  - Accessibility budget: Lighthouse 95+, axe DevTools 0 critical issues
+  - Animation budget: 60fps target (GPU-accelerated transforms only)
+  - Mobile testing throughout (not just at end)
+
+  **Go/No-Go Decision Gate:**
+  After Iteration 1, measure landing page LCP on Safari:
+  - If LCP < 2.5s → Proceed with iterations 2-3
+  - If LCP 2.5-3s → Optimize before proceeding
+  - If LCP > 3s → Reassess backdrop-filter usage, simplify animations
+
+  **Optional 4th Iteration:**
+  If timeline allows and all 3 core iterations complete successfully:
+  - Iteration 4: Accessibility deep-dive + advanced micro-interactions
+  - ARIA landmarks throughout
+  - Focus trap for modals
+  - Screen reader optimization
+  - Advanced success animations (confetti, sparkles)
+  - Ambient background effects
+  - Sound effects (mute by default)
+
+  **Browser Testing Strategy:**
+  - Primary: Chrome latest (desktop + mobile)
+  - Secondary: Safari latest (desktop + mobile) - CRITICAL for backdrop-filter testing
+  - Tertiary: Firefox latest (desktop), Edge latest (desktop)
+  - Mobile devices: iPhone 12+ (iOS Safari), Android (Chrome)
+  - Older devices: Test Safari on iPhone X or older (performance validation)
+
+---
+*Master plan created from 4 explorer reports: 2025-11-27*
+*Plan-5: Design Overhaul - 4.5/10 → 9/10 Polished Product*

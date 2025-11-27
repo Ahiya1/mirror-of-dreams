@@ -61,7 +61,7 @@ const EvolutionCard: React.FC<EvolutionCardProps> = ({
       hoverable={true}
     >
       <CardHeader>
-        <CardTitle icon="🦋">Evolution Insights</CardTitle>
+        <CardTitle>Evolution Insights</CardTitle>
       </CardHeader>
 
       <CardContent>
@@ -111,23 +111,20 @@ const EvolutionCard: React.FC<EvolutionCardProps> = ({
             <div className="evolution-empty-state">
               {eligibilityData?.eligible ? (
                 <div className="evolution-status evolution-status--eligible">
-                  <div className="status-icon">✨</div>
                   <div className="status-content">
                     <h5 className="status-title">Ready to Generate</h5>
                     <p className="status-message">
-                      You can generate your first evolution report! Evolution reports reveal deep
-                      patterns in your consciousness journey.
+                      You can generate your first evolution report based on your reflections.
                     </p>
                   </div>
                 </div>
               ) : (
                 <div className="evolution-status evolution-status--ineligible">
-                  <div className="status-icon">🌱</div>
                   <div className="status-content">
                     <h5 className="status-title">Keep Reflecting</h5>
                     <p className="status-message">
                       {eligibilityData?.reason ||
-                        'Create at least 4 reflections on a dream to unlock evolution reports. Each reflection adds depth to your journey.'}
+                        'Create at least 4 reflections on a dream to generate an evolution report.'}
                     </p>
                   </div>
                 </div>
@@ -163,7 +160,6 @@ const EvolutionCard: React.FC<EvolutionCardProps> = ({
             className="cosmic-button cosmic-button--secondary"
             onClick={() => router.push('/evolution')}
           >
-            <span>🦋</span>
             <span>View Reports</span>
           </button>
         ) : eligibilityData?.eligible ? (
@@ -171,7 +167,6 @@ const EvolutionCard: React.FC<EvolutionCardProps> = ({
             className="cosmic-button cosmic-button--primary"
             onClick={() => router.push('/evolution')}
           >
-            <span>✨</span>
             <span>Generate Report</span>
           </button>
         ) : (
@@ -179,7 +174,6 @@ const EvolutionCard: React.FC<EvolutionCardProps> = ({
             className="cosmic-button cosmic-button--secondary"
             onClick={() => router.push('/dreams')}
           >
-            <span>📝</span>
             <span>Create Reflections</span>
           </button>
         )}

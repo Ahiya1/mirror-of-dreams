@@ -15,15 +15,17 @@ export interface GlassBaseProps {
 }
 
 /**
- * Props for GlassCard component
+ * Props for GlassCard component (simplified for restraint)
  */
-export interface GlassCardProps extends GlassBaseProps {
-  /** Visual style variant */
-  variant?: 'default' | 'elevated' | 'inset';
-  /** Enable hover animations */
-  hoverable?: boolean;
+export interface GlassCardProps {
+  /** Elevated state (adds slight shadow and border highlight) */
+  elevated?: boolean;
+  /** Interactive state (enables subtle hover lift) */
+  interactive?: boolean;
   /** Click handler */
   onClick?: () => void;
+  /** Additional Tailwind classes */
+  className?: string;
   /** Card content */
   children: ReactNode;
 }
@@ -33,15 +35,55 @@ export interface GlassCardProps extends GlassBaseProps {
  */
 export interface GlowButtonProps extends GlassBaseProps {
   /** Button style variant */
-  variant?: 'primary' | 'secondary' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'cosmic';
   /** Button size */
   size?: 'sm' | 'md' | 'lg';
+  /** Button type */
+  type?: 'button' | 'submit' | 'reset';
   /** Click handler */
   onClick?: () => void;
   /** Disabled state */
   disabled?: boolean;
   /** Button content */
   children: ReactNode;
+}
+
+/**
+ * Props for GlassInput component
+ */
+export interface GlassInputProps {
+  /** Input type */
+  type?: 'text' | 'email' | 'password' | 'textarea';
+  /** Variant (for backward compatibility) */
+  variant?: 'text' | 'textarea';
+  /** Input value */
+  value: string;
+  /** Change handler */
+  onChange: (value: string) => void;
+  /** Placeholder text */
+  placeholder?: string;
+  /** Input label */
+  label?: string;
+  /** Error message */
+  error?: string;
+  /** Maximum length */
+  maxLength?: number;
+  /** Show character counter */
+  showCounter?: boolean;
+  /** Show password toggle (for password type) */
+  showPasswordToggle?: boolean;
+  /** Required field */
+  required?: boolean;
+  /** Minimum length */
+  minLength?: number;
+  /** Autocomplete attribute */
+  autoComplete?: string;
+  /** Input ID */
+  id?: string;
+  /** Additional Tailwind classes */
+  className?: string;
+  /** Textarea rows */
+  rows?: number;
 }
 
 /**
@@ -83,13 +125,11 @@ export interface ProgressOrbsProps {
 }
 
 /**
- * Props for GlowBadge component
+ * Props for GlowBadge component (simplified - no pulsing)
  */
 export interface GlowBadgeProps {
   /** Badge variant */
   variant?: 'success' | 'warning' | 'error' | 'info';
-  /** Enable pulsing glow animation */
-  glowing?: boolean;
   /** Additional Tailwind classes */
   className?: string;
   /** Badge content */

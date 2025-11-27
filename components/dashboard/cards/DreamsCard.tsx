@@ -46,11 +46,9 @@ const DreamsCard: React.FC<DreamsCardProps> = ({ animated = true, className = ''
   // Empty state component
   const EmptyState = () => (
     <div className="empty-state">
-      <div className="empty-icon">✨</div>
       <h4>Dream Big</h4>
-      <p>Create your first dream and begin your journey of intentional growth.</p>
+      <p>Create your first dream and start reflecting.</p>
       <Link href="/dreams" className="cosmic-button cosmic-button--primary">
-        <span>✨</span>
         <span>Create Dream</span>
       </Link>
     </div>
@@ -74,7 +72,7 @@ const DreamsCard: React.FC<DreamsCardProps> = ({ animated = true, className = ''
       hoverable={true}
     >
       <CardHeader>
-        <CardTitle icon="✨">Active Dreams</CardTitle>
+        <CardTitle>Active Dreams</CardTitle>
         <HeaderAction href="/dreams">
           View All <span>→</span>
         </HeaderAction>

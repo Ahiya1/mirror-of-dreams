@@ -47,24 +47,24 @@ export default function DesignSystemPage() {
             Foundation cards with different variants and glass intensities
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <GlassCard variant="default">
+            <GlassCard>
               <h3 className="text-lg font-semibold text-white mb-2">Default Card</h3>
               <p className="text-white/70">
                 Standard glass card with subtle blur and border
               </p>
             </GlassCard>
 
-            <GlassCard variant="elevated" glowColor="blue">
+            <GlassCard elevated>
               <h3 className="text-lg font-semibold text-white mb-2">Elevated Card</h3>
               <p className="text-white/70">
-                Card with enhanced shadow and blue glow effect
+                Card with enhanced shadow and border highlight
               </p>
             </GlassCard>
 
-            <GlassCard variant="inset" glowColor="electric">
-              <h3 className="text-lg font-semibold text-white mb-2">Inset Card</h3>
+            <GlassCard interactive>
+              <h3 className="text-lg font-semibold text-white mb-2">Interactive Card</h3>
               <p className="text-white/70">
-                Card with inner shadow and electric glow
+                Card with subtle hover lift effect
               </p>
             </GlassCard>
           </div>
@@ -222,11 +222,11 @@ export default function DesignSystemPage() {
             <GlowBadge variant="warning">Warning</GlowBadge>
             <GlowBadge variant="error">Error</GlowBadge>
             <GlowBadge variant="info">Info</GlowBadge>
-            <GlowBadge variant="success" glowing>
-              Glowing Success
+            <GlowBadge variant="success">
+              Success
             </GlowBadge>
-            <GlowBadge variant="info" glowing>
-              Glowing Info
+            <GlowBadge variant="info">
+              Info
             </GlowBadge>
           </div>
         </section>

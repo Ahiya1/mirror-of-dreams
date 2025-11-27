@@ -1,0 +1,252 @@
+plan_id: plan-4
+created_at: 2025-11-27T00:00:00Z
+status: PLANNED
+total_iterations: 2
+complexity: COMPLEX
+
+strategy: |
+  Plan-4 addresses critical broken functionality (reflection AI 400 errors) while establishing
+  restraint and substance over flash. The strategy splits work into 2 focused iterations:
+
+  **Critical Path:**
+  1. Fix reflection creation mutation (currently failing with 400 errors)
+  2. Transform to 4-question one-page flow (from multi-step wizard)
+  3. Simplify dashboard and strip excessive decoration
+  4. Update copy to be clear and honest
+
+  **Why 2 Iterations:**
+  - Iteration 1 tackles the CRITICAL broken core (reflection API + UX transformation)
+  - Iteration 2 refines design, copy, and validates substance
+  - Allows validation checkpoint after core functionality restored
+  - Reduces risk of overwhelming changes in single push
+
+  **Reasoning from Exploration:**
+  - Explorer 1 recommended 3 iterations (18-24 hours)
+  - Explorer 2 recommended 1 iteration (18-24 hours)
+  - Explorer 3 flagged HIGH complexity on broken API integration
+  - Explorer 4 emphasized performance debugging may take time
+  - Synthesis: 2 iterations balances risk mitigation with cohesion
+
+  **Success Criteria:**
+  - Users can complete reflections without 400 errors (100% success rate)
+  - Reflection flow is one-page with 4 questions (no multi-step wizard)
+  - Dashboard shows ONE clear primary action ("Reflect Now")
+  - Maximum 2 emojis per page throughout app
+  - All copy is direct and honest (no marketing speak)
+  - AI insights reference user's actual answers (substance over style)
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 1
+    name: "Fix Broken Core + One-Page Reflection Flow"
+    vision: "Restore reflection creation functionality and transform UX to focused one-page experience"
+    scope: |
+      **Objective:** Fix critical blocker and establish new reflection UX pattern
+
+      **Features:**
+      1. **Working Reflection AI** (CRITICAL)
+         - Debug and fix reflection.create mutation (400 error root cause)
+         - Test Anthropic API integration end-to-end
+         - Ensure ANTHROPIC_API_KEY properly loaded
+         - Verify schema validation matches database constraints
+         - Add detailed error logging for debugging
+
+      2. **4-Question One-Page Reflection Flow** (HIGH PRIORITY)
+         - Refactor MirrorExperience.tsx (remove multi-step state management)
+         - Display all 4 questions simultaneously on one scrollable page
+         - Remove "Has Date" question (Q3 in old flow)
+         - Update all question text to reference "THIS dream"
+         - Q1: "What is your dream?" (elaborate on this specific dream)
+         - Q2: "What is your plan?" (for this dream)
+         - Q3: "What's your relationship with this dream?"
+         - Q4: "What are you willing to give?" (for this dream)
+         - Simplify tone selection (bottom of page, simple buttons)
+         - Single submit button: "Gaze into the Mirror"
+         - Update createReflectionSchema to remove hasDate/dreamDate fields
+         - Test complete flow: dream selection → 4 questions → AI response → display
+
+      **Technical Changes:**
+      - server/trpc/routers/reflection.ts (debug 400 error)
+      - app/reflection/MirrorExperience.tsx (781-line refactor)
+      - types/schemas.ts (update createReflectionSchema)
+      - Optional: Database migration to remove has_date/dream_date columns
+
+      **Acceptance Criteria:**
+      - ✅ Reflection creation succeeds with 0% error rate
+      - ✅ All 4 questions visible on one page (scrollable)
+      - ✅ Questions reference specific dream selected
+      - ✅ Tone selection works (Fusion default)
+      - ✅ AI response generated and displayed
+      - ✅ Reflection saved to database with dream linkage
+      - ✅ Dashboard updates immediately (shows reflection count)
+
+      **Estimated Duration:** 10-14 hours
+      - 4-6 hours: Debug and fix reflection mutation
+      - 5-6 hours: Refactor MirrorExperience.tsx to one-page flow
+      - 1-2 hours: Testing and validation
+
+    status: PENDING
+    dependencies: []
+
+  - iteration_id: 2
+    global_iteration: 2
+    name: "Restraint & Substance - Simplify Design + Clear Copy"
+    vision: "Strip decorative flash and establish honest, clear communication throughout app"
+    scope: |
+      **Objective:** Establish restraint and substance across all user-facing pages
+
+      **Features:**
+      3. **Simplified Engaging Dashboard** (HIGH PRIORITY)
+         - Change greeting from "Deep night wisdom, Creator" to "Good evening, [Name]"
+         - Make "Reflect Now" the most prominent action (large, clear button)
+         - Simplify active dreams section (simple cards: title, days left, reflection count)
+         - Add recent reflections section (list of 3 most recent with dream name + time)
+         - Simplify plan/usage display ("8/30 reflections this month" not "100% Used, ∞ Limit")
+         - Remove competing sections or consolidate into single-column layout
+         - Maximum 2 emojis total on dashboard
+
+      4. **Remove Decorative Flash** (MEDIUM PRIORITY)
+         - Strip excessive emojis (max 2 per page, only for recognition)
+         - Remove pop-up/bounce animations from buttons (framer-motion scale/pop effects)
+         - Remove decorative gradients (solid colors or functional gradients only)
+         - Simplify button components (no glow effects unless functional)
+         - Update GlassCard, GlowButton, and glass components for restraint
+         - NO decorative animations, smooth 200-300ms transitions only
+
+      5. **Clear, Honest Copy** (MEDIUM PRIORITY)
+         - Landing page: "Reflect. Understand. Evolve." (not "Transform your consciousness")
+         - Auth pages: "Welcome Back" and "Create Account" (no spiritual taglines)
+         - Dashboard: Clear instructions, no mystical greetings
+         - All buttons/CTAs: Direct language (no decorative emojis)
+         - Remove promises that don't align with delivery
+         - Ensure AI prompts deliver substance (quote user's words, not generic praise)
+
+      6. **Simplified Auth Pages** (LOW PRIORITY)
+         - Remove gradient buttons and "Free Forever" badges
+         - Make sign-in and sign-up pages identical in structure/styling
+         - Simple solid button with clear hover state
+         - Remove marketing taglines
+
+      **Technical Changes:**
+      - app/dashboard/page.tsx (simplify layout)
+      - components/dashboard/cards/* (6 card components)
+      - components/dashboard/shared/WelcomeSection.tsx (update greeting logic)
+      - components/ui/glass/* (simplify glass components)
+      - app/auth/signin/page.tsx (remove decoration)
+      - app/auth/signup/page.tsx (consistency with signin)
+      - app/page.tsx (landing page copy)
+      - All pages: emoji audit and removal
+
+      **Acceptance Criteria:**
+      - ✅ Dashboard shows ONE clear primary action
+      - ✅ Greeting is time-based only (no mysticism)
+      - ✅ Recent reflections visible (last 3)
+      - ✅ Usage display is simple ("X/Y reflections")
+      - ✅ Maximum 2 emojis per page throughout app
+      - ✅ NO pop-up or bounce animations on buttons
+      - ✅ Auth pages have identical styling
+      - ✅ All copy is direct and meaningful
+      - ✅ AI responses reference user's actual answers
+
+      **Estimated Duration:** 8-12 hours
+      - 3-4 hours: Dashboard simplification
+      - 3-4 hours: Remove flash (emojis, animations, gradients)
+      - 1-2 hours: Copy updates throughout
+      - 1 hour: Auth page consistency
+      - 1 hour: Validation and polish
+
+    status: PENDING
+    dependencies:
+      - iteration_1
+
+explorer_synthesis: |
+  **Master Explorer Consensus:**
+
+  **Complexity Assessment:**
+  - Explorer 1: COMPLEX (brownfield refactor, 781-line component, critical bug, 20+ file changes)
+  - Explorer 2: MEDIUM (6 features, subtractive work, one critical blocker)
+  - Explorer 3: MEDIUM-HIGH (broken API, major UX transformation, multiple integration points)
+  - Explorer 4: MEDIUM (performance-critical fix, restrained scope, single-user focus)
+  - **Synthesis: COMPLEX** (critical bug + major UX refactor + widespread design changes)
+
+  **Iteration Breakdown Recommendations:**
+  - Explorer 1: 3 iterations (Fix core → Remove flash → Copy/validation)
+  - Explorer 2: 1 iteration (All changes cohesive, serve same goal)
+  - Explorer 3: Not explicit, emphasized HIGH priority on broken API
+  - Explorer 4: Performance lens, defer optimizations
+  - **Synthesis: 2 iterations** (Critical core → Design refinement)
+
+  **Critical Path Agreement:**
+  All explorers agree:
+  1. Fix reflection.create mutation FIRST (CRITICAL BLOCKER)
+  2. Transform to one-page 4-question flow (MAJOR UX CHANGE)
+  3. Simplify dashboard (FOCUS ENHANCEMENT)
+  4. Remove flash (RESTRAINT PRINCIPLE)
+  5. Update copy (CLARITY & HONESTY)
+
+  **Risk Factors Identified:**
+  - Root cause of 400 error unknown (requires debugging - 2-4 hour buffer)
+  - MirrorExperience.tsx refactor is large (781 lines, complex state management)
+  - Removing flash could over-correct to sterile (needs "earned beauty" guidelines)
+  - AI responses may still feel generic (prompt refinement needed)
+  - Database migration may be required (optional, can defer)
+
+  **Technology Stack Consensus:**
+  All explorers agree: NO framework changes needed
+  - Next.js 14 App Router ✓
+  - tRPC + React Query ✓
+  - Supabase PostgreSQL ✓
+  - Anthropic Claude ✓
+  - Tailwind CSS ✓
+  - Framer Motion (restrained usage) ✓
+
+  **Success Criteria Alignment:**
+  - Working reflection creation (100% success rate)
+  - One-page flow with 4 questions
+  - Clear primary action on dashboard
+  - Maximum 2 emojis per page
+  - No pop-up animations
+  - Direct, honest copy
+  - AI insights reference user's actual words
+
+notes: |
+  **Why 2 Iterations (Not 1 or 3):**
+
+  Explorer 2 argued for 1 iteration: "All changes serve one goal (restraint + substance)"
+  - Valid point: Changes are cohesive thematically
+  - Risk: Too many changes at once (bug fix + UX refactor + design overhaul)
+  - Risk: If reflection fix takes longer than expected, delays all other work
+
+  Explorer 1 argued for 3 iterations: "Fix core → Remove flash → Copy/validation"
+  - Valid point: Separates critical path from aesthetic improvements
+  - Risk: Iteration overhead (3 planning + validation phases)
+  - Risk: User experience inconsistent between iterations
+
+  **2-iteration compromise:**
+  - Iteration 1: Critical blocker + UX foundation (working reflection with new flow)
+  - Iteration 2: Design refinement + copy polish (restraint across all pages)
+  - Allows validation checkpoint after core functionality restored
+  - Reduces risk while maintaining thematic cohesion
+  - Total time similar (18-26 hours vs 18-24 hours)
+
+  **Critical Debugging Buffer:**
+  - Reflection 400 error has unknown root cause
+  - Could be schema mismatch, API key, middleware, or database constraint
+  - Allocated 4-6 hours in iteration 1 (includes buffer)
+  - If resolved quickly, extra time goes to UX refactor polish
+
+  **Optional Schema Migration:**
+  - Removing has_date/dream_date fields from reflections table
+  - Not critical for functionality (can be nullable)
+  - If time allows in iteration 1, create migration
+  - Otherwise defer to post-plan-4 cleanup
+
+  **Earned Beauty Guidelines:**
+  - Needed before iteration 2 begins
+  - Examples: Active state glow = earned, button decoration = remove
+  - Will be established during iteration 1 validation
+  - Prevents over-correction to sterile design
+
+---
+*Master plan created from 4 explorer reports: 2025-11-27*
+*Plan-4: Restraint. Substance. Transformation.*

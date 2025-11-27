@@ -58,7 +58,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     const tierInfo: Record<string, TierInfo> = {
       free: {
         name: 'Free',
-        description: '1 reflection per month to explore your consciousness',
+        description: '1 reflection per month to get started',
         benefits: [
           '1 monthly reflection',
           'Basic mirror experience',
@@ -121,7 +121,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         type: 'manage',
         text: 'Creator Dashboard',
         href: '/creator',
-        icon: '🌟',
+        icon: '',
         color: 'intense',
       };
     }
@@ -129,9 +129,9 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     if (userData.tier === 'free') {
       return {
         type: 'upgrade',
-        text: 'Upgrade Journey',
+        text: 'Upgrade Plan',
         href: '/subscription',
-        icon: '✨',
+        icon: '',
         color: 'primary',
       };
     }
@@ -139,9 +139,9 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     if (userData.tier === 'essential') {
       return {
         type: 'upgrade',
-        text: 'Unlock Premium',
+        text: 'Upgrade to Premium',
         href: '/subscription?tier=premium',
-        icon: '💎',
+        icon: '',
         color: 'fusion',
       };
     }
@@ -151,7 +151,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         type: 'upgrade',
         text: 'Become Creator',
         href: '/subscription?tier=creator',
-        icon: '🌟',
+        icon: '',
         color: 'intense',
       };
     }
@@ -160,7 +160,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       type: 'manage',
       text: 'Manage Plan',
       href: '/subscription',
-      icon: '⚙️',
+      icon: '',
       color: 'secondary',
     };
   };
@@ -198,7 +198,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       hoverable={true}
     >
       <CardHeader>
-        <CardTitle icon="💎">Your Plan</CardTitle>
+        <CardTitle>Your Plan</CardTitle>
       </CardHeader>
 
       <CardContent>
@@ -238,7 +238,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           {upgradeBenefits.length > 0 && (
             <div className="upgrade-preview">
               <h5 className="upgrade-title">
-                Unlock with {tierInfo.nextTier === 'creator' ? 'Creator' : 'Premium'}
+                Available with {tierInfo.nextTier === 'creator' ? 'Creator' : 'Premium'}
               </h5>
               <div className="upgrade-benefits">
                 {upgradeBenefits.slice(0, 3).map((benefit, index) => (
@@ -264,7 +264,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           href={subscriptionAction.href}
           className={`cosmic-button cosmic-button--${subscriptionAction.color}`}
         >
-          <span>{subscriptionAction.icon}</span>
+          {subscriptionAction.icon && <span>{subscriptionAction.icon}</span>}
           <span>{subscriptionAction.text}</span>
         </Link>
       </CardActions>

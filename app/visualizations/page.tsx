@@ -115,7 +115,7 @@ export default function VisualizationsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
+    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark pt-nav px-4 sm:px-8 pb-8">
       <AppNavigation currentPage="visualizations" />
 
       <div className="max-w-6xl mx-auto">
@@ -130,7 +130,7 @@ export default function VisualizationsPage() {
         </div>
 
         {/* Generation Controls */}
-        <GlassCard variant="elevated" className="mb-8">
+        <GlassCard elevated className="mb-8">
           <GradientText gradient="primary" className="text-2xl font-bold mb-6">
             Create New Visualization
           </GradientText>
@@ -138,12 +138,11 @@ export default function VisualizationsPage() {
           {/* Tier Warning */}
           {user.tier === 'free' && !selectedDreamId ? (
             <GlassCard
-              variant="default"
               className="border-l-4 border-yellow-500 mb-6"
             >
               <div className="flex items-center gap-3">
-                <GlowBadge variant="warning" glowing={true}>
-                  ⚡
+                <GlowBadge variant="warning">
+                  !
                 </GlowBadge>
                 <div className="flex-1">
                   <p className="text-white/90 font-medium text-sm">
@@ -164,9 +163,8 @@ export default function VisualizationsPage() {
                 {visualizationStyles.map((style) => (
                   <GlassCard
                     key={style.id}
-                    variant={selectedStyle === style.id ? 'elevated' : 'default'}
-                    hoverable={true}
-                    glowColor="purple"
+                    elevated={selectedStyle === style.id}
+                    interactive
                     className={cn(
                       'cursor-pointer text-center',
                       selectedStyle === style.id && 'border-mirror-purple shadow-glow-lg'
@@ -253,14 +251,14 @@ export default function VisualizationsPage() {
         </GlassCard>
 
         {/* Visualizations List */}
-        <GlassCard variant="elevated">
+        <GlassCard elevated>
           <GradientText gradient="primary" className="text-2xl font-bold mb-6">
             Your Visualizations
           </GradientText>
 
           {!visualizationsData || visualizationsData.items.length === 0 ? (
             <EmptyState
-              icon="🌌"
+              icon=""
               title="No visualizations yet"
               description="Create your first visualization to experience your dream as already achieved."
               ctaLabel="Generate First Visualization"
@@ -271,9 +269,7 @@ export default function VisualizationsPage() {
               {visualizationsData.items.map((viz: any) => (
                 <GlassCard
                   key={viz.id}
-                  variant="default"
-                  hoverable={true}
-                  glowColor="purple"
+                  interactive
                   className="cursor-pointer"
                   onClick={() => router.push(`/visualizations/${viz.id}`)}
                 >
@@ -287,7 +283,7 @@ export default function VisualizationsPage() {
                       </GradientText>
                     </div>
                     <GlowBadge variant="info">
-                      {viz.dreams ? '📊' : '🌌'}
+                      {viz.dreams ? 'Dream' : 'Cross'}
                     </GlowBadge>
                   </div>
 

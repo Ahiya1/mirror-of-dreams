@@ -97,9 +97,8 @@ export function DreamCard({
 
   return (
     <GlassCard
-      variant="elevated"
-      glowColor={categoryGlowColor}
-      hoverable={true}
+      elevated
+      interactive
       className="h-full flex flex-col"
     >
       <Link href={`/dreams/${id}`} className="flex-1 text-white no-underline">

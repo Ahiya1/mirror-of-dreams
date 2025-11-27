@@ -1,90 +1,60 @@
 'use client';
 
-import { motion, useReducedMotion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import type { GlowBadgeProps } from '@/types/glass-components';
 
 /**
- * GlowBadge - Status badge with glow effect
+ * GlowBadge - Status badge (simplified - no pulsing animation)
  *
  * @param variant - Badge variant (success | warning | error | info)
- * @param glowing - Enable pulsing glow animation
  * @param className - Additional Tailwind classes
  * @param children - Badge content
  */
 export function GlowBadge({
   variant = 'info',
-  glowing = false,
   className,
   children,
 }: GlowBadgeProps) {
-  const prefersReducedMotion = useReducedMotion();
-
   const variants = {
     success: {
-      bg: 'bg-mirror-success/20',
-      text: 'text-mirror-success',
-      border: 'border-mirror-success/30',
-      shadow: 'shadow-[0_0_20px_rgba(16,185,129,0.3)]',
+      bg: 'bg-green-500/20',
+      text: 'text-green-500',
+      border: 'border-green-500/30',
     },
     warning: {
-      bg: 'bg-mirror-warning/20',
-      text: 'text-mirror-warning',
-      border: 'border-mirror-warning/30',
-      shadow: 'shadow-[0_0_20px_rgba(245,158,11,0.3)]',
+      bg: 'bg-yellow-500/20',
+      text: 'text-yellow-500',
+      border: 'border-yellow-500/30',
     },
     error: {
-      bg: 'bg-mirror-error/20',
-      text: 'text-mirror-error',
-      border: 'border-mirror-error/30',
-      shadow: 'shadow-[0_0_20px_rgba(239,68,68,0.3)]',
+      bg: 'bg-red-500/20',
+      text: 'text-red-500',
+      border: 'border-red-500/30',
     },
     info: {
-      bg: 'bg-mirror-info/20',
-      text: 'text-mirror-info',
-      border: 'border-mirror-info/30',
-      shadow: 'shadow-[0_0_20px_rgba(59,130,246,0.3)]',
+      bg: 'bg-blue-500/20',
+      text: 'text-blue-500',
+      border: 'border-blue-500/30',
     },
   };
 
   const variantStyles = variants[variant];
 
   return (
-    <motion.span
-      animate={
-        glowing && !prefersReducedMotion
-          ? {
-              boxShadow: [
-                variantStyles.shadow,
-                'shadow-[0_0_40px_rgba(139,92,246,0.6)]',
-                variantStyles.shadow,
-              ],
-            }
-          : undefined
-      }
-      transition={
-        glowing && !prefersReducedMotion
-          ? {
-              duration: 2,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }
-          : undefined
-      }
+    <span
       className={cn(
         'inline-flex items-center px-3 py-1',
         'text-xs font-medium',
         'rounded-full',
-        'border',
+        'border-2',
         'backdrop-blur-sm',
         variantStyles.bg,
         variantStyles.text,
         variantStyles.border,
-        glowing && variantStyles.shadow,
         className
       )}
     >
       {children}
-    </motion.span>
+    </span>
   );
 }

@@ -151,7 +151,6 @@ function ReflectionOutputContent() {
             onClick={startNewReflection}
             title="New reflection"
           >
-            <span className="button-icon">✨</span>
             <span>New Reflection</span>
           </button>
 

@@ -13,7 +13,6 @@ import type { GlassModalProps } from '@/types/glass-components';
  * @param onClose - Close handler
  * @param title - Modal title (optional)
  * @param children - Modal content
- * @param glassIntensity - Glass blur intensity (inherited)
  * @param className - Additional Tailwind classes
  */
 export function GlassModal({
@@ -21,7 +20,6 @@ export function GlassModal({
   onClose,
   title,
   children,
-  glassIntensity = 'medium',
   className,
 }: GlassModalProps) {
   return (
@@ -49,9 +47,7 @@ export function GlassModal({
               className="w-full max-w-lg"
             >
               <GlassCard
-                variant="elevated"
-                glassIntensity={glassIntensity}
-                animated={false}
+                elevated
                 className={className}
               >
                 {/* Close Button */}

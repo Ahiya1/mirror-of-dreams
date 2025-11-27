@@ -1,25 +1,40 @@
-current_plan: plan-3
-global_iteration_counter: 18
-
 plans:
-  - plan_id: plan-1
-    name: "Core Features (Iterations 1-3)"
-    status: IN_PROGRESS
-    created_at: "2025-10-22T00:00:00Z"
-    iterations_complete: 3
-
-  - plan_id: plan-2
-    name: "Magical Frontend Redesign"
-    status: PLANNED
-    created_at: "2025-10-23T05:30:00Z"
-    vision_file: .2L/plan-2/vision.md
-
-  - plan_id: plan-3
-    name: "Essence Vision - Working Cohesive Product"
-    status: PLANNED
-    created_at: "2025-11-12T00:00:00Z"
-    vision_file: .2L/plan-3/vision.md
-    master_plan_file: .2L/plan-3/master-plan.yaml
+  plan-1:
+    status: COMPLETE
+    created: "2025-01-15"
+    description: "Initial MVP implementation"
+  plan-2:
+    status: COMPLETE
+    created: "2025-10-22"
+    description: "Dreams feature addition"
+  plan-3:
+    status: COMPLETE
+    created: "2025-11-12"
+    description: "Cohesive MVP with cosmic glass UI"
+  plan-4:
+    status: COMPLETE
+    created: "2025-11-27"
+    vision_file: "plan-4/vision.md"
+    master_plan_file: "plan-4/master-plan.yaml"
+    description: "Fix broken core, remove flash, deliver substance"
+    total_iterations: 2
+    current_iteration: 2
+    completed_at: "2025-11-27T03:42:00Z"
     master_exploration:
-      num_explorers: 3
-      complexity_level: MEDIUM
+      num_explorers: 4
+      complexity_level: "COMPLEX"
+    github_repo: "git@github.com:Ahiya1/mirror-of-truth-online.git"
+  plan-5:
+    status: PLANNED
+    created: "2025-11-27"
+    vision_file: "plan-5/vision.md"
+    master_plan_file: "plan-5/master-plan.yaml"
+    description: "Design Overhaul - Transform from 4.5/10 to 9/10 polished product"
+    total_iterations: 3
+    current_iteration: 0
+    master_exploration:
+      num_explorers: 4
+      complexity_level: "COMPLEX"
+    github_repo: "git@github.com:Ahiya1/mirror-of-truth-online.git"
+current_plan: plan-5
+global_iteration_counter: 3

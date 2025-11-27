@@ -76,7 +76,7 @@ export function CreateDreamModal({ isOpen, onClose, onSuccess }: CreateDreamModa
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
-          <GlassCard variant="default" className="border-l-4 border-mirror-error/60">
+          <GlassCard className="border-l-4 border-mirror-error/60">
             <div className="flex items-start gap-3">
               <AlertTriangle className="w-5 h-5 text-mirror-error flex-shrink-0 mt-0.5" />
               <p className="text-sm text-mirror-error">{error}</p>

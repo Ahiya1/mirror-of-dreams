@@ -35,12 +35,14 @@ export const reflectionRouter = router({
   create: usageLimitedProcedure
     .input(createReflectionSchema)
     .mutation(async ({ ctx, input }) => {
+      console.log('🔍 Reflection.create called');
+      console.log('📥 Input received:', JSON.stringify(input, null, 2));
+      console.log('👤 User:', ctx.user.email, 'Tier:', ctx.user.tier);
+
       const {
         dreamId,
         dream,
         plan,
-        hasDate,
-        dreamDate,
         relationship,
         offering,
         tone = 'fusion',
@@ -69,7 +71,7 @@ export const reflectionRouter = router({
       // Add date awareness to system prompt
       const systemPromptWithDate = systemPrompt + `\n\nCURRENT DATE AWARENESS:\nToday's date is ${currentDate}. Be aware of this when reflecting on their plans, timing, and relationship with their dreams. Consider seasonal context, time of year, and how timing relates to their consciousness journey.`;
 
-      // Build user prompt
+      // Build user prompt (4-question format)
       const userName = ctx.user.name || 'Friend';
       const intro = userName ? `My name is ${userName}.\n\n` : '';
 
@@ -77,15 +79,14 @@ export const reflectionRouter = router({
 
 **My plan:** ${plan}
 
-**Have I set a definite date?** ${hasDate}${
-        hasDate === 'yes' && dreamDate ? ` (Date: ${dreamDate})` : ''
-      }
-
 **My relationship with this dream:** ${relationship}
 
 **What I'm willing to give:** ${offering}
 
 Please mirror back what you see, in a flowing reflection I can return to months from now.`;
+
+      console.log('🤖 Calling Anthropic API...');
+      console.log('📝 Prompt length:', userPrompt.length, 'characters');
 
       // Call Claude API (using Sonnet 4.5)
       const requestConfig: any = {
@@ -114,8 +115,9 @@ Please mirror back what you see, in a flowing reflection I can return to months 
         }
 
         aiResponse = textBlock.text;
+        console.log('✅ AI response generated:', aiResponse.length, 'characters');
       } catch (error: any) {
-        console.error('Claude API error:', error);
+        console.error('❌ Claude API error:', error);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: `Failed to generate reflection: ${error.message}`,
@@ -130,6 +132,7 @@ Please mirror back what you see, in a flowing reflection I can return to months 
       const estimatedReadTime = Math.ceil(wordCount / 200); // 200 words per minute
 
       // Store reflection in database
+      console.log('💾 Saving to database...');
       const { data: reflectionRecord, error: reflectionError } = await supabase
         .from('reflections')
         .insert({
@@ -137,8 +140,6 @@ Please mirror back what you see, in a flowing reflection I can return to months 
           dream_id: dreamId, // Link to dream
           dream,
           plan,
-          has_date: hasDate,
-          dream_date: hasDate === 'yes' ? dreamDate : null,
           relationship,
           offering,
           ai_response: formattedReflection,
@@ -153,12 +154,14 @@ Please mirror back what you see, in a flowing reflection I can return to months 
         .single();
 
       if (reflectionError) {
-        console.error('Failed to store reflection:', reflectionError);
+        console.error('❌ Database error:', reflectionError);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to save reflection',
         });
       }
+
+      console.log('✅ Reflection created:', reflectionRecord.id);
 
       // Update user usage counters
       const { error: updateError } = await supabase

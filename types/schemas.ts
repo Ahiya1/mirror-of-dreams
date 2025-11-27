@@ -41,8 +41,6 @@ export const createReflectionSchema = z.object({
   dreamId: z.string().uuid(), // REQUIRED: dream ID to link reflection to
   dream: z.string().min(1).max(3200),
   plan: z.string().min(1).max(4000),
-  hasDate: z.enum(['yes', 'no']),
-  dreamDate: z.string().nullable(),
   relationship: z.string().min(1).max(4000),
   offering: z.string().min(1).max(2400),
   tone: z.enum(['gentle', 'intense', 'fusion']).default('fusion'),

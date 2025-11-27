@@ -1,165 +1,149 @@
 /**
- * Landing Page (Portal)
+ * Landing Page
  *
- * Main entry point for Mirror of Dreams
- * Features cosmic background with floating mirror shards and dynamic content
+ * Builder: Builder-2 (Iteration 3)
+ *
+ * Complete rebuild of landing page using design system:
+ * - CosmicBackground (replaces MirrorShards)
+ * - LandingNavigation (replaces portal Navigation)
+ * - Hero section with dual CTAs
+ * - 4 feature highlight cards
+ * - Footer with links
+ * - Responsive design (mobile-first)
+ * - Scroll-triggered animations
  */
 
-"use client";
+'use client';
 
-import React, { useState, useCallback } from "react";
-import { usePortalState } from "@/components/portal/hooks/usePortalState";
-import MirrorShards from "@/components/portal/MirrorShards";
-import Navigation from "@/components/portal/Navigation";
-import MainContent from "@/components/portal/MainContent";
-import "../styles/portal.css";
+import { motion } from 'framer-motion';
+import CosmicBackground from '@/components/shared/CosmicBackground';
+import LandingNavigation from '@/components/shared/LandingNavigation';
+import LandingHero from '@/components/landing/LandingHero';
+import LandingFeatureCard from '@/components/landing/LandingFeatureCard';
 
-export default function HomePage() {
-  const {
-    userState,
-    isLoading,
-    showUserDropdown,
-    handleSignOut,
-    toggleUserDropdown,
-    getReflectButtonConfig,
-    getSecondaryButtonsConfig,
-    getTaglinesConfig,
-    getUsageConfig,
-    getUserMenuConfig,
-  } = usePortalState();
-
-  const [mirrorHover, setMirrorHover] = useState(false);
-
-  /**
-   * Handle reflect button hover for mirror effect
-   */
-  const handleReflectHover = useCallback((isHovered: boolean) => {
-    if (window.matchMedia("(hover: hover)").matches) {
-      setMirrorHover(isHovered);
-    }
-  }, []);
-
-  // Get configurations
-  const reflectConfig = getReflectButtonConfig();
-  const secondaryButtons = getSecondaryButtonsConfig();
-  const taglines = getTaglinesConfig();
-  const usageConfig = getUsageConfig();
-  const userMenuConfig = getUserMenuConfig();
-
-  // Loading state
-  if (isLoading) {
-    return (
-      <div className="portal portal--loading">
-        <div className="portal-loading">
-          <div className="loading-spinner" />
-          <span>Preparing your sacred space...</span>
-        </div>
-
-        <style jsx>{`
-          .portal {
-            height: 100vh;
-            overflow: hidden;
-            background: linear-gradient(
-              135deg,
-              #0f0f23 0%,
-              #1a1a2e 25%,
-              #16213e 50%,
-              #0f0f23 100%
-            );
-            color: #fff;
-            font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
-            position: fixed;
-            width: 100vw;
-            margin: 0;
-            padding: 0;
-          }
-
-          .portal--loading {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-
-          .portal-loading {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            color: rgba(255, 255, 255, 0.8);
-          }
-
-          .loading-spinner {
-            width: 32px;
-            height: 32px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            border-top-color: rgba(255, 255, 255, 0.8);
-            animation: spin 1s linear infinite;
-          }
-
-          @keyframes spin {
-            to {
-              transform: rotate(360deg);
-            }
-          }
-
-          .portal-loading span {
-            font-size: 0.9rem;
-            font-weight: 300;
-          }
-        `}</style>
-      </div>
-    );
-  }
+export default function LandingPage() {
+  const features = [
+    {
+      id: 'ai-reflections',
+      icon: '✨',
+      title: 'AI-Powered Reflections',
+      description: 'Your personal mirror analyzes patterns and provides insights into your subconscious.',
+    },
+    {
+      id: 'track-dreams',
+      icon: '📖',
+      title: 'Track Your Dreams',
+      description: 'Organize and revisit your dream journal anytime, anywhere.',
+    },
+    {
+      id: 'visualize-evolution',
+      icon: '📈',
+      title: 'Visualize Your Evolution',
+      description: 'See how your dreams and thoughts evolve over time with interactive charts.',
+    },
+    {
+      id: 'sacred-space',
+      icon: '🌙',
+      title: 'Sacred Space',
+      description: 'Premium experience designed for deep introspection and self-discovery.',
+    },
+  ];
 
   return (
-    <div className="portal">
-      {/* Mirror Shards Background */}
-      <MirrorShards className={mirrorHover ? "hover" : ""} />
+    <div className="min-h-screen relative overflow-x-hidden">
+      {/* Background (consistent with authenticated app) */}
+      <CosmicBackground animated={true} intensity={1} />
 
       {/* Navigation */}
-      <Navigation
-        userConfig={userMenuConfig}
-        showUserDropdown={showUserDropdown}
-        onToggleUserDropdown={toggleUserDropdown}
-        onSignOut={handleSignOut}
-      />
+      <LandingNavigation transparent />
 
       {/* Main Content */}
-      <MainContent
-        reflectConfig={reflectConfig}
-        secondaryButtons={secondaryButtons}
-        taglines={taglines}
-        usageConfig={usageConfig}
-        isAuthenticated={userState?.authenticated || false}
-        onReflectHover={handleReflectHover}
-      />
+      <main className="relative z-10">
+        {/* Hero Section */}
+        <section className="min-h-screen flex items-center justify-center px-4 sm:px-8">
+          <LandingHero />
+        </section>
 
-      <style jsx>{`
-        .portal {
-          height: 100vh;
-          overflow: hidden;
-          background: linear-gradient(
-            135deg,
-            #0f0f23 0%,
-            #1a1a2e 25%,
-            #16213e 50%,
-            #0f0f23 100%
-          );
-          color: #fff;
-          font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
-          position: fixed;
-          width: 100vw;
-          margin: 0;
-          padding: 0;
-        }
+        {/* Features Section */}
+        <section id="features" className="py-20 px-4 sm:px-8">
+          <div className="max-w-7xl mx-auto">
+            {/* Section Headline */}
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-4xl sm:text-5xl font-bold text-center mb-16"
+            >
+              <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+                Why Mirror of Dreams?
+              </span>
+            </motion.h2>
 
-        /* Remove all focus outlines - rely on hover states */
-        :global(.portal *) {
-          outline: none !important;
-          -webkit-tap-highlight-color: transparent;
-        }
-      `}</style>
+            {/* Feature Cards Grid */}
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.1 },
+                },
+              }}
+            >
+              {features.map((feature) => (
+                <motion.div
+                  key={feature.id}
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 },
+                  }}
+                >
+                  <LandingFeatureCard {...feature} />
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="py-8 px-4 sm:px-8 border-t border-white/10">
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-white/60 text-sm">
+              © 2025 Mirror of Dreams. All rights reserved.
+            </p>
+            <div className="flex gap-6 text-sm">
+              <a
+                href="/about"
+                className="text-white/60 hover:text-white/90 transition-colors"
+              >
+                About
+              </a>
+              <a
+                href="/privacy"
+                className="text-white/60 hover:text-white/90 transition-colors"
+              >
+                Privacy
+              </a>
+              <a
+                href="/terms"
+                className="text-white/60 hover:text-white/90 transition-colors"
+              >
+                Terms
+              </a>
+              <a
+                href="/contact"
+                className="text-white/60 hover:text-white/90 transition-colors"
+              >
+                Contact
+              </a>
+            </div>
+          </div>
+        </footer>
+      </main>
     </div>
   );
 }

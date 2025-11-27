@@ -32,11 +32,9 @@ const ReflectionsCard: React.FC<ReflectionsCardProps> = ({ animated = true, clas
   // Empty state component
   const EmptyState = () => (
     <div className="empty-state">
-      <div className="empty-icon">🪞</div>
-      <h4>Your Journey Awaits</h4>
-      <p>Create your first reflection to begin seeing yourself clearly.</p>
+      <h4>No Reflections Yet</h4>
+      <p>Create your first reflection to get started.</p>
       <Link href="/reflection" className="cosmic-button cosmic-button--primary">
-        <span>✨</span>
         <span>Start Reflecting</span>
       </Link>
     </div>
@@ -46,7 +44,7 @@ const ReflectionsCard: React.FC<ReflectionsCardProps> = ({ animated = true, clas
   const LoadingState = () => (
     <div className="loading-reflections">
       <div className="cosmic-spinner" />
-      <span>Loading your journey...</span>
+      <span>Loading reflections...</span>
     </div>
   );
 
@@ -60,7 +58,7 @@ const ReflectionsCard: React.FC<ReflectionsCardProps> = ({ animated = true, clas
       hoverable={true}
     >
       <CardHeader>
-        <CardTitle icon="🌙">Recent Reflections</CardTitle>
+        <CardTitle>Recent Reflections</CardTitle>
         <HeaderAction href="/reflections">
           View All <span>→</span>
         </HeaderAction>

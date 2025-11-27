@@ -82,7 +82,7 @@ export default function VisualizationDetailPage() {
   const paragraphs = visualization.narrative?.split('\n\n').filter((p: string) => p.trim()) || [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 pt-nav px-4 sm:px-8 pb-8">
       <AppNavigation currentPage="visualizations" />
 
       <div className="max-w-5xl mx-auto">

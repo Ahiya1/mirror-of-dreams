@@ -22,7 +22,7 @@ interface EmptyStateProps {
 export function EmptyState({ icon, title, description, ctaLabel, ctaAction }: EmptyStateProps) {
   return (
     <div className="flex justify-center items-center min-h-[50vh]">
-      <GlassCard variant="elevated" className="text-center max-w-md">
+      <GlassCard elevated className="text-center max-w-md">
         <div className="text-6xl mb-4">{icon}</div>
         <GradientText gradient="cosmic" className="text-2xl font-bold mb-4">
           {title}

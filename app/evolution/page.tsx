@@ -94,7 +94,7 @@ export default function EvolutionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
+    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark pt-nav px-4 sm:px-8 pb-8">
       <AppNavigation currentPage="evolution" />
 
       <div className="max-w-6xl mx-auto">
@@ -109,20 +109,19 @@ export default function EvolutionPage() {
         </div>
 
         {/* Generation Controls */}
-        <GlassCard variant="elevated" className="mb-8">
+        <GlassCard elevated className="mb-8">
           <GradientText gradient="primary" className="text-2xl font-bold mb-6">
             Generate New Report
           </GradientText>
 
           {user.tier === 'free' ? (
             <GlassCard
-              variant="elevated"
-              glowColor="purple"
+              elevated
               className="border-l-4 border-yellow-500"
             >
               <div className="flex items-center gap-3">
-                <GlowBadge variant="warning" glowing={true}>
-                  ⚡
+                <GlowBadge variant="warning">
+                  !
                 </GlowBadge>
                 <div className="flex-1">
                   <p className="text-white/90 font-medium">Upgrade to Essential</p>
@@ -142,7 +141,7 @@ export default function EvolutionPage() {
           ) : (
             <div className="space-y-6">
               {/* Dream-Specific Report */}
-              <GlassCard variant="default">
+              <GlassCard>
                 <GradientText gradient="primary" className="text-lg font-medium mb-2">
                   Dream-Specific Report
                 </GradientText>
@@ -198,7 +197,7 @@ export default function EvolutionPage() {
               </GlassCard>
 
               {/* Cross-Dream Report */}
-              <GlassCard variant="default">
+              <GlassCard>
                 <GradientText gradient="primary" className="text-lg font-medium mb-2">
                   Cross-Dream Report
                 </GradientText>
@@ -227,11 +226,10 @@ export default function EvolutionPage() {
               {/* Eligibility Info */}
               {eligibility && !eligibility.eligible && (
                 <GlassCard
-                  variant="default"
                   className="border-l-4 border-blue-500"
                 >
                   <div className="flex items-center gap-3">
-                    <GlowBadge variant="info">ℹ️</GlowBadge>
+                    <GlowBadge variant="info">i</GlowBadge>
                     <p className="text-white/80 text-sm">{eligibility.reason}</p>
                   </div>
                 </GlassCard>
@@ -241,14 +239,14 @@ export default function EvolutionPage() {
         </GlassCard>
 
         {/* Reports List */}
-        <GlassCard variant="elevated">
+        <GlassCard elevated>
           <GradientText gradient="primary" className="text-2xl font-bold mb-6">
             Your Reports
           </GradientText>
 
           {!reportsData || reportsData.reports.length === 0 ? (
             <EmptyState
-              icon="🦋"
+              icon=""
               title="No evolution reports yet"
               description="Generate your first evolution report to see your growth patterns over time."
               ctaLabel={user.tier !== 'free' ? 'Generate First Report' : undefined}
@@ -259,9 +257,7 @@ export default function EvolutionPage() {
               {reportsData.reports.map((report: any) => (
                 <GlassCard
                   key={report.id}
-                  variant="default"
-                  hoverable={true}
-                  glowColor="purple"
+                  interactive
                   className="cursor-pointer"
                   onClick={() => router.push(`/evolution/${report.id}`)}
                 >
@@ -274,7 +270,7 @@ export default function EvolutionPage() {
                       )}
                     </GradientText>
                     <GlowBadge variant="info">
-                      {report.report_category === 'dream-specific' ? '📊' : '🌌'}
+                      {report.report_category === 'dream-specific' ? 'Dream' : 'Cross'}
                     </GlowBadge>
                   </div>
 

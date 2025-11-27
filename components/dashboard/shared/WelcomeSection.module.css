@@ -2,285 +2,37 @@
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: var(--space-xl) var(--space-2xl);
+  padding: var(--space-xl);
   background: var(--glass-bg);
   backdrop-filter: blur(40px) saturate(130%);
   border: 1px solid var(--glass-border);
   border-radius: var(--card-radius);
   margin-bottom: var(--space-xl);
   overflow: hidden;
-  animation: welcomeEntrance 0.8s ease-out;
-  min-height: 120px;
-}
-
-.welcomeBackground {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.welcomeGlow {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
-  opacity: 0.6;
-  animation: breatheGlow 4s ease-in-out infinite;
-}
-
-.welcomeGlowPrimary {
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(
-    circle,
-    rgba(147, 51, 234, 0.15) 0%,
-    rgba(147, 51, 234, 0.05) 50%,
-    transparent 100%
-  );
-  top: -150px;
-  left: -100px;
-}
-
-.welcomeGlowSecondary {
-  width: 250px;
-  height: 250px;
-  background: radial-gradient(
-    circle,
-    rgba(59, 130, 246, 0.1) 0%,
-    rgba(59, 130, 246, 0.03) 50%,
-    transparent 100%
-  );
-  bottom: -125px;
-  right: -75px;
-  animation-delay: 2s;
 }
 
 .welcomeContent {
   position: relative;
   z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   width: 100%;
-  gap: var(--space-xl);
-}
-
-.welcomeText {
-  flex: 1;
-  max-width: 60%;
 }
 
 .welcomeTitle {
-  font-size: var(--text-2xl);
+  font-size: var(--text-3xl);
   font-weight: var(--font-light);
-  margin: 0 0 var(--space-md) 0;
-  line-height: var(--leading-tight);
-}
-
-.welcomeGreeting {
-  display: block;
-  font-size: var(--text-lg);
-  color: var(--cosmic-text-secondary);
-  font-weight: var(--font-light);
-  margin-bottom: var(--space-1);
-  opacity: 0;
-  animation: slideInLeft 0.6s ease-out 0.2s forwards;
-}
-
-.welcomeName {
-  background: linear-gradient(
-    135deg,
-    var(--cosmic-text) 0%,
-    rgba(147, 51, 234, 0.9) 50%,
-    rgba(59, 130, 246, 0.8) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  display: block;
-  opacity: 0;
-  animation: slideInLeft 0.6s ease-out 0.4s forwards;
-}
-
-.welcomeMessage {
-  font-size: var(--text-base);
-  color: var(--cosmic-text-secondary);
   margin: 0;
-  line-height: var(--leading-relaxed);
-  font-weight: var(--font-light);
-  opacity: 0;
-  animation: slideInLeft 0.6s ease-out 0.6s forwards;
-}
-
-.welcomeActions {
-  display: flex;
-  gap: var(--space-md);
-  flex-shrink: 0;
-}
-
-.welcomeAction {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-md) var(--space-lg);
-  border-radius: var(--radius-xl);
-  text-decoration: none;
-  font-size: var(--text-base);
-  font-weight: var(--font-medium);
-  transition: var(--transition-smooth);
-  position: relative;
-  overflow: hidden;
-  opacity: 0;
-  animation: slideInRight 0.6s ease-out forwards;
-  min-width: 160px;
-  justify-content: center;
-}
-
-.welcomeAction::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    45deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.1) 50%,
-    transparent 70%
-  );
-  transform: translateX(-100%);
-  transition: transform 0.6s ease;
-}
-
-.welcomeAction:hover::before {
-  transform: translateX(100%);
-}
-
-.welcomeActionPrimary {
-  background: linear-gradient(
-    135deg,
-    rgba(147, 51, 234, 0.2),
-    rgba(99, 102, 241, 0.15)
-  );
-  border: 1px solid rgba(147, 51, 234, 0.3);
-  color: rgba(196, 181, 253, 0.95);
-}
-
-.welcomeActionPrimary:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(147, 51, 234, 0.3),
-    rgba(99, 102, 241, 0.2)
-  );
-  border-color: rgba(147, 51, 234, 0.4);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(147, 51, 234, 0.2);
-}
-
-.welcomeActionSecondary {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  color: var(--cosmic-text-secondary);
-}
-
-.welcomeActionSecondary:hover {
-  background: var(--glass-hover-bg);
-  border-color: var(--glass-hover-border);
   color: var(--cosmic-text);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.welcomeActionDisabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
-.welcomeActionIcon {
-  font-size: var(--text-lg);
-  line-height: 1;
-}
-
-.welcomeActionText {
-  font-weight: var(--font-medium);
-  letter-spacing: 0.3px;
-}
-
-@keyframes welcomeEntrance {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes breatheGlow {
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 0.4;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.7;
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  line-height: var(--leading-tight);
 }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .welcomeSection {
-    flex-direction: column;
-    text-align: center;
-    gap: var(--space-lg);
     padding: var(--space-lg);
   }
 
-  .welcomeContent {
-    flex-direction: column;
-    gap: var(--space-lg);
-  }
-
-  .welcomeText {
-    max-width: 100%;
-  }
-
   .welcomeTitle {
-    font-size: var(--text-xl);
-  }
-
-  .welcomeActions {
-    flex-direction: column;
-    width: 100%;
-    max-width: 300px;
-  }
-
-  .welcomeAction {
-    width: 100%;
+    font-size: var(--text-2xl);
   }
 }
 
@@ -290,30 +42,6 @@
   }
 
   .welcomeTitle {
-    font-size: var(--text-lg);
-  }
-
-  .welcomeMessage {
-    font-size: var(--text-sm);
-  }
-}
-
-/* Reduced Motion */
-@media (prefers-reduced-motion: reduce) {
-  .welcomeSection,
-  .welcomeGreeting,
-  .welcomeName,
-  .welcomeMessage,
-  .welcomeAction {
-    animation: none;
-    opacity: 1;
-  }
-
-  .welcomeGlow {
-    animation: none;
-  }
-
-  .welcomeAction::before {
-    display: none;
+    font-size: var(--text-xl);
   }
 }

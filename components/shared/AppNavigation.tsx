@@ -70,9 +70,7 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
 
   return (
     <GlassCard
-      variant="elevated"
-      glassIntensity="strong"
-      hoverable={false}
+      elevated
       className="fixed top-0 left-0 right-0 z-[100] rounded-none border-b border-white/10"
     >
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
@@ -201,7 +199,7 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
                   transition={{ duration: 0.2 }}
                 >
                   <GlassCard
-                    variant="elevated"
+                    elevated
                     className="absolute top-[calc(100%+8px)] right-0 min-w-[240px] overflow-hidden"
                   >
                     {/* Header */}

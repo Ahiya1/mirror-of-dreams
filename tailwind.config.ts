@@ -7,6 +7,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      spacing: {
+        'nav': '80px', // Navigation bar height for padding
+      },
       colors: {
         cosmic: {
           purple: '#8B5CF6',
@@ -163,77 +166,22 @@ const config: Config = {
       },
       animation: {
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // BREATHING (Slow, organic, alive - 6-8s cycles)
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        'breathe': 'breathe 7s ease-in-out infinite',
-        'breathe-slow': 'breathe 10s ease-in-out infinite',
-        'glow-breathe': 'glowBreathe 6s ease-in-out infinite',
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // FLOATING (Gentle drift - 8-12s cycles)
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        'float': 'float 9s ease-in-out infinite',
-        'float-slow': 'float 12s ease-in-out infinite',
-        'drift': 'drift 11s ease-in-out infinite',
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // FLICKERING (Golden candlelight - 12-16s organic)
+        // BACKGROUND AMBIENT (Living light patterns - slow, atmospheric)
+        // These are kept for background depth only
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         'flicker': 'flicker 14s ease-in-out infinite',
         'shimmer-soft': 'shimmerSoft 8s ease-in-out infinite',
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // CAUSTIC (Living light patterns - 10-15s)
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         'caustic': 'caustic 13s ease-in-out infinite',
         'light-dance': 'lightDance 11s ease-in-out infinite',
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // INTERACTION (Reverent, not snappy - 0.4-0.6s)
+        // PAGE TRANSITIONS (Fast, functional - 300ms)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        'fade-in': 'fadeIn 1.2s ease-out',
-        'scale-in': 'scaleIn 0.5s ease-out',
-        'glow-in': 'glowIn 0.6s ease-out',
+        'fade-in': 'fadeIn 300ms ease-out',
       },
       keyframes: {
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // BREATHING - Organic inhale/exhale (like a living being)
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        breathe: {
-          '0%, 100%': {
-            transform: 'scale(1)',
-            opacity: '0.95',
-          },
-          '50%': {
-            transform: 'scale(1.03)',
-            opacity: '1',
-          },
-        },
-        glowBreathe: {
-          '0%, 100%': {
-            boxShadow: '0 0 40px rgba(124, 58, 237, 0.3), 0 0 80px rgba(124, 58, 237, 0.15)',
-          },
-          '50%': {
-            boxShadow: '0 0 60px rgba(124, 58, 237, 0.45), 0 0 120px rgba(124, 58, 237, 0.25)',
-          },
-        },
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // FLOATING - Gentle drift through space
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        float: {
-          '0%': { transform: 'translateY(0px) translateX(0px)' },
-          '33%': { transform: 'translateY(-12px) translateX(6px)' },
-          '66%': { transform: 'translateY(-6px) translateX(-4px)' },
-          '100%': { transform: 'translateY(0px) translateX(0px)' },
-        },
-        drift: {
-          '0%, 100%': { transform: 'translateX(0px)' },
-          '50%': { transform: 'translateX(8px)' },
-        },
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // FLICKERING - Golden candlelight (organic, unpredictable)
+        // BACKGROUND AMBIENT (Kept for atmospheric depth)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         flicker: {
           '0%, 100%': { opacity: '0.05' },
@@ -246,10 +194,6 @@ const config: Config = {
           '0%': { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
         },
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // CAUSTIC - Living light patterns (like light through water)
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         caustic: {
           '0%, 100%': {
             opacity: '0.1',
@@ -268,29 +212,11 @@ const config: Config = {
         },
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // ENTRANCE - Slow, reverent appearance
+        // PAGE TRANSITIONS (Fast, functional)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         fadeIn: {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
-        },
-        scaleIn: {
-          '0%': {
-            opacity: '0',
-            transform: 'scale(0.92)',
-          },
-          '100%': {
-            opacity: '1',
-            transform: 'scale(1)',
-          },
-        },
-        glowIn: {
-          '0%': {
-            boxShadow: '0 0 0 rgba(124, 58, 237, 0)',
-          },
-          '100%': {
-            boxShadow: '0 0 40px rgba(124, 58, 237, 0.3), 0 0 80px rgba(124, 58, 237, 0.15)',
-          },
         },
       },
     },
