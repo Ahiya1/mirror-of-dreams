@@ -262,3 +262,70 @@ export const floatVariants: Variants = {
     y: 0,
   },
 };
+
+/**
+ * Input focus animation (textarea/input focus glow)
+ * Apply to reflection form inputs for premium feel
+ */
+export const inputFocusVariants: Variants = {
+  rest: {
+    boxShadow: '0 0 0 1px rgba(255, 255, 255, 0.1)',
+  },
+  focus: {
+    boxShadow: [
+      '0 0 0 2px rgba(139, 92, 246, 0.5)',        // Purple ring
+      '0 0 20px rgba(139, 92, 246, 0.3)',         // Purple glow
+      'inset 0 0 20px rgba(139, 92, 246, 0.15)',  // Inner glow
+    ].join(', '),
+    transition: { duration: 0.3, ease: 'easeOut' },
+  },
+};
+
+/**
+ * Card press animation (click feedback for interactive cards)
+ * Subtle scale-down on tap for tactile feedback
+ */
+export const cardPressVariants: Variants = {
+  rest: { scale: 1 },
+  tap: {
+    scale: 0.98,
+    transition: { duration: 0.1 },
+  },
+};
+
+/**
+ * Character counter color shift (visual feedback for input length)
+ * Transitions: safe (white) → warning (gold) → danger (red)
+ */
+export const characterCounterVariants: Variants = {
+  safe: {
+    color: 'rgba(255, 255, 255, 0.7)', // White/70
+    transition: { duration: 0.2 },
+  },
+  warning: {
+    color: '#fbbf24', // Gold (approaching limit)
+    transition: { duration: 0.2 },
+  },
+  danger: {
+    color: '#f87171', // Red (over limit)
+    transition: { duration: 0.2 },
+  },
+};
+
+/**
+ * Page transition animation (route changes)
+ * 150ms exit, 300ms enter for smooth crossfades
+ */
+export const pageTransitionVariants: Variants = {
+  initial: {
+    opacity: 0,
+  },
+  enter: {
+    opacity: 1,
+    transition: { duration: 0.3 },
+  },
+  exit: {
+    opacity: 0,
+    transition: { duration: 0.15 },
+  },
+};

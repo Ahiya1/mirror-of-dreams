@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useRef, useEffect, ReactNode } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { cardPressVariants } from '@/lib/animations/variants';
 
 interface DashboardCardProps {
   children: ReactNode;
@@ -34,6 +36,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   // Animation entrance effect
   useEffect(() => {
@@ -107,7 +110,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
     .join(' ');
 
   return (
-    <div
+    <motion.div
       ref={cardRef}
       className={cardClasses}
       onMouseEnter={handleMouseEnter}
@@ -116,6 +119,10 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
       style={{
         animationDelay: animated ? `${animationDelay}ms` : undefined,
       }}
+      // Apply card press animation (respects reduced motion)
+      variants={prefersReducedMotion || !onClick ? undefined : cardPressVariants}
+      initial={prefersReducedMotion || !onClick ? false : 'rest'}
+      whileTap={prefersReducedMotion || !onClick ? undefined : 'tap'}
     >
       {/* Background gradient overlay */}
       <div className="dashboard-card__gradient" />
@@ -140,7 +147,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
           <div className="dashboard-card__error-text">Unable to load data</div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

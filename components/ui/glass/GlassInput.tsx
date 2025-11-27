@@ -2,8 +2,10 @@
 
 import { cn } from '@/lib/utils'
 import { useState, useEffect, useRef } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import { PasswordToggle } from '@/components/ui/PasswordToggle'
 import type { GlassInputProps } from '@/types/glass-components'
+import { inputFocusVariants, characterCounterVariants } from '@/lib/animations/variants'
 
 export function GlassInput({
   type = 'text',
@@ -28,6 +30,7 @@ export function GlassInput({
   const [showPassword, setShowPassword] = useState(false)
   const [isShaking, setIsShaking] = useState(false)
   const prevErrorRef = useRef<string | undefined>()
+  const prefersReducedMotion = useReducedMotion()
 
   // Trigger shake animation on error state change (not every render)
   useEffect(() => {
@@ -46,6 +49,15 @@ export function GlassInput({
   const actualType = variant === 'textarea' ? 'textarea' : type
   const inputType = actualType === 'password' && showPassword ? 'text' : actualType
 
+  // Character counter color state logic
+  const getCounterColorState = () => {
+    if (!maxLength) return 'safe'
+    const percentage = value.length / maxLength
+    if (percentage > 0.9) return 'danger'   // Over 90%
+    if (percentage > 0.7) return 'warning'  // Over 70%
+    return 'safe'                           // Under 70%
+  }
+
   const baseClasses = cn(
     'w-full px-4 py-3 rounded-xl',
     'bg-white/5 backdrop-blur-sm',
@@ -60,14 +72,14 @@ export function GlassInput({
       : success
       ? 'border-mirror-success/50'
       : isFocused
-      ? 'border-mirror-purple/60 shadow-[0_0_30px_rgba(168,85,247,0.2)]'
+      ? 'border-mirror-purple/60'
       : 'border-white/10',
     // Focus states
     error
-      ? 'focus:border-mirror-error focus:shadow-[0_0_30px_rgba(248,113,113,0.2)]'
+      ? 'focus:border-mirror-error'
       : success
-      ? 'focus:border-mirror-success focus:shadow-[0_0_30px_rgba(52,211,153,0.2)]'
-      : 'focus:border-mirror-purple/60 focus:shadow-[0_0_30px_rgba(168,85,247,0.2)]',
+      ? 'focus:border-mirror-success'
+      : 'focus:border-mirror-purple/60',
     actualType === 'textarea' && 'resize-vertical',
     // Add padding for password toggle or success checkmark
     (actualType === 'password' && showPasswordToggle) || success ? 'pr-12' : '',
@@ -76,7 +88,7 @@ export function GlassInput({
     className
   )
 
-  const Component = actualType === 'textarea' ? 'textarea' : 'input'
+  const Component = actualType === 'textarea' ? motion.textarea : motion.input
 
   return (
     <div className="space-y-2">
@@ -92,7 +104,7 @@ export function GlassInput({
           type={actualType === 'textarea' ? undefined : inputType}
           className={baseClasses}
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => onChange(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           placeholder={placeholder}
@@ -100,6 +112,10 @@ export function GlassInput({
           minLength={minLength}
           required={required}
           autoComplete={autoComplete}
+          // Apply focus glow animation (respects reduced motion)
+          variants={prefersReducedMotion ? undefined : inputFocusVariants}
+          initial={prefersReducedMotion ? false : 'rest'}
+          animate={prefersReducedMotion ? false : (isFocused ? 'focus' : 'rest')}
           {...(actualType === 'textarea' && {
             rows: rows,
           })}
@@ -149,11 +165,16 @@ export function GlassInput({
           </div>
         )}
 
-        {/* Character Counter */}
+        {/* Character Counter with color shift animation */}
         {showCounter && maxLength && actualType === 'textarea' && (
-          <div className="absolute bottom-3 right-3 text-xs text-white/40 pointer-events-none">
+          <motion.div
+            className="absolute bottom-3 right-3 text-xs pointer-events-none font-medium"
+            variants={prefersReducedMotion ? undefined : characterCounterVariants}
+            initial={prefersReducedMotion ? false : 'safe'}
+            animate={prefersReducedMotion ? false : getCounterColorState()}
+          >
             {value.length} / {maxLength}
-          </div>
+          </motion.div>
         )}
       </div>
 

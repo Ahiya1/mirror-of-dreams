@@ -2,11 +2,13 @@
 
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
+import { pageTransitionVariants } from '@/lib/animations/variants';
 
 /**
  * Global page transition template
  *
- * Applies fade + slide animation to all page navigations
+ * Applies smooth crossfade to all page navigations
+ * 150ms exit, 300ms enter for polished feel
  * Respects prefers-reduced-motion for accessibility
  */
 export default function Template({ children }: { children: React.ReactNode }) {
@@ -22,13 +24,10 @@ export default function Template({ children }: { children: React.ReactNode }) {
     <AnimatePresence mode="wait">
       <motion.div
         key={pathname}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        transition={{
-          duration: 0.3,
-          ease: 'easeOut',
-        }}
+        variants={pageTransitionVariants}
+        initial="initial"
+        animate="enter"
+        exit="exit"
       >
         {children}
       </motion.div>
