@@ -27,11 +27,11 @@ import {
 } from '@/components/ui/glass';
 import CosmicBackground from '@/components/shared/CosmicBackground';
 import { AppNavigation } from '@/components/shared/AppNavigation';
-import WelcomeSection from '@/components/dashboard/shared/WelcomeSection';
+import DashboardHero from '@/components/dashboard/DashboardHero';
 import DashboardGrid from '@/components/dashboard/shared/DashboardGrid';
-import UsageCard from '@/components/dashboard/cards/UsageCard';
-import ReflectionsCard from '@/components/dashboard/cards/ReflectionsCard';
 import DreamsCard from '@/components/dashboard/cards/DreamsCard';
+import ReflectionsCard from '@/components/dashboard/cards/ReflectionsCard';
+import ProgressStatsCard from '@/components/dashboard/cards/ProgressStatsCard';
 import EvolutionCard from '@/components/dashboard/cards/EvolutionCard';
 import VisualizationCard from '@/components/dashboard/cards/VisualizationCard';
 import SubscriptionCard from '@/components/dashboard/cards/SubscriptionCard';
@@ -46,8 +46,8 @@ export default function DashboardPage() {
   // UI state
   const [isPageVisible, setIsPageVisible] = useState(false);
 
-  // Stagger animation for grid cards (6 cards, 150ms delay between each)
-  const { containerRef, getItemStyles } = useStaggerAnimation(6, {
+  // Stagger animation for hero + grid cards (1 hero + 6 cards = 7 items)
+  const { containerRef, getItemStyles } = useStaggerAnimation(7, {
     delay: 150,
     duration: 800,
     triggerOnce: true,
@@ -81,10 +81,6 @@ export default function DashboardPage() {
     }
   }, [isAuthenticated, authLoading, router]);
 
-  // Handle navigation to reflection page
-  const handleReflectNow = () => {
-    router.push('/reflection');
-  };
 
   // Loading state - show skeleton while auth loads
   if (authLoading) {
@@ -113,56 +109,43 @@ export default function DashboardPage() {
 
       {/* Main content */}
       <main className="dashboard-main">
-        <div className="dashboard-container">
-          {/* Personalized Welcome Section */}
-          <WelcomeSection />
+        <div className="dashboard-container" ref={containerRef}>
+          {/* Hero Section - Primary focus with personalized greeting + CTA */}
+          <div style={getItemStyles(0)}>
+            <DashboardHero />
+          </div>
 
-        {/* Quick Action: Reflect Now Button - PRIMARY ACTION */}
-        <div className="flex flex-col items-center gap-3 mb-8">
-          <GlowButton
-            variant="cosmic"
-            size="lg"
-            onClick={handleReflectNow}
-            className="w-full sm:w-auto min-w-[280px]"
-          >
-            ✨ Reflect Now
-          </GlowButton>
-        </div>
+          {/* Dashboard Grid - Secondary focus with card sections */}
+          <div className="dashboard-grid-container">
+            <DashboardGrid isLoading={false}>
+              {/* Primary Cards: Dreams & Reflections (most important user data) */}
+              <div style={getItemStyles(1)}>
+                <DreamsCard animated={true} />
+              </div>
 
-        {/* Dashboard Grid with Stagger Animation */}
-        <div ref={containerRef} className="dashboard-grid-container">
-          <DashboardGrid isLoading={false}>
-            {/* Card 1: Usage Card - Fetches own data */}
-            <div style={getItemStyles(0)}>
-              <UsageCard animated={true} />
-            </div>
+              <div style={getItemStyles(2)}>
+                <ReflectionsCard animated={true} />
+              </div>
 
-            {/* Card 2: Reflections Card - Fetches own data */}
-            <div style={getItemStyles(1)}>
-              <ReflectionsCard animated={true} />
-            </div>
+              {/* Secondary Cards: Progress & Evolution (insights) */}
+              <div style={getItemStyles(3)}>
+                <ProgressStatsCard animated={true} />
+              </div>
 
-            {/* Card 3: Dreams Card - Fetches own data */}
-            <div style={getItemStyles(2)}>
-              <DreamsCard animated={true} />
-            </div>
+              <div style={getItemStyles(4)}>
+                <EvolutionCard animated={true} />
+              </div>
 
-            {/* Card 4: Evolution Card - Fetches own data */}
-            <div style={getItemStyles(3)}>
-              <EvolutionCard animated={true} />
-            </div>
+              {/* Tertiary Cards: Visualizations & Subscription */}
+              <div style={getItemStyles(5)}>
+                <VisualizationCard animated={true} />
+              </div>
 
-            {/* Card 5: Visualization Card - Fetches own data */}
-            <div style={getItemStyles(4)}>
-              <VisualizationCard animated={true} />
-            </div>
-
-            {/* Card 6: Subscription Card - Fetches own data */}
-            <div style={getItemStyles(5)}>
-              <SubscriptionCard animated={true} />
-            </div>
-          </DashboardGrid>
-        </div>
+              <div style={getItemStyles(6)}>
+                <SubscriptionCard animated={true} />
+              </div>
+            </DashboardGrid>
+          </div>
         </div>
       </main>
 

@@ -24,12 +24,33 @@ export function ReflectionCard({ reflection }: ReflectionCardProps) {
     return styles[tone as keyof typeof styles] || styles.fusion;
   };
 
-  // Preview text (first 150 chars of dream)
-  const preview = reflection.dream.slice(0, 150) + (reflection.dream.length > 150 ? '...' : '');
+  // Snippet from AI response (120 characters - Pattern from plan)
+  const snippet = reflection.aiResponse
+    .replace(/^#{1,3}\s+.*$/gm, '') // Remove markdown headings
+    .replace(/\*\*/g, '') // Remove markdown bold
+    .replace(/\*/g, '') // Remove markdown italic
+    .replace(/\n\n/g, ' ') // Replace double newlines with space
+    .trim()
+    .substring(0, 120) + '...';
+
+  // Relative time helper
+  const getRelativeTime = (dateString: string): string => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMs = now.getTime() - date.getTime();
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+    if (diffInDays === 0) return 'Today';
+    if (diffInDays === 1) return 'Yesterday';
+    if (diffInDays < 7) return `${diffInDays} days ago`;
+    if (diffInDays < 30) return `${Math.floor(diffInDays / 7)} weeks ago`;
+    if (diffInDays < 365) return `${Math.floor(diffInDays / 30)} months ago`;
+    return `${Math.floor(diffInDays / 365)} years ago`;
+  };
 
   return (
     <Link href={`/reflections/${reflection.id}`}>
-      <div className="group relative overflow-hidden rounded-xl border border-purple-500/20 bg-gradient-to-br from-slate-900/90 to-slate-800/90 p-6 transition-all duration-300 hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/20 backdrop-blur-sm">
+      <div className="group relative overflow-hidden rounded-xl border border-purple-500/20 bg-gradient-to-br from-slate-900/90 to-slate-800/90 p-6 backdrop-blur-sm transition-all duration-300 hover:border-purple-500/50 hover:bg-white/10 hover:shadow-lg hover:shadow-purple-500/20 hover:-translate-y-1 cursor-pointer">
         {/* Premium indicator */}
         {reflection.isPremium && (
           <div className="absolute top-3 right-3">
@@ -42,31 +63,31 @@ export function ReflectionCard({ reflection }: ReflectionCardProps) {
           </div>
         )}
 
-        {/* Title */}
-        <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-purple-300 transition-colors line-clamp-1">
-          {reflection.title || 'Untitled Reflection'}
-        </h3>
-
-        {/* Preview */}
-        <p className="text-gray-300 text-sm mb-4 line-clamp-3">
-          {preview}
-        </p>
-
-        {/* Metadata */}
-        <div className="flex flex-wrap items-center gap-3 text-xs text-gray-400">
-          {/* Date */}
-          <div className="flex items-center gap-1">
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <span>{formattedDate}</span>
+        {/* Dream badge (title as dream identifier) */}
+        {reflection.title && (
+          <div className="mb-3">
+            <span className="inline-block px-3 py-1 bg-purple-500/20 border border-purple-500/40 rounded-full text-xs text-purple-300 font-medium">
+              {reflection.title}
+            </span>
           </div>
+        )}
 
-          {/* Tone badge */}
+        {/* Date and tone */}
+        <div className="flex items-center gap-3 mb-4 text-xs text-white/40">
+          <span>{getRelativeTime(reflection.createdAt)}</span>
+          <span>•</span>
           <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-medium capitalize ${getToneBadge(reflection.tone)}`}>
             {reflection.tone}
           </span>
+        </div>
 
+        {/* AI Response Snippet (120 chars) */}
+        <p className="text-sm text-white/80 line-clamp-3 mb-4 leading-relaxed">
+          {snippet}
+        </p>
+
+        {/* Metadata footer */}
+        <div className="flex flex-wrap items-center gap-3 text-xs text-gray-400">
           {/* Word count */}
           <div className="flex items-center gap-1">
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,7 +134,15 @@ export function ReflectionCard({ reflection }: ReflectionCardProps) {
           </div>
         )}
 
-        {/* Hover indicator */}
+        {/* "Read full reflection" indicator (appears on hover) */}
+        <div className="mt-4 flex items-center gap-2 text-sm text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity">
+          <span>Read full reflection</span>
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </div>
+
+        {/* Hover glow bottom border */}
         <div className="absolute bottom-0 left-0 h-1 w-0 bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300 group-hover:w-full" />
       </div>
     </Link>

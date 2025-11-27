@@ -48,11 +48,15 @@ const ReflectionItem: React.FC<ReflectionItemProps> = ({
   };
 
   function getReflectionPreview(refl: any): string {
-    const text = refl.dream || refl.content || refl.preview;
+    // Try to get AI response first for better snippets
+    const text = refl.aiResponse || refl.ai_response || refl.dream || refl.content || refl.preview;
     if (!text) return 'Your reflection content...';
 
-    const maxLength = 80;
-    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    // Use 120 chars as per plan requirement
+    const maxLength = 120;
+    // Strip any markdown/HTML for clean preview
+    const cleanText = text.replace(/<[^>]*>/g, '').replace(/[#*_]/g, '').trim();
+    return cleanText.length > maxLength ? cleanText.substring(0, maxLength) + '...' : cleanText;
   }
 
   function formatTimeAgo(dateString?: string): string {

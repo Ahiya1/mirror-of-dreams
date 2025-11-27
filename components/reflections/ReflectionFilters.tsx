@@ -14,6 +14,10 @@ interface ReflectionFiltersProps {
   onSortByChange: (sortBy: 'created_at' | 'word_count' | 'rating') => void;
   sortOrder: 'asc' | 'desc';
   onSortOrderChange: (sortOrder: 'asc' | 'desc') => void;
+  // Note: Dream filtering would be added here when reflections are linked to dreams table
+  // dreamId?: string;
+  // onDreamIdChange?: (dreamId?: string) => void;
+  // dreams?: Array<{ id: string; title: string }>;
 }
 
 export function ReflectionFilters({
@@ -91,9 +95,9 @@ export function ReflectionFilters({
           onChange={(e) => onSortByChange(e.target.value as any)}
           className="rounded-lg border border-purple-500/20 bg-slate-900/50 px-4 py-2 text-sm text-white backdrop-blur-sm transition-all focus:border-purple-500/50 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
         >
-          <option value="created_at">Sort by Date</option>
-          <option value="word_count">Sort by Length</option>
-          <option value="rating">Sort by Rating</option>
+          <option value="created_at">Most Recent</option>
+          <option value="word_count">Longest</option>
+          <option value="rating">Highest Rated</option>
         </select>
 
         {/* Sort order */}
@@ -139,7 +143,7 @@ export function ReflectionFilters({
                     : 'bg-slate-800/50 text-gray-300 hover:bg-slate-800'
                 }`}
               >
-                All
+                All Tones
               </button>
               <button
                 onClick={() => onToneChange('gentle')}
@@ -169,7 +173,7 @@ export function ReflectionFilters({
                     : 'bg-slate-800/50 text-gray-300 hover:bg-slate-800'
                 }`}
               >
-                Fusion
+                Sacred Fusion
               </button>
             </div>
           </div>
@@ -186,7 +190,7 @@ export function ReflectionFilters({
                     : 'bg-slate-800/50 text-gray-300 hover:bg-slate-800'
                 }`}
               >
-                All
+                All Types
               </button>
               <button
                 onClick={() => onIsPremiumChange(true)}
@@ -210,6 +214,27 @@ export function ReflectionFilters({
               </button>
             </div>
           </div>
+
+          {/* Dream filter - Commented out until reflections are linked to dreams table */}
+          {/*
+          {dreams && dreams.length > 0 && (
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Dream</label>
+              <select
+                value={dreamId || ''}
+                onChange={(e) => onDreamIdChange?.(e.target.value || undefined)}
+                className="w-full rounded-lg border border-purple-500/20 bg-slate-800/50 px-4 py-2 text-sm text-white transition-all focus:border-purple-500/50 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+              >
+                <option value="">All Dreams</option>
+                {dreams.map((dream) => (
+                  <option key={dream.id} value={dream.id}>
+                    {dream.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          */}
         </div>
       )}
     </div>

@@ -6,6 +6,7 @@ import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/contexts/ToastContext';
 import CosmicBackground from '@/components/shared/CosmicBackground';
+import { AIResponseRenderer } from '@/components/reflections/AIResponseRenderer';
 import '@/styles/mirror.css';
 
 // Separate component that uses searchParams
@@ -116,11 +117,7 @@ function ReflectionOutputContent() {
                 reflectionVisible ? 'visible' : ''
               }`}
             >
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: reflection.aiResponse || '',
-                }}
-              />
+              <AIResponseRenderer content={reflection.aiResponse || ''} />
             </div>
 
             {/* Subtle shimmer */}

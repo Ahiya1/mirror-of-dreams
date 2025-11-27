@@ -21,10 +21,10 @@ export default function ReflectionsPage() {
   const [sortBy, setSortBy] = useState<'created_at' | 'word_count' | 'rating'>('created_at');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
-  // Fetch reflections with tRPC
+  // Fetch reflections with tRPC (20 per page as per plan)
   const { data, isLoading, error } = trpc.reflections.list.useQuery({
     page,
-    limit: 12,
+    limit: 20, // Pattern from plan: 20 per page
     search: search || undefined,
     tone,
     isPremium,
@@ -35,7 +35,7 @@ export default function ReflectionsPage() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen p-8">
+      <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
@@ -54,7 +54,7 @@ export default function ReflectionsPage() {
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen p-8">
+      <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
         <div className="max-w-6xl mx-auto">
           <div className="rounded-lg border border-red-500/20 bg-red-900/10 p-6 backdrop-blur-sm">
             <div className="flex items-center gap-3">
@@ -87,20 +87,22 @@ export default function ReflectionsPage() {
       <AppNavigation currentPage="reflection" />
 
       <div className="max-w-6xl mx-auto pt-nav px-4 sm:px-8 pb-8">
-        {/* Header */}
+        {/* Header with count */}
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
-                Your Reflections
+                Your Reflections {total > 0 && `(${total})`}
               </h1>
               <p className="text-gray-400">
-                {total === 0 ? 'No reflections yet' : `${total} reflection${total === 1 ? '' : 's'} total`}
+                {total === 0
+                  ? 'Your reflection journey begins here'
+                  : `${total} reflection${total === 1 ? '' : 's'} captured`}
               </p>
             </div>
             <Link
               href="/reflection"
-              className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:from-purple-700 hover:to-pink-700 transition-all"
+              className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:from-purple-700 hover:to-pink-700 transition-all hover:shadow-lg hover:shadow-purple-500/20"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -152,22 +154,22 @@ export default function ReflectionsPage() {
           />
         </div>
 
-        {/* Empty state - using enhanced EmptyState component */}
+        {/* Empty state */}
         {reflections.length === 0 && (
           <EmptyState
             icon="💭"
             title={search || tone || isPremium !== undefined
               ? 'No reflections found'
-              : 'Reflection is how you water your dreams'}
+              : 'Your reflection journey begins here'}
             description={search || tone || isPremium !== undefined
               ? 'Try adjusting your filters or search criteria'
-              : 'Your reflection journey begins here. Take a moment to gaze into the mirror and explore your inner landscape.'}
+              : 'Reflection is how you water your dreams. Take a moment to gaze into the mirror and explore your inner landscape.'}
             ctaLabel={!search && !tone && isPremium === undefined ? 'Reflect Now' : undefined}
             ctaAction={!search && !tone && isPremium === undefined ? () => router.push('/reflection') : undefined}
           />
         )}
 
-        {/* Reflections grid */}
+        {/* Reflections grid - Desktop: 2-3 columns, Mobile: single column (Pattern from plan) */}
         {reflections.length > 0 && (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -176,7 +178,7 @@ export default function ReflectionsPage() {
               ))}
             </div>
 
-            {/* Pagination */}
+            {/* Pagination (20 per page) */}
             {totalPages > 1 && (
               <div className="flex items-center justify-center gap-2">
                 <button

@@ -1,14 +1,18 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Check } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/contexts/ToastContext';
 import CosmicBackground from '@/components/shared/CosmicBackground';
 import { GlassCard, GlowButton, CosmicLoader, GlassInput } from '@/components/ui/glass';
+import { ReflectionQuestionCard } from '@/components/reflection/ReflectionQuestionCard';
+import { ToneSelectionCard } from '@/components/reflection/ToneSelectionCard';
+import { ProgressBar } from '@/components/reflection/ProgressBar';
+import { AIResponseRenderer } from '@/components/reflections/AIResponseRenderer';
 import { cn } from '@/lib/utils';
 import type { ToneId } from '@/lib/utils/constants';
 import { QUESTION_LIMITS } from '@/lib/utils/constants';
@@ -31,15 +35,24 @@ interface Dream {
 
 type ViewMode = 'questionnaire' | 'output';
 
+// Guiding text for each question - sets contemplative tone
+const QUESTION_GUIDES = {
+  dream: 'Take a moment to describe your dream in vivid detail...',
+  plan: 'What concrete steps will you take on this journey?',
+  relationship: 'How does this dream connect to who you are becoming?',
+  offering: 'What are you willing to give, sacrifice, or commit?',
+};
+
 /**
  * Mesmerizing single-page Mirror Experience
- * Combines questionnaire and output in one immersive flow
+ * Enhanced with depth, atmosphere, and immersive transitions
  */
 export default function MirrorExperience() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, isAuthenticated } = useAuth();
   const toast = useToast();
+  const prefersReducedMotion = useReducedMotion();
 
   // Determine view mode from URL
   const reflectionId = searchParams.get('id');
@@ -146,7 +159,7 @@ export default function MirrorExperience() {
 
     // Update status text after 3 seconds
     setTimeout(() => {
-      setStatusText('Crafting your reflection...');
+      setStatusText('Crafting your insight...');
     }, 3000);
 
     createReflection.mutate({
@@ -164,6 +177,7 @@ export default function MirrorExperience() {
       id: 'dream' as keyof FormData,
       number: 1,
       text: selectedDream ? `What is ${selectedDream.title}?` : 'What is this dream?',
+      guide: QUESTION_GUIDES.dream,
       placeholder: 'Describe your dream in detail...',
       limit: QUESTION_LIMITS.dream,
     },
@@ -171,6 +185,7 @@ export default function MirrorExperience() {
       id: 'plan' as keyof FormData,
       number: 2,
       text: selectedDream ? `What is your plan for ${selectedDream.title}?` : 'What is your plan to bring it to life?',
+      guide: QUESTION_GUIDES.plan,
       placeholder: 'Share the steps you envision taking...',
       limit: QUESTION_LIMITS.plan,
     },
@@ -178,6 +193,7 @@ export default function MirrorExperience() {
       id: 'relationship' as keyof FormData,
       number: 3,
       text: selectedDream ? `What's your relationship with ${selectedDream.title}?` : 'What relationship do you seek with your dream?',
+      guide: QUESTION_GUIDES.relationship,
       placeholder: 'Describe your relationship with this dream...',
       limit: QUESTION_LIMITS.relationship,
     },
@@ -185,6 +201,7 @@ export default function MirrorExperience() {
       id: 'offering' as keyof FormData,
       number: 4,
       text: selectedDream ? `What are you willing to give for ${selectedDream.title}?` : 'What are you willing to offer in service of this dream?',
+      guide: QUESTION_GUIDES.offering,
       placeholder: 'What will you give, sacrifice, or commit...',
       limit: QUESTION_LIMITS.sacrifice,
     },
@@ -205,8 +222,10 @@ export default function MirrorExperience() {
   };
 
   return (
-    <div className="mirror-experience">
+    <div className="reflection-experience">
+      {/* Darker cosmic background with vignette */}
       <CosmicBackground />
+      <div className="reflection-vignette" />
 
       {/* Tone-based ambient elements */}
       <div className="tone-elements">
@@ -264,286 +283,275 @@ export default function MirrorExperience() {
         ))}
       </div>
 
-      {viewMode === 'questionnaire' ? (
-        <div className="questionnaire-container">
-          {/* Mirror frame with GlassCard */}
-          <GlassCard
-            elevated
-            className={cn(
-              'p-12 rounded-[30px] transition-all duration-800',
-              mirrorGlow && 'border-mirror-gold/60 shadow-[0_0_120px_rgba(251,191,36,0.4)]'
-            )}
+      <AnimatePresence mode="wait">
+        {viewMode === 'questionnaire' && (
+          <motion.div
+            key="questionnaire"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
+            className="questionnaire-container"
           >
-            <div className="mirror-surface">
-              {!selectedDreamId ? (
-                /* Dream selection view */
-                <div className="question-view">
-                  {/* Progress Orbs - Show as inactive for step 0 */}
-                  <div className="flex justify-center mb-6">
-                    {/* Removed decorative emoji */}
-                  </div>
-
-                  <h2 className="text-center mb-8 text-2xl md:text-3xl font-light bg-gradient-to-r from-mirror-purple via-mirror-violet to-mirror-blue bg-clip-text text-transparent">
-                    Which dream are you reflecting on?
-                  </h2>
-
-                  <div className="dream-selection-list">
-                    {dreams && dreams.length > 0 ? (
-                      dreams.map((dream: any) => {
-                        const emoji = categoryEmoji[dream.category || 'other'] || '⭐';
-                        const isSelected = selectedDreamId === dream.id;
-
-                        return (
-                          <div
-                            key={dream.id}
-                            onClick={() => handleDreamSelect(dream.id)}
-                            role="button"
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                handleDreamSelect(dream.id);
-                              }
-                            }}
-                          >
-                            <GlassCard
-                              elevated={isSelected}
-                              interactive
-                              className={cn(
-                                'cursor-pointer transition-all',
-                                isSelected && 'border-mirror-purple/60'
-                              )}
-                            >
-                              <div className="flex items-center gap-4">
-                                <span className="text-4xl flex-shrink-0">{emoji}</span>
-                                <div className="flex-1 min-w-0">
-                                  <h3 className="mb-1 text-lg font-medium bg-gradient-to-r from-mirror-purple to-mirror-blue bg-clip-text text-transparent">
-                                    {dream.title}
-                                  </h3>
-                                  {dream.daysLeft !== null && dream.daysLeft !== undefined && (
-                                    <p className="text-sm text-mirror-purple/90">
-                                      {dream.daysLeft < 0
-                                        ? `${Math.abs(dream.daysLeft)}d overdue`
-                                        : dream.daysLeft === 0
-                                        ? 'Today!'
-                                        : `${dream.daysLeft}d left`}
-                                    </p>
-                                  )}
-                                </div>
-                                {isSelected && (
-                                  <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    className="text-mirror-purple flex-shrink-0"
-                                  >
-                                    <Check className="h-6 w-6" />
-                                  </motion.div>
-                                )}
-                              </div>
-                            </GlassCard>
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <GlassCard elevated className="text-center">
-                        <p className="text-white/70 mb-6">No active dreams yet.</p>
-                        <GlowButton
-                          variant="primary"
-                          size="md"
-                          onClick={() => router.push('/dreams')}
-                        >
-                          Create Your First Dream
-                        </GlowButton>
-                      </GlassCard>
-                    )}
-                  </div>
-
-                </div>
-              ) : (
-                /* One-Page Reflection Form */
-                <div className="one-page-form">
-                  {/* Dream Context Display */}
-                  {selectedDream && (
-                    <div className="mb-8 text-center">
-                      <div className="flex items-center justify-center gap-3 mb-2">
-                        <h2 className="text-2xl md:text-3xl font-light bg-gradient-to-r from-mirror-purple via-mirror-violet to-mirror-blue bg-clip-text text-transparent">
-                          {selectedDream.title}
-                        </h2>
-                      </div>
-                      {selectedDream.daysLeft !== null && selectedDream.daysLeft !== undefined && (
-                        <p className="text-sm text-mirror-purple/90">
-                          {selectedDream.daysLeft < 0
-                            ? `${Math.abs(selectedDream.daysLeft)} days overdue`
-                            : selectedDream.daysLeft === 0
-                            ? 'Target date: Today!'
-                            : `${selectedDream.daysLeft} days left`}
-                        </p>
-                      )}
-                    </div>
-                  )}
-
-                  {/* All 4 Questions */}
-                  <div className="space-y-8 mb-8">
-                    {questions.map((question) => (
-                      <div key={question.id} className="question-block">
-                        <h3 className="text-lg mb-3 font-light bg-gradient-to-r from-mirror-purple to-mirror-blue bg-clip-text text-transparent">
-                          {question.number}. {question.text}
-                        </h3>
-                        <GlassInput
-                          variant="textarea"
-                          value={formData[question.id]}
-                          onChange={(value) => handleFieldChange(question.id, value)}
-                          placeholder={question.placeholder}
-                          maxLength={question.limit}
-                          showCounter={true}
-                          rows={6}
-                        />
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Tone Selection */}
-                  <div className="tone-selection-section mb-8">
-                    <h2 className="text-center mb-4 text-2xl md:text-3xl font-light bg-gradient-to-r from-mirror-purple via-mirror-violet to-mirror-blue bg-clip-text text-transparent">
-                      Choose Your Reflection Tone
-                    </h2>
-                    <p className="text-center text-white/70 mb-6">How shall the mirror speak to you?</p>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {[
-                      { id: 'fusion' as ToneId, name: 'Fusion', desc: 'Balanced and thoughtful', glowColor: 'cosmic' as const },
-                      { id: 'gentle' as ToneId, name: 'Gentle', desc: 'Compassionate and nurturing', glowColor: 'blue' as const },
-                      { id: 'intense' as ToneId, name: 'Intense', desc: 'Direct and challenging', glowColor: 'purple' as const },
-                    ].map(tone => {
-                      const isSelected = selectedTone === tone.id
-
-                      return (
-                        <div
-                          key={tone.id}
-                          onClick={() => setSelectedTone(tone.id)}
-                          role="button"
-                          tabIndex={0}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault();
-                              setSelectedTone(tone.id);
-                            }
-                          }}
-                        >
-                          <GlassCard
-                            elevated={isSelected}
-                            interactive
-                            className={cn(
-                              'cursor-pointer transition-all text-center',
-                              isSelected && 'border-2'
-                            )}
-                          >
-                            <div className="space-y-3 py-4">
-                              <h3 className={cn(
-                                'text-lg font-medium',
-                                isSelected && 'bg-gradient-to-r from-mirror-purple to-mirror-blue bg-clip-text text-transparent'
-                              )}>
-                                {tone.name}
-                              </h3>
-                              <p className="text-sm text-white/60">{tone.desc}</p>
-                            </div>
-                          </GlassCard>
-                        </div>
-                      )
-                    })}
-                    </div>
-                  </div>
-
-                  {/* Submit Button */}
-                  <div className="flex justify-center mt-8">
-                    <GlowButton
-                      variant="primary"
-                      size="lg"
-                      onClick={handleSubmit}
-                      disabled={isSubmitting}
-                      className="min-w-[250px]"
-                    >
-                      {isSubmitting ? (
-                        <span className="flex items-center gap-2">
-                          <CosmicLoader size="sm" />
-                          Creating...
-                        </span>
-                      ) : (
-                        <>
-                          Submit Reflection
-                        </>
-                      )}
-                    </GlowButton>
-                  </div>
-                </div>
-              )}
-            </div>
-          </GlassCard>
-        </div>
-      ) : (
-        /* Output view */
-        <div className="output-container">
-          {reflectionLoading ? (
-            <div className="flex flex-col items-center justify-center gap-6 py-20">
-              <CosmicLoader size="lg" />
-              <p className="text-white/70 text-lg">Loading reflection...</p>
-            </div>
-          ) : reflection ? (
+            {/* Centered narrow content (800px) */}
             <GlassCard
               elevated
-              className="p-12 rounded-[30px]"
+              className={cn(
+                'reflection-card',
+                mirrorGlow && 'border-mirror-gold/60 shadow-[0_0_120px_rgba(251,191,36,0.4)]'
+              )}
             >
               <div className="mirror-surface">
-                <div className="reflection-content">
-                  <h1 className="text-center mb-8 text-4xl md:text-5xl font-semibold bg-gradient-to-r from-[#fbbf24] to-[#9333ea] bg-clip-text text-transparent">
-                    Your Reflection
-                  </h1>
-                  <div
-                    className="reflection-text"
-                    dangerouslySetInnerHTML={{ __html: reflection.aiResponse }}
-                  />
-                  <div className="flex justify-center mt-8">
-                    <GlowButton
-                      variant="primary"
-                      size="lg"
-                      onClick={() => {
-                        setViewMode('questionnaire');
-                        setSelectedDreamId('');
-                        setSelectedDream(null);
-                        setFormData({
-                          dream: '',
-                          plan: '',
-                          relationship: '',
-                          offering: '',
-                        });
-                        router.push('/reflection');
-                      }}
-                    >
-                      Create New Reflection
-                    </GlowButton>
+                {!selectedDreamId ? (
+                  /* Dream selection view */
+                  <div className="question-view">
+                    <h2 className="text-center mb-8 text-2xl md:text-3xl font-light bg-gradient-to-r from-mirror-purple via-mirror-violet to-mirror-blue bg-clip-text text-transparent">
+                      Which dream are you reflecting on?
+                    </h2>
+
+                    <div className="dream-selection-list">
+                      {dreams && dreams.length > 0 ? (
+                        dreams.map((dream: any) => {
+                          const emoji = categoryEmoji[dream.category || 'other'] || '⭐';
+                          const isSelected = selectedDreamId === dream.id;
+
+                          return (
+                            <div
+                              key={dream.id}
+                              onClick={() => handleDreamSelect(dream.id)}
+                              role="button"
+                              tabIndex={0}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault();
+                                  handleDreamSelect(dream.id);
+                                }
+                              }}
+                            >
+                              <GlassCard
+                                elevated={isSelected}
+                                interactive
+                                className={cn(
+                                  'cursor-pointer transition-all',
+                                  isSelected && 'border-mirror-purple/60'
+                                )}
+                              >
+                                <div className="flex items-center gap-4">
+                                  <span className="text-4xl flex-shrink-0">{emoji}</span>
+                                  <div className="flex-1 min-w-0">
+                                    <h3 className="mb-1 text-lg font-medium bg-gradient-to-r from-mirror-purple to-mirror-blue bg-clip-text text-transparent">
+                                      {dream.title}
+                                    </h3>
+                                    {dream.daysLeft !== null && dream.daysLeft !== undefined && (
+                                      <p className="text-sm text-mirror-purple/90">
+                                        {dream.daysLeft < 0
+                                          ? `${Math.abs(dream.daysLeft)}d overdue`
+                                          : dream.daysLeft === 0
+                                          ? 'Today!'
+                                          : `${dream.daysLeft}d left`}
+                                      </p>
+                                    )}
+                                  </div>
+                                  {isSelected && (
+                                    <motion.div
+                                      initial={{ scale: 0 }}
+                                      animate={{ scale: 1 }}
+                                      className="text-mirror-purple flex-shrink-0"
+                                    >
+                                      <Check className="h-6 w-6" />
+                                    </motion.div>
+                                  )}
+                                </div>
+                              </GlassCard>
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <GlassCard elevated className="text-center">
+                          <p className="text-white/70 mb-6">No active dreams yet.</p>
+                          <GlowButton
+                            variant="primary"
+                            size="md"
+                            onClick={() => router.push('/dreams')}
+                          >
+                            Create Your First Dream
+                          </GlowButton>
+                        </GlassCard>
+                      )}
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  /* One-Page Reflection Form */
+                  <div className="one-page-form">
+                    {/* Dream Context Display */}
+                    {selectedDream && (
+                      <div className="mb-8 text-center">
+                        <div className="flex items-center justify-center gap-3 mb-2">
+                          <h2 className="text-2xl md:text-3xl font-light bg-gradient-to-r from-mirror-purple via-mirror-violet to-mirror-blue bg-clip-text text-transparent">
+                            {selectedDream.title}
+                          </h2>
+                        </div>
+                        {selectedDream.daysLeft !== null && selectedDream.daysLeft !== undefined && (
+                          <p className="text-sm text-mirror-purple/90">
+                            {selectedDream.daysLeft < 0
+                              ? `${Math.abs(selectedDream.daysLeft)} days overdue`
+                              : selectedDream.daysLeft === 0
+                              ? 'Target date: Today!'
+                              : `${selectedDream.daysLeft} days left`}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Progress Indicator */}
+                    <div className="mb-8">
+                      <ProgressBar currentStep={1} totalSteps={4} />
+                    </div>
+
+                    {/* All 4 Questions with guiding text */}
+                    <div className="space-y-8 mb-8">
+                      {questions.map((question) => (
+                        <ReflectionQuestionCard
+                          key={question.id}
+                          questionNumber={question.number}
+                          totalQuestions={4}
+                          questionText={question.text}
+                          guidingText={question.guide}
+                          placeholder={question.placeholder}
+                          value={formData[question.id]}
+                          onChange={(value) => handleFieldChange(question.id, value)}
+                          maxLength={question.limit}
+                        />
+                      ))}
+                    </div>
+
+                    {/* Enhanced Tone Selection */}
+                    <div className="mb-8">
+                      <ToneSelectionCard
+                        selectedTone={selectedTone}
+                        onSelect={setSelectedTone}
+                      />
+                    </div>
+
+                    {/* "Gaze into the Mirror" Submit Button */}
+                    <div className="flex justify-center mt-10">
+                      <GlowButton
+                        variant="cosmic"
+                        size="lg"
+                        onClick={handleSubmit}
+                        disabled={isSubmitting}
+                        className="min-w-[280px] text-lg font-medium"
+                      >
+                        {isSubmitting ? (
+                          <span className="flex items-center gap-3">
+                            <CosmicLoader size="sm" />
+                            Gazing...
+                          </span>
+                        ) : (
+                          <>
+                            ✨ Gaze into the Mirror ✨
+                          </>
+                        )}
+                      </GlowButton>
+                    </div>
+                  </div>
+                )}
               </div>
             </GlassCard>
-          ) : null}
-        </div>
-      )}
+          </motion.div>
+        )}
 
-      {/* Loading Overlay */}
+        {viewMode === 'output' && (
+          <motion.div
+            key="output"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.5 }}
+            className="output-container"
+          >
+            {reflectionLoading ? (
+              <div className="flex flex-col items-center justify-center gap-6 py-20">
+                <CosmicLoader size="lg" />
+                <p className="text-white/70 text-lg">Loading reflection...</p>
+              </div>
+            ) : reflection ? (
+              <GlassCard
+                elevated
+                className="reflection-card"
+              >
+                <div className="mirror-surface">
+                  <div className="reflection-content">
+                    <h1 className="text-center mb-8 text-4xl md:text-5xl font-semibold bg-gradient-to-r from-[#fbbf24] to-[#9333ea] bg-clip-text text-transparent">
+                      Your Reflection
+                    </h1>
+                    <div className="reflection-text">
+                      <AIResponseRenderer content={reflection.aiResponse} />
+                    </div>
+                    <div className="flex justify-center mt-8">
+                      <GlowButton
+                        variant="primary"
+                        size="lg"
+                        onClick={() => {
+                          setViewMode('questionnaire');
+                          setSelectedDreamId('');
+                          setSelectedDream(null);
+                          setFormData({
+                            dream: '',
+                            plan: '',
+                            relationship: '',
+                            offering: '',
+                          });
+                          router.push('/reflection');
+                        }}
+                      >
+                        Create New Reflection
+                      </GlowButton>
+                    </div>
+                  </div>
+                </div>
+              </GlassCard>
+            ) : null}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Loading Overlay with smooth transitions */}
       <AnimatePresence>
         {isSubmitting && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.5 }}
             className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-6 bg-mirror-void-deep/95 backdrop-blur-lg"
           >
-            <CosmicLoader size="lg" />
+            <motion.div
+              animate={
+                !prefersReducedMotion
+                  ? { scale: [1, 1.05, 1] }
+                  : undefined
+              }
+              transition={
+                !prefersReducedMotion
+                  ? { duration: 2, repeat: Infinity, ease: 'easeInOut' }
+                  : undefined
+              }
+            >
+              <CosmicLoader size="lg" />
+            </motion.div>
             <motion.div
               className="text-center space-y-2"
-              animate={{ opacity: [0.7, 1, 0.7] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              animate={
+                !prefersReducedMotion
+                  ? { opacity: [0.7, 1, 0.7] }
+                  : { opacity: 1 }
+              }
+              transition={
+                !prefersReducedMotion
+                  ? { duration: 2, repeat: Infinity, ease: 'easeInOut' }
+                  : undefined
+              }
             >
               <p className="text-white/90 text-xl font-light">
                 {statusText}
@@ -557,7 +565,7 @@ export default function MirrorExperience() {
       </AnimatePresence>
 
       <style jsx>{`
-        .mirror-experience {
+        .reflection-experience {
           position: fixed;
           inset: 0;
           display: flex;
@@ -565,6 +573,25 @@ export default function MirrorExperience() {
           justify-content: center;
           overflow-y: auto;
           perspective: 1000px;
+          /* Darker background for depth */
+          background: radial-gradient(
+            ellipse at center,
+            rgba(15, 23, 42, 0.95) 0%,
+            rgba(2, 6, 23, 1) 100%
+          );
+        }
+
+        /* Vignette effect for focus */
+        .reflection-vignette {
+          position: fixed;
+          inset: 0;
+          pointer-events: none;
+          background: radial-gradient(
+            ellipse at center,
+            transparent 0%,
+            rgba(0, 0, 0, 0.4) 100%
+          );
+          z-index: 1;
         }
 
         .tone-elements {
@@ -701,8 +728,15 @@ export default function MirrorExperience() {
           position: relative;
           z-index: 10;
           width: 100%;
+          /* Centered narrow content (800px) */
           max-width: 800px;
           padding: var(--space-xl);
+        }
+
+        .reflection-card {
+          padding: 3rem;
+          border-radius: 30px;
+          transition: all 0.8s ease;
         }
 
         .mirror-surface {
@@ -723,6 +757,7 @@ export default function MirrorExperience() {
           animation: fade-in 0.6s ease-out;
         }
 
+        /* Mobile-optimized scrollable form */
         .one-page-form {
           max-height: calc(100vh - 250px);
           overflow-y: auto;
@@ -748,10 +783,6 @@ export default function MirrorExperience() {
           background: rgba(168, 85, 247, 0.5);
         }
 
-        .question-block {
-          scroll-margin-top: 20px;
-        }
-
         @keyframes fade-in {
           from {
             opacity: 0;
@@ -762,7 +793,6 @@ export default function MirrorExperience() {
             transform: translateY(0);
           }
         }
-
 
         .reflection-content {
           text-align: left;
@@ -792,7 +822,6 @@ export default function MirrorExperience() {
           color: rgba(255, 255, 255, 0.8);
         }
 
-
         /* Dream selection styles */
         .dream-selection-list {
           max-width: 600px;
@@ -806,8 +835,23 @@ export default function MirrorExperience() {
         }
 
         @media (max-width: 768px) {
+          .reflection-card {
+            padding: 2rem;
+          }
+
           .mirror-surface {
             padding: var(--space-lg);
+          }
+        }
+
+        /* Respect reduced motion preference */
+        @media (prefers-reduced-motion: reduce) {
+          .fusion-breath,
+          .gentle-star,
+          .intense-swirl,
+          .particle {
+            animation: none;
+            opacity: 0.3;
           }
         }
       `}</style>
