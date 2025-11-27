@@ -38,6 +38,14 @@ export default function EvolutionPage() {
     enabled: !!user,
   });
 
+  // Count total reflections for progress indicator
+  const { data: reflectionsData } = trpc.reflections.list.useQuery(
+    { page: 1, limit: 1 },
+    { enabled: !!user }
+  );
+  const totalReflections = reflectionsData?.total || 0;
+  const minReflections = 4;
+
   // Mutations
   const generateDreamEvolution = trpc.evolution.generateDreamEvolution.useMutation({
     onSuccess: () => {
@@ -247,9 +255,14 @@ export default function EvolutionPage() {
           {!reportsData || reportsData.reports.length === 0 ? (
             <EmptyState
               icon="🌱"
-              title="Your Growth Story Awaits"
-              description="With 12+ reflections, we can reveal the patterns in your transformation. Keep reflecting!"
-              ctaLabel="Reflect Now"
+              title="Your evolution story unfolds after 4 reflections"
+              description="Evolution insights reveal patterns and growth across your reflections. Keep reflecting to unlock this feature."
+              progress={{
+                current: Math.min(totalReflections, minReflections),
+                total: minReflections,
+                label: 'reflections'
+              }}
+              ctaLabel="Create a Reflection"
               ctaAction={() => router.push('/reflection')}
             />
           ) : (

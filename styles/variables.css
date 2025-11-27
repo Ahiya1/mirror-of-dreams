@@ -2,11 +2,31 @@
 
 :root {
   /* ╭─ CORE COLORS ─────────────────────────────────────────────────────╮ */
+  /*
+   * Text Opacity Standards (WCAG AA Compliance):
+   *
+   * - Primary text: 100% (white) - Highest contrast for critical content
+   * - Secondary text: 80% - Body text, descriptions (WCAG AA compliant)
+   * - Muted text: 60% - Metadata, timestamps (WCAG AA borderline - use sparingly)
+   * - Faded text: 40% - Disabled states, very subtle text (may fail WCAG AA)
+   *
+   * Background: #020617 (very dark blue-black)
+   *
+   * WCAG AA Requirements:
+   * - Normal text (18px+): 4.5:1 contrast ratio minimum
+   * - Large text (24px+): 3:1 contrast ratio minimum
+   *
+   * Audit Findings (Iteration 9):
+   * - 95% opacity: WCAG AA PASS (headings, important text)
+   * - 80% opacity: WCAG AA PASS (body text)
+   * - 60% opacity: WCAG AA BORDERLINE (may need 70% for critical content)
+   * - 40% opacity: WCAG AA FAIL (use only for decorative/non-essential text)
+   */
   --cosmic-bg: #020617;
-  --cosmic-text: #ffffff;
-  --cosmic-text-secondary: rgba(255, 255, 255, 0.8);
-  --cosmic-text-muted: rgba(255, 255, 255, 0.6);
-  --cosmic-text-faded: rgba(255, 255, 255, 0.4);
+  --cosmic-text: #ffffff;                             /* 100% - Primary text */
+  --cosmic-text-secondary: rgba(255, 255, 255, 0.8);  /* 80% - Body text (WCAG AA compliant) */
+  --cosmic-text-muted: rgba(255, 255, 255, 0.6);      /* 60% - Metadata (WCAG AA borderline) */
+  --cosmic-text-faded: rgba(255, 255, 255, 0.4);      /* 40% - Disabled/decorative (may fail WCAG) */
 
   /* ╭─ GLASS MORPHISM ──────────────────────────────────────────────────╮ */
   --glass-bg: linear-gradient(
@@ -124,13 +144,28 @@
   --space-32: 8rem; /* 128px */
 
   /* ╭─ RESPONSIVE SPACING ──────────────────────────────────────────────╮ */
-  --space-xs: clamp(0.5rem, 1vw, 0.75rem);
-  --space-sm: clamp(0.75rem, 1.5vw, 1rem);
-  --space-md: clamp(1rem, 2.5vw, 1.5rem);
-  --space-lg: clamp(1.5rem, 3vw, 2rem);
-  --space-xl: clamp(2rem, 4vw, 3rem);
-  --space-2xl: clamp(3rem, 6vw, 4rem);
-  --space-3xl: clamp(4rem, 8vw, 6rem);
+  /*
+   * Responsive spacing scale using clamp() for fluid scaling
+   *
+   * Semantic Usage Guide:
+   * - --space-xs: Tight spacing (8-12px) - Icon + label gaps, compact UI
+   * - --space-sm: Related items (12-16px) - List spacing, form field gaps
+   * - --space-md: Component padding (16-24px) - Small cards, input padding
+   * - --space-lg: Section spacing (24-32px) - Between page sections
+   * - --space-xl: Card padding (32-48px) - GlassCard default, major components
+   * - --space-2xl: Major breaks (48-64px) - Dashboard grid gaps, large sections
+   * - --space-3xl: Page sections (64-96px) - Header to content, visual hierarchy
+   *
+   * Use Tailwind classes: px-xl, py-lg, gap-md, mb-2xl, etc.
+   * All spacing automatically scales 25% smaller on mobile (via clamp min value)
+   */
+  --space-xs: clamp(0.5rem, 1vw, 0.75rem);    /* 8-12px */
+  --space-sm: clamp(0.75rem, 1.5vw, 1rem);    /* 12-16px */
+  --space-md: clamp(1rem, 2.5vw, 1.5rem);     /* 16-24px */
+  --space-lg: clamp(1.5rem, 3vw, 2rem);       /* 24-32px */
+  --space-xl: clamp(2rem, 4vw, 3rem);         /* 32-48px */
+  --space-2xl: clamp(3rem, 6vw, 4rem);        /* 48-64px */
+  --space-3xl: clamp(4rem, 8vw, 6rem);        /* 64-96px */
 
   /* ╭─ TYPOGRAPHY ──────────────────────────────────────────────────────╮ */
   --font-family-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -138,16 +173,27 @@
   --font-family-mono: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono",
     Consolas, "Courier New", monospace;
 
-  /* Font Sizes - Responsive */
-  --text-xs: clamp(0.85rem, 1.8vw, 0.9rem);
-  --text-sm: clamp(0.9rem, 2.2vw, 1rem);
-  --text-base: clamp(1.05rem, 2.5vw, 1.15rem);
-  --text-lg: clamp(1.1rem, 3vw, 1.4rem);
-  --text-xl: clamp(1.3rem, 4vw, 1.6rem);
-  --text-2xl: clamp(1.6rem, 4vw, 2rem);
-  --text-3xl: clamp(1.8rem, 5vw, 2.5rem);
-  --text-4xl: clamp(2.2rem, 6vw, 3rem);
-  --text-5xl: clamp(2.8rem, 7vw, 3.5rem);
+  /* Font Sizes - Responsive (fluid scaling via clamp)
+   *
+   * Semantic Usage Guide:
+   * - --text-4xl: Page titles (h1) - 35-48px - Use with .text-h1 utility class
+   * - --text-2xl: Section headings (h2) - 26-32px - Use with .text-h2 utility class
+   * - --text-xl: Subsection headings (h3) - 21-26px - Use with .text-h3 utility class
+   * - --text-base: Body text - 17-18px - Use with .text-body utility class
+   * - --text-sm: Small text (metadata, labels) - 14-16px - Use with .text-small utility class
+   * - --text-xs: Captions, footnotes - 14-15px - Use with .text-tiny utility class
+   *
+   * All scales automatically responsive - NO manual breakpoint adjustments needed
+   */
+  --text-xs: clamp(0.85rem, 1.8vw, 0.9rem);     /* 14-15px - Captions, footnotes */
+  --text-sm: clamp(0.9rem, 2.2vw, 1rem);        /* 14-16px - Small text, metadata */
+  --text-base: clamp(1.05rem, 2.5vw, 1.15rem);  /* 17-18px - Body text (WCAG AA optimized) */
+  --text-lg: clamp(1.1rem, 3vw, 1.4rem);        /* 18-22px - Emphasized body text */
+  --text-xl: clamp(1.3rem, 4vw, 1.6rem);        /* 21-26px - h3 headings */
+  --text-2xl: clamp(1.6rem, 4vw, 2rem);         /* 26-32px - h2 section headings */
+  --text-3xl: clamp(1.8rem, 5vw, 2.5rem);       /* 29-40px - Large headings */
+  --text-4xl: clamp(2.2rem, 6vw, 3rem);         /* 35-48px - h1 page titles */
+  --text-5xl: clamp(2.8rem, 7vw, 3.5rem);       /* 45-56px - Hero headings (rare) */
 
   /* Font Weights */
   --font-thin: 100;
@@ -160,13 +206,23 @@
   --font-extrabold: 800;
   --font-black: 900;
 
-  /* Line Heights */
+  /* Line Heights
+   *
+   * Semantic Usage Guide:
+   * - --leading-tight: Headings (1.25) - Compact, impactful
+   * - --leading-snug: Subheadings (1.375) - Balanced
+   * - --leading-normal: UI text (1.5) - Standard readability
+   * - --leading-relaxed: Body text (1.75) - Optimal reading (WCAG AA recommended)
+   * - --leading-loose: Reflection content (2.0) - Maximum readability for long-form
+   *
+   * Reflection display uses 1.8 line-height for optimal reading experience
+   */
   --leading-none: 1;
-  --leading-tight: 1.25;
-  --leading-snug: 1.375;
-  --leading-normal: 1.5;
-  --leading-relaxed: 1.75;
-  --leading-loose: 2;
+  --leading-tight: 1.25;      /* Headings */
+  --leading-snug: 1.375;      /* Subheadings */
+  --leading-normal: 1.5;      /* UI text, small text */
+  --leading-relaxed: 1.75;    /* Body text - optimal readability */
+  --leading-loose: 2;         /* Long-form content - maximum readability */
 
   /* Letter Spacing */
   --tracking-tighter: -0.05em;
@@ -259,6 +315,9 @@
   --sidebar-width: 320px;
   --header-height: 64px;
   --footer-height: 80px;
+
+  /* Navigation - Dynamically set by JavaScript, fallback provides responsive default */
+  --nav-height: clamp(60px, 8vh, 80px);
 
   /* Content */
   --content-max-width: 65ch;

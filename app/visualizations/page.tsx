@@ -258,11 +258,12 @@ export default function VisualizationsPage() {
 
           {!visualizationsData || visualizationsData.items.length === 0 ? (
             <EmptyState
-              icon="🌌"
-              title="See Your Dreams Come Alive"
-              description="Visualizations paint your future as if it's already here. Ready to glimpse your destiny?"
+              icon="📊"
+              title="Visualizations appear after 4 reflections on a dream"
+              description="Visual insights help you see patterns in your reflection journey. Keep reflecting to unlock visualizations."
               ctaLabel="Create First Visualization"
               ctaAction={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              variant="compact"
             />
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

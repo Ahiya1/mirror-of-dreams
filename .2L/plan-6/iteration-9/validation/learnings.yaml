@@ -1,0 +1,45 @@
+schema_version: '1.0'
+project: mirror-of-dreams
+plan: plan-6
+iteration: iteration-9
+created_at: '2025-11-27T23:59:36.058493'
+learnings:
+- category: validation
+  severity: medium
+  issue: Dashboard Empty States Not Implemented
+  root_cause: Descoped during execution (noted in integration report as "LOW priority,
+    future iteration")
+  solution: ' 1. Update DreamsCard component to use shared EmptyState when dreams.length
+    === 0 2. Update ReflectionsCard component to use shared EmptyState when reflections.length
+    === 0 3. Use copy from success criteria exactly 4. Estimated: 2-3 hours for Builder-4
+    or next iteration'
+  recurrence_risk: medium
+  affected_files:
+  - app/dashboard/page.tsx
+  id: mirror-of-dreams-20251127-001
+  iteration: plan-6-iter-9
+- category: validation
+  severity: medium
+  issue: Visual Verification Incomplete
+  root_cause: Builders focused on code implementation, visual regression testing out
+    of scope
+  solution: ' 1. Manual testing at all breakpoints (20 minutes) 2. Real device testing
+    (iPhone SE, iPad, Android) (30 minutes) 3. Screenshot comparison before/after
+    (15 minutes) 4. Can be performed by QA or stakeholder before final deployment'
+  recurrence_risk: medium
+  affected_files:
+  - All pages
+  id: mirror-of-dreams-20251127-002
+  iteration: plan-6-iter-9
+- category: validation
+  severity: medium
+  issue: WCAG AA Lighthouse Audit Not Performed
+  root_cause: Builder-2 couldn't run Lighthouse due to server access issues
+  solution: ' 1. Run Lighthouse on all 6 main pages (10 minutes) 2. Target: 100% accessibility
+    score 3. Verify contrast ratios match documented values (12.6:1+) 4. Test keyboard
+    navigation (Tab through all interactive elements)'
+  recurrence_risk: medium
+  affected_files:
+  - All pages
+  id: mirror-of-dreams-20251127-003
+  iteration: plan-6-iter-9

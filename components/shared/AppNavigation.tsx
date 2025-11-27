@@ -25,7 +25,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 
 interface AppNavigationProps {
-  currentPage: 'dashboard' | 'dreams' | 'reflection' | 'evolution' | 'visualizations' | 'admin';
+  currentPage: 'dashboard' | 'dreams' | 'reflection' | 'reflections' | 'evolution' | 'visualizations' | 'admin';
   onRefresh?: () => void;
 }
 
@@ -81,9 +81,37 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
     setShowMobileMenu(false);
   }, [currentPage]);
 
+  // Measure navigation height and set CSS variable
+  useEffect(() => {
+    const measureNavHeight = () => {
+      const nav = document.querySelector('[data-nav-container]');
+      if (nav) {
+        const height = nav.getBoundingClientRect().height;
+        document.documentElement.style.setProperty('--nav-height', `${height}px`);
+      }
+    };
+
+    // Measure on mount
+    measureNavHeight();
+
+    // Re-measure on resize (debounced)
+    let resizeTimer: NodeJS.Timeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(measureNavHeight, 150);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimer);
+    };
+  }, [showMobileMenu]); // Re-measure when mobile menu toggles
+
   return (
     <GlassCard
       elevated
+      data-nav-container
       className="fixed top-0 left-0 right-0 z-[100] rounded-none border-b border-white/10"
     >
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">

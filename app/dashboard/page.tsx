@@ -179,7 +179,7 @@ export default function DashboardPage() {
         .dashboard-main {
           position: relative;
           z-index: var(--z-content);
-          padding-top: clamp(60px, 8vh, 80px);
+          padding-top: var(--nav-height);
           min-height: 100vh;
         }
 
