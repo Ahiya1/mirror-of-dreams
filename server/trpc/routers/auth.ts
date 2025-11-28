@@ -80,6 +80,7 @@ export const authRouter = router({
         tier: newUser.tier,
         isCreator: newUser.is_creator || false,
         isAdmin: newUser.is_admin || false,
+        isDemo: newUser.is_demo || false,
         iat: Math.floor(Date.now() / 1000),
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * JWT_EXPIRY_DAYS,
       };
@@ -158,6 +159,7 @@ export const authRouter = router({
         tier: user.tier,
         isCreator: user.is_creator || false,
         isAdmin: user.is_admin || false,
+        isDemo: user.is_demo || false,
         iat: Math.floor(Date.now() / 1000),
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * JWT_EXPIRY_DAYS,
       };
@@ -341,4 +343,41 @@ export const authRouter = router({
         message: 'Account deleted successfully',
       };
     }),
+
+  // Demo login (no password required)
+  loginDemo: publicProcedure.mutation(async () => {
+    // Fetch demo user from database
+    const { data: demoUser, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('is_demo', true)
+      .single();
+
+    if (error || !demoUser) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Demo user not found. Please contact support.',
+      });
+    }
+
+    // Generate JWT with isDemo flag
+    const payload: JWTPayload = {
+      userId: demoUser.id,
+      email: demoUser.email,
+      tier: demoUser.tier,
+      isCreator: demoUser.is_creator || false,
+      isAdmin: demoUser.is_admin || false,
+      isDemo: true, // Demo user flag
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 days
+    };
+
+    const token = jwt.sign(payload, JWT_SECRET);
+
+    return {
+      user: userRowToUser(demoUser),
+      token,
+      message: 'Welcome to the demo!',
+    };
+  }),
 });

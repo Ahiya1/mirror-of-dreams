@@ -23,6 +23,7 @@ import { Menu, X } from 'lucide-react';
 import { GlassCard, GlowButton } from '@/components/ui/glass';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
+import { DemoBanner } from './DemoBanner';
 
 interface AppNavigationProps {
   currentPage: 'dashboard' | 'dreams' | 'reflection' | 'reflections' | 'evolution' | 'visualizations' | 'admin';
@@ -109,11 +110,16 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
   }, [showMobileMenu]); // Re-measure when mobile menu toggles
 
   return (
-    <GlassCard
-      elevated
-      data-nav-container
-      className="fixed top-0 left-0 right-0 z-[100] rounded-none border-b border-white/10"
-    >
+    <>
+      {/* Demo Banner - appears only for demo users */}
+      <DemoBanner />
+
+      <GlassCard
+        elevated
+        data-nav-container
+        className="fixed top-0 left-0 right-0 z-[100] rounded-none border-b border-white/10"
+        style={{ top: user?.isDemo ? 'var(--demo-banner-height, 0px)' : '0' }}
+      >
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
         {/* Left section */}
         <div className="flex items-center gap-8">
@@ -455,6 +461,7 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
           background: rgba(255, 255, 255, 0.08);
         }
       `}</style>
-    </GlassCard>
+      </GlassCard>
+    </>
   );
 }

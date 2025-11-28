@@ -22,30 +22,30 @@ import LandingHero from '@/components/landing/LandingHero';
 import LandingFeatureCard from '@/components/landing/LandingFeatureCard';
 
 export default function LandingPage() {
-  const features = [
+  const useCases = [
     {
-      id: 'ai-reflections',
-      icon: '✨',
-      title: 'AI-Powered Reflections',
-      description: 'Your personal mirror analyzes patterns and provides insights into your subconscious.',
+      id: 'clarity',
+      icon: '🚀',
+      title: 'From Vague Aspiration to Clear Action Plan',
+      description:
+        '"I want to launch a SaaS product" becomes "Build MVP in 30 days, validate with 10 early users, iterate based on feedback." Your AI mirror breaks down dreams into concrete steps.',
+      example: 'Real example from demo: Launch My SaaS Product',
     },
     {
-      id: 'track-dreams',
-      icon: '📖',
-      title: 'Track Your Dreams',
-      description: 'Organize and revisit your dream journal anytime, anywhere.',
-    },
-    {
-      id: 'visualize-evolution',
+      id: 'evolution',
       icon: '📈',
-      title: 'Visualize Your Evolution',
-      description: 'See how your dreams and thoughts evolve over time with interactive charts.',
+      title: 'See Your Growth Over Time',
+      description:
+        'Evolution reports analyze your reflections across weeks and months, revealing patterns you can\'t see day-to-day. Watch yourself shift from fear to confidence, from planning to execution.',
+      example: 'Unlocked after 4 reflections on a dream',
     },
     {
-      id: 'sacred-space',
-      icon: '🌙',
-      title: 'Sacred Space',
-      description: 'Premium experience designed for deep introspection and self-discovery.',
+      id: 'breakthroughs',
+      icon: '💡',
+      title: 'Break Through Mental Blocks',
+      description:
+        'Your AI mirror identifies recurring obstacles, asks questions you haven\'t considered, and challenges excuses. It\'s like having a coach available 24/7.',
+      example: 'Fusion tone: Gentle encouragement + direct truth',
     },
   ];
 
@@ -64,7 +64,7 @@ export default function LandingPage() {
           <LandingHero />
         </section>
 
-        {/* Features Section */}
+        {/* Use Cases Section */}
         <section id="features" className="py-20 px-4 sm:px-8">
           <div className="max-w-7xl mx-auto">
             {/* Section Headline */}
@@ -76,13 +76,13 @@ export default function LandingPage() {
               className="text-4xl sm:text-5xl font-bold text-center mb-16"
             >
               <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
-                Why Mirror of Dreams?
+                How Mirror of Dreams Transforms Your Life
               </span>
             </motion.h2>
 
-            {/* Feature Cards Grid */}
+            {/* Use Case Cards Grid */}
             <motion.div
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+              className="grid grid-cols-1 md:grid-cols-3 gap-8"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
@@ -90,19 +90,26 @@ export default function LandingPage() {
                 hidden: { opacity: 0 },
                 visible: {
                   opacity: 1,
-                  transition: { staggerChildren: 0.1 },
+                  transition: { staggerChildren: 0.15 },
                 },
               }}
             >
-              {features.map((feature) => (
+              {useCases.map((useCase) => (
                 <motion.div
-                  key={feature.id}
+                  key={useCase.id}
                   variants={{
                     hidden: { opacity: 0, y: 20 },
                     visible: { opacity: 1, y: 0 },
                   }}
                 >
-                  <LandingFeatureCard {...feature} />
+                  <LandingFeatureCard
+                    icon={useCase.icon}
+                    title={useCase.title}
+                    description={useCase.description}
+                  />
+                  <p className="text-sm text-purple-400 mt-3 text-center">
+                    {useCase.example}
+                  </p>
                 </motion.div>
               ))}
             </motion.div>
@@ -110,37 +117,68 @@ export default function LandingPage() {
         </section>
 
         {/* Footer */}
-        <footer className="py-8 px-4 sm:px-8 border-t border-white/10">
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-white/60 text-sm">
-              © 2025 Mirror of Dreams. All rights reserved.
-            </p>
-            <div className="flex gap-6 text-sm">
-              <a
-                href="/about"
-                className="text-white/60 hover:text-white/90 transition-colors"
-              >
-                About
-              </a>
-              <a
-                href="/privacy"
-                className="text-white/60 hover:text-white/90 transition-colors"
-              >
-                Privacy
-              </a>
-              <a
-                href="/terms"
-                className="text-white/60 hover:text-white/90 transition-colors"
-              >
-                Terms
-              </a>
-              <a
-                href="/contact"
-                className="text-white/60 hover:text-white/90 transition-colors"
-              >
-                Contact
-              </a>
+        <footer className="border-t border-white/10 py-12 px-4 sm:px-6 mt-24">
+          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            {/* Brand */}
+            <div>
+              <h3 className="text-xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Mirror of Dreams
+              </h3>
+              <p className="text-white/60 text-sm leading-relaxed">
+                Transform your dreams into reality through AI-powered reflection.
+              </p>
             </div>
+
+            {/* Product */}
+            <div>
+              <h4 className="font-semibold mb-3 text-white/90">Product</h4>
+              <ul className="space-y-2 text-sm text-white/60">
+                <li>
+                  <a href="/pricing" className="hover:text-purple-400 transition-colors">
+                    Pricing
+                  </a>
+                </li>
+                <li>
+                  <a href="#demo" className="hover:text-purple-400 transition-colors">
+                    See Demo
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Company */}
+            <div>
+              <h4 className="font-semibold mb-3 text-white/90">Company</h4>
+              <ul className="space-y-2 text-sm text-white/60">
+                <li>
+                  <a href="/about" className="hover:text-purple-400 transition-colors">
+                    About
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Legal */}
+            <div>
+              <h4 className="font-semibold mb-3 text-white/90">Legal</h4>
+              <ul className="space-y-2 text-sm text-white/60">
+                <li>
+                  <a href="/privacy" className="hover:text-purple-400 transition-colors">
+                    Privacy Policy
+                  </a>
+                </li>
+                <li>
+                  <a href="/terms" className="hover:text-purple-400 transition-colors">
+                    Terms of Service
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Copyright */}
+          <div className="max-w-6xl mx-auto mt-8 pt-8 border-t border-white/10 text-center text-sm text-white/40">
+            © {new Date().getFullYear()} Mirror of Dreams. All rights reserved.
           </div>
         </footer>
       </main>

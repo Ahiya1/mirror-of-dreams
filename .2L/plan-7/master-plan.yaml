@@ -1,0 +1,216 @@
+plan_id: plan-7
+created_at: '2025-11-28T01:46:00Z'
+status: PLANNED
+total_iterations: 3
+complexity: COMPLEX
+
+strategy: |
+  Transform Mirror of Dreams from functional (6.5/10) to complete, commercially viable sanctuary (9/10).
+
+  Three-iteration approach addressing:
+  1. Foundation & Demo - Critical conversion infrastructure
+  2. Core Pages - Product completeness & trust-building
+  3. Experience Polish - 9/10 quality through UX enhancements
+
+  Key strategic decisions:
+  - Demo user is HIGHEST PRIORITY (stakeholder validation, user conversion)
+  - Content creation parallel-tracked (demo reflections, founder story, micro-copy)
+  - Reuse Plan-6 design system aggressively (GlassCard, CosmicBackground, patterns)
+  - Performance monitored from day 1 (Core Web Vitals, bundle size <30KB increase)
+  - Read-only demo account (security + simplicity)
+
+  Critical risks mitigated:
+  - Demo content quality (4-6 hours high-quality writing + AI generation)
+  - Image optimization (WebP, next/image priority loading for <2s LCP)
+  - Bundle size discipline (weekly monitoring, lazy-loading non-critical pages)
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 12
+    name: "Foundation & Demo User"
+    vision: "Create populated demo account and rebuild landing page for conversion"
+    scope: |
+      CRITICAL: Demo user is foundation for stakeholder validation and conversion.
+
+      Features:
+      1. Demo User Creation (P0 - BLOCKING)
+         - Seed script: 5 realistic dreams (SaaS, Marathon, Piano, Relationships, Financial Freedom)
+         - 12-15 high-quality reflections (200-400 words each, authentic content)
+         - Generate 2 evolution reports via AI (requires 4+ reflections per dream)
+         - Generate 1-2 visualizations
+         - Flag: users.is_demo = true
+         - Quality check: Ahiya reviews all demo content before seeding
+
+      2. Landing Page Transformation (P0 - BLOCKING)
+         - Hero redesign: "Transform Your Dreams into Reality Through AI-Powered Reflection"
+         - Dual CTAs: "Start Free" + "See Demo" (auto-login to demo account)
+         - Replace emoji features with 3 concrete use cases
+         - Add screenshots: Dashboard (populated), Reflection output, Evolution report
+         - Social proof: Stats ("X reflections created"), founder snippet
+         - Footer: About, Pricing, Privacy, Terms links (active)
+         - Performance: <2s LCP (WebP images, next/image priority)
+         - Mobile-first responsive
+
+      3. Backend Infrastructure (P0 - Foundation)
+         - Database migration: Add preferences JSONB column, is_demo flag
+         - tRPC mutations: updateProfile, changeEmail, changePassword, updatePreferences, deleteAccount
+         - Settings validation schemas (Zod)
+         - Demo login flow: trpc.auth.loginDemo() OR auto-session creation
+         - Demo banner component: "You're viewing demo. Sign up to save your reflections."
+
+      4. Performance Setup (P0 - Monitoring)
+         - Core Web Vitals monitoring (reportWebVitals in layout.tsx)
+         - Redis caching for demo user data (Upstash)
+         - Image optimization to WebP format
+         - Bundle size baseline measurement
+
+      Dependencies:
+      - Existing Plan-6 design system (GlassCard, CosmicBackground, GlowButton)
+      - Existing tRPC infrastructure (extend users router)
+      - Content: 12-15 demo reflections (pre-written OR AI-generated with review)
+
+      Risks:
+      - HIGH: Demo content quality (must be authentic, not lorem ipsum)
+      - MEDIUM: Landing page images unoptimized (500KB-2MB → needs WebP conversion)
+      - MEDIUM: Demo dashboard slow to load (12-15 reflections → needs caching)
+
+      Success Criteria:
+      - Demo account has 5 dreams, 12+ reflections, feels authentic
+      - Landing page LCP <2s (Lighthouse >90)
+      - "See Demo" auto-login works smoothly
+      - Demo banner non-intrusive but clear
+      - Backend mutations tested and functional
+
+      Estimated: 20-24 hours
+    status: PENDING
+    dependencies: []
+
+  - iteration_id: 2
+    global_iteration: 13
+    name: "Core Pages & Product Completeness"
+    vision: "Build Profile, Settings, About, Pricing pages for complete product experience"
+    scope: |
+      CRITICAL: These pages are table stakes for commercial product. No 404s, all self-service enabled.
+
+      Features:
+      1. Profile Page (P0 - Account Management)
+         - Account info section: Name (editable), Email (display), Member since
+         - Tier & subscription: Current tier, benefits, usage stats ("32/50 reflections this month")
+         - Account actions: Change email (password-protected, defer verification to v2), Change password (requires current password), Delete account (scary modal)
+         - Visual: GlassCard layout, GlassInput components, toast confirmations
+         - Navigation: Add "Profile" link to app navigation dropdown
+
+      2. Settings Page (P0 - Preferences)
+         - Notification preferences: Email notifications toggle, Reflection reminders (daily/weekly/off)
+         - Reflection preferences: Default tone (fusion/gentle/intense), Show character counter (yes/no)
+         - Display preferences: Reduce motion override (respect browser + allow override), Theme (Cosmic Dark only for now)
+         - Privacy: Analytics opt-in/out
+         - Save immediately on toggle (no "Save" button), toast confirmation
+         - Navigation: Add "Settings" link to app navigation dropdown
+
+      3. About Page (P1 - Trust Building)
+         - Founder story: Ahiya's personal narrative (why Mirror of Dreams exists)
+         - Mission statement: "We believe everyone has dreams worth pursuing..."
+         - Product philosophy: Why reflection + AI (non-judgmental, pattern-recognizing, 24/7)
+         - Values: Privacy-first, Substance over flash, Continuous evolution
+         - Call to action: "Start Your Free Account"
+         - Visual: CosmicBackground, GlassCard sections, personal photo
+
+      4. Pricing Page (P1 - Conversion)
+         - CRITICAL FIRST: Resolve tier limits discrepancy (vision says free=10, code says free=1)
+         - Tier comparison table: Free (10/month, 3 dreams), Premium ($9.99/month, 50/month, 10 dreams), Pro ($29.99/month, unlimited), Creator (contact sales)
+         - Feature tooltips: "What are Advanced AI insights?" explanations
+         - FAQ: Can I change plans? What happens on downgrade? Refund policy? Data security?
+         - CTA per tier: "Start Free", "Start 14-Day Free Trial", "Contact Sales"
+         - Annual billing toggle: "Save 17% with annual billing"
+
+      Backend:
+      - Implement tRPC mutations (from Iteration 1 backend work)
+      - Test email change flow (password-protected, no verification emails for MVP)
+      - Test password change (bcrypt compare + hash)
+      - Test preferences persistence (JSONB column)
+
+      Dependencies:
+      - Iteration 1: Backend mutations, database schema
+      - Content: Ahiya's founder story (2-3 hours writing)
+      - Design: Plan-6 components (GlassCard, GlassInput, GlowButton)
+
+      Risks:
+      - MEDIUM: Tier limits must be resolved before Pricing page (vision vs code mismatch)
+      - MEDIUM: Email verification adds 6-8 hours (recommendation: defer to post-MVP)
+      - LOW: Content creation dependency (Ahiya's story)
+
+      Success Criteria:
+      - Zero 404s on navigation links (Profile, Settings, About, Pricing)
+      - Profile mutations work (name, email, password changes successful)
+      - Settings persist immediately on toggle
+      - About page tells compelling story (Ahiya reviews)
+      - Pricing page clarifies tier value (Free → Premium conversion clear)
+
+      Estimated: 18-24 hours
+    status: PENDING
+    dependencies: []
+
+  - iteration_id: 3
+    global_iteration: 14
+    name: "Experience Polish & UX Enhancements"
+    vision: "Elevate reflection experience from functional to sacred and welcoming (9/10)"
+    scope: |
+      CRITICAL: This iteration transforms UX from clinical to emotionally resonant. Focus on warmth, beauty, guidance.
+
+      Features:
+      1. Enhanced Reflection Form (P1 - Core Interaction)
+         - Welcoming micro-copy: "Welcome to your sacred space for reflection. Take a deep breath."
+         - After dream selection: "Beautiful choice. Let's explore [Dream Name] together."
+         - Character counter redesign: "342 thoughtful words" (not "X/Y characters"), Color states (white → gold → purple, NO red warnings)
+         - Tone selection enhancement: Each tone card with description (2-3 sentences explaining experience), Hover preview glow in tone color
+         - Progress encouragement: "Question 1 of 4 - You're doing great", Checkmarks after completing questions
+         - Respect reduced motion (already in Plan-6 hook)
+
+      2. Individual Reflection Display (P1 - Reading Experience)
+         - Visual header: Dream name (large gradient), Date (beautifully formatted: "November 28th, 2025 • Evening"), Tone badge (glowing pill with tone color)
+         - AI response enhancement: First paragraph 1.25rem (draw reader in), Key insights highlighted (gold background), Questions italicized + indented, Pull quotes centered with larger text
+         - User reflections section: Collapsible by default ("Show Your Original Reflection"), Q&A format when expanded
+         - Metadata sidebar (desktop) / footer (mobile): Word count, Related evolution link
+         - Actions: "Reflect Again", "Copy Text", "Delete"
+         - Max-width 720px, line-height 1.8 for optimal reading
+
+      3. Empty State Redesign (P1 - Onboarding)
+         - Dashboard: No dreams ("Your journey begins with a dream" + cosmic seed illustration), No reflections ("Your first reflection awaits")
+         - Dreams page: Constellation illustration, Examples of dreams (🚀 Launch business, 💪 Transform health, etc.)
+         - Reflections page: Blank journal illustration, "Create your first reflection to see your evolution"
+         - Evolution page: Progress indicator "0/4 reflections to unlock evolution"
+         - Visualizations page: Canvas illustration, "After 4 reflections, generate visualizations"
+         - All: Cosmic-themed SVG, warm copy (not generic), clear CTAs
+
+      4. Reflection Collection Enhancements (P1 - Browsing)
+         - Filters: Dream dropdown, Tone visual pills (glow on selected), Date range ("Last 7 days", "Last 30 days", "All time")
+         - Reflection cards: GlassCard with hover lift, Dream badge, Date + tone indicator, AI snippet (first 120 chars), Word count
+         - Sort: "Most recent", "Oldest first", "Longest reflections"
+         - Pagination: 20/page (existing, ensure working)
+
+      Performance:
+      - Bundle size monitoring (must stay under +30KB total for Plan-7)
+      - Lazy-load non-critical components
+      - Optimize markdown parsing for reflection display
+
+      Dependencies:
+      - Iteration 1, 2: All pages exist (navigation works)
+      - Existing components: ReflectionQuestionCard, CharacterCounter, ToneSelectionCard, EmptyState, AIResponseRenderer
+
+      Risks:
+      - LOW: Too much encouragement feels patronizing (Ahiya must test and provide feedback)
+      - LOW: Markdown highlighting complex (start with visual polish, defer advanced highlighting)
+      - LOW: SVG illustrations time-consuming (use CSS cosmic effects if needed)
+
+      Success Criteria:
+      - Reflection form feels welcoming (user feedback: "supported" not "interrogated")
+      - Individual reflections beautiful (AI insights stand out, reading experience honors depth)
+      - Empty states guide action (<5 seconds to understand next step)
+      - All micro-copy reviewed for warmth vs. clinical tone
+      - Bundle size increase <30KB total (across all 3 iterations)
+      - Accessibility maintained (WCAG 2.1 AA, reduced motion respected)
+
+      Estimated: 18-22 hours
+    status: PENDING
+    dependencies: []

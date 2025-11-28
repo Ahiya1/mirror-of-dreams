@@ -1,0 +1,39 @@
+schema_version: '1.0'
+project: mirror-of-dreams
+plan: plan-7
+iteration: iteration-12
+created_at: '2025-11-28T02:40:00.730501'
+learnings:
+- category: content
+  severity: medium
+  issue: Demo Content Not Seeded
+  root_cause: Demo user has no dreams or reflections, defeating the entire purpose
+    of "See Demo" CTA. Visitors who click will see an empty dashboard.
+  solution: ''
+  recurrence_risk: medium
+  affected_files:
+  - Database (users, dreams, reflections, evolution_reports tables)
+  id: mirror-of-dreams-20251128-001
+  iteration: plan-7-iter-12
+- category: validation
+  severity: medium
+  issue: Screenshots Not Captured
+  root_cause: Landing page references screenshots that don't exist. If deployed, broken
+    image placeholders or missing visuals.
+  solution: ''
+  recurrence_risk: medium
+  affected_files:
+  - '`/public/landing/` (expected location)'
+  id: mirror-of-dreams-20251128-002
+  iteration: plan-7-iter-12
+- category: performance
+  severity: medium
+  issue: Performance Testing Not Performed
+  root_cause: Cannot verify LCP <2s or bundle size <10KB increase targets. May deploy
+    slow landing page.
+  solution: ''
+  recurrence_risk: medium
+  affected_files:
+  - Landing page (/)
+  id: mirror-of-dreams-20251128-003
+  iteration: plan-7-iter-12

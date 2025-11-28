@@ -90,8 +90,19 @@ export function useAuth(): UseAuthReturn {
         currentMonthYear: new Date().toISOString().slice(0, 7), // "2025-01" format
         isCreator: userData.is_creator,
         isAdmin: userData.is_admin,
+        isDemo: userData.is_demo || false, // NEW: Demo user flag
         language: userData.language,
         emailVerified: true, // getProfile doesn't return this, default to true
+        preferences: userData.preferences || {
+          notification_email: true,
+          reflection_reminders: 'off',
+          evolution_email: true,
+          marketing_emails: false,
+          default_tone: 'fusion',
+          show_character_counter: true,
+          reduce_motion_override: null,
+          analytics_opt_in: true,
+        }, // NEW: User preferences with defaults
         createdAt: userData.created_at,
         lastSignInAt: userData.last_sign_in_at,
         updatedAt: userData.created_at, // getProfile doesn't return updated_at, use created_at
