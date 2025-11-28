@@ -1,8 +1,8 @@
 // lib/utils/constants.ts - Application constants
 
 export const TIER_LIMITS = {
-  free: 3,
-  essential: 20,
+  free: 10,
+  essential: 50,
   premium: Infinity,
 } as const;
 

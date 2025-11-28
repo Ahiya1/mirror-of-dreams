@@ -14,6 +14,7 @@ interface UseAuthReturn {
   signup: (name: string, email: string, password: string) => Promise<void>;
   signout: () => Promise<void>;
   refreshUser: () => Promise<void>;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
 /**
@@ -159,5 +160,6 @@ export function useAuth(): UseAuthReturn {
     signup,
     signout,
     refreshUser,
+    setUser,
   };
 }

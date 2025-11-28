@@ -55,6 +55,7 @@
     "canvas": "^3.1.2",
     "clsx": "^2.1.0",
     "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
     "framer-motion": "^11.18.2",
     "google-auth-library": "^10.1.0",

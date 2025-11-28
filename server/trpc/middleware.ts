@@ -2,6 +2,7 @@
 
 import { TRPCError } from '@trpc/server';
 import { middleware, publicProcedure } from './trpc';
+import { TIER_LIMITS } from '@/lib/utils/constants';
 
 // Ensure user is authenticated
 export const isAuthed = middleware(({ ctx, next }) => {
@@ -63,12 +64,6 @@ export const checkUsageLimit = middleware(async ({ ctx, next }) => {
     return next({ ctx: { ...ctx, user: ctx.user } });
   }
 
-  const TIER_LIMITS = {
-    free: 1,
-    essential: 5,
-    premium: 10,
-  };
-
   const limit = TIER_LIMITS[ctx.user.tier];
   const usage = ctx.user.reflectionCountThisMonth;
 
@@ -82,8 +77,28 @@ export const checkUsageLimit = middleware(async ({ ctx, next }) => {
   return next({ ctx: { ...ctx, user: ctx.user } });
 });
 
+// Ensure user is not a demo user (blocks destructive operations)
+export const notDemo = middleware(({ ctx, next }) => {
+  if (!ctx.user) {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'Authentication required.',
+    });
+  }
+
+  if (ctx.user.isDemo) {
+    throw new TRPCError({
+      code: 'FORBIDDEN',
+      message: 'Demo accounts cannot modify data. Sign up to save changes.',
+    });
+  }
+
+  return next({ ctx: { ...ctx, user: ctx.user } });
+});
+
 // Export protected procedures
 export const protectedProcedure = publicProcedure.use(isAuthed);
 export const creatorProcedure = publicProcedure.use(isCreatorOrAdmin);
 export const premiumProcedure = publicProcedure.use(isAuthed).use(isPremium);
 export const usageLimitedProcedure = publicProcedure.use(isAuthed).use(checkUsageLimit);
+export const writeProcedure = publicProcedure.use(isAuthed).use(notDemo);

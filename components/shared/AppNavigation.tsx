@@ -26,7 +26,7 @@ import { cn } from '@/lib/utils';
 import { DemoBanner } from './DemoBanner';
 
 interface AppNavigationProps {
-  currentPage: 'dashboard' | 'dreams' | 'reflection' | 'reflections' | 'evolution' | 'visualizations' | 'admin';
+  currentPage: 'dashboard' | 'dreams' | 'reflection' | 'reflections' | 'evolution' | 'visualizations' | 'admin' | 'profile' | 'settings';
   onRefresh?: () => void;
 }
 

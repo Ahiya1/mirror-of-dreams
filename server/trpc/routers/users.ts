@@ -2,12 +2,17 @@
 
 import { z } from 'zod';
 import { router } from '../trpc';
-import { protectedProcedure } from '../middleware';
+import { protectedProcedure, writeProcedure } from '../middleware';
 import { TRPCError } from '@trpc/server';
 import { supabase } from '@/server/lib/supabase';
-import { updateProfileSchema } from '@/types/schemas';
-import { userRowToUser } from '@/types/user';
-import type { UserRow } from '@/types/user';
+import { updateProfileSchema, changeEmailSchema, updatePreferencesSchema } from '@/types/schemas';
+import { userRowToUser, DEFAULT_PREFERENCES } from '@/types/user';
+import type { UserRow, JWTPayload } from '@/types/user';
+import { TIER_LIMITS } from '@/lib/utils/constants';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET!;
 
 export const usersRouter = router({
   // Complete onboarding for new users
@@ -102,6 +107,140 @@ export const usersRouter = router({
       };
     }),
 
+  // Change email (password-protected, issues new JWT)
+  changeEmail: writeProcedure
+    .input(changeEmailSchema)
+    .mutation(async ({ ctx, input }) => {
+      // 1. Check if email already in use
+      const { data: existingUser } = await supabase
+        .from('users')
+        .select('id')
+        .eq('email', input.newEmail.toLowerCase())
+        .single();
+
+      if (existingUser) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Email already in use',
+        });
+      }
+
+      // 2. Fetch user with password_hash (never returned to client)
+      const { data: user } = await supabase
+        .from('users')
+        .select('password_hash')
+        .eq('id', ctx.user.id)
+        .single();
+
+      if (!user) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'User not found',
+        });
+      }
+
+      // 3. Verify current password
+      const passwordValid = await bcrypt.compare(
+        input.currentPassword,
+        user.password_hash
+      );
+
+      if (!passwordValid) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Current password is incorrect',
+        });
+      }
+
+      // 4. Update email in database
+      const { data: updatedUser, error } = await supabase
+        .from('users')
+        .update({
+          email: input.newEmail.toLowerCase(),
+          updated_at: new Date().toISOString(),
+          email_verified: false, // Reset verification (future: send email)
+        })
+        .eq('id', ctx.user.id)
+        .select()
+        .single();
+
+      if (error) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to update email',
+        });
+      }
+
+      // 5. Generate new JWT with updated email (invalidate old token)
+      const payload: JWTPayload = {
+        userId: updatedUser.id,
+        email: updatedUser.email, // NEW EMAIL
+        tier: updatedUser.tier as any,
+        isCreator: updatedUser.is_creator || false,
+        isAdmin: updatedUser.is_admin || false,
+        isDemo: updatedUser.is_demo || false,
+        iat: Math.floor(Date.now() / 1000),
+        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30, // Fresh 30 days
+      };
+
+      const token = jwt.sign(payload, JWT_SECRET);
+
+      // 6. Return new token + updated user
+      return {
+        user: userRowToUser(updatedUser as UserRow),
+        token, // Client MUST replace old token with this
+        message: 'Email updated successfully',
+      };
+    }),
+
+  // Update user preferences (partial JSONB update)
+  updatePreferences: protectedProcedure
+    .input(updatePreferencesSchema)
+    .mutation(async ({ ctx, input }) => {
+      // 1. Fetch current preferences
+      const { data: user } = await supabase
+        .from('users')
+        .select('preferences')
+        .eq('id', ctx.user.id)
+        .single();
+
+      if (!user) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'User not found',
+        });
+      }
+
+      // 2. Merge input with existing preferences (partial update)
+      const updatedPreferences = {
+        ...DEFAULT_PREFERENCES, // Ensure all keys present
+        ...(user.preferences || {}), // Existing preferences
+        ...input, // New preferences (overwrites existing)
+      };
+
+      // 3. Update database (JSONB column)
+      const { error } = await supabase
+        .from('users')
+        .update({
+          preferences: updatedPreferences,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', ctx.user.id);
+
+      if (error) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to update preferences',
+        });
+      }
+
+      // 4. Return merged preferences
+      return {
+        preferences: updatedPreferences,
+        message: 'Preferences updated',
+      };
+    }),
+
   // Get detailed usage statistics
   getUsageStats: protectedProcedure.query(async ({ ctx }) => {
     // Get reflection statistics
@@ -161,12 +300,6 @@ export const usersRouter = router({
     }
 
     // Get usage limits
-    const TIER_LIMITS = {
-      free: 1,
-      essential: 5,
-      premium: 10,
-    };
-
     const limit = ctx.user.isCreator || ctx.user.isAdmin
       ? 999999
       : TIER_LIMITS[ctx.user.tier];

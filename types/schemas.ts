@@ -33,6 +33,22 @@ export const deleteAccountSchema = z.object({
   confirmEmail: z.string().email(),
 });
 
+export const changeEmailSchema = z.object({
+  newEmail: z.string().email('Invalid email address'),
+  currentPassword: z.string(),
+});
+
+export const updatePreferencesSchema = z.object({
+  notification_email: z.boolean().optional(),
+  reflection_reminders: z.enum(['off', 'daily', 'weekly']).optional(),
+  evolution_email: z.boolean().optional(),
+  marketing_emails: z.boolean().optional(),
+  default_tone: z.enum(['fusion', 'gentle', 'intense']).optional(),
+  show_character_counter: z.boolean().optional(),
+  reduce_motion_override: z.boolean().nullable().optional(),
+  analytics_opt_in: z.boolean().optional(),
+});
+
 // ============================================
 // Reflection Schemas
 // ============================================

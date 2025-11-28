@@ -1,7 +1,7 @@
 // server/trpc/routers/auth.ts - Authentication router
 
 import { router, publicProcedure } from '../trpc';
-import { protectedProcedure } from '../middleware';
+import { protectedProcedure, writeProcedure } from '../middleware';
 import { TRPCError } from '@trpc/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -296,7 +296,7 @@ export const authRouter = router({
     }),
 
   // Delete account
-  deleteAccount: protectedProcedure
+  deleteAccount: writeProcedure
     .input(deleteAccountSchema)
     .mutation(async ({ ctx, input }) => {
       // Verify email matches
