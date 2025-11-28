@@ -383,7 +383,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
         .dream-detail {
           min-height: 100vh;
           background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
-          padding-top: 80px;
+          padding-top: calc(var(--nav-height) + var(--demo-banner-height, 0px));
           padding-left: 2rem;
           padding-right: 2rem;
           padding-bottom: 2rem;

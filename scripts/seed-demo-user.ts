@@ -359,6 +359,167 @@ ${userQuestions.offering}`;
 }
 
 /**
+ * Generate evolution report for a dream
+ */
+async function generateEvolutionReport(
+  dream: { id: string; title: string; description: string; category: string },
+  reflections: { id: string; dream: string; plan: string; relationship: string; offering: string; created_at: string }[]
+): Promise<string> {
+  console.log(`   🤖 Generating evolution report (${reflections.length} reflections)...`);
+
+  const systemPrompt = `You are an expert analyst creating a temporal evolution report for someone's dream journey. Your task is to analyze their reflections chronologically and identify patterns of growth, change, and transformation.
+
+Write an 800-1200 word evolution report that:
+
+1. **Temporal Framing**: Clearly mark time progression ("When you began 18 days ago...", "Seven days later...", "Now, at the 2-day mark...")
+2. **Direct Quotes**: Include specific quotes from reflections to ground your analysis
+3. **Pattern Recognition**: Identify recurring themes, shifts in mindset, and transformation patterns (e.g., fear → confidence, broad scope → focused action, doubt → certainty)
+4. **Metacognitive Insight**: Reflect on the user's growth process itself - what does their journey reveal about how they learn, adapt, and evolve?
+5. **Encouraging Mentor Tone**: Write with warmth and wisdom, celebrating progress while acknowledging challenges
+
+Be specific and authentic. This person is on a real journey and deserves a thoughtful, personalized analysis.`;
+
+  // Sort reflections by date (oldest first)
+  const sortedReflections = [...reflections].sort(
+    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+  );
+
+  // Build reflection history
+  const reflectionHistory = sortedReflections
+    .map((r, index) => {
+      const daysAgo = Math.floor((Date.now() - new Date(r.created_at).getTime()) / (1000 * 60 * 60 * 24));
+      return `### Reflection ${index + 1} (${daysAgo} days ago)
+
+**Dream state:** ${r.dream}
+
+**Plan:** ${r.plan}
+
+**Relationship with dream:** ${r.relationship}
+
+**Offering/commitment:** ${r.offering}`;
+    })
+    .join('\n\n---\n\n');
+
+  const userMessage = `Dream: ${dream.title}
+Description: ${dream.description}
+Category: ${dream.category}
+
+Number of reflections: ${reflections.length}
+Time period: ${Math.floor((new Date(sortedReflections[sortedReflections.length - 1].created_at).getTime() - new Date(sortedReflections[0].created_at).getTime()) / (1000 * 60 * 60 * 24))} days
+
+Chronological reflections:
+
+${reflectionHistory}
+
+---
+
+Analyze this journey and create an evolution report that shows how this person has grown, changed, and evolved in their relationship with this dream. Be specific, use quotes, and celebrate their progress.`;
+
+  try {
+    const response = await anthropic.messages.create({
+      model: 'claude-sonnet-4-5-20250929',
+      temperature: 1,
+      max_tokens: 8000,
+      thinking: {
+        type: 'enabled',
+        budget_tokens: 8000,
+      },
+      system: systemPrompt,
+      messages: [
+        {
+          role: 'user',
+          content: userMessage,
+        },
+      ],
+    });
+
+    // Extract text content (filter out thinking blocks)
+    const textContent = response.content
+      .filter((block) => block.type === 'text')
+      .map((block) => ('text' in block ? block.text : ''))
+      .join('\n\n');
+
+    return textContent;
+  } catch (error) {
+    console.error(`   ❌ Evolution report generation failed:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Generate visualization for a dream
+ */
+async function generateVisualization(
+  dream: { id: string; title: string; description: string },
+  reflections: { id: string; dream: string; plan: string; relationship: string; offering: string; created_at: string }[]
+): Promise<string> {
+  console.log(`   🤖 Generating achievement visualization...`);
+
+  const systemPrompt = `You are a creative writer specializing in achievement visualizations. Your task is to transform someone's dream journey into a vivid, inspiring narrative using the mountain climbing metaphor.
+
+Write a 400-600 word achievement visualization that:
+
+1. **Mountain Climbing Metaphor**: Use mountain climbing imagery throughout (base camp, first plateau, technical chasm, summit approach, etc.)
+2. **Vivid Imagery**: Create rich, sensory descriptions that make the journey feel real and tangible
+3. **Journey Stages**:
+   - Base camp: Early fears, doubts, and preparation
+   - First plateau: Initial progress and small wins
+   - Technical chasm: Challenges, scope issues, technical problems
+   - Summit approach: Current confidence and vision
+4. **Emotional Arc**: Capture the full emotional journey from uncertainty to confidence
+5. **Inspiring Conclusion**: End with a powerful image of what awaits at the summit
+
+Make it feel epic but authentic. This is someone's real journey.`;
+
+  // Sort reflections chronologically
+  const sortedReflections = [...reflections].sort(
+    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+  );
+
+  const userMessage = `Dream: ${dream.title}
+Description: ${dream.description}
+
+Journey overview:
+- First reflection: ${sortedReflections[0].dream.substring(0, 200)}...
+- Latest reflection: ${sortedReflections[sortedReflections.length - 1].dream.substring(0, 200)}...
+
+Key quotes:
+${sortedReflections.map((r, i) => `${i + 1}. "${r.relationship.substring(0, 150)}..."`).join('\n')}
+
+Create a mountain climbing visualization that captures this journey from doubt to confidence, from planning to building, from fear to momentum.`;
+
+  try {
+    const response = await anthropic.messages.create({
+      model: 'claude-sonnet-4-5-20250929',
+      temperature: 1,
+      max_tokens: 4000,
+      thinking: {
+        type: 'enabled',
+        budget_tokens: 4000,
+      },
+      system: systemPrompt,
+      messages: [
+        {
+          role: 'user',
+          content: userMessage,
+        },
+      ],
+    });
+
+    // Extract text content (filter out thinking blocks)
+    const textContent = response.content
+      .filter((block) => block.type === 'text')
+      .map((block) => ('text' in block ? block.text : ''))
+      .join('\n\n');
+
+    return textContent;
+  } catch (error) {
+    console.error(`   ❌ Visualization generation failed:`, error);
+    throw error;
+  }
+}
+
+/**
  * Main seeding function
  */
 async function seedDemoUser() {
@@ -498,7 +659,101 @@ async function seedDemoUser() {
 
     console.log(`✅ Generated ${totalReflections} reflections\n`);
 
-    // 5. Update user stats
+    // 5. Generate evolution report and visualization for "Launch My SaaS Product"
+    console.log('📊 Generating evolution report and visualization...\n');
+
+    // Find the SaaS dream
+    const saasDream = createdDreams.find((d) =>
+      d.title.toLowerCase().includes('saas')
+    );
+
+    if (saasDream) {
+      // Query all reflections for this dream
+      const { data: saasReflections, error: reflectionsError } = await supabase
+        .from('reflections')
+        .select('id, dream, plan, relationship, offering, created_at')
+        .eq('dream_id', saasDream.id)
+        .order('created_at', { ascending: true });
+
+      if (reflectionsError || !saasReflections || saasReflections.length === 0) {
+        console.warn('⚠️  Could not fetch SaaS reflections for evolution report');
+      } else {
+        console.log(`🎯 Generating evolution report for "${saasDream.title}" (${saasReflections.length} reflections)...`);
+
+        // Generate evolution report content
+        const evolutionContent = await generateEvolutionReport(
+          {
+            id: saasDream.id,
+            title: saasDream.title,
+            description: saasDream.description,
+            category: saasDream.category,
+          },
+          saasReflections
+        );
+
+        const wordCount = evolutionContent.split(/\s+/).length;
+        console.log(`   ✅ Evolution report generated (${wordCount} words)`);
+
+        // Get earliest and latest reflection timestamps
+        const earliestReflection = saasReflections[0];
+        const latestReflection = saasReflections[saasReflections.length - 1];
+
+        // Insert evolution report
+        const { error: evolutionError } = await supabase.from('evolution_reports').insert({
+          user_id: demoUser.id,
+          dream_id: saasDream.id,
+          analysis: evolutionContent, // CRITICAL: Use 'analysis' column, not 'evolution'
+          report_type: 'premium',
+          report_category: 'dream-specific',
+          reflections_analyzed: saasReflections.map((r) => r.id),
+          reflection_count: saasReflections.length,
+          time_period_start: earliestReflection.created_at,
+          time_period_end: latestReflection.created_at,
+          patterns_detected: ['fear-to-confidence', 'scope-management', 'technical-growth'],
+          growth_score: 78,
+        });
+
+        if (evolutionError) {
+          console.error('❌ Failed to insert evolution report:', evolutionError);
+        } else {
+          console.log('✅ Evolution report created\n');
+        }
+
+        // Generate visualization
+        console.log('🎯 Generating visualization...');
+        const visualizationContent = await generateVisualization(
+          {
+            id: saasDream.id,
+            title: saasDream.title,
+            description: saasDream.description,
+          },
+          saasReflections
+        );
+
+        const vizWordCount = visualizationContent.split(/\s+/).length;
+        console.log(`   ✅ Visualization generated (${vizWordCount} words)`);
+
+        // Insert visualization
+        const { error: vizError } = await supabase.from('visualizations').insert({
+          user_id: demoUser.id,
+          dream_id: saasDream.id,
+          narrative: visualizationContent,
+          style: 'achievement',
+          reflections_analyzed: saasReflections.map((r) => r.id),
+          reflection_count: saasReflections.length,
+        });
+
+        if (vizError) {
+          console.error('❌ Failed to insert visualization:', vizError);
+        } else {
+          console.log('✅ Visualization created\n');
+        }
+      }
+    } else {
+      console.warn('⚠️  SaaS dream not found, skipping evolution report and visualization\n');
+    }
+
+    // 6. Update user stats
     console.log('📊 Updating user stats...');
     const { error: updateError } = await supabase
       .from('users')
@@ -522,6 +777,8 @@ async function seedDemoUser() {
     console.log(`   • Demo user: ${DEMO_USER_EMAIL}`);
     console.log(`   • Dreams created: ${createdDreams.length}`);
     console.log(`   • Reflections generated: ${totalReflections}`);
+    console.log(`   • Evolution reports: 1 (Launch My SaaS Product)`);
+    console.log(`   • Visualizations: 1 (Launch My SaaS Product)`);
     console.log(`\n✨ Demo account is ready for testing!\n`);
   } catch (error) {
     console.error('\n❌ Seeding failed:', error);

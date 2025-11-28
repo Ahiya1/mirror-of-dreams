@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import '@/styles/variables.css';  // First: CSS custom properties
 import '@/styles/animations.css'; // Second: Keyframe animations
 import '@/styles/globals.css';
+import '@/styles/reflection.css';  // Reflection experience sacred styling
 import { TRPCProvider } from '@/components/providers/TRPCProvider';
 import { ToastProvider } from '@/contexts/ToastContext';
 

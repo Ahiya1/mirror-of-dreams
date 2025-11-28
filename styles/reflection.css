@@ -1,0 +1,192 @@
+/* ═══════════════════════════════════════════════════════════════
+   REFLECTION EXPERIENCE - Sacred Space Styling
+   Enhanced aesthetics for the Mirror reflection experience
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Dream Context Banner - Sacred Display */
+.dream-context-banner {
+  background: linear-gradient(
+    135deg,
+    rgba(88, 28, 135, 0.3) 0%,
+    rgba(219, 39, 119, 0.25) 100%
+  );
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 4px 20px rgba(168, 85, 247, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.dream-context-banner h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #e9d5ff 0%, #fbcfe8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.dream-context-banner .dream-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.dream-context-banner .category-badge {
+  padding: 0.5rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(168, 85, 247, 0.2);
+  color: #e9d5ff;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.dream-context-banner .days-remaining {
+  color: rgba(233, 213, 255, 0.7);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+  .dream-context-banner h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Reflection Container - Darker, More Focused */
+.reflection-container {
+  background: radial-gradient(
+    circle at center,
+    rgba(88, 28, 135, 0.1) 0%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  min-height: 100vh;
+}
+
+/* Question Card - Glass Effect with Sacred Styling */
+.reflection-question-card {
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.05),
+    rgba(236, 72, 153, 0.05)
+  );
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 1rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.reflection-question-card:hover {
+  border-color: rgba(139, 92, 246, 0.3);
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.15);
+}
+
+/* Question Text - Gradient Styling */
+.reflection-question-card h3 {
+  background: linear-gradient(135deg, #c084fc, #fbbf24);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* Warm Placeholder Text */
+.reflection-question-card textarea::placeholder,
+.reflection-question-card input::placeholder {
+  color: rgba(196, 181, 253, 0.5);
+  font-style: italic;
+}
+
+/* Submit Button Breathing Animation */
+.submit-button-breathe {
+  animation: breathe 3s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+/* Tone Selection - Sacred Feel */
+.tone-selection-card {
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.05),
+    rgba(236, 72, 153, 0.05)
+  );
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.tone-option {
+  transition: all 0.3s ease;
+  cursor: pointer;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid transparent;
+}
+
+.tone-option:hover {
+  border-color: rgba(168, 85, 247, 0.3);
+  background: rgba(168, 85, 247, 0.1);
+}
+
+.tone-option.selected {
+  border-color: rgba(168, 85, 247, 0.5);
+  background: rgba(168, 85, 247, 0.15);
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.2);
+}
+
+/* Enhanced spacing between questions */
+.questions-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .reflection-question-card {
+    padding: 1.5rem;
+  }
+
+  .dream-context-banner {
+    padding: 1.25rem;
+  }
+
+  .questions-container {
+    gap: 1.5rem;
+  }
+}
+
+/* Accessibility - Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .submit-button-breathe {
+    animation: none;
+  }
+
+  .reflection-question-card {
+    transition: none;
+  }
+
+  .tone-option {
+    transition: none;
+  }
+}

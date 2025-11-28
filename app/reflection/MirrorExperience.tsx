@@ -43,6 +43,14 @@ const QUESTION_GUIDES = {
   offering: 'What are you willing to give, sacrifice, or commit?',
 };
 
+// Warm placeholder text - creates sacred, welcoming space
+const WARM_PLACEHOLDERS = {
+  dream: 'Your thoughts are safe here... what\'s present for you right now?',
+  plan: 'What step feels right to take next?',
+  relationship: 'How does this dream connect to who you\'re becoming?',
+  offering: 'What gift is this dream offering you?',
+};
+
 /**
  * Mesmerizing single-page Mirror Experience
  * Enhanced with depth, atmosphere, and immersive transitions
@@ -178,7 +186,7 @@ export default function MirrorExperience() {
       number: 1,
       text: selectedDream ? `What is ${selectedDream.title}?` : 'What is this dream?',
       guide: QUESTION_GUIDES.dream,
-      placeholder: 'Describe your dream in detail...',
+      placeholder: WARM_PLACEHOLDERS.dream,
       limit: QUESTION_LIMITS.dream,
     },
     {
@@ -186,7 +194,7 @@ export default function MirrorExperience() {
       number: 2,
       text: selectedDream ? `What is your plan for ${selectedDream.title}?` : 'What is your plan to bring it to life?',
       guide: QUESTION_GUIDES.plan,
-      placeholder: 'Share the steps you envision taking...',
+      placeholder: WARM_PLACEHOLDERS.plan,
       limit: QUESTION_LIMITS.plan,
     },
     {
@@ -194,7 +202,7 @@ export default function MirrorExperience() {
       number: 3,
       text: selectedDream ? `What's your relationship with ${selectedDream.title}?` : 'What relationship do you seek with your dream?',
       guide: QUESTION_GUIDES.relationship,
-      placeholder: 'Describe your relationship with this dream...',
+      placeholder: WARM_PLACEHOLDERS.relationship,
       limit: QUESTION_LIMITS.relationship,
     },
     {
@@ -202,7 +210,7 @@ export default function MirrorExperience() {
       number: 4,
       text: selectedDream ? `What are you willing to give for ${selectedDream.title}?` : 'What are you willing to offer in service of this dream?',
       guide: QUESTION_GUIDES.offering,
-      placeholder: 'What will you give, sacrifice, or commit...',
+      placeholder: WARM_PLACEHOLDERS.offering,
       limit: QUESTION_LIMITS.sacrifice,
     },
   ];
@@ -390,26 +398,28 @@ export default function MirrorExperience() {
                       </p>
                     </div>
 
-                    {/* Dream Context Display */}
+                    {/* Enhanced Dream Context Banner - Sacred Display */}
                     {selectedDream && (
-                      <div className="mb-8 text-center">
-                        <div className="flex items-center justify-center gap-3 mb-2">
-                          <h2 className="text-2xl md:text-3xl font-light bg-gradient-to-r from-mirror-purple via-mirror-violet to-mirror-blue bg-clip-text text-transparent">
-                            {selectedDream.title}
-                          </h2>
+                      <div className="dream-context-banner">
+                        <h2>
+                          Reflecting on: {selectedDream.title}
+                        </h2>
+                        <div className="dream-meta">
+                          {selectedDream.category && (
+                            <span className="category-badge">
+                              {selectedDream.category}
+                            </span>
+                          )}
+                          {selectedDream.daysLeft !== null && selectedDream.daysLeft !== undefined && (
+                            <span className="days-remaining">
+                              {selectedDream.daysLeft < 0
+                                ? `${Math.abs(selectedDream.daysLeft)} days overdue`
+                                : selectedDream.daysLeft === 0
+                                ? 'Today!'
+                                : `${selectedDream.daysLeft} days remaining`}
+                            </span>
+                          )}
                         </div>
-                        <p className="text-sm md:text-base text-white/70 mb-2">
-                          {REFLECTION_MICRO_COPY.dreamSelected(selectedDream.title)}
-                        </p>
-                        {selectedDream.daysLeft !== null && selectedDream.daysLeft !== undefined && (
-                          <p className="text-sm text-mirror-purple/90">
-                            {selectedDream.daysLeft < 0
-                              ? `${Math.abs(selectedDream.daysLeft)} days overdue`
-                              : selectedDream.daysLeft === 0
-                              ? 'Target date: Today!'
-                              : `${selectedDream.daysLeft} days left`}
-                          </p>
-                        )}
                       </div>
                     )}
 
@@ -418,8 +428,8 @@ export default function MirrorExperience() {
                       <ProgressBar currentStep={1} totalSteps={4} />
                     </div>
 
-                    {/* All 4 Questions with guiding text */}
-                    <div className="space-y-8 mb-8">
+                    {/* All 4 Questions with enhanced sacred styling */}
+                    <div className="questions-container">
                       {questions.map((question) => (
                         <ReflectionQuestionCard
                           key={question.id}
@@ -450,14 +460,14 @@ export default function MirrorExperience() {
                       </p>
                     </div>
 
-                    {/* "Gaze into the Mirror" Submit Button */}
+                    {/* "Gaze into the Mirror" Submit Button with breathing animation */}
                     <div className="flex justify-center">
                       <GlowButton
                         variant="cosmic"
                         size="lg"
                         onClick={handleSubmit}
                         disabled={isSubmitting}
-                        className="min-w-[280px] text-lg font-medium"
+                        className="min-w-[280px] text-lg font-medium submit-button-breathe"
                       >
                         {isSubmitting ? (
                           <span className="flex items-center gap-3">

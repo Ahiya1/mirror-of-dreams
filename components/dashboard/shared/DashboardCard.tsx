@@ -33,23 +33,9 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
   hoverable = true,
   breathing = false,
 }) => {
-  const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
-
-  // Animation entrance effect
-  useEffect(() => {
-    if (animated) {
-      const timer = setTimeout(() => {
-        setIsVisible(true);
-      }, animationDelay);
-
-      return () => clearTimeout(timer);
-    } else {
-      setIsVisible(true);
-    }
-  }, [animated, animationDelay]);
 
   // Handle mouse interactions
   const handleMouseEnter = () => {
@@ -99,7 +85,6 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
     'dashboard-card',
     `dashboard-card--${variant}`,
     className,
-    isVisible && animated ? 'dashboard-card--visible' : '',
     isHovered ? 'dashboard-card--hovered' : '',
     isLoading ? 'dashboard-card--loading' : '',
     hasError ? 'dashboard-card--error' : '',
@@ -116,9 +101,6 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
-      style={{
-        animationDelay: animated ? `${animationDelay}ms` : undefined,
-      }}
       // Apply card press animation (respects reduced motion)
       variants={prefersReducedMotion || !onClick ? undefined : cardPressVariants}
       initial={prefersReducedMotion || !onClick ? false : 'rest'}
