@@ -15,7 +15,7 @@ import { ProgressBar } from '@/components/reflection/ProgressBar';
 import { AIResponseRenderer } from '@/components/reflections/AIResponseRenderer';
 import { cn } from '@/lib/utils';
 import type { ToneId } from '@/lib/utils/constants';
-import { QUESTION_LIMITS } from '@/lib/utils/constants';
+import { QUESTION_LIMITS, REFLECTION_MICRO_COPY } from '@/lib/utils/constants';
 
 interface FormData {
   dream: string;
@@ -383,6 +383,13 @@ export default function MirrorExperience() {
                 ) : (
                   /* One-Page Reflection Form */
                   <div className="one-page-form">
+                    {/* Welcome Message */}
+                    <div className="mb-6 text-center">
+                      <p className="text-white/80 text-base md:text-lg font-light italic">
+                        {REFLECTION_MICRO_COPY.welcome}
+                      </p>
+                    </div>
+
                     {/* Dream Context Display */}
                     {selectedDream && (
                       <div className="mb-8 text-center">
@@ -391,6 +398,9 @@ export default function MirrorExperience() {
                             {selectedDream.title}
                           </h2>
                         </div>
+                        <p className="text-sm md:text-base text-white/70 mb-2">
+                          {REFLECTION_MICRO_COPY.dreamSelected(selectedDream.title)}
+                        </p>
                         {selectedDream.daysLeft !== null && selectedDream.daysLeft !== undefined && (
                           <p className="text-sm text-mirror-purple/90">
                             {selectedDream.daysLeft < 0
@@ -433,8 +443,15 @@ export default function MirrorExperience() {
                       />
                     </div>
 
+                    {/* Ready message before submit */}
+                    <div className="text-center mb-6">
+                      <p className="text-white/70 text-sm italic">
+                        {REFLECTION_MICRO_COPY.readyToSubmit}
+                      </p>
+                    </div>
+
                     {/* "Gaze into the Mirror" Submit Button */}
-                    <div className="flex justify-center mt-10">
+                    <div className="flex justify-center">
                       <GlowButton
                         variant="cosmic"
                         size="lg"

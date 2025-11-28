@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/glass';
 import { AppNavigation } from '@/components/shared/AppNavigation';
 import { EmptyState } from '@/components/shared/EmptyState';
+import { CanvasVisual } from '@/components/shared/illustrations/CanvasVisual';
 import { cn } from '@/lib/utils';
 
 type VisualizationStyle = 'achievement' | 'spiral' | 'synthesis';
@@ -56,6 +57,14 @@ export default function VisualizationsPage() {
     { page: 1, limit: 20 },
     { enabled: !!user }
   );
+
+  // Count total reflections for progress indicator
+  const { data: reflectionsData } = trpc.reflections.list.useQuery(
+    { page: 1, limit: 1 },
+    { enabled: !!user }
+  );
+  const totalReflections = reflectionsData?.total || 0;
+  const minReflections = 4;
 
   // Mutation
   const generateVisualization = trpc.visualizations.generate.useMutation({
@@ -258,11 +267,17 @@ export default function VisualizationsPage() {
 
           {!visualizationsData || visualizationsData.items.length === 0 ? (
             <EmptyState
-              icon="📊"
-              title="Visualizations appear after 4 reflections on a dream"
-              description="Visual insights help you see patterns in your reflection journey. Keep reflecting to unlock visualizations."
-              ctaLabel="Create First Visualization"
-              ctaAction={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              illustration={<CanvasVisual />}
+              icon="🎨"
+              title="Your story is being written"
+              description="After 4 reflections, visualizations bloom and reveal your patterns."
+              progress={{
+                current: Math.min(totalReflections, minReflections),
+                total: minReflections,
+                label: 'reflections to unlock visualizations'
+              }}
+              ctaLabel="Add Another Reflection"
+              ctaAction={() => router.push('/reflection')}
               variant="compact"
             />
           ) : (

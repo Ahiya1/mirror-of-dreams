@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { trpc } from '@/lib/trpc';
 import { type ReflectionTone } from '@/types/reflection';
+import { type DateRangeOption, getDateRangeFilter } from '@/lib/utils/dateRange';
 import { ReflectionCard } from '@/components/reflections/ReflectionCard';
 import { ReflectionFilters } from '@/components/reflections/ReflectionFilters';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { AppNavigation } from '@/components/shared/AppNavigation';
+import { BlankJournal } from '@/components/shared/illustrations/BlankJournal';
 
 export default function ReflectionsPage() {
   const router = useRouter();
@@ -20,6 +22,7 @@ export default function ReflectionsPage() {
   const [isPremium, setIsPremium] = useState<boolean | undefined>(undefined);
   const [sortBy, setSortBy] = useState<'created_at' | 'word_count' | 'rating'>('created_at');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [dateRange, setDateRange] = useState<DateRangeOption>('all');
 
   // Fetch reflections with tRPC (20 per page as per plan)
   const { data, isLoading, error } = trpc.reflections.list.useQuery({
@@ -151,21 +154,27 @@ export default function ReflectionsPage() {
               setSortOrder(value);
               setPage(1);
             }}
+            dateRange={dateRange}
+            onDateRangeChange={(value) => {
+              setDateRange(value);
+              setPage(1);
+            }}
           />
         </div>
 
         {/* Empty state */}
         {reflections.length === 0 && (
           <EmptyState
+            illustration={!search && !tone && isPremium === undefined && dateRange === 'all' ? <BlankJournal /> : undefined}
             icon="💭"
-            title={search || tone || isPremium !== undefined
+            title={search || tone || isPremium !== undefined || dateRange !== 'all'
               ? 'No reflections found'
-              : 'Your reflection journey begins here'}
-            description={search || tone || isPremium !== undefined
+              : 'Your first reflection awaits'}
+            description={search || tone || isPremium !== undefined || dateRange !== 'all'
               ? 'Try adjusting your filters or search criteria'
-              : 'Reflection is how you water your dreams. Take a moment to gaze into the mirror and explore your inner landscape.'}
-            ctaLabel={!search && !tone && isPremium === undefined ? 'Reflect Now' : undefined}
-            ctaAction={!search && !tone && isPremium === undefined ? () => router.push('/reflection') : undefined}
+              : 'Take a moment to explore your thoughts and let your inner wisdom guide you.'}
+            ctaLabel={!search && !tone && isPremium === undefined && dateRange === 'all' ? 'Start Reflecting' : undefined}
+            ctaAction={!search && !tone && isPremium === undefined && dateRange === 'all' ? () => router.push('/reflection') : undefined}
           />
         )}
 

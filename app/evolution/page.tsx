@@ -255,14 +255,14 @@ export default function EvolutionPage() {
           {!reportsData || reportsData.reports.length === 0 ? (
             <EmptyState
               icon="🌱"
-              title="Your evolution story unfolds after 4 reflections"
-              description="Evolution insights reveal patterns and growth across your reflections. Keep reflecting to unlock this feature."
+              title="Your evolution is brewing"
+              description="After 4 reflections, patterns emerge and your journey reveals itself."
               progress={{
                 current: Math.min(totalReflections, minReflections),
                 total: minReflections,
-                label: 'reflections'
+                label: 'reflections to unlock evolution'
               }}
-              ctaLabel="Create a Reflection"
+              ctaLabel="Continue Reflecting"
               ctaAction={() => router.push('/reflection')}
             />
           ) : (

@@ -54,10 +54,10 @@ const DreamsCard: React.FC<DreamsCardProps> = ({ animated = true, className = ''
   // Empty state component
   const EmptyState = () => (
     <div className="empty-state">
-      <h4>Dream Big</h4>
-      <p>Create your first dream and start reflecting.</p>
+      <h4>Your journey begins with a dream</h4>
+      <p>What calls to you? Create your first dream to start reflecting.</p>
       <Link href="/dreams" className="cosmic-button cosmic-button--primary">
-        <span>Create Dream</span>
+        <span>Create Your First Dream</span>
       </Link>
     </div>
   );

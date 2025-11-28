@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { GlassCard } from '@/components/ui/glass';
 import { cn } from '@/lib/utils';
 import type { ToneId } from '@/lib/utils/constants';
+import { TONE_DESCRIPTIONS } from '@/lib/utils/constants';
 
 interface ToneOption {
   id: ToneId;
@@ -17,22 +18,29 @@ const TONE_OPTIONS: ToneOption[] = [
   {
     id: 'fusion',
     name: 'Sacred Fusion',
-    description: 'Balanced wisdom where all voices become one',
+    description: TONE_DESCRIPTIONS.fusion,
     icon: '✨',
   },
   {
     id: 'gentle',
     name: 'Gentle Clarity',
-    description: 'Soft wisdom that illuminates gently',
+    description: TONE_DESCRIPTIONS.gentle,
     icon: '🌸',
   },
   {
     id: 'intense',
     name: 'Luminous Intensity',
-    description: 'Piercing truth that burns away illusions',
+    description: TONE_DESCRIPTIONS.intense,
     icon: '⚡',
   },
 ];
+
+// Tone-specific glow colors for hover effects
+const TONE_GLOW_COLORS = {
+  fusion: 'rgba(251, 191, 36, 0.3)', // Gold
+  gentle: 'rgba(59, 130, 246, 0.3)', // Blue
+  intense: 'rgba(168, 85, 247, 0.3)', // Purple
+};
 
 interface ToneSelectionCardProps {
   selectedTone: ToneId;
@@ -51,6 +59,8 @@ export const ToneSelectionCard: React.FC<ToneSelectionCardProps> = ({
   selectedTone,
   onSelect,
 }) => {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <div className="tone-selection-cards">
       {/* Section header */}
@@ -67,9 +77,10 @@ export const ToneSelectionCard: React.FC<ToneSelectionCardProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {TONE_OPTIONS.map((tone) => {
           const isSelected = selectedTone === tone.id;
+          const glowColor = TONE_GLOW_COLORS[tone.id];
 
           return (
-            <button
+            <motion.button
               key={tone.id}
               type="button"
               onClick={() => onSelect(tone.id)}
@@ -82,6 +93,11 @@ export const ToneSelectionCard: React.FC<ToneSelectionCardProps> = ({
               className="text-left w-full focus:outline-none focus:ring-2 focus:ring-mirror-purple focus:ring-offset-2 focus:ring-offset-transparent rounded-xl"
               aria-pressed={isSelected}
               aria-label={`${tone.name}: ${tone.description}`}
+              whileHover={prefersReducedMotion ? undefined : {
+                boxShadow: `0 0 30px ${glowColor}`,
+                y: -2,
+              }}
+              whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
             >
               <GlassCard
                 elevated={isSelected}
@@ -114,7 +130,7 @@ export const ToneSelectionCard: React.FC<ToneSelectionCardProps> = ({
                   </h3>
 
                   {/* Description */}
-                  <p className="text-sm text-white/60 leading-relaxed">
+                  <p className="text-sm text-white/70 leading-relaxed">
                     {tone.description}
                   </p>
 
@@ -144,7 +160,7 @@ export const ToneSelectionCard: React.FC<ToneSelectionCardProps> = ({
                   )}
                 </div>
               </GlassCard>
-            </button>
+            </motion.button>
           );
         })}
       </div>

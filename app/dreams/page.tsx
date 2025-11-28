@@ -10,6 +10,7 @@ import { CreateDreamModal } from '@/components/dreams/CreateDreamModal';
 import { CosmicLoader, GlowButton, GlassCard, GradientText } from '@/components/ui/glass';
 import { AppNavigation } from '@/components/shared/AppNavigation';
 import { EmptyState } from '@/components/shared/EmptyState';
+import { Constellation } from '@/components/shared/illustrations/Constellation';
 
 export default function DreamsPage() {
   const router = useRouter();
@@ -153,9 +154,10 @@ export default function DreamsPage() {
           </div>
         ) : (
           <EmptyState
-            icon="🌱"
-            title="Dreams are the seeds of transformation"
-            description="Create your first dream to begin your journey of self-reflection and manifestation."
+            illustration={<Constellation />}
+            icon="🌟"
+            title="Dream big, start small"
+            description="Every great journey starts with a single dream. What do you want to explore? 🚀 Launch a business • 💪 Transform health • 🎹 Master piano"
             ctaLabel="Create Your First Dream"
             ctaAction={() => setIsCreateModalOpen(true)}
           />
