@@ -53,6 +53,7 @@ export const ReflectionQuestionCard: React.FC<ReflectionQuestionCardProps> = ({
         placeholder={placeholder}
         maxLength={maxLength}
         showCounter={true}
+        counterMode="words"
         rows={6}
         className="w-full"
       />

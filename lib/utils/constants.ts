@@ -83,3 +83,26 @@ export const RESPONSE_MESSAGES = {
   NETWORK_ERROR: 'Network error - please try again',
   GENERIC_ERROR: 'A moment of silence… Your reflection is being prepared. Please try again soon.',
 } as const;
+
+/**
+ * Micro-copy for reflection form - warm, encouraging tone
+ */
+export const REFLECTION_MICRO_COPY = {
+  welcome: 'Welcome to your sacred space for reflection. Take a deep breath.',
+  dreamSelected: (dreamName: string) => `Beautiful choice. Let's explore ${dreamName} together.`,
+  questionProgress: (current: number, total: number) => `Question ${current} of ${total} — You're doing great`,
+  readyToSubmit: 'Ready when you are. There is no rush.',
+  continueWriting: 'Keep writing — your thoughts matter.',
+  celebrateDepth: (words: number) => `${words} thoughtful words — beautiful depth.`,
+  almostThere: 'You are near the space available — almost complete.',
+  reflectionComplete: 'Your reflection is complete. If you would like to add more, consider starting a new reflection.',
+} as const;
+
+/**
+ * Extended tone descriptions for tone selection cards
+ */
+export const TONE_DESCRIPTIONS = {
+  fusion: 'Balanced wisdom where all voices become one. Expect both comfort and challenge, woven together in sacred harmony.',
+  gentle: 'Soft wisdom that illuminates gently. Your mirror will speak with compassion, holding space for vulnerability.',
+  intense: 'Piercing truth that burns away illusions. Expect direct clarity that honors your readiness for transformation.',
+} as const;

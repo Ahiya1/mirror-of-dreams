@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { type ReflectionTone } from '@/types/reflection';
+import { type DateRangeOption, DATE_RANGE_OPTIONS } from '@/lib/utils/dateRange';
 
 interface ReflectionFiltersProps {
   search: string;
@@ -14,6 +15,8 @@ interface ReflectionFiltersProps {
   onSortByChange: (sortBy: 'created_at' | 'word_count' | 'rating') => void;
   sortOrder: 'asc' | 'desc';
   onSortOrderChange: (sortOrder: 'asc' | 'desc') => void;
+  dateRange?: DateRangeOption;
+  onDateRangeChange?: (range: DateRangeOption) => void;
   // Note: Dream filtering would be added here when reflections are linked to dreams table
   // dreamId?: string;
   // onDreamIdChange?: (dreamId?: string) => void;
@@ -31,15 +34,20 @@ export function ReflectionFilters({
   onSortByChange,
   sortOrder,
   onSortOrderChange,
+  dateRange = 'all',
+  onDateRangeChange,
 }: ReflectionFiltersProps) {
   const [showFilters, setShowFilters] = useState(false);
 
-  const hasActiveFilters = tone !== undefined || isPremium !== undefined;
+  const hasActiveFilters = tone !== undefined || isPremium !== undefined || dateRange !== 'all';
 
   const clearFilters = () => {
     onToneChange(undefined);
     onIsPremiumChange(undefined);
     onSearchChange('');
+    if (onDateRangeChange) {
+      onDateRangeChange('all');
+    }
   };
 
   return (
@@ -131,6 +139,28 @@ export function ReflectionFilters({
       {/* Expandable filter panel */}
       {showFilters && (
         <div className="rounded-lg border border-purple-500/20 bg-slate-900/50 p-4 backdrop-blur-sm space-y-4">
+          {/* Date Range filter */}
+          {onDateRangeChange && (
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Time Period</label>
+              <div className="flex flex-wrap gap-2">
+                {DATE_RANGE_OPTIONS.map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => onDateRangeChange(option.value)}
+                    className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                      dateRange === option.value
+                        ? 'bg-purple-500 text-white'
+                        : 'bg-slate-800/50 text-gray-300 hover:bg-slate-800'
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Tone filter */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">Tone</label>

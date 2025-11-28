@@ -72,6 +72,10 @@ export interface GlassInputProps {
   maxLength?: number;
   /** Show character counter */
   showCounter?: boolean;
+  /** Counter mode: characters (default) or words */
+  counterMode?: 'characters' | 'words';
+  /** Custom counter format function */
+  counterFormat?: (count: number, max: number) => string;
   /** Show password toggle (for password type) */
   showPasswordToggle?: boolean;
   /** Required field */

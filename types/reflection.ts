@@ -9,6 +9,7 @@ export type HasDate = 'yes' | 'no';
 export interface Reflection {
   id: string;
   userId: string;
+  dreamId: string | null;
   dream: string;
   plan: string;
   hasDate: HasDate;
@@ -62,6 +63,7 @@ export interface ReflectionListParams {
 export interface ReflectionRow {
   id: string;
   user_id: string;
+  dream_id: string | null;
   dream: string;
   plan: string;
   has_date: string;
@@ -89,6 +91,7 @@ export function reflectionRowToReflection(row: ReflectionRow): Reflection {
   return {
     id: row.id,
     userId: row.user_id,
+    dreamId: row.dream_id,
     dream: row.dream,
     plan: row.plan,
     hasDate: row.has_date as HasDate,

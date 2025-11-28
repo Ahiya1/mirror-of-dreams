@@ -24,7 +24,13 @@ export function AIResponseRenderer({ content }: AIResponseRendererProps) {
     return (
       <div className="max-w-[720px] mx-auto space-y-4">
         {content.split('\n\n').map((para, i) => (
-          <p key={i} className="text-lg leading-relaxed text-white/95">
+          <p
+            key={i}
+            className={i === 0
+              ? "text-xl leading-[1.8] text-white"
+              : "text-lg leading-[1.8] text-white/95"
+            }
+          >
             {para}
           </p>
         ))}
@@ -60,8 +66,9 @@ export function AIResponseRenderer({ content }: AIResponseRendererProps) {
           ),
 
           // Body text with optimal readability (18px, line-height 1.8)
+          // First paragraph is larger (1.25rem) to draw reader in
           p: ({ node, ...props }) => (
-            <p className="text-lg leading-relaxed text-white/95 mb-4" {...props} />
+            <p className="text-lg leading-[1.8] text-white/95 mb-4 first:text-xl first:text-white" {...props} />
           ),
 
           // Blockquotes with cosmic accent
@@ -85,9 +92,9 @@ export function AIResponseRenderer({ content }: AIResponseRendererProps) {
             <li className="text-white/90 leading-relaxed" {...props} />
           ),
 
-          // Strong (bold) with gradient emphasis
+          // Strong (bold) with gold background highlight for key insights
           strong: ({ node, ...props }) => (
-            <strong className="font-semibold text-purple-300" {...props} />
+            <strong className="font-semibold text-amber-400 bg-amber-400/10 px-1 rounded" {...props} />
           ),
 
           // Emphasis (italic)

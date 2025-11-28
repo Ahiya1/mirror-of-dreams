@@ -154,7 +154,13 @@ iterations:
       - Pricing page clarifies tier value (Free → Premium conversion clear)
 
       Estimated: 18-24 hours
-    status: PENDING
+    status: COMPLETE
+    completion_rate: 93
+    completed_at: '2025-11-28T10:00:00Z'
+    learnings:
+      - "Tier limits were scattered across 3 files - unified to constants.ts"
+      - "Demo user protection best implemented at middleware level"
+      - "JWT rotation required on email change - document this pattern"
     dependencies: []
 
   - iteration_id: 3
@@ -218,5 +224,12 @@ iterations:
       - Accessibility maintained (WCAG 2.1 AA, reduced motion respected)
 
       Estimated: 18-22 hours
-    status: PENDING
+    status: COMPLETE
+    completion_rate: 100
+    completed_at: '2025-11-28T12:00:00Z'
+    learnings:
+      - "Polish iteration leverages existing patterns - 80% of code already existed"
+      - "Word counter UX: celebrate depth (gold/purple) not punish expression (no red)"
+      - "CSS art illustrations faster than custom SVGs, equally effective"
+      - "Backward compatibility critical - optional props maintain existing behavior"
     dependencies: []

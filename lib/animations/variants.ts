@@ -295,7 +295,8 @@ export const cardPressVariants: Variants = {
 
 /**
  * Character counter color shift (visual feedback for input length)
- * Transitions: safe (white) → warning (gold) → danger (red)
+ * Transitions: safe (white) → warning (gold) → high (purple, NOT red)
+ * Note: No red "danger" state - we celebrate depth, not limit expression
  */
 export const characterCounterVariants: Variants = {
   safe: {
@@ -307,8 +308,27 @@ export const characterCounterVariants: Variants = {
     transition: { duration: 0.2 },
   },
   danger: {
-    color: '#f87171', // Red (over limit)
+    color: '#a855f7', // Purple (changed from red - almost complete)
     transition: { duration: 0.2 },
+  },
+};
+
+/**
+ * Word counter color shift (for word-based counting in reflection form)
+ * Same color progression as character counter but semantic naming
+ */
+export const wordCounterVariants: Variants = {
+  low: {
+    color: 'rgba(255, 255, 255, 0.7)', // White/70 (0-50%)
+    transition: { duration: 0.3 },
+  },
+  mid: {
+    color: '#fbbf24', // Gold (50-90%)
+    transition: { duration: 0.3 },
+  },
+  high: {
+    color: '#a855f7', // Purple (90-100%)
+    transition: { duration: 0.3 },
   },
 };
 
