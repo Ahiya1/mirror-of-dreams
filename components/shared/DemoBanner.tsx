@@ -22,7 +22,7 @@ export function DemoBanner() {
   if (!user?.isDemo) return null;
 
   return (
-    <div className="bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border-b border-amber-500/30 px-4 sm:px-6 py-3 relative z-50">
+    <div className="bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border-b border-amber-500/30 px-4 sm:px-6 py-3 fixed top-0 left-0 right-0 z-[110]">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
         <div className="flex items-center gap-2 sm:gap-3 text-sm text-amber-200 text-center sm:text-left">
           <span className="text-xl sm:text-2xl flex-shrink-0" aria-label="Demo indicator">

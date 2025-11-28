@@ -1,7 +1,7 @@
 .dashboardGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: repeat(3, auto);
   gap: var(--space-xl);
   min-height: 600px;
   animation: gridEntrance 0.6s ease-out;

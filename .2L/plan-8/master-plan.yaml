@@ -1,0 +1,201 @@
+plan_id: plan-8
+created_at: '2025-11-28T12:00:00Z'
+status: PLANNED
+total_iterations: 1
+
+vision_summary: |
+  Fix critical layout bugs (navigation overlap, empty dashboard), complete demo user data
+  (evolution reports, visualizations), and polish reflection space to achieve 9/10 quality.
+
+  Current State: 7.5/10
+  Target State: 9/10
+
+complexity_assessment:
+  rating: MEDIUM
+  explorer_consensus:
+    - master-explorer-1: MEDIUM (single iteration recommended)
+    - master-explorer-2: MEDIUM (2 iterations recommended)
+    - master-explorer-3: MEDIUM (sequential phases)
+    - master-explorer-4: MEDIUM (build passes, performance neutral)
+  justification: |
+    Bug fixes are well-scoped CSS/layout corrections. Demo data generation uses Claude Code
+    to write content directly. No new dependencies, no schema changes, no breaking changes.
+    Build already passes cleanly. All 7 features are interconnected - partial delivery provides no value.
+
+strategy: |
+  Execute all 7 features in a SINGLE focused iteration with 4 builders working on distinct areas:
+
+  1. Builder-1: Navigation & Layout Foundation (P0)
+     - CSS variables + z-index stacking + page padding audit
+
+  2. Builder-2: Dashboard Display Fixes (P0)
+     - Grid layout + stagger animation fallback
+
+  3. Builder-3: Demo Data Completion (P0)
+     - Evolution reports + visualizations for demo user
+
+  4. Builder-4: UX Polish (P1)
+     - Dream context in reflection + aesthetics enhancement
+
+  All builders can work in parallel after Builder-1 establishes CSS foundation.
+  Integration merges all changes into cohesive codebase.
+  Validation ensures build passes and all acceptance criteria met.
+
+dependencies:
+  critical_path:
+    - CSS variables (--demo-banner-height) must be defined first
+    - Navigation/layout fixes depend on CSS variables
+    - Dashboard fixes can run parallel with navigation
+    - Demo data generation is independent
+    - UX polish is independent
+
+  parallel_opportunities:
+    - Builder-2, Builder-3, Builder-4 can start after Builder-1 completes CSS variables
+    - Demo data seeding is completely independent of UI fixes
+    - Reflection aesthetics independent of dashboard fixes
+
+risk_assessment:
+  high_risks: []
+  medium_risks:
+    - id: M-1
+      description: Dashboard IntersectionObserver not triggering
+      mitigation: Add 2-second fallback timer + CSS opacity fallback
+    - id: M-2
+      description: Demo content feels inauthentic
+      mitigation: Claude Code generates thoughtfully with specific quotes from reflections
+    - id: M-3
+      description: Navigation overlap persists on some pages
+      mitigation: Audit all 12 pages with systematic testing checklist
+  low_risks:
+    - id: L-1
+      description: Reflection aesthetics subjective
+      mitigation: Follow specific design direction from vision
+    - id: L-2
+      description: Browser-specific CSS differences
+      mitigation: Test Chrome, Firefox, Safari, Edge
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 15
+    name: "Final Polish & Demo Completeness"
+    vision: |
+      Fix all layout bugs, complete demo user data, and polish reflection space
+      to transform Mirror of Dreams from 7.5/10 to 9/10 quality.
+    scope: |
+      All 7 features from Plan-8 vision:
+
+      P0 - BLOCKING:
+      1. Fix Navigation/Layout Stack - CSS variables + z-index + page padding
+      2. Fix Empty Dashboard Display - Grid layout + animation fallback
+      3. Complete Demo Evolution Reports - Seed script + content generation
+      4. Complete Demo Visualizations - Seed script + content generation
+
+      P1 - UX POLISH:
+      5. Fix Dream Name in Reflection Flow - Dream context banner
+      6. Enhance Reflection Space Aesthetics - Sacred feel improvements
+      7. Layout Consistency Audit - Test all 12 pages
+    status: PENDING
+    dependencies: []
+
+    builders:
+      - id: builder-1
+        name: "Navigation & Layout Foundation"
+        priority: P0
+        estimated_hours: 3
+        tasks:
+          - Define --demo-banner-height CSS variable (44px)
+          - Define --total-header-height calculation
+          - Fix z-index stacking (banner z-200, nav z-100)
+          - Update AppNavigation.tsx positioning
+          - Update all 12 page layouts with proper padding-top
+          - Test with demo user on all pages
+        files:
+          - src/styles/variables.css
+          - components/shared/AppNavigation.tsx
+          - components/shared/DemoBanner.tsx
+          - app/dashboard/page.tsx
+          - app/dreams/page.tsx
+          - app/reflections/page.tsx
+          - app/evolution/page.tsx
+          - app/visualizations/page.tsx
+          - app/profile/page.tsx
+          - app/settings/page.tsx
+        acceptance_criteria:
+          - Demo banner fully visible on all pages
+          - No content hidden behind navigation
+          - Mobile hamburger menu doesn't overlap banner
+          - No layout shift on initial load
+
+      - id: builder-2
+        name: "Dashboard Display Fixes"
+        priority: P0
+        estimated_hours: 2
+        depends_on: [builder-1]
+        tasks:
+          - Fix DashboardGrid.module.css grid layout (2x2 → flexible)
+          - Add 2-second fallback timeout to useStaggerAnimation
+          - Add CSS opacity fallback for animation failure
+          - Test dashboard renders all 7 sections within 500ms
+        files:
+          - components/dashboard/shared/DashboardGrid.module.css
+          - hooks/useStaggerAnimation.ts
+          - app/dashboard/page.tsx
+        acceptance_criteria:
+          - All 7 dashboard sections visible
+          - No empty void below navigation
+          - Stagger animation plays OR fallback triggers
+          - Demo user sees populated cards
+
+      - id: builder-3
+        name: "Demo Data Completion"
+        priority: P0
+        estimated_hours: 4
+        depends_on: []
+        tasks:
+          - Verify evolution_reports table schema
+          - Verify visualizations table schema
+          - Update seed-demo-user.ts to generate evolution report content
+          - Update seed-demo-user.ts to generate visualization content
+          - Generate authentic content with specific quotes from demo reflections
+          - Run seed script and verify data exists
+          - Test evolution page shows report
+          - Test visualizations page shows content
+        files:
+          - scripts/seed-demo-user.ts
+        acceptance_criteria:
+          - 1-2 evolution reports exist for demo user
+          - 1-2 visualizations exist for demo user
+          - Evolution report contains temporal analysis with specific quotes
+          - Visualization contains achievement narrative
+          - Dashboard previews show snippets
+
+      - id: builder-4
+        name: "UX Polish"
+        priority: P1
+        estimated_hours: 4
+        depends_on: [builder-1]
+        tasks:
+          - Add dream context banner to MirrorExperience.tsx
+          - Handle URL param for pre-selected dream
+          - Enhance reflection vignette (darker, deeper)
+          - Add ambient glow behind form container
+          - Update question card styling with gradient borders
+          - Add breathing animation to submit button
+          - Update micro-copy for warmth
+        files:
+          - app/reflection/MirrorExperience.tsx
+          - src/styles/reflection.css (or component styles)
+        acceptance_criteria:
+          - Dream name visible when navigating from dream card
+          - Reflection space feels sacred, not clinical
+          - Warm placeholders and micro-copy
+          - Submit button has breathing animation on hover
+
+    success_criteria:
+      - All 7 features complete
+      - Build passes without errors
+      - Demo banner visible on all 12 pages
+      - Dashboard displays all content
+      - Demo user has evolution reports and visualizations
+      - Reflection form shows dream context
+      - Stakeholder rates product at 9/10

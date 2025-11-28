@@ -257,6 +257,7 @@
   --z-tone-elements: 1;
   --z-content: 10;
   --z-navigation: 100;
+  --z-demo-banner: 110;
   --z-modal: 1000;
   --z-tooltip: 2000;
 
@@ -318,6 +319,8 @@
 
   /* Navigation - Dynamically set by JavaScript, fallback provides responsive default */
   --nav-height: clamp(60px, 8vh, 80px);
+  --demo-banner-height: 44px;
+  --total-header-height: calc(var(--nav-height) + var(--demo-banner-height));
 
   /* Content */
   --content-max-width: 65ch;

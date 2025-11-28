@@ -652,6 +652,6 @@ body {
      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
   .pt-nav {
-    padding-top: var(--nav-height);
+    padding-top: calc(var(--nav-height) + var(--demo-banner-height, 0px));
   }
 }

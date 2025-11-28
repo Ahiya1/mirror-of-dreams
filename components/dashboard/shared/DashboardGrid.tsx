@@ -1,7 +1,6 @@
 'use client';
 
 import React, { ReactNode } from 'react';
-import { useStaggerAnimation } from '@/hooks/useStaggerAnimation';
 import styles from './DashboardGrid.module.css';
 
 interface DashboardGridProps {
@@ -11,7 +10,8 @@ interface DashboardGridProps {
 }
 
 /**
- * Dashboard grid with coordinated stagger animations and responsive layout
+ * Dashboard grid with responsive layout
+ * Animation handled by individual card components
  * Migrated from: src/components/dashboard/shared/DashboardGrid.jsx
  */
 const DashboardGrid: React.FC<DashboardGridProps> = ({
@@ -19,15 +19,8 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({
   isLoading = false,
   className = '',
 }) => {
-  const cardCount = 4;
-  const { containerRef, getItemStyles } = useStaggerAnimation(cardCount, {
-    delay: 150, // 150ms between each card
-    duration: 800, // Animation duration
-    triggerOnce: !isLoading, // Only animate when not loading
-  });
-
   return (
-    <div ref={containerRef} className={`${styles.dashboardGrid} ${className}`}>
+    <div className={`${styles.dashboardGrid} ${className}`}>
       {children}
     </div>
   );

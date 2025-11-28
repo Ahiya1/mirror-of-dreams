@@ -93,7 +93,7 @@ export default function SettingsPage() {
       <CosmicBackground />
       <AppNavigation currentPage="settings" />
 
-      <main className="relative z-10 pt-[var(--nav-height)] min-h-screen">
+      <main className="relative z-10 pt-nav min-h-screen">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <h1 className="text-3xl font-bold text-white mb-8">Settings</h1>
 
