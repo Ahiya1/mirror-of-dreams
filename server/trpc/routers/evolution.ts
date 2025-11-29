@@ -199,9 +199,12 @@ Length: 800-1200 words. Tone: Warm, insightful, empowering.`;
           user_id: userId,
           dream_id: input.dreamId,
           report_category: 'dream-specific',
-          evolution: evolutionText,
+          report_type: userTier === 'premium' ? 'premium' : 'essential',
+          analysis: evolutionText,
           reflections_analyzed: selectedReflections.map((r) => r.id),
           reflection_count: selectedReflections.length,
+          time_period_start: selectedReflections[selectedReflections.length - 1]?.created_at || new Date().toISOString(),
+          time_period_end: selectedReflections[0]?.created_at || new Date().toISOString(),
         })
         .select()
         .single();
@@ -407,9 +410,12 @@ Length: 1000-1500 words. Tone: Profound, holistic, empowering.`;
           user_id: userId,
           dream_id: null,
           report_category: 'cross-dream',
-          evolution: evolutionText,
+          report_type: userTier === 'premium' ? 'premium' : 'essential',
+          analysis: evolutionText,
           reflections_analyzed: selectedReflections.map((r) => r.id),
           reflection_count: selectedReflections.length,
+          time_period_start: selectedReflections[selectedReflections.length - 1]?.created_at || new Date().toISOString(),
+          time_period_end: selectedReflections[0]?.created_at || new Date().toISOString(),
         })
         .select()
         .single();
