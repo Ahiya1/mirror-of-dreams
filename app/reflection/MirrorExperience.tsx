@@ -598,8 +598,8 @@ export default function MirrorExperience() {
           display: flex;
           align-items: center;
           justify-content: center;
+          overflow-x: hidden;  /* Prevent horizontal wobble from animated elements */
           overflow-y: auto;
-          perspective: 1000px;
           /* Darker background for depth */
           background: radial-gradient(
             ellipse at center,
