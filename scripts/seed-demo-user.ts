@@ -1070,10 +1070,13 @@ async function seedDemoUser() {
       const { error: evolutionError } = await supabase.from('evolution_reports').insert({
         user_id: demoUser.id,
         dream_id: saasDream.id,
-        evolution: SAAS_EVOLUTION_REPORT,
+        analysis: SAAS_EVOLUTION_REPORT,
+        report_type: 'premium',
         report_category: 'dream-specific',
         reflections_analyzed: saasReflectionIds,
         reflection_count: saasReflectionIds.length,
+        time_period_start: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString(),
+        time_period_end: new Date().toISOString(),
       });
 
       if (evolutionError) {

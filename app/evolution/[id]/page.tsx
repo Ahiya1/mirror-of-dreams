@@ -167,7 +167,7 @@ export default function EvolutionReportPage() {
                 ),
             }}
           >
-            {report.evolution || ''}
+            {report.analysis || ''}
           </ReactMarkdown>
         </div>
 

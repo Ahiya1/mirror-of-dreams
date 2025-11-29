@@ -292,7 +292,7 @@ export default function EvolutionPage() {
                   </p>
 
                   <p className="text-white/70 text-sm line-clamp-2 mb-3">
-                    {report.evolution?.substring(0, 200)}...
+                    {report.analysis?.substring(0, 200)}...
                   </p>
 
                   <div className="flex items-center justify-between">
