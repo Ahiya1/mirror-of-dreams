@@ -652,6 +652,7 @@ body {
      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
   .pt-nav {
-    padding-top: calc(var(--nav-height) + var(--demo-banner-height, 0px));
+    /* Extra 1.5rem buffer for visual breathing room below fixed nav */
+    padding-top: calc(var(--nav-height) + var(--demo-banner-height, 0px) + 1.5rem);
   }
 }
