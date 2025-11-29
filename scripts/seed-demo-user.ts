@@ -1070,15 +1070,10 @@ async function seedDemoUser() {
       const { error: evolutionError } = await supabase.from('evolution_reports').insert({
         user_id: demoUser.id,
         dream_id: saasDream.id,
-        analysis: SAAS_EVOLUTION_REPORT,
-        report_type: 'premium',
+        evolution: SAAS_EVOLUTION_REPORT,
         report_category: 'dream-specific',
         reflections_analyzed: saasReflectionIds,
         reflection_count: saasReflectionIds.length,
-        time_period_start: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString(),
-        time_period_end: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-        patterns_detected: ['fear-to-confidence', 'scope-management', 'technical-growth'],
-        growth_score: 78,
       });
 
       if (evolutionError) {

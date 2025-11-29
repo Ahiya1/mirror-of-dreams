@@ -313,7 +313,7 @@ export default function MirrorExperience() {
                 {!selectedDreamId ? (
                   /* Dream selection view */
                   <div className="question-view">
-                    <h2 className="text-center mb-8 text-2xl md:text-3xl font-light bg-gradient-to-r from-mirror-purple via-mirror-violet to-mirror-blue bg-clip-text text-transparent">
+                    <h2 className="text-center mb-8 text-2xl md:text-3xl font-light bg-gradient-to-r from-mirror-amethyst via-mirror-amethyst-light to-cosmic-blue bg-clip-text text-transparent">
                       Which dream are you reflecting on?
                     </h2>
 
@@ -341,17 +341,17 @@ export default function MirrorExperience() {
                                 interactive
                                 className={cn(
                                   'cursor-pointer transition-all',
-                                  isSelected && 'border-mirror-purple/60'
+                                  isSelected && 'border-mirror-amethyst/60'
                                 )}
                               >
                                 <div className="flex items-center gap-4">
                                   <span className="text-4xl flex-shrink-0">{emoji}</span>
                                   <div className="flex-1 min-w-0">
-                                    <h3 className="mb-1 text-lg font-medium bg-gradient-to-r from-mirror-purple to-mirror-blue bg-clip-text text-transparent">
+                                    <h3 className="mb-1 text-lg font-medium text-white">
                                       {dream.title}
                                     </h3>
                                     {dream.daysLeft !== null && dream.daysLeft !== undefined && (
-                                      <p className="text-sm text-mirror-purple/90">
+                                      <p className="text-sm text-mirror-amethyst-light">
                                         {dream.daysLeft < 0
                                           ? `${Math.abs(dream.daysLeft)}d overdue`
                                           : dream.daysLeft === 0
@@ -364,7 +364,7 @@ export default function MirrorExperience() {
                                     <motion.div
                                       initial={{ scale: 0 }}
                                       animate={{ scale: 1 }}
-                                      className="text-mirror-purple flex-shrink-0"
+                                      className="text-mirror-amethyst flex-shrink-0"
                                     >
                                       <Check className="h-6 w-6" />
                                     </motion.div>
@@ -763,7 +763,7 @@ export default function MirrorExperience() {
         .reflection-card {
           padding: 3rem;
           border-radius: 30px;
-          transition: all 0.8s ease;
+          transition: border-color 0.8s ease, box-shadow 0.8s ease;
         }
 
         .mirror-surface {

@@ -319,7 +319,7 @@
 
   /* Navigation - Dynamically set by JavaScript, fallback provides responsive default */
   --nav-height: clamp(60px, 8vh, 80px);
-  --demo-banner-height: 44px;
+  --demo-banner-height: 0px; /* Set dynamically by DemoBanner component when visible */
   --total-header-height: calc(var(--nav-height) + var(--demo-banner-height));
 
   /* Content */

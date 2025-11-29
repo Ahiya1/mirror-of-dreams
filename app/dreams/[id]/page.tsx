@@ -29,9 +29,9 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
     sortOrder: 'desc',
   });
 
-  // Filter reflections by dream_id
+  // Filter reflections by dreamId (camelCase from API response)
   const dreamReflections = reflections?.items?.filter(
-    (r: any) => r.dream_id === params.id
+    (r: any) => r.dreamId === params.id
   ) || [];
 
   const reflectionCount = dreamReflections.length;
