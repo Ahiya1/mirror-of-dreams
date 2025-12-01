@@ -234,7 +234,7 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
               aria-controls="user-dropdown-menu"
             >
               <span className="text-lg" aria-hidden="true">
-                {user?.tier === 'premium' ? '💎' : user?.tier === 'essential' ? '✨' : '👤'}
+                {user?.tier === 'unlimited' ? '💎' : user?.tier === 'pro' ? '✨' : '👤'}
               </span>
               <span className="hidden sm:inline text-sm text-white">
                 {user?.name?.split(' ')[0] || 'Friend'}
@@ -277,7 +277,7 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
                         <span>⚙️</span>
                         <span>Settings</span>
                       </Link>
-                      {user?.tier !== 'premium' && (
+                      {user?.tier !== 'unlimited' && (
                         <Link href="/subscription" className="dashboard-dropdown-item">
                           <span>💎</span>
                           <span>Upgrade</span>

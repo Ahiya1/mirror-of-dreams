@@ -49,14 +49,14 @@ export const visualizationsRouter = router({
     .input(generateVisualizationSchema)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.user.id;
-      const userTier = ctx.user.tier as 'free' | 'essential' | 'optimal' | 'premium';
+      const userTier = ctx.user.tier as 'free' | 'pro' | 'unlimited';
       const isDreamSpecific = !!input.dreamId;
 
       // 1. Check tier eligibility for cross-dream
       if (!isDreamSpecific && userTier === 'free') {
         throw new TRPCError({
           code: 'FORBIDDEN',
-          message: 'Cross-dream visualizations require Essential tier or higher',
+          message: 'Cross-dream visualizations require Pro tier or higher',
         });
       }
 

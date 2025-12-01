@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/glass';
 import { AppNavigation } from '@/components/shared/AppNavigation';
 import { EmptyState } from '@/components/shared/EmptyState';
+import { FeatureLockOverlay } from '@/components/subscription/FeatureLockOverlay';
 import { cn } from '@/lib/utils';
 
 export default function EvolutionPage() {
@@ -123,29 +124,17 @@ export default function EvolutionPage() {
           </GradientText>
 
           {user.tier === 'free' ? (
-            <GlassCard
-              elevated
-              className="border-l-4 border-yellow-500"
-            >
-              <div className="flex items-center gap-3">
-                <GlowBadge variant="warning">
-                  !
-                </GlowBadge>
-                <div className="flex-1">
-                  <p className="text-white/90 font-medium">Upgrade to Essential</p>
-                  <p className="text-small text-white/70">
-                    Evolution reports are available for Essential tier and higher.
-                  </p>
-                </div>
-                <GlowButton
-                  variant="primary"
-                  size="sm"
-                  onClick={() => router.push('/dashboard')}
-                >
-                  Upgrade Now
-                </GlowButton>
-              </div>
-            </GlassCard>
+            <FeatureLockOverlay
+              featureName="Evolution Reports"
+              description="Track your growth and transformation over time with AI-powered evolution analysis."
+              requiredTier="pro"
+              benefits={[
+                'Recurring themes and insights',
+                'Growth patterns over time',
+                'Dream evolution trajectories',
+                'Monthly progress reports',
+              ]}
+            />
           ) : (
             <div className="space-y-6">
               {/* Dream-Specific Report */}

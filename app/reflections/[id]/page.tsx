@@ -285,10 +285,12 @@ export default function ReflectionDetailPage({ params }: ReflectionDetailPagePro
                 <span className="text-gray-400">Word Count</span>
                 <span className="text-gray-200">{reflection.wordCount.toLocaleString()}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-400">Read Time</span>
-                <span className="text-gray-200">{reflection.estimatedReadTime} min</span>
-              </div>
+              {reflection.estimatedReadTime && (
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-400">Read Time</span>
+                  <span className="text-gray-200">{reflection.estimatedReadTime} min</span>
+                </div>
+              )}
               {reflection.rating && (
                 <div className="flex items-center justify-between">
                   <span className="text-gray-400">Your Rating</span>

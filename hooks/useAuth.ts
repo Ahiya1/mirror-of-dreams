@@ -87,8 +87,11 @@ export function useAuth(): UseAuthReturn {
         subscriptionStatus: userData.subscription_status,
         subscriptionPeriod: userData.subscription_period,
         reflectionCountThisMonth: userData.reflection_count_this_month,
+        reflectionsToday: userData.reflections_today || 0,
+        lastReflectionDate: userData.last_reflection_date || null,
         totalReflections: userData.total_reflections,
         currentMonthYear: new Date().toISOString().slice(0, 7), // "2025-01" format
+        cancelAtPeriodEnd: userData.cancel_at_period_end || false,
         isCreator: userData.is_creator,
         isAdmin: userData.is_admin,
         isDemo: userData.is_demo || false, // NEW: Demo user flag

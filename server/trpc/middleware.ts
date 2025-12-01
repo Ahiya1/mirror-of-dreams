@@ -2,7 +2,7 @@
 
 import { TRPCError } from '@trpc/server';
 import { middleware, publicProcedure } from './trpc';
-import { TIER_LIMITS } from '@/lib/utils/constants';
+import { TIER_LIMITS, DAILY_LIMITS } from '@/lib/utils/constants';
 
 // Ensure user is authenticated
 export const isAuthed = middleware(({ ctx, next }) => {
@@ -53,7 +53,7 @@ export const isPremium = middleware(({ ctx, next }) => {
   return next({ ctx: { ...ctx, user: ctx.user } });
 });
 
-// Check usage limits
+// Check usage limits (both daily and monthly)
 export const checkUsageLimit = middleware(async ({ ctx, next }) => {
   if (!ctx.user) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
@@ -64,13 +64,29 @@ export const checkUsageLimit = middleware(async ({ ctx, next }) => {
     return next({ ctx: { ...ctx, user: ctx.user } });
   }
 
-  const limit = TIER_LIMITS[ctx.user.tier];
-  const usage = ctx.user.reflectionCountThisMonth;
+  // Check daily limit first (Pro and Unlimited only)
+  if (ctx.user.tier === 'pro' || ctx.user.tier === 'unlimited') {
+    const dailyLimit = DAILY_LIMITS[ctx.user.tier];
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const lastDate = ctx.user.lastReflectionDate;
 
-  if (usage >= limit) {
+    // Check if already at daily limit
+    if (lastDate === today && ctx.user.reflectionsToday >= dailyLimit) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: `Daily reflection limit reached (${dailyLimit}/day). Try again tomorrow.`,
+      });
+    }
+  }
+
+  // Check monthly limit
+  const monthlyLimit = TIER_LIMITS[ctx.user.tier];
+  const monthlyUsage = ctx.user.reflectionCountThisMonth;
+
+  if (monthlyUsage >= monthlyLimit) {
     throw new TRPCError({
       code: 'FORBIDDEN',
-      message: `Monthly reflection limit reached (${limit}). Please upgrade or wait until next month.`,
+      message: `Monthly reflection limit reached (${monthlyLimit}). Please upgrade or wait until next month.`,
     });
   }
 

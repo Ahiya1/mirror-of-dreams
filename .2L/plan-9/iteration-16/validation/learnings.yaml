@@ -1,0 +1,44 @@
+schema_version: '1.0'
+project: mirror-of-dreams
+plan: plan-9
+iteration: iteration-16
+created_at: '2025-11-30T05:45:29.039205'
+learnings:
+- category: typescript
+  severity: critical
+  issue: Tier name migration incomplete
+  root_cause: TypeScript compilation fails, build fails, deployment blocked
+  solution: "Global find/replace to migrate all old tier references (essential\u2192\
+    pro, premium\u2192unlimited, optimal\u2192unlimited). Update tier comparisons,\
+    \ TIER_LIMITS lookups, and cost calculation calls."
+  recurrence_risk: high
+  affected_files:
+  - 7 files
+  - app/profile/page.tsx
+  - components/shared/AppNavigation.tsx
+  - server/trpc/routers/evolution.ts
+  - server/trpc/routers/reflections.ts
+  - server/trpc/routers/visualizations.ts)
+  id: mirror-of-dreams-20251130-001
+  iteration: plan-9-iter-16
+- category: typescript
+  severity: critical
+  issue: useAuth.ts missing User properties
+  root_cause: User object construction incomplete, type error
+  solution: Add reflectionsToday, lastReflectionDate, cancelAtPeriodEnd to User object
+    construction
+  recurrence_risk: high
+  affected_files:
+  - hooks/useAuth.ts:82
+  id: mirror-of-dreams-20251130-002
+  iteration: plan-9-iter-16
+- category: typescript
+  severity: critical
+  issue: Duplicate property in seed script
+  root_cause: Demo user seeding broken
+  solution: Remove duplicate property in object literal
+  recurrence_risk: high
+  affected_files:
+  - scripts/seed-demo-user.ts:176
+  id: mirror-of-dreams-20251130-003
+  iteration: plan-9-iter-16

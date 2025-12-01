@@ -3,7 +3,7 @@
 import React from 'react';
 
 interface TierBadgeProps {
-  tier?: 'free' | 'essential' | 'premium' | 'creator';
+  tier?: 'free' | 'pro' | 'unlimited' | 'essential' | 'premium' | 'creator';
   size?: 'sm' | 'md' | 'lg' | 'xl';
   animated?: boolean;
   showGlow?: boolean;
@@ -33,6 +33,23 @@ const TierBadge: React.FC<TierBadgeProps> = ({
       color: 'rgba(255, 255, 255, 0.9)',
       glow: 'rgba(255, 255, 255, 0.15)',
     },
+    pro: {
+      name: 'Pro',
+      icon: '✨',
+      background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.15))',
+      border: 'rgba(16, 185, 129, 0.3)',
+      color: 'rgba(110, 231, 183, 0.9)',
+      glow: 'rgba(16, 185, 129, 0.3)',
+    },
+    unlimited: {
+      name: 'Unlimited',
+      icon: '💎',
+      background: 'linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(99, 102, 241, 0.15))',
+      border: 'rgba(147, 51, 234, 0.3)',
+      color: 'rgba(196, 181, 253, 0.9)',
+      glow: 'rgba(147, 51, 234, 0.4)',
+    },
+    // Legacy tiers (for backward compatibility)
     essential: {
       name: 'Essential',
       icon: '✨',

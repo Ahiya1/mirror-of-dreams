@@ -46,7 +46,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
   // User data with fallbacks
   const userData = {
-    tier: (user?.tier || 'free') as 'free' | 'essential' | 'premium' | 'creator',
+    tier: (user?.tier || 'free') as 'free' | 'pro' | 'unlimited',
     subscriptionStatus: user?.subscriptionStatus || 'active',
     isCreator: user?.isCreator || false,
   };
@@ -58,51 +58,43 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     const tierInfo: Record<string, TierInfo> = {
       free: {
         name: 'Free',
-        description: '1 reflection per month to get started',
+        description: '2 reflections per month to get started',
         benefits: [
-          '1 monthly reflection',
-          'Basic mirror experience',
-          'Community access',
+          '2 monthly reflections',
+          '2 active dreams',
+          'Basic AI insights',
+          'All reflection tones',
         ],
         color: 'default',
-        nextTier: 'essential',
+        nextTier: 'pro',
       },
-      essential: {
-        name: 'Essential',
-        description: '5 reflections monthly + Evolution Reports to track growth',
+      pro: {
+        name: 'Pro',
+        description: '30 reflections monthly + Evolution Reports',
         benefits: [
-          '5 monthly reflections',
+          '30 monthly reflections',
+          '1 reflection per day',
+          '5 active dreams',
           'Evolution reports',
-          'Pattern insights',
-          'Priority support',
+          'Visualizations',
+          'Advanced AI model',
         ],
         color: 'success',
-        nextTier: 'premium',
+        nextTier: 'unlimited',
       },
-      premium: {
-        name: 'Premium',
-        description: '10 reflections monthly + Advanced Evolution Insights',
+      unlimited: {
+        name: 'Unlimited',
+        description: '60 reflections monthly + Extended Thinking AI',
         benefits: [
-          '10 monthly reflections',
-          'Advanced evolution analytics',
-          'Deep pattern analysis',
-          'Premium themes',
-          'Early access features',
+          '60 monthly reflections',
+          '2 reflections per day',
+          'Unlimited dreams',
+          'Extended thinking AI',
+          'Evolution reports',
+          'Visualizations',
+          'Priority support',
         ],
         color: 'fusion',
-        nextTier: 'creator',
-      },
-      creator: {
-        name: 'Creator',
-        description: 'Unlimited reflections and full access to all features',
-        benefits: [
-          'Unlimited reflections',
-          'Creator dashboard',
-          'Advanced analytics',
-          'All premium features',
-          'Direct support',
-        ],
-        color: 'intense',
         nextTier: null,
       },
     };
@@ -116,50 +108,40 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
    * Get subscription action based on current tier
    */
   const getSubscriptionAction = (): SubscriptionAction => {
-    if (userData.isCreator) {
-      return {
-        type: 'manage',
-        text: 'Creator Dashboard',
-        href: '/creator',
-        icon: '',
-        color: 'intense',
-      };
-    }
-
     if (userData.tier === 'free') {
       return {
         type: 'upgrade',
         text: 'Upgrade Plan',
-        href: '/subscription',
+        href: '/pricing',
         icon: '',
         color: 'primary',
       };
     }
 
-    if (userData.tier === 'essential') {
+    if (userData.tier === 'pro') {
       return {
         type: 'upgrade',
-        text: 'Upgrade to Premium',
-        href: '/subscription?tier=premium',
+        text: 'Upgrade to Unlimited',
+        href: '/pricing',
         icon: '',
         color: 'fusion',
       };
     }
 
-    if (userData.tier === 'premium') {
+    if (userData.tier === 'unlimited') {
       return {
-        type: 'upgrade',
-        text: 'Become Creator',
-        href: '/subscription?tier=creator',
+        type: 'manage',
+        text: 'Manage Subscription',
+        href: '/profile',
         icon: '',
-        color: 'intense',
+        color: 'secondary',
       };
     }
 
     return {
       type: 'manage',
       text: 'Manage Plan',
-      href: '/subscription',
+      href: '/pricing',
       icon: '',
       color: 'secondary',
     };
@@ -238,7 +220,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           {upgradeBenefits.length > 0 && (
             <div className="upgrade-preview">
               <h5 className="upgrade-title">
-                Available with {tierInfo.nextTier === 'creator' ? 'Creator' : 'Premium'}
+                Available with {tierInfo.nextTier === 'unlimited' ? 'Unlimited' : 'Pro'}
               </h5>
               <div className="upgrade-benefits">
                 {upgradeBenefits.slice(0, 3).map((benefit, index) => (

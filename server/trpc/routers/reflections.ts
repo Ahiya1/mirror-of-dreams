@@ -205,9 +205,8 @@ export const reflectionsRouter = router({
     // Aligned with vision: Free tier gets 4 reflections/month
     const TIER_LIMITS = {
       free: 4,        // Vision: 4 reflections/month for Free tier
-      essential: 10,   // Between free and optimal
-      optimal: 30,     // Vision: 30 reflections/month for Optimal tier
-      premium: 999999  // Unlimited for admin/creator
+      pro: 10,        // Pro tier (formerly essential)
+      unlimited: 999999  // Unlimited for admin/creator
     };
 
     const limit = ctx.user.isCreator || ctx.user.isAdmin
