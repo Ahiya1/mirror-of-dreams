@@ -290,11 +290,11 @@ export default function MirrorExperience() {
                 <ul className="space-y-2 text-white/70">
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-green-400" />
-                    <span>3 reflections per month</span>
+                    <span>2 reflections per month</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-green-400" />
-                    <span>Track up to 3 dreams</span>
+                    <span>Track up to 2 dreams</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-green-400" />
