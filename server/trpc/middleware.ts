@@ -105,7 +105,7 @@ export const notDemo = middleware(({ ctx, next }) => {
   if (ctx.user.isDemo) {
     throw new TRPCError({
       code: 'FORBIDDEN',
-      message: 'Demo accounts cannot modify data. Sign up to save changes.',
+      message: 'Create a free account to start your own reflection journey. The demo shows what\'s possible!',
     });
   }
 
@@ -116,5 +116,5 @@ export const notDemo = middleware(({ ctx, next }) => {
 export const protectedProcedure = publicProcedure.use(isAuthed);
 export const creatorProcedure = publicProcedure.use(isCreatorOrAdmin);
 export const premiumProcedure = publicProcedure.use(isAuthed).use(isPremium);
-export const usageLimitedProcedure = publicProcedure.use(isAuthed).use(checkUsageLimit);
+export const usageLimitedProcedure = publicProcedure.use(isAuthed).use(notDemo).use(checkUsageLimit);
 export const writeProcedure = publicProcedure.use(isAuthed).use(notDemo);

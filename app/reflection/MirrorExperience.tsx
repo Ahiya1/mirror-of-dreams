@@ -250,6 +250,96 @@ export default function MirrorExperience() {
     other: '⭐',
   };
 
+  // Demo user CTA - show signup prompt instead of questionnaire
+  if (user?.isDemo && viewMode === 'questionnaire') {
+    return (
+      <div className="reflection-experience">
+        <CosmicBackground />
+        <div className="reflection-vignette" />
+
+        <div className="min-h-screen flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="max-w-xl w-full"
+          >
+            <GlassCard className="p-8 text-center">
+              {/* Mirror icon */}
+              <div className="mb-6">
+                <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-purple-500/30 to-pink-500/30 flex items-center justify-center border border-purple-500/40">
+                  <span className="text-4xl">🪞</span>
+                </div>
+              </div>
+
+              {/* Heading */}
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
+                Ready to Start Your Journey?
+              </h1>
+
+              {/* Description */}
+              <p className="text-white/70 text-lg mb-6 leading-relaxed">
+                You've explored what Mirror of Dreams can offer.
+                Now it's time to create your own reflections and
+                discover insights unique to your path.
+              </p>
+
+              {/* What you get */}
+              <div className="bg-white/5 rounded-xl p-4 mb-8 text-left">
+                <p className="text-purple-300 font-medium mb-3">With a free account, you get:</p>
+                <ul className="space-y-2 text-white/70">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-green-400" />
+                    <span>3 reflections per month</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-green-400" />
+                    <span>Track up to 3 dreams</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-green-400" />
+                    <span>Personal reflection history</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* CTA buttons */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <GlowButton
+                  variant="primary"
+                  size="lg"
+                  className="flex-1"
+                  onClick={() => router.push('/auth/signup')}
+                >
+                  Create Free Account
+                </GlowButton>
+                <GlowButton
+                  variant="ghost"
+                  size="lg"
+                  className="flex-1"
+                  onClick={() => router.push('/reflections')}
+                >
+                  Continue Exploring
+                </GlowButton>
+              </div>
+
+              {/* Already have account */}
+              <p className="mt-6 text-white/50 text-sm">
+                Already have an account?{' '}
+                <button
+                  onClick={() => router.push('/auth/signin')}
+                  className="text-purple-400 hover:text-purple-300 transition-colors"
+                >
+                  Sign in
+                </button>
+              </p>
+            </GlassCard>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="reflection-experience">
       {/* Darker cosmic background with vignette */}
