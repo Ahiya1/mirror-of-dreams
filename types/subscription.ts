@@ -11,8 +11,8 @@ export interface Subscription {
   tier: SubscriptionTier;
   status: SubscriptionStatus;
   period: 'monthly' | 'yearly';
-  stripeCustomerId: string | null;
-  stripeSubscriptionId: string | null;
+  paypalSubscriptionId: string | null;
+  paypalPayerId: string | null;
   currentPeriodStart: string | null;
   currentPeriodEnd: string | null;
   cancelAtPeriodEnd: boolean;
@@ -30,16 +30,16 @@ export interface PaymentIntentInput {
 }
 
 /**
- * Stripe configuration (client-facing)
+ * PayPal configuration (client-facing)
  */
-export interface StripeConfig {
-  publishableKey: string;
-  priceIds: {
-    essential: {
+export interface PayPalConfig {
+  clientId: string;
+  planIds: {
+    pro: {
       monthly: string;
       yearly: string;
     };
-    premium: {
+    unlimited: {
       monthly: string;
       yearly: string;
     };
@@ -50,11 +50,11 @@ export interface StripeConfig {
  * Tier pricing structure
  */
 export interface TierPricing {
-  essential: {
+  pro: {
     monthly: number;
     yearly: number;
   };
-  premium: {
+  unlimited: {
     monthly: number;
     yearly: number;
   };
@@ -65,8 +65,8 @@ export interface TierPricing {
  */
 export interface TierLimits {
   free: number;
-  essential: number;
-  premium: number;
+  pro: number;
+  unlimited: number;
 }
 
 /**

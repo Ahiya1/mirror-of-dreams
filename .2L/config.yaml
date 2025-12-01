@@ -23,7 +23,7 @@ plans:
     master_exploration:
       num_explorers: 4
       complexity_level: COMPLEX
-    github_repo: git@github.com:Ahiya1/mirror-of-truth-online.git
+    github_repo: git@github.com:Ahiya1/mirror-of-dreams.git
   plan-5:
     status: COMPLETE
     created: '2025-11-27'
@@ -36,13 +36,13 @@ plans:
     master_exploration:
       num_explorers: 4
       complexity_level: COMPLEX
-    github_repo: git@github.com:Ahiya1/mirror-of-truth-online.git
+    github_repo: git@github.com:Ahiya1/mirror-of-dreams.git
   plan-6:
     status: COMPLETE
     created: '2025-11-27'
     vision_file: plan-6/vision.md
     description: The Final Polish - Transform from 5.8/10 to 10/10 complete experience
-    github_repo: git@github.com:Ahiya1/mirror-of-truth-online.git
+    github_repo: git@github.com:Ahiya1/mirror-of-dreams.git
     master_exploration:
       num_explorers: 4
       complexity_level: COMPLEX
@@ -59,7 +59,7 @@ plans:
     total_iterations: 3
     current_iteration: 3
     completed_at: '2025-11-28T12:00:00Z'
-    github_repo: git@github.com:Ahiya1/mirror-of-truth-online.git
+    github_repo: git@github.com:Ahiya1/mirror-of-dreams.git
     master_exploration:
       num_explorers: 4
       complexity_level: COMPLEX
@@ -69,7 +69,7 @@ plans:
     vision_file: plan-8/vision.md
     master_plan_file: plan-8/master-plan.yaml
     description: Final Polish & Demo Completeness - Fix layout bugs, complete demo data, enhance reflection aesthetics (7.5/10 → 9/10)
-    github_repo: git@github.com:Ahiya1/mirror-of-truth-online.git
+    github_repo: git@github.com:Ahiya1/mirror-of-dreams.git
     master_exploration:
       num_explorers: 4
       complexity_level: MEDIUM
@@ -77,5 +77,25 @@ plans:
     current_iteration: 1
     current_phase: complete
     completed_at: '2025-11-28T16:00:00Z'
-current_plan: plan-8
+plan-9:
+    status: COMPLETE
+    created: '2025-11-30'
+    vision_file: plan-9/vision.md
+    master_plan_file: plan-9/master-plan.yaml
+    description: PayPal Subscription Integration - Enable monetization with PayPal billing
+    github_repo: git@github.com:Ahiya1/mirror-of-dreams.git
+    master_exploration:
+      num_explorers: 4
+      complexity_level: MEDIUM-HIGH
+    total_iterations: 2
+    current_iteration: 2
+    completed_at: '2025-12-01T00:00:00Z'
+  plan-10:
+    status: COMPLETE
+    created: '2025-12-01'
+    vision_file: plan-10/vision.md
+    description: Production Readiness - Remove Stripe, fix demo user bugs, clean up code
+    github_repo: git@github.com:Ahiya1/mirror-of-dreams.git
+    completed_at: '2025-12-01T01:00:00Z'
+current_plan: plan-10
 global_iteration_counter: 15

@@ -1,6 +1,6 @@
 // types/user.ts - User types and transformations
 
-export type SubscriptionTier = 'free' | 'essential' | 'premium';
+export type SubscriptionTier = 'free' | 'pro' | 'unlimited';
 export type SubscriptionStatus = 'active' | 'canceled' | 'expired' | 'past_due' | 'trialing';
 export type Language = 'en' | 'he';
 
@@ -43,8 +43,11 @@ export interface User {
   subscriptionStatus: SubscriptionStatus;
   subscriptionPeriod: 'monthly' | 'yearly' | null;
   reflectionCountThisMonth: number;
+  reflectionsToday: number;
+  lastReflectionDate: string | null; // "YYYY-MM-DD"
   totalReflections: number;
   currentMonthYear: string; // "2025-01"
+  cancelAtPeriodEnd: boolean;
   isCreator: boolean;
   isAdmin: boolean;
   isDemo: boolean; // NEW: Demo user flag
@@ -87,8 +90,11 @@ export interface UserRow {
   subscription_status: string;
   subscription_period: string | null;
   reflection_count_this_month: number;
+  reflections_today: number;
+  last_reflection_date: string | null;
   total_reflections: number;
   current_month_year: string;
+  cancel_at_period_end: boolean;
   is_creator: boolean;
   is_admin: boolean;
   is_demo: boolean; // NEW: Demo user flag
@@ -112,8 +118,11 @@ export function userRowToUser(row: UserRow): User {
     subscriptionStatus: row.subscription_status as SubscriptionStatus,
     subscriptionPeriod: row.subscription_period as 'monthly' | 'yearly' | null,
     reflectionCountThisMonth: row.reflection_count_this_month,
+    reflectionsToday: row.reflections_today || 0,
+    lastReflectionDate: row.last_reflection_date || null,
     totalReflections: row.total_reflections,
     currentMonthYear: row.current_month_year,
+    cancelAtPeriodEnd: row.cancel_at_period_end || false,
     isCreator: row.is_creator,
     isAdmin: row.is_admin,
     isDemo: row.is_demo || false, // NEW: Demo user flag

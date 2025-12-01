@@ -25,6 +25,7 @@ import { GlassInput } from '@/components/ui/glass/GlassInput';
 import { GlowButton } from '@/components/ui/glass/GlowButton';
 import { GlassModal } from '@/components/ui/glass/GlassModal';
 import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
+import { SubscriptionStatusCard } from '@/components/subscription/SubscriptionStatusCard';
 import { formatDistanceToNow } from 'date-fns';
 
 export default function ProfilePage() {
@@ -330,20 +331,18 @@ export default function ProfilePage() {
             </div>
           </GlassCard>
 
-          {/* Tier & Subscription */}
+          {/* Subscription & Billing Section */}
+          <SubscriptionStatusCard />
+
+          {/* Usage Statistics */}
           <GlassCard elevated className="mb-6">
-            <h2 className="text-xl font-semibold text-white mb-4">Tier & Subscription</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">Usage Statistics</h2>
 
             <div className="space-y-3">
               <div>
-                <label className="text-sm text-white/60 block mb-1">Current Tier</label>
-                <p className="text-lg text-white capitalize">{user?.tier}</p>
-              </div>
-
-              <div>
                 <label className="text-sm text-white/60 block mb-1">Reflections This Month</label>
                 <p className="text-lg text-white">
-                  {user?.reflectionCountThisMonth} / {user?.tier === 'free' ? '10' : user?.tier === 'essential' ? '50' : 'Unlimited'}
+                  {user?.reflectionCountThisMonth} / {user?.tier === 'free' ? '2' : user?.tier === 'pro' ? '30' : '60'}
                 </p>
               </div>
 

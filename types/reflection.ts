@@ -20,9 +20,9 @@ export interface Reflection {
   tone: ReflectionTone;
   isPremium: boolean;
   wordCount: number;
-  estimatedReadTime: number;
-  title: string;
-  tags: string[];
+  estimatedReadTime: number | null;
+  title: string | null;
+  tags: string[] | null;
   rating: number | null;
   userFeedback: string | null;
   viewCount: number;

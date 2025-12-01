@@ -1,68 +1,91 @@
 'use client';
 
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/contexts/ToastContext';
 import CosmicBackground from '@/components/shared/CosmicBackground';
-import { GlassCard } from '@/components/ui/glass/GlassCard';
 import { GlowButton } from '@/components/ui/glass/GlowButton';
-import { Check, X } from 'lucide-react';
-import { TIER_LIMITS } from '@/lib/utils/constants';
+import { PricingCard } from '@/components/subscription/PricingCard';
+import { TIER_LIMITS, TIER_PRICING, DAILY_LIMITS, DREAM_LIMITS } from '@/lib/utils/constants';
+import type { BillingPeriod } from '@/lib/utils/constants';
 
-export default function PricingPage() {
+// Separate component that uses searchParams
+function PricingPageContent() {
+  const { user } = useAuth();
+  const toast = useToast();
+  const searchParams = useSearchParams();
+  const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('monthly');
+
+  // Handle PayPal return redirects
+  useEffect(() => {
+    const subscription = searchParams.get('subscription');
+
+    if (subscription === 'success') {
+      toast.success('Subscription activated! Welcome to your new tier.');
+      // Clean up URL
+      window.history.replaceState({}, '', '/pricing');
+    } else if (subscription === 'canceled') {
+      toast.info('Checkout canceled. Your current plan is still active.');
+      window.history.replaceState({}, '', '/pricing');
+    } else if (subscription === 'error') {
+      const errorMessage = searchParams.get('message') || 'Payment failed';
+      toast.error(errorMessage);
+      window.history.replaceState({}, '', '/pricing');
+    }
+  }, [searchParams, toast]);
+
   const tiers = [
     {
+      tier: 'free' as const,
       name: 'Free',
-      price: '$0',
-      period: 'forever',
+      monthlyPrice: 0,
+      yearlyPrice: 0,
       description: 'Perfect for exploring Mirror of Dreams',
-      cta: 'Start Free',
-      ctaLink: '/auth/signup',
-      popular: false,
       features: [
         { name: `${TIER_LIMITS.free} reflections per month`, included: true },
-        { name: '3 active dreams', included: true },
+        { name: `${DREAM_LIMITS.free} active dreams`, included: true },
         { name: 'Basic AI insights', included: true },
         { name: 'All reflection tones', included: true },
         { name: 'Evolution reports', included: false },
         { name: 'Visualizations', included: false },
-        { name: 'Advanced AI model', included: false },
+        { name: 'Daily reflection limits', included: false },
         { name: 'Priority support', included: false },
       ],
     },
     {
-      name: 'Premium',
-      price: '$9.99',
-      period: 'per month',
+      tier: 'pro' as const,
+      name: 'Pro',
+      monthlyPrice: TIER_PRICING.pro.monthly,
+      yearlyPrice: TIER_PRICING.pro.yearly,
       description: 'For committed dreamers and deep reflection',
-      cta: 'Start Premium',
-      ctaLink: '/auth/signup?plan=premium',
       popular: true,
       features: [
-        { name: `${TIER_LIMITS.essential} reflections per month`, included: true },
-        { name: '10 active dreams', included: true },
+        { name: `${TIER_LIMITS.pro} reflections per month`, included: true },
+        { name: `${DAILY_LIMITS.pro} reflection per day`, included: true },
+        { name: `${DREAM_LIMITS.pro} active dreams`, included: true },
         { name: 'Advanced AI insights', included: true },
         { name: 'All reflection tones', included: true },
         { name: 'Evolution reports', included: true },
         { name: 'Visualizations', included: true },
-        { name: 'Advanced AI model', included: true },
         { name: 'Priority support', included: true },
       ],
     },
     {
-      name: 'Pro',
-      price: '$29.99',
-      period: 'per month',
-      description: 'Unlimited reflection for transformation',
-      cta: 'Start Pro',
-      ctaLink: '/auth/signup?plan=pro',
-      popular: false,
+      tier: 'unlimited' as const,
+      name: 'Unlimited',
+      monthlyPrice: TIER_PRICING.unlimited.monthly,
+      yearlyPrice: TIER_PRICING.unlimited.yearly,
+      description: 'Maximum reflection capacity for transformation',
       features: [
-        { name: 'Unlimited reflections', included: true },
-        { name: 'Unlimited dreams', included: true },
-        { name: 'Premium AI insights', included: true },
+        { name: `${TIER_LIMITS.unlimited} reflections per month`, included: true },
+        { name: `${DAILY_LIMITS.unlimited} reflections per day`, included: true },
+        { name: 'Unlimited active dreams', included: true },
+        { name: 'Premium AI insights with extended thinking', included: true },
         { name: 'All reflection tones', included: true },
         { name: 'Evolution reports', included: true },
         { name: 'Visualizations', included: true },
-        { name: 'Advanced AI model', included: true },
         { name: 'Priority support', included: true },
       ],
     },
@@ -87,12 +110,12 @@ export default function PricingPage() {
     {
       question: "What's your refund policy?",
       answer:
-        "We offer a 14-day money-back guarantee. If you're not satisfied with Premium or Pro within 14 days of purchase, contact support for a full refund.",
+        "We offer a 14-day money-back guarantee. If you're not satisfied with Pro or Unlimited within 14 days of purchase, contact support for a full refund.",
     },
     {
       question: 'Do you offer annual billing?',
       answer:
-        'Yes! Annual billing saves 17% compared to monthly. You can switch to annual billing from your account settings after signing up.',
+        'Yes! Annual billing saves 17% compared to monthly. Toggle between monthly and yearly above to see the pricing.',
     },
   ];
 
@@ -120,7 +143,7 @@ export default function PricingPage() {
       <main className="relative z-10 pt-32 pb-20 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-16">
+          <div className="text-center mb-8">
             <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
               Choose Your Path
             </h1>
@@ -129,69 +152,40 @@ export default function PricingPage() {
             </p>
           </div>
 
+          {/* Billing Period Toggle */}
+          <div className="flex justify-center items-center gap-4 mb-12">
+            <button
+              onClick={() => setBillingPeriod('monthly')}
+              className={`px-6 py-2 rounded-lg font-medium transition-all ${
+                billingPeriod === 'monthly'
+                  ? 'bg-white/20 text-white'
+                  : 'text-white/60 hover:text-white'
+              }`}
+            >
+              Monthly
+            </button>
+            <button
+              onClick={() => setBillingPeriod('yearly')}
+              className={`px-6 py-2 rounded-lg font-medium transition-all ${
+                billingPeriod === 'yearly'
+                  ? 'bg-white/20 text-white'
+                  : 'text-white/60 hover:text-white'
+              }`}
+            >
+              Yearly
+              <span className="ml-2 text-green-400 text-sm">Save 17%</span>
+            </button>
+          </div>
+
           {/* Tier Cards */}
           <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mb-20">
             {tiers.map((tier) => (
-              <GlassCard
-                key={tier.name}
-                elevated
-                interactive={tier.popular}
-                className={`relative ${
-                  tier.popular
-                    ? 'border-2 border-purple-500/50 shadow-lg shadow-purple-500/20'
-                    : ''
-                }`}
-              >
-                {tier.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-500 to-blue-500 text-white text-sm font-semibold px-4 py-1 rounded-full">
-                    Most Popular
-                  </div>
-                )}
-
-                <div className="p-6">
-                  <h3 className="text-2xl font-bold text-white mb-2">
-                    {tier.name}
-                  </h3>
-                  <p className="text-white/60 text-sm mb-6">
-                    {tier.description}
-                  </p>
-
-                  <div className="mb-6">
-                    <span className="text-4xl font-bold text-white">
-                      {tier.price}
-                    </span>
-                    <span className="text-white/60 ml-2">{tier.period}</span>
-                  </div>
-
-                  <Link href={tier.ctaLink} className="block mb-6">
-                    <GlowButton
-                      variant={tier.popular ? 'primary' : 'secondary'}
-                      className="w-full"
-                    >
-                      {tier.cta}
-                    </GlowButton>
-                  </Link>
-
-                  <div className="space-y-3">
-                    {tier.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-start gap-3">
-                        {feature.included ? (
-                          <Check className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                        ) : (
-                          <X className="w-5 h-5 text-white/30 flex-shrink-0 mt-0.5" />
-                        )}
-                        <span
-                          className={
-                            feature.included ? 'text-white' : 'text-white/40'
-                          }
-                        >
-                          {feature.name}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </GlassCard>
+              <PricingCard
+                key={tier.tier}
+                {...tier}
+                billingPeriod={billingPeriod}
+                currentUserTier={user?.tier}
+              />
             ))}
           </div>
 
@@ -291,5 +285,29 @@ export default function PricingPage() {
         </div>
       </footer>
     </div>
+  );
+}
+
+// Loading fallback component
+function PricingPageLoading() {
+  return (
+    <div className="min-h-screen relative">
+      <CosmicBackground animated intensity={1} />
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+          <p className="text-white/80">Loading pricing...</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Main page component with Suspense boundary
+export default function PricingPage() {
+  return (
+    <Suspense fallback={<PricingPageLoading />}>
+      <PricingPageContent />
+    </Suspense>
   );
 }

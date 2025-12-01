@@ -59,9 +59,9 @@ export function getModelIdentifier(): string {
  * @param tier - User tier
  * @returns Thinking budget tokens (0 if not available)
  */
-export function getThinkingBudget(tier: 'free' | 'essential' | 'optimal' | 'premium'): number {
-  // Extended thinking available for Optimal and Premium tiers
-  if (tier === 'optimal' || tier === 'premium') {
+export function getThinkingBudget(tier: 'free' | 'pro' | 'unlimited'): number {
+  // Extended thinking available only for Unlimited tier
+  if (tier === 'unlimited') {
     return 5000; // 5K token budget for extended thinking
   }
   return 0;

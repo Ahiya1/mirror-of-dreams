@@ -1,12 +1,37 @@
 // lib/utils/constants.ts - Application constants
 
 export const TIER_LIMITS = {
-  free: 10,
-  essential: 50,
-  premium: Infinity,
+  free: 2,
+  pro: 30,
+  unlimited: 60,
+} as const;
+
+export const DAILY_LIMITS = {
+  free: Infinity,
+  pro: 1,
+  unlimited: 2,
+} as const;
+
+export const DREAM_LIMITS = {
+  free: 2,
+  pro: 5,
+  unlimited: Infinity,
 } as const;
 
 export type TierName = keyof typeof TIER_LIMITS;
+
+export const TIER_PRICING = {
+  pro: {
+    monthly: 15,
+    yearly: 150,
+  },
+  unlimited: {
+    monthly: 29,
+    yearly: 290,
+  },
+} as const;
+
+export type BillingPeriod = 'monthly' | 'yearly';
 
 export const TONES = [
   {

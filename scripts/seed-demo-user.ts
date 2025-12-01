@@ -13,7 +13,11 @@
  *   npx tsx scripts/seed-demo-user.ts
  */
 
+import { config } from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
+
+// Load environment variables from .env.local
+config({ path: '.env.local' });
 
 // Environment validation
 if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
@@ -172,7 +176,6 @@ Trust it.`,
       questions: {
         dream: "Same SaaS goal. I've built the landing page and set up authentication. The core feature (dashboard for tracking metrics) is 40% done.",
         plan: "This week: Finish dashboard layout. Next week: Add data visualization charts. Week 3: Build social proof widget. Week 4: Soft launch to beta users.",
-        relationship: "Feeling more confident now that I have tangible progress. But also anxious about scope creep - I keep wanting to add features. Need to stay focused on MVP.",
         relationship: "Feeling more confident now that I have tangible progress. But also anxious about scope creep - I keep wanting to add features. Need to stay focused on MVP.",
         offering: "This week I'm dedicating 15 hours. Already blocked calendar. Saying no to a friend's party on Saturday. Also committed to shipping even if the UI isn't polished - functionality first.",
       },
@@ -1023,6 +1026,19 @@ async function seedDemoUser() {
       for (const reflection of reflections) {
         const createdDate = new Date(Date.now() - reflection.daysAgo * 24 * 60 * 60 * 1000);
 
+        const wordCount = reflection.aiResponse.split(/\s+/).length;
+        const estimatedReadTime = Math.ceil(wordCount / 200); // ~200 words per minute
+
+        // Generate tags based on dream category
+        const categoryTags: Record<string, string[]> = {
+          career: ['business', 'growth', 'ambition'],
+          health: ['fitness', 'wellness', 'discipline'],
+          creative: ['art', 'learning', 'expression'],
+          relationships: ['connection', 'vulnerability', 'trust'],
+          financial: ['freedom', 'investment', 'independence'],
+        };
+        const tags = categoryTags[dream.category] || ['personal', 'growth'];
+
         const { data: createdReflection, error: reflectionError } = await supabase
           .from('reflections')
           .insert({
@@ -1037,7 +1053,10 @@ async function seedDemoUser() {
             ai_response: reflection.aiResponse,
             tone: reflection.tone,
             is_premium: true,
-            word_count: reflection.aiResponse.split(/\s+/).length,
+            word_count: wordCount,
+            estimated_read_time: estimatedReadTime,
+            title: dream.title,
+            tags: tags,
             created_at: createdDate.toISOString(),
             updated_at: createdDate.toISOString(),
           })
@@ -1053,7 +1072,7 @@ async function seedDemoUser() {
           saasReflectionIds.push(createdReflection.id);
         }
 
-        console.log(`   ✅ Reflection (${reflection.daysAgo} days ago, ${reflection.aiResponse.split(/\s+/).length} words)`);
+        console.log(`   ✅ Reflection (${reflection.daysAgo} days ago, ${wordCount} words, ~${estimatedReadTime} min read)`);
         totalReflections++;
       }
 

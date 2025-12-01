@@ -1,0 +1,260 @@
+plan_id: plan-9
+created_at: "2025-11-30T05:10:00Z"
+status: COMPLETED
+total_iterations: 2
+
+vision_summary: |
+  Replace Stripe with PayPal subscription billing, implement 3-tier structure
+  (Free, Pro, Unlimited) with daily limits, and complete the monetization flow.
+  AI upgrade (Sonnet 4.5) already complete - focus 100% on payments.
+
+complexity_assessment:
+  level: MEDIUM-HIGH
+  rationale: |
+    Multiple interconnected changes (payment provider swap, tier restructure,
+    daily limits) but well-defined scope with existing patterns to follow.
+    AI upgrade already complete reduces scope significantly.
+  num_explorers: 4
+  key_findings:
+    - Claude Sonnet 4.5 already implemented in reflection.ts
+    - Extended thinking already implemented for premium tier
+    - Stripe never activated - clean slate for PayPal
+    - Database schema supports subscriptions with minor additions needed
+    - Existing webhook pattern from Stripe provides template for PayPal
+
+strategy: |
+  TWO-ITERATION APPROACH:
+
+  Iteration 1 (Foundation + Backend):
+    - Database schema updates (tier rename, daily limits, PayPal columns)
+    - PayPal client library with token management
+    - tRPC subscription procedures (createCheckout, cancel, getStatus)
+    - PayPal webhook handler with signature verification
+    - Update tier limits constants and middleware
+    - Create PayPal products and subscription plans via MCP
+
+  Iteration 2 (Frontend + Polish):
+    - Update pricing page with 3-tier structure and PayPal checkout
+    - Profile page subscription management (cancel, status display)
+    - Feature gating for evolution/visualizations (free tier lock)
+    - Dashboard upgrade prompts and usage warnings
+    - Daily limit enforcement in reflection flow
+    - End-to-end testing with PayPal sandbox
+
+  This separation ensures:
+  - Backend is stable before frontend integrates
+  - Database migrations complete before code references new schema
+  - Webhook handler tested before live payments
+  - Clear integration boundary between iterations
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 16
+    name: "Foundation & Backend - PayPal Integration Core"
+    vision: |
+      Build the complete PayPal subscription backend infrastructure including
+      database schema, API client, webhook handler, and tRPC procedures.
+    scope: |
+      ## Database Schema Updates
+      - Add paypal_subscription_id, paypal_payer_id columns
+      - Add reflections_today, last_reflection_date for daily limits
+      - Update tier constraint: free | pro | unlimited (rename essential/premium)
+      - Add index on paypal_subscription_id for webhook lookups
+      - Create webhook_events table for idempotency
+
+      ## PayPal Client Library (server/lib/paypal.ts)
+      - Access token management with auto-refresh (9-hour expiry)
+      - createSubscription(planId, userId, returnUrl, cancelUrl)
+      - cancelSubscription(subscriptionId)
+      - getSubscriptionDetails(subscriptionId)
+      - Environment-aware (sandbox vs production)
+
+      ## PayPal Webhook Handler (app/api/webhooks/paypal/route.ts)
+      - Signature verification using PayPal verification API
+      - Handle BILLING.SUBSCRIPTION.ACTIVATED → upgrade tier
+      - Handle BILLING.SUBSCRIPTION.CANCELLED → set cancel_at_period_end
+      - Handle BILLING.SUBSCRIPTION.EXPIRED → downgrade to free
+      - Handle BILLING.SUBSCRIPTION.SUSPENDED → set past_due
+      - Idempotency via webhook_events table
+      - Comprehensive logging
+
+      ## tRPC Subscription Procedures (server/trpc/routers/subscriptions.ts)
+      - subscriptions.createCheckout({ tier, period }) → approval URL
+      - subscriptions.cancel() → cancel at period end
+      - subscriptions.getStatus() → full subscription details
+      - subscriptions.reactivate() → undo cancellation (if before expiry)
+
+      ## Tier Limits Update
+      - Update TIER_LIMITS constant: free=2, pro=30, unlimited=60
+      - Update extended thinking: only for 'unlimited' tier
+      - Update cost calculator with new tier names
+
+      ## PayPal Products & Plans (via MCP)
+      - Create "Mirror of Dreams Pro" product
+      - Create "Mirror of Dreams Unlimited" product
+      - Create 4 subscription plans:
+        - Pro Monthly: $15/month
+        - Pro Yearly: $150/year
+        - Unlimited Monthly: $29/month
+        - Unlimited Yearly: $290/year
+      - Store Plan IDs in environment variables
+      - Create webhook endpoint in PayPal Dashboard
+
+      ## Type System Updates
+      - SubscriptionTier = 'free' | 'pro' | 'unlimited'
+      - Remove Stripe types
+      - Add PayPal types (webhook events, subscription response)
+    dependencies: []
+    status: COMPLETED
+    estimated_hours: 10-12
+    builders_needed: 4
+    builder_tasks:
+      - id: 1
+        name: "Database Schema & Types"
+        scope: |
+          - Create Supabase migration for all schema changes
+          - Update types/user.ts with new tier enum
+          - Update types/subscription.ts for PayPal
+          - Run migration locally to validate
+      - id: 2
+        name: "PayPal Client Library"
+        scope: |
+          - Create server/lib/paypal.ts
+          - Token management with caching
+          - All API wrapper functions
+          - Environment configuration
+      - id: 3
+        name: "PayPal Webhook Handler"
+        scope: |
+          - Create app/api/webhooks/paypal/route.ts
+          - Signature verification
+          - All event handlers
+          - Database updates for each event
+          - Idempotency checks
+      - id: 4
+        name: "tRPC Procedures & Tier Updates"
+        scope: |
+          - Expand subscriptions.ts router
+          - Update TIER_LIMITS constant
+          - Update middleware for daily limits
+          - Update cost-calculator tier names
+
+  - iteration_id: 2
+    global_iteration: 17
+    name: "Frontend Integration & Polish"
+    vision: |
+      Connect the frontend to PayPal checkout, add subscription management UI,
+      implement feature gating, and complete end-to-end payment flow.
+    scope: |
+      ## Pricing Page Update (app/pricing/page.tsx)
+      - Show 3 tiers: Free ($0), Pro ($15), Unlimited ($29)
+      - Add monthly/yearly toggle with savings display
+      - Replace CTAs with PayPal checkout flow
+      - Show "Current Plan" badge if logged in
+      - Handle ?subscription=success|canceled query params
+      - Loading states during checkout creation
+      - Daily limit indicators (1/day Pro, 2/day Unlimited)
+
+      ## Profile Page Subscription Management
+      - Display billing period, next billing date, status
+      - "Cancel Subscription" button with confirmation modal
+      - "Reactivate" button if canceled but not expired
+      - "Change Plan" link to pricing
+      - Show cancellation notice if cancelAtPeriodEnd=true
+
+      ## Dashboard Updates
+      - Fix broken /subscription link → /pricing
+      - Add upgrade prompts for free tier users
+      - Show usage warnings at 80% monthly limit
+      - Add past_due banner for payment failures
+
+      ## Feature Gating
+      - Lock evolution reports for free tier
+      - Lock visualizations for free tier
+      - Show "Upgrade to Pro" overlay on locked features
+      - Link locked features to pricing page
+
+      ## Daily Limit Enforcement
+      - Check daily limit before reflection creation
+      - Show daily limit error with countdown
+      - Reset counter at midnight (UTC)
+      - UI shows "1 of 1 today" for Pro users
+
+      ## End-to-End Testing
+      - Test complete checkout flow in sandbox
+      - Test all webhook events
+      - Test cancellation flow
+      - Test upgrade/downgrade scenarios
+      - Test daily limit edge cases
+    dependencies:
+      - iteration_id: 1
+    status: COMPLETED
+    estimated_hours: 8-10
+    builders_needed: 3
+    builder_tasks:
+      - id: 1
+        name: "Pricing Page & Checkout Flow"
+        scope: |
+          - Update pricing page with 3 tiers
+          - Add monthly/yearly toggle
+          - Integrate with createCheckout mutation
+          - Handle return URLs and success states
+      - id: 2
+        name: "Profile & Dashboard Updates"
+        scope: |
+          - Profile page subscription management
+          - Dashboard upgrade prompts
+          - Cancel/reactivate buttons
+          - Usage warnings and banners
+      - id: 3
+        name: "Feature Gating & Daily Limits"
+        scope: |
+          - Lock evolution/visualization for free
+          - Implement daily limit check in reflection flow
+          - UI for limit reached states
+          - Test all tier transitions
+
+success_criteria:
+  - name: "Users Can Subscribe via PayPal"
+    target: "Complete checkout flow works end-to-end in sandbox"
+    weight: 10
+  - name: "Webhooks Handle All Events"
+    target: "All subscription lifecycle events update database correctly"
+    weight: 10
+  - name: "Users Can Cancel"
+    target: "Cancel flow works, access preserved until period end"
+    weight: 10
+  - name: "Daily Limits Work"
+    target: "Pro limited to 1/day, Unlimited to 2/day"
+    weight: 9
+  - name: "Feature Gating Enforced"
+    target: "Free tier blocked from evolution/visualizations"
+    weight: 8
+  - name: "Pricing Page Converts"
+    target: "All CTAs work, checkout initiates from any tier"
+    weight: 8
+
+risks:
+  - name: "PayPal Webhook Signature Verification"
+    severity: HIGH
+    mitigation: "Follow PayPal docs exactly, test in sandbox extensively"
+  - name: "Database Migration"
+    severity: MEDIUM
+    mitigation: "Full backup before migration, test locally first"
+  - name: "Daily Limit Race Conditions"
+    severity: MEDIUM
+    mitigation: "PostgreSQL atomic updates prevent concurrent bypass"
+  - name: "Tier Renaming Breaks Code"
+    severity: MEDIUM
+    mitigation: "TypeScript catches most issues, grep for string literals"
+
+notes: |
+  KEY FINDING: AI upgrade already complete!
+  - Claude Sonnet 4.5 already in reflection.ts line 93
+  - Extended thinking already implemented for premium tier
+  - Only need to update tier names in extended thinking logic
+
+  This removes ~3 hours from original estimate and simplifies the plan.
+
+  PayPal credentials already configured in .env.example but plan IDs
+  need to be created with correct 3-tier pricing structure.

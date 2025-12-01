@@ -26,8 +26,8 @@ function getAnthropicClient(): Anthropic {
 
 // Evolution report thresholds
 const EVOLUTION_THRESHOLDS = {
-  essential: 4,
-  premium: 6,
+  pro: 4,
+  unlimited: 6,
 };
 
 export const reflectionRouter = router({
@@ -49,9 +49,9 @@ export const reflectionRouter = router({
         isPremium: requestedPremium = false,
       } = input;
 
-      // Determine if premium features should be used
+      // Determine if premium features should be used (extended thinking for unlimited tier)
       const shouldUsePremium =
-        requestedPremium || ctx.user.tier === 'premium' || ctx.user.isCreator;
+        requestedPremium || ctx.user.tier === 'unlimited' || ctx.user.isCreator;
 
       // Get current date for date awareness
       const currentDate = new Date().toLocaleDateString('en-US', {
@@ -163,11 +163,16 @@ Please mirror back what you see, in a flowing reflection I can return to months 
 
       console.log('✅ Reflection created:', reflectionRecord.id);
 
-      // Update user usage counters
+      // Update user usage counters (both daily and monthly)
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
       const { error: updateError } = await supabase
         .from('users')
         .update({
           reflection_count_this_month: ctx.user.reflectionCountThisMonth + 1,
+          reflections_today: ctx.user.lastReflectionDate === today
+            ? ctx.user.reflectionsToday + 1
+            : 1,
+          last_reflection_date: today,
           total_reflections: ctx.user.totalReflections + 1,
           last_reflection_at: new Date().toISOString(),
         })
@@ -227,7 +232,7 @@ async function checkEvolutionEligibility(
 ): Promise<boolean> {
   if (tier === 'free') return false;
 
-  const threshold = EVOLUTION_THRESHOLDS[tier as 'essential' | 'premium'] || 6;
+  const threshold = EVOLUTION_THRESHOLDS[tier as 'pro' | 'unlimited'] || 6;
 
   // Get last evolution report
   const { data: lastReport } = await supabase

@@ -35,6 +35,8 @@ import ProgressStatsCard from '@/components/dashboard/cards/ProgressStatsCard';
 import EvolutionCard from '@/components/dashboard/cards/EvolutionCard';
 import VisualizationCard from '@/components/dashboard/cards/VisualizationCard';
 import SubscriptionCard from '@/components/dashboard/cards/SubscriptionCard';
+import { UsageWarningBanner } from '@/components/subscription/UsageWarningBanner';
+import { TIER_LIMITS } from '@/lib/utils/constants';
 import '@/styles/dashboard.css';
 
 export default function DashboardPage() {
@@ -114,6 +116,19 @@ export default function DashboardPage() {
           <div style={getItemStyles(0)}>
             <DashboardHero />
           </div>
+
+          {/* Usage Warning Banner */}
+          {user && (
+            <UsageWarningBanner
+              tier={user.tier}
+              used={user.reflectionCountThisMonth}
+              variant={
+                user.reflectionCountThisMonth >= TIER_LIMITS[user.tier] ? 'error' :
+                user.reflectionCountThisMonth / TIER_LIMITS[user.tier] >= 0.9 ? 'warning' :
+                'info'
+              }
+            />
+          )}
 
           {/* Dashboard Grid - Secondary focus with card sections */}
           <div className="dashboard-grid-container">

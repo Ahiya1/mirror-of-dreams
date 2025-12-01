@@ -49,7 +49,7 @@ export const evolutionRouter = router({
     .input(generateDreamEvolutionSchema)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.user.id;
-      const userTier = ctx.user.tier as 'free' | 'essential' | 'optimal' | 'premium';
+      const userTier = ctx.user.tier as 'free' | 'pro' | 'unlimited';
 
       // 1. Get the dream
       const { data: dream, error: dreamError } = await supabase
@@ -199,7 +199,7 @@ Length: 800-1200 words. Tone: Warm, insightful, empowering.`;
           user_id: userId,
           dream_id: input.dreamId,
           report_category: 'dream-specific',
-          report_type: userTier === 'premium' ? 'premium' : 'essential',
+          report_type: userTier === 'unlimited' ? 'premium' : 'essential',
           analysis: evolutionText,
           reflections_analyzed: selectedReflections.map((r) => r.id),
           reflection_count: selectedReflections.length,
@@ -262,13 +262,13 @@ Length: 800-1200 words. Tone: Warm, insightful, empowering.`;
   generateCrossDreamEvolution: protectedProcedure
     .mutation(async ({ ctx }) => {
       const userId = ctx.user.id;
-      const userTier = ctx.user.tier as 'free' | 'essential' | 'optimal' | 'premium';
+      const userTier = ctx.user.tier as 'free' | 'pro' | 'unlimited';
 
       // 1. Check if cross-dream is available for this tier
       if (userTier === 'free') {
         throw new TRPCError({
           code: 'FORBIDDEN',
-          message: 'Cross-dream evolution reports are not available on the Free tier. Please upgrade to Essential or higher.',
+          message: 'Cross-dream evolution reports are not available on the Free tier. Please upgrade to Pro or higher.',
         });
       }
 
@@ -410,7 +410,7 @@ Length: 1000-1500 words. Tone: Profound, holistic, empowering.`;
           user_id: userId,
           dream_id: null,
           report_category: 'cross-dream',
-          report_type: userTier === 'premium' ? 'premium' : 'essential',
+          report_type: userTier === 'unlimited' ? 'premium' : 'essential',
           analysis: evolutionText,
           reflections_analyzed: selectedReflections.map((r) => r.id),
           reflection_count: selectedReflections.length,
@@ -536,13 +536,13 @@ Length: 1000-1500 words. Tone: Profound, holistic, empowering.`;
    */
   checkEligibility: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.user.id;
-    const userTier = ctx.user.tier as 'free' | 'essential' | 'optimal' | 'premium';
+    const userTier = ctx.user.tier as 'free' | 'pro' | 'unlimited';
 
     // Free tier has no access
     if (userTier === 'free') {
       return {
         eligible: false,
-        reason: 'Upgrade to Essential tier or higher for evolution reports',
+        reason: 'Upgrade to Pro tier or higher for evolution reports',
         threshold: 0,
         reflectionsSinceLastReport: 0,
       };

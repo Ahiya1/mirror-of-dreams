@@ -7,7 +7,7 @@ import styles from './ReflectionItem.module.css';
 interface ReflectionItemProps {
   reflection: {
     id: string | number;
-    title?: string;
+    title?: string | null;
     dream?: string;
     content?: string;
     preview?: string;

@@ -13,6 +13,8 @@ import { ReflectionQuestionCard } from '@/components/reflection/ReflectionQuesti
 import { ToneSelectionCard } from '@/components/reflection/ToneSelectionCard';
 import { ProgressBar } from '@/components/reflection/ProgressBar';
 import { AIResponseRenderer } from '@/components/reflections/AIResponseRenderer';
+import { UpgradeModal } from '@/components/subscription/UpgradeModal';
+import { checkReflectionLimits } from '@/lib/utils/limits';
 import { cn } from '@/lib/utils';
 import type { ToneId } from '@/lib/utils/constants';
 import { QUESTION_LIMITS, REFLECTION_MICRO_COPY } from '@/lib/utils/constants';
@@ -74,6 +76,11 @@ export default function MirrorExperience() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusText, setStatusText] = useState('Gazing into the mirror...');
   const [mirrorGlow, setMirrorGlow] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [upgradeData, setUpgradeData] = useState<{
+    reason: 'monthly_limit' | 'daily_limit';
+    resetTime?: Date;
+  }>({ reason: 'monthly_limit' });
 
   // Fetch user's dreams for selection
   const { data: dreams } = trpc.dreams.list.useQuery({
@@ -161,6 +168,20 @@ export default function MirrorExperience() {
 
   const handleSubmit = () => {
     if (!validateForm()) return;
+
+    // Check limits before submission
+    if (user) {
+      const limitCheck = checkReflectionLimits(user);
+
+      if (!limitCheck.canCreate) {
+        setUpgradeData({
+          reason: limitCheck.reason!,
+          resetTime: limitCheck.resetTime,
+        });
+        setShowUpgradeModal(true);
+        return;
+      }
+    }
 
     setIsSubmitting(true);
     setStatusText('Gazing into the mirror...');
@@ -882,6 +903,15 @@ export default function MirrorExperience() {
           }
         }
       `}</style>
+
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        reason={upgradeData.reason}
+        resetTime={upgradeData.resetTime}
+        currentTier={user?.tier}
+      />
     </div>
   );
 }

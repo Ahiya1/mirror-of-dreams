@@ -88,15 +88,13 @@ function selectEvenly(period: Reflection[], count: number): Reflection[] {
 export const EVOLUTION_CONTEXT_LIMITS = {
   dream_specific: {
     free: 4,
-    essential: 6,
-    optimal: 9,
-    premium: 12,
+    pro: 6,
+    unlimited: 12,
   },
   cross_dream: {
     free: 0, // Not available
-    essential: 12,
-    optimal: 21,
-    premium: 30,
+    pro: 12,
+    unlimited: 30,
   },
 } as const;
 
@@ -104,7 +102,7 @@ export const EVOLUTION_CONTEXT_LIMITS = {
  * Get context limit for a specific tier and report type
  */
 export function getContextLimit(
-  tier: 'free' | 'essential' | 'optimal' | 'premium',
+  tier: 'free' | 'pro' | 'unlimited',
   reportType: 'dream_specific' | 'cross_dream'
 ): number {
   return EVOLUTION_CONTEXT_LIMITS[reportType][tier];

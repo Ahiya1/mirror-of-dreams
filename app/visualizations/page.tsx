@@ -14,6 +14,7 @@ import {
 import { AppNavigation } from '@/components/shared/AppNavigation';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { CanvasVisual } from '@/components/shared/illustrations/CanvasVisual';
+import { FeatureLockOverlay } from '@/components/subscription/FeatureLockOverlay';
 import { cn } from '@/lib/utils';
 
 type VisualizationStyle = 'achievement' | 'spiral' | 'synthesis';
@@ -146,20 +147,18 @@ export default function VisualizationsPage() {
 
           {/* Tier Warning */}
           {user.tier === 'free' && !selectedDreamId ? (
-            <GlassCard
-              className="border-l-4 border-yellow-500 mb-6"
-            >
-              <div className="flex items-center gap-3">
-                <GlowBadge variant="warning">
-                  !
-                </GlowBadge>
-                <div className="flex-1">
-                  <p className="text-white/90 font-medium text-sm">
-                    Cross-dream visualizations require Essential tier or higher. You can still create dream-specific visualizations.
-                  </p>
-                </div>
-              </div>
-            </GlassCard>
+            <FeatureLockOverlay
+              featureName="Cross-Dream Visualizations"
+              description="Unlock powerful cross-dream analysis that reveals connections and patterns across all your dreams."
+              requiredTier="pro"
+              benefits={[
+                'Synthesis across all dreams',
+                'Network of interconnected insights',
+                'Growth spiral visualizations',
+                'Achievement path mapping',
+              ]}
+              className="mb-6"
+            />
           ) : null}
 
           <div className="space-y-6">
