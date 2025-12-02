@@ -20,6 +20,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { trpc } from '@/lib/trpc';
 import { useToast } from '@/contexts/ToastContext';
 import { AppNavigation } from '@/components/shared/AppNavigation';
+import { BottomNavigation } from '@/components/navigation';
 import CosmicBackground from '@/components/shared/CosmicBackground';
 import { GlassCard } from '@/components/ui/glass/GlassCard';
 import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
@@ -93,7 +94,7 @@ export default function SettingsPage() {
       <CosmicBackground />
       <AppNavigation currentPage="settings" />
 
-      <main className="relative z-10 pt-nav min-h-screen">
+      <main className="relative z-10 pt-nav min-h-screen pb-20 md:pb-0">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <h1 className="text-3xl font-bold text-white mb-8">Settings</h1>
 
@@ -200,6 +201,9 @@ export default function SettingsPage() {
           </GlassCard>
         </div>
       </main>
+
+      {/* Bottom Navigation - visible only on mobile (< 768px) */}
+      <BottomNavigation />
     </div>
   );
 }

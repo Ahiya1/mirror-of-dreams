@@ -349,3 +349,31 @@ export const pageTransitionVariants: Variants = {
     transition: { duration: 0.15 },
   },
 };
+
+/**
+ * Bottom navigation show/hide animation
+ * Used with scroll direction detection
+ */
+export const bottomNavVariants: Variants = {
+  hidden: {
+    y: '100%',
+    opacity: 0,
+  },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      type: 'spring',
+      stiffness: 300,
+      damping: 30,
+    },
+  },
+  exit: {
+    y: '100%',
+    opacity: 0,
+    transition: {
+      duration: 0.2,
+      ease: 'easeIn',
+    },
+  },
+};

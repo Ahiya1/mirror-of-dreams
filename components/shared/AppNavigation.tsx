@@ -304,10 +304,11 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
             </AnimatePresence>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - Hidden on small mobile (< 768px) where bottom nav is used,
+              visible on tablet (768-1024px) where hamburger menu is still needed */}
           <button
             onClick={() => setShowMobileMenu(!showMobileMenu)}
-            className="lg:hidden p-2 rounded-lg bg-white/8 hover:bg-white/12 transition-all"
+            className="hidden md:block lg:hidden p-2 rounded-lg bg-white/8 hover:bg-white/12 transition-all"
             aria-label={showMobileMenu ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={showMobileMenu}
             aria-controls="mobile-navigation"
@@ -321,7 +322,7 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
         </div>
       </div>
 
-      {/* Mobile Navigation Menu */}
+      {/* Mobile Navigation Menu - Only visible on tablet (768-1024px), not on small mobile where bottom nav is used */}
       <AnimatePresence>
         {showMobileMenu && (
           <motion.nav
@@ -330,7 +331,7 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="lg:hidden mt-4 pt-4 border-t border-white/10 px-6 pb-4"
+            className="hidden md:block lg:hidden mt-4 pt-4 border-t border-white/10 px-6 pb-4"
             role="navigation"
             aria-label="Mobile navigation"
           >

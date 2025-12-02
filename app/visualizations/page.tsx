@@ -12,6 +12,7 @@ import {
   GlowBadge,
 } from '@/components/ui/glass';
 import { AppNavigation } from '@/components/shared/AppNavigation';
+import { BottomNavigation } from '@/components/navigation';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { CanvasVisual } from '@/components/shared/illustrations/CanvasVisual';
 import { FeatureLockOverlay } from '@/components/subscription/FeatureLockOverlay';
@@ -125,7 +126,7 @@ export default function VisualizationsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark pt-nav px-4 sm:px-8 pb-8">
+    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark pt-nav px-4 sm:px-8 pb-20 md:pb-8">
       <AppNavigation currentPage="visualizations" />
 
       <div className="max-w-6xl mx-auto">
@@ -324,6 +325,9 @@ export default function VisualizationsPage() {
           )}
         </GlassCard>
       </div>
+
+      {/* Bottom Navigation - visible only on mobile (< 768px) */}
+      <BottomNavigation />
     </div>
   );
 }

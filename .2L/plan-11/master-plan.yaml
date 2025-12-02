@@ -1,0 +1,219 @@
+plan_id: plan-11
+created_at: '2025-12-02T06:15:00Z'
+status: PLANNED
+complexity: COMPLEX
+total_iterations: 3
+
+vision_summary: |
+  Transform Mirror of Dreams from a "responsive desktop" experience into a truly
+  mobile-native experience with bottom navigation, full-screen reflection flow,
+  touch-optimized interactions, and mobile-first UX patterns.
+
+exploration_summary:
+  explorers: 3
+  complexity_factors:
+    - 7 MVP features requiring coordinated changes
+    - Core navigation architecture needs replacement (bottom nav)
+    - MirrorExperience (1007 lines) needs major refactor for step-by-step flow
+    - New component patterns: bottom sheets, swipe gestures, haptics
+    - Must maintain desktop experience quality
+  key_files_to_modify:
+    - /components/shared/AppNavigation.tsx
+    - /app/reflection/MirrorExperience.tsx
+    - /components/ui/glass/GlassModal.tsx
+    - /components/ui/glass/GlassInput.tsx
+    - /styles/variables.css
+    - /app/dashboard/page.tsx
+  new_components_needed:
+    - /components/navigation/BottomNavigation.tsx
+    - /components/ui/mobile/BottomSheet.tsx
+    - /components/reflection/mobile/MobileReflectionFlow.tsx
+    - /lib/hooks/useScrollDirection.ts
+    - /lib/hooks/useIsMobile.ts
+
+strategy: |
+  Three-iteration approach:
+
+  1. ITERATION 1 (Foundation): Establish mobile-native navigation patterns
+     - Bottom navigation is the most visible change
+     - Low-medium technical risk
+     - Creates foundation for all subsequent mobile work
+
+  2. ITERATION 2 (Reflection Flow): Core user experience transformation
+     - This is the emotional core of the app
+     - Highest technical complexity (MirrorExperience refactor)
+     - Bottom sheet for dream selection
+     - Step-by-step wizard with swipe navigation
+
+  3. ITERATION 3 (Polish): Touch-native interactions throughout
+     - Dashboard mobile optimization
+     - Modal full-screen treatment
+     - Form improvements
+     - Can be done incrementally if needed
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 16
+    name: "Mobile Navigation Foundation"
+    vision: |
+      Establish mobile-native navigation patterns with bottom navigation bar
+    scope: |
+      ## Features
+      1. Bottom Navigation Component
+         - Fixed bottom bar with 5 tabs (Home, Dreams, Reflect, Evolution, Profile)
+         - Active state with pill indicator animation
+         - Hide on scroll down, reveal on scroll up
+         - Safe area padding for notched devices
+         - Haptic feedback on tab tap (where supported)
+         - Hidden on desktop (md:hidden)
+
+      2. Navigation Integration
+         - Modify AppNavigation for mobile coexistence
+         - Keep top bar minimal on mobile (logo + user avatar only)
+         - Desktop navigation unchanged
+
+      3. Safe Area & Mobile Foundation
+         - Add CSS variables for safe-area-inset-*
+         - Add viewport-fit=cover meta tag
+         - Create useScrollDirection hook
+         - Create useIsMobile hook
+
+      ## Components
+      - NEW: BottomNavigation.tsx
+      - NEW: useScrollDirection.ts
+      - NEW: useIsMobile.ts
+      - MODIFY: AppNavigation.tsx
+      - MODIFY: variables.css
+      - MODIFY: layout.tsx (viewport meta)
+
+      ## Success Criteria
+      - Bottom nav visible on mobile (< 768px)
+      - Desktop navigation unchanged
+      - Tabs navigate correctly
+      - Hide/show on scroll works smoothly
+      - Safe area padding applied on notched devices
+    status: PENDING
+    risk: LOW-MEDIUM
+    estimated_hours: 5-7
+    dependencies: []
+
+  - iteration_id: 2
+    global_iteration: 17
+    name: "Full-Screen Reflection Experience"
+    vision: |
+      Transform reflection from cramped single-page form to immersive step-by-step flow
+    scope: |
+      ## Features
+      1. Bottom Sheet Component
+         - Slide up from bottom with spring animation
+         - Drag handle for swipe-to-dismiss
+         - Multiple height modes (auto, half, full)
+         - Safe area padding
+
+      2. Dream Selection Bottom Sheet
+         - Uses new BottomSheet component
+         - Large touch targets (60px+ per dream)
+         - Currently selected dream highlighted
+         - Quick "Create Dream" option
+
+      3. Mobile Reflection Wizard
+         - Full-screen takeover (no visible nav during reflection)
+         - One question per screen with swipe/tap to advance
+         - Progress dots at top
+         - Swipe back to previous question
+         - Keyboard-aware textarea positioning
+         - Tone selection as dedicated step
+         - Exit confirmation if unsaved input
+
+      4. Enhanced Gazing Experience
+         - Immersive full-screen loading animation
+         - Status text transitions
+         - Breathing cosmic effects
+
+      ## Components
+      - NEW: BottomSheet.tsx
+      - NEW: MobileReflectionFlow.tsx
+      - NEW: ReflectionWizardState.ts (context)
+      - NEW: ProgressDots.tsx
+      - MODIFY: MirrorExperience.tsx (conditional mobile flow)
+      - MODIFY: /reflection/page.tsx
+
+      ## Success Criteria
+      - Complete reflection on mobile feels native, not cramped
+      - Swipe navigation between questions works
+      - Dream selection uses bottom sheet
+      - Keyboard doesn't cover input
+      - Form data preserved on step navigation
+    status: PENDING
+    risk: MEDIUM-HIGH
+    estimated_hours: 8-10
+    dependencies:
+      - iteration_id: 1
+        reason: Uses safe area utilities, navigation hide patterns
+
+  - iteration_id: 3
+    global_iteration: 18
+    name: "Touch Polish & Dashboard Optimization"
+    vision: |
+      Make every interaction feel touch-native with polished feedback and mobile-optimized layouts
+    scope: |
+      ## Features
+      1. Touch-Optimized Cards
+         - Add whileTap={{ scale: 0.98 }} to all cards
+         - Replace hover effects with :active equivalents
+         - Use @media (hover: hover) for hover-only effects
+         - Larger touch targets (48px minimum)
+
+      2. Mobile-Optimized Modals
+         - GlassModal full-screen on mobile
+         - Slide up animation from bottom
+         - Swipe down to dismiss
+         - Close button always visible
+
+      3. Mobile Form Improvements
+         - GlassInput height increased to 56px
+         - Auto-scroll input into view on focus
+         - Form progress auto-saved to localStorage
+         - Input types optimized (email, tel, etc.)
+
+      4. Dashboard Mobile Optimization
+         - Compact hero section with prominent "Reflect Now" CTA
+         - Horizontal scroll stats strip
+         - Primary cards only (Dreams, Reflections)
+         - Secondary content relocated to profile/dedicated pages
+         - Pull-to-refresh functionality
+
+      ## Components
+      - MODIFY: GlassCard.tsx (touch states)
+      - MODIFY: GlassModal.tsx (full-screen mobile)
+      - MODIFY: GlassInput.tsx (larger, keyboard-aware)
+      - MODIFY: DashboardHero.tsx (compact mobile)
+      - MODIFY: DashboardGrid.tsx (mobile layout)
+      - MODIFY: dashboard.css
+
+      ## Success Criteria
+      - All cards have satisfying tap feedback
+      - Modals feel native on mobile
+      - Forms work seamlessly with keyboard
+      - Dashboard is focused and scannable on mobile
+      - No unintended desktop regressions
+    status: PENDING
+    risk: LOW
+    estimated_hours: 6-8
+    dependencies:
+      - iteration_id: 2
+        reason: Builds on patterns established in iterations 1-2
+
+success_metrics:
+  - Mobile feels native (target: 8/10+ rating)
+  - All primary CTAs in thumb zone (target: 90%+)
+  - Reflection completion rate maintained or improved
+  - Lighthouse mobile performance score >= 85
+  - Zero unintended desktop regressions
+
+technology_notes:
+  - Stack: Next.js 14, React, TypeScript, Tailwind CSS, Framer Motion
+  - No backend changes needed
+  - Performance budget: < 15KB gzipped additional JS
+  - Framer Motion handles all animations/gestures
+  - Must maintain cosmic glass aesthetic
