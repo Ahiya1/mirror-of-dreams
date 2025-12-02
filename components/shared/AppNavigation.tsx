@@ -120,11 +120,11 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
         className="fixed left-0 right-0 z-[100] rounded-none border-b border-white/10"
         style={{ top: 'var(--demo-banner-height, 0px)' }}
       >
-      <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="container mx-auto px-4 sm:px-6 py-2 sm:py-4 flex items-center justify-between">
         {/* Left section */}
         <div className="flex items-center gap-8">
-          <Link href="/dashboard" className="flex items-center gap-3 text-white/90 hover:text-white transition-all hover:-translate-y-0.5 text-lg font-normal">
-            <span className="text-2xl animate-glow-pulse">🪞</span>
+          <Link href="/dashboard" className="flex items-center gap-2 sm:gap-3 text-white/90 hover:text-white transition-all hover:-translate-y-0.5 text-lg font-normal">
+            <span className="text-xl sm:text-2xl animate-glow-pulse">🪞</span>
             <span className="hidden md:inline">Mirror of Dreams</span>
           </Link>
 
@@ -227,13 +227,13 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
             <button
               onClick={handleUserDropdownToggle}
               onKeyDown={handleUserDropdownKeyDown}
-              className="flex items-center gap-3 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-all"
+              className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-all"
               aria-label="User menu"
               aria-expanded={showUserDropdown}
               aria-haspopup="true"
               aria-controls="user-dropdown-menu"
             >
-              <span className="text-lg" aria-hidden="true">
+              <span className="text-base sm:text-lg" aria-hidden="true">
                 {user?.tier === 'unlimited' ? '💎' : user?.tier === 'pro' ? '✨' : '👤'}
               </span>
               <span className="hidden sm:inline text-sm text-white">

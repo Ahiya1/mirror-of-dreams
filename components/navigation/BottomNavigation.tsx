@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Sparkles, Layers, TrendingUp, User } from 'lucide-react';
+import { Home, Sparkles, Layers, TrendingUp, BarChart2, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // Context imports
@@ -41,6 +41,7 @@ const NAV_ITEMS: readonly NavItem[] = [
   { href: '/dreams', icon: Sparkles, label: 'Dreams' },
   { href: '/reflection', icon: Layers, label: 'Reflect' },
   { href: '/evolution', icon: TrendingUp, label: 'Evolution' },
+  { href: '/visualizations', icon: BarChart2, label: 'Visual' },
   { href: '/profile', icon: User, label: 'Profile' },
 ] as const;
 
@@ -52,7 +53,7 @@ const NAV_ITEMS: readonly NavItem[] = [
  * BottomNavigation - Fixed bottom navigation bar for mobile devices
  *
  * Features:
- * - 5 navigation tabs: Home, Dreams, Reflect, Evolution, Profile
+ * - 6 navigation tabs: Home, Dreams, Reflect, Evolution, Visual, Profile
  * - Active state with animated pill indicator
  * - Hides on scroll down, reveals on scroll up
  * - Safe area padding for notched devices (iPhone X+)
