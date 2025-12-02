@@ -92,7 +92,7 @@
     "vite": "^4.5.14"
   },
   "engines": {
-    "node": "18.x"
+    "node": "20.x"
   },
   "repository": {
     "type": "git",
