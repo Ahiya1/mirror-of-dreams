@@ -45,13 +45,13 @@ export default function NavigationBase({
         className
       )}
     >
-      <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="container mx-auto px-4 sm:px-6 py-2 sm:py-4 flex items-center justify-between">
         {/* Logo */}
         <Link
           href={homeHref}
-          className="flex items-center gap-3 text-white/90 hover:text-white transition-all hover:-translate-y-0.5 text-lg font-normal"
+          className="flex items-center gap-2 sm:gap-3 text-white/90 hover:text-white transition-all hover:-translate-y-0.5 text-lg font-normal"
         >
-          <span className="text-2xl">🪞</span>
+          <span className="text-xl sm:text-2xl">🪞</span>
           <span className="hidden md:inline">Mirror of Dreams</span>
         </Link>
 

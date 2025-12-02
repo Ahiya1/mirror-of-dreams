@@ -68,7 +68,7 @@ export default function LandingNavigation({ transparent = false }: LandingNaviga
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="fixed top-[72px] left-0 right-0 z-[90] sm:hidden"
+            className="fixed top-[52px] sm:top-[72px] left-0 right-0 z-[90] sm:hidden"
           >
             <div className="bg-mirror-void-deep/95 backdrop-blur-lg border-b border-white/10 p-4">
               <Link
