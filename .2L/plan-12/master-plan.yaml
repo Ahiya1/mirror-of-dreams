@@ -1,0 +1,93 @@
+plan_id: plan-12
+created_at: '2025-12-02T12:15:00Z'
+status: PLANNED
+total_iterations: 1
+
+strategy: |
+  Single-iteration aesthetic polish pass focused on mobile perfection.
+  Both explorers confirmed this is SIMPLE/MEDIUM complexity with no backend changes.
+  All 5 MVP features are CSS/styling focused with minimal component modifications.
+
+  Key approach:
+  - 2 builders working in parallel to avoid file conflicts
+  - Builder 1: CSS-focused fixes (centering, spacing, navigation)
+  - Builder 2: Component-focused changes (markdown support)
+  - Shared MarkdownPreview component to avoid duplication
+
+  Risk mitigation:
+  - Navigation header changes have HIGH risk - test thoroughly
+  - Markdown in line-clamp needs inline-only rendering approach
+  - Test on 375px, 390px, 414px, 428px mobile widths
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 19
+    name: "Aesthetic Flawlessness Polish"
+    vision: |
+      Fix mobile centering, slim navigation, add markdown to cards,
+      reduce evolution report spacing. Target: 7.5/10 → 9/10.
+    scope: |
+      Feature 1: Fix Mobile Dashboard Left-Shift
+      - Audit dashboard container centering
+      - Fix asymmetric padding if present
+      - Test on 4 key mobile widths
+
+      Feature 2: Slim Mobile Navigation Header
+      - Reduce mobile padding (py-2 → py-1.5)
+      - Make GlassCard more subtle on mobile
+      - Verify --nav-height measurement updates
+      - Test back button spacing on detail pages
+
+      Feature 3: Add Markdown to Card Previews
+      - Create shared MarkdownPreview component
+      - Use ReactMarkdown with inline-only rendering
+      - Apply to EvolutionCard, VisualizationCard
+      - Apply to evolution and visualizations list pages
+
+      Feature 4: Reduce Evolution Report Empty Space
+      - Change p-8 to p-4 sm:p-6 lg:p-8
+      - Maintain visual hierarchy
+
+      Feature 5: Mobile Content Centering Audit
+      - Audit dreams, reflection, evolution, visualizations, profile pages
+      - Ensure consistent margin-inline: auto pattern
+      - Fix any asymmetric containers
+    status: PENDING
+    dependencies: []
+    builders:
+      - id: 1
+        name: "CSS Layout & Navigation"
+        features: [1, 2, 4, 5]
+        files:
+          - /components/shared/AppNavigation.tsx
+          - /styles/dashboard.css
+          - /app/dashboard/page.tsx
+          - /app/evolution/[id]/page.tsx
+          - /app/dreams/page.tsx
+          - /app/profile/page.tsx
+          - /app/reflection/page.tsx
+      - id: 2
+        name: "Markdown Preview Support"
+        features: [3]
+        files:
+          - /components/shared/MarkdownPreview.tsx (NEW)
+          - /components/dashboard/cards/EvolutionCard.tsx
+          - /components/dashboard/cards/VisualizationCard.tsx
+          - /app/evolution/page.tsx
+          - /app/visualizations/page.tsx
+
+explorer_findings:
+  complexity: MEDIUM
+  num_explorers: 2
+  total_estimated_hours: 8-13
+  risk_level: MEDIUM
+  key_risks:
+    - Navigation header height measurement may break
+    - Line-clamp with markdown block elements
+    - Mobile safe area insets
+
+recommendations:
+  - Create shared MarkdownPreview component to avoid duplication
+  - Test on real mobile devices, not just DevTools
+  - Verify --nav-height CSS variable after changes
+  - Use inline-only markdown rendering (strip block elements)
