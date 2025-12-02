@@ -16,8 +16,10 @@ export interface GlassBaseProps {
 
 /**
  * Props for GlassCard component (simplified for restraint)
+ * Note: Does not extend HTMLAttributes to avoid conflicts with Framer Motion's motion.div
+ * (specifically onDrag type conflicts). Only necessary props are defined explicitly.
  */
-export interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface GlassCardProps {
   /** Elevated state (adds slight shadow and border highlight) */
   elevated?: boolean;
   /** Interactive state (enables subtle hover lift) */
@@ -28,6 +30,10 @@ export interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
   /** Card content */
   children: ReactNode;
+  /** Inline styles */
+  style?: React.CSSProperties;
+  /** Allow data-* attributes */
+  [key: `data-${string}`]: string | boolean | undefined;
 }
 
 /**
@@ -116,6 +122,8 @@ export interface GlassModalProps extends GlassBaseProps {
   title?: string;
   /** Modal content */
   children: ReactNode;
+  /** Disable swipe-to-dismiss gesture on mobile (useful for forms where accidental dismiss is bad) */
+  disableSwipeDismiss?: boolean;
 }
 
 /**

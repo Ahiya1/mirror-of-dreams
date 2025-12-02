@@ -1,5 +1,6 @@
 'use client';
 
+import { motion, useReducedMotion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import type { GlassCardProps } from '@/types/glass-components';
 
@@ -11,6 +12,7 @@ import type { GlassCardProps } from '@/types/glass-components';
  * @param onClick - Click handler
  * @param className - Additional Tailwind classes
  * @param children - Card content
+ * @param style - Inline styles
  */
 export function GlassCard({
   elevated = false,
@@ -18,44 +20,59 @@ export function GlassCard({
   onClick,
   className,
   children,
-  ...props
+  style,
+  ...dataAttributes
 }: GlassCardProps) {
+  const prefersReducedMotion = useReducedMotion();
+
+  // Determine if we should animate (interactive AND has onClick AND no reduced motion)
+  const shouldAnimate = interactive && onClick && !prefersReducedMotion;
+
+  const cardClassName = cn(
+    // Base glass effect (functional depth)
+    'backdrop-blur-crystal',
+    'bg-gradient-to-br from-white/8 via-transparent to-purple-500/3',
+    'border border-white/10',
+    'rounded-xl p-6',
+    'relative',
+    // Elevated state (functional hierarchy)
+    elevated && 'shadow-lg border-white/15',
+    // Interactive state (enhanced hover with glow + border highlight)
+    interactive && [
+      'cursor-pointer',
+      'transition-all duration-250',
+      'hover:-translate-y-0.5',
+      'hover:shadow-[0_8px_30px_rgba(124,58,237,0.15)]',
+      'hover:border-purple-400/30',
+      'active:scale-[0.99]',  // Keep CSS fallback for non-animated state
+      'focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2'
+    ],
+    // Custom classes
+    className
+  );
+
+  // Handle keyboard interaction for accessibility
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (interactive && onClick && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
   return (
-    <div
+    <motion.div
       onClick={onClick}
-      className={cn(
-        // Base glass effect (functional depth)
-        'backdrop-blur-crystal',
-        'bg-gradient-to-br from-white/8 via-transparent to-purple-500/3',
-        'border border-white/10',
-        'rounded-xl p-6',
-        'relative',
-        // Elevated state (functional hierarchy)
-        elevated && 'shadow-lg border-white/15',
-        // Interactive state (enhanced hover with glow + border highlight)
-        interactive && [
-          'cursor-pointer',
-          'transition-all duration-250',
-          'hover:-translate-y-0.5',
-          'hover:shadow-[0_8px_30px_rgba(124,58,237,0.15)]',
-          'hover:border-purple-400/30',
-          'active:scale-[0.99]',
-          'focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2'
-        ],
-        // Custom classes
-        className
-      )}
-      tabIndex={interactive ? 0 : props.tabIndex}
-      role={interactive ? 'button' : props.role}
-      onKeyDown={interactive && onClick ? (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick();
-        }
-      } : props.onKeyDown}
-      {...props}
+      // Touch feedback animation (only when interactive with click handler)
+      whileTap={shouldAnimate ? { scale: 0.98 } : undefined}
+      transition={{ duration: 0.1 }}
+      className={cardClassName}
+      style={style}
+      tabIndex={interactive ? 0 : undefined}
+      role={interactive ? 'button' : undefined}
+      onKeyDown={handleKeyDown}
+      {...dataAttributes}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }

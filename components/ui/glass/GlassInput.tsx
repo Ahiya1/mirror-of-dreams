@@ -88,10 +88,13 @@ export function GlassInput({
   }
 
   const baseClasses = cn(
-    'w-full px-4 py-3 rounded-xl',
+    // Increased padding for 56px minimum height (mobile touch-friendly)
+    'w-full px-4 py-4 rounded-xl',
+    'min-h-[56px]',
     'bg-white/5 backdrop-blur-sm',
     'border-2 transition-all duration-300',
     'text-white placeholder:text-white/40',
+    'text-base',
     'focus:outline-none',
     'focus:scale-[1.01]',
     'font-inherit',
