@@ -120,7 +120,7 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
         className="fixed left-0 right-0 z-[100] rounded-none border-b border-white/10"
         style={{ top: 'var(--demo-banner-height, 0px)' }}
       >
-      <div className="container mx-auto px-4 sm:px-6 py-2 sm:py-4 flex items-center justify-between">
+      <div className="container mx-auto px-3 sm:px-6 py-1.5 sm:py-3 flex items-center justify-between">
         {/* Left section */}
         <div className="flex items-center gap-8">
           <Link href="/dashboard" className="flex items-center gap-2 sm:gap-3 text-white/90 hover:text-white transition-all hover:-translate-y-0.5 text-lg font-normal">

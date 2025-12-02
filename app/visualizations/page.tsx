@@ -16,6 +16,7 @@ import { BottomNavigation } from '@/components/navigation';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { CanvasVisual } from '@/components/shared/illustrations/CanvasVisual';
 import { FeatureLockOverlay } from '@/components/subscription/FeatureLockOverlay';
+import { MarkdownPreview } from '@/components/shared/MarkdownPreview';
 import { cn } from '@/lib/utils';
 
 type VisualizationStyle = 'achievement' | 'spiral' | 'synthesis';
@@ -308,7 +309,11 @@ export default function VisualizationsPage() {
                   </p>
 
                   <p className="text-white/70 text-sm line-clamp-3 mb-3">
-                    {viz.narrative?.substring(0, 150)}...
+                    <MarkdownPreview
+                      content={viz.narrative || ''}
+                      maxLength={150}
+                      className="text-white/70"
+                    />
                   </p>
 
                   <div className="flex items-center justify-between">

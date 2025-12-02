@@ -8,6 +8,7 @@ import DashboardCard, {
   CardContent,
   CardActions,
 } from '@/components/dashboard/shared/DashboardCard';
+import { MarkdownPreview } from '@/components/shared/MarkdownPreview';
 import { trpc } from '@/lib/trpc';
 
 interface EvolutionCardProps {
@@ -84,7 +85,11 @@ const EvolutionCard: React.FC<EvolutionCardProps> = ({
                 </div>
 
                 <p className="preview-text">
-                  {latestReport.evolution ? latestReport.evolution.substring(0, 200) + '...' : 'View report'}
+                  {latestReport.evolution ? (
+                    <MarkdownPreview content={latestReport.evolution} maxLength={200} />
+                  ) : (
+                    'View report'
+                  )}
                 </p>
 
                 <div className="preview-meta">

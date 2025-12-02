@@ -49,13 +49,13 @@ export default function EvolutionReportPage() {
         {/* Back Button */}
         <button
           onClick={() => router.push('/evolution')}
-          className="text-purple-200 hover:text-white mb-6 flex items-center gap-2 transition-colors"
+          className="text-purple-200 hover:text-white mb-4 flex items-center gap-2 transition-colors"
         >
           ← Back to Evolution Reports
         </button>
 
         {/* Report Header */}
-        <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 mb-6 border border-white/20">
+        <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 border border-white/20">
           <div className="flex justify-between items-start mb-4">
             <div>
               <h1 className="text-3xl font-bold text-white mb-2">
@@ -92,7 +92,7 @@ export default function EvolutionReportPage() {
         </div>
 
         {/* Report Content with Markdown Rendering */}
-        <div className="bg-white/10 backdrop-blur-md rounded-lg p-8 border border-white/20">
+        <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 sm:p-6 lg:p-8 border border-white/20">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
