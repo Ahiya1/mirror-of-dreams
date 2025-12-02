@@ -9,6 +9,7 @@ import { DreamCard } from '@/components/dreams/DreamCard';
 import { CreateDreamModal } from '@/components/dreams/CreateDreamModal';
 import { CosmicLoader, GlowButton, GlassCard, GradientText } from '@/components/ui/glass';
 import { AppNavigation } from '@/components/shared/AppNavigation';
+import { BottomNavigation } from '@/components/navigation';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { Constellation } from '@/components/shared/illustrations/Constellation';
 
@@ -54,7 +55,7 @@ export default function DreamsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark pt-nav px-4 sm:px-8 pb-8">
+    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark pt-nav px-4 sm:px-8 pb-20 md:pb-8">
       <AppNavigation currentPage="dreams" />
 
       <div className="max-w-7xl mx-auto">
@@ -170,6 +171,9 @@ export default function DreamsPage() {
         onClose={() => setIsCreateModalOpen(false)}
         onSuccess={handleCreateSuccess}
       />
+
+      {/* Bottom Navigation - visible only on mobile (< 768px) */}
+      <BottomNavigation />
     </div>
   );
 }

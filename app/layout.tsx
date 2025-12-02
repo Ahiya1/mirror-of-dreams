@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import '@/styles/variables.css';  // First: CSS custom properties
 import '@/styles/animations.css'; // Second: Keyframe animations
 import '@/styles/globals.css';
@@ -10,6 +10,15 @@ export const metadata: Metadata = {
   title: 'Mirror of Dreams - Reflect, Discover, Transform',
   description: 'An AI-powered reflection experience for personal growth and self-discovery',
   keywords: ['reflection', 'dreams', 'self-discovery', 'AI', 'personal growth'],
+};
+
+// Separate viewport export (Next.js 14 pattern)
+// viewportFit: 'cover' enables safe area insets for notched devices
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1, // Prevent zoom on input focus
+  viewportFit: 'cover', // Enable safe area insets
 };
 
 export default function RootLayout({

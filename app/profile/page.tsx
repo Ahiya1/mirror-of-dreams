@@ -19,6 +19,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { trpc } from '@/lib/trpc';
 import { useToast } from '@/contexts/ToastContext';
 import { AppNavigation } from '@/components/shared/AppNavigation';
+import { BottomNavigation } from '@/components/navigation';
 import CosmicBackground from '@/components/shared/CosmicBackground';
 import { GlassCard } from '@/components/ui/glass/GlassCard';
 import { GlassInput } from '@/components/ui/glass/GlassInput';
@@ -214,7 +215,7 @@ export default function ProfilePage() {
       <CosmicBackground />
       <AppNavigation currentPage="profile" />
 
-      <main className="relative z-10 pt-nav min-h-screen">
+      <main className="relative z-10 pt-nav min-h-screen pb-20 md:pb-0">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <h1 className="text-3xl font-bold text-white mb-8">Profile</h1>
 
@@ -487,6 +488,9 @@ export default function ProfilePage() {
           </div>
         </div>
       </GlassModal>
+
+      {/* Bottom Navigation - visible only on mobile (< 768px) */}
+      <BottomNavigation />
     </div>
   );
 }

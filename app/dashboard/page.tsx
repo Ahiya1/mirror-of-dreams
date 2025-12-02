@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/glass';
 import CosmicBackground from '@/components/shared/CosmicBackground';
 import { AppNavigation } from '@/components/shared/AppNavigation';
+import { BottomNavigation } from '@/components/navigation';
 import DashboardHero from '@/components/dashboard/DashboardHero';
 import DashboardGrid from '@/components/dashboard/shared/DashboardGrid';
 import DreamsCard from '@/components/dashboard/cards/DreamsCard';
@@ -164,6 +165,9 @@ export default function DashboardPage() {
         </div>
       </main>
 
+      {/* Bottom Navigation - visible only on mobile (< 768px) */}
+      <BottomNavigation />
+
       {/* Minimal custom styles for dashboard layout */}
       <style jsx global>{`
         .dashboard {
@@ -179,6 +183,15 @@ export default function DashboardPage() {
           z-index: var(--z-content);
           padding-top: calc(var(--nav-height) + var(--demo-banner-height, 0px));
           min-height: 100vh;
+          /* Bottom padding for mobile bottom nav - 64px nav height + safe area */
+          padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+        }
+
+        /* Remove bottom padding on tablet and desktop where bottom nav is hidden */
+        @media (min-width: 768px) {
+          .dashboard-main {
+            padding-bottom: 0;
+          }
         }
 
         .dashboard-container {
