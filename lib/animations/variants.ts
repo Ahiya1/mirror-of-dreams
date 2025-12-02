@@ -495,3 +495,32 @@ export const statusTextVariants: Variants = {
     },
   },
 };
+
+/**
+ * Mobile modal slide-up animation
+ * Full-screen modal that slides up from bottom on mobile devices
+ * Uses spring physics for natural, responsive feel
+ */
+export const mobileModalVariants: Variants = {
+  hidden: {
+    y: '100%',
+    opacity: 0,
+  },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      type: 'spring',
+      stiffness: 300,
+      damping: 30,
+    },
+  },
+  exit: {
+    y: '100%',
+    opacity: 0,
+    transition: {
+      duration: 0.2,
+      ease: 'easeIn',
+    },
+  },
+};

@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
+import { haptic } from '@/lib/utils/haptics';
 import type { GlowButtonProps } from '@/types/glass-components';
 
 /**
@@ -23,6 +24,13 @@ export function GlowButton({
   onClick,
   disabled = false,
 }: GlowButtonProps) {
+  // Haptic-enhanced click handler
+  const handleClick = () => {
+    if (!disabled) {
+      haptic('light');  // Trigger haptic feedback on tap
+    }
+    onClick?.();
+  };
   const variants = {
     primary: cn(
       'bg-purple-600 text-white',
@@ -75,16 +83,17 @@ export function GlowButton({
     ),
   };
 
+  // Size classes with minimum touch targets (48px for WCAG AA compliance)
   const sizes = {
-    sm: 'px-4 py-2 text-sm',
-    md: 'px-6 py-3 text-base',
-    lg: 'px-8 py-4 text-lg',
+    sm: 'px-4 py-2 text-sm min-h-[44px] min-w-[44px]',
+    md: 'px-6 py-3 text-base min-h-[48px] min-w-[48px]',
+    lg: 'px-8 py-4 text-lg min-h-[52px] min-w-[52px]',
   };
 
   return (
     <button
       type={type}
-      onClick={onClick}
+      onClick={handleClick}
       disabled={disabled}
       className={cn(
         // Base structure

@@ -1,15 +1,28 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, PanInfo, useReducedMotion } from 'framer-motion';
 import FocusLock from 'react-focus-lock';
 import { X } from 'lucide-react';
-import { useEffect, useRef } from 'react';
-import { modalOverlayVariants, modalContentVariants } from '@/lib/animations/variants';
+import { useEffect, useRef, useCallback } from 'react';
+import { modalOverlayVariants, modalContentVariants, mobileModalVariants } from '@/lib/animations/variants';
 import { GlassCard } from './GlassCard';
+import { useIsMobile } from '@/lib/hooks/useIsMobile';
+import { cn } from '@/lib/utils';
+import { haptic } from '@/lib/utils/haptics';
 import type { GlassModalProps } from '@/types/glass-components';
 
 /**
- * GlassModal - Modal dialog with glass overlay, animated entrance, and focus trap
+ * GlassModal - Modal dialog with glass overlay
+ *
+ * Mobile (< 768px):
+ * - Full-screen rendering
+ * - Slide up from bottom animation
+ * - Swipe down to dismiss gesture
+ * - Drag handle indicator
+ *
+ * Desktop:
+ * - Centered card with fade animation
+ * - Standard modal behavior (unchanged)
  *
  * Features:
  * - Focus trap (Tab navigation contained within modal)
@@ -17,12 +30,14 @@ import type { GlassModalProps } from '@/types/glass-components';
  * - Escape key closes modal
  * - Return focus to trigger element on close
  * - WCAG 2.4.3 compliant
+ * - 44px+ touch targets for accessibility
  *
  * @param isOpen - Modal open state
  * @param onClose - Close handler
  * @param title - Modal title (optional)
  * @param children - Modal content
  * @param className - Additional Tailwind classes
+ * @param disableSwipeDismiss - Disable swipe-to-dismiss on mobile (for forms)
  */
 export function GlassModal({
   isOpen,
@@ -30,8 +45,11 @@ export function GlassModal({
   title,
   children,
   className,
+  disableSwipeDismiss = false,
 }: GlassModalProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = useReducedMotion();
 
   // Auto-focus close button when modal opens
   useEffect(() => {
@@ -56,57 +74,148 @@ export function GlassModal({
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
+  // Handle swipe-to-dismiss gesture
+  const handleDragEnd = useCallback((_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    // Dismiss if dragged down more than 100px OR with high velocity (> 500px/s)
+    if (info.offset.y > 100 || info.velocity.y > 500) {
+      haptic('light');
+      onClose();
+    }
+  }, [onClose]);
+
+  // Handle close with haptic feedback
+  const handleClose = useCallback(() => {
+    haptic('light');
+    onClose();
+  }, [onClose]);
+
+  // Determine if swipe dismiss is enabled
+  const swipeEnabled = isMobile && !disableSwipeDismiss && !prefersReducedMotion;
+
   return (
     <AnimatePresence>
       {isOpen && (
         <FocusLock returnFocus>
           {/* Overlay */}
           <motion.div
-            variants={modalOverlayVariants}
+            variants={prefersReducedMotion ? undefined : modalOverlayVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
-            onClick={onClose}
+            onClick={handleClose}
             className="fixed inset-0 z-50 bg-mirror-dark/80 backdrop-blur-glass"
           />
 
-          {/* Modal Content */}
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Modal Container */}
+          <div className={cn(
+            'fixed z-50',
+            isMobile
+              ? 'inset-0'  // Full screen container on mobile
+              : 'inset-0 flex items-center justify-center p-4'  // Centered on desktop
+          )}>
             <motion.div
-              variants={modalContentVariants}
+              variants={prefersReducedMotion ? undefined : (isMobile ? mobileModalVariants : modalContentVariants)}
               initial="hidden"
               animate="visible"
               exit="exit"
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-lg"
+              className={cn(
+                isMobile
+                  ? 'h-full w-full flex flex-col'  // Full screen on mobile
+                  : 'w-full max-w-lg'              // Card on desktop
+              )}
               role="dialog"
               aria-modal="true"
               aria-labelledby={title ? 'modal-title' : undefined}
+              // Enable swipe-to-dismiss on mobile only (unless disabled)
+              drag={swipeEnabled ? 'y' : false}
+              dragConstraints={{ top: 0, bottom: 0 }}
+              dragElastic={{ top: 0, bottom: 0.5 }}
+              onDragEnd={swipeEnabled ? handleDragEnd : undefined}
             >
-              <GlassCard
-                elevated
-                className={className}
-              >
-                {/* Close Button */}
-                <button
-                  ref={closeButtonRef}
-                  onClick={onClose}
-                  className="absolute top-4 right-4 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
-                  aria-label="Close modal"
-                >
-                  <X className="w-5 h-5 text-white" />
-                </button>
+              {isMobile ? (
+                // Mobile: Full-screen glass container
+                <div className={cn(
+                  'flex-1 flex flex-col',
+                  'bg-mirror-void-deep/95 backdrop-blur-xl',
+                  'overflow-hidden',
+                  className
+                )}>
+                  {/* Drag handle indicator (only shown when swipe is enabled) */}
+                  {!disableSwipeDismiss && (
+                    <div className="flex justify-center py-3 flex-shrink-0">
+                      <div className="w-12 h-1.5 bg-white/30 rounded-full" />
+                    </div>
+                  )}
 
-                {/* Title */}
-                {title && (
-                  <h2 id="modal-title" className="text-2xl font-bold text-white mb-4 pr-10">
-                    {title}
-                  </h2>
-                )}
+                  {/* Close Button - Mobile (44px+ touch target) */}
+                  <button
+                    ref={closeButtonRef}
+                    onClick={handleClose}
+                    className={cn(
+                      'absolute z-10',
+                      disableSwipeDismiss ? 'top-4' : 'top-2',
+                      'right-4',
+                      'p-3 min-w-[44px] min-h-[44px]',
+                      'flex items-center justify-center',
+                      'rounded-lg bg-white/10 hover:bg-white/20',
+                      'transition-colors',
+                      'focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50'
+                    )}
+                    aria-label="Close modal"
+                  >
+                    <X className="w-5 h-5 text-white" />
+                  </button>
 
-                {/* Content */}
-                <div className="text-white/80">{children}</div>
-              </GlassCard>
+                  {/* Title - Mobile */}
+                  {title && (
+                    <h2
+                      id="modal-title"
+                      className={cn(
+                        'text-2xl font-bold text-white px-6 pb-4 pr-16 flex-shrink-0',
+                        disableSwipeDismiss ? 'pt-4' : 'pt-0'
+                      )}
+                    >
+                      {title}
+                    </h2>
+                  )}
+
+                  {/* Scrollable Content - Mobile */}
+                  <div className="flex-1 overflow-y-auto px-6 pb-6 pb-safe">
+                    <div className="text-white/80">{children}</div>
+                  </div>
+                </div>
+              ) : (
+                // Desktop: GlassCard (existing behavior unchanged)
+                <GlassCard elevated className={className}>
+                  {/* Close Button - Desktop (44px+ touch target) */}
+                  <button
+                    ref={closeButtonRef}
+                    onClick={handleClose}
+                    className={cn(
+                      'absolute top-4 right-4',
+                      'p-3 min-w-[44px] min-h-[44px]',
+                      'flex items-center justify-center',
+                      'rounded-lg bg-white/10 hover:bg-white/20',
+                      'transition-colors',
+                      'focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50'
+                    )}
+                    aria-label="Close modal"
+                  >
+                    <X className="w-5 h-5 text-white" />
+                  </button>
+
+                  {/* Title - Desktop */}
+                  {title && (
+                    <h2 id="modal-title" className="text-2xl font-bold text-white mb-4 pr-14">
+                      {title}
+                    </h2>
+                  )}
+
+                  {/* Content - Desktop */}
+                  <div className="text-white/80">{children}</div>
+                </GlassCard>
+              )}
             </motion.div>
           </div>
         </FocusLock>

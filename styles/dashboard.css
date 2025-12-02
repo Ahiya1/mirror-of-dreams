@@ -610,20 +610,29 @@
   pointer-events: none;
 }
 
-.dashboard-card:hover::before {
-  opacity: 1;
+/* Guard hover effects for touch devices - only apply on hover-capable devices */
+@media (hover: hover) {
+  .dashboard-card:hover::before {
+    opacity: 1;
+  }
+
+  .dashboard-card:hover::after {
+    transform: translateX(100%);
+  }
+
+  .dashboard-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 20px 64px rgba(139, 92, 246, 0.4);
+    border-color: rgba(139, 92, 246, 0.3);
+    backdrop-filter: blur(50px) saturate(140%);
+    will-change: transform;
+  }
 }
 
-.dashboard-card:hover::after {
-  transform: translateX(100%);
-}
-
-.dashboard-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 20px 64px rgba(139, 92, 246, 0.4);
-  border-color: rgba(139, 92, 246, 0.3);
-  backdrop-filter: blur(50px) saturate(140%);
-  will-change: transform;
+/* Touch feedback always available - active state for mobile */
+.dashboard-card:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
 }
 
 .dashboard-card--breathing {
@@ -1872,6 +1881,41 @@
 .reflection-item:focus-visible {
   outline: 2px solid rgba(147, 51, 234, 0.6);
   outline-offset: 2px;
+}
+
+/* ╭─ MOBILE DASHBOARD OPTIMIZATION ──────────────────────────────────────╮ */
+
+/* Mobile: De-emphasize secondary cards (3rd onwards) */
+@media (max-width: 767px) {
+  /* Secondary cards: ProgressStats, Evolution, Visualization, Subscription */
+  /* These are children 3-6 of the dashboard grid */
+  .dashboard-grid > *:nth-child(n+3) {
+    /* Slightly muted on mobile to draw focus to primary cards */
+    opacity: 0.92;
+  }
+
+  /* Compact card sizing for mobile */
+  .dashboard-card {
+    min-height: 160px;
+  }
+
+  /* Primary cards (Dreams, Reflections) keep full prominence */
+  .dashboard-grid > *:nth-child(1),
+  .dashboard-grid > *:nth-child(2) {
+    opacity: 1;
+  }
+
+  /* Hero section: More compact on mobile */
+  .dashboard-hero {
+    padding: var(--space-md) 0;
+  }
+
+  /* Ensure "Reflect Now" CTA remains prominent */
+  .dashboard-hero .cosmic-button--primary {
+    min-width: 140px;
+    padding: var(--space-3) var(--space-5);
+    font-size: var(--text-base);
+  }
 }
 
 /* ╭─ PRINT OPTIMIZATION ─────────────────────────────────────────────────╮ */
