@@ -60,7 +60,7 @@ export default function LandingPage() {
       {/* Main Content */}
       <main className="relative z-10">
         {/* Hero Section */}
-        <section className="min-h-screen flex items-center justify-center px-4 sm:px-8 pt-20 sm:pt-0">
+        <section className="min-h-screen flex items-center justify-center px-4 sm:px-8 pt-24 pb-8 sm:pt-0 sm:pb-0">
           <LandingHero />
         </section>
 
