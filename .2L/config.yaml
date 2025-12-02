@@ -108,7 +108,7 @@ plan-9:
       num_explorers: 3
       complexity_level: COMPLEX
     total_iterations: 3
-    current_iteration: 1
+    current_iteration: 2
     current_phase: exploration
 current_plan: plan-11
-global_iteration_counter: 15
+global_iteration_counter: 16

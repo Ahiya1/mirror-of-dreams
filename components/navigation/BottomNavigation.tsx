@@ -6,6 +6,9 @@ import { usePathname } from 'next/navigation';
 import { Home, Sparkles, Layers, TrendingUp, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+// Context imports
+import { useNavigation } from '@/contexts/NavigationContext';
+
 // Shared hook imports (from Builder-1)
 import { useScrollDirection } from '@/lib/hooks/useScrollDirection';
 
@@ -62,9 +65,11 @@ const NAV_ITEMS: readonly NavItem[] = [
 export function BottomNavigation({ className }: BottomNavigationProps) {
   const pathname = usePathname();
   const scrollDirection = useScrollDirection();
+  const { showBottomNav } = useNavigation();
 
   // Hide nav on scroll down, show on scroll up (or at top)
-  const isVisible = scrollDirection !== 'down';
+  // Also hide when showBottomNav is false (e.g., during reflection wizard)
+  const isVisible = showBottomNav && scrollDirection !== 'down';
 
   /**
    * Determine if a nav item is active

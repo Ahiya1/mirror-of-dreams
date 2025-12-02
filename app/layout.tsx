@@ -5,6 +5,7 @@ import '@/styles/globals.css';
 import '@/styles/reflection.css';  // Reflection experience sacred styling
 import { TRPCProvider } from '@/components/providers/TRPCProvider';
 import { ToastProvider } from '@/contexts/ToastContext';
+import { NavigationProvider } from '@/contexts/NavigationContext';
 
 export const metadata: Metadata = {
   title: 'Mirror of Dreams - Reflect, Discover, Transform',
@@ -42,12 +43,14 @@ export default function RootLayout({
           <div className="stars" />
         </div>
 
-        {/* Main content wrapped with tRPC provider and Toast provider */}
+        {/* Main content wrapped with tRPC provider, Toast provider, and Navigation provider */}
         <TRPCProvider>
           <ToastProvider>
-            <main id="main-content" tabIndex={-1} className="relative z-10 focus:outline-none">
-              {children}
-            </main>
+            <NavigationProvider>
+              <main id="main-content" tabIndex={-1} className="relative z-10 focus:outline-none">
+                {children}
+              </main>
+            </NavigationProvider>
           </ToastProvider>
         </TRPCProvider>
       </body>

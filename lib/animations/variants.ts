@@ -377,3 +377,121 @@ export const bottomNavVariants: Variants = {
     },
   },
 };
+
+/**
+ * Bottom sheet slide-up animation
+ * Use for modal-like bottom sheets
+ */
+export const bottomSheetVariants: Variants = {
+  hidden: {
+    y: '100%',
+    opacity: 0,
+  },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      type: 'spring',
+      stiffness: 300,
+      damping: 30,
+    },
+  },
+  exit: {
+    y: '100%',
+    opacity: 0,
+    transition: {
+      duration: 0.2,
+      ease: 'easeIn',
+    },
+  },
+};
+
+/**
+ * Bottom sheet backdrop animation
+ */
+export const bottomSheetBackdropVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.2 },
+  },
+  exit: {
+    opacity: 0,
+    transition: { duration: 0.15 },
+  },
+};
+
+/**
+ * Step transition animation (horizontal slide)
+ * Use custom prop for direction: positive = forward, negative = backward
+ */
+export const stepTransitionVariants: Variants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? '100%' : '-100%',
+    opacity: 0,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      type: 'spring',
+      stiffness: 300,
+      damping: 30,
+    },
+  },
+  exit: (direction: number) => ({
+    x: direction < 0 ? '100%' : '-100%',
+    opacity: 0,
+    transition: {
+      duration: 0.2,
+    },
+  }),
+};
+
+/**
+ * Gazing overlay animation
+ * Full-screen immersive loading state
+ */
+export const gazingOverlayVariants: Variants = {
+  hidden: {
+    opacity: 0,
+  },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      ease: 'easeOut',
+    },
+  },
+  exit: {
+    opacity: 0,
+    transition: {
+      duration: 0.3,
+    },
+  },
+};
+
+/**
+ * Status text fade transition
+ * For cycling through gazing status messages
+ */
+export const statusTextVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 10,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.3,
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: -10,
+    transition: {
+      duration: 0.2,
+    },
+  },
+};
