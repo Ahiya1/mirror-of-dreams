@@ -1,149 +1,9 @@
 {
   "functions": {
-    "api/**/*.js": {
-      "maxDuration": 240
+    "app/api/**/*.ts": {
+      "maxDuration": 60
     }
   },
-  "rewrites": [
-    {
-      "source": "/",
-      "destination": "/portal/index.html"
-    },
-    {
-      "source": "/register",
-      "destination": "/commitment/register.html"
-    },
-    {
-      "source": "/auth/signin",
-      "destination": "/auth/signin.html"
-    },
-    {
-      "source": "/dashboard",
-      "destination": "/dashboard/index.html"
-    },
-    {
-      "source": "/profile",
-      "destination": "/profile/index.html"
-    },
-    {
-      "source": "/subscription",
-      "destination": "/subscription/index.html"
-    },
-    {
-      "source": "/reflections",
-      "destination": "/reflections/history.html"
-    },
-    {
-      "source": "/reflections/history",
-      "destination": "/reflections/history.html"
-    },
-    {
-      "source": "/reflections/view",
-      "destination": "/reflections/view.html"
-    },
-    {
-      "source": "/evolution",
-      "destination": "/evolution/reports.html"
-    },
-    {
-      "source": "/gifting",
-      "destination": "/gifting/index.html"
-    },
-    {
-      "source": "/breathing",
-      "destination": "/transition/breathing.html"
-    },
-    {
-      "source": "/reflection",
-      "destination": "/mirror/questionnaire.html"
-    },
-    {
-      "source": "/reflection/output",
-      "destination": "/mirror/output.html"
-    },
-    {
-      "source": "/about",
-      "destination": "/about/index.html"
-    },
-    {
-      "source": "/behind-the-mirror",
-      "destination": "/creator/index.html"
-    },
-    {
-      "source": "/admin",
-      "destination": "/stewardship/admin.html"
-    },
-    {
-      "source": "/he",
-      "destination": "/portal/index.html"
-    },
-    {
-      "source": "/en",
-      "destination": "/portal/index.html"
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/mirror",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/truth",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/breathe",
-      "destination": "/breathing",
-      "permanent": true
-    },
-    {
-      "source": "/signup",
-      "destination": "/register",
-      "permanent": true
-    },
-    {
-      "source": "/join",
-      "destination": "/register",
-      "permanent": true
-    },
-    {
-      "source": "/auth",
-      "destination": "/auth/signin",
-      "permanent": false
-    },
-    {
-      "source": "/signin",
-      "destination": "/auth/signin",
-      "permanent": true
-    },
-    {
-      "source": "/login",
-      "destination": "/auth/signin",
-      "permanent": true
-    },
-    {
-      "source": "/creator",
-      "destination": "/behind-the-mirror",
-      "permanent": true
-    },
-    {
-      "source": "/gift",
-      "destination": "/gifting",
-      "permanent": true
-    },
-    {
-      "source": "/settings",
-      "destination": "/profile",
-      "permanent": true
-    },
-    {
-      "source": "/billing",
-      "destination": "/subscription",
-      "permanent": true
-    }
-  ],
   "headers": [
     {
       "source": "/api/(.*)",
@@ -159,10 +19,6 @@
         {
           "key": "Access-Control-Allow-Headers",
           "value": "X-Requested-With, Content-Type, Authorization"
-        },
-        {
-          "key": "Access-Control-Max-Age",
-          "value": "86400"
         }
       ]
     },
