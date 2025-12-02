@@ -8,14 +8,13 @@ DROP TABLE IF EXISTS public.subscription_gifts CASCADE;
 DROP TABLE IF EXISTS public.reflections CASCADE;
 DROP TABLE IF EXISTS public.users CASCADE;
 
--- Enable necessary extensions
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- Note: Using gen_random_uuid() which is built into PostgreSQL 13+
 
 -- =====================================================
 -- USERS TABLE - Core user management with subscriptions
 -- =====================================================
 CREATE TABLE public.users (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     email TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
     name TEXT NOT NULL,
@@ -57,7 +56,7 @@ CREATE INDEX idx_users_current_month ON public.users(current_month_year);
 -- REFLECTIONS TABLE - All user reflections with metadata
 -- =====================================================
 CREATE TABLE public.reflections (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -100,7 +99,7 @@ CREATE INDEX idx_reflections_tags ON public.reflections USING GIN(tags);
 -- USAGE_TRACKING TABLE - Monthly usage by user
 -- =====================================================
 CREATE TABLE public.usage_tracking (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
     month_year TEXT NOT NULL, -- Format: 'YYYY-MM'
     reflection_count INTEGER DEFAULT 0,
@@ -119,7 +118,7 @@ CREATE INDEX idx_usage_tracking_month_year ON public.usage_tracking(month_year);
 -- EVOLUTION_REPORTS TABLE - Growth analysis reports
 -- =====================================================
 CREATE TABLE public.evolution_reports (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     
@@ -148,7 +147,7 @@ CREATE INDEX idx_evolution_reports_report_type ON public.evolution_reports(repor
 -- SUBSCRIPTION_GIFTS TABLE - Gifted subscriptions
 -- =====================================================
 CREATE TABLE public.subscription_gifts (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     gift_code TEXT UNIQUE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     
@@ -313,7 +312,7 @@ INSERT INTO public.users (
     is_admin,
     email_verified
 ) VALUES (
-    uuid_generate_v4(),
+    gen_random_uuid(),
     'ahiya.butman@gmail.com',
     '$2b$10$placeholder_hash_replace_with_real_hash', -- Replace with actual bcrypt hash
     'Ahiya',

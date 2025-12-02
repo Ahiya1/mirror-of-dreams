@@ -19,7 +19,7 @@ WHERE report_category IS NULL;
 
 -- 2. Create visualizations table
 CREATE TABLE IF NOT EXISTS public.visualizations (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
     dream_id UUID REFERENCES public.dreams(id) ON DELETE SET NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -59,7 +59,7 @@ CREATE INDEX IF NOT EXISTS idx_visualizations_created_at ON public.visualization
 -- 3. Create or update api_usage_log table
 -- Create table if it doesn't exist
 CREATE TABLE IF NOT EXISTS public.api_usage_log (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 
