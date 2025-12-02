@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <title>Verify Email | Mirror of Truth</title>
+    <style>
+      /* Cosmic Email Verification - Sacred Confirmation */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100vh;
+        overflow: hidden;
+        background: linear-gradient(
+          135deg,
+          #0f0f23 0%,
+          #1a1a2e 25%,
+          #16213e 50%,
+          #0f0f23 100%
+        );
+        color: #fff;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+        position: fixed;
+        width: 100vw;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Cosmic Aurora Background */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(
+            ellipse at 30% 20%,
+            rgba(52, 211, 153, 0.06) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 70% 80%,
+            rgba(59, 130, 246, 0.05) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 50% 50%,
+            rgba(147, 51, 234, 0.03) 0%,
+            transparent 60%
+          );
+        z-index: 1;
+        animation: auroraGlow 35s ease-in-out infinite;
+      }
+
+      @keyframes auroraGlow {
+        0%, 100% {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+        50% {
+          transform: scale(1.15);
+          opacity: 1;
+        }
+      }
+
+      /* Floating Stars */
+      .stars {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 2;
+        overflow: hidden;
+      }
+
+      .star {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+        animation: twinkle 3s ease-in-out infinite;
+      }
+
+      .star:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
+      .star:nth-child(2) { top: 20%; left: 80%; animation-delay: 0.5s; }
+      .star:nth-child(3) { top: 40%; left: 10%; animation-delay: 1s; }
+      .star:nth-child(4) { top: 60%; left: 90%; animation-delay: 1.5s; }
+      .star:nth-child(5) { top: 80%; left: 30%; animation-delay: 2s; }
+      .star:nth-child(6) { top: 15%; left: 50%; animation-delay: 0.3s; }
+      .star:nth-child(7) { top: 70%; left: 70%; animation-delay: 0.8s; }
+      .star:nth-child(8) { top: 90%; left: 15%; animation-delay: 1.3s; }
+
+      @keyframes twinkle {
+        0%, 100% {
+          opacity: 0.3;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.5);
+        }
+      }
+
+      /* Main Container */
+      .main-container {
+        position: relative;
+        z-index: 10;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: clamp(1rem, 3vh, 2rem);
+        max-width: 95vw;
+        margin: 0 auto;
+        gap: clamp(1rem, 2vh, 1.5rem);
+        overflow: hidden;
+      }
+
+      /* Card */
+      .card {
+        width: 100%;
+        max-width: clamp(380px, 45vw, 480px);
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(20px) saturate(130%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: clamp(20px, 4vw, 28px);
+        padding: clamp(2rem, 4vh, 3rem) clamp(1.5rem, 3vw, 2.5rem);
+        box-shadow:
+          0 25px 60px rgba(0, 0, 0, 0.35),
+          0 0 0 1px rgba(255, 255, 255, 0.05),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        inset: 1px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.06) 0%,
+          rgba(52, 211, 153, 0.02) 50%,
+          rgba(255, 255, 255, 0.01) 100%
+        );
+        border-radius: clamp(19px, 4vw, 27px);
+        pointer-events: none;
+      }
+
+      /* States */
+      .state {
+        display: none;
+      }
+
+      .state.active {
+        display: block;
+      }
+
+      /* Loading State */
+      .loading-state .icon {
+        font-size: clamp(3rem, 6vw, 4rem);
+        margin-bottom: clamp(1rem, 2vh, 1.5rem);
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.8; }
+        50% { transform: scale(1.1); opacity: 1; }
+      }
+
+      .loading-state .title {
+        font-size: clamp(1.3rem, 2.6vw, 1.6rem);
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
+      }
+
+      .loading-state .subtitle {
+        font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+        color: rgba(255, 255, 255, 0.6);
+        font-weight: 300;
+      }
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-top-color: rgba(52, 211, 153, 0.8);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: clamp(1.5rem, 3vh, 2rem) auto 0;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      /* Success State */
+      .success-state .icon {
+        font-size: clamp(4rem, 8vw, 5rem);
+        margin-bottom: clamp(1rem, 2vh, 1.5rem);
+        animation: successPop 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      }
+
+      @keyframes successPop {
+        0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+        60% { transform: scale(1.2) rotate(10deg); }
+        100% { transform: scale(1) rotate(0deg); opacity: 1; }
+      }
+
+      .success-state .title {
+        font-size: clamp(1.4rem, 2.8vw, 1.8rem);
+        font-weight: 400;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.95) 0%,
+          rgba(52, 211, 153, 0.9) 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
+      }
+
+      .success-state .message {
+        font-size: clamp(0.9rem, 1.8vw, 1rem);
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.6;
+        font-weight: 300;
+        margin-bottom: clamp(1.5rem, 3vh, 2rem);
+      }
+
+      .signin-button {
+        display: inline-flex;
+        align-items: center;
+        gap: clamp(0.5rem, 1vw, 0.7rem);
+        color: rgba(255, 255, 255, 0.95);
+        text-decoration: none;
+        padding: clamp(1rem, 2vh, 1.2rem) clamp(2rem, 4vw, 2.5rem);
+        border-radius: clamp(12px, 2.4vw, 16px);
+        background: linear-gradient(
+          135deg,
+          rgba(52, 211, 153, 0.2) 0%,
+          rgba(59, 130, 246, 0.15) 100%
+        );
+        border: 1px solid rgba(52, 211, 153, 0.4);
+        transition: all 0.3s ease;
+        font-weight: 500;
+        font-size: clamp(0.9rem, 1.8vw, 1rem);
+        box-shadow: 0 10px 30px rgba(52, 211, 153, 0.15);
+      }
+
+      .signin-button:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(52, 211, 153, 0.3) 0%,
+          rgba(59, 130, 246, 0.22) 100%
+        );
+        border-color: rgba(52, 211, 153, 0.55);
+        transform: translateY(-3px) scale(1.03);
+        box-shadow: 0 15px 40px rgba(52, 211, 153, 0.25);
+      }
+
+      /* Error State */
+      .error-state .icon {
+        font-size: clamp(3.5rem, 7vw, 4.5rem);
+        margin-bottom: clamp(1rem, 2vh, 1.5rem);
+        animation: shake 0.5s ease;
+      }
+
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-8px); }
+        40%, 80% { transform: translateX(8px); }
+      }
+
+      .error-state .title {
+        font-size: clamp(1.3rem, 2.6vw, 1.6rem);
+        font-weight: 400;
+        color: rgba(252, 165, 165, 0.95);
+        margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
+      }
+
+      .error-state .message {
+        font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+        color: rgba(255, 255, 255, 0.6);
+        line-height: 1.6;
+        font-weight: 300;
+        margin-bottom: clamp(1.5rem, 3vh, 2rem);
+      }
+
+      .resend-button {
+        display: inline-flex;
+        align-items: center;
+        gap: clamp(0.5rem, 1vw, 0.7rem);
+        color: rgba(253, 224, 71, 0.95);
+        text-decoration: none;
+        padding: clamp(0.9rem, 1.8vh, 1.1rem) clamp(1.8rem, 3.6vw, 2.2rem);
+        border-radius: clamp(12px, 2.4vw, 15px);
+        background: linear-gradient(
+          135deg,
+          rgba(251, 191, 36, 0.15) 0%,
+          rgba(251, 191, 36, 0.1) 100%
+        );
+        border: 1px solid rgba(251, 191, 36, 0.35);
+        transition: all 0.3s ease;
+        font-weight: 500;
+        font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+        cursor: pointer;
+      }
+
+      .resend-button:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(251, 191, 36, 0.22) 0%,
+          rgba(251, 191, 36, 0.15) 100%
+        );
+        border-color: rgba(251, 191, 36, 0.5);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(251, 191, 36, 0.15);
+      }
+
+      /* Already Verified State */
+      .already-verified-state .icon {
+        font-size: clamp(3.5rem, 7vw, 4.5rem);
+        margin-bottom: clamp(1rem, 2vh, 1.5rem);
+      }
+
+      .already-verified-state .title {
+        font-size: clamp(1.3rem, 2.6vw, 1.6rem);
+        font-weight: 400;
+        color: rgba(147, 197, 253, 0.95);
+        margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
+      }
+
+      .already-verified-state .message {
+        font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+        color: rgba(255, 255, 255, 0.6);
+        line-height: 1.6;
+        font-weight: 300;
+        margin-bottom: clamp(1.5rem, 3vh, 2rem);
+      }
+
+      /* Footer Link */
+      .footer-link {
+        margin-top: clamp(1.5rem, 3vh, 2rem);
+      }
+
+      .footer-link a {
+        color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+        font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+        transition: color 0.3s ease;
+      }
+
+      .footer-link a:hover {
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .card {
+          max-width: 90vw;
+          padding: clamp(1.5rem, 3vh, 2rem) clamp(1.2rem, 2.4vw, 1.8rem);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      * {
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Stars -->
+    <div class="stars">
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+      <div class="card">
+
+        <!-- Loading State -->
+        <div class="state loading-state active" id="loadingState">
+          <div class="icon">🪞</div>
+          <h1 class="title">Verifying your email...</h1>
+          <p class="subtitle">Just a moment while we confirm your identity</p>
+          <div class="spinner"></div>
+        </div>
+
+        <!-- Success State -->
+        <div class="state success-state" id="successState">
+          <div class="icon">🎉</div>
+          <h1 class="title">Email Verified!</h1>
+          <p class="message">
+            Your email has been successfully verified.<br>
+            Welcome to your sacred space of reflection.
+          </p>
+          <a href="/auth/signin" class="signin-button">
+            <span>🪞</span>
+            <span>Sign in to begin</span>
+          </a>
+        </div>
+
+        <!-- Already Verified State -->
+        <div class="state already-verified-state" id="alreadyVerifiedState">
+          <div class="icon">✅</div>
+          <h1 class="title">Already Verified</h1>
+          <p class="message">
+            Your email was already verified.<br>
+            You're all set to continue your journey.
+          </p>
+          <a href="/auth/signin" class="signin-button">
+            <span>🪞</span>
+            <span>Sign in</span>
+          </a>
+        </div>
+
+        <!-- Error State -->
+        <div class="state error-state" id="errorState">
+          <div class="icon">⏰</div>
+          <h1 class="title" id="errorTitle">Link Expired</h1>
+          <p class="message" id="errorMessage">
+            This verification link has expired or is invalid.<br>
+            Please request a new verification email.
+          </p>
+          <button class="resend-button" id="resendButton" onclick="requestNewLink()">
+            <span>📧</span>
+            <span>Request new link</span>
+          </button>
+          <div class="footer-link">
+            <a href="/auth/signin">← Back to sign in</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <script>
+      // Email Verification Logic
+      let token = null;
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // Get token from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        token = urlParams.get("token");
+
+        if (!token) {
+          showError("No verification token provided", "Missing Token");
+          return;
+        }
+
+        // Verify the token
+        verifyEmail(token);
+      });
+
+      async function verifyEmail(token) {
+        try {
+          const response = await fetch("/api/auth/verify-email", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token }),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            if (result.alreadyVerified) {
+              showState("alreadyVerifiedState");
+            } else {
+              showState("successState");
+              createCelebration();
+            }
+          } else if (result.expired) {
+            showError(
+              "This verification link has expired.<br>Please request a new verification email.",
+              "Link Expired"
+            );
+          } else if (result.invalid) {
+            showError(
+              "This verification link is invalid.<br>Please check your email for the correct link.",
+              "Invalid Link"
+            );
+          } else {
+            showError(
+              result.error || "Verification failed. Please try again.",
+              "Verification Failed"
+            );
+          }
+        } catch (error) {
+          console.error("Verification error:", error);
+          showError(
+            "Something went wrong. Please try again later.",
+            "Error"
+          );
+        }
+      }
+
+      function showState(stateId) {
+        document.querySelectorAll(".state").forEach((s) => s.classList.remove("active"));
+        document.getElementById(stateId).classList.add("active");
+      }
+
+      function showError(message, title) {
+        document.getElementById("errorTitle").textContent = title || "Error";
+        document.getElementById("errorMessage").innerHTML = message;
+        showState("errorState");
+      }
+
+      async function requestNewLink() {
+        const button = document.getElementById("resendButton");
+        const originalContent = button.innerHTML;
+
+        button.innerHTML = '<span class="spinner" style="width:18px;height:18px;margin:0;border-width:2px;"></span><span>Sending...</span>';
+        button.disabled = true;
+
+        try {
+          // Try to get email from localStorage or prompt user
+          let email = localStorage.getItem("pending_verification_email");
+
+          if (!email) {
+            email = prompt("Please enter your email address:");
+            if (!email) {
+              button.innerHTML = originalContent;
+              button.disabled = false;
+              return;
+            }
+          }
+
+          const response = await fetch("/api/auth/send-verification", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email }),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            if (result.alreadyVerified) {
+              showState("alreadyVerifiedState");
+            } else {
+              button.innerHTML = '<span>✓</span><span>Email sent!</span>';
+              button.style.borderColor = "rgba(52, 211, 153, 0.5)";
+              button.style.color = "rgba(110, 231, 183, 0.95)";
+
+              setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.style.borderColor = "";
+                button.style.color = "";
+                button.disabled = false;
+              }, 3000);
+            }
+          } else {
+            throw new Error(result.error);
+          }
+        } catch (error) {
+          console.error("Resend error:", error);
+          button.innerHTML = '<span>✗</span><span>Failed - try again</span>';
+          button.style.borderColor = "rgba(239, 68, 68, 0.5)";
+          button.style.color = "rgba(252, 165, 165, 0.95)";
+
+          setTimeout(() => {
+            button.innerHTML = originalContent;
+            button.style.borderColor = "";
+            button.style.color = "";
+            button.disabled = false;
+          }, 3000);
+        }
+      }
+
+      function createCelebration() {
+        const colors = [
+          "rgba(52, 211, 153, 0.9)",
+          "rgba(59, 130, 246, 0.8)",
+          "rgba(147, 51, 234, 0.8)",
+          "rgba(251, 191, 36, 0.8)",
+        ];
+
+        for (let i = 0; i < 25; i++) {
+          setTimeout(() => {
+            const particle = document.createElement("div");
+            particle.style.position = "fixed";
+            particle.style.width = Math.random() * 10 + 5 + "px";
+            particle.style.height = particle.style.width;
+            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+            particle.style.borderRadius = "50%";
+            particle.style.pointerEvents = "none";
+            particle.style.zIndex = "1000";
+
+            const startX = window.innerWidth / 2;
+            const startY = window.innerHeight / 2;
+
+            particle.style.left = startX + "px";
+            particle.style.top = startY + "px";
+
+            document.body.appendChild(particle);
+
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = 100 + Math.random() * 150;
+            const endX = startX + Math.cos(angle) * velocity;
+            const endY = startY + Math.sin(angle) * velocity - 100;
+
+            particle.animate(
+              [
+                {
+                  left: startX + "px",
+                  top: startY + "px",
+                  opacity: 1,
+                  transform: "scale(0)",
+                },
+                {
+                  left: endX + "px",
+                  top: endY + "px",
+                  opacity: 0,
+                  transform: "scale(1)",
+                },
+              ],
+              {
+                duration: 1200 + Math.random() * 600,
+                easing: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+              }
+            ).onfinish = () => {
+              if (document.body.contains(particle)) {
+                document.body.removeChild(particle);
+              }
+            };
+          }, i * 30);
+        }
+      }
+
+      // Debug
+      if (window.location.hostname === "localhost") {
+        console.log("✨ Email Verification - Sacred Confirmation");
+
+        window.verifyDebug = {
+          showSuccess: () => { showState("successState"); createCelebration(); },
+          showAlreadyVerified: () => showState("alreadyVerifiedState"),
+          showExpired: () => showError("This verification link has expired.", "Link Expired"),
+          celebration: createCelebration,
+        };
+      }
+    </script>
+  </body>
+</html>

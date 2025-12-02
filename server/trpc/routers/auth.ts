@@ -6,6 +6,11 @@ import { TRPCError } from '@trpc/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { supabase } from '@/server/lib/supabase';
+import {
+  sendVerificationEmail,
+  generateToken,
+  getVerificationTokenExpiration,
+} from '@/server/lib/email';
 import { type JWTPayload, type UserRow, userRowToUser } from '@/types';
 import {
   signupSchema,
@@ -90,6 +95,27 @@ export const authRouter = router({
       // Include onboarding_completed flag (new users always need onboarding unless admin/creator)
       const userResponse = userRowToUser(newUser);
 
+      // Send verification email (async, don't block signup)
+      try {
+        const verificationToken = generateToken();
+        const expiresAt = getVerificationTokenExpiration();
+
+        // Store verification token
+        await supabase.from('email_verification_tokens').insert({
+          user_id: newUser.id,
+          token: verificationToken,
+          expires_at: expiresAt.toISOString(),
+        });
+
+        // Send email (fire and forget - don't block signup on email failure)
+        sendVerificationEmail(newUser.email, verificationToken, newUser.name).catch(
+          (err) => console.error('Failed to send verification email:', err)
+        );
+      } catch (emailError) {
+        // Log but don't fail signup if email fails
+        console.error('Error setting up verification email:', emailError);
+      }
+
       return {
         user: {
           ...userResponse,
@@ -97,6 +123,7 @@ export const authRouter = router({
         },
         token,
         message: 'Account created successfully',
+        emailVerificationSent: true,
       };
     }),
 
