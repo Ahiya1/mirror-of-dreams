@@ -4,9 +4,20 @@ import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Check } from 'lucide-react';
+
+// Internal utilities
 import { trpc } from '@/lib/trpc';
+import { cn } from '@/lib/utils';
+import { checkReflectionLimits } from '@/lib/utils/limits';
+
+// Internal hooks
 import { useAuth } from '@/hooks/useAuth';
+import { useIsMobile } from '@/lib/hooks/useIsMobile';
+
+// Internal contexts
 import { useToast } from '@/contexts/ToastContext';
+
+// Internal components
 import CosmicBackground from '@/components/shared/CosmicBackground';
 import { GlassCard, GlowButton, CosmicLoader, GlassInput } from '@/components/ui/glass';
 import { ReflectionQuestionCard } from '@/components/reflection/ReflectionQuestionCard';
@@ -14,8 +25,9 @@ import { ToneSelectionCard } from '@/components/reflection/ToneSelectionCard';
 import { ProgressBar } from '@/components/reflection/ProgressBar';
 import { AIResponseRenderer } from '@/components/reflections/AIResponseRenderer';
 import { UpgradeModal } from '@/components/subscription/UpgradeModal';
-import { checkReflectionLimits } from '@/lib/utils/limits';
-import { cn } from '@/lib/utils';
+import { MobileReflectionFlow } from '@/components/reflection/mobile/MobileReflectionFlow';
+
+// Types and constants
 import type { ToneId } from '@/lib/utils/constants';
 import { QUESTION_LIMITS, REFLECTION_MICRO_COPY } from '@/lib/utils/constants';
 
@@ -63,6 +75,7 @@ export default function MirrorExperience() {
   const { user, isAuthenticated } = useAuth();
   const toast = useToast();
   const prefersReducedMotion = useReducedMotion();
+  const isMobile = useIsMobile();
 
   // Determine view mode from URL
   const reflectionId = searchParams.get('id');
@@ -340,6 +353,28 @@ export default function MirrorExperience() {
     );
   }
 
+  // Mobile users get the step-by-step wizard for questionnaire mode
+  if (isMobile && viewMode === 'questionnaire') {
+    return (
+      <MobileReflectionFlow
+        dreams={dreams || []}
+        selectedDreamId={selectedDreamId}
+        onDreamSelect={(dream) => {
+          setSelectedDreamId(dream.id);
+          setSelectedDream(dream);
+        }}
+        formData={formData}
+        onFieldChange={handleFieldChange}
+        selectedTone={selectedTone}
+        onToneSelect={setSelectedTone}
+        onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
+        onClose={() => router.push('/dashboard')}
+      />
+    );
+  }
+
+  // Desktop users get the existing experience (unchanged)
   return (
     <div className="reflection-experience">
       {/* Darker cosmic background with vignette */}
