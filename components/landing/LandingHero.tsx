@@ -56,7 +56,7 @@ export default function LandingHero() {
       className="text-center max-w-4xl mx-auto px-4"
     >
       {/* Headline */}
-      <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6">
+      <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6">
         <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600 bg-clip-text text-transparent">
           Transform Your Dreams into Reality Through AI-Powered Reflection
         </span>

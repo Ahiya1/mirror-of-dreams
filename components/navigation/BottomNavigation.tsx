@@ -128,7 +128,7 @@ export function BottomNavigation({ className }: BottomNavigationProps) {
                   aria-label={`Navigate to ${item.label}`}
                   className={cn(
                     'flex flex-col items-center justify-center',
-                    'flex-1 h-full min-w-[64px]',
+                    'flex-1 h-full min-w-0',
                     'transition-colors duration-200',
                     'focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-inset'
                   )}
@@ -137,7 +137,7 @@ export function BottomNavigation({ className }: BottomNavigationProps) {
                     {/* Icon */}
                     <Icon
                       className={cn(
-                        'w-6 h-6 transition-colors duration-200',
+                        'w-5 h-5 transition-colors duration-200',
                         isActive ? 'text-purple-400' : 'text-white/60'
                       )}
                       aria-hidden="true"
@@ -146,7 +146,7 @@ export function BottomNavigation({ className }: BottomNavigationProps) {
                     {/* Label */}
                     <span
                       className={cn(
-                        'text-xs mt-1 transition-colors duration-200',
+                        'text-[10px] mt-0.5 transition-colors duration-200 truncate max-w-full',
                         isActive ? 'text-white' : 'text-white/60'
                       )}
                     >
