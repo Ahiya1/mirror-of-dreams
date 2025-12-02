@@ -8,6 +8,7 @@ import DashboardCard, {
   CardContent,
   CardActions,
 } from '@/components/dashboard/shared/DashboardCard';
+import { MarkdownPreview } from '@/components/shared/MarkdownPreview';
 import { trpc } from '@/lib/trpc';
 
 interface VisualizationCardProps {
@@ -79,9 +80,11 @@ const VisualizationCard: React.FC<VisualizationCardProps> = ({
                 </div>
 
                 <p className="preview-text">
-                  {latestVisualization.narrative
-                    ? latestVisualization.narrative.substring(0, 150) + '...'
-                    : 'View visualization'}
+                  {latestVisualization.narrative ? (
+                    <MarkdownPreview content={latestVisualization.narrative} maxLength={150} />
+                  ) : (
+                    'View visualization'
+                  )}
                 </p>
 
                 <div className="preview-meta">

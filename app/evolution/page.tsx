@@ -15,6 +15,7 @@ import { AppNavigation } from '@/components/shared/AppNavigation';
 import { BottomNavigation } from '@/components/navigation';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { FeatureLockOverlay } from '@/components/subscription/FeatureLockOverlay';
+import { MarkdownPreview } from '@/components/shared/MarkdownPreview';
 import { cn } from '@/lib/utils';
 
 export default function EvolutionPage() {
@@ -282,7 +283,11 @@ export default function EvolutionPage() {
                   </p>
 
                   <p className="text-white/70 text-sm line-clamp-2 mb-3">
-                    {report.analysis?.substring(0, 200)}...
+                    <MarkdownPreview
+                      content={report.analysis || ''}
+                      maxLength={200}
+                      className="text-white/70"
+                    />
                   </p>
 
                   <div className="flex items-center justify-between">

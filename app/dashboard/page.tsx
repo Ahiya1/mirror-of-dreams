@@ -231,13 +231,13 @@ export default function DashboardPage() {
 
         @media (max-width: 768px) {
           .dashboard-container {
-            padding: var(--space-md);
+            padding: 1rem;  /* 16px - consistent with px-4 on other pages */
           }
         }
 
         @media (max-width: 480px) {
           .dashboard-container {
-            padding: var(--space-sm);
+            padding: 1rem;  /* Same 16px for consistency */
           }
         }
       `}</style>
