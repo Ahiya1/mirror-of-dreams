@@ -125,5 +125,19 @@ plan-9:
     current_iteration: 19
     current_phase: complete
     completed_at: '2025-12-02T12:45:00Z'
-current_plan: plan-12
-global_iteration_counter: 19
+plan-13:
+    status: COMPLETE
+    created: '2025-12-03'
+    vision_file: plan-13/vision.md
+    master_plan_file: plan-13/master-plan.yaml
+    description: Critical UX Fixes & Messaging Alignment - Fix landing page lies, broken upgrade, mobile overflow
+    github_repo: git@github.com:Ahiya1/mirror-of-dreams.git
+    master_exploration:
+      num_explorers: 2
+      complexity_level: SIMPLE
+    total_iterations: 1
+    current_iteration: 20
+    current_phase: complete
+    completed_at: '2025-12-03T17:50:00Z'
+current_plan: plan-13
+global_iteration_counter: 20

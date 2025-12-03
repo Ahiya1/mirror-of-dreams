@@ -25,11 +25,11 @@ export default function LandingPage() {
   const useCases = [
     {
       id: 'clarity',
-      icon: '🚀',
-      title: 'From Vague Aspiration to Clear Action Plan',
+      icon: '🔮',
+      title: 'From Inner Confusion to Clear Self-Understanding',
       description:
-        '"I want to launch a SaaS product" becomes "Build MVP in 30 days, validate with 10 early users, iterate based on feedback." Your AI mirror breaks down dreams into concrete steps.',
-      example: 'Real example from demo: Launch My SaaS Product',
+        '"I feel stuck but don\'t know why" becomes a journey of discovery where your AI mirror reflects your thoughts back, helping you recognize patterns and truths you already know.',
+      example: 'Discover what\'s really holding you back',
     },
     {
       id: 'evolution',

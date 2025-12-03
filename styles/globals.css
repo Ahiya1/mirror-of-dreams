@@ -17,6 +17,13 @@
   box-sizing: border-box;
 }
 
+/* Prevent horizontal overflow at all levels - critical for mobile */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -25,7 +32,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #0f0a1a;  /* Deep purple space */
   color: #ffffff;
-  overflow-x: hidden;
 }
 
 /* Cosmic background animation (preserved from existing) */
