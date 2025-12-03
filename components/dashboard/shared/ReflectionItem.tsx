@@ -98,7 +98,7 @@ const ReflectionItem: React.FC<ReflectionItemProps> = ({
 
   return (
     <Link
-      href={`/reflections/view?id=${reflectionData.id}`}
+      href={`/reflections/${reflectionData.id}`}
       className={`${styles.reflectionItem} ${className}`}
       onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)}

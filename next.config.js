@@ -4,6 +4,23 @@ const nextConfig = {
   images: {
     domains: [],
   },
+  // Redirect old URL patterns to new ones
+  async redirects() {
+    return [
+      {
+        // Redirect /reflections/view?id=xxx to /reflections/xxx
+        source: '/reflections/view',
+        has: [
+          {
+            type: 'query',
+            key: 'id',
+          },
+        ],
+        destination: '/reflections/:id',
+        permanent: true,
+      },
+    ];
+  },
   // Externalize Anthropic SDK to avoid build-time initialization
   experimental: {
     serverComponentsExternalPackages: ['@anthropic-ai/sdk'],
