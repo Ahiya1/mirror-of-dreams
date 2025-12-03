@@ -81,7 +81,7 @@ const ReflectionItem = ({
       onClick(reflection);
     } else {
       // Default navigation to reflection view
-      window.location.href = `/reflections/view?id=${reflectionData.id}`;
+      window.location.href = `/reflections/${reflectionData.id}`;
     }
   };
 
