@@ -5,25 +5,11 @@ import { router } from '../trpc';
 import { protectedProcedure } from '../middleware';
 import { TRPCError } from '@trpc/server';
 import { supabase } from '@/server/lib/supabase';
-
-// Import PayPal client functions (Builder 2 dependency)
-// TODO: These imports will be available after Builder 2 completes
-// import { createSubscription, cancelSubscription, getPlanId } from '@/server/lib/paypal';
-
-// Placeholder types until Builder 2 completes
-let createSubscription: ((userId: string, planId: string) => Promise<string>) | undefined;
-let cancelSubscription: ((subscriptionId: string) => Promise<void>) | undefined;
-let getPlanId: ((tier: 'pro' | 'unlimited', period: 'monthly' | 'yearly') => string | null) | undefined;
-
-// Try to import PayPal functions if available
-try {
-  const paypalModule = require('@/server/lib/paypal');
-  createSubscription = paypalModule.createSubscription;
-  cancelSubscription = paypalModule.cancelSubscription;
-  getPlanId = paypalModule.getPlanId;
-} catch (e) {
-  console.warn('PayPal client not available yet (Builder 2 in progress)');
-}
+import {
+  createSubscription,
+  cancelSubscription,
+  getPlanId,
+} from '@/server/lib/paypal';
 
 export const subscriptionsRouter = router({
   // Get current subscription status
@@ -100,44 +86,24 @@ export const subscriptionsRouter = router({
       period: z.enum(['monthly', 'yearly']),
     }))
     .mutation(async ({ ctx, input }) => {
-      if (!createSubscription || !getPlanId) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'PayPal integration not available yet (Builder 2 in progress)',
-        });
-      }
-
-      // Get plan ID for the selected tier/period
-      const planId = getPlanId(input.tier, input.period);
-
-      if (!planId) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Invalid plan configuration',
-        });
-      }
-
       try {
+        // Get plan ID for the selected tier/period
+        const planId = getPlanId(input.tier, input.period);
+
+        // Create PayPal subscription and get approval URL
         const approvalUrl = await createSubscription(ctx.user.id, planId);
         return { approvalUrl };
       } catch (error) {
         console.error('PayPal createSubscription error:', error);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to create checkout session',
+          message: error instanceof Error ? error.message : 'Failed to create checkout session',
         });
       }
     }),
 
   // Cancel subscription
   cancel: protectedProcedure.mutation(async ({ ctx }) => {
-    if (!cancelSubscription) {
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'PayPal integration not available yet (Builder 2 in progress)',
-      });
-    }
-
     const { data: user } = await supabase
       .from('users')
       .select('paypal_subscription_id')
@@ -165,7 +131,7 @@ export const subscriptionsRouter = router({
       console.error('PayPal cancelSubscription error:', error);
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to cancel subscription',
+        message: error instanceof Error ? error.message : 'Failed to cancel subscription',
       });
     }
   }),

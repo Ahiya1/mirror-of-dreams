@@ -8,12 +8,14 @@ import { useToast } from '@/contexts/ToastContext';
 import CosmicBackground from '@/components/shared/CosmicBackground';
 import { GlowButton } from '@/components/ui/glass/GlowButton';
 import { PricingCard } from '@/components/subscription/PricingCard';
+import { AppNavigation } from '@/components/shared/AppNavigation';
+import LandingNavigation from '@/components/shared/LandingNavigation';
 import { TIER_LIMITS, TIER_PRICING, DAILY_LIMITS, DREAM_LIMITS } from '@/lib/utils/constants';
 import type { BillingPeriod } from '@/lib/utils/constants';
 
 // Separate component that uses searchParams
 function PricingPageContent() {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const toast = useToast();
   const searchParams = useSearchParams();
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('monthly');
@@ -123,22 +125,12 @@ function PricingPageContent() {
     <div className="min-h-screen relative">
       <CosmicBackground animated intensity={1} />
 
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/20 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold text-white">
-            Mirror of Dreams
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/auth/signin" className="text-white/80 hover:text-white transition-colors">
-              Sign In
-            </Link>
-            <Link href="/auth/signup">
-              <GlowButton size="sm">Start Free</GlowButton>
-            </Link>
-          </div>
-        </div>
-      </nav>
+      {/* Navigation - Show app nav if authenticated, landing nav otherwise */}
+      {isAuthenticated ? (
+        <AppNavigation currentPage="dashboard" />
+      ) : (
+        <LandingNavigation transparent />
+      )}
 
       <main className="relative z-10 pt-32 pb-20 px-4">
         <div className="max-w-7xl mx-auto">
