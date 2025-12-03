@@ -202,7 +202,7 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
             <GlowButton
               variant="primary"
               size="sm"
-              onClick={() => router.push('/subscription')}
+              onClick={() => router.push('/pricing')}
               className="hidden sm:flex"
             >
               <span className="text-lg">💎</span>
@@ -278,7 +278,7 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
                         <span>Settings</span>
                       </Link>
                       {user?.tier !== 'unlimited' && (
-                        <Link href="/subscription" className="dashboard-dropdown-item">
+                        <Link href="/pricing" className="dashboard-dropdown-item">
                           <span>💎</span>
                           <span>Upgrade</span>
                         </Link>

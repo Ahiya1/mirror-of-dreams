@@ -1,0 +1,75 @@
+plan_id: plan-13
+created_at: 2025-12-03T19:30:00Z
+status: PLANNED
+total_iterations: 1
+
+strategy: |
+  Single iteration focused bug-fix plan addressing 4 UX issues:
+  1. Landing page messaging alignment (text-only changes)
+  2. Upgrade button routing fix (2 line changes)
+  3. Mobile horizontal overflow fix (CSS debugging)
+  4. Free tier limits verification (mostly confirmation)
+
+  All issues are independent and low-risk. A single builder can handle
+  all 4 fixes in sequence. Order: Landing -> Routing -> Limits -> Overflow.
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 20
+    name: "Critical UX Fixes"
+    vision: "Fix all 4 UX issues: landing messaging, upgrade routing, mobile overflow, free tier limits"
+    scope: |
+      Builder Tasks (Single Builder):
+
+      1. LANDING PAGE MESSAGING (Priority 1)
+         - File: app/page.tsx (lines 25-50)
+         - Change useCases array:
+           - Title: "From Vague Aspiration to Clear Action Plan" -> reflective messaging
+           - Description: Remove "concrete steps" / "Build MVP" language
+           - Example: Update to reflective example
+         - Optional: Update LandingHero.tsx subheadline for consistency
+
+      2. UPGRADE BUTTON ROUTING (Priority 2)
+         - File: components/shared/AppNavigation.tsx
+           - Line 205: router.push('/subscription') -> router.push('/pricing')
+           - Line 281: href="/subscription" -> href="/pricing"
+         - Delete: public/subscription/index.html (deprecated Stripe file)
+         - DO NOT TOUCH: app/subscription/success/ or app/subscription/cancel/
+
+      3. FREE TIER LIMITS DISPLAY (Priority 3)
+         - Verify: SubscriptionCard.tsx shows correct limits (2 reflections, 2 dreams)
+         - Verify: Evolution/Visualizations pages show FeatureLockOverlay for free tier
+         - Add if missing: Explicit indication of unavailable features
+
+      4. MOBILE HORIZONTAL OVERFLOW (Priority 4)
+         - Debug: Use DevTools mobile simulation to find overflow source
+         - Check: Dashboard grid, navigation, footer for fixed-width elements
+         - Fix: Add appropriate overflow/max-width CSS rules
+         - Test: Viewports 320px, 375px, 414px
+
+    status: PENDING
+    dependencies: []
+
+    builder_count: 1
+    estimated_time: "1.5-2 hours"
+
+    files_to_modify:
+      - app/page.tsx
+      - components/shared/AppNavigation.tsx
+      - styles/dashboard.css (if needed)
+      - components/dashboard/cards/SubscriptionCard.tsx (if needed)
+
+    files_to_delete:
+      - public/subscription/index.html
+
+    files_to_verify:
+      - lib/utils/constants.ts
+      - app/pricing/page.tsx
+      - components/subscription/FeatureLockOverlay.tsx
+
+    acceptance_criteria:
+      - Landing page has no "action plan" or "concrete steps" messaging
+      - Upgrade button navigates to /pricing
+      - PayPal checkout flow works from /pricing
+      - No horizontal scroll on mobile viewports (320px+)
+      - Free tier limits (2 reflections, 2 dreams) visible in dashboard
