@@ -1,43 +1,34 @@
 'use client';
 
 import { useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { CheckCircle } from 'lucide-react';
 
 /**
- * PayPal Success Redirect Handler Content
+ * PayPal Success Page
  *
- * This component handles the return URL from PayPal after successful subscription.
- * Immediately redirects to pricing page with success query parameter.
+ * Shows a success message after PayPal subscription approval,
+ * then redirects to the dashboard.
  */
 function SubscriptionSuccessContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
-    // Get any additional parameters from PayPal (like subscription_id, token, etc.)
-    const subscriptionId = searchParams.get('subscription_id');
-    const token = searchParams.get('token');
+    // Short delay to show success message, then redirect to dashboard
+    const timer = setTimeout(() => {
+      router.replace('/journey?upgraded=true');
+    }, 2500);
 
-    // Build redirect URL with subscription=success
-    let redirectUrl = '/pricing?subscription=success';
-
-    // Optionally preserve PayPal parameters for debugging/logging
-    if (subscriptionId) {
-      redirectUrl += `&subscription_id=${subscriptionId}`;
-    }
-    if (token) {
-      redirectUrl += `&token=${token}`;
-    }
-
-    // Redirect to pricing page with success parameter
-    router.replace(redirectUrl);
-  }, [router, searchParams]);
+    return () => clearTimeout(timer);
+  }, [router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-purple-950/50 to-black">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
-        <p className="text-white/80">Processing your subscription...</p>
+        <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-4 animate-pulse" />
+        <h1 className="text-2xl font-bold text-white mb-2">Payment Successful!</h1>
+        <p className="text-white/70 mb-4">Welcome to your upgraded experience</p>
+        <p className="text-white/50 text-sm">Redirecting to your dashboard...</p>
       </div>
     </div>
   );
