@@ -26,7 +26,7 @@ export function PayPalCheckoutModal({
   period,
   onSuccess,
 }: PayPalCheckoutModalProps) {
-  const { refreshUser } = useAuth();
+  const { user, refreshUser } = useAuth();
   const toast = useToast();
   const [isActivating, setIsActivating] = useState(false);
 
@@ -111,7 +111,7 @@ export function PayPalCheckoutModal({
         </div>
 
         {/* Content */}
-        {isLoading || isActivating ? (
+        {isLoading || isActivating || !user ? (
           <div className="flex flex-col items-center justify-center py-8 gap-3">
             <CosmicLoader size="lg" />
             {isActivating && (
@@ -128,12 +128,13 @@ export function PayPalCheckoutModal({
               Close
             </button>
           </div>
-        ) : planData?.planId && clientId ? (
+        ) : planData?.planId && clientId && user ? (
           <PayPalScriptProvider
             options={{
               clientId,
               vault: true,
               intent: 'subscription',
+              components: 'buttons',
             }}
           >
             <PayPalButtons
@@ -143,9 +144,18 @@ export function PayPalCheckoutModal({
                 layout: 'vertical',
                 label: 'subscribe',
               }}
-              createSubscription={(data, actions) => {
+              createSubscription={(_data, actions) => {
+                const baseUrl = window.location.origin;
                 return actions.subscription.create({
                   plan_id: planData.planId,
+                  custom_id: user.id,
+                  application_context: {
+                    shipping_preference: 'NO_SHIPPING',
+                    user_action: 'SUBSCRIBE_NOW',
+                    brand_name: 'Mirror of Dreams',
+                    return_url: `${baseUrl}/subscription/success`,
+                    cancel_url: `${baseUrl}/pricing`,
+                  },
                 });
               }}
               onApprove={handleApprove}
