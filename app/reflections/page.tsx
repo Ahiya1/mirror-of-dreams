@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { trpc } from '@/lib/trpc';
@@ -11,9 +11,22 @@ import { ReflectionFilters } from '@/components/reflections/ReflectionFilters';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { AppNavigation } from '@/components/shared/AppNavigation';
 import { BlankJournal } from '@/components/shared/illustrations/BlankJournal';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function ReflectionsPage() {
   const router = useRouter();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+
+  // Redirect to signin if not authenticated, or to verify-required if not verified
+  useEffect(() => {
+    if (!authLoading) {
+      if (!isAuthenticated) {
+        router.push('/auth/signin');
+      } else if (user && !user.emailVerified && !user.isCreator && !user.isAdmin && !user.isDemo) {
+        router.push('/auth/verify-required');
+      }
+    }
+  }, [isAuthenticated, authLoading, user, router]);
 
   // Filter state
   const [page, setPage] = useState(1);
@@ -34,6 +47,30 @@ export default function ReflectionsPage() {
     sortBy,
     sortOrder,
   });
+
+  // Auth loading state
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <svg className="animate-spin h-12 w-12 mx-auto mb-4 text-purple-500" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <p className="text-gray-300">Loading...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Auth/verification guard - return null while redirect happens
+  if (!isAuthenticated || (user && !user.emailVerified && !user.isCreator && !user.isAdmin && !user.isDemo)) {
+    return null;
+  }
 
   // Loading state
   if (isLoading) {

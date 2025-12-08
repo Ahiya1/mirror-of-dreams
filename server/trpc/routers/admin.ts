@@ -231,6 +231,42 @@ export const adminRouter = router({
       };
     }),
 
+  // Get webhook events for admin dashboard
+  getWebhookEvents: creatorProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).default(20),
+        eventType: z.string().optional(),
+      })
+    )
+    .query(async ({ input }) => {
+      const { limit, eventType } = input;
+
+      let query = supabase
+        .from('webhook_events')
+        .select('id, event_id, event_type, processed_at, payload, user_id')
+        .order('processed_at', { ascending: false })
+        .limit(limit);
+
+      if (eventType) {
+        query = query.eq('event_type', eventType);
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch webhook events',
+        });
+      }
+
+      return {
+        items: data || [],
+        total: data?.length || 0,
+      };
+    }),
+
   // Get API usage stats (Iteration 3)
   getApiUsageStats: creatorProcedure
     .input(

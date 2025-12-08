@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { trpc } from '@/lib/trpc';
 import { DreamCard } from '@/components/dreams/DreamCard';
@@ -12,11 +12,24 @@ import { AppNavigation } from '@/components/shared/AppNavigation';
 import { BottomNavigation } from '@/components/navigation';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { Constellation } from '@/components/shared/illustrations/Constellation';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function DreamsPage() {
   const router = useRouter();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<'active' | 'achieved' | 'archived' | 'released' | undefined>('active');
+
+  // Redirect to signin if not authenticated, or to verify-required if not verified
+  useEffect(() => {
+    if (!authLoading) {
+      if (!isAuthenticated) {
+        router.push('/auth/signin');
+      } else if (user && !user.emailVerified && !user.isCreator && !user.isAdmin && !user.isDemo) {
+        router.push('/auth/verify-required');
+      }
+    }
+  }, [isAuthenticated, authLoading, user, router]);
 
   // Fetch dreams
   const { data: dreams, isLoading, refetch } = trpc.dreams.list.useQuery({
@@ -42,6 +55,23 @@ export default function DreamsPage() {
   const handleVisualize = (dreamId: string) => {
     router.push(`/visualizations?dreamId=${dreamId}`);
   };
+
+  // Auth loading state
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
+        <div className="flex flex-col items-center gap-4">
+          <CosmicLoader size="lg" />
+          <p className="text-small text-white/60">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Auth/verification guard - return null while redirect happens
+  if (!isAuthenticated || (user && !user.emailVerified && !user.isCreator && !user.isAdmin && !user.isDemo)) {
+    return null;
+  }
 
   if (isLoading) {
     return (

@@ -72,10 +72,21 @@ const WARM_PLACEHOLDERS = {
 export default function MirrorExperience() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const toast = useToast();
   const prefersReducedMotion = useReducedMotion();
   const isMobile = useIsMobile();
+
+  // Redirect to signin if not authenticated, or to verify-required if not verified
+  useEffect(() => {
+    if (!authLoading) {
+      if (!isAuthenticated) {
+        router.push('/auth/signin');
+      } else if (user && !user.emailVerified && !user.isCreator && !user.isAdmin && !user.isDemo) {
+        router.push('/auth/verify-required');
+      }
+    }
+  }, [isAuthenticated, authLoading, user, router]);
 
   // Determine view mode from URL
   const reflectionId = searchParams.get('id');
@@ -262,6 +273,23 @@ export default function MirrorExperience() {
     educational: '📚',
     other: '⭐',
   };
+
+  // Loading state - show loader while checking auth
+  if (authLoading) {
+    return (
+      <div className="reflection-experience">
+        <CosmicBackground />
+        <div className="flex items-center justify-center min-h-screen">
+          <CosmicLoader size="lg" />
+        </div>
+      </div>
+    );
+  }
+
+  // Auth/verification guard - return null while redirect happens
+  if (!isAuthenticated || (user && !user.emailVerified && !user.isCreator && !user.isAdmin && !user.isDemo)) {
+    return null;
+  }
 
   // Demo user CTA - show signup prompt instead of questionnaire
   if (user?.isDemo && viewMode === 'questionnaire') {

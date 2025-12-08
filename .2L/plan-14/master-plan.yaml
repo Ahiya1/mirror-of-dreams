@@ -1,0 +1,75 @@
+plan_id: plan-14
+created_at: 2025-12-08T21:00:00Z
+status: PLANNED
+total_iterations: 1
+
+strategy: |
+  Single iteration approach - 80% of backend infrastructure already exists.
+
+  Key insight from exploration:
+  - Email verification system is COMPLETE (nodemailer, templates, API routes, tokens table)
+  - Admin tRPC router has all needed endpoints (getStats, getAllUsers, etc.)
+  - PayPal integration is COMPLETE (webhook handler, signature verification)
+
+  Work is primarily:
+  1. UI creation for email verification blocking
+  2. Admin dashboard page creation
+  3. Admin user seeding in production
+  4. PayPal production verification (manual testing)
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 21
+    name: "Production Readiness - First User Battle Testing"
+    vision: "Enable first-user battle testing with email confirmation, admin access, and verified payments"
+    scope: |
+      ## Builder 1: Email Verification Enforcement
+      - Create blocking UI for unverified users (redirect to confirmation screen)
+      - Add "Resend confirmation email" button functionality
+      - Verify Gmail SMTP credentials work in production
+      - Test full signup -> email -> confirm flow
+
+      ## Builder 2: Admin Dashboard & User Seeding
+      - Create `/app/admin/page.tsx` using existing tRPC endpoints
+      - Display: total users, recent users table, webhook events
+      - Implement admin role check (redirect non-admins)
+      - Run admin seeding SQL in production for ahiya.butman@gmail.com
+      - Set: is_admin=true, tier='unlimited', email_verified=true
+
+      ## Builder 3: PayPal Production Verification
+      - Verify webhook URL is correctly configured
+      - Execute test subscription in production (user pays via PayPal)
+      - Verify webhook received and processed
+      - Verify tier update in Supabase
+      - Document verification results
+
+    status: PENDING
+    dependencies: []
+    builders:
+      - id: 1
+        name: "Email Verification Enforcement"
+        scope: "UI blocking for unverified users, resend functionality, production verification"
+        estimated_hours: 2-3
+      - id: 2
+        name: "Admin Dashboard & User Seeding"
+        scope: "Admin page UI, role checks, production seeding"
+        estimated_hours: 3-4
+      - id: 3
+        name: "PayPal Production Verification"
+        scope: "End-to-end payment test, webhook verification, documentation"
+        estimated_hours: 1-2
+
+validation_criteria:
+  - "New signup triggers confirmation email via Gmail SMTP"
+  - "Unverified users see blocking screen with resend option"
+  - "ahiya.butman@gmail.com has admin access in production"
+  - "/admin route loads with real data (users, stats)"
+  - "At least 1 real PayPal transaction processed successfully"
+  - "Webhook events visible in admin or database"
+
+notes: |
+  Critical discovery from exploration:
+  - Email system already sends emails on signup (server/auth.ts lines 98-117)
+  - The gap is UI enforcement, not backend implementation
+  - Admin tRPC endpoints: getStats, getAllUsers, getAllReflections, getUserByEmail, updateUserTier
+  - PayPal webhook handles: ACTIVATED, CANCELLED, EXPIRED, SUSPENDED, PAYMENT.SALE.COMPLETED

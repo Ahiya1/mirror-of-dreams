@@ -77,12 +77,16 @@ export default function DashboardPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Redirect to signin if not authenticated (after auth check completes)
+  // Redirect to signin if not authenticated, or to verify-required if not verified
   React.useEffect(() => {
-    if (!isAuthenticated && !authLoading) {
-      router.push('/auth/signin');
+    if (!authLoading) {
+      if (!isAuthenticated) {
+        router.push('/auth/signin');
+      } else if (user && !user.emailVerified && !user.isCreator && !user.isAdmin && !user.isDemo) {
+        router.push('/auth/verify-required');
+      }
     }
-  }, [isAuthenticated, authLoading, router]);
+  }, [isAuthenticated, authLoading, user, router]);
 
 
   // Loading state - show skeleton while auth loads
@@ -98,8 +102,8 @@ export default function DashboardPage() {
     );
   }
 
-  // Redirect to signin if not authenticated (but don't show loading)
-  if (!isAuthenticated) {
+  // Redirect to signin if not authenticated or to verify-required if not verified (but don't show loading)
+  if (!isAuthenticated || (user && !user.emailVerified && !user.isCreator && !user.isAdmin && !user.isDemo)) {
     return null; // Let the useEffect handle the redirect
   }
 
