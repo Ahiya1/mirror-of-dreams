@@ -95,22 +95,31 @@ export const authRouter = router({
       // Include onboarding_completed flag (new users always need onboarding unless admin/creator)
       const userResponse = userRowToUser(newUser);
 
-      // Send verification email (async, don't block signup)
+      // Send verification email
+      let emailVerificationSent = false;
       try {
         const verificationToken = generateToken();
         const expiresAt = getVerificationTokenExpiration();
 
         // Store verification token
-        await supabase.from('email_verification_tokens').insert({
+        const { error: tokenError } = await supabase.from('email_verification_tokens').insert({
           user_id: newUser.id,
           token: verificationToken,
           expires_at: expiresAt.toISOString(),
         });
 
-        // Send email (fire and forget - don't block signup on email failure)
-        sendVerificationEmail(newUser.email, verificationToken, newUser.name).catch(
-          (err) => console.error('Failed to send verification email:', err)
-        );
+        if (tokenError) {
+          console.error('Failed to store verification token:', tokenError);
+        } else {
+          // Send email and await the result
+          const emailResult = await sendVerificationEmail(newUser.email, verificationToken, newUser.name);
+          if (emailResult.success) {
+            emailVerificationSent = true;
+            console.log(`Verification email sent to ${newUser.email}`);
+          } else {
+            console.error('Failed to send verification email:', emailResult.error);
+          }
+        }
       } catch (emailError) {
         // Log but don't fail signup if email fails
         console.error('Error setting up verification email:', emailError);
@@ -123,7 +132,7 @@ export const authRouter = router({
         },
         token,
         message: 'Account created successfully',
-        emailVerificationSent: true,
+        emailVerificationSent,
       };
     }),
 
