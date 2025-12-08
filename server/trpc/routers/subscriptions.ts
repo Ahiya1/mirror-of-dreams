@@ -89,15 +89,20 @@ export const subscriptionsRouter = router({
       period: z.enum(['monthly', 'yearly']),
     }))
     .mutation(async ({ ctx, input }) => {
+      console.log(`[CreateCheckout] Starting for user ${ctx.user.id}, tier: ${input.tier}, period: ${input.period}`);
       try {
         // Get plan ID for the selected tier/period
         const planId = getPlanId(input.tier, input.period);
+        console.log(`[CreateCheckout] Got plan ID: ${planId}`);
 
         // Create PayPal subscription and get approval URL
         const approvalUrl = await createSubscription(ctx.user.id, planId);
+        console.log(`[CreateCheckout] Success - approval URL generated`);
         return { approvalUrl };
       } catch (error) {
-        console.error('PayPal createSubscription error:', error);
+        console.error('[CreateCheckout] Error:', error);
+        console.error('[CreateCheckout] Error message:', error instanceof Error ? error.message : 'unknown');
+        console.error('[CreateCheckout] Error stack:', error instanceof Error ? error.stack : 'no stack');
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: error instanceof Error ? error.message : 'Failed to create checkout session',
