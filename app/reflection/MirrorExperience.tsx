@@ -330,15 +330,15 @@ export default function MirrorExperience() {
                 <p className="text-purple-300 font-medium mb-3">With a free account, you get:</p>
                 <ul className="space-y-2 text-white/70">
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-green-400" />
+                    <Check className="w-4 h-4 text-mirror-success" />
                     <span>2 reflections per month</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-green-400" />
+                    <Check className="w-4 h-4 text-mirror-success" />
                     <span>Track up to 2 dreams</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-green-400" />
+                    <Check className="w-4 h-4 text-mirror-success" />
                     <span>Personal reflection history</span>
                   </li>
                 </ul>
@@ -683,7 +683,7 @@ export default function MirrorExperience() {
               >
                 <div className="mirror-surface">
                   <div className="reflection-content">
-                    <h1 className="text-center mb-8 text-4xl md:text-5xl font-semibold bg-gradient-to-r from-[#fbbf24] to-[#9333ea] bg-clip-text text-transparent">
+                    <h1 className="text-center mb-8 text-h1 font-semibold bg-gradient-to-r from-[#fbbf24] to-[#9333ea] bg-clip-text text-transparent">
                       Your Reflection
                     </h1>
                     <div className="reflection-text">

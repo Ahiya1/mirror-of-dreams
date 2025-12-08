@@ -8,6 +8,7 @@ import DashboardCard, {
   CardContent,
   CardActions,
 } from '@/components/dashboard/shared/DashboardCard';
+import { GlowButton } from '@/components/ui/glass';
 import { MarkdownPreview } from '@/components/shared/MarkdownPreview';
 import { trpc } from '@/lib/trpc';
 
@@ -161,26 +162,26 @@ const EvolutionCard: React.FC<EvolutionCardProps> = ({
 
       <CardActions>
         {hasReports ? (
-          <button
-            className="cosmic-button cosmic-button--secondary"
+          <GlowButton
+            variant="secondary"
             onClick={() => router.push('/evolution')}
           >
-            <span>View Reports</span>
-          </button>
+            View Reports
+          </GlowButton>
         ) : eligibilityData?.eligible ? (
-          <button
-            className="cosmic-button cosmic-button--primary"
+          <GlowButton
+            variant="cosmic"
             onClick={() => router.push('/evolution')}
           >
-            <span>Generate Report</span>
-          </button>
+            Generate Report
+          </GlowButton>
         ) : (
-          <button
-            className="cosmic-button cosmic-button--secondary"
+          <GlowButton
+            variant="secondary"
             onClick={() => router.push('/dreams')}
           >
-            <span>Create Reflections</span>
-          </button>
+            Create Reflections
+          </GlowButton>
         )}
       </CardActions>
 

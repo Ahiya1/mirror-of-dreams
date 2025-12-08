@@ -76,7 +76,7 @@ export default function AboutPage() {
         {/* Hero Section */}
         <section className="min-h-screen flex items-center justify-center px-4 sm:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
+            <h1 className="text-h1 font-bold text-white mb-6">
               About Mirror of Dreams
             </h1>
             <p className="text-xl sm:text-2xl text-white/60 max-w-2xl mx-auto">

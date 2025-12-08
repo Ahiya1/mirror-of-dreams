@@ -9,7 +9,7 @@ import DashboardCard, {
   HeaderAction,
 } from '@/components/dashboard/shared/DashboardCard';
 import ReflectionItem from '@/components/dashboard/shared/ReflectionItem';
-import { CosmicLoader } from '@/components/ui/glass';
+import { CosmicLoader, GlowButton } from '@/components/ui/glass';
 import { trpc } from '@/lib/trpc';
 
 interface ReflectionsCardProps {
@@ -35,8 +35,8 @@ const ReflectionsCard: React.FC<ReflectionsCardProps> = ({ animated = true, clas
     <div className="empty-state">
       <h4>No Reflections Yet</h4>
       <p>Create your first reflection to get started.</p>
-      <Link href="/reflection" className="cosmic-button cosmic-button--primary">
-        <span>Start Reflecting</span>
+      <Link href="/reflection">
+        <GlowButton variant="cosmic">Start Reflecting</GlowButton>
       </Link>
     </div>
   );

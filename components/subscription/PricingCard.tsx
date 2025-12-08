@@ -74,7 +74,7 @@ export function PricingCard({
           <span className="text-4xl font-bold text-white">${price}</span>
           <span className="text-white/60 ml-2">{period}</span>
           {yearlySavings > 0 && (
-            <div className="text-green-400 text-sm mt-1">Save {yearlySavings}% yearly</div>
+            <div className="text-mirror-success text-sm mt-1">Save {yearlySavings}% yearly</div>
           )}
         </div>
 
@@ -105,7 +105,7 @@ export function PricingCard({
           {features.map((feature, idx) => (
             <div key={idx} className="flex items-start gap-3">
               {feature.included ? (
-                <Check className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                <Check className="w-5 h-5 text-mirror-success flex-shrink-0 mt-0.5" />
               ) : (
                 <X className="w-5 h-5 text-white/30 flex-shrink-0 mt-0.5" />
               )}

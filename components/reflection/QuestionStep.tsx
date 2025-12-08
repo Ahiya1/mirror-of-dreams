@@ -2,6 +2,7 @@
 
 import React from 'react';
 import CharacterCounter from './CharacterCounter';
+import { GlowButton } from '@/components/ui/glass/GlowButton';
 
 interface QuestionStepProps {
   questionNumber: number;
@@ -58,26 +59,22 @@ const QuestionStep: React.FC<QuestionStepProps> = ({
           )}
 
           <div
-            className="choice-buttons"
+            className="choice-buttons flex flex-wrap gap-3"
             role="radiogroup"
             aria-labelledby={titleId}
             aria-describedby={subtitle ? subtitleId : undefined}
             aria-required="true"
           >
             {choices.map((choice) => (
-              <button
+              <GlowButton
                 key={choice.value}
-                type="button"
-                className={`cosmic-button ${
-                  selectedChoice === choice.value ? 'cosmic-button--gentle' : ''
-                }`}
+                variant={selectedChoice === choice.value ? 'primary' : 'secondary'}
+                size="md"
                 onClick={() => onChoiceSelect?.(choice.value)}
-                aria-pressed={selectedChoice === choice.value}
-                aria-checked={selectedChoice === choice.value}
-                role="radio"
+                className={selectedChoice === choice.value ? 'ring-2 ring-purple-400/50' : ''}
               >
                 {choice.label}
-              </button>
+              </GlowButton>
             ))}
           </div>
 

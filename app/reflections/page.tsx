@@ -12,6 +12,9 @@ import { EmptyState } from '@/components/shared/EmptyState';
 import { AppNavigation } from '@/components/shared/AppNavigation';
 import { BlankJournal } from '@/components/shared/illustrations/BlankJournal';
 import { useAuth } from '@/hooks/useAuth';
+import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
+import { GlowButton } from '@/components/ui/glass/GlowButton';
+import { GradientText } from '@/components/ui/glass/GradientText';
 
 export default function ReflectionsPage() {
   const router = useRouter();
@@ -55,11 +58,8 @@ export default function ReflectionsPage() {
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
-              <svg className="animate-spin h-12 w-12 mx-auto mb-4 text-purple-500" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              <p className="text-gray-300">Loading...</p>
+              <CosmicLoader size="lg" label="Loading..." />
+              <p className="text-gray-300 mt-4">Loading...</p>
             </div>
           </div>
         </div>
@@ -79,11 +79,8 @@ export default function ReflectionsPage() {
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
-              <svg className="animate-spin h-12 w-12 mx-auto mb-4 text-purple-500" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              <p className="text-gray-300">Loading your reflections...</p>
+              <CosmicLoader size="lg" label="Loading your reflections..." />
+              <p className="text-gray-300 mt-4">Loading your reflections...</p>
             </div>
           </div>
         </div>
@@ -96,22 +93,24 @@ export default function ReflectionsPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
         <div className="max-w-6xl mx-auto">
-          <div className="rounded-lg border border-red-500/20 bg-red-900/10 p-6 backdrop-blur-sm">
+          <div className="rounded-lg border border-mirror-error/20 bg-mirror-error/10 p-6 backdrop-blur-sm">
             <div className="flex items-center gap-3">
-              <svg className="h-6 w-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-6 w-6 text-mirror-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <div>
-                <h3 className="text-lg font-semibold text-red-300">Error loading reflections</h3>
-                <p className="text-sm text-red-400 mt-1">{error.message}</p>
+                <h3 className="text-lg font-semibold text-mirror-error">Error loading reflections</h3>
+                <p className="text-sm text-mirror-error/80 mt-1">{error.message}</p>
               </div>
             </div>
-            <button
+            <GlowButton
+              variant="danger"
+              size="sm"
               onClick={() => window.location.reload()}
-              className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors"
+              className="mt-4"
             >
               Retry
-            </button>
+            </GlowButton>
           </div>
         </div>
       </div>
@@ -131,8 +130,10 @@ export default function ReflectionsPage() {
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
             <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
-                Your Reflections {total > 0 && `(${total})`}
+              <h1 className="text-h1 mb-2">
+                <GradientText gradient="cosmic">
+                  Your Reflections {total > 0 && `(${total})`}
+                </GradientText>
               </h1>
               <p className="text-gray-400">
                 {total === 0
@@ -140,15 +141,17 @@ export default function ReflectionsPage() {
                   : `${total} reflection${total === 1 ? '' : 's'} captured`}
               </p>
             </div>
-            <Link
-              href="/reflection"
-              className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:from-purple-700 hover:to-pink-700 transition-all hover:shadow-lg hover:shadow-purple-500/20"
+            <GlowButton
+              variant="cosmic"
+              onClick={() => router.push('/reflection')}
             >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              New Reflection
-            </Link>
+              <div className="flex items-center gap-2">
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                New Reflection
+              </div>
+            </GlowButton>
           </div>
 
           {/* Back to dashboard */}

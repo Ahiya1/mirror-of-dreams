@@ -5,9 +5,13 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { trpc } from '@/lib/trpc';
-import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
-import { GlowButton } from '@/components/ui/glass/GlowButton';
-import { GradientText } from '@/components/ui/glass/GradientText';
+import {
+  GlassCard,
+  GlowButton,
+  GradientText,
+  CosmicLoader,
+  AnimatedBackground,
+} from '@/components/ui/glass';
 import { AppNavigation } from '@/components/shared/AppNavigation';
 
 const MIN_REFLECTIONS_FOR_GENERATION = 4;
@@ -102,10 +106,11 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
 
   if (isLoading) {
     return (
-      <div className="dream-detail">
-        <div className="loading">
+      <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark">
+        <AnimatedBackground intensity="subtle" />
+        <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
           <CosmicLoader size="lg" label="Loading dream..." />
-          <p className="loading-text">Loading dream...</p>
+          <p className="text-body text-white/80">Loading dream...</p>
         </div>
       </div>
     );
@@ -113,8 +118,20 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
 
   if (!dream) {
     return (
-      <div className="dream-detail">
-        <div className="error">Dream not found</div>
+      <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark">
+        <AnimatedBackground intensity="subtle" />
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <GlassCard className="p-8 text-center" elevated>
+            <p className="text-h3 text-white">Dream not found</p>
+            <GlowButton
+              variant="ghost"
+              onClick={() => router.push('/dreams')}
+              className="mt-4"
+            >
+              Back to Dreams
+            </GlowButton>
+          </GlassCard>
+        </div>
       </div>
     );
   }
@@ -141,621 +158,270 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
   };
   const categoryEmoji = categoryEmojiMap[dream.category as string] || '⭐';
 
+  // Status badge styles using design system tokens
+  const statusStyles: Record<string, string> = {
+    active: 'bg-mirror-purple/20 text-mirror-purple-light border-mirror-purple/30',
+    achieved: 'bg-mirror-success/20 text-mirror-success border-mirror-success/30',
+    archived: 'bg-white/10 text-white/60 border-white/20',
+    released: 'bg-mirror-info/20 text-mirror-info border-mirror-info/30',
+  };
+
   return (
-    <div className="dream-detail">
+    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark">
+      <AnimatedBackground intensity="subtle" />
       <AppNavigation currentPage="dreams" />
 
-      <div className="dream-detail__container">
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-[calc(var(--nav-height)+var(--demo-banner-height,0px)+1rem)] pb-8">
         {/* Back Button */}
-        <button onClick={() => router.push('/dreams')} className="back-btn">
+        <GlowButton
+          variant="ghost"
+          size="sm"
+          onClick={() => router.push('/dreams')}
+          className="mb-6"
+        >
           ← Back to Dreams
-        </button>
+        </GlowButton>
 
-        {/* Header */}
-        <div className="dream-detail__header">
-          <div className="header-left">
-            <div className="emoji">{categoryEmoji}</div>
-            <div>
-              <h1 className="title">{dream.title}</h1>
-              <div className="meta">
-                <span className={`status status--${dream.status}`}>
-                  {statusEmoji} {dream.status}
-                </span>
-                {dream.daysLeft !== null && dream.daysLeft !== undefined && (
-                  <span className="days-left">
-                    {dream.daysLeft < 0
-                      ? `${Math.abs(dream.daysLeft)} days overdue`
-                      : dream.daysLeft === 0
-                      ? 'Today!'
-                      : `${dream.daysLeft} days left`}
+        {/* Header Card */}
+        <GlassCard className="mb-6" elevated>
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+            {/* Left: Title & Meta */}
+            <div className="flex gap-4 flex-1">
+              <div className="text-5xl">{categoryEmoji}</div>
+              <div>
+                <h1 className="text-h2 font-bold text-white mb-2">{dream.title}</h1>
+                <div className="flex flex-wrap gap-3 items-center">
+                  <span className={`px-3 py-1 rounded-full text-body-sm font-medium border ${statusStyles[dream.status as string] || statusStyles.active}`}>
+                    {statusEmoji} {dream.status}
                   </span>
-                )}
+                  {dream.daysLeft !== null && dream.daysLeft !== undefined && (
+                    <span className="text-body-sm text-white/70">
+                      {dream.daysLeft < 0
+                        ? `${Math.abs(dream.daysLeft)} days overdue`
+                        : dream.daysLeft === 0
+                        ? 'Today!'
+                        : `${dream.daysLeft} days left`}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="header-actions">
-            <button onClick={() => router.push(`/reflection?dreamId=${params.id}`)} className="btn-primary">
-              Reflect
-            </button>
-            <button onClick={handleDelete} className="btn-danger">
-              Delete
-            </button>
+            {/* Right: Actions */}
+            <div className="flex gap-3 sm:flex-shrink-0">
+              <GlowButton
+                variant="primary"
+                onClick={() => router.push(`/reflection?dreamId=${params.id}`)}
+              >
+                Reflect
+              </GlowButton>
+              <GlowButton
+                variant="danger"
+                onClick={handleDelete}
+              >
+                Delete
+              </GlowButton>
+            </div>
           </div>
-        </div>
+        </GlassCard>
 
         {/* Description */}
         {dream.description && (
-          <div className="dream-detail__description">
-            <h2 className="section-title">Description</h2>
-            <p className="description-text">{dream.description}</p>
-          </div>
+          <GlassCard className="mb-6">
+            <h2 className="text-h3 font-semibold text-white mb-3">Description</h2>
+            <p className="text-body text-white/80 leading-relaxed">{dream.description}</p>
+          </GlassCard>
         )}
 
         {/* Evolution Report Generation Section */}
-        <div className="dream-detail__ai-section">
-          <h2 className="section-title">
-            <GradientText gradient="cosmic" className="title-gradient">
+        <GlassCard className="mb-6 border-mirror-purple/20" elevated>
+          <h2 className="text-h3 font-semibold mb-4">
+            <GradientText gradient="cosmic">
               Evolution Report
             </GradientText>
           </h2>
 
           {isGeneratingEvolution ? (
-            <div className="ai-loading-state">
+            <div className="flex flex-col items-center py-8 gap-6">
               <CosmicLoader size="lg" label="Generating evolution report..." />
-              <div className="loading-messages">
-                <p className="loading-message-primary">
+              <div className="text-center space-y-2">
+                <p className="text-body text-mirror-purple-light font-medium">
                   Analyzing your journey across time...
                 </p>
-                <p className="loading-message-secondary">
+                <p className="text-body-sm text-mirror-purple/80">
                   This takes approximately 30-45 seconds
                 </p>
-                <p className="loading-message-warning">
+                <p className="text-body-sm text-white/60 italic">
                   Don't close this tab
                 </p>
               </div>
             </div>
           ) : isEligibleForGeneration ? (
-            <div className="ai-eligible-state">
-              <p className="eligible-message">
+            <div className="space-y-4">
+              <p className="text-body text-white/90">
                 You have {reflectionCount} reflections. Generate an evolution report to see your growth patterns.
               </p>
               <GlowButton
-                variant="primary"
+                variant="cosmic"
                 size="lg"
                 onClick={handleGenerateEvolution}
-                className="ai-generate-btn"
+                className="w-full"
               >
                 Generate Evolution Report
               </GlowButton>
             </div>
           ) : (
-            <div className="ai-ineligible-state">
-              <p className="ineligible-message">
+            <div className="space-y-4">
+              <p className="text-body text-mirror-purple-light">
                 You have {reflectionCount} reflection{reflectionCount !== 1 ? 's' : ''}.
                 Create {remainingReflections} more to unlock evolution reports.
               </p>
-              <div className="progress-bar-container">
+              <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
                 <div
-                  className="progress-bar-fill"
+                  className="h-full bg-gradient-to-r from-mirror-purple via-mirror-indigo to-mirror-violet rounded-full transition-all duration-500"
                   style={{ width: `${(reflectionCount / MIN_REFLECTIONS_FOR_GENERATION) * 100}%` }}
                 />
               </div>
-              <p className="progress-text">
+              <p className="text-body-sm text-white/70 text-center">
                 {reflectionCount} of {MIN_REFLECTIONS_FOR_GENERATION} reflections needed
               </p>
             </div>
           )}
-        </div>
+        </GlassCard>
 
         {/* Visualization Generation Section */}
-        <div className="dream-detail__ai-section">
-          <h2 className="section-title">
-            <GradientText gradient="cosmic" className="title-gradient">
+        <GlassCard className="mb-6 border-mirror-purple/20" elevated>
+          <h2 className="text-h3 font-semibold mb-4">
+            <GradientText gradient="cosmic">
               Visualization
             </GradientText>
           </h2>
 
           {isGeneratingVisualization ? (
-            <div className="ai-loading-state">
+            <div className="flex flex-col items-center py-8 gap-6">
               <CosmicLoader size="lg" label="Generating visualization..." />
-              <div className="loading-messages">
-                <p className="loading-message-primary">
+              <div className="text-center space-y-2">
+                <p className="text-body text-mirror-purple-light font-medium">
                   Crafting your achievement narrative...
                 </p>
-                <p className="loading-message-secondary">
+                <p className="text-body-sm text-mirror-purple/80">
                   This takes approximately 25-35 seconds
                 </p>
-                <p className="loading-message-warning">
+                <p className="text-body-sm text-white/60 italic">
                   Don't close this tab
                 </p>
               </div>
             </div>
           ) : isEligibleForGeneration ? (
-            <div className="ai-eligible-state">
-              <p className="eligible-message">
+            <div className="space-y-4">
+              <p className="text-body text-white/90">
                 Generate a visualization to experience your dream as already achieved.
               </p>
               <GlowButton
-                variant="primary"
+                variant="cosmic"
                 size="lg"
                 onClick={handleGenerateVisualization}
-                className="ai-generate-btn"
+                className="w-full"
               >
                 Generate Visualization
               </GlowButton>
             </div>
           ) : (
-            <div className="ai-ineligible-state">
-              <p className="ineligible-message">
+            <div className="space-y-4">
+              <p className="text-body text-mirror-purple-light">
                 You have {reflectionCount} reflection{reflectionCount !== 1 ? 's' : ''}.
                 Create {remainingReflections} more to unlock visualizations.
               </p>
-              <div className="progress-bar-container">
+              <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
                 <div
-                  className="progress-bar-fill"
+                  className="h-full bg-gradient-to-r from-mirror-purple via-mirror-indigo to-mirror-violet rounded-full transition-all duration-500"
                   style={{ width: `${(reflectionCount / MIN_REFLECTIONS_FOR_GENERATION) * 100}%` }}
                 />
               </div>
-              <p className="progress-text">
+              <p className="text-body-sm text-white/70 text-center">
                 {reflectionCount} of {MIN_REFLECTIONS_FOR_GENERATION} reflections needed
               </p>
             </div>
           )}
-        </div>
+        </GlassCard>
 
         {/* Status Actions */}
-        <div className="dream-detail__status-actions">
-          <h2 className="section-title">Update Status</h2>
-          <div className="status-buttons">
-            <button
+        <GlassCard className="mb-6">
+          <h2 className="text-h3 font-semibold text-white mb-4">Update Status</h2>
+          <div className="flex flex-wrap gap-3">
+            <GlowButton
+              variant={dream.status === 'active' ? 'primary' : 'ghost'}
               onClick={() => handleStatusChange('active')}
               disabled={dream.status === 'active'}
-              className="status-btn"
             >
               Active
-            </button>
-            <button
+            </GlowButton>
+            <GlowButton
+              variant={dream.status === 'achieved' ? 'success' : 'ghost'}
               onClick={() => handleStatusChange('achieved')}
               disabled={dream.status === 'achieved'}
-              className="status-btn"
             >
               Achieved
-            </button>
-            <button
+            </GlowButton>
+            <GlowButton
+              variant={dream.status === 'archived' ? 'secondary' : 'ghost'}
               onClick={() => handleStatusChange('archived')}
               disabled={dream.status === 'archived'}
-              className="status-btn"
             >
               Archive
-            </button>
-            <button
+            </GlowButton>
+            <GlowButton
+              variant={dream.status === 'released' ? 'info' : 'ghost'}
               onClick={() => handleStatusChange('released')}
               disabled={dream.status === 'released'}
-              className="status-btn"
             >
               Release
-            </button>
+            </GlowButton>
           </div>
-        </div>
+        </GlassCard>
 
         {/* Reflections */}
-        <div className="dream-detail__reflections">
-          <h2 className="section-title">
+        <GlassCard>
+          <h2 className="text-h3 font-semibold text-white mb-4">
             Reflections ({reflectionCount})
           </h2>
           {dreamReflections.length > 0 ? (
-            <div className="reflections-list">
+            <div className="space-y-4">
               {dreamReflections.map((reflection: any) => (
-                <div
+                <GlassCard
                   key={reflection.id}
+                  interactive
                   onClick={() => router.push(`/reflections/${reflection.id}`)}
-                  className="reflection-item"
+                  className="p-4"
                 >
-                  <div className="reflection-date">
+                  <div className="text-body-sm text-white/60 mb-2">
                     {new Date(reflection.created_at).toLocaleDateString()}
                   </div>
-                  <div className="reflection-preview">
+                  <div className="text-body text-white/90 mb-2 line-clamp-2">
                     {reflection.dream?.substring(0, 150)}...
                   </div>
-                  <div className="reflection-meta">
-                    <span className="tone">{reflection.tone}</span>
-                    <span className="words">{reflection.word_count} words</span>
+                  <div className="flex gap-4 text-body-sm">
+                    <span className="text-mirror-purple-light capitalize">{reflection.tone}</span>
+                    <span className="text-white/60">{reflection.word_count} words</span>
                   </div>
-                </div>
+                </GlassCard>
               ))}
             </div>
           ) : (
-            <div className="no-reflections">
-              <p>No reflections yet. Create your first reflection for this dream!</p>
-              <button
+            <div className="text-center py-8">
+              <p className="text-body text-white/60 mb-4">
+                No reflections yet. Create your first reflection for this dream!
+              </p>
+              <GlowButton
+                variant="primary"
                 onClick={() => router.push(`/reflection?dreamId=${params.id}`)}
-                className="btn-primary"
               >
                 Create First Reflection
-              </button>
+              </GlowButton>
             </div>
           )}
-        </div>
+        </GlassCard>
       </div>
-
-      <style jsx>{`
-        .dream-detail {
-          min-height: 100vh;
-          background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
-          padding-top: calc(var(--nav-height) + var(--demo-banner-height, 0px));
-          padding-left: 2rem;
-          padding-right: 2rem;
-          padding-bottom: 2rem;
-        }
-
-        .dream-detail__container {
-          max-width: 900px;
-          margin: 0 auto;
-        }
-
-        .back-btn {
-          padding: 0.5rem 1rem;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 8px;
-          color: rgba(255, 255, 255, 0.7);
-          cursor: pointer;
-          margin-bottom: 2rem;
-          transition: all 0.2s;
-        }
-
-        .back-btn:hover {
-          background: rgba(255, 255, 255, 0.08);
-        }
-
-        .dream-detail__header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          margin-bottom: 2rem;
-          gap: 2rem;
-        }
-
-        .header-left {
-          display: flex;
-          gap: 1.5rem;
-          flex: 1;
-        }
-
-        .emoji {
-          font-size: 3rem;
-        }
-
-        .title {
-          font-size: 2rem;
-          font-weight: 700;
-          color: white;
-          margin: 0 0 0.5rem 0;
-        }
-
-        .meta {
-          display: flex;
-          gap: 1rem;
-          align-items: center;
-        }
-
-        .status {
-          padding: 0.25rem 0.75rem;
-          border-radius: 6px;
-          font-size: 0.875rem;
-          font-weight: 500;
-          text-transform: capitalize;
-        }
-
-        .status--active {
-          background: rgba(139, 92, 246, 0.2);
-          color: #a78bfa;
-        }
-
-        .status--achieved {
-          background: rgba(16, 185, 129, 0.2);
-          color: #34d399;
-        }
-
-        .status--archived {
-          background: rgba(156, 163, 175, 0.2);
-          color: #9ca3af;
-        }
-
-        .status--released {
-          background: rgba(59, 130, 246, 0.2);
-          color: #60a5fa;
-        }
-
-        .days-left {
-          color: rgba(255, 255, 255, 0.7);
-          font-size: 0.875rem;
-        }
-
-        .header-actions {
-          display: flex;
-          gap: 0.75rem;
-        }
-
-        .btn-primary,
-        .btn-danger {
-          padding: 0.75rem 1.5rem;
-          border: none;
-          border-radius: 8px;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-
-        .btn-primary {
-          background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-          color: white;
-        }
-
-        .btn-primary:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-        }
-
-        .btn-danger {
-          background: rgba(239, 68, 68, 0.1);
-          color: #ef4444;
-        }
-
-        .btn-danger:hover {
-          background: rgba(239, 68, 68, 0.2);
-        }
-
-        .dream-detail__description,
-        .dream-detail__ai-section,
-        .dream-detail__status-actions,
-        .dream-detail__reflections {
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 12px;
-          padding: 1.5rem;
-          margin-bottom: 2rem;
-        }
-
-        .dream-detail__ai-section {
-          background: rgba(139, 92, 246, 0.05);
-          border: 1px solid rgba(139, 92, 246, 0.15);
-        }
-
-        .section-title {
-          font-size: 1.25rem;
-          font-weight: 600;
-          color: white;
-          margin: 0 0 1rem 0;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-
-        .title-icon {
-          font-size: 1.5rem;
-        }
-
-        .title-gradient {
-          font-size: 1.25rem;
-          font-weight: 600;
-        }
-
-        .description-text {
-          color: rgba(255, 255, 255, 0.8);
-          line-height: 1.7;
-          font-size: 1.05rem;
-        }
-
-        /* AI Generation States */
-        .ai-loading-state {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          padding: 2rem;
-          gap: 1.5rem;
-        }
-
-        .loading-messages {
-          text-align: center;
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-        }
-
-        .loading-message-primary {
-          color: rgba(167, 139, 250, 1);
-          font-size: 1.125rem;
-          font-weight: 500;
-        }
-
-        .loading-message-secondary {
-          color: rgba(139, 92, 246, 0.8);
-          font-size: 0.875rem;
-        }
-
-        .loading-message-warning {
-          color: rgba(255, 255, 255, 0.6);
-          font-size: 0.75rem;
-          font-style: italic;
-        }
-
-        .ai-eligible-state {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-        }
-
-        .eligible-message {
-          color: rgba(255, 255, 255, 0.9);
-          font-size: 1rem;
-          line-height: 1.6;
-        }
-
-        .ai-generate-btn {
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-        }
-
-        .btn-icon {
-          font-size: 1.25rem;
-        }
-
-        .ai-ineligible-state {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-        }
-
-        .ineligible-message {
-          color: rgba(167, 139, 250, 0.9);
-          font-size: 1rem;
-        }
-
-        .progress-bar-container {
-          width: 100%;
-          height: 8px;
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: 999px;
-          overflow: hidden;
-        }
-
-        .progress-bar-fill {
-          height: 100%;
-          background: linear-gradient(90deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
-          border-radius: 999px;
-          transition: width 0.5s ease;
-        }
-
-        .progress-text {
-          color: rgba(255, 255, 255, 0.7);
-          font-size: 0.875rem;
-          text-align: center;
-        }
-
-        .status-buttons {
-          display: flex;
-          gap: 0.75rem;
-          flex-wrap: wrap;
-        }
-
-        .status-btn {
-          padding: 0.75rem 1.25rem;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 8px;
-          color: rgba(255, 255, 255, 0.9);
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-
-        .status-btn:hover:not(:disabled) {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .status-btn:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-
-        .reflections-list {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-        }
-
-        .reflection-item {
-          padding: 1rem;
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 8px;
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-
-        .reflection-item:hover {
-          background: rgba(255, 255, 255, 0.05);
-          border-color: rgba(139, 92, 246, 0.3);
-        }
-
-        .reflection-date {
-          font-size: 0.875rem;
-          color: rgba(255, 255, 255, 0.6);
-          margin-bottom: 0.5rem;
-        }
-
-        .reflection-preview {
-          color: rgba(255, 255, 255, 0.9);
-          margin-bottom: 0.5rem;
-          line-height: 1.5;
-        }
-
-        .reflection-meta {
-          display: flex;
-          gap: 1rem;
-          font-size: 0.875rem;
-        }
-
-        .tone {
-          color: #a78bfa;
-          text-transform: capitalize;
-        }
-
-        .words {
-          color: rgba(255, 255, 255, 0.6);
-        }
-
-        .no-reflections {
-          text-align: center;
-          padding: 2rem;
-          color: rgba(255, 255, 255, 0.6);
-        }
-
-        .no-reflections p {
-          margin-bottom: 1.5rem;
-        }
-
-        .loading,
-        .error {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          min-height: 50vh;
-          color: white;
-          gap: 1rem;
-        }
-
-        .loading-text {
-          color: rgba(255, 255, 255, 0.8);
-          font-size: 1.125rem;
-        }
-
-        @media (max-width: 768px) {
-          .dream-detail {
-            padding: 1rem;
-          }
-
-          .dream-detail__header {
-            flex-direction: column;
-          }
-
-          .header-actions {
-            width: 100%;
-            justify-content: stretch;
-          }
-
-          .btn-primary,
-          .btn-danger {
-            flex: 1;
-          }
-        }
-      `}</style>
     </div>
   );
 }

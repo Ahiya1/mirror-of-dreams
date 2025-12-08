@@ -217,12 +217,12 @@ export default function ProfilePage() {
 
       <main className="relative z-10 pt-nav min-h-screen pb-20 md:pb-0">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-3xl font-bold text-white mb-8">Profile</h1>
+          <h1 className="text-h1 text-white mb-8">Profile</h1>
 
           {/* Demo User Banner */}
           {user?.isDemo && (
-            <div className="mb-6 p-4 bg-blue-500/10 border border-blue-500/30 rounded-xl">
-              <p className="text-blue-400 text-sm">
+            <div className="mb-6 p-4 bg-mirror-info/10 border border-mirror-info/30 rounded-xl">
+              <p className="text-mirror-info text-sm">
                 You're viewing the demo account. Sign up to modify your profile and save changes.
               </p>
             </div>
@@ -407,15 +407,14 @@ export default function ProfilePage() {
           </GlassCard>
 
           {/* Danger Zone */}
-          <GlassCard elevated className="border-red-500/30">
-            <h2 className="text-xl font-semibold text-red-400 mb-2">Danger Zone</h2>
+          <GlassCard elevated className="border-mirror-error/30">
+            <h2 className="text-xl font-semibold text-mirror-error mb-2">Danger Zone</h2>
             <p className="text-white/60 mb-4">
               Permanently delete your account and all data. This action cannot be undone.
             </p>
             <GlowButton
-              variant="secondary"
+              variant="danger"
               onClick={() => setShowDeleteModal(true)}
-              className="border-red-500/50 text-red-400 hover:bg-red-500/10"
               disabled={user?.isDemo}
             >
               Delete Account
@@ -440,11 +439,11 @@ export default function ProfilePage() {
             This action cannot be undone. All your reflections, dreams, and data will be permanently deleted.
           </p>
 
-          <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
-            <p className="text-red-400 text-sm">
+          <div className="p-4 bg-mirror-error/10 border border-mirror-error/30 rounded-lg">
+            <p className="text-mirror-error text-sm">
               <strong>Warning:</strong> You will lose access to:
             </p>
-            <ul className="list-disc list-inside text-red-400/80 text-sm mt-2 space-y-1">
+            <ul className="list-disc list-inside text-mirror-error/80 text-sm mt-2 space-y-1">
               <li>All reflections and dreams</li>
               <li>Evolution reports and insights</li>
               <li>Subscription benefits</li>
@@ -472,9 +471,9 @@ export default function ProfilePage() {
 
           <div className="flex gap-3 pt-4">
             <GlowButton
+              variant="danger"
               onClick={handleDeleteAccount}
               disabled={deleteAccountMutation.isPending}
-              className="bg-red-500 hover:bg-red-600"
             >
               {deleteAccountMutation.isPending ? 'Deleting...' : 'Delete Forever'}
             </GlowButton>

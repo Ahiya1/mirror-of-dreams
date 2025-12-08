@@ -8,6 +8,7 @@ import DashboardCard, {
   CardContent,
   CardActions,
 } from '@/components/dashboard/shared/DashboardCard';
+import { GlowButton } from '@/components/ui/glass';
 import TierBadge from '@/components/dashboard/shared/TierBadge';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -242,12 +243,19 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       </CardContent>
 
       <CardActions>
-        <Link
-          href={subscriptionAction.href}
-          className={`cosmic-button cosmic-button--${subscriptionAction.color}`}
-        >
-          {subscriptionAction.icon && <span>{subscriptionAction.icon}</span>}
-          <span>{subscriptionAction.text}</span>
+        <Link href={subscriptionAction.href}>
+          <GlowButton
+            variant={
+              subscriptionAction.color === 'fusion'
+                ? 'cosmic'
+                : subscriptionAction.color === 'primary'
+                ? 'cosmic'
+                : 'secondary'
+            }
+          >
+            {subscriptionAction.icon && <span>{subscriptionAction.icon}</span>}
+            {subscriptionAction.text}
+          </GlowButton>
         </Link>
       </CardActions>
 

@@ -1,0 +1,84 @@
+plan_id: plan-15
+created_at: 2025-12-09T12:00:00Z
+status: PLANNED
+total_iterations: 1
+
+strategy: |
+  Single iteration with 4 parallel builders. This is a pure design system adoption effort -
+  all tokens and components already exist. Work is independent and can be done in parallel.
+
+  Critical insight: The design system is 100% defined but only ~60% adopted.
+  Goal: Achieve 90%+ adoption across all pages.
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 22
+    name: "Complete Design System Adoption"
+    vision: "Transform all pages to use canonical design system components and tokens"
+    scope: |
+      BUILDER 1: Critical Pages Redesign
+      - /app/subscription/success/page.tsx (10% → 90%)
+        - Wrap in GlassCard, use CosmicBackground
+        - Replace text-green-400 with text-mirror-success
+        - Use GradientText for heading
+        - Use CosmicLoader for loading state
+      - /app/dreams/[id]/page.tsx (30% → 90%)
+        - Remove massive inline <style jsx> block
+        - Convert all buttons to GlowButton
+        - Use GlassCard for sections
+        - Replace custom status colors with mirror.* tokens
+
+      BUILDER 2: User-Facing Pages
+      - /app/reflections/page.tsx (50% → 90%)
+        - Replace SVG spinners with CosmicLoader
+        - Replace red colors with mirror.error
+        - Convert buttons to GlowButton
+        - Use text-h1/GradientText for title
+      - /app/reflections/[id]/page.tsx (40% → 90%)
+        - Use GlassCard for content sections
+        - Use GlassModal for delete confirmation
+        - Replace red/purple hardcoded colors
+      - /app/pricing/page.tsx (50% → 90%)
+        - Use text-h1 for title
+        - Replace text-green-400 with mirror.success
+        - Standardize toggle button styling
+      - /app/profile/page.tsx (75% → 90%)
+        - Replace text-blue-400 with mirror.info (demo banner)
+        - Replace text-red-400 with mirror.error (danger zone)
+        - Use text-h1 for page title
+        - Use GlowButton variant="danger" for delete actions
+
+      BUILDER 3: Dashboard Cards (cosmic-button → GlowButton)
+      - /components/dashboard/cards/DreamsCard.tsx
+      - /components/dashboard/cards/EvolutionCard.tsx
+      - /components/dashboard/cards/VisualizationCard.tsx
+      - /components/dashboard/cards/UsageCard.tsx
+      - /components/dashboard/cards/ReflectionsCard.tsx
+      - /components/dashboard/cards/SubscriptionCard.tsx
+      Import GlowButton, replace all cosmic-button class usage
+
+      BUILDER 4: Component & Remaining Cleanup
+      - /components/reflection/ToneSelection.tsx (cosmic-button → GlowButton)
+      - /components/reflection/QuestionStep.tsx (cosmic-button → GlowButton)
+      - /components/reflections/ReflectionCard.tsx (blue → mirror.info)
+      - /components/reflections/ReflectionFilters.tsx (blue → mirror.info)
+      - /components/subscription/UsageWarningBanner.tsx (blue/yellow → mirror tokens)
+      - /components/subscription/PayPalCheckoutModal.tsx (red → mirror.error)
+      - /components/subscription/CancelSubscriptionModal.tsx (yellow → mirror.warning)
+      - /components/shared/AppNavigation.tsx (red → mirror.error)
+      - /app/about/page.tsx (typography standardization)
+      - /components/landing/LandingHero.tsx (typography)
+      - /app/reflection/MirrorExperience.tsx (green → mirror.success, typography)
+
+    status: PENDING
+    dependencies: []
+
+success_criteria:
+  - "Zero hardcoded color violations (no text-blue-*, text-red-*, text-green-* outside design system)"
+  - "Zero cosmic-button class usage (all migrated to GlowButton)"
+  - "All page titles use text-h1 or GradientText"
+  - "All error states use mirror.error"
+  - "All success states use mirror.success"
+  - "All info states use mirror.info"
+  - "Subscription Success page uses GlassCard and CosmicBackground"
+  - "Build passes with no TypeScript errors"

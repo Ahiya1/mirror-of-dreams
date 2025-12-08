@@ -120,7 +120,7 @@ export function PayPalCheckoutModal({
           </div>
         ) : error ? (
           <div className="text-center py-8">
-            <p className="text-red-400 mb-4">{error.message || 'Failed to load checkout'}</p>
+            <p className="text-mirror-error mb-4">{error.message || 'Failed to load checkout'}</p>
             <button
               onClick={onClose}
               className="text-white/60 hover:text-white transition-colors"
@@ -165,7 +165,7 @@ export function PayPalCheckoutModal({
           </PayPalScriptProvider>
         ) : (
           <div className="text-center py-8">
-            <p className="text-red-400">PayPal is not configured</p>
+            <p className="text-mirror-error">PayPal is not configured</p>
           </div>
         )}
 

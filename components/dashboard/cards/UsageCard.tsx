@@ -9,6 +9,7 @@ import DashboardCard, {
   CardActions,
   HeaderAction,
 } from '@/components/dashboard/shared/DashboardCard';
+import { GlowButton } from '@/components/ui/glass';
 import { trpc } from '@/lib/trpc';
 
 interface UsageCardProps {
@@ -73,11 +74,8 @@ const UsageCard: React.FC<UsageCardProps> = ({ animated = true, className = '' }
       </CardContent>
 
       <CardActions>
-        <Link
-          href="/reflection"
-          className="cosmic-button cosmic-button--primary"
-        >
-          <span>Create Reflection</span>
+        <Link href="/reflection">
+          <GlowButton variant="cosmic">Create Reflection</GlowButton>
         </Link>
       </CardActions>
 

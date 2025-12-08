@@ -179,7 +179,7 @@ export function ReflectionFilters({
                 onClick={() => onToneChange('gentle')}
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
                   tone === 'gentle'
-                    ? 'bg-blue-500 text-white'
+                    ? 'bg-mirror-info text-white'
                     : 'bg-slate-800/50 text-gray-300 hover:bg-slate-800'
                 }`}
               >
