@@ -11,6 +11,9 @@ import { AIResponseRenderer } from '@/components/reflections/AIResponseRenderer'
 import { GlowButton } from '@/components/ui/glass/GlowButton';
 import { ToneBadge } from '@/components/reflection/ToneBadge';
 import { GradientText } from '@/components/ui/glass/GradientText';
+import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
+import { GlassCard } from '@/components/ui/glass/GlassCard';
+import { GlassModal } from '@/components/ui/glass/GlassModal';
 
 interface ReflectionDetailPageProps {
   params: {
@@ -83,15 +86,12 @@ export default function ReflectionDetailPage({ params }: ReflectionDetailPagePro
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen p-8">
+      <div className="min-h-screen p-8 bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
-              <svg className="animate-spin h-12 w-12 mx-auto mb-4 text-purple-500" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              <p className="text-gray-300">Loading reflection...</p>
+              <CosmicLoader size="lg" label="Loading reflection..." />
+              <p className="text-gray-300 mt-4">Loading reflection...</p>
             </div>
           </div>
         </div>
@@ -102,29 +102,32 @@ export default function ReflectionDetailPage({ params }: ReflectionDetailPagePro
   // Error state
   if (error || !reflection) {
     return (
-      <div className="min-h-screen p-8">
+      <div className="min-h-screen p-8 bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark">
         <div className="max-w-4xl mx-auto">
-          <div className="rounded-lg border border-red-500/20 bg-red-900/10 p-6 backdrop-blur-sm">
+          <div className="rounded-lg border border-mirror-error/20 bg-mirror-error/10 p-6 backdrop-blur-sm">
             <div className="flex items-center gap-3 mb-4">
-              <svg className="h-6 w-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-6 w-6 text-mirror-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <div>
-                <h3 className="text-lg font-semibold text-red-300">Reflection not found</h3>
-                <p className="text-sm text-red-400 mt-1">
+                <h3 className="text-lg font-semibold text-mirror-error">Reflection not found</h3>
+                <p className="text-sm text-mirror-error/80 mt-1">
                   {error?.message || 'This reflection does not exist or you do not have access to it'}
                 </p>
               </div>
             </div>
-            <Link
-              href="/reflections"
-              className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors"
+            <GlowButton
+              variant="danger"
+              size="sm"
+              onClick={() => router.push('/reflections')}
             >
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              Back to Reflections
-            </Link>
+              <div className="flex items-center gap-2">
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Reflections
+              </div>
+            </GlowButton>
           </div>
         </div>
       </div>
@@ -278,7 +281,7 @@ export default function ReflectionDetailPage({ params }: ReflectionDetailPagePro
         {/* Stats and Actions */}
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
           {/* Stats Card */}
-          <div className="rounded-xl border border-purple-500/20 bg-slate-900/50 p-6 backdrop-blur-sm">
+          <GlassCard elevated>
             <h3 className="text-lg font-semibold text-purple-300 mb-4">Details</h3>
             <div className="space-y-3 text-sm">
               <div className="flex items-center justify-between">
@@ -295,10 +298,10 @@ export default function ReflectionDetailPage({ params }: ReflectionDetailPagePro
                 <div className="flex items-center justify-between">
                   <span className="text-gray-400">Your Rating</span>
                   <div className="flex items-center gap-1">
-                    <svg className="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="h-4 w-4 text-mirror-warning" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
-                    <span className="text-yellow-400 font-medium">{reflection.rating}/10</span>
+                    <span className="text-mirror-warning font-medium">{reflection.rating}/10</span>
                   </div>
                 </div>
               )}
@@ -307,92 +310,102 @@ export default function ReflectionDetailPage({ params }: ReflectionDetailPagePro
                 <span className="text-gray-200">{reflection.viewCount}</span>
               </div>
             </div>
-          </div>
+          </GlassCard>
 
           {/* Actions Card */}
-          <div className="rounded-xl border border-purple-500/20 bg-slate-900/50 p-6 backdrop-blur-sm">
+          <GlassCard elevated>
             <h3 className="text-lg font-semibold text-purple-300 mb-4">Actions</h3>
             <div className="space-y-3">
               {/* Reflect Again button */}
-              <button
+              <GlowButton
+                variant="cosmic"
                 onClick={() => {
                   const reflectUrl = reflection.dreamId
                     ? `/reflection?dreamId=${reflection.dreamId}`
                     : '/reflection';
                   router.push(reflectUrl);
                 }}
-                className="w-full flex items-center justify-center gap-2 rounded-lg bg-purple-600/20 px-4 py-2.5 text-sm font-medium text-purple-300 hover:bg-purple-600/30 border border-purple-500/20 transition-colors"
+                className="w-full"
               >
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                </svg>
-                Reflect Again
-              </button>
+                <div className="flex items-center justify-center gap-2">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                  Reflect Again
+                </div>
+              </GlowButton>
 
               {/* Copy Text button */}
-              <button
+              <GlowButton
+                variant="secondary"
                 onClick={() => {
                   navigator.clipboard.writeText(reflection.aiResponse);
                   toast.success('Reflection copied to clipboard!');
                 }}
-                className="w-full flex items-center justify-center gap-2 rounded-lg bg-slate-800/50 px-4 py-2.5 text-sm font-medium text-gray-200 hover:bg-slate-800 transition-colors"
+                className="w-full"
               >
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-                Copy Text
-              </button>
+                <div className="flex items-center justify-center gap-2">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  Copy Text
+                </div>
+              </GlowButton>
 
               {/* Delete button */}
-              <button
+              <GlowButton
+                variant="danger"
                 onClick={() => setShowDeleteConfirm(true)}
-                className="w-full flex items-center justify-center gap-2 rounded-lg bg-red-900/20 px-4 py-2.5 text-sm font-medium text-red-400 hover:bg-red-900/30 transition-colors"
+                className="w-full"
               >
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-                Delete
-              </button>
+                <div className="flex items-center justify-center gap-2">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Delete
+                </div>
+              </GlowButton>
             </div>
-          </div>
+          </GlassCard>
         </div>
 
-        {/* Delete confirmation dialog */}
-        {showDeleteConfirm && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <div className="max-w-md w-full rounded-xl border border-red-500/20 bg-slate-900 p-6 shadow-xl">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-900/20">
-                  <svg className="h-6 w-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-white">Delete Reflection</h3>
-                  <p className="text-sm text-gray-400">This action cannot be undone</p>
-                </div>
+        {/* Delete confirmation modal */}
+        <GlassModal
+          isOpen={showDeleteConfirm}
+          onClose={() => setShowDeleteConfirm(false)}
+          title="Delete Reflection"
+        >
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-mirror-error/20">
+                <svg className="h-6 w-6 text-mirror-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
               </div>
-              <p className="text-gray-300 mb-6">
-                Are you sure you want to delete this reflection? All data will be permanently removed.
-              </p>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setShowDeleteConfirm(false)}
-                  className="flex-1 rounded-lg border border-gray-600 px-4 py-2.5 text-sm font-medium text-gray-300 hover:bg-slate-800 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleDelete}
-                  disabled={deleteMutation.isPending}
-                  className="flex-1 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-red-700 transition-colors disabled:opacity-50"
-                >
-                  {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
-                </button>
-              </div>
+              <p className="text-sm text-gray-400">This action cannot be undone</p>
+            </div>
+            <p className="text-gray-300 mb-6">
+              Are you sure you want to delete this reflection? All data will be permanently removed.
+            </p>
+            <div className="flex gap-3">
+              <GlowButton
+                variant="secondary"
+                onClick={() => setShowDeleteConfirm(false)}
+                className="flex-1"
+              >
+                Cancel
+              </GlowButton>
+              <GlowButton
+                variant="danger"
+                onClick={handleDelete}
+                disabled={deleteMutation.isPending}
+                className="flex-1"
+              >
+                {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+              </GlowButton>
             </div>
           </div>
-        )}
+        </GlassModal>
       </div>
     </div>
   );

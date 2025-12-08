@@ -17,7 +17,7 @@ export function ReflectionCard({ reflection }: ReflectionCardProps) {
   // Get tone badge styling
   const getToneBadge = (tone: string) => {
     const styles = {
-      gentle: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+      gentle: 'bg-mirror-info/20 text-mirror-info border-mirror-info/30',
       intense: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
       fusion: 'bg-pink-500/20 text-pink-300 border-pink-500/30',
     };

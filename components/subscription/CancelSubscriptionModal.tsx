@@ -68,8 +68,8 @@ export function CancelSubscriptionModal({
     <GlassModal isOpen={isOpen} onClose={handleClose} title="Cancel Subscription">
       <div className="space-y-4">
         {/* Warning Banner */}
-        <div className="flex items-start gap-3 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-          <AlertTriangle className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+        <div className="flex items-start gap-3 p-4 bg-mirror-warning/10 border border-mirror-warning/30 rounded-lg">
+          <AlertTriangle className="w-5 h-5 text-mirror-warning flex-shrink-0 mt-0.5" />
           <div className="text-sm text-white/80">
             <p className="font-semibold text-white mb-2">
               Are you sure you want to cancel?

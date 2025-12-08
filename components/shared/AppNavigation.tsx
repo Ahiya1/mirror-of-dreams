@@ -292,7 +292,7 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className="dashboard-dropdown-item text-red-400/90 hover:bg-red-500/10 w-full text-left"
+                        className="dashboard-dropdown-item text-mirror-error/90 hover:bg-mirror-error/10 w-full text-left"
                       >
                         <span>🚪</span>
                         <span>Sign Out</span>

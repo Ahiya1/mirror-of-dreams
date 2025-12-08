@@ -56,8 +56,8 @@ const DreamsCard: React.FC<DreamsCardProps> = ({ animated = true, className = ''
     <div className="empty-state">
       <h4>Your journey begins with a dream</h4>
       <p>What calls to you? Create your first dream to start reflecting.</p>
-      <Link href="/dreams" className="cosmic-button cosmic-button--primary">
-        <span>Create Your First Dream</span>
+      <Link href="/dreams">
+        <GlowButton variant="cosmic">Create Your First Dream</GlowButton>
       </Link>
     </div>
   );
@@ -132,15 +132,14 @@ const DreamsCard: React.FC<DreamsCardProps> = ({ animated = true, className = ''
                     </div>
                   </Link>
 
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleReflectOnDream(dream.id);
-                    }}
-                    className="dream-item__cta cosmic-button cosmic-button--sm cosmic-button--cosmic"
+                  <GlowButton
+                    variant="cosmic"
+                    size="sm"
+                    className="dream-item__cta"
+                    onClick={() => handleReflectOnDream(dream.id)}
                   >
                     Reflect
-                  </button>
+                  </GlowButton>
                 </div>
               );
             })}

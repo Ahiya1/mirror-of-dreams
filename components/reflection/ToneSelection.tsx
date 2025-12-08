@@ -3,6 +3,8 @@
 import React from 'react';
 import { TONES } from '@/lib/utils/constants';
 import type { ToneId } from '@/lib/utils/constants';
+import { GlowButton } from '@/components/ui/glass/GlowButton';
+import { cn } from '@/lib/utils';
 
 interface ToneSelectionProps {
   selectedTone: ToneId;
@@ -36,6 +38,21 @@ const ToneSelection: React.FC<ToneSelectionProps> = ({
     }
   };
 
+  // Get variant based on tone selection
+  const getVariant = (toneId: ToneId): 'primary' | 'secondary' | 'cosmic' => {
+    if (selectedTone !== toneId) return 'secondary';
+    switch (toneId) {
+      case 'gentle':
+        return 'primary';
+      case 'intense':
+        return 'cosmic';
+      case 'fusion':
+        return 'cosmic';
+      default:
+        return 'primary';
+    }
+  };
+
   return (
     <div className="tone-selection">
       <div className="tone-label">
@@ -43,25 +60,22 @@ const ToneSelection: React.FC<ToneSelectionProps> = ({
       </div>
 
       <div
-        className="tone-buttons"
+        className="tone-buttons flex flex-wrap gap-3"
         role="radiogroup"
         aria-label="Reflection tone selection"
         aria-required="true"
       >
         {TONES.map((tone) => (
-          <button
+          <GlowButton
             key={tone.id}
-            type="button"
-            className={`cosmic-button ${
-              selectedTone === tone.id ? `cosmic-button--${tone.id}` : ''
-            }`}
+            variant={getVariant(tone.id)}
+            size="md"
             onClick={() => handleToneSelect(tone.id)}
-            onKeyDown={(e) => handleKeyDown(e, tone.id)}
             disabled={disabled}
-            aria-pressed={selectedTone === tone.id}
-            aria-label={`${tone.label}: ${tone.description}`}
-            role="radio"
-            aria-checked={selectedTone === tone.id}
+            className={cn(
+              'flex items-center gap-2',
+              selectedTone === tone.id && 'ring-2 ring-purple-400/50'
+            )}
           >
             <span className="tone-button-text">{tone.label}</span>
             {selectedTone === tone.id && (
@@ -69,7 +83,7 @@ const ToneSelection: React.FC<ToneSelectionProps> = ({
                 ✨
               </span>
             )}
-          </button>
+          </GlowButton>
         ))}
       </div>
 

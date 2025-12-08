@@ -136,7 +136,7 @@ function PricingPageContent() {
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
+            <h1 className="text-h1 text-white mb-4">
               Choose Your Path
             </h1>
             <p className="text-xl text-white/60 max-w-2xl mx-auto">
@@ -165,7 +165,7 @@ function PricingPageContent() {
               }`}
             >
               Yearly
-              <span className="ml-2 text-green-400 text-sm">Save 17%</span>
+              <span className="ml-2 text-mirror-success text-sm">Save 17%</span>
             </button>
           </div>
 

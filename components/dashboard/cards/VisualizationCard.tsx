@@ -8,6 +8,7 @@ import DashboardCard, {
   CardContent,
   CardActions,
 } from '@/components/dashboard/shared/DashboardCard';
+import { GlowButton } from '@/components/ui/glass';
 import { MarkdownPreview } from '@/components/shared/MarkdownPreview';
 import { trpc } from '@/lib/trpc';
 
@@ -124,19 +125,19 @@ const VisualizationCard: React.FC<VisualizationCardProps> = ({
 
       <CardActions>
         {hasVisualizations ? (
-          <button
-            className="cosmic-button cosmic-button--secondary"
+          <GlowButton
+            variant="secondary"
             onClick={() => router.push('/visualizations')}
           >
-            <span>View All</span>
-          </button>
+            View All
+          </GlowButton>
         ) : (
-          <button
-            className="cosmic-button cosmic-button--primary"
+          <GlowButton
+            variant="cosmic"
             onClick={() => router.push('/visualizations')}
           >
-            <span>Create Visualization</span>
-          </button>
+            Create Visualization
+          </GlowButton>
         )}
       </CardActions>
 
