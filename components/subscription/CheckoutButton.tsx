@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
-import { trpc } from '@/lib/trpc';
 import { useToast } from '@/contexts/ToastContext';
 import { GlowButton } from '@/components/ui/glass/GlowButton';
+import { PayPalCheckoutModal } from './PayPalCheckoutModal';
 import type { TierName, BillingPeriod } from '@/lib/utils/constants';
 
 interface CheckoutButtonProps {
@@ -19,20 +19,9 @@ export function CheckoutButton({ tier, period, className, variant = 'primary' }:
   const { isAuthenticated, user } = useAuth();
   const router = useRouter();
   const toast = useToast();
-  const [isCreatingCheckout, setIsCreatingCheckout] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const createCheckoutMutation = trpc.subscriptions.createCheckout.useMutation({
-    onSuccess: (data) => {
-      // Redirect to PayPal approval page
-      window.location.href = data.approvalUrl;
-    },
-    onError: (error) => {
-      toast.error(error.message || 'Failed to start checkout. Please try again.');
-      setIsCreatingCheckout(false);
-    },
-  });
-
-  const handleClick = async () => {
+  const handleClick = () => {
     // Require authentication for paid tiers
     if (!isAuthenticated) {
       router.push(`/auth/signup?plan=${tier}&period=${period}`);
@@ -45,24 +34,32 @@ export function CheckoutButton({ tier, period, className, variant = 'primary' }:
       return;
     }
 
-    // Prevent double-clicks
-    if (isCreatingCheckout) {
-      return;
-    }
+    // Open the PayPal checkout modal
+    setIsModalOpen(true);
+  };
 
-    // Create PayPal checkout session
-    setIsCreatingCheckout(true);
-    createCheckoutMutation.mutate({ tier, period });
+  const handleSuccess = () => {
+    // Refresh the page to show updated tier
+    router.refresh();
   };
 
   return (
-    <GlowButton
-      variant={variant}
-      onClick={handleClick}
-      disabled={isCreatingCheckout}
-      className={className}
-    >
-      {isCreatingCheckout ? 'Redirecting to PayPal...' : `Start ${tier.charAt(0).toUpperCase() + tier.slice(1)}`}
-    </GlowButton>
+    <>
+      <GlowButton
+        variant={variant}
+        onClick={handleClick}
+        className={className}
+      >
+        Start {tier.charAt(0).toUpperCase() + tier.slice(1)}
+      </GlowButton>
+
+      <PayPalCheckoutModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        tier={tier}
+        period={period}
+        onSuccess={handleSuccess}
+      />
+    </>
   );
 }

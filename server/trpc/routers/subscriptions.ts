@@ -9,6 +9,9 @@ import {
   createSubscription,
   cancelSubscription,
   getPlanId,
+  getSubscriptionDetails,
+  determineTierFromPlanId,
+  determinePeriodFromPlanId,
 } from '@/server/lib/paypal';
 
 export const subscriptionsRouter = router({
@@ -98,6 +101,87 @@ export const subscriptionsRouter = router({
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: error instanceof Error ? error.message : 'Failed to create checkout session',
+        });
+      }
+    }),
+
+  // Get plan ID for embedded checkout (no redirect needed)
+  getPlanId: protectedProcedure
+    .input(z.object({
+      tier: z.enum(['pro', 'unlimited']),
+      period: z.enum(['monthly', 'yearly']),
+    }))
+    .query(({ input }) => {
+      try {
+        const planId = getPlanId(input.tier, input.period);
+        return { planId };
+      } catch (error) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: error instanceof Error ? error.message : 'Failed to get plan ID',
+        });
+      }
+    }),
+
+  // Activate subscription after PayPal embedded checkout approval
+  activateSubscription: protectedProcedure
+    .input(z.object({
+      subscriptionId: z.string(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        // Fetch subscription details from PayPal
+        const subscription = await getSubscriptionDetails(input.subscriptionId);
+
+        // Verify subscription is active or approved
+        if (!['ACTIVE', 'APPROVED'].includes(subscription.status)) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: `Subscription is not active. Status: ${subscription.status}`,
+          });
+        }
+
+        // Determine tier and period from plan ID
+        const tier = determineTierFromPlanId(subscription.plan_id);
+        const period = determinePeriodFromPlanId(subscription.plan_id);
+
+        // Update user subscription in database
+        const { error } = await supabase
+          .from('users')
+          .update({
+            tier,
+            subscription_status: 'active',
+            subscription_period: period,
+            subscription_started_at: new Date().toISOString(),
+            paypal_subscription_id: subscription.id,
+            paypal_payer_id: subscription.subscriber.payer_id,
+            subscription_id: subscription.id,
+            cancel_at_period_end: false,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', ctx.user.id);
+
+        if (error) {
+          console.error('Failed to update user subscription:', error);
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to activate subscription',
+          });
+        }
+
+        console.log(`[Subscription] User ${ctx.user.id} upgraded to ${tier} (${period})`);
+
+        return {
+          success: true,
+          tier,
+          period,
+        };
+      } catch (error) {
+        console.error('Activate subscription error:', error);
+        if (error instanceof TRPCError) throw error;
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: error instanceof Error ? error.message : 'Failed to activate subscription',
         });
       }
     }),
