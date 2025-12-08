@@ -25,14 +25,14 @@ if (process.env.NODE_ENV === 'development') {
 // Get the app URL for links
 const getAppUrl = () => {
   return process.env.NEXT_PUBLIC_APP_URL ||
-         process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` :
-         'http://localhost:3000';
+         (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` :
+         'http://localhost:3000');
 };
 
-// Email templates
+// Email templates - Cosmic design aligned with Mirror of Dreams aesthetic
 const emailTemplates = {
   emailVerification: (verifyLink: string, userName?: string) => ({
-    subject: 'Verify Your Email | Mirror of Truth',
+    subject: 'Begin Your Dream Journey | Mirror of Dreams',
     html: `
 <!DOCTYPE html>
 <html>
@@ -41,58 +41,92 @@ const emailTemplates = {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Verify Your Email</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #0f0f23; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
-  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #0f0f23;">
+<body style="margin: 0; padding: 0; background-color: #0a0416; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+  <!-- Outer cosmic void container -->
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background: linear-gradient(180deg, #0a0416 0%, #120828 50%, #1a0f2e 100%); min-height: 100vh;">
     <tr>
       <td style="padding: 40px 20px;">
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 500px; margin: 0 auto;">
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 520px; margin: 0 auto;">
 
-          <!-- Header -->
+          <!-- Cosmic Header with Moon Icon -->
           <tr>
-            <td style="text-align: center; padding-bottom: 30px;">
-              <div style="font-size: 48px; margin-bottom: 10px;">🪞</div>
-              <h1 style="color: #ffffff; font-size: 24px; font-weight: 300; margin: 0; letter-spacing: 0.5px;">
-                Mirror of Truth
+            <td style="text-align: center; padding-bottom: 32px;">
+              <!-- Moon glow effect -->
+              <div style="display: inline-block; width: 80px; height: 80px; background: radial-gradient(circle, rgba(124, 58, 237, 0.4) 0%, rgba(124, 58, 237, 0.1) 50%, transparent 70%); border-radius: 50%; margin-bottom: 16px; position: relative;">
+                <span style="font-size: 48px; line-height: 80px;">🌙</span>
+              </div>
+              <h1 style="color: #ffffff; font-size: 28px; font-weight: 200; margin: 0; letter-spacing: 2px; text-transform: uppercase;">
+                Mirror of Dreams
               </h1>
+              <p style="color: rgba(196, 181, 253, 0.7); font-size: 12px; letter-spacing: 3px; margin: 8px 0 0 0; text-transform: uppercase;">
+                Your Gateway to the Realm of Dreams
+              </p>
             </td>
           </tr>
 
-          <!-- Main Card -->
+          <!-- Main Glass Card with Purple Glow -->
           <tr>
             <td>
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="
+                background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(255, 255, 255, 0.03) 50%, rgba(124, 58, 237, 0.05) 100%);
+                border-radius: 24px;
+                border: 1px solid rgba(124, 58, 237, 0.3);
+                box-shadow:
+                  0 0 40px rgba(124, 58, 237, 0.15),
+                  0 0 80px rgba(124, 58, 237, 0.08),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.1);
+              ">
                 <tr>
-                  <td style="padding: 40px 30px;">
+                  <td style="padding: 48px 36px;">
 
-                    <!-- Icon -->
-                    <div style="text-align: center; margin-bottom: 25px;">
-                      <span style="font-size: 50px;">✨</span>
+                    <!-- Sparkle Icon -->
+                    <div style="text-align: center; margin-bottom: 28px;">
+                      <span style="font-size: 56px; filter: drop-shadow(0 0 10px rgba(196, 181, 253, 0.5));">✨</span>
                     </div>
 
                     <!-- Greeting -->
-                    <h2 style="color: #ffffff; font-size: 22px; font-weight: 400; text-align: center; margin: 0 0 15px 0;">
-                      ${userName ? `Welcome ${userName}!` : 'Welcome!'}
+                    <h2 style="color: #ffffff; font-size: 24px; font-weight: 300; text-align: center; margin: 0 0 20px 0; letter-spacing: 0.5px;">
+                      ${userName ? `Welcome, ${userName}` : 'Welcome, Dreamer'}
                     </h2>
 
+                    <!-- Divider -->
+                    <div style="width: 60px; height: 1px; background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.6), transparent); margin: 0 auto 24px auto;"></div>
+
                     <!-- Message -->
-                    <p style="color: rgba(255,255,255,0.8); font-size: 15px; line-height: 1.7; text-align: center; margin: 0 0 30px 0; font-weight: 300;">
-                      Thank you for joining Mirror of Truth. Please verify your email address to complete your registration and begin your journey of self-discovery.
+                    <p style="color: rgba(255, 255, 255, 0.85); font-size: 16px; line-height: 1.8; text-align: center; margin: 0 0 32px 0; font-weight: 300;">
+                      The mirror awaits. Verify your email to begin your journey through the realm of dreams, where AI-powered insights illuminate the hidden meanings within.
                     </p>
 
-                    <!-- Button -->
+                    <!-- CTA Button with Glow -->
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                       <tr>
                         <td style="text-align: center;">
-                          <a href="${verifyLink}" target="_blank" style="display: inline-block; background: linear-gradient(135deg, rgba(52,211,153,0.2) 0%, rgba(52,211,153,0.15) 100%); color: #6ee7b7; text-decoration: none; padding: 16px 40px; border-radius: 12px; font-size: 15px; font-weight: 500; border: 1px solid rgba(52,211,153,0.4); letter-spacing: 0.3px;">
-                            Verify Email ✓
+                          <a href="${verifyLink}" target="_blank" style="
+                            display: inline-block;
+                            background: linear-gradient(135deg, rgba(124, 58, 237, 0.9) 0%, rgba(147, 51, 234, 0.9) 100%);
+                            color: #ffffff;
+                            text-decoration: none;
+                            padding: 18px 48px;
+                            border-radius: 14px;
+                            font-size: 16px;
+                            font-weight: 500;
+                            letter-spacing: 1px;
+                            text-transform: uppercase;
+                            border: 1px solid rgba(168, 85, 247, 0.5);
+                            box-shadow:
+                              0 4px 24px rgba(124, 58, 237, 0.4),
+                              0 8px 40px rgba(124, 58, 237, 0.2),
+                              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                          ">
+                            Enter the Mirror ✦
                           </a>
                         </td>
                       </tr>
                     </table>
 
                     <!-- Expiry Notice -->
-                    <p style="color: rgba(255,255,255,0.5); font-size: 13px; text-align: center; margin: 25px 0 0 0; font-style: italic;">
-                      This link will expire in 24 hours.
+                    <p style="color: rgba(196, 181, 253, 0.5); font-size: 12px; text-align: center; margin: 28px 0 0 0; font-style: italic; letter-spacing: 0.5px;">
+                      This gateway remains open for 24 hours
                     </p>
 
                   </td>
@@ -101,20 +135,36 @@ const emailTemplates = {
             </td>
           </tr>
 
-          <!-- What's Next -->
+          <!-- Features Preview with Glass Effect -->
           <tr>
-            <td style="padding-top: 25px;">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background: rgba(52,211,153,0.08); border-radius: 12px; border: 1px solid rgba(52,211,153,0.2);">
+            <td style="padding-top: 28px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="
+                background: linear-gradient(135deg, rgba(124, 58, 237, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+                border-radius: 16px;
+                border: 1px solid rgba(124, 58, 237, 0.2);
+              ">
                 <tr>
-                  <td style="padding: 20px;">
-                    <p style="color: rgba(110,231,183,0.95); font-size: 14px; font-weight: 500; margin: 0 0 10px 0; text-align: center;">
-                      What awaits you:
+                  <td style="padding: 24px 28px;">
+                    <p style="color: rgba(196, 181, 253, 0.9); font-size: 13px; font-weight: 500; margin: 0 0 16px 0; text-align: center; letter-spacing: 1.5px; text-transform: uppercase;">
+                      What Dreams Await
                     </p>
-                    <p style="color: rgba(255,255,255,0.7); font-size: 13px; margin: 0; line-height: 1.6; text-align: center;">
-                      🌟 AI-powered self-reflection sessions<br>
-                      🔮 Deep insights into your inner world<br>
-                      📚 A sacred journal of your journey
-                    </p>
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                      <tr>
+                        <td style="padding: 8px 0; color: rgba(255, 255, 255, 0.75); font-size: 14px; line-height: 1.6;">
+                          <span style="color: #c4b5fd; margin-right: 12px;">🌙</span> Record your dreams in a sacred digital journal
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0; color: rgba(255, 255, 255, 0.75); font-size: 14px; line-height: 1.6;">
+                          <span style="color: #c4b5fd; margin-right: 12px;">✨</span> AI-powered analysis reveals hidden patterns
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0; color: rgba(255, 255, 255, 0.75); font-size: 14px; line-height: 1.6;">
+                          <span style="color: #c4b5fd; margin-right: 12px;">🔮</span> Watch your inner world unfold over time
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
               </table>
@@ -123,24 +173,28 @@ const emailTemplates = {
 
           <!-- Fallback Link -->
           <tr>
-            <td style="padding-top: 25px; text-align: center;">
-              <p style="color: rgba(255,255,255,0.4); font-size: 12px; margin: 0 0 8px 0;">
-                Button not working? Copy and paste this link:
+            <td style="padding-top: 28px; text-align: center;">
+              <p style="color: rgba(255, 255, 255, 0.35); font-size: 11px; margin: 0 0 10px 0; letter-spacing: 0.5px;">
+                If the button doesn't work, copy this link:
               </p>
-              <p style="color: rgba(59,130,246,0.8); font-size: 11px; margin: 0; word-break: break-all;">
+              <p style="color: rgba(168, 85, 247, 0.7); font-size: 10px; margin: 0; word-break: break-all; line-height: 1.6;">
                 ${verifyLink}
               </p>
             </td>
           </tr>
 
-          <!-- Footer -->
+          <!-- Footer with Stars -->
           <tr>
-            <td style="padding-top: 40px; text-align: center; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 30px;">
-              <p style="color: rgba(255,255,255,0.3); font-size: 12px; margin: 20px 0 0 0;">
-                Mirror of Truth - Your sacred space for reflection
+            <td style="padding-top: 48px; text-align: center;">
+              <div style="width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.3), transparent); margin-bottom: 24px;"></div>
+              <p style="color: rgba(255, 255, 255, 0.25); font-size: 11px; margin: 0 0 8px 0; letter-spacing: 2px;">
+                ✦ ✦ ✦
               </p>
-              <p style="color: rgba(255,255,255,0.2); font-size: 11px; margin: 8px 0 0 0;">
-                © ${new Date().getFullYear()} Mirror of Truth. All rights reserved.
+              <p style="color: rgba(255, 255, 255, 0.3); font-size: 11px; margin: 0 0 4px 0; letter-spacing: 0.5px;">
+                Mirror of Dreams
+              </p>
+              <p style="color: rgba(255, 255, 255, 0.2); font-size: 10px; margin: 0;">
+                © ${new Date().getFullYear()} All dreams reserved
               </p>
             </td>
           </tr>
@@ -153,28 +207,31 @@ const emailTemplates = {
 </html>
     `,
     text: `
-Mirror of Truth - Verify Your Email
+MIRROR OF DREAMS
+Your Gateway to the Realm of Dreams
 
-${userName ? `Welcome ${userName}!` : 'Welcome!'}
+${userName ? `Welcome, ${userName}!` : 'Welcome, Dreamer!'}
 
-Thank you for joining Mirror of Truth. Please verify your email address to complete your registration:
+The mirror awaits. Verify your email to begin your journey through the realm of dreams, where AI-powered insights illuminate the hidden meanings within.
 
+VERIFY YOUR EMAIL:
 ${verifyLink}
 
-This link will expire in 24 hours.
+This gateway remains open for 24 hours.
 
-What awaits you:
-- AI-powered self-reflection sessions
-- Deep insights into your inner world
-- A sacred journal of your journey
+WHAT DREAMS AWAIT:
+• Record your dreams in a sacred digital journal
+• AI-powered analysis reveals hidden patterns
+• Watch your inner world unfold over time
 
 ---
-Mirror of Truth - Your sacred space for reflection
+Mirror of Dreams
+© ${new Date().getFullYear()} All dreams reserved
     `,
   }),
 
   passwordReset: (resetLink: string, userName?: string) => ({
-    subject: 'Reset Your Password | Mirror of Truth',
+    subject: 'Return to Your Dreams | Mirror of Dreams',
     html: `
 <!DOCTYPE html>
 <html>
@@ -183,58 +240,91 @@ Mirror of Truth - Your sacred space for reflection
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reset Your Password</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #0f0f23; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
-  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #0f0f23;">
+<body style="margin: 0; padding: 0; background-color: #0a0416; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+  <!-- Outer cosmic void container -->
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background: linear-gradient(180deg, #0a0416 0%, #120828 50%, #1a0f2e 100%); min-height: 100vh;">
     <tr>
       <td style="padding: 40px 20px;">
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 500px; margin: 0 auto;">
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 520px; margin: 0 auto;">
 
-          <!-- Header -->
+          <!-- Cosmic Header -->
           <tr>
-            <td style="text-align: center; padding-bottom: 30px;">
-              <div style="font-size: 48px; margin-bottom: 10px;">🪞</div>
-              <h1 style="color: #ffffff; font-size: 24px; font-weight: 300; margin: 0; letter-spacing: 0.5px;">
-                Mirror of Truth
+            <td style="text-align: center; padding-bottom: 32px;">
+              <div style="display: inline-block; width: 80px; height: 80px; background: radial-gradient(circle, rgba(124, 58, 237, 0.4) 0%, rgba(124, 58, 237, 0.1) 50%, transparent 70%); border-radius: 50%; margin-bottom: 16px;">
+                <span style="font-size: 48px; line-height: 80px;">🌙</span>
+              </div>
+              <h1 style="color: #ffffff; font-size: 28px; font-weight: 200; margin: 0; letter-spacing: 2px; text-transform: uppercase;">
+                Mirror of Dreams
               </h1>
+              <p style="color: rgba(196, 181, 253, 0.7); font-size: 12px; letter-spacing: 3px; margin: 8px 0 0 0; text-transform: uppercase;">
+                Your Gateway to the Realm of Dreams
+              </p>
             </td>
           </tr>
 
-          <!-- Main Card -->
+          <!-- Main Glass Card -->
           <tr>
             <td>
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="
+                background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(255, 255, 255, 0.03) 50%, rgba(124, 58, 237, 0.05) 100%);
+                border-radius: 24px;
+                border: 1px solid rgba(124, 58, 237, 0.3);
+                box-shadow:
+                  0 0 40px rgba(124, 58, 237, 0.15),
+                  0 0 80px rgba(124, 58, 237, 0.08),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.1);
+              ">
                 <tr>
-                  <td style="padding: 40px 30px;">
+                  <td style="padding: 48px 36px;">
 
-                    <!-- Icon -->
-                    <div style="text-align: center; margin-bottom: 25px;">
-                      <span style="font-size: 50px;">🔐</span>
+                    <!-- Key Icon -->
+                    <div style="text-align: center; margin-bottom: 28px;">
+                      <span style="font-size: 56px; filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.4));">🔐</span>
                     </div>
 
                     <!-- Greeting -->
-                    <h2 style="color: #ffffff; font-size: 22px; font-weight: 400; text-align: center; margin: 0 0 15px 0;">
-                      ${userName ? `Hello ${userName},` : 'Hello,'}
+                    <h2 style="color: #ffffff; font-size: 24px; font-weight: 300; text-align: center; margin: 0 0 20px 0; letter-spacing: 0.5px;">
+                      ${userName ? `Hello, ${userName}` : 'Hello, Dreamer'}
                     </h2>
 
+                    <!-- Divider -->
+                    <div style="width: 60px; height: 1px; background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.6), transparent); margin: 0 auto 24px auto;"></div>
+
                     <!-- Message -->
-                    <p style="color: rgba(255,255,255,0.8); font-size: 15px; line-height: 1.7; text-align: center; margin: 0 0 30px 0; font-weight: 300;">
-                      We received a request to reset your password. Click the button below to create a new password for your account.
+                    <p style="color: rgba(255, 255, 255, 0.85); font-size: 16px; line-height: 1.8; text-align: center; margin: 0 0 32px 0; font-weight: 300;">
+                      Lost the key to your dreams? No worries. Click below to create a new password and return to your sacred space of reflection.
                     </p>
 
-                    <!-- Button -->
+                    <!-- CTA Button with Golden Glow -->
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                       <tr>
                         <td style="text-align: center;">
-                          <a href="${resetLink}" target="_blank" style="display: inline-block; background: linear-gradient(135deg, rgba(251,191,36,0.2) 0%, rgba(251,191,36,0.15) 100%); color: #fde047; text-decoration: none; padding: 16px 40px; border-radius: 12px; font-size: 15px; font-weight: 500; border: 1px solid rgba(251,191,36,0.4); letter-spacing: 0.3px;">
-                            Reset Password ✨
+                          <a href="${resetLink}" target="_blank" style="
+                            display: inline-block;
+                            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(217, 119, 6, 0.2) 100%);
+                            color: #fde047;
+                            text-decoration: none;
+                            padding: 18px 48px;
+                            border-radius: 14px;
+                            font-size: 16px;
+                            font-weight: 500;
+                            letter-spacing: 1px;
+                            text-transform: uppercase;
+                            border: 1px solid rgba(251, 191, 36, 0.4);
+                            box-shadow:
+                              0 4px 24px rgba(251, 191, 36, 0.2),
+                              0 8px 40px rgba(251, 191, 36, 0.1),
+                              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+                          ">
+                            Reset Password ✦
                           </a>
                         </td>
                       </tr>
                     </table>
 
                     <!-- Expiry Notice -->
-                    <p style="color: rgba(255,255,255,0.5); font-size: 13px; text-align: center; margin: 25px 0 0 0; font-style: italic;">
-                      This link will expire in 1 hour for security reasons.
+                    <p style="color: rgba(251, 191, 36, 0.5); font-size: 12px; text-align: center; margin: 28px 0 0 0; font-style: italic; letter-spacing: 0.5px;">
+                      This link expires in 1 hour for your security
                     </p>
 
                   </td>
@@ -245,12 +335,17 @@ Mirror of Truth - Your sacred space for reflection
 
           <!-- Security Notice -->
           <tr>
-            <td style="padding-top: 25px;">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background: rgba(251,191,36,0.08); border-radius: 12px; border: 1px solid rgba(251,191,36,0.2);">
+            <td style="padding-top: 28px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="
+                background: linear-gradient(135deg, rgba(251, 191, 36, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+                border-radius: 16px;
+                border: 1px solid rgba(251, 191, 36, 0.2);
+              ">
                 <tr>
-                  <td style="padding: 15px 20px;">
-                    <p style="color: rgba(253,224,71,0.9); font-size: 13px; margin: 0; line-height: 1.5; text-align: center;">
-                      ⚠️ If you didn't request this password reset, you can safely ignore this email. Your password will remain unchanged.
+                  <td style="padding: 20px 24px;">
+                    <p style="color: rgba(253, 224, 71, 0.85); font-size: 13px; margin: 0; line-height: 1.6; text-align: center;">
+                      <span style="margin-right: 8px;">⚠️</span>
+                      If you didn't request this, simply ignore this email. Your dreams remain safe and your password unchanged.
                     </p>
                   </td>
                 </tr>
@@ -260,11 +355,11 @@ Mirror of Truth - Your sacred space for reflection
 
           <!-- Fallback Link -->
           <tr>
-            <td style="padding-top: 25px; text-align: center;">
-              <p style="color: rgba(255,255,255,0.4); font-size: 12px; margin: 0 0 8px 0;">
-                Button not working? Copy and paste this link:
+            <td style="padding-top: 28px; text-align: center;">
+              <p style="color: rgba(255, 255, 255, 0.35); font-size: 11px; margin: 0 0 10px 0; letter-spacing: 0.5px;">
+                If the button doesn't work, copy this link:
               </p>
-              <p style="color: rgba(59,130,246,0.8); font-size: 11px; margin: 0; word-break: break-all;">
+              <p style="color: rgba(251, 191, 36, 0.6); font-size: 10px; margin: 0; word-break: break-all; line-height: 1.6;">
                 ${resetLink}
               </p>
             </td>
@@ -272,12 +367,16 @@ Mirror of Truth - Your sacred space for reflection
 
           <!-- Footer -->
           <tr>
-            <td style="padding-top: 40px; text-align: center; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 30px;">
-              <p style="color: rgba(255,255,255,0.3); font-size: 12px; margin: 20px 0 0 0;">
-                Mirror of Truth - Your sacred space for reflection
+            <td style="padding-top: 48px; text-align: center;">
+              <div style="width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.3), transparent); margin-bottom: 24px;"></div>
+              <p style="color: rgba(255, 255, 255, 0.25); font-size: 11px; margin: 0 0 8px 0; letter-spacing: 2px;">
+                ✦ ✦ ✦
               </p>
-              <p style="color: rgba(255,255,255,0.2); font-size: 11px; margin: 8px 0 0 0;">
-                © ${new Date().getFullYear()} Mirror of Truth. All rights reserved.
+              <p style="color: rgba(255, 255, 255, 0.3); font-size: 11px; margin: 0 0 4px 0; letter-spacing: 0.5px;">
+                Mirror of Dreams
+              </p>
+              <p style="color: rgba(255, 255, 255, 0.2); font-size: 10px; margin: 0;">
+                © ${new Date().getFullYear()} All dreams reserved
               </p>
             </td>
           </tr>
@@ -290,20 +389,23 @@ Mirror of Truth - Your sacred space for reflection
 </html>
     `,
     text: `
-Mirror of Truth - Password Reset
+MIRROR OF DREAMS
+Return to Your Dreams
 
-${userName ? `Hello ${userName},` : 'Hello,'}
+${userName ? `Hello, ${userName}!` : 'Hello, Dreamer!'}
 
-We received a request to reset your password. Visit the link below to create a new password:
+Lost the key to your dreams? No worries. Click below to create a new password and return to your sacred space of reflection.
 
+RESET YOUR PASSWORD:
 ${resetLink}
 
-This link will expire in 1 hour for security reasons.
+This link expires in 1 hour for your security.
 
-If you didn't request this password reset, you can safely ignore this email. Your password will remain unchanged.
+If you didn't request this, simply ignore this email. Your dreams remain safe and your password unchanged.
 
 ---
-Mirror of Truth - Your sacred space for reflection
+Mirror of Dreams
+© ${new Date().getFullYear()} All dreams reserved
     `,
   }),
 };
@@ -321,7 +423,7 @@ export async function sendPasswordResetEmail(
     const template = emailTemplates.passwordReset(resetLink, userName);
 
     await transporter.sendMail({
-      from: `"Mirror of Truth" <${process.env.GMAIL_USER}>`,
+      from: `"Mirror of Dreams" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: template.subject,
       text: template.text,
@@ -347,12 +449,13 @@ export async function sendVerificationEmail(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const appUrl = getAppUrl();
-    const verifyLink = `${appUrl}/auth/verify-email?token=${token}`;
+    // Use the API route path for verification
+    const verifyLink = `${appUrl}/api/auth/verify-email?token=${token}`;
 
     const template = emailTemplates.emailVerification(verifyLink, userName);
 
     await transporter.sendMail({
-      from: `"Mirror of Truth" <${process.env.GMAIL_USER}>`,
+      from: `"Mirror of Dreams" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: template.subject,
       text: template.text,

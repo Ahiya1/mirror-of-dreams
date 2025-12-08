@@ -37,20 +37,17 @@ export default function SignupPage() {
 
   const signupMutation = trpc.auth.signup.useMutation({
     onSuccess: (data) => {
-      const { user, token } = data;
+      const { token } = data;
 
       // Store token
       localStorage.setItem('authToken', token);
 
-      setMessage({ text: 'Account created! Redirecting...', type: 'success' });
+      setMessage({ text: 'Account created! Please check your email to verify your account.', type: 'success' });
       setTimeout(() => {
-        // Check if onboarding needed (new users who are not admin/creator)
-        if (!user.onboardingCompleted && !user.isAdmin && !user.isCreator) {
-          router.push('/onboarding');
-        } else {
-          router.push('/dashboard');
-        }
-      }, 1000);
+        // Always redirect to verify-required page after signup
+        // User must verify email before accessing the app
+        router.push('/auth/verify-required');
+      }, 1500);
     },
     onError: (error) => {
       setErrors({ submit: error.message });
