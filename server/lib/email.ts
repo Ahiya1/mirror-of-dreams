@@ -418,7 +418,7 @@ export async function sendPasswordResetEmail(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const appUrl = getAppUrl();
-    const resetLink = `${appUrl}/auth/reset-password?token=${token}`;
+    const resetLink = `${appUrl}/auth/reset-password.html?token=${token}`;
 
     const template = emailTemplates.passwordReset(resetLink, userName);
 
