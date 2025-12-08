@@ -123,4 +123,4 @@ build/
 dist/
 out/
 
-test
+test.mcp.json

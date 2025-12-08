@@ -96,7 +96,7 @@ export function useAuth(): UseAuthReturn {
         isAdmin: userData.is_admin,
         isDemo: userData.is_demo || false, // NEW: Demo user flag
         language: userData.language,
-        emailVerified: true, // getProfile doesn't return this, default to true
+        emailVerified: userData.email_verified ?? false,
         preferences: userData.preferences || {
           notification_email: true,
           reflection_reminders: 'off',

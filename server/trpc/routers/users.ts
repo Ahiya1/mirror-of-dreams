@@ -48,7 +48,8 @@ export const usersRouter = router({
         reflection_count_this_month, reflections_today, last_reflection_date,
         total_reflections, cancel_at_period_end,
         is_creator, is_admin, is_demo, language, timezone,
-        preferences, last_reflection_at, created_at, last_sign_in_at
+        preferences, last_reflection_at, created_at, last_sign_in_at,
+        email_verified
       `
       )
       .eq('id', ctx.user.id)
