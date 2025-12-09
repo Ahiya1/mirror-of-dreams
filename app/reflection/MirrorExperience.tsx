@@ -104,6 +104,8 @@ export default function MirrorExperience() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusText, setStatusText] = useState('Gazing into the mirror...');
   const [mirrorGlow, setMirrorGlow] = useState(false);
+  // Store newly created reflection to show directly (no page navigation needed)
+  const [newReflection, setNewReflection] = useState<{ id: string; content: string } | null>(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeData, setUpgradeData] = useState<{
     reason: 'monthly_limit' | 'daily_limit';
@@ -151,12 +153,18 @@ export default function MirrorExperience() {
     onSuccess: (data) => {
       // Clear localStorage on successful submit
       localStorage.removeItem(STORAGE_KEY);
-      // Transition to output with smooth animation
+      // Store the reflection content
+      setNewReflection({ id: data.reflectionId, content: data.reflection });
+      // Brief "complete" message then fade to output
       setStatusText('Reflection complete!');
       setMirrorGlow(true);
       setTimeout(() => {
-        router.push(`/reflection?id=${data.reflectionId}`);
-      }, 1000);
+        // Fade out overlay and show reflection (no navigation)
+        setIsSubmitting(false);
+        setViewMode('output');
+        // Update URL without navigation (for bookmarking/sharing)
+        window.history.replaceState(null, '', `/reflection?id=${data.reflectionId}`);
+      }, 1200);
     },
     onError: (error) => {
       toast.error(`Error: ${error.message}`);
@@ -164,17 +172,15 @@ export default function MirrorExperience() {
     },
   });
 
-  // Sync viewMode with URL params (handles client-side navigation after submit)
+  // Sync viewMode with URL params (handles direct URL access and browser navigation)
   useEffect(() => {
+    // Only sync if we don't have a newReflection (which means we just created one)
+    if (newReflection) return;
     const targetMode: ViewMode = reflectionId ? 'output' : 'questionnaire';
     if (viewMode !== targetMode) {
       setViewMode(targetMode);
-      // Scroll to top when showing reflection output
-      if (targetMode === 'output') {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
     }
-  }, [reflectionId]); // Only depend on reflectionId to avoid infinite loops
+  }, [reflectionId, newReflection]);
 
   // Update selected dream when dreams load or selection changes
   useEffect(() => {
@@ -735,15 +741,16 @@ export default function MirrorExperience() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.5 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.6 }}
             className="output-container"
           >
-            {reflectionLoading ? (
+            {/* Show loading only when fetching from URL (not when we have newReflection) */}
+            {!newReflection && reflectionLoading ? (
               <div className="flex flex-col items-center justify-center gap-6 py-20">
                 <CosmicLoader size="lg" />
                 <p className="text-white/70 text-lg">Loading reflection...</p>
               </div>
-            ) : reflection ? (
+            ) : (newReflection || reflection) ? (
               <GlassCard
                 elevated
                 className="reflection-card"
@@ -754,7 +761,8 @@ export default function MirrorExperience() {
                       Your Reflection
                     </h1>
                     <div className="reflection-text">
-                      <AIResponseRenderer content={reflection.aiResponse} />
+                      {/* Use newReflection if just created, otherwise fetched reflection */}
+                      <AIResponseRenderer content={newReflection?.content || reflection?.aiResponse || ''} />
                     </div>
                     <div className="flex justify-center mt-8">
                       <GlowButton
@@ -764,6 +772,7 @@ export default function MirrorExperience() {
                           setViewMode('questionnaire');
                           setSelectedDreamId('');
                           setSelectedDream(null);
+                          setNewReflection(null);
                           setFormData({
                             dream: '',
                             plan: '',
