@@ -57,33 +57,32 @@ export default function LandingHero() {
     >
       {/* Headline */}
       <h1 className="text-h1 font-bold mb-6">
-        <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600 bg-clip-text text-transparent">
-          Transform Your Dreams into Reality Through AI-Powered Reflection
+        <span className="bg-gradient-to-r from-purple-400 via-amber-300/90 to-purple-600 bg-clip-text text-transparent">
+          Your dreams know things
         </span>
       </h1>
 
       {/* Subheadline */}
       <p className="text-xl sm:text-2xl text-white/70 mb-12 leading-relaxed">
-        Your personal AI mirror analyzes your reflections, reveals hidden patterns,
-        and guides your evolution — one dream at a time
+        A companion for listening to what your inner life is trying to tell you
       </p>
 
       {/* CTAs */}
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <GlowButton
-          variant="primary"
+          variant="warm"
           size="lg"
           onClick={handleSeeDemoClick}
           disabled={isLoggingIn || loginDemo.isPending}
         >
-          {isLoggingIn || loginDemo.isPending ? 'Loading Demo...' : 'See Demo'}
+          {isLoggingIn || loginDemo.isPending ? 'Opening the door...' : 'Try It'}
         </GlowButton>
         <GlowButton
-          variant="secondary"
+          variant="cosmic"
           size="lg"
           onClick={() => router.push('/auth/signup')}
         >
-          Start Free
+          Begin
         </GlowButton>
       </div>
     </motion.div>

@@ -123,7 +123,7 @@ export default function SignupPage() {
       <CosmicBackground animated={true} intensity={1} />
 
       {/* Auth Layout */}
-      <AuthLayout title="Create Account">
+      <AuthLayout title="Begin Your Journey" subtitle="A companion awaits">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Name Input */}
           <GlassInput
@@ -205,7 +205,7 @@ export default function SignupPage() {
 
           {/* Submit Button */}
           <GlowButton
-            variant="cosmic"
+            variant="warm"
             size="lg"
             type="submit"
             disabled={signupMutation.isPending}
@@ -214,21 +214,21 @@ export default function SignupPage() {
             {signupMutation.isPending ? (
               <span className="flex items-center justify-center gap-2">
                 <CosmicLoader size="sm" />
-                Creating account...
+                Preparing your space...
               </span>
             ) : (
-              'Create Free Account'
+              'Create Your Space'
             )}
           </GlowButton>
 
           {/* Switch to Signin */}
           <div className="text-center space-y-2">
-            <p className="text-white/60 text-sm">Already have an account?</p>
+            <p className="text-white/60 text-sm">Already have a space?</p>
             <Link
               href="/auth/signin"
               className="inline-block text-purple-400 hover:text-purple-300 transition-colors text-sm font-medium"
             >
-              Sign in
+              Welcome back
             </Link>
           </div>
         </form>

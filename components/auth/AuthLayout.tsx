@@ -19,11 +19,13 @@ import { GlassCard } from '@/components/ui/glass';
 interface AuthLayoutProps {
   /** Page title */
   title?: string;
+  /** Page subtitle */
+  subtitle?: string;
   /** Form content */
   children: ReactNode;
 }
 
-export default function AuthLayout({ title = 'Welcome', children }: AuthLayoutProps) {
+export default function AuthLayout({ title = 'Welcome', subtitle, children }: AuthLayoutProps) {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 relative z-10">
       <div className="w-full max-w-md">
@@ -39,10 +41,18 @@ export default function AuthLayout({ title = 'Welcome', children }: AuthLayoutPr
 
           {/* Title */}
           {title && (
-            <h1 className="text-3xl font-light text-center mb-8 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-light text-center mb-2 bg-gradient-to-r from-purple-400 via-amber-300/80 to-purple-400 bg-clip-text text-transparent">
               {title}
             </h1>
           )}
+
+          {/* Subtitle */}
+          {subtitle && (
+            <p className="text-white/60 text-center mb-8 text-lg">{subtitle}</p>
+          )}
+
+          {/* Spacer if no subtitle */}
+          {!subtitle && title && <div className="mb-6" />}
 
           {/* Form Content */}
           {children}

@@ -35,9 +35,9 @@ export const DashboardHero: React.FC = () => {
 
   const getMotivationalCopy = (): string => {
     if (!hasActiveDreams) {
-      return "Create your first dream to begin your journey of transformation";
+      return "When you're ready, name what you're holding";
     }
-    return "Your dreams await your reflection";
+    return "Your dreams are waiting to be heard";
   };
 
   const handleReflectNow = () => {
@@ -73,9 +73,9 @@ export const DashboardHero: React.FC = () => {
           {!hasActiveDreams && (
             <p className="dashboard-hero__hint">
               <Link href="/dreams" className="dashboard-hero__hint-link">
-                Create a dream
+                Name your first dream
               </Link>{' '}
-              to start reflecting
+              to begin
             </p>
           )}
         </div>

@@ -24,28 +24,28 @@ import LandingFeatureCard from '@/components/landing/LandingFeatureCard';
 export default function LandingPage() {
   const useCases = [
     {
-      id: 'clarity',
-      icon: '🔮',
-      title: 'From Inner Confusion to Clear Self-Understanding',
+      id: 'witness',
+      icon: '🌙',
+      title: 'Be Witnessed, Not Fixed',
       description:
-        '"I feel stuck but don\'t know why" becomes a journey of discovery where your AI mirror reflects your thoughts back, helping you recognize patterns and truths you already know.',
-      example: 'Discover what\'s really holding you back',
+        'Share your dreams and reflections with a presence that listens without judgment, advice, or agenda. Sometimes the most profound shifts come from simply being heard.',
+      example: 'A companion who walks alongside',
     },
     {
-      id: 'evolution',
-      icon: '📈',
-      title: 'See Your Growth Over Time',
+      id: 'patterns',
+      icon: '✨',
+      title: 'Notice What\'s Emerging',
       description:
-        'Evolution reports analyze your reflections across weeks and months, revealing patterns you can\'t see day-to-day. Watch yourself shift from fear to confidence, from planning to execution.',
-      example: 'Unlocked after 4 reflections on a dream',
+        'Over time, patterns reveal themselves—not because someone points them out, but because you begin to see them for yourself through the mirror of your own words.',
+      example: 'Your journey, witnessed over time',
     },
     {
-      id: 'breakthroughs',
-      icon: '💡',
-      title: 'Break Through Mental Blocks',
+      id: 'journey',
+      icon: '🌸',
+      title: 'Walk Your Own Path',
       description:
-        'Your AI mirror identifies recurring obstacles, asks questions you haven\'t considered, and challenges excuses. It\'s like having a coach available 24/7.',
-      example: 'Fusion tone: Gentle encouragement + direct truth',
+        'This is your journey. Your companion walks alongside you, reflecting back what you share, celebrating where you\'ve been and where you\'re going.',
+      example: 'Growth at your own pace',
     },
   ];
 
@@ -75,8 +75,8 @@ export default function LandingPage() {
               transition={{ duration: 0.6 }}
               className="text-4xl sm:text-5xl font-bold text-center mb-16"
             >
-              <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
-                How Mirror of Dreams Transforms Your Life
+              <span className="bg-gradient-to-r from-purple-400 via-amber-300/80 to-purple-400 bg-clip-text text-transparent">
+                A Space for Dreamers
               </span>
             </motion.h2>
 
@@ -125,7 +125,7 @@ export default function LandingPage() {
                 Mirror of Dreams
               </h3>
               <p className="text-white/60 text-sm leading-relaxed">
-                Transform your dreams into reality through AI-powered reflection.
+                A sacred space for dreamers who want to listen more deeply to themselves.
               </p>
             </div>
 

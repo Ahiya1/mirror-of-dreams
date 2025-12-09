@@ -41,10 +41,10 @@ function PricingPageContent() {
   const tiers = [
     {
       tier: 'free' as const,
-      name: 'Free',
+      name: 'Wanderer',
       monthlyPrice: 0,
       yearlyPrice: 0,
-      description: 'Perfect for exploring Mirror of Dreams',
+      description: 'Perfect for beginning your journey',
       features: [
         { name: `${TIER_LIMITS.free} reflections per month`, included: true },
         { name: `${DREAM_LIMITS.free} active dreams`, included: true },
@@ -58,10 +58,10 @@ function PricingPageContent() {
     },
     {
       tier: 'pro' as const,
-      name: 'Pro',
+      name: 'Seeker',
       monthlyPrice: TIER_PRICING.pro.monthly,
       yearlyPrice: TIER_PRICING.pro.yearly,
-      description: 'For committed dreamers and deep reflection',
+      description: 'For those ready to go deeper',
       popular: true,
       features: [
         { name: `${TIER_LIMITS.pro} reflections per month`, included: true },
@@ -76,10 +76,10 @@ function PricingPageContent() {
     },
     {
       tier: 'unlimited' as const,
-      name: 'Unlimited',
+      name: 'Devoted',
       monthlyPrice: TIER_PRICING.unlimited.monthly,
       yearlyPrice: TIER_PRICING.unlimited.yearly,
-      description: 'Maximum reflection capacity for transformation',
+      description: 'For the committed inner traveler',
       features: [
         { name: `${TIER_LIMITS.unlimited} reflections per month`, included: true },
         { name: `${DAILY_LIMITS.unlimited} reflections per day`, included: true },
@@ -136,11 +136,11 @@ function PricingPageContent() {
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-h1 text-white mb-4">
-              Choose Your Path
+            <h1 className="text-h1 text-white mb-4 bg-gradient-to-r from-purple-400 via-amber-300/80 to-purple-400 bg-clip-text text-transparent">
+              Find Your Space
             </h1>
             <p className="text-xl text-white/60 max-w-2xl mx-auto">
-              Start free and upgrade as your reflection practice deepens
+              Choose what feels right for where you are now
             </p>
           </div>
 

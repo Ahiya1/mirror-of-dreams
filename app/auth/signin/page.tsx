@@ -119,7 +119,7 @@ export default function SignInPage() {
       <CosmicBackground animated={true} intensity={1} />
 
       {/* Auth Layout */}
-      <AuthLayout title="Welcome Back">
+      <AuthLayout title="Welcome Back" subtitle="Your dreams are waiting">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Email Input */}
           <GlassInput
@@ -178,7 +178,7 @@ export default function SignInPage() {
 
           {/* Submit Button */}
           <GlowButton
-            variant="cosmic"
+            variant="warm"
             size="lg"
             type="submit"
             disabled={signinMutation.isPending}
@@ -187,21 +187,21 @@ export default function SignInPage() {
             {signinMutation.isPending ? (
               <span className="flex items-center justify-center gap-2">
                 <CosmicLoader size="sm" />
-                Signing you in...
+                Opening the door...
               </span>
             ) : (
-              'Sign In'
+              'Enter'
             )}
           </GlowButton>
 
           {/* Switch to Signup */}
           <div className="text-center space-y-2">
-            <p className="text-white/60 text-sm">New to Mirror of Dreams?</p>
+            <p className="text-white/60 text-sm">New here?</p>
             <Link
               href="/auth/signup"
               className="inline-block text-purple-400 hover:text-purple-300 transition-colors text-sm font-medium"
             >
-              Create account
+              Begin your journey
             </Link>
           </div>
         </form>
