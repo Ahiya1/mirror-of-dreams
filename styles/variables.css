@@ -59,12 +59,12 @@
   --mirror-transition-slow: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 
   /* ╭─ TONE COLORS ─────────────────────────────────────────────────────╮ */
-  /* Sacred Fusion */
+  /* Sacred Fusion - Enhanced warmth (Dreams warmth formula) */
   --fusion-primary: rgba(251, 191, 36, 0.95);
-  --fusion-bg: rgba(251, 191, 36, 0.08);
-  --fusion-border: rgba(251, 191, 36, 0.3);
-  --fusion-hover: rgba(251, 191, 36, 0.15);
-  --fusion-glow: rgba(251, 191, 36, 0.25);
+  --fusion-bg: rgba(251, 191, 36, 0.15);        /* 0.08 -> 0.15 */
+  --fusion-border: rgba(251, 191, 36, 0.4);     /* 0.3 -> 0.4 */
+  --fusion-hover: rgba(251, 191, 36, 0.25);     /* 0.15 -> 0.25 */
+  --fusion-glow: rgba(251, 191, 36, 0.35);      /* 0.25 -> 0.35 */
 
   /* Gentle Clarity */
   --gentle-primary: rgba(255, 255, 255, 0.95);

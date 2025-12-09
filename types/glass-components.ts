@@ -41,7 +41,7 @@ export interface GlassCardProps {
  */
 export interface GlowButtonProps extends GlassBaseProps {
   /** Button style variant */
-  variant?: 'primary' | 'secondary' | 'ghost' | 'cosmic' | 'success' | 'danger' | 'info';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'cosmic' | 'warm' | 'success' | 'danger' | 'info';
   /** Button size */
   size?: 'sm' | 'md' | 'lg';
   /** Button type */

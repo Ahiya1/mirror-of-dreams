@@ -118,12 +118,14 @@ body {
      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
   .crystal-glass {
-    /* DREAMY GLASS - Multi-layer gradients */
+    /* DREAMY GLASS - Multi-layer gradients with golden warmth (Dreams warmth formula) */
     backdrop-filter: blur(40px) saturate(150%);
     background:
       linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, transparent 40%, rgba(147, 51, 234, 0.03) 70%, transparent 100%),
       linear-gradient(225deg, rgba(99, 102, 241, 0.04) 0%, transparent 50%),
       linear-gradient(315deg, rgba(168, 85, 247, 0.02) 0%, transparent 60%),
+      /* Golden warmth layer - hearth presence */
+      radial-gradient(circle at 50% 100%, rgba(251, 191, 36, 0.06) 0%, transparent 60%),
       rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
@@ -182,17 +184,21 @@ body {
     box-shadow:
       0 12px 40px rgba(0, 0, 0, 0.2),
       0 0 0 1px rgba(255, 255, 255, 0.12),
-      0 0 60px rgba(147, 51, 234, 0.1);
+      0 0 60px rgba(147, 51, 234, 0.1),
+      /* Golden warmth glow on hover (Dreams warmth formula) */
+      0 8px 30px rgba(251, 191, 36, 0.06);
   }
 
   .crystal-sharp {
-    /* ELEVATED DREAMY GLASS - Multi-layer + breathing */
+    /* ELEVATED DREAMY GLASS - Multi-layer + breathing + warmth (Dreams warmth formula) */
     backdrop-filter: blur(45px) saturate(160%);
     background:
       radial-gradient(ellipse at top left, rgba(147, 51, 234, 0.08) 0%, transparent 50%),
       radial-gradient(ellipse at bottom right, rgba(168, 85, 247, 0.06) 0%, transparent 50%),
       linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 30%, rgba(99, 102, 241, 0.04) 60%, transparent 100%),
       linear-gradient(225deg, rgba(168, 85, 247, 0.03) 0%, transparent 50%),
+      /* Golden warmth layer - hearth presence */
+      radial-gradient(ellipse at center bottom, rgba(251, 191, 36, 0.08) 0%, transparent 50%),
       rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.12);
     position: relative;
@@ -301,8 +307,8 @@ body {
   }
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     GOLDEN PRESENCE (Ambient - Always There, Never Loud)
-     Eternal candlelight seeping through edges
+     GOLDEN PRESENCE (Warm Hearth - Felt and Present)
+     The warmth that makes you feel held and safe in the cosmos
      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
   .warmth-ambient {
@@ -312,14 +318,20 @@ body {
   .warmth-ambient::before {
     content: '';
     position: absolute;
-    left: 20%;
-    top: 30%;
-    width: clamp(220px, 45vw, 300px);
-    height: clamp(220px, 45vw, 300px);
+    left: 15%;
+    top: 25%;
+    width: clamp(250px, 50vw, 350px);
+    height: clamp(250px, 50vw, 350px);
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(251, 191, 36, 0.3) 0%, rgba(245, 158, 11, 0.15) 30%, rgba(217, 119, 6, 0.08) 60%, transparent 80%);
-    filter: blur(35px);
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.35) 0%, rgba(245, 158, 11, 0.20) 30%, rgba(217, 119, 6, 0.12) 60%, transparent 80%);
+    filter: blur(40px);
     pointer-events: none;
+    animation: warmthPulse 12s ease-in-out infinite;
+  }
+
+  @keyframes warmthPulse {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
   }
 
   .gold-seep-edge {
@@ -329,18 +341,32 @@ body {
   .gold-seep-edge::after {
     content: '';
     position: absolute;
-    right: 15%;
-    bottom: 25%;
-    width: clamp(180px, 35vw, 240px);
-    height: clamp(180px, 35vw, 240px);
+    right: 10%;
+    bottom: 20%;
+    width: clamp(200px, 40vw, 280px);
+    height: clamp(200px, 40vw, 280px);
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(251, 191, 36, 0.3) 0%, rgba(245, 158, 11, 0.15) 30%, rgba(217, 119, 6, 0.08) 60%, transparent 80%);
-    filter: blur(35px);
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.35) 0%, rgba(245, 158, 11, 0.20) 30%, rgba(217, 119, 6, 0.12) 60%, transparent 80%);
+    filter: blur(40px);
     pointer-events: none;
+    animation: warmthPulse 15s ease-in-out infinite reverse;
   }
 
   .warmth-glow {
-    box-shadow: 0 0 80px rgba(251, 191, 36, 0.05), 0 0 40px rgba(217, 119, 6, 0.03);
+    box-shadow: 0 0 100px rgba(251, 191, 36, 0.15), 0 0 60px rgba(217, 119, 6, 0.10);
+  }
+
+  /* Hover warmth - adds golden glow on interaction */
+  .hover-warmth {
+    transition: box-shadow 0.5s ease, transform 0.5s ease;
+  }
+
+  .hover-warmth:hover {
+    box-shadow:
+      0 0 50px rgba(251, 191, 36, 0.20),
+      0 8px 30px rgba(217, 119, 6, 0.15),
+      inset 0 0 30px rgba(251, 191, 36, 0.08);
+    transform: translateY(-2px);
   }
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

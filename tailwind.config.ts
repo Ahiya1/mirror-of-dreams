@@ -69,18 +69,21 @@ const config: Config = {
           'glass-near': 'rgba(255, 255, 255, 0.08)',   // Near clarity
 
           // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-          // GOLDEN PRESENCE (Ambient - Always There, Never Loud)
-          // Eternal warm light seeping through
+          // GOLDEN PRESENCE (Warm Hearth - Present and Felt)
+          // The warmth that makes you feel held and safe
           // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-          'gold-ambient': 'rgba(251, 191, 36, 0.05)',  // Always present
-          'gold-seep': 'rgba(251, 191, 36, 0.08)',     // Seeping through
-          'gold-edge': 'rgba(251, 191, 36, 0.12)',     // Edge presence
-          'gold-flicker': 'rgba(251, 191, 36, 0.15)',  // Candle flicker
+          'gold-ambient': 'rgba(251, 191, 36, 0.08)',  // Always present (increased)
+          'gold-seep': 'rgba(251, 191, 36, 0.12)',     // Seeping through (increased)
+          'gold-edge': 'rgba(251, 191, 36, 0.18)',     // Edge presence (increased)
+          'gold-flicker': 'rgba(251, 191, 36, 0.22)',  // Candle flicker (increased)
+          'gold-hover': 'rgba(251, 191, 36, 0.25)',    // Hover warmth (NEW)
+          'gold-glow': 'rgba(251, 191, 36, 0.30)',     // Active glow (NEW)
 
-          // Golden Warmth (atmospheric)
-          'warmth-deep': 'rgba(217, 119, 6, 0.03)',    // Deep warmth
-          'warmth': 'rgba(245, 158, 11, 0.05)',        // Ambient warmth
-          'warmth-bright': 'rgba(251, 191, 36, 0.08)', // Bright moment
+          // Golden Warmth (atmospheric) - increased for felt presence
+          'warmth-deep': 'rgba(217, 119, 6, 0.06)',    // Deep warmth (increased)
+          'warmth': 'rgba(245, 158, 11, 0.10)',        // Ambient warmth (increased)
+          'warmth-bright': 'rgba(251, 191, 36, 0.15)', // Bright moment (increased)
+          'warmth-held': 'rgba(251, 191, 36, 0.20)',   // Feeling held (NEW)
 
           // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           // Semantic
@@ -125,11 +128,12 @@ const config: Config = {
         'refraction': 'linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%)',
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // GOLDEN AMBIENT PRESENCE (Always there, soft)
+        // GOLDEN AMBIENT PRESENCE (Felt warmth, like a hearth)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        'warmth-ambient': 'radial-gradient(circle, rgba(251, 191, 36, 0.05) 0%, transparent 100%)',
-        'gold-seep': 'linear-gradient(135deg, rgba(251, 191, 36, 0.08) 0%, rgba(217, 119, 6, 0.03) 100%)',
-        'gold-edge-glow': 'radial-gradient(circle at bottom right, rgba(251, 191, 36, 0.12), transparent 60%)',
+        'warmth-ambient': 'radial-gradient(circle, rgba(251, 191, 36, 0.12) 0%, rgba(251, 191, 36, 0.05) 50%, transparent 100%)',
+        'gold-seep': 'linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(217, 119, 6, 0.06) 100%)',
+        'gold-edge-glow': 'radial-gradient(circle at bottom right, rgba(251, 191, 36, 0.20), transparent 60%)',
+        'warmth-glow': 'radial-gradient(ellipse at center, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.08) 40%, transparent 70%)',
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         // CAUSTIC LIGHT PATTERNS (Living light)
@@ -167,10 +171,12 @@ const config: Config = {
         'reflection-corner': 'inset 3px 3px 6px rgba(255, 255, 255, 0.3)',
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // GOLDEN AMBIENT (Soft warmth seeping through)
+        // GOLDEN AMBIENT (Felt warmth - the hearth in the cosmos)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        'warmth': '0 0 80px rgba(251, 191, 36, 0.05), 0 0 40px rgba(217, 119, 6, 0.03)',
-        'gold-seep': 'inset -2px -2px 8px rgba(251, 191, 36, 0.08)',
+        'warmth': '0 0 80px rgba(251, 191, 36, 0.12), 0 0 40px rgba(217, 119, 6, 0.08)',
+        'warmth-hover': '0 0 100px rgba(251, 191, 36, 0.18), 0 0 60px rgba(217, 119, 6, 0.12)',
+        'gold-seep': 'inset -2px -2px 8px rgba(251, 191, 36, 0.15)',
+        'gold-hover': '0 0 40px rgba(251, 191, 36, 0.20), 0 8px 30px rgba(217, 119, 6, 0.15)',
       },
       animation: {
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

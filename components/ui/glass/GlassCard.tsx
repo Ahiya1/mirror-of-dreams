@@ -37,13 +37,14 @@ export function GlassCard({
     'relative',
     // Elevated state (functional hierarchy)
     elevated && 'shadow-lg border-white/15',
-    // Interactive state (enhanced hover with glow + border highlight)
+    // Interactive state (enhanced hover with glow + border highlight + warmth)
     interactive && [
       'cursor-pointer',
       'transition-all duration-250',
       'hover:-translate-y-0.5',
-      'hover:shadow-[0_8px_30px_rgba(124,58,237,0.15)]',
-      'hover:border-purple-400/30',
+      // Combined purple glow + golden warmth (70/20/10 formula)
+      'hover:shadow-[0_8px_30px_rgba(124,58,237,0.12),0_4px_20px_rgba(251,191,36,0.08)]',
+      'hover:border-purple-400/25',
       'active:scale-[0.99]',  // Keep CSS fallback for non-animated state
       'focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2'
     ],

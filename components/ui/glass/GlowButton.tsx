@@ -63,6 +63,23 @@ export function GlowButton({
       'hover:before:translate-x-full',
       'overflow-hidden'
     ),
+    // Warm variant - for primary actions that feel held and safe
+    warm: cn(
+      'bg-gradient-to-br from-amber-500/20 via-orange-500/15 to-amber-500/20',
+      'border border-amber-500/30',
+      'text-amber-100',
+      'backdrop-blur-md',
+      'hover:from-amber-500/30 hover:via-orange-500/25 hover:to-amber-500/30',
+      'hover:border-amber-400/50',
+      'hover:-translate-y-0.5',
+      'hover:shadow-[0_12px_35px_rgba(251,191,36,0.25)]',
+      'active:scale-[0.98]',
+      'before:absolute before:inset-0',
+      'before:bg-gradient-to-r before:from-transparent before:via-amber-200/15 before:to-transparent',
+      'before:-translate-x-full before:transition-transform before:duration-500',
+      'hover:before:translate-x-full',
+      'overflow-hidden'
+    ),
     success: cn(
       'bg-mirror-success text-white',
       'hover:bg-mirror-success/90 hover:-translate-y-0.5',

@@ -26,11 +26,12 @@ export function AnimatedBackground({
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // LAYER OPACITIES (Depth control)
+  // Gold values boosted 4x to create visible warmth (Dreams warmth formula)
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   const intensityConfig = {
-    subtle: { far: 0.3, mid: 0.15, near: 0.08, gold: 0.03 },
-    medium: { far: 0.5, mid: 0.25, near: 0.12, gold: 0.05 },
-    strong: { far: 0.7, mid: 0.35, near: 0.18, gold: 0.08 },
+    subtle: { far: 0.3, mid: 0.15, near: 0.08, gold: 0.12 },   // gold: 0.03 -> 0.12
+    medium: { far: 0.5, mid: 0.25, near: 0.12, gold: 0.18 },   // gold: 0.05 -> 0.18
+    strong: { far: 0.7, mid: 0.35, near: 0.18, gold: 0.25 },   // gold: 0.08 -> 0.25
   };
 
   const config = intensityConfig[intensity];
