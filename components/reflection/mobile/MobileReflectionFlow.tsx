@@ -76,7 +76,7 @@ const QUESTIONS = [
   {
     id: 'dream' as keyof FormData,
     number: 1,
-    text: 'What is this dream?',
+    text: 'What is your dream?',
     guide: 'Take a moment to describe your dream in vivid detail...',
     placeholder: 'Your thoughts are safe here... what\'s present for you right now?',
     limit: QUESTION_LIMITS.dream,
@@ -92,7 +92,7 @@ const QUESTIONS = [
   {
     id: 'relationship' as keyof FormData,
     number: 3,
-    text: 'What relationship do you seek with your dream?',
+    text: 'What is your relationship with this dream?',
     guide: 'How does this dream connect to who you are becoming?',
     placeholder: 'How does this dream connect to who you\'re becoming?',
     limit: QUESTION_LIMITS.relationship,
@@ -543,7 +543,7 @@ export function MobileReflectionFlow({
         </AnimatePresence>
       </div>
 
-      {/* Gazing Overlay */}
+      {/* Magical Mirror Gazing Overlay */}
       <AnimatePresence>
         {isSubmitting && (
           <motion.div
@@ -551,41 +551,192 @@ export function MobileReflectionFlow({
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-mirror-void-deep/98 backdrop-blur-xl"
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden"
+            style={{
+              background: 'radial-gradient(ellipse at center, rgba(15, 10, 30, 0.98) 0%, rgba(5, 2, 15, 1) 100%)',
+            }}
           >
-            <motion.div
-              animate={
-                !prefersReducedMotion
-                  ? { scale: [1, 1.05, 1] }
-                  : undefined
-              }
-              transition={
-                !prefersReducedMotion
-                  ? { duration: 2, repeat: Infinity, ease: 'easeInOut' }
-                  : undefined
-              }
-            >
-              <CosmicLoader size="lg" />
-            </motion.div>
+            {/* Twinkling stars background */}
+            <div className="absolute inset-0 overflow-hidden">
+              {[...Array(40)].map((_, i) => (
+                <motion.div
+                  key={`star-${i}`}
+                  className="absolute rounded-full bg-white"
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                    width: `${1 + Math.random() * 2}px`,
+                    height: `${1 + Math.random() * 2}px`,
+                    boxShadow: '0 0 6px rgba(255, 255, 255, 0.8)',
+                  }}
+                  animate={!prefersReducedMotion ? {
+                    opacity: [0.2, 0.8, 0.2],
+                    scale: [0.8, 1.2, 0.8],
+                  } : undefined}
+                  transition={{
+                    duration: 2 + Math.random() * 3,
+                    repeat: Infinity,
+                    delay: Math.random() * 2,
+                  }}
+                />
+              ))}
 
-            <div className="mt-8 h-16 flex items-center">
-              <AnimatePresence mode="wait">
-                <motion.p
-                  key={statusIndex}
-                  variants={statusTextVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  className="text-white/90 text-xl font-light text-center px-6"
-                >
-                  {STATUS_MESSAGES[statusIndex]}
-                </motion.p>
-              </AnimatePresence>
+              {/* Floating particles */}
+              {[...Array(12)].map((_, i) => (
+                <motion.div
+                  key={`particle-${i}`}
+                  className="absolute w-1 h-1 rounded-full"
+                  style={{
+                    left: `${20 + Math.random() * 60}%`,
+                    top: `${20 + Math.random() * 60}%`,
+                    background: 'radial-gradient(circle, rgba(168, 85, 247, 0.9) 0%, rgba(236, 72, 153, 0.6) 50%, transparent 100%)',
+                    filter: 'blur(1px)',
+                  }}
+                  animate={!prefersReducedMotion ? {
+                    x: [0, (Math.random() - 0.5) * 80, 0],
+                    y: [0, -40 - Math.random() * 40, 0],
+                    opacity: [0, 0.6, 0],
+                    scale: [0, 1, 0],
+                  } : undefined}
+                  transition={{
+                    duration: 4 + Math.random() * 3,
+                    repeat: Infinity,
+                    delay: Math.random() * 4,
+                    ease: "easeInOut",
+                  }}
+                />
+              ))}
             </div>
 
-            <p className="text-white/50 text-sm mt-2">
-              This may take a few moments
-            </p>
+            {/* Central mirror portal */}
+            <div className="relative flex items-center justify-center w-[200px] h-[200px]">
+              {/* Outer rotating ring */}
+              <motion.div
+                className="absolute w-[200px] h-[200px] rounded-full"
+                style={{
+                  background: 'conic-gradient(from 0deg, transparent 0%, rgba(168, 85, 247, 0.3) 25%, transparent 50%, rgba(251, 191, 36, 0.3) 75%, transparent 100%)',
+                  filter: 'blur(8px)',
+                }}
+                animate={!prefersReducedMotion ? {
+                  rotate: 360,
+                  scale: [1, 1.05, 1],
+                } : undefined}
+                transition={{
+                  rotate: { duration: 30, repeat: Infinity, ease: "linear" },
+                  scale: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+                }}
+              />
+
+              {/* Middle rotating ring */}
+              <motion.div
+                className="absolute w-[160px] h-[160px] rounded-full"
+                style={{
+                  background: 'conic-gradient(from 180deg, transparent 0%, rgba(236, 72, 153, 0.4) 25%, transparent 50%, rgba(168, 85, 247, 0.4) 75%, transparent 100%)',
+                  filter: 'blur(4px)',
+                }}
+                animate={!prefersReducedMotion ? {
+                  rotate: -360,
+                  scale: [1.05, 1, 1.05],
+                } : undefined}
+                transition={{
+                  rotate: { duration: 25, repeat: Infinity, ease: "linear" },
+                  scale: { duration: 3.5, repeat: Infinity, ease: "easeInOut" },
+                }}
+              />
+
+              {/* The mirror portal itself */}
+              <motion.div
+                className="relative w-[120px] h-[120px] rounded-full overflow-hidden"
+                style={{
+                  background: 'radial-gradient(circle at 30% 30%, rgba(40, 30, 60, 0.9) 0%, rgba(20, 15, 35, 0.95) 50%, rgba(10, 5, 20, 1) 100%)',
+                  boxShadow: '0 0 60px rgba(168, 85, 247, 0.4), 0 0 100px rgba(168, 85, 247, 0.2), inset 0 0 40px rgba(0, 0, 0, 0.5), inset 0 0 80px rgba(168, 85, 247, 0.1)',
+                  border: '1px solid rgba(168, 85, 247, 0.3)',
+                }}
+                animate={!prefersReducedMotion ? {
+                  scale: [1, 1.02, 1],
+                } : undefined}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                {/* Surface shimmer */}
+                <div
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(255, 255, 255, 0.05) 100%)',
+                  }}
+                />
+
+                {/* Inner glow */}
+                <motion.div
+                  className="absolute rounded-full"
+                  style={{
+                    inset: '20%',
+                    background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(236, 72, 153, 0.1) 50%, rgba(251, 191, 36, 0.15) 100%)',
+                    filter: 'blur(10px)',
+                  }}
+                  animate={!prefersReducedMotion ? {
+                    opacity: [0.3, 0.6, 0.3],
+                  } : undefined}
+                  transition={{
+                    duration: 5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+
+                {/* Center pulse */}
+                <motion.div
+                  className="absolute rounded-full"
+                  style={{
+                    inset: '30%',
+                    background: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(168, 85, 247, 0.1) 50%, transparent 100%)',
+                  }}
+                  animate={!prefersReducedMotion ? {
+                    opacity: [0.4, 0.8, 0.4],
+                    scale: [0.8, 1.1, 0.8],
+                  } : undefined}
+                  transition={{
+                    duration: 2.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+              </motion.div>
+            </div>
+
+            {/* Status text */}
+            <motion.div
+              className="relative text-center mt-10 z-10"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+            >
+              <div className="h-12 flex items-center justify-center">
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={statusIndex}
+                    variants={statusTextVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="text-white/95 text-xl font-light text-center px-6"
+                    style={{
+                      letterSpacing: '0.05em',
+                      textShadow: '0 0 30px rgba(168, 85, 247, 0.5)',
+                    }}
+                  >
+                    {STATUS_MESSAGES[statusIndex]}
+                  </motion.p>
+                </AnimatePresence>
+              </div>
+
+              <p className="text-white/50 text-sm mt-2" style={{ letterSpacing: '0.1em' }}>
+                Your reflection is taking form...
+              </p>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

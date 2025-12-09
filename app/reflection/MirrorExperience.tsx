@@ -316,7 +316,7 @@ export default function MirrorExperience() {
     {
       id: 'relationship' as keyof FormData,
       number: 3,
-      text: 'What relationship do you seek with your dream?',
+      text: 'What is your relationship with this dream?',
       guide: QUESTION_GUIDES.relationship,
       placeholder: WARM_PLACEHOLDERS.relationship,
       limit: QUESTION_LIMITS.relationship,
@@ -780,48 +780,159 @@ export default function MirrorExperience() {
         )}
       </AnimatePresence>
 
-      {/* Loading Overlay with smooth transitions */}
+      {/* Magical Mirror Gazing Overlay */}
       <AnimatePresence>
         {isSubmitting && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.5 }}
-            className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-6 bg-mirror-void-deep/95 backdrop-blur-lg"
+            transition={{ duration: prefersReducedMotion ? 0 : 0.8 }}
+            className="gazing-overlay"
           >
+            {/* Deep space background */}
+            <div className="gazing-cosmos">
+              {/* Distant stars */}
+              {[...Array(50)].map((_, i) => (
+                <motion.div
+                  key={`star-${i}`}
+                  className="gazing-star"
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                    width: `${1 + Math.random() * 2}px`,
+                    height: `${1 + Math.random() * 2}px`,
+                  }}
+                  animate={!prefersReducedMotion ? {
+                    opacity: [0.2, 0.8, 0.2],
+                    scale: [0.8, 1.2, 0.8],
+                  } : undefined}
+                  transition={{
+                    duration: 2 + Math.random() * 3,
+                    repeat: Infinity,
+                    delay: Math.random() * 2,
+                  }}
+                />
+              ))}
+
+              {/* Floating light particles */}
+              {[...Array(15)].map((_, i) => (
+                <motion.div
+                  key={`particle-${i}`}
+                  className="gazing-particle"
+                  style={{
+                    left: `${20 + Math.random() * 60}%`,
+                    top: `${20 + Math.random() * 60}%`,
+                  }}
+                  animate={!prefersReducedMotion ? {
+                    x: [0, (Math.random() - 0.5) * 100, 0],
+                    y: [0, -50 - Math.random() * 50, 0],
+                    opacity: [0, 0.6, 0],
+                    scale: [0, 1, 0],
+                  } : undefined}
+                  transition={{
+                    duration: 4 + Math.random() * 3,
+                    repeat: Infinity,
+                    delay: Math.random() * 4,
+                    ease: "easeInOut",
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Central mirror portal */}
+            <div className="gazing-center">
+              {/* Outer glow rings */}
+              <motion.div
+                className="mirror-ring mirror-ring-outer"
+                animate={!prefersReducedMotion ? {
+                  rotate: 360,
+                  scale: [1, 1.05, 1],
+                } : undefined}
+                transition={{
+                  rotate: { duration: 30, repeat: Infinity, ease: "linear" },
+                  scale: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+                }}
+              />
+              <motion.div
+                className="mirror-ring mirror-ring-middle"
+                animate={!prefersReducedMotion ? {
+                  rotate: -360,
+                  scale: [1.05, 1, 1.05],
+                } : undefined}
+                transition={{
+                  rotate: { duration: 25, repeat: Infinity, ease: "linear" },
+                  scale: { duration: 3.5, repeat: Infinity, ease: "easeInOut" },
+                }}
+              />
+
+              {/* The mirror itself */}
+              <motion.div
+                className="mirror-portal"
+                animate={!prefersReducedMotion ? {
+                  scale: [1, 1.02, 1],
+                } : undefined}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                {/* Mirror surface shimmer */}
+                <div className="mirror-surface-effect" />
+
+                {/* Inner reflection */}
+                <motion.div
+                  className="mirror-reflection-inner"
+                  animate={!prefersReducedMotion ? {
+                    opacity: [0.3, 0.6, 0.3],
+                    backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'],
+                  } : undefined}
+                  transition={{
+                    duration: 5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+
+                {/* Central glow */}
+                <motion.div
+                  className="mirror-glow-center"
+                  animate={!prefersReducedMotion ? {
+                    opacity: [0.4, 0.8, 0.4],
+                    scale: [0.8, 1.1, 0.8],
+                  } : undefined}
+                  transition={{
+                    duration: 2.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+              </motion.div>
+            </div>
+
+            {/* Status text */}
             <motion.div
-              animate={
-                !prefersReducedMotion
-                  ? { scale: [1, 1.05, 1] }
-                  : undefined
-              }
-              transition={
-                !prefersReducedMotion
-                  ? { duration: 2, repeat: Infinity, ease: 'easeInOut' }
-                  : undefined
-              }
+              className="gazing-text"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
             >
-              <CosmicLoader size="lg" />
-            </motion.div>
-            <motion.div
-              className="text-center space-y-2"
-              animate={
-                !prefersReducedMotion
-                  ? { opacity: [0.7, 1, 0.7] }
-                  : { opacity: 1 }
-              }
-              transition={
-                !prefersReducedMotion
-                  ? { duration: 2, repeat: Infinity, ease: 'easeInOut' }
-                  : undefined
-              }
-            >
-              <p className="text-white/90 text-xl font-light">
+              <motion.p
+                className="gazing-status"
+                animate={!prefersReducedMotion ? {
+                  opacity: [0.7, 1, 0.7],
+                } : undefined}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
                 {statusText}
-              </p>
-              <p className="text-white/60 text-sm">
-                This may take a few moments
+              </motion.p>
+              <p className="gazing-subtitle">
+                Your reflection is taking form...
               </p>
             </motion.div>
           </motion.div>
@@ -1116,6 +1227,202 @@ export default function MirrorExperience() {
           .particle {
             animation: none;
             opacity: 0.3;
+          }
+        }
+
+        /* ============================================
+           MAGICAL GAZING OVERLAY STYLES
+           ============================================ */
+        .gazing-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: 100;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          background: radial-gradient(
+            ellipse at center,
+            rgba(15, 10, 30, 0.98) 0%,
+            rgba(5, 2, 15, 1) 100%
+          );
+          overflow: hidden;
+        }
+
+        .gazing-cosmos {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+        }
+
+        .gazing-star {
+          position: absolute;
+          background: white;
+          border-radius: 50%;
+          box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+        }
+
+        .gazing-particle {
+          position: absolute;
+          width: 4px;
+          height: 4px;
+          background: radial-gradient(
+            circle,
+            rgba(168, 85, 247, 0.9) 0%,
+            rgba(236, 72, 153, 0.6) 50%,
+            transparent 100%
+          );
+          border-radius: 50%;
+          filter: blur(1px);
+        }
+
+        .gazing-center {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 280px;
+          height: 280px;
+        }
+
+        .mirror-ring {
+          position: absolute;
+          border-radius: 50%;
+          border: 1px solid transparent;
+        }
+
+        .mirror-ring-outer {
+          width: 280px;
+          height: 280px;
+          background: conic-gradient(
+            from 0deg,
+            transparent 0%,
+            rgba(168, 85, 247, 0.3) 25%,
+            transparent 50%,
+            rgba(251, 191, 36, 0.3) 75%,
+            transparent 100%
+          );
+          filter: blur(8px);
+        }
+
+        .mirror-ring-middle {
+          width: 220px;
+          height: 220px;
+          background: conic-gradient(
+            from 180deg,
+            transparent 0%,
+            rgba(236, 72, 153, 0.4) 25%,
+            transparent 50%,
+            rgba(168, 85, 247, 0.4) 75%,
+            transparent 100%
+          );
+          filter: blur(4px);
+        }
+
+        .mirror-portal {
+          position: relative;
+          width: 160px;
+          height: 160px;
+          border-radius: 50%;
+          background: radial-gradient(
+            circle at 30% 30%,
+            rgba(40, 30, 60, 0.9) 0%,
+            rgba(20, 15, 35, 0.95) 50%,
+            rgba(10, 5, 20, 1) 100%
+          );
+          box-shadow:
+            0 0 60px rgba(168, 85, 247, 0.4),
+            0 0 100px rgba(168, 85, 247, 0.2),
+            inset 0 0 40px rgba(0, 0, 0, 0.5),
+            inset 0 0 80px rgba(168, 85, 247, 0.1);
+          border: 1px solid rgba(168, 85, 247, 0.3);
+          overflow: hidden;
+        }
+
+        .mirror-surface-effect {
+          position: absolute;
+          inset: 0;
+          border-radius: 50%;
+          background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.1) 0%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.05) 100%
+          );
+        }
+
+        .mirror-reflection-inner {
+          position: absolute;
+          inset: 20%;
+          border-radius: 50%;
+          background: linear-gradient(
+            135deg,
+            rgba(168, 85, 247, 0.2) 0%,
+            rgba(236, 72, 153, 0.1) 50%,
+            rgba(251, 191, 36, 0.15) 100%
+          );
+          background-size: 200% 200%;
+          filter: blur(10px);
+        }
+
+        .mirror-glow-center {
+          position: absolute;
+          inset: 30%;
+          border-radius: 50%;
+          background: radial-gradient(
+            circle,
+            rgba(255, 255, 255, 0.15) 0%,
+            rgba(168, 85, 247, 0.1) 50%,
+            transparent 100%
+          );
+        }
+
+        .gazing-text {
+          position: relative;
+          text-align: center;
+          margin-top: 3rem;
+          z-index: 10;
+        }
+
+        .gazing-status {
+          font-size: 1.5rem;
+          font-weight: 300;
+          color: rgba(255, 255, 255, 0.95);
+          letter-spacing: 0.05em;
+          margin-bottom: 0.75rem;
+          text-shadow: 0 0 30px rgba(168, 85, 247, 0.5);
+        }
+
+        .gazing-subtitle {
+          font-size: 0.9rem;
+          color: rgba(255, 255, 255, 0.5);
+          font-weight: 300;
+          letter-spacing: 0.1em;
+        }
+
+        @media (max-width: 768px) {
+          .gazing-center {
+            width: 220px;
+            height: 220px;
+          }
+
+          .mirror-ring-outer {
+            width: 220px;
+            height: 220px;
+          }
+
+          .mirror-ring-middle {
+            width: 170px;
+            height: 170px;
+          }
+
+          .mirror-portal {
+            width: 120px;
+            height: 120px;
+          }
+
+          .gazing-status {
+            font-size: 1.25rem;
           }
         }
       `}</style>
