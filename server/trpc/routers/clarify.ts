@@ -16,6 +16,8 @@ import { router } from '../trpc';
 
 import { buildClarifyContext, getUserPatterns } from '@/lib/clarify/context-builder';
 import { CLARIFY_SESSION_LIMITS } from '@/lib/utils/constants';
+import { withAIRetry } from '@/lib/utils/retry';
+import { aiLogger } from '@/server/lib/logger';
 import { supabase } from '@/server/lib/supabase';
 import {
   clarifySessionRowToSession,
@@ -262,11 +264,14 @@ export const clarifyRouter = router({
       let initialResponse: string | null = null;
       let initialToolUseResult: ClarifyToolUse['result'] | null = null;
       if (input.initialMessage) {
+        // Capture the initial message to avoid TypeScript narrowing issues in closures
+        const userInitialMessage = input.initialMessage;
+
         // Store user message
         const { error: msgError } = await supabase.from('clarify_messages').insert({
           session_id: session.id,
           role: 'user',
-          content: input.initialMessage,
+          content: userInitialMessage,
         });
 
         // Generate AI response with context and tools
@@ -277,13 +282,17 @@ export const clarifyRouter = router({
           const context = await buildClarifyContext(userId, session.id);
           const systemPrompt = context + getClarifySystemPrompt();
 
-          const response = await client.messages.create({
-            model: 'claude-sonnet-4-5-20250929',
-            max_tokens: 1500,
-            system: systemPrompt,
-            messages: [{ role: 'user', content: input.initialMessage }],
-            tools: [createDreamTool],
-          });
+          const response = await withAIRetry(
+            () =>
+              client.messages.create({
+                model: 'claude-sonnet-4-5-20250929',
+                max_tokens: 1500,
+                system: systemPrompt,
+                messages: [{ role: 'user', content: userInitialMessage }],
+                tools: [createDreamTool],
+              }),
+            { operation: 'clarify.createSession' }
+          );
 
           let toolUseRecord: ClarifyToolUse | null = null;
           let tokenCount = response.usage?.output_tokens || 0;
@@ -307,31 +316,38 @@ export const clarifyRouter = router({
             };
             initialToolUseResult = toolUseRecord.result;
 
+            // Capture response.content for closure
+            const assistantContent = response.content;
+
             // Get Claude's acknowledgment with tool result
-            const followUp = await client.messages.create({
-              model: 'claude-sonnet-4-5-20250929',
-              max_tokens: 1500,
-              system: systemPrompt,
-              messages: [
-                { role: 'user', content: input.initialMessage },
-                { role: 'assistant', content: response.content },
-                {
-                  role: 'user',
-                  content: [
+            const followUp = await withAIRetry(
+              () =>
+                client.messages.create({
+                  model: 'claude-sonnet-4-5-20250929',
+                  max_tokens: 1500,
+                  system: systemPrompt,
+                  messages: [
+                    { role: 'user', content: userInitialMessage },
+                    { role: 'assistant', content: assistantContent },
                     {
-                      type: 'tool_result',
-                      tool_use_id: toolUseBlock.id,
-                      content: JSON.stringify({
-                        success: toolResult.success,
-                        dreamId: toolResult.dreamId,
-                        dreamTitle: toolResult.dreamTitle,
-                      }),
+                      role: 'user',
+                      content: [
+                        {
+                          type: 'tool_result',
+                          tool_use_id: toolUseBlock.id,
+                          content: JSON.stringify({
+                            success: toolResult.success,
+                            dreamId: toolResult.dreamId,
+                            dreamTitle: toolResult.dreamTitle,
+                          }),
+                        },
+                      ],
                     },
                   ],
-                },
-              ],
-              tools: [createDreamTool],
-            });
+                  tools: [createDreamTool],
+                }),
+              { operation: 'clarify.createSession.toolFollowUp' }
+            );
 
             const followUpText = followUp.content.find(
               (b): b is Anthropic.TextBlock => b.type === 'text'
@@ -358,8 +374,12 @@ export const clarifyRouter = router({
               tool_use: toolUseRecord,
             });
           }
-        } catch {
-          // Continue without AI response if generation fails
+        } catch (error) {
+          // Log error but continue without AI response
+          aiLogger.error(
+            { err: error, operation: 'clarify.createSession', sessionId: session.id, userId },
+            'Failed to generate initial AI response'
+          );
         }
       }
 
@@ -491,13 +511,17 @@ export const clarifyRouter = router({
 
     try {
       const client = getAnthropicClient();
-      const response = await client.messages.create({
-        model: 'claude-sonnet-4-5-20250929',
-        max_tokens: 1500,
-        system: systemPrompt,
-        messages: anthropicMessages,
-        tools: [createDreamTool],
-      });
+      const response = await withAIRetry(
+        () =>
+          client.messages.create({
+            model: 'claude-sonnet-4-5-20250929',
+            max_tokens: 1500,
+            system: systemPrompt,
+            messages: anthropicMessages,
+            tools: [createDreamTool],
+          }),
+        { operation: 'clarify.sendMessage' }
+      );
 
       // Check for tool_use
       const toolUseBlock = response.content.find(
@@ -517,31 +541,38 @@ export const clarifyRouter = router({
           },
         };
 
+        // Capture response.content for closure
+        const assistantContent = response.content;
+
         // Get Claude's acknowledgment with tool result
-        const followUp = await client.messages.create({
-          model: 'claude-sonnet-4-5-20250929',
-          max_tokens: 1500,
-          system: systemPrompt,
-          messages: [
-            ...anthropicMessages,
-            { role: 'assistant', content: response.content },
-            {
-              role: 'user',
-              content: [
+        const followUp = await withAIRetry(
+          () =>
+            client.messages.create({
+              model: 'claude-sonnet-4-5-20250929',
+              max_tokens: 1500,
+              system: systemPrompt,
+              messages: [
+                ...anthropicMessages,
+                { role: 'assistant', content: assistantContent },
                 {
-                  type: 'tool_result',
-                  tool_use_id: toolUseBlock.id,
-                  content: JSON.stringify({
-                    success: toolResult.success,
-                    dreamId: toolResult.dreamId,
-                    dreamTitle: toolResult.dreamTitle,
-                  }),
+                  role: 'user',
+                  content: [
+                    {
+                      type: 'tool_result',
+                      tool_use_id: toolUseBlock.id,
+                      content: JSON.stringify({
+                        success: toolResult.success,
+                        dreamId: toolResult.dreamId,
+                        dreamTitle: toolResult.dreamTitle,
+                      }),
+                    },
+                  ],
                 },
               ],
-            },
-          ],
-          tools: [createDreamTool],
-        });
+              tools: [createDreamTool],
+            }),
+          { operation: 'clarify.sendMessage.toolFollowUp' }
+        );
 
         const followUpText = followUp.content.find(
           (b): b is Anthropic.TextBlock => b.type === 'text'
@@ -559,7 +590,11 @@ export const clarifyRouter = router({
         aiResponse = textBlock.text;
         tokenCount = response.usage?.output_tokens || null;
       }
-    } catch {
+    } catch (error) {
+      aiLogger.error(
+        { err: error, operation: 'clarify.sendMessage', sessionId: input.sessionId, userId },
+        'Failed to generate AI response'
+      );
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to generate response. Please try again.',

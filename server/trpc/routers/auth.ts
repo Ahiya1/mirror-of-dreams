@@ -13,6 +13,7 @@ import {
   generateToken,
   getVerificationTokenExpiration,
 } from '@/server/lib/email';
+import { authLogger } from '@/server/lib/logger';
 import { supabase } from '@/server/lib/supabase';
 import { type JWTPayload, type UserRow, userRowToUser } from '@/types';
 import {
@@ -72,7 +73,10 @@ export const authRouter = router({
       .single();
 
     if (error) {
-      console.error('Signup error:', error);
+      authLogger.error(
+        { err: error, operation: 'signup', email: email.toLowerCase() },
+        'Signup error'
+      );
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to create user',
@@ -113,7 +117,10 @@ export const authRouter = router({
       });
 
       if (tokenError) {
-        console.error('Failed to store verification token:', tokenError);
+        authLogger.error(
+          { err: tokenError, operation: 'store_verification_token', userId: newUser.id },
+          'Failed to store verification token'
+        );
       } else {
         // Send email and await the result
         const emailResult = await sendVerificationEmail(
@@ -124,12 +131,18 @@ export const authRouter = router({
         if (emailResult.success) {
           emailVerificationSent = true;
         } else {
-          console.error('Failed to send verification email:', emailResult.error);
+          authLogger.error(
+            { err: emailResult.error, operation: 'send_verification_email', userId: newUser.id },
+            'Failed to send verification email'
+          );
         }
       }
     } catch (emailError) {
       // Log but don't fail signup if email fails
-      console.error('Error setting up verification email:', emailError);
+      authLogger.error(
+        { err: emailError, operation: 'setup_verification_email', userId: newUser.id },
+        'Error setting up verification email'
+      );
     }
 
     return {
@@ -261,7 +274,10 @@ export const authRouter = router({
       .single();
 
     if (error) {
-      console.error('Update profile error:', error);
+      authLogger.error(
+        { err: error, operation: 'update_profile', userId: ctx.user.id },
+        'Update profile error'
+      );
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to update profile',
@@ -322,7 +338,10 @@ export const authRouter = router({
         .eq('id', ctx.user.id);
 
       if (error) {
-        console.error('Change password error:', error);
+        authLogger.error(
+          { err: error, operation: 'change_password', userId: ctx.user.id },
+          'Change password error'
+        );
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to change password',
@@ -369,7 +388,10 @@ export const authRouter = router({
     const { error } = await supabase.from('users').delete().eq('id', ctx.user.id);
 
     if (error) {
-      console.error('Delete account error:', error);
+      authLogger.error(
+        { err: error, operation: 'delete_account', userId: ctx.user.id },
+        'Delete account error'
+      );
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to delete account',

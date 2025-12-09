@@ -10,6 +10,8 @@ import { z } from 'zod';
 import { protectedProcedure } from '../middleware';
 import { router } from '../trpc';
 
+import { withAIRetry } from '@/lib/utils/retry';
+import { aiLogger, dbLogger } from '@/server/lib/logger';
 import { supabase } from '@/server/lib/supabase';
 
 // =====================================================
@@ -167,7 +169,10 @@ export const lifecycleRouter = router({
       .single();
 
     if (evolutionError) {
-      console.error('Failed to create evolution event:', evolutionError);
+      dbLogger.error(
+        { err: evolutionError, operation: 'lifecycle.evolve', userId, dreamId },
+        'Failed to create evolution event'
+      );
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to record evolution',
@@ -188,7 +193,10 @@ export const lifecycleRouter = router({
       .single();
 
     if (updateError) {
-      console.error('Failed to update dream:', updateError);
+      dbLogger.error(
+        { err: updateError, operation: 'lifecycle.evolve.update', userId, dreamId },
+        'Failed to update dream'
+      );
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to update dream',
@@ -343,12 +351,16 @@ Format your response exactly like this:
 ---JOURNEY_SYNTHESIS---
 [your narrative here]`;
 
-        const response = await client.messages.create({
-          model: 'claude-sonnet-4-5-20250929',
-          max_tokens: 3000,
-          system: systemPrompt,
-          messages: [{ role: 'user', content: userPrompt }],
-        });
+        const response = await withAIRetry(
+          () =>
+            client.messages.create({
+              model: 'claude-sonnet-4-5-20250929',
+              max_tokens: 3000,
+              system: systemPrompt,
+              messages: [{ role: 'user', content: userPrompt }],
+            }),
+          { operation: 'lifecycle.achieve' }
+        );
 
         const textBlock = response.content.find((block) => block.type === 'text');
         if (textBlock && textBlock.type === 'text') {
@@ -370,7 +382,10 @@ Format your response exactly like this:
             : null;
         }
       } catch (aiError) {
-        console.error('Failed to generate ceremony synthesis:', aiError);
+        aiLogger.error(
+          { err: aiError, operation: 'lifecycle.achieve.synthesis', userId, dreamId },
+          'Failed to generate ceremony synthesis'
+        );
         // Continue without AI synthesis - ceremony still gets created
       }
     }
@@ -395,7 +410,10 @@ Format your response exactly like this:
       .single();
 
     if (ceremonyError) {
-      console.error('Failed to create ceremony:', ceremonyError);
+      dbLogger.error(
+        { err: ceremonyError, operation: 'lifecycle.achieve.ceremony', userId, dreamId },
+        'Failed to create ceremony'
+      );
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to create achievement ceremony',
@@ -413,7 +431,10 @@ Format your response exactly like this:
       .eq('id', dreamId);
 
     if (statusError) {
-      console.error('Failed to update dream status:', statusError);
+      dbLogger.error(
+        { err: statusError, operation: 'lifecycle.achieve.status', userId, dreamId },
+        'Failed to update dream status'
+      );
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to update dream status',
@@ -555,7 +576,10 @@ Format your response exactly like this:
       .single();
 
     if (ritualError) {
-      console.error('Failed to create ritual:', ritualError);
+      dbLogger.error(
+        { err: ritualError, operation: 'lifecycle.release.ritual', userId, dreamId },
+        'Failed to create ritual'
+      );
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to create release ritual',
@@ -573,7 +597,10 @@ Format your response exactly like this:
       .eq('id', dreamId);
 
     if (statusError) {
-      console.error('Failed to update dream status:', statusError);
+      dbLogger.error(
+        { err: statusError, operation: 'lifecycle.release.status', userId, dreamId },
+        'Failed to update dream status'
+      );
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to update dream status',

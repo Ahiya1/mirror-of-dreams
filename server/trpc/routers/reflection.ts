@@ -7,6 +7,8 @@ import { z } from 'zod';
 import { usageLimitedProcedure } from '../middleware';
 import { router } from '../trpc';
 
+import { withAIRetry } from '@/lib/utils/retry';
+import { aiLogger, dbLogger } from '@/server/lib/logger';
 import { loadPrompts, buildReflectionUserPrompt } from '@/server/lib/prompts';
 import { supabase } from '@/server/lib/supabase';
 import { createReflectionSchema } from '@/types/schemas';
@@ -112,7 +114,9 @@ Please mirror back what you see, in a flowing reflection I can return to months 
     let aiResponse: string;
     try {
       const client = getAnthropicClient();
-      const response = await client.messages.create(requestConfig);
+      const response = await withAIRetry(() => client.messages.create(requestConfig), {
+        operation: 'reflection.create',
+      });
 
       const textBlock = response.content.find((block) => block.type === 'text');
       if (!textBlock || textBlock.type !== 'text') {
@@ -121,7 +125,10 @@ Please mirror back what you see, in a flowing reflection I can return to months 
 
       aiResponse = textBlock.text;
     } catch (error: unknown) {
-      console.error('Claude API error:', error);
+      aiLogger.error(
+        { err: error, operation: 'reflection.create', userId: ctx.user.id },
+        'Claude API error'
+      );
       const message = error instanceof Error ? error.message : 'Unknown error';
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
@@ -155,7 +162,10 @@ Please mirror back what you see, in a flowing reflection I can return to months 
       .single();
 
     if (reflectionError) {
-      console.error('Database error saving reflection:', reflectionError);
+      dbLogger.error(
+        { err: reflectionError, operation: 'reflection.save', userId: ctx.user.id, dreamId },
+        'Database error saving reflection'
+      );
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to save reflection',

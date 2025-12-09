@@ -10,7 +10,9 @@ import { z } from 'zod';
 import { protectedProcedure } from '../middleware';
 import { router } from '../trpc';
 
+import { withAIRetry } from '@/lib/utils/retry';
 import { calculateCost, getModelIdentifier, getThinkingBudget } from '@/server/lib/cost-calculator';
+import { aiLogger } from '@/server/lib/logger';
 import { supabase } from '@/server/lib/supabase';
 import {
   selectTemporalContext,
@@ -163,7 +165,26 @@ Length: 800-1200 words. Tone: Warm, insightful, empowering.`;
         };
       }
 
-      const response = await anthropic.messages.create(requestConfig);
+      let response;
+      try {
+        response = await withAIRetry(() => anthropic.messages.create(requestConfig), {
+          operation: 'evolution.generateDreamEvolution',
+        });
+      } catch (error) {
+        aiLogger.error(
+          {
+            err: error,
+            operation: 'evolution.generateDreamEvolution',
+            userId,
+            dreamId: input.dreamId,
+          },
+          'Failed to generate dream evolution report'
+        );
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to generate evolution report. Please try again.',
+        });
+      }
 
       // Extract text and thinking
       const contentBlock = response.content.find((block) => block.type === 'text');
@@ -378,7 +399,21 @@ Length: 1000-1500 words. Tone: Profound, holistic, empowering.`;
       };
     }
 
-    const response = await anthropic.messages.create(requestConfig);
+    let response;
+    try {
+      response = await withAIRetry(() => anthropic.messages.create(requestConfig), {
+        operation: 'evolution.generateCrossDreamEvolution',
+      });
+    } catch (error) {
+      aiLogger.error(
+        { err: error, operation: 'evolution.generateCrossDreamEvolution', userId },
+        'Failed to generate cross-dream evolution report'
+      );
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to generate cross-dream evolution report. Please try again.',
+      });
+    }
 
     const contentBlock = response.content.find((block) => block.type === 'text');
     const thinkingBlock = response.content.find((block) => block.type === 'thinking');

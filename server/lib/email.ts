@@ -2,6 +2,8 @@
 
 import nodemailer from 'nodemailer';
 
+import { emailLogger } from './logger';
+
 // Gmail SMTP configuration
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -15,7 +17,7 @@ const transporter = nodemailer.createTransport({
 if (process.env.NODE_ENV === 'development') {
   transporter.verify((error) => {
     if (error) {
-      console.error('Email service error:', error);
+      emailLogger.error({ err: error, operation: 'transporter.verify' }, 'Email service error');
     }
   });
 }
@@ -431,7 +433,10 @@ export async function sendPasswordResetEmail(
 
     return { success: true };
   } catch (error) {
-    console.error('Failed to send password reset email:', error);
+    emailLogger.error(
+      { err: error, operation: 'sendPasswordResetEmail', email },
+      'Failed to send password reset email'
+    );
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to send email',
@@ -462,7 +467,10 @@ export async function sendVerificationEmail(
 
     return { success: true };
   } catch (error) {
-    console.error('Failed to send verification email:', error);
+    emailLogger.error(
+      { err: error, operation: 'sendVerificationEmail', email },
+      'Failed to send verification email'
+    );
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to send email',

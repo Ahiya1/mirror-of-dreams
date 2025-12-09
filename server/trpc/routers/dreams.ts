@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { protectedProcedure } from '../middleware';
 import { router } from '../trpc';
 
+import { dbLogger } from '@/server/lib/logger';
 import { supabase } from '@/server/lib/supabase';
 
 // =====================================================
@@ -189,7 +190,7 @@ export const dreamsRouter = router({
       .single();
 
     if (error) {
-      console.error('Failed to create dream:', error);
+      dbLogger.error({ err: error, operation: 'dreams.create', userId }, 'Failed to create dream');
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to create dream',

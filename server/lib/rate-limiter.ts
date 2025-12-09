@@ -3,6 +3,8 @@
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 
+import { logger } from './logger';
+
 // Check if Redis is configured
 const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL;
 const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
@@ -25,7 +27,7 @@ function createRateLimiter(
   prefix: string
 ): Ratelimit | null {
   if (!redis) {
-    console.warn(`Rate limiter ${prefix} disabled: Redis not configured`);
+    logger.warn({ service: 'rate-limiter', prefix }, 'Rate limiter disabled: Redis not configured');
     return null;
   }
 
@@ -70,7 +72,7 @@ export async function checkRateLimit(
       reset: result.reset,
     };
   } catch (e) {
-    console.error('Rate limiter error:', e);
+    logger.error({ service: 'rate-limiter', err: e, identifier }, 'Rate limiter error');
     // Graceful degradation - allow request if Redis fails
     return { success: true };
   }

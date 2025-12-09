@@ -5,6 +5,8 @@ import Anthropic from '@anthropic-ai/sdk';
 import type { ExtractedPattern, ConsolidationResult, PatternType } from '@/types/pattern';
 
 import { PATTERN_CONSOLIDATION } from '@/lib/utils/constants';
+import { withAIRetry } from '@/lib/utils/retry';
+import { aiLogger, dbLogger } from '@/server/lib/logger';
 import { supabase } from '@/server/lib/supabase';
 
 // Lazy Anthropic client
@@ -67,29 +69,39 @@ export async function extractPatternsFromSession(
 
   try {
     const client = getAnthropicClient();
-    const response = await client.messages.create({
-      model: 'claude-3-5-haiku-20241022',
-      max_tokens: 2000,
-      system:
-        'You are a pattern extraction assistant. Output valid JSON only. No markdown, no explanation.',
-      messages: [
-        {
-          role: 'user',
-          content: CONSOLIDATION_PROMPT.replace('{messages}', formattedMessages),
-        },
-      ],
-    });
+    const response = await withAIRetry(
+      () =>
+        client.messages.create({
+          model: 'claude-3-5-haiku-20241022',
+          max_tokens: 2000,
+          system:
+            'You are a pattern extraction assistant. Output valid JSON only. No markdown, no explanation.',
+          messages: [
+            {
+              role: 'user',
+              content: CONSOLIDATION_PROMPT.replace('{messages}', formattedMessages),
+            },
+          ],
+        }),
+      { operation: 'clarify.extractPatterns' }
+    );
 
     const textBlock = response.content.find((b) => b.type === 'text');
     if (!textBlock || textBlock.type !== 'text') {
-      console.error('No text response from Haiku');
+      aiLogger.error(
+        { operation: 'clarify.extractPatterns', sessionId },
+        'No text response from Haiku'
+      );
       return [];
     }
 
     // Parse and validate patterns
     const parsed = JSON.parse(textBlock.text);
     if (!Array.isArray(parsed)) {
-      console.error('Invalid pattern response: not an array');
+      aiLogger.error(
+        { operation: 'clarify.extractPatterns', sessionId },
+        'Invalid pattern response: not an array'
+      );
       return [];
     }
 
@@ -119,7 +131,10 @@ export async function extractPatternsFromSession(
 
     return validPatterns;
   } catch (error) {
-    console.error('Pattern extraction failed:', error);
+    aiLogger.error(
+      { err: error, operation: 'clarify.extractPatterns', sessionId },
+      'Pattern extraction failed'
+    );
     return [];
   }
 }
@@ -193,7 +208,10 @@ export async function consolidateUserPatterns(userId: string): Promise<Consolida
         });
 
         if (insertError) {
-          console.error('Failed to insert pattern:', insertError);
+          dbLogger.error(
+            { err: insertError, operation: 'clarify.consolidation.insert', userId, sessionId },
+            'Failed to insert pattern'
+          );
         } else {
           totalPatterns++;
         }
@@ -208,7 +226,10 @@ export async function consolidateUserPatterns(userId: string): Promise<Consolida
       .in('id', messageIds);
 
     if (updateError) {
-      console.error('Failed to mark messages as consolidated:', updateError);
+      dbLogger.error(
+        { err: updateError, operation: 'clarify.consolidation.markConsolidated', userId },
+        'Failed to mark messages as consolidated'
+      );
     }
 
     return {
@@ -218,7 +239,10 @@ export async function consolidateUserPatterns(userId: string): Promise<Consolida
       success: true,
     };
   } catch (error) {
-    console.error(`Consolidation failed for user ${userId}:`, error);
+    dbLogger.error(
+      { err: error, operation: 'clarify.consolidation', userId },
+      'Consolidation failed'
+    );
     return {
       userId,
       patternsExtracted: 0,
@@ -241,7 +265,10 @@ export async function markMessagesConsolidated(messageIds: string[]): Promise<bo
     .in('id', messageIds);
 
   if (error) {
-    console.error('Failed to mark messages as consolidated:', error);
+    dbLogger.error(
+      { err: error, operation: 'clarify.markConsolidated', messageIds },
+      'Failed to mark messages as consolidated'
+    );
     return false;
   }
 

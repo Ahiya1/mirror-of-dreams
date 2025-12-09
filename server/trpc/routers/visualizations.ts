@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { protectedProcedure } from '../middleware';
 import { router } from '../trpc';
 
+import { withAIRetry } from '@/lib/utils/retry';
 import { calculateCost, getModelIdentifier, getThinkingBudget } from '@/server/lib/cost-calculator';
 import { supabase } from '@/server/lib/supabase';
 import {
@@ -182,7 +183,17 @@ export const visualizationsRouter = router({
         };
       }
 
-      const response = await anthropic.messages.create(requestConfig);
+      let response;
+      try {
+        response = await withAIRetry(() => anthropic.messages.create(requestConfig), {
+          operation: 'visualizations.generate',
+        });
+      } catch (error) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to generate visualization. Please try again.',
+        });
+      }
 
       // Extract narrative text
       const narrativeBlock = response.content.find((block) => block.type === 'text');

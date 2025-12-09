@@ -4,6 +4,7 @@ import { type FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
 import jwt from 'jsonwebtoken';
 
 import { getAuthCookie } from '@/server/lib/cookies';
+import { authLogger } from '@/server/lib/logger';
 import { supabase } from '@/server/lib/supabase';
 import { type User, type JWTPayload, userRowToUser } from '@/types';
 
@@ -40,7 +41,10 @@ export async function createContext(opts: FetchCreateContextFnOptions) {
         .single();
 
       if (error) {
-        console.error('Context creation - Supabase error:', error);
+        authLogger.error(
+          { err: error, operation: 'context.create', userId: payload.userId },
+          'Context creation - Supabase error'
+        );
         user = null;
       } else if (data) {
         // Check if monthly usage needs reset
@@ -63,7 +67,7 @@ export async function createContext(opts: FetchCreateContextFnOptions) {
       }
     } catch (e) {
       // Invalid token or database error
-      console.error('Context creation error:', e);
+      authLogger.error({ err: e, operation: 'context.create' }, 'Context creation error');
       user = null;
     }
   }

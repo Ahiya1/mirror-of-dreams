@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { protectedProcedure } from '../middleware';
 import { router } from '../trpc';
 
+import { paymentLogger, dbLogger } from '@/server/lib/logger';
 import {
   createSubscription,
   cancelSubscription,
@@ -33,7 +34,10 @@ export const subscriptionsRouter = router({
       .single();
 
     if (error) {
-      console.error('Subscription status query error:', error);
+      dbLogger.error(
+        { err: error, operation: 'subscriptions.getStatus', userId: ctx.user.id },
+        'Subscription status query error'
+      );
       // Return default free tier status for local development
       return {
         tier: 'free' as const,
@@ -101,7 +105,16 @@ export const subscriptionsRouter = router({
         const approvalUrl = await createSubscription(ctx.user.id, planId);
         return { approvalUrl };
       } catch (error) {
-        console.error('CreateCheckout error:', error);
+        paymentLogger.error(
+          {
+            err: error,
+            operation: 'subscriptions.createCheckout',
+            userId: ctx.user.id,
+            tier: input.tier,
+            period: input.period,
+          },
+          'CreateCheckout error'
+        );
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: error instanceof Error ? error.message : 'Failed to create checkout session',
@@ -170,7 +183,15 @@ export const subscriptionsRouter = router({
           .eq('id', ctx.user.id);
 
         if (error) {
-          console.error('Failed to update user subscription:', error);
+          dbLogger.error(
+            {
+              err: error,
+              operation: 'subscriptions.activate',
+              userId: ctx.user.id,
+              subscriptionId: input.subscriptionId,
+            },
+            'Failed to update user subscription'
+          );
           throw new TRPCError({
             code: 'INTERNAL_SERVER_ERROR',
             message: 'Failed to activate subscription',
@@ -184,7 +205,15 @@ export const subscriptionsRouter = router({
         };
       } catch (error) {
         if (error instanceof TRPCError) throw error;
-        console.error('Activate subscription error:', error);
+        paymentLogger.error(
+          {
+            err: error,
+            operation: 'subscriptions.activate',
+            userId: ctx.user.id,
+            subscriptionId: input.subscriptionId,
+          },
+          'Activate subscription error'
+        );
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: error instanceof Error ? error.message : 'Failed to activate subscription',
@@ -215,7 +244,15 @@ export const subscriptionsRouter = router({
 
       return { success: true };
     } catch (error) {
-      console.error('PayPal cancelSubscription error:', error);
+      paymentLogger.error(
+        {
+          err: error,
+          operation: 'subscriptions.cancel',
+          userId: ctx.user.id,
+          subscriptionId: user.paypal_subscription_id,
+        },
+        'PayPal cancelSubscription error'
+      );
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: error instanceof Error ? error.message : 'Failed to cancel subscription',

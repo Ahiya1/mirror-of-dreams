@@ -1,5 +1,7 @@
 // server/lib/paypal.ts - PayPal REST API client library
 
+import { paymentLogger } from './logger';
+
 /**
  * PayPal Subscription Interface
  * Matches PayPal REST API response structure
@@ -216,7 +218,10 @@ export async function verifyWebhookSignature(
     !headers.authAlgo ||
     !headers.transmissionSig
   ) {
-    console.error('[PayPal] Missing required webhook headers');
+    paymentLogger.error(
+      { operation: 'webhook.verify', headers },
+      'Missing required webhook headers'
+    );
     return false;
   }
 
@@ -239,7 +244,7 @@ export async function verifyWebhookSignature(
 
     return response.verification_status === 'SUCCESS';
   } catch (error) {
-    console.error('[PayPal] Webhook verification error:', error);
+    paymentLogger.error({ err: error, operation: 'webhook.verify' }, 'Webhook verification error');
     return false;
   }
 }
