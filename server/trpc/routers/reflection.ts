@@ -124,14 +124,11 @@ Please mirror back what you see, in a flowing reflection I can return to months 
         });
       }
 
-      // Format as sacred HTML
-      const formattedReflection = toSacredHTML(aiResponse);
-
       // Calculate word count and estimated read time
       const wordCount = aiResponse.split(/\s+/).length;
       const estimatedReadTime = Math.ceil(wordCount / 200); // 200 words per minute
 
-      // Store reflection in database
+      // Store reflection in database (raw markdown - client handles rendering)
       console.log('💾 Saving to database...');
       const { data: reflectionRecord, error: reflectionError } = await supabase
         .from('reflections')
@@ -142,7 +139,7 @@ Please mirror back what you see, in a flowing reflection I can return to months 
           plan,
           relationship,
           offering,
-          ai_response: formattedReflection,
+          ai_response: aiResponse, // Store raw markdown, client renders with proper styling
           tone,
           is_premium: shouldUsePremium,
           word_count: wordCount,
@@ -192,7 +189,7 @@ Please mirror back what you see, in a flowing reflection I can return to months 
       );
 
       return {
-        reflection: formattedReflection,
+        reflection: aiResponse,
         reflectionId: reflectionRecord.id,
         isPremium: shouldUsePremium,
         shouldTriggerEvolution,
@@ -202,28 +199,6 @@ Please mirror back what you see, in a flowing reflection I can return to months 
       };
     }),
 });
-
-// Helper: Format markdown to sacred HTML
-function toSacredHTML(md: string): string {
-  const wrap =
-    "font-family:'Inter',sans-serif;font-size:1.05rem;line-height:1.7;color:#333;";
-  const pStyle = 'margin:0 0 1.4rem 0;';
-  const strong = 'font-weight:600;color:#16213e;';
-  const em = 'font-style:italic;color:#444;';
-
-  const html = md
-    .trim()
-    .split(/\r?\n\s*\r?\n/)
-    .map((p) => {
-      let h = p.replace(/\r?\n/g, '<br>');
-      h = h.replace(/\*\*(.*?)\*\*/g, (_, t) => `<span style="${strong}">${t}</span>`);
-      h = h.replace(/\*(.*?)\*/g, (_, t) => `<span style="${em}">${t}</span>`);
-      return `<p style="${pStyle}">${h}</p>`;
-    })
-    .join('');
-
-  return `<div class="mirror-reflection" style="${wrap}">${html}</div>`;
-}
 
 // Helper: Check evolution report eligibility
 async function checkEvolutionEligibility(

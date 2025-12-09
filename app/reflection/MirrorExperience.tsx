@@ -169,6 +169,10 @@ export default function MirrorExperience() {
     const targetMode: ViewMode = reflectionId ? 'output' : 'questionnaire';
     if (viewMode !== targetMode) {
       setViewMode(targetMode);
+      // Scroll to top when showing reflection output
+      if (targetMode === 'output') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
   }, [reflectionId]); // Only depend on reflectionId to avoid infinite loops
 

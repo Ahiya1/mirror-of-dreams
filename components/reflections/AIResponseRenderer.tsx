@@ -9,21 +9,54 @@ interface AIResponseRendererProps {
 }
 
 /**
+ * Strips HTML tags and converts to clean text for re-rendering
+ */
+function stripHtmlToText(html: string): string {
+  // Replace <br> with newlines
+  let text = html.replace(/<br\s*\/?>/gi, '\n');
+  // Replace </p><p> with double newlines
+  text = text.replace(/<\/p>\s*<p[^>]*>/gi, '\n\n');
+  // Replace <span style="font-weight:600...">text</span> with **text**
+  text = text.replace(/<span[^>]*font-weight:\s*600[^>]*>([^<]*)<\/span>/gi, '**$1**');
+  // Replace <span style="font-style:italic...">text</span> with *text*
+  text = text.replace(/<span[^>]*font-style:\s*italic[^>]*>([^<]*)<\/span>/gi, '*$1*');
+  // Strip remaining HTML tags
+  text = text.replace(/<[^>]+>/g, '');
+  // Decode HTML entities
+  text = text.replace(/&amp;/g, '&');
+  text = text.replace(/&lt;/g, '<');
+  text = text.replace(/&gt;/g, '>');
+  text = text.replace(/&quot;/g, '"');
+  text = text.replace(/&#39;/g, "'");
+  // Clean up extra whitespace
+  text = text.replace(/\n{3,}/g, '\n\n').trim();
+  return text;
+}
+
+/**
  * AIResponseRenderer - Safely render AI responses with markdown support
- * Replaces dangerouslySetInnerHTML with secure react-markdown
+ * Handles both markdown and legacy HTML content
  *
  * Security: XSS-safe, sanitizes all HTML
- * Pattern: Copied from Evolution page (proven, working code)
  */
 export function AIResponseRenderer({ content }: AIResponseRendererProps) {
+  // Detect if content is HTML (legacy format from toSacredHTML)
+  const isHtml = /<div class="mirror-reflection"|<p style="|<span style=/i.test(content);
+
+  // If it's HTML, convert to markdown-like format for consistent rendering
+  let processedContent = content;
+  if (isHtml) {
+    processedContent = stripHtmlToText(content);
+  }
+
   // Detect if content has markdown syntax (anywhere in content)
-  const hasMarkdown = /#{1,3}\s|\*\*[^*]+\*\*|\*[^*]+\*|_[^_]+_|^\s*[-*]\s|^\s*>\s|```|\[[^\]]+\]\([^)]+\)/m.test(content);
+  const hasMarkdown = /#{1,3}\s|\*\*[^*]+\*\*|\*[^*]+\*|_[^_]+_|^\s*[-*]\s|^\s*>\s|```|\[[^\]]+\]\([^)]+\)/m.test(processedContent);
 
   // Fallback for plain text (no markdown detected)
   if (!hasMarkdown) {
     return (
       <div className="max-w-[720px] mx-auto space-y-4">
-        {content.split('\n\n').map((para, i) => (
+        {processedContent.split('\n\n').map((para, i) => (
           <p
             key={i}
             className={i === 0
@@ -117,7 +150,7 @@ export function AIResponseRenderer({ content }: AIResponseRendererProps) {
             ),
         }}
       >
-        {content}
+        {processedContent}
       </ReactMarkdown>
     </div>
   );
