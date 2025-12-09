@@ -12,22 +12,33 @@ interface AIResponseRendererProps {
  * Strips HTML tags and converts to clean text for re-rendering
  */
 function stripHtmlToText(html: string): string {
+  // First decode any HTML entities that might be double-encoded
+  let text = html;
+  text = text.replace(/&lt;/g, '<');
+  text = text.replace(/&gt;/g, '>');
+  text = text.replace(/&amp;/g, '&');
+  text = text.replace(/&quot;/g, '"');
+  text = text.replace(/&#39;/g, "'");
+  text = text.replace(/&nbsp;/g, ' ');
+
+  // Remove the outer mirror-reflection div wrapper
+  text = text.replace(/<div[^>]*class="mirror-reflection"[^>]*>/gi, '');
+  text = text.replace(/<\/div>/gi, '');
+
   // Replace <br> with newlines
-  let text = html.replace(/<br\s*\/?>/gi, '\n');
+  text = text.replace(/<br\s*\/?>/gi, '\n');
   // Replace </p><p> with double newlines
   text = text.replace(/<\/p>\s*<p[^>]*>/gi, '\n\n');
+  // Replace opening <p> tags with nothing (content follows)
+  text = text.replace(/<p[^>]*>/gi, '');
+  // Replace closing </p> with newline
+  text = text.replace(/<\/p>/gi, '\n');
   // Replace <span style="font-weight:600...">text</span> with **text**
   text = text.replace(/<span[^>]*font-weight:\s*600[^>]*>([^<]*)<\/span>/gi, '**$1**');
   // Replace <span style="font-style:italic...">text</span> with *text*
   text = text.replace(/<span[^>]*font-style:\s*italic[^>]*>([^<]*)<\/span>/gi, '*$1*');
-  // Strip remaining HTML tags
-  text = text.replace(/<[^>]+>/g, '');
-  // Decode HTML entities
-  text = text.replace(/&amp;/g, '&');
-  text = text.replace(/&lt;/g, '<');
-  text = text.replace(/&gt;/g, '>');
-  text = text.replace(/&quot;/g, '"');
-  text = text.replace(/&#39;/g, "'");
+  // Strip remaining HTML tags (use a more robust pattern that handles attributes with quotes)
+  text = text.replace(/<[^>]*>/g, '');
   // Clean up extra whitespace
   text = text.replace(/\n{3,}/g, '\n\n').trim();
   return text;
@@ -41,7 +52,8 @@ function stripHtmlToText(html: string): string {
  */
 export function AIResponseRenderer({ content }: AIResponseRendererProps) {
   // Detect if content is HTML (legacy format from toSacredHTML)
-  const isHtml = /<div class="mirror-reflection"|<p style="|<span style=/i.test(content);
+  // Also check for HTML entities that might indicate encoded HTML
+  const isHtml = /<div[^>]*class="mirror-reflection"|<p\s+style="|<span\s+style="|&lt;div|&lt;p\s+style/i.test(content);
 
   // If it's HTML, convert to markdown-like format for consistent rendering
   let processedContent = content;

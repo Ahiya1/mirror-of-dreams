@@ -94,8 +94,9 @@ export default function RitualPage({ params }: { params: { id: string } }) {
       });
 
       setStep('complete');
-    } catch (err: any) {
-      setError(err.message || 'Failed to complete ritual');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to complete ritual';
+      setError(message);
     }
   };
 

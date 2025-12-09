@@ -51,7 +51,6 @@ interface PayPalWebhookEvent {
 // Main webhook handler
 export async function POST(req: NextRequest) {
   const webhookStart = Date.now();
-  console.log('[PayPal Webhook] Received webhook');
 
   try {
     // 1. Get raw body and headers
@@ -72,7 +71,6 @@ export async function POST(req: NextRequest) {
     }
 
     const event: PayPalWebhookEvent = JSON.parse(body);
-    console.log('[PayPal Webhook] Event type:', event.event_type);
 
     // 3. Check idempotency
     const { data: existing } = await supabase
@@ -82,7 +80,6 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (existing) {
-      console.log('[PayPal Webhook] Duplicate event:', event.id);
       return NextResponse.json({ received: true, duplicate: true });
     }
 
@@ -92,8 +89,6 @@ export async function POST(req: NextRequest) {
       event_type: event.event_type,
       payload: event,
     });
-
-    console.log('[PayPal Webhook] Event logged, processing:', event.event_type);
 
     // 5. Handle event by type
     switch (event.event_type) {
@@ -112,8 +107,6 @@ export async function POST(req: NextRequest) {
       case 'PAYMENT.SALE.COMPLETED':
         await handlePaymentSaleCompleted(event);
         break;
-      default:
-        console.log(`[PayPal Webhook] Unhandled event type: ${event.event_type}`);
     }
 
     // 6. Return 200
@@ -122,13 +115,14 @@ export async function POST(req: NextRequest) {
       eventType: event.event_type,
       processingTime: Date.now() - webhookStart,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[PayPal Webhook] Error:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
     // Return 200 to prevent PayPal retries - we logged the event
     return NextResponse.json({
       received: true,
       error: 'Processing error',
-      details: error.message,
+      details: message,
     });
   }
 }
@@ -145,10 +139,6 @@ async function handleSubscriptionActivated(event: PayPalWebhookEvent) {
 
   const tier = determineTierFromPlanId(subscription.plan_id);
   const period = determinePeriodFromPlanId(subscription.plan_id);
-
-  console.log(
-    `[PayPal Webhook] Activating subscription for user ${userId}: ${tier} (${period})`
-  );
 
   // Update user subscription
   const { error } = await supabase
@@ -170,15 +160,11 @@ async function handleSubscriptionActivated(event: PayPalWebhookEvent) {
     console.error('[PayPal Webhook] Failed to update user:', error);
     throw error;
   }
-
-  console.log(`[PayPal Webhook] User ${userId} upgraded to ${tier} (${period})`);
 }
 
 // Handle subscription cancelled
 async function handleSubscriptionCancelled(event: PayPalWebhookEvent) {
   const subscription = event.resource;
-
-  console.log('[PayPal Webhook] Subscription cancelled:', subscription.id);
 
   // Find user by PayPal subscription ID
   const { data: user } = await supabase
@@ -212,17 +198,11 @@ async function handleSubscriptionCancelled(event: PayPalWebhookEvent) {
     console.error('[PayPal Webhook] Failed to update user:', error);
     throw error;
   }
-
-  console.log(
-    `[PayPal Webhook] User ${user.id} subscription will cancel at period end`
-  );
 }
 
 // Handle subscription expired
 async function handleSubscriptionExpired(event: PayPalWebhookEvent) {
   const subscription = event.resource;
-
-  console.log('[PayPal Webhook] Subscription expired:', subscription.id);
 
   // Find user and downgrade to free
   const { error } = await supabase
@@ -239,17 +219,11 @@ async function handleSubscriptionExpired(event: PayPalWebhookEvent) {
     console.error('[PayPal Webhook] Failed to update user:', error);
     throw error;
   }
-
-  console.log(
-    `[PayPal Webhook] Subscription ${subscription.id} expired, user downgraded to free`
-  );
 }
 
 // Handle subscription suspended (payment failed)
 async function handleSubscriptionSuspended(event: PayPalWebhookEvent) {
   const subscription = event.resource;
-
-  console.log('[PayPal Webhook] Subscription suspended:', subscription.id);
 
   // Mark subscription as past_due
   const { error } = await supabase
@@ -264,15 +238,11 @@ async function handleSubscriptionSuspended(event: PayPalWebhookEvent) {
     console.error('[PayPal Webhook] Failed to update user:', error);
     throw error;
   }
-
-  console.log(`[PayPal Webhook] Subscription ${subscription.id} marked as past_due`);
 }
 
 // Handle payment sale completed
 async function handlePaymentSaleCompleted(event: PayPalWebhookEvent) {
   const subscription = event.resource;
-
-  console.log('[PayPal Webhook] Payment sale completed for:', subscription.id);
 
   // Optional: Update last payment timestamp
   const { error } = await supabase
@@ -285,8 +255,6 @@ async function handlePaymentSaleCompleted(event: PayPalWebhookEvent) {
   if (error) {
     console.error('[PayPal Webhook] Failed to update user:', error);
   }
-
-  console.log('[PayPal Webhook] Payment recorded successfully');
 }
 
 // Disable body parsing - we need raw body for signature verification

@@ -7,9 +7,7 @@ export { GradientText } from './GradientText';
 export { GlassInput } from './GlassInput';
 
 // Complex Components
-export { DreamCard } from './DreamCard';
 export { GlassModal } from './GlassModal';
-export { FloatingNav } from './FloatingNav';
 
 // Specialty Components
 export { CosmicLoader } from './CosmicLoader';

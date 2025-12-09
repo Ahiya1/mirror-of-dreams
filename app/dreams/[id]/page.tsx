@@ -86,7 +86,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
     try {
       await deleteDream.mutateAsync({ id: params.id });
       router.push('/dreams');
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Error will be shown by tRPC error handling
     }
   };
@@ -95,7 +95,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
     try {
       await updateStatus.mutateAsync({ id: params.id, status });
       refetch();
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Error will be shown by tRPC error handling
     }
   };

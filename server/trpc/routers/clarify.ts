@@ -115,7 +115,6 @@ async function executeCreateDreamTool(
       .single();
 
     if (error) {
-      console.error('Failed to create dream via tool:', error);
       return { dreamId: '', dreamTitle: '', success: false };
     }
 
@@ -130,8 +129,7 @@ async function executeCreateDreamTool(
       dreamTitle: dream.title,
       success: true,
     };
-  } catch (error) {
-    console.error('Tool execution error:', error);
+  } catch {
     return { dreamId: '', dreamTitle: '', success: false };
   }
 }
@@ -228,7 +226,6 @@ export const clarifyRouter = router({
         .single();
 
       if (sessionError || !session) {
-        console.error('Failed to create session:', sessionError);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to create session',
@@ -244,10 +241,6 @@ export const clarifyRouter = router({
         })
         .eq('id', userId);
 
-      if (updateError) {
-        console.error('Failed to update user counters:', updateError);
-      }
-
       // If initial message provided, send it
       let initialResponse: string | null = null;
       let initialToolUseResult: ClarifyToolUse['result'] | null = null;
@@ -260,10 +253,6 @@ export const clarifyRouter = router({
             role: 'user',
             content: input.initialMessage,
           });
-
-        if (msgError) {
-          console.error('Failed to save initial message:', msgError);
-        }
 
         // Generate AI response with context and tools
         try {
@@ -356,8 +345,8 @@ export const clarifyRouter = router({
                 tool_use: toolUseRecord,
               });
           }
-        } catch (aiError) {
-          console.error('Failed to generate initial response:', aiError);
+        } catch {
+          // Continue without AI response if generation fails
         }
       }
 
@@ -471,7 +460,6 @@ export const clarifyRouter = router({
         });
 
       if (userMsgError) {
-        console.error('Failed to save user message:', userMsgError);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to save message',
@@ -564,8 +552,7 @@ export const clarifyRouter = router({
           aiResponse = textBlock.text;
           tokenCount = response.usage?.output_tokens || null;
         }
-      } catch (aiError: unknown) {
-        console.error('Claude API error:', aiError);
+      } catch {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to generate response. Please try again.',
@@ -584,10 +571,6 @@ export const clarifyRouter = router({
         })
         .select()
         .single();
-
-      if (assistantMsgError) {
-        console.error('Failed to save AI response:', assistantMsgError);
-      }
 
       return {
         message: assistantMsg ? clarifyMessageRowToMessage(assistantMsg) : {

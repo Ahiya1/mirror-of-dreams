@@ -1,15 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Sparkles, Moon, Star, Home, Settings } from 'lucide-react';
 import {
   GlassCard,
   GlowButton,
   GradientText,
   CosmicLoader,
-  DreamCard,
   GlassModal,
-  FloatingNav,
   ProgressOrbs,
   GlowBadge,
   AnimatedBackground,
@@ -117,27 +114,6 @@ export default function DesignSystemPage() {
           </div>
         </section>
 
-        {/* Dream Cards Section */}
-        <section className="space-y-6">
-          <h2 className="text-3xl font-bold text-white">Dream Cards</h2>
-          <p className="text-white/70">Specialized cards for dream entries</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <DreamCard
-              title="The Cosmic Journey"
-              content="I found myself floating through a vast expanse of stars, each one whispering secrets of the universe. Colors I'd never seen before painted the void, and time seemed to lose all meaning..."
-              date="October 23, 2025"
-              tone="Mystical"
-              onClick={() => console.log('Dream clicked!')}
-            />
-            <DreamCard
-              title="The Mirror Realm"
-              content="Standing before an infinite mirror, I saw not my reflection but countless versions of myself, each one living a different life, making different choices..."
-              date="October 22, 2025"
-              tone="Profound"
-            />
-          </div>
-        </section>
-
         {/* Modal Section */}
         <section className="space-y-6">
           <h2 className="text-3xl font-bold text-white">Glass Modal</h2>
@@ -231,29 +207,7 @@ export default function DesignSystemPage() {
           </div>
         </section>
 
-        {/* Floating Nav Demo */}
-        <section className="space-y-6 pb-32">
-          <h2 className="text-3xl font-bold text-white">Floating Navigation</h2>
-          <p className="text-white/70">
-            Fixed navigation bar at the bottom (scroll to see it in action)
-          </p>
-        </section>
       </div>
-
-      {/* Floating Navigation */}
-      <FloatingNav
-        items={[
-          { label: 'Home', href: '/', icon: <Home className="w-5 h-5" />, active: false },
-          {
-            label: 'Design',
-            href: '/design-system',
-            icon: <Sparkles className="w-5 h-5" />,
-            active: true,
-          },
-          { label: 'Dreams', href: '/dreams', icon: <Moon className="w-5 h-5" /> },
-          { label: 'Settings', href: '/settings', icon: <Settings className="w-5 h-5" /> },
-        ]}
-      />
     </div>
   );
 }

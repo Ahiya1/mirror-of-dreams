@@ -15,18 +15,18 @@ export function GradientText({
   className,
   children,
 }: GradientTextProps) {
+  // Use the gradient-text-* classes defined in globals.css
+  // which include the background-clip and text-fill-color properties
   const gradientClasses = {
-    cosmic: 'bg-gradient-cosmic',
-    primary: 'bg-gradient-primary',
-    dream: 'bg-gradient-violet',
+    cosmic: 'gradient-text-cosmic',
+    primary: 'gradient-text-amethyst',
+    dream: 'gradient-text-ethereal',
   };
 
   return (
     <span
       className={cn(
-        // Base gradient text styles
-        'bg-clip-text text-transparent',
-        // Gradient
+        // Gradient class (includes bg-clip-text and text-fill-color)
         gradientClasses[gradient],
         // Custom
         className

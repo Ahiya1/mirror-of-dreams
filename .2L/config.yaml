@@ -195,5 +195,18 @@ plan-17:
     current_iteration: 27
     current_phase: complete
     completed_at: '2025-12-09T16:30:00Z'
-current_plan: plan-17
-global_iteration_counter: 27
+plan-18:
+    status: IN_PROGRESS
+    created: '2025-12-09'
+    vision_file: plan-18/vision.md
+    master_plan_file: plan-18/master-plan.yaml
+    description: The Soul Transformation - From identity crisis to coherent companion
+    github_repo: git@github.com:Ahiya1/mirror-of-dreams.git
+    master_exploration:
+      num_explorers: 6
+      complexity_level: COMPLEX
+    total_iterations: 6
+    current_iteration: 1
+    current_phase: exploration
+current_plan: plan-18
+global_iteration_counter: 28

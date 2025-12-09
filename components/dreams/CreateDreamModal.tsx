@@ -61,8 +61,9 @@ export function CreateDreamModal({ isOpen, onClose, onSuccess }: CreateDreamModa
 
       onSuccess();
       onClose();
-    } catch (err: any) {
-      setError(err.message || 'Failed to create dream');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to create dream';
+      setError(message);
     }
   };
 

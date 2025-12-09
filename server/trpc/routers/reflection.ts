@@ -35,10 +35,6 @@ export const reflectionRouter = router({
   create: usageLimitedProcedure
     .input(createReflectionSchema)
     .mutation(async ({ ctx, input }) => {
-      console.log('🔍 Reflection.create called');
-      console.log('📥 Input received:', JSON.stringify(input, null, 2));
-      console.log('👤 User:', ctx.user.email, 'Tier:', ctx.user.tier);
-
       const {
         dreamId,
         dream,
@@ -48,6 +44,20 @@ export const reflectionRouter = router({
         tone = 'fusion',
         isPremium: requestedPremium = false,
       } = input;
+
+      // Get the dream title from linked dream if dreamId provided, otherwise use first 100 chars of dream answer
+      let reflectionTitle = dream.slice(0, 100);
+      if (dreamId) {
+        const { data: linkedDream } = await supabase
+          .from('dreams')
+          .select('title')
+          .eq('id', dreamId)
+          .single();
+
+        if (linkedDream?.title) {
+          reflectionTitle = linkedDream.title;
+        }
+      }
 
       // Determine if premium features should be used (extended thinking for unlimited tier)
       const shouldUsePremium =
@@ -85,11 +95,8 @@ export const reflectionRouter = router({
 
 Please mirror back what you see, in a flowing reflection I can return to months from now.`;
 
-      console.log('🤖 Calling Anthropic API...');
-      console.log('📝 Prompt length:', userPrompt.length, 'characters');
-
       // Call Claude API (using Sonnet 4.5)
-      const requestConfig: any = {
+      const requestConfig: Anthropic.MessageCreateParams = {
         model: 'claude-sonnet-4-5-20250929',
         temperature: 1,
         max_tokens: shouldUsePremium ? 6000 : 4000,
@@ -115,12 +122,12 @@ Please mirror back what you see, in a flowing reflection I can return to months 
         }
 
         aiResponse = textBlock.text;
-        console.log('✅ AI response generated:', aiResponse.length, 'characters');
-      } catch (error: any) {
-        console.error('❌ Claude API error:', error);
+      } catch (error: unknown) {
+        console.error('Claude API error:', error);
+        const message = error instanceof Error ? error.message : 'Unknown error';
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: `Failed to generate reflection: ${error.message}`,
+          message: `Failed to generate reflection: ${message}`,
         });
       }
 
@@ -129,7 +136,6 @@ Please mirror back what you see, in a flowing reflection I can return to months 
       const estimatedReadTime = Math.ceil(wordCount / 200); // 200 words per minute
 
       // Store reflection in database (raw markdown - client handles rendering)
-      console.log('💾 Saving to database...');
       const { data: reflectionRecord, error: reflectionError } = await supabase
         .from('reflections')
         .insert({
@@ -144,21 +150,19 @@ Please mirror back what you see, in a flowing reflection I can return to months 
           is_premium: shouldUsePremium,
           word_count: wordCount,
           estimated_read_time: estimatedReadTime,
-          title: dream.slice(0, 100), // First 100 chars of dream as title
+          title: reflectionTitle, // Use dream name if linked, otherwise first 100 chars of dream answer
           tags: [],
         })
         .select()
         .single();
 
       if (reflectionError) {
-        console.error('❌ Database error:', reflectionError);
+        console.error('Database error saving reflection:', reflectionError);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to save reflection',
         });
       }
-
-      console.log('✅ Reflection created:', reflectionRecord.id);
 
       // Update user usage counters (both daily and monthly)
       const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
@@ -175,18 +179,8 @@ Please mirror back what you see, in a flowing reflection I can return to months 
         })
         .eq('id', ctx.user.id);
 
-      if (updateError) {
-        console.error('Failed to update user usage:', updateError);
-      }
-
       // Check if evolution report should be triggered
       const shouldTriggerEvolution = await checkEvolutionEligibility(ctx.user.id, ctx.user.tier);
-
-      console.log(
-        `✨ Reflection created: ${ctx.user.email} (${
-          shouldUsePremium ? 'Premium' : 'Standard'
-        }) - ID: ${reflectionRecord.id} - Tone: ${tone}`
-      );
 
       return {
         reflection: aiResponse,

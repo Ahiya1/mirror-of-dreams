@@ -1,0 +1,358 @@
+plan_id: plan-18
+created_at: "2025-12-09T18:45:00Z"
+status: PLANNED
+total_iterations: 6
+name: "The Soul Transformation"
+
+strategy: |
+  This is not a feature update. It is an identity transformation.
+
+  Mirror of Dreams has been operating as Mirror of Truth in companion clothing.
+  The prompts confront, the UI comforts - users feel the disconnect as "multiple apps merged."
+
+  The transformation follows a strict order because each layer depends on the previous:
+
+  1. BONES (Iteration 1): Clean the codebase - can't build new on unstable foundation
+  2. SOUL (Iteration 2): Define the identity - can't write prompts without knowing who speaks
+  3. VOICE (Iteration 3): Transform all prompts - the core of what makes users feel "held"
+  4. FACE (Iteration 4): Align visuals - make warmth intentional, not decorative
+  5. BODY (Iteration 5): Integrate experience - every touchpoint feels like one product
+  6. SPIRIT (Iteration 6): Polish the ineffable - the feeling of being held in every detail
+
+  Key insight from exploration: The clarify_agent.txt already embodies the target voice.
+  It proves the transformation is possible. We extend that presence everywhere.
+
+exploration_summary:
+  codebase_health:
+    dead_code: "75 files in /src/ (~15,000 lines) completely unused"
+    duplicate_components: "6 orphaned, 4 duplicate patterns"
+    console_logs: "130+ in production code"
+    any_types: "48+ TypeScript any usages"
+    security_vulns: "5 npm vulnerabilities"
+
+  prompt_architecture:
+    current_identity: "Mirror of Truth - consciousness recognition technology"
+    problematic_patterns:
+      - "You're not confused - you're avoiding"
+      - "Stop pretending you don't know"
+      - "Close the gap between self-perception and reality"
+    reference_model: "clarify_agent.txt already has target voice"
+
+  visual_ux:
+    current_formula: "90% cool purple + 10% white = cold sophistication"
+    target_formula: "70% purple + 20% gold + 10% soft white = held safety"
+    key_finding: "Breathing transition is the emotional north star"
+
+  experience_flow:
+    cohesion_stat: "Only 1 of 17 touchpoints maintains sacred voice"
+    key_insight: "The fix is VOICE, not design"
+    three_competing_voices:
+      - "Sacred/Contemplative (reflection flow only)"
+      - "Product/SaaS (dashboard, pricing, features)"
+      - "Technical/Neutral (auth, 404)"
+
+  identity_philosophy:
+    core_shift: "From 'exposing blind spots' to 'witnessing becoming'"
+    mirror_of_truth: "I see what you're hiding"
+    mirror_of_dreams: "I witness what's emerging"
+    sacred_contract: "I am here to witness, not to fix"
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 28
+    name: "Codebase Purification (Bones)"
+    vision: "Clean the foundation - remove 90+ dead files, fix technical debt"
+    scope: |
+      ## Priority 1 (Critical)
+      - Remove entire /src/ directory (75 files, ~15K lines dead code)
+      - Remove deprecated infrastructure (backend-server.js, dev-proxy.js, vite.config.js, etc.)
+
+      ## Priority 2 (High)
+      - Remove 6 orphaned components (FloatingNav, AnimatedBackground, etc.)
+      - Clean 130+ console.log statements from production code
+      - Update exports in /components/ui/glass/index.ts
+
+      ## Priority 3 (Medium)
+      - Fix 48+ TypeScript `any` types with proper interfaces
+      - Consolidate split hook locations (/hooks/ vs /lib/hooks/)
+      - npm audit fix for security vulnerabilities
+
+      ## Priority 4 (Lower)
+      - Verify and clean orphaned static HTML in /public/
+      - Standardize file naming conventions
+      - Update package.json test script placeholder
+
+      ## Success Criteria
+      - npm run build completes with zero warnings
+      - Zero unused exports
+      - No files in /src/ directory
+      - All console.logs removed or wrapped in NODE_ENV check
+    status: PENDING
+    builder_count: 4
+    estimated_hours: 8
+
+  - iteration_id: 2
+    global_iteration: 29
+    name: "Identity Crystallization (Soul)"
+    vision: "Define exactly what Mirror of Dreams IS - philosophy, voice, contract"
+    scope: |
+      ## Philosophy Document
+      Create /docs/philosophy.md:
+      - What is Mirror of Dreams?
+      - Core belief: "Users are whole and need witnessing, not fixing"
+      - The relationship: Companion who walks alongside
+      - How it differs from Mirror of Truth
+
+      ## Voice Bible
+      Create /docs/voice-bible.md:
+      - 30+ sample passages across all contexts
+      - Word lists: use / never use
+      - Sentence pattern guidelines
+      - Tone variations (Gentle, Present, Deep) - same companion at different depths
+
+      ## Sacred Contract
+      Create /docs/sacred-contract.md:
+      - What Mirror of Dreams always does
+      - What Mirror of Dreams never does
+      - The promises to users
+
+      ## Tone Transformation Map
+      - Gentle Clarity → Gentle Presence
+      - Luminous Intensity → Deep Witnessing (or retire)
+      - Sacred Fusion → Adaptive Presence
+
+      ## Visual Principles Document
+      Create /docs/visual-principles.md:
+      - How visuals serve "held and safe"
+      - The warmth formula (70% purple + 20% gold + 10% soft white)
+      - Animation principles aligned to companion presence
+
+      ## Success Criteria
+      - Any designer/writer can understand the product from docs
+      - Voice samples feel distinctly different from current
+      - Clear before/after transformation map for all tones
+    status: PENDING
+    builder_count: 2
+    estimated_hours: 6
+
+  - iteration_id: 3
+    global_iteration: 30
+    name: "Prompt Transformation (Voice)"
+    vision: "Rewrite ALL prompts to embody the Mirror of Dreams identity"
+    scope: |
+      ## Foundation (Must Do First)
+      Rewrite /prompts/base_instructions.txt:
+      - From: "Mirror of Truth, consciousness recognition technology"
+      - To: "Mirror of Dreams, sacred companion for lifelong dreamers"
+      - Remove all gap-closing, exposure, confrontation language
+      - Add witnessing, presence, companionship philosophy
+
+      ## Tone Files
+      Rewrite /prompts/gentle_clarity.txt:
+      - Rename to gentle_presence.txt
+      - Keep warmth, remove "gap identification"
+
+      Transform /prompts/luminous_intensity.txt:
+      - Rename to deep_witnessing.txt
+      - From: confrontation, "stop pretending"
+      - To: depth without sharpness, going deeper together
+
+      Rewrite /prompts/sacred_fusion.txt:
+      - Rename to adaptive_presence.txt
+      - Keep adaptive sensitivity, remove "bypass defenses"
+
+      ## Feature Prompts
+      Rewrite /prompts/evolution_instructions.txt:
+      - From: "consciousness development"
+      - To: "witnessing the journey"
+      - Growth as celebration, not tracking
+
+      Update /prompts/ceremony_synthesis.txt:
+      - Already closest to target - refine
+      - Remove transformation framing
+
+      Review /prompts/clarify_agent.txt:
+      - This IS the reference model
+      - Minimal changes, ensure consistency
+
+      ## Code Updates
+      Update /server/lib/prompts.ts:
+      - Rename tone mappings
+      - Update PREMIUM_REFLECTION_ENHANCEMENT
+      - Update PREMIUM_EVOLUTION_ENHANCEMENT
+
+      Update /server/trpc/routers/reflection.ts:
+      - Update tone type definitions
+      - Ensure new prompt names work
+
+      ## Success Criteria
+      - Read any generated reflection and feel accompanied, not exposed
+      - No "actually," "stop," "you're avoiding" language in any prompt
+      - All tones feel like the same companion at different depths
+    status: PENDING
+    builder_count: 3
+    estimated_hours: 10
+
+  - iteration_id: 4
+    global_iteration: 31
+    name: "Visual Coherence (Face)"
+    vision: "Make visuals intentionally serve 'held and safe'"
+    scope: |
+      ## Warmth Injection
+      Update color system in styles/:
+      - Increase golden presence opacity (from 0.03-0.05 to visible warmth)
+      - Add golden edge glows on hover states
+      - Warm the glass morphism edges
+
+      Update tailwind.config.ts:
+      - Define warmth tokens explicitly
+      - Create --held-glow, --safe-edge variables
+
+      ## Hover State Transformation
+      Across all interactive components:
+      - From: mechanical lift effect (SaaS pattern)
+      - To: recognition glow (companion pattern)
+      - Golden warmth on hover, not just opacity change
+
+      ## Animation Refinement
+      Review all animations:
+      - Ensure timings create comfort, not just aesthetics
+      - Breathing transition as reference for all motion
+      - Add subtle warmth pulses to key elements
+
+      ## Loading State Enhancement
+      Transform loading states from "waiting" to "holding space":
+      - Gazing overlay already good - extend pattern
+      - Add warmth to skeleton loaders
+      - Loading messages that feel like presence
+
+      ## Empty State Transformation
+      All empty states:
+      - From: hollow product screens
+      - To: invitations with warmth
+      - Add illustrations or warm copy
+
+      ## Error State Warmth
+      All error states:
+      - Maintain visual warmth (no harsh red)
+      - Copy that reassures ("your words are safe")
+      - Clear path back to stability
+
+      ## Success Criteria
+      - Every screen feels warm, not just beautiful
+      - Hover states feel like recognition, not just feedback
+      - User would describe the app as "feels safe"
+    status: PENDING
+    builder_count: 3
+    estimated_hours: 8
+
+  - iteration_id: 5
+    global_iteration: 32
+    name: "Experience Integration (Body)"
+    vision: "Every touchpoint feels like one product, one companion"
+    scope: |
+      ## Voice System Creation
+      Create /lib/voice/mirror-voice.ts:
+      - Centralized copy for all contexts
+      - Greetings, navigation, empty states, loading, errors
+      - All in the companion voice
+
+      ## Landing Page Voice
+      Update app/page.tsx (landing):
+      - From: "Transform Your Dreams" (marketing)
+      - To: "Your dreams know things. Let's listen together." (companion)
+      - Remove SaaS language, add warmth
+
+      ## Pricing Page Voice
+      Update app/pricing/page.tsx:
+      - Transform from generic SaaS pricing table
+      - Maintain sacred tone in tier descriptions
+      - No "features" language, use journey language
+
+      ## Dashboard Voice
+      Update all dashboard components:
+      - From: feature-focused cards with metrics
+      - To: companion home base
+      - Warm greetings, journey language
+
+      ## Onboarding Voice
+      Update onboarding flow:
+      - Ensure sacred voice from step 1 to completion
+      - No transactional feature lists
+      - The companion present throughout
+
+      ## 404 and Error Pages
+      Update app/not-found.tsx:
+      - From: bare "Page not found"
+      - To: companion voice ("We got a bit lost. Let me guide you back.")
+
+      ## Reflection Flow Continuity
+      Ensure reflection output → history transition is seamless:
+      - Same voice before, during, after
+      - No jarring shifts
+
+      ## Micro-Copy Audit
+      Full audit replacing:
+      - "Track" → "Hold/Tend"
+      - "Create" → "Name/Begin"
+      - "Generate" → "Reveal/Unfold"
+      - Remove "AI-powered" entirely
+
+      ## Success Criteria
+      - Complete entire flow without voice shift
+      - Describe the experience as "one coherent product"
+      - The companion is present everywhere
+    status: PENDING
+    builder_count: 4
+    estimated_hours: 10
+
+  - iteration_id: 6
+    global_iteration: 33
+    name: "Polish & Feel (Spirit)"
+    vision: "The ineffable quality of 'held and safe' in every detail"
+    scope: |
+      ## Micro-Copy Polish
+      Review every word in the app:
+      - Does this word create safety?
+      - Does this phrase feel like the companion?
+      - Ruthless editing for voice consistency
+
+      ## Animation Polish
+      Review every animation:
+      - Does this motion feel held?
+      - Does this timing create safety?
+      - Adjust easing for comfort
+
+      ## Transition Polish
+      All page/state transitions:
+      - Smooth, expected, breathing
+      - No jarring moments
+
+      ## Edge Case Polish
+      Every edge case:
+      - Empty states warm
+      - Error states reassuring
+      - Loading states present
+
+      ## Full Journey Testing
+      Multiple complete user journeys:
+      - New user signup → first reflection → dashboard → return
+      - Returning user → new reflection → evolution
+      - Note every micro-disconnect
+      - Fix all of them
+
+      ## Documentation
+      Final documentation:
+      - Update README with new identity
+      - Document voice system for future development
+      - Document visual principles
+      - Ensure identity can be maintained
+
+      ## Success Criteria
+      - Multiple complete journeys with zero disconnects
+      - User would say "I felt held throughout"
+      - The app FEELS like what it claims to be
+      - "Held, safe, and cared for" in every interaction
+    status: PENDING
+    builder_count: 3
+    estimated_hours: 8

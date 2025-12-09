@@ -16,8 +16,6 @@ if (process.env.NODE_ENV === 'development') {
   transporter.verify((error) => {
     if (error) {
       console.error('Email service error:', error);
-    } else {
-      console.log('Email service ready');
     }
   });
 }
@@ -430,7 +428,6 @@ export async function sendPasswordResetEmail(
       html: template.html,
     });
 
-    console.log(`Password reset email sent to ${email}`);
     return { success: true };
   } catch (error) {
     console.error('Failed to send password reset email:', error);
@@ -462,7 +459,6 @@ export async function sendVerificationEmail(
       html: template.html,
     });
 
-    console.log(`Verification email sent to ${email}`);
     return { success: true };
   } catch (error) {
     console.error('Failed to send verification email:', error);

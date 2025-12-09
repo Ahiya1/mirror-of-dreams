@@ -97,8 +97,9 @@ export function EvolutionModal({ isOpen, onClose, onSuccess, dream }: EvolutionM
       setEvolutionReflection('');
       onSuccess();
       onClose();
-    } catch (err: any) {
-      setError(err.message || 'Failed to evolve dream');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to evolve dream';
+      setError(message);
     }
   };
 

@@ -89,20 +89,15 @@ export const subscriptionsRouter = router({
       period: z.enum(['monthly', 'yearly']),
     }))
     .mutation(async ({ ctx, input }) => {
-      console.log(`[CreateCheckout] Starting for user ${ctx.user.id}, tier: ${input.tier}, period: ${input.period}`);
       try {
         // Get plan ID for the selected tier/period
         const planId = getPlanId(input.tier, input.period);
-        console.log(`[CreateCheckout] Got plan ID: ${planId}`);
 
         // Create PayPal subscription and get approval URL
         const approvalUrl = await createSubscription(ctx.user.id, planId);
-        console.log(`[CreateCheckout] Success - approval URL generated`);
         return { approvalUrl };
       } catch (error) {
-        console.error('[CreateCheckout] Error:', error);
-        console.error('[CreateCheckout] Error message:', error instanceof Error ? error.message : 'unknown');
-        console.error('[CreateCheckout] Error stack:', error instanceof Error ? error.stack : 'no stack');
+        console.error('CreateCheckout error:', error);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: error instanceof Error ? error.message : 'Failed to create checkout session',
@@ -174,16 +169,14 @@ export const subscriptionsRouter = router({
           });
         }
 
-        console.log(`[Subscription] User ${ctx.user.id} upgraded to ${tier} (${period})`);
-
         return {
           success: true,
           tier,
           period,
         };
       } catch (error) {
-        console.error('Activate subscription error:', error);
         if (error instanceof TRPCError) throw error;
+        console.error('Activate subscription error:', error);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: error instanceof Error ? error.message : 'Failed to activate subscription',

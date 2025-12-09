@@ -23,7 +23,6 @@ export async function GET(request: NextRequest) {
   }
 
   const startTime = Date.now();
-  console.log('[Consolidation] Starting pattern consolidation job');
 
   try {
     // Find users with unconsolidated messages
@@ -46,18 +45,13 @@ export async function GET(request: NextRequest) {
         .filter(Boolean)
     )];
 
-    console.log(`[Consolidation] Found ${userIds.length} users with unconsolidated messages`);
-
     // Process each user
     const results = [];
     for (const userId of userIds) {
       const result = await consolidateUserPatterns(userId as string);
       results.push(result);
 
-      // Log progress
-      if (result.success) {
-        console.log(`[Consolidation] User ${userId}: ${result.patternsExtracted} patterns from ${result.messagesProcessed} messages`);
-      } else {
+      if (!result.success) {
         console.error(`[Consolidation] User ${userId}: FAILED - ${result.error}`);
       }
     }
@@ -66,8 +60,6 @@ export async function GET(request: NextRequest) {
     const successCount = results.filter(r => r.success).length;
     const totalPatterns = results.reduce((sum, r) => sum + r.patternsExtracted, 0);
     const totalMessages = results.reduce((sum, r) => sum + r.messagesProcessed, 0);
-
-    console.log(`[Consolidation] Complete in ${duration}ms: ${successCount}/${userIds.length} users, ${totalPatterns} patterns, ${totalMessages} messages`);
 
     return NextResponse.json({
       success: true,

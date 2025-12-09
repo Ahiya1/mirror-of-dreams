@@ -11,7 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useNavigation } from '@/contexts/NavigationContext';
 
 // Shared hook imports (from Builder-1)
-import { useScrollDirection } from '@/lib/hooks/useScrollDirection';
+import { useScrollDirection } from '@/hooks';
 
 // Shared utility imports (from Builder-1)
 import { haptic } from '@/lib/utils/haptics';

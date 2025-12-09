@@ -115,7 +115,6 @@ export const authRouter = router({
           const emailResult = await sendVerificationEmail(newUser.email, verificationToken, newUser.name);
           if (emailResult.success) {
             emailVerificationSent = true;
-            console.log(`Verification email sent to ${newUser.email}`);
           } else {
             console.error('Failed to send verification email:', emailResult.error);
           }

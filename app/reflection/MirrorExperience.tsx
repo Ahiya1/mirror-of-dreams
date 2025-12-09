@@ -12,7 +12,7 @@ import { checkReflectionLimits } from '@/lib/utils/limits';
 
 // Internal hooks
 import { useAuth } from '@/hooks/useAuth';
-import { useIsMobile } from '@/lib/hooks/useIsMobile';
+import { useIsMobile } from '@/hooks';
 
 // Internal contexts
 import { useToast } from '@/contexts/ToastContext';

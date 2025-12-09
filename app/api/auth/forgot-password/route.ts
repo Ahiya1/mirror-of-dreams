@@ -33,7 +33,6 @@ export async function POST(request: NextRequest) {
     // Always return success to prevent email enumeration attacks
     // But only send email if user actually exists
     if (userError || !user) {
-      console.log(`Password reset requested for non-existent email: ${normalizedEmail}`);
       // Return success anyway to prevent enumeration
       return NextResponse.json({
         success: true,

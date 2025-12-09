@@ -6,7 +6,7 @@ import { X } from 'lucide-react';
 import { useEffect, useRef, useCallback } from 'react';
 import { modalOverlayVariants, modalContentVariants, mobileModalVariants } from '@/lib/animations/variants';
 import { GlassCard } from './GlassCard';
-import { useIsMobile } from '@/lib/hooks/useIsMobile';
+import { useIsMobile } from '@/hooks';
 import { cn } from '@/lib/utils';
 import { haptic } from '@/lib/utils/haptics';
 import type { GlassModalProps } from '@/types/glass-components';

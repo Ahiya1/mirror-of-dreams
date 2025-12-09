@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
 import { haptic } from '@/lib/utils/haptics';
 
 // Hooks
-import { useKeyboardHeight } from '@/lib/hooks';
+import { useKeyboardHeight } from '@/hooks';
 
 // Context for navigation
 import { useHideBottomNav } from '@/contexts/NavigationContext';
