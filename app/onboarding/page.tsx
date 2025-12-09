@@ -30,27 +30,27 @@ interface OnboardingStep {
 
 const steps: OnboardingStep[] = [
   {
-    title: 'Welcome to Mirror of Dreams',
+    title: 'Welcome, Dreamer',
     content:
-      'This is not a productivity tool. This is a consciousness companion.\n\nYour dreams hold the mirror to who you\'re becoming. We reflect your journey back to you—soft, sharp, and true.',
+      'This is your companion for inner listening.\n\nYour dreams know things. We\'re here to help you listen to what they\'re trying to tell you—gently, with warmth and presence.',
     visual: '🌙',
   },
   {
-    title: 'How Reflections Work',
+    title: 'How Conversations Work',
     content:
-      'Every few days, answer 5 deep questions about your dream:\n\n1. What is your dream?\n2. What is your plan?\n3. Have you set a date?\n4. What\'s your relationship with this dream?\n5. What are you willing to give in return?\n\nAfter 4 reflections, your Mirror reveals the patterns you couldn\'t see.',
+      'When you\'re ready, you\'ll explore 5 questions about what you\'re holding:\n\n1. What\'s the dream you\'re carrying?\n2. What feels like your next step?\n3. Is there a time horizon?\n4. How do you relate to this dream?\n5. What are you willing to give for it?\n\nOver time, patterns begin to emerge—not because we reveal them, but because you start to see them yourself.',
     visual: '✨',
   },
   {
     title: 'Clarify: Your Exploration Space',
     content:
-      'Before committing to a dream, use Clarify to explore your thoughts and discover what truly resonates with you.\n\nHave conversations with our AI guide to clarify your aspirations. When you\'re ready, transform your insights into actionable dreams.',
+      'Before naming a dream, explore what\'s stirring in you.\n\nHave open conversations to discover what truly resonates. When something feels clear, you can give it a name and begin tending to it.',
     visual: '🔮',
   },
   {
-    title: 'Your Free Tier',
+    title: 'Your Wanderer Space',
     content:
-      'Your free tier includes:\n✓ 2 dreams to explore\n✓ 4 reflections per month\n✓ 1 evolution report per month (after 4 reflections)\n✓ 1 visualization per month\n\nNeed more? Optimal tier gives you:\n✓ 7 dreams\n✓ 30 reflections per month\n✓ 6 evolution reports & visualizations\n\nStart free. Upgrade only if you fall in love.',
+      'As a Wanderer, you receive:\n✓ 2 dreams to hold\n✓ 4 conversations per month\n✓ Access to your journey insights\n✓ Pattern visualizations\n\nWhen you\'re ready for more space, Seeker and Devoted paths await.\n\nNo rush. Begin where you are.',
     visual: '🌱',
   },
 ];
@@ -159,15 +159,15 @@ export default function OnboardingPage() {
             Skip
           </GlowButton>
           <GlowButton
-            variant="primary"
+            variant="warm"
             onClick={handleNext}
             disabled={completeOnboarding.isPending}
           >
             {completeOnboarding.isPending
-              ? 'Completing...'
+              ? 'Preparing your space...'
               : step < steps.length - 1
-              ? 'Next'
-              : 'Continue to Dashboard'}
+              ? 'Continue'
+              : 'Enter Your Space'}
           </GlowButton>
         </div>
       </GlassCard>

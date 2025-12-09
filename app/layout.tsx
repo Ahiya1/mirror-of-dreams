@@ -8,9 +8,9 @@ import { ToastProvider } from '@/contexts/ToastContext';
 import { NavigationProvider } from '@/contexts/NavigationContext';
 
 export const metadata: Metadata = {
-  title: 'Mirror of Dreams - Reflect, Discover, Transform',
-  description: 'An AI-powered reflection experience for personal growth and self-discovery',
-  keywords: ['reflection', 'dreams', 'self-discovery', 'AI', 'personal growth'],
+  title: 'Mirror of Dreams - A Companion for Dreamers',
+  description: 'A sacred space for those who want to listen more deeply to their dreams and inner life.',
+  keywords: ['reflection', 'dreams', 'self-discovery', 'journaling', 'inner work'],
 };
 
 // Separate viewport export (Next.js 14 pattern)
