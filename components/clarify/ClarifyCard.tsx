@@ -27,17 +27,24 @@ interface ClarifyCardProps {
 const ClarifyCard: React.FC<ClarifyCardProps> = ({ animated = true, className = '' }) => {
   const { user } = useAuth();
 
-  // Don't render for free tier
-  if (!user || (user.tier === 'free' && !user.isCreator && !user.isAdmin)) {
-    return null;
-  }
+  // Check if user can access Clarify
+  const canAccess = user && (user.tier !== 'free' || user.isCreator || user.isAdmin);
 
-  // Fetch limits and recent sessions
-  const { data: limits, isLoading: limitsLoading } = trpc.clarify.getLimits.useQuery();
+  // Fetch limits and recent sessions - hooks must be called unconditionally
+  const { data: limits, isLoading: limitsLoading } = trpc.clarify.getLimits.useQuery(undefined, {
+    enabled: canAccess,
+  });
   const { data: sessionsData, isLoading: sessionsLoading } = trpc.clarify.listSessions.useQuery({
     status: 'active',
     limit: 3,
+  }, {
+    enabled: canAccess,
   });
+
+  // Don't render for free tier (after hooks)
+  if (!canAccess) {
+    return null;
+  }
 
   const isLoading = limitsLoading || sessionsLoading;
   const sessions = sessionsData?.sessions || [];
