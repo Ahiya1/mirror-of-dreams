@@ -23,3 +23,6 @@ export * from './schemas';
 
 // Glass component types
 export * from './glass-components';
+
+// Clarify types
+export * from './clarify';

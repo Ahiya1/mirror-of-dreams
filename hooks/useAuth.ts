@@ -90,6 +90,8 @@ export function useAuth(): UseAuthReturn {
         reflectionsToday: userData.reflections_today || 0,
         lastReflectionDate: userData.last_reflection_date || null,
         totalReflections: userData.total_reflections,
+        clarifySessionsThisMonth: userData.clarify_sessions_this_month || 0,
+        totalClarifySessions: userData.total_clarify_sessions || 0,
         currentMonthYear: new Date().toISOString().slice(0, 7), // "2025-01" format
         cancelAtPeriodEnd: userData.cancel_at_period_end || false,
         isCreator: userData.is_creator,

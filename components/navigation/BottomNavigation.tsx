@@ -3,8 +3,9 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Sparkles, Layers, TrendingUp, BarChart2, User } from 'lucide-react';
+import { Home, Sparkles, Layers, TrendingUp, BarChart2, User, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/useAuth';
 
 // Context imports
 import { useNavigation } from '@/contexts/NavigationContext';
@@ -36,14 +37,21 @@ interface BottomNavigationProps {
 // Constants
 // ============================================
 
-const NAV_ITEMS: readonly NavItem[] = [
+// Base navigation items (always shown)
+const BASE_NAV_ITEMS: NavItem[] = [
   { href: '/dashboard', icon: Home, label: 'Home' },
   { href: '/dreams', icon: Sparkles, label: 'Dreams' },
+];
+
+// Clarify item (paid-only)
+const CLARIFY_NAV_ITEM: NavItem = { href: '/clarify', icon: MessageSquare, label: 'Clarify' };
+
+// Remaining navigation items
+const REMAINING_NAV_ITEMS: NavItem[] = [
   { href: '/reflection', icon: Layers, label: 'Reflect' },
   { href: '/evolution', icon: TrendingUp, label: 'Evolution' },
-  { href: '/visualizations', icon: BarChart2, label: 'Visual' },
   { href: '/profile', icon: User, label: 'Profile' },
-] as const;
+];
 
 // ============================================
 // BottomNavigation Component
@@ -53,7 +61,9 @@ const NAV_ITEMS: readonly NavItem[] = [
  * BottomNavigation - Fixed bottom navigation bar for mobile devices
  *
  * Features:
- * - 6 navigation tabs: Home, Dreams, Reflect, Evolution, Visual, Profile
+ * - 5-6 navigation tabs depending on user tier:
+ *   - Free: Home, Dreams, Reflect, Evolution, Profile
+ *   - Paid (Pro/Unlimited): Home, Dreams, Clarify, Reflect, Evolution, Profile
  * - Active state with animated pill indicator
  * - Hides on scroll down, reveals on scroll up
  * - Safe area padding for notched devices (iPhone X+)
@@ -67,6 +77,15 @@ export function BottomNavigation({ className }: BottomNavigationProps) {
   const pathname = usePathname();
   const scrollDirection = useScrollDirection();
   const { showBottomNav } = useNavigation();
+  const { user } = useAuth();
+
+  // Build nav items dynamically based on user tier
+  // Paid users (pro/unlimited) get the Clarify tab
+  const navItems: NavItem[] = [
+    ...BASE_NAV_ITEMS,
+    ...(user?.tier !== 'free' ? [CLARIFY_NAV_ITEM] : []),
+    ...REMAINING_NAV_ITEMS,
+  ];
 
   // Hide nav on scroll down, show on scroll up (or at top)
   // Also hide when showBottomNav is false (e.g., during reflection wizard)
@@ -115,7 +134,7 @@ export function BottomNavigation({ className }: BottomNavigationProps) {
           aria-label="Main navigation"
         >
           <div className="flex items-center justify-around h-16">
-            {NAV_ITEMS.map((item) => {
+            {navItems.map((item) => {
               const isActive = isItemActive(item.href);
               const Icon = item.icon;
 

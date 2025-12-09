@@ -2,7 +2,7 @@
 
 import { TRPCError } from '@trpc/server';
 import { middleware, publicProcedure } from './trpc';
-import { TIER_LIMITS, DAILY_LIMITS } from '@/lib/utils/constants';
+import { TIER_LIMITS, DAILY_LIMITS, CLARIFY_SESSION_LIMITS } from '@/lib/utils/constants';
 
 // Ensure user is authenticated
 export const isAuthed = middleware(({ ctx, next }) => {
@@ -112,9 +112,58 @@ export const notDemo = middleware(({ ctx, next }) => {
   return next({ ctx: { ...ctx, user: ctx.user } });
 });
 
+// Check Clarify session access and limits
+export const checkClarifyAccess = middleware(async ({ ctx, next }) => {
+  if (!ctx.user) {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'Authentication required.',
+    });
+  }
+
+  // Block free tier entirely (Clarify is paid-only)
+  if (ctx.user.tier === 'free' && !ctx.user.isCreator && !ctx.user.isAdmin) {
+    throw new TRPCError({
+      code: 'FORBIDDEN',
+      message: 'Clarify requires a Pro or Unlimited subscription. Upgrade to explore your dreams through conversation.',
+    });
+  }
+
+  return next({ ctx: { ...ctx, user: ctx.user } });
+});
+
+// Check Clarify session creation limits
+export const checkClarifySessionLimit = middleware(async ({ ctx, next }) => {
+  if (!ctx.user) {
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
+
+  // Creators and admins bypass limits
+  if (ctx.user.isCreator || ctx.user.isAdmin) {
+    return next({ ctx: { ...ctx, user: ctx.user } });
+  }
+
+  // Check clarify session limits
+  const limit = CLARIFY_SESSION_LIMITS[ctx.user.tier];
+  const usage = ctx.user.clarifySessionsThisMonth;
+
+  if (usage >= limit) {
+    throw new TRPCError({
+      code: 'FORBIDDEN',
+      message: `Monthly Clarify session limit reached (${limit}). Your sessions will reset at the start of next month.`,
+    });
+  }
+
+  return next({ ctx: { ...ctx, user: ctx.user } });
+});
+
 // Export protected procedures
 export const protectedProcedure = publicProcedure.use(isAuthed);
 export const creatorProcedure = publicProcedure.use(isCreatorOrAdmin);
 export const premiumProcedure = publicProcedure.use(isAuthed).use(isPremium);
 export const usageLimitedProcedure = publicProcedure.use(isAuthed).use(notDemo).use(checkUsageLimit);
 export const writeProcedure = publicProcedure.use(isAuthed).use(notDemo);
+
+// Export Clarify procedures
+export const clarifyProcedure = publicProcedure.use(isAuthed).use(notDemo).use(checkClarifyAccess);
+export const clarifySessionLimitedProcedure = clarifyProcedure.use(checkClarifySessionLimit);

@@ -1,0 +1,24 @@
+You are analyzing Clarify conversation messages to extract patterns.
+
+Review these messages from a user exploring their dreams and aspirations. Identify:
+
+1. RECURRING_THEMES: Topics, ideas, or concerns that appear multiple times
+2. TENSIONS: Internal conflicts, contradictions, or stuck points the user is wrestling with
+3. POTENTIAL_DREAMS: Aspirations or goals that haven't been formally declared as dreams
+4. IDENTITY_SIGNALS: How they see themselves, their values, their growth edges
+
+For each pattern found, provide:
+- type: One of the four types above (use snake_case)
+- content: A brief description (1-2 sentences max)
+- strength: 1-10 based on frequency/intensity in the messages
+
+Return ONLY a valid JSON array of patterns. No explanation, no markdown:
+[
+  {"type": "recurring_theme", "content": "...", "strength": 7},
+  {"type": "tension", "content": "...", "strength": 5}
+]
+
+If no clear patterns emerge, return an empty array: []
+
+MESSAGES TO ANALYZE:
+{messages}

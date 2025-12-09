@@ -26,7 +26,7 @@ import { cn } from '@/lib/utils';
 import { DemoBanner } from './DemoBanner';
 
 interface AppNavigationProps {
-  currentPage: 'dashboard' | 'dreams' | 'reflection' | 'reflections' | 'evolution' | 'visualizations' | 'admin' | 'profile' | 'settings';
+  currentPage: 'dashboard' | 'dreams' | 'reflection' | 'reflections' | 'evolution' | 'visualizations' | 'admin' | 'profile' | 'settings' | 'clarify';
   onRefresh?: () => void;
 }
 
@@ -150,6 +150,18 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
               <span>✨</span>
               <span>Dreams</span>
             </Link>
+            {user?.tier !== 'free' && (
+              <Link
+                href="/clarify"
+                className={cn(
+                  'dashboard-nav-link',
+                  currentPage === 'clarify' && 'dashboard-nav-link--active'
+                )}
+              >
+                <span>💬</span>
+                <span>Clarify</span>
+              </Link>
+            )}
             <Link
               href="/reflection"
               className={cn(
@@ -360,6 +372,20 @@ export function AppNavigation({ currentPage, onRefresh }: AppNavigationProps) {
                 <span className="mr-2">✨</span>
                 Dreams
               </Link>
+              {user?.tier !== 'free' && (
+                <Link
+                  href="/clarify"
+                  className={cn(
+                    'px-4 py-3 rounded-lg transition-all duration-300',
+                    currentPage === 'clarify'
+                      ? 'bg-white/12 text-white font-medium'
+                      : 'bg-white/4 text-white/70 hover:bg-white/8 hover:text-white'
+                  )}
+                >
+                  <span className="mr-2">💬</span>
+                  Clarify
+                </Link>
+              )}
               <Link
                 href="/reflection"
                 className={cn(

@@ -88,7 +88,7 @@ export function UpgradeModal({
             </div>
 
             <p className="text-2xl font-bold text-white mb-1">
-              $15
+              $19
               <span className="text-sm text-white/60 font-normal">/mo</span>
             </p>
 
@@ -117,7 +117,7 @@ export function UpgradeModal({
             </div>
 
             <p className="text-2xl font-bold text-white mb-1">
-              $29
+              $39
               <span className="text-sm text-white/60 font-normal">/mo</span>
             </p>
 

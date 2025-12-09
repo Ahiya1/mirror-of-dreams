@@ -46,6 +46,8 @@ export interface User {
   reflectionsToday: number;
   lastReflectionDate: string | null; // "YYYY-MM-DD"
   totalReflections: number;
+  clarifySessionsThisMonth: number;
+  totalClarifySessions: number;
   currentMonthYear: string; // "2025-01"
   cancelAtPeriodEnd: boolean;
   isCreator: boolean;
@@ -93,6 +95,8 @@ export interface UserRow {
   reflections_today: number;
   last_reflection_date: string | null;
   total_reflections: number;
+  clarify_sessions_this_month: number;
+  total_clarify_sessions: number;
   current_month_year: string;
   cancel_at_period_end: boolean;
   is_creator: boolean;
@@ -121,6 +125,8 @@ export function userRowToUser(row: UserRow): User {
     reflectionsToday: row.reflections_today || 0,
     lastReflectionDate: row.last_reflection_date || null,
     totalReflections: row.total_reflections,
+    clarifySessionsThisMonth: row.clarify_sessions_this_month || 0,
+    totalClarifySessions: row.total_clarify_sessions || 0,
     currentMonthYear: row.current_month_year,
     cancelAtPeriodEnd: row.cancel_at_period_end || false,
     isCreator: row.is_creator,

@@ -11,6 +11,8 @@ import { artifactRouter } from './artifact';
 import { subscriptionsRouter } from './subscriptions';
 import { adminRouter } from './admin';
 import { dreamsRouter } from './dreams';
+import { lifecycleRouter } from './lifecycle';
+import { clarifyRouter } from './clarify';
 
 export const appRouter = router({
   auth: authRouter,
@@ -23,6 +25,8 @@ export const appRouter = router({
   artifact: artifactRouter,
   subscriptions: subscriptionsRouter,
   admin: adminRouter,
+  lifecycle: lifecycleRouter,
+  clarify: clarifyRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -213,7 +213,7 @@ If emails are not sending:
 
 1. Log into production with a test user (not admin)
 2. Navigate to `/pricing`
-3. Select a plan (recommend Pro Monthly for testing - $15)
+3. Select a plan (recommend Pro Monthly for testing - $19)
 4. Click the PayPal button
 5. Complete payment with a real PayPal account
 6. Wait for redirect back to the application

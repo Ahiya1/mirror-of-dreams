@@ -28,6 +28,7 @@ import { GlassModal } from '@/components/ui/glass/GlassModal';
 import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
 import { SubscriptionStatusCard } from '@/components/subscription/SubscriptionStatusCard';
 import { formatDistanceToNow } from 'date-fns';
+import { CLARIFY_SESSION_LIMITS } from '@/lib/utils/constants';
 
 export default function ProfilePage() {
   const { user, isLoading: authLoading, isAuthenticated, setUser } = useAuth();
@@ -351,6 +352,23 @@ export default function ProfilePage() {
                 <label className="text-sm text-white/60 block mb-1">Total Reflections</label>
                 <p className="text-lg text-white">{user?.totalReflections}</p>
               </div>
+
+              {/* Clarify stats - paid users only */}
+              {user && (user.tier !== 'free' || user.isCreator || user.isAdmin) && (
+                <>
+                  <div>
+                    <label className="text-sm text-white/60 block mb-1">Clarify Sessions This Month</label>
+                    <p className="text-lg text-white">
+                      {user.clarifySessionsThisMonth} / {CLARIFY_SESSION_LIMITS[user.tier]}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-sm text-white/60 block mb-1">Total Clarify Sessions</label>
+                    <p className="text-lg text-white">{user.totalClarifySessions}</p>
+                  </div>
+                </>
+              )}
             </div>
           </GlassCard>
 

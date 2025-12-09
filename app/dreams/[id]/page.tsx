@@ -13,6 +13,8 @@ import {
   AnimatedBackground,
 } from '@/components/ui/glass';
 import { AppNavigation } from '@/components/shared/AppNavigation';
+import { EvolutionModal } from '@/components/dreams/EvolutionModal';
+import { EvolutionHistory } from '@/components/dreams/EvolutionHistory';
 
 const MIN_REFLECTIONS_FOR_GENERATION = 4;
 
@@ -21,6 +23,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
   const [isEditing, setIsEditing] = useState(false);
   const [isGeneratingEvolution, setIsGeneratingEvolution] = useState(false);
   const [isGeneratingVisualization, setIsGeneratingVisualization] = useState(false);
+  const [isEvolutionModalOpen, setIsEvolutionModalOpen] = useState(false);
 
   // Fetch dream
   const { data: dream, isLoading, refetch } = trpc.dreams.get.useQuery({ id: params.id });
@@ -32,6 +35,12 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
     sortBy: 'created_at',
     sortOrder: 'desc',
   });
+
+  // Fetch evolution history
+  const { data: evolutionHistory } = trpc.lifecycle.getEvolutionHistory.useQuery(
+    { dreamId: params.id },
+    { enabled: !!dream && dream.status === 'active' }
+  );
 
   // Filter reflections by dreamId (camelCase from API response)
   const dreamReflections = reflections?.items?.filter(
@@ -137,26 +146,26 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
   }
 
   const statusEmojiMap: Record<string, string> = {
-    active: '✨',
-    achieved: '🎉',
-    archived: '📦',
-    released: '🕊️',
+    active: '\u2728',
+    achieved: '\uD83C\uDF89',
+    archived: '\uD83D\uDCE6',
+    released: '\uD83D\uDD4A\uFE0F',
   };
-  const statusEmoji = statusEmojiMap[dream.status as string] || '✨';
+  const statusEmoji = statusEmojiMap[dream.status as string] || '\u2728';
 
   const categoryEmojiMap: Record<string, string> = {
-    health: '🏃',
-    career: '💼',
-    relationships: '❤️',
-    financial: '💰',
-    personal_growth: '🌱',
-    creative: '🎨',
-    spiritual: '🙏',
-    entrepreneurial: '🚀',
-    educational: '📚',
-    other: '⭐',
+    health: '\uD83C\uDFC3',
+    career: '\uD83D\uDCBC',
+    relationships: '\u2764\uFE0F',
+    financial: '\uD83D\uDCB0',
+    personal_growth: '\uD83C\uDF31',
+    creative: '\uD83C\uDFA8',
+    spiritual: '\uD83D\uDE4F',
+    entrepreneurial: '\uD83D\uDE80',
+    educational: '\uD83D\uDCDA',
+    other: '\u2B50',
   };
-  const categoryEmoji = categoryEmojiMap[dream.category as string] || '⭐';
+  const categoryEmoji = categoryEmojiMap[dream.category as string] || '\u2B50';
 
   // Status badge styles using design system tokens
   const statusStyles: Record<string, string> = {
@@ -179,7 +188,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
           onClick={() => router.push('/dreams')}
           className="mb-6"
         >
-          ← Back to Dreams
+          Back to Dreams
         </GlowButton>
 
         {/* Header Card */}
@@ -209,6 +218,14 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
 
             {/* Right: Actions */}
             <div className="flex gap-3 sm:flex-shrink-0">
+              {dream.status === 'active' && (
+                <GlowButton
+                  variant="secondary"
+                  onClick={() => setIsEvolutionModalOpen(true)}
+                >
+                  Evolve Dream
+                </GlowButton>
+              )}
               <GlowButton
                 variant="primary"
                 onClick={() => router.push(`/reflection?dreamId=${params.id}`)}
@@ -358,10 +375,16 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
             </GlowButton>
             <GlowButton
               variant={dream.status === 'achieved' ? 'success' : 'ghost'}
-              onClick={() => handleStatusChange('achieved')}
-              disabled={dream.status === 'achieved'}
+              onClick={() => {
+                if (dream.status === 'achieved') {
+                  router.push(`/dreams/${params.id}/ceremony`);
+                } else if (dream.status === 'active') {
+                  router.push(`/dreams/${params.id}/ceremony`);
+                }
+              }}
+              disabled={dream.status !== 'active' && dream.status !== 'achieved'}
             >
-              Achieved
+              {dream.status === 'achieved' ? 'View Ceremony' : 'Mark Achieved'}
             </GlowButton>
             <GlowButton
               variant={dream.status === 'archived' ? 'secondary' : 'ghost'}
@@ -372,13 +395,26 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
             </GlowButton>
             <GlowButton
               variant={dream.status === 'released' ? 'info' : 'ghost'}
-              onClick={() => handleStatusChange('released')}
-              disabled={dream.status === 'released'}
+              onClick={() => {
+                if (dream.status === 'released') {
+                  router.push(`/dreams/${params.id}/ritual`);
+                } else if (dream.status === 'active') {
+                  router.push(`/dreams/${params.id}/ritual`);
+                }
+              }}
+              disabled={dream.status !== 'active' && dream.status !== 'released'}
             >
-              Release
+              {dream.status === 'released' ? 'View Ritual' : 'Release Dream'}
             </GlowButton>
           </div>
         </GlassCard>
+
+        {/* Evolution History */}
+        {evolutionHistory && evolutionHistory.events.length > 0 && (
+          <GlassCard className="mb-6">
+            <EvolutionHistory events={evolutionHistory.events} />
+          </GlassCard>
+        )}
 
         {/* Reflections */}
         <GlassCard>
@@ -422,6 +458,22 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
           )}
         </GlassCard>
       </div>
+
+      {/* Evolution Modal */}
+      {dream && dream.status === 'active' && (
+        <EvolutionModal
+          isOpen={isEvolutionModalOpen}
+          onClose={() => setIsEvolutionModalOpen(false)}
+          onSuccess={() => refetch()}
+          dream={{
+            id: dream.id,
+            title: dream.title,
+            description: dream.description,
+            target_date: dream.target_date,
+            category: dream.category,
+          }}
+        />
+      )}
     </div>
   );
 }

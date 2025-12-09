@@ -46,7 +46,8 @@ export const usersRouter = router({
         id, email, name, tier, subscription_status, subscription_period,
         subscription_started_at, subscription_expires_at,
         reflection_count_this_month, reflections_today, last_reflection_date,
-        total_reflections, cancel_at_period_end,
+        total_reflections, clarify_sessions_this_month, total_clarify_sessions,
+        cancel_at_period_end,
         is_creator, is_admin, is_demo, language, timezone,
         preferences, last_reflection_at, created_at, last_sign_in_at,
         email_verified

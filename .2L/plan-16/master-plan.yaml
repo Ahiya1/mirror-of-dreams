@@ -1,0 +1,159 @@
+plan_id: plan-16
+created_at: 2025-12-09T11:30:00Z
+status: PLANNED
+total_iterations: 3
+complexity: COMPLEX
+
+strategy: |
+  Three-iteration approach prioritizing foundation before complexity:
+
+  1. Dream Lifecycle First: Evolution, Achievement, Release are more self-contained
+     and establish patterns (modals, ceremonies, database) that Clarify will build upon.
+
+  2. Clarify Agent Core Second: Chat interface, sessions, streaming, function calling.
+     This is the highest-risk feature and benefits from having the lifecycle complete.
+
+  3. Memory Layer Last: Pattern extraction, consolidation, context injection.
+     Requires Clarify to be working to have messages to consolidate.
+
+  Risk Mitigation:
+  - Start with non-streaming chat, add streaming as enhancement
+  - Use manual consolidation before automated jobs
+  - Extensive integration testing between iterations
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 23
+    name: "Dream Lifecycle Completion"
+    vision: |
+      Complete the dream lifecycle with Evolution, Achievement Ceremony, and Release Ritual.
+      Users can evolve dreams in place, celebrate achievements with journey synthesis,
+      and release dreams with a gratitude-based ritual.
+    scope: |
+      Database:
+      - Create evolution_events table
+      - Create achievement_ceremonies table
+      - Create release_rituals table
+      - Add evolution_count, has_ceremony, has_ritual to dreams table
+
+      Backend (tRPC):
+      - dreams.evolve mutation (create evolution event, update dream)
+      - dreams.achieve mutation (trigger ceremony flow)
+      - dreams.release mutation (trigger ritual flow)
+      - dreams.getEvolutionHistory query
+      - dreams.getCeremony query
+      - dreams.getRitual query
+      - AI generation for ceremony synthesis (who you were / who you became)
+
+      Frontend:
+      - EvolutionModal component (old form → new form → reflection)
+      - Evolution history display on dream detail page
+      - AchievementCeremony page (/dreams/[id]/ceremony)
+      - ReleaseRitual page (/dreams/[id]/ritual) with 4-step wizard
+      - Update dream detail page with new action buttons
+      - Update dream card to show evolution count
+
+      Rate Limits:
+      - Add evolution report limits to constants (Pro: 4/mo, Unlimited: 8/mo)
+      - Add visualization limits to constants (Pro: 4/mo, Unlimited: 8/mo)
+    status: PENDING
+    dependencies: []
+    estimated_hours: 12-16
+    risk_level: MEDIUM
+
+  - iteration_id: 2
+    global_iteration: 24
+    name: "Clarify Agent Core"
+    vision: |
+      Implement the Clarify Agent - a conversational pre-dream exploration space.
+      Users can have ongoing conversations, return to past sessions, and optionally
+      declare dreams when something crystallizes.
+    scope: |
+      Database:
+      - Create clarify_sessions table
+      - Create clarify_messages table
+      - Add clarify_sessions_this_month to users table
+      - Add total_clarify_sessions to users table
+      - Add pre_session_id to dreams table
+
+      Backend (tRPC):
+      - clarifyRouter with CRUD for sessions
+      - clarify.createSession mutation
+      - clarify.getSession query
+      - clarify.listSessions query
+      - clarify.sendMessage mutation (streams response)
+      - SSE endpoint for streaming (/api/clarify/stream)
+      - Function calling setup for createDream tool
+      - System prompt with posture constraints
+
+      Frontend:
+      - Add "Clarify" to navigation (paid users only)
+      - ClarifyPage (/clarify) - session list
+      - ClarifySessionPage (/clarify/[sessionId]) - conversation
+      - ClarifyChat component (message list, input, streaming display)
+      - NewSessionButton component
+      - SessionCard component for session list
+      - Streaming response display with typing indicator
+
+      Rate Limits:
+      - Add clarify session limits (Pro: 20/mo, Unlimited: 30/mo)
+      - Implement checkClarifyLimit middleware
+      - Block free tier from Clarify
+    status: PENDING
+    dependencies: [1]
+    estimated_hours: 14-18
+    risk_level: HIGH
+
+  - iteration_id: 3
+    global_iteration: 25
+    name: "Memory Layer & Polish"
+    vision: |
+      Implement the memory layer that makes Clarify truly powerful - pattern extraction,
+      cross-session memory, and context injection that makes each conversation informed
+      by the user's history.
+    scope: |
+      Database:
+      - Create clarify_patterns table
+      - Add consolidated boolean to clarify_messages
+
+      Backend:
+      - Pattern consolidation function (Haiku-powered)
+      - Manual consolidation endpoint for testing
+      - Vercel cron job for nightly consolidation
+      - Context builder for system prompt injection
+      - Fetch recent sessions, patterns, dreams, reflections
+      - Token budget management for context window
+
+      Frontend:
+      - Pattern display in session (optional - "I notice...")
+      - Session title auto-generation
+      - Polish mobile experience for Clarify
+      - Polish ceremony/ritual animations
+
+      Integration:
+      - Connect dream creation from Clarify to dreams page
+      - Update dashboard to show Clarify sessions
+      - Update profile to show Clarify usage
+
+      Testing:
+      - End-to-end testing of full lifecycle
+      - Memory persistence testing
+      - Rate limit testing
+      - Mobile testing
+    status: PENDING
+    dependencies: [1, 2]
+    estimated_hours: 10-14
+    risk_level: MEDIUM
+
+notes: |
+  Key decisions:
+  - Streaming: Use Server-Sent Events via Next.js API route
+  - Function calling: Single createDream tool, never pressures
+  - Consolidation: Hybrid approach - Vercel cron + on-demand fallback
+  - Models: Sonnet 4.5 for conversation, Haiku 3.5 for consolidation
+  - Mobile: Clarify only shown to paid users (replaces one nav item)
+
+  Cost estimates validated:
+  - Clarify session: ~$0.14 (10 exchanges)
+  - Consolidation: ~$0.02 per run
+  - Total margin target: 68-72% maintained

@@ -36,6 +36,7 @@ import ProgressStatsCard from '@/components/dashboard/cards/ProgressStatsCard';
 import EvolutionCard from '@/components/dashboard/cards/EvolutionCard';
 import VisualizationCard from '@/components/dashboard/cards/VisualizationCard';
 import SubscriptionCard from '@/components/dashboard/cards/SubscriptionCard';
+import ClarifyCard from '@/components/clarify/ClarifyCard';
 import { UsageWarningBanner } from '@/components/subscription/UsageWarningBanner';
 import { TIER_LIMITS } from '@/lib/utils/constants';
 import '@/styles/dashboard.css';
@@ -49,8 +50,11 @@ export default function DashboardPage() {
   // UI state
   const [isPageVisible, setIsPageVisible] = useState(false);
 
-  // Stagger animation for hero + grid cards (1 hero + 6 cards = 7 items)
-  const { containerRef, getItemStyles } = useStaggerAnimation(7, {
+  // Stagger animation for hero + grid cards (1 hero + 6-7 cards depending on tier)
+  // Paid users have ClarifyCard (7 cards), free users have 6 cards
+  const isPaidUser = user && (user.tier !== 'free' || user.isCreator || user.isAdmin);
+  const itemCount = isPaidUser ? 8 : 7;
+  const { containerRef, getItemStyles } = useStaggerAnimation(itemCount, {
     delay: 150,
     duration: 800,
     triggerOnce: true,
@@ -161,7 +165,14 @@ export default function DashboardPage() {
                 <VisualizationCard animated={true} />
               </div>
 
-              <div style={getItemStyles(6)}>
+              {/* Clarify Card - paid users only */}
+              {isPaidUser && (
+                <div style={getItemStyles(6)}>
+                  <ClarifyCard animated={true} />
+                </div>
+              )}
+
+              <div style={getItemStyles(isPaidUser ? 7 : 6)}>
                 <SubscriptionCard animated={true} />
               </div>
             </DashboardGrid>

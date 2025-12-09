@@ -18,16 +18,54 @@ export const DREAM_LIMITS = {
   unlimited: Infinity,
 } as const;
 
+export const CLARIFY_SESSION_LIMITS = {
+  free: 0,        // Free tier cannot access Clarify
+  pro: 20,        // 20 sessions/month
+  unlimited: 30,  // 30 sessions/month
+} as const;
+
+/**
+ * Clarify context limits for token budget management
+ */
+export const CLARIFY_CONTEXT_LIMITS = {
+  maxContextTokens: 8000,      // Max tokens for injected context
+  maxRecentMessages: 20,       // Recent messages from current session (already handled)
+  maxCrossSessions: 3,         // Other sessions to reference
+  maxPatterns: 10,             // Patterns to include
+  maxDreams: 5,                // Active dreams to include
+  maxReflections: 3,           // Recent reflections to include
+} as const;
+
+/**
+ * Pattern consolidation settings
+ */
+export const PATTERN_CONSOLIDATION = {
+  minMessagesForConsolidation: 5,  // Minimum user messages before consolidation
+  maxMessagesPerBatch: 50,         // Max messages to process at once
+  strengthDecayDays: 30,           // Days before strength starts decaying
+  minStrengthThreshold: 3,         // Minimum strength to include in context
+} as const;
+
+/**
+ * Pattern types for Clarify memory layer
+ */
+export const CLARIFY_PATTERN_TYPES = [
+  'recurring_theme',
+  'tension',
+  'potential_dream',
+  'identity_signal',
+] as const;
+
 export type TierName = keyof typeof TIER_LIMITS;
 
 export const TIER_PRICING = {
   pro: {
-    monthly: 15,
-    yearly: 150,
+    monthly: 19,
+    yearly: 190,
   },
   unlimited: {
-    monthly: 29,
-    yearly: 290,
+    monthly: 39,
+    yearly: 390,
   },
 } as const;
 
