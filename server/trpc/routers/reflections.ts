@@ -23,10 +23,10 @@ export const reflectionsRouter = router({
       const { page, limit, tone, isPremium, search, sortBy, sortOrder } = input;
       const offset = (page - 1) * limit;
 
-      // Build query
+      // Build query - include dream title via join
       let query = supabase
         .from('reflections')
-        .select('*', { count: 'exact' })
+        .select('*, dreams(title)', { count: 'exact' })
         .eq('user_id', ctx.user.id);
 
       // Apply filters

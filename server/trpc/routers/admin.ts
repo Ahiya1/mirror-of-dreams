@@ -267,6 +267,78 @@ export const adminRouter = router({
       };
     }),
 
+  // Get user feedback from reflections
+  getFeedback: creatorProcedure
+    .input(
+      z.object({
+        page: z.number().min(1).default(1),
+        limit: z.number().min(1).max(100).default(50),
+        minRating: z.number().min(1).max(10).optional(),
+        maxRating: z.number().min(1).max(10).optional(),
+      })
+    )
+    .query(async ({ input }) => {
+      const { page, limit, minRating, maxRating } = input;
+      const offset = (page - 1) * limit;
+
+      // Get reflections that have ratings/feedback
+      let query = supabase
+        .from('reflections')
+        .select(`
+          id, dream, rating, user_feedback, created_at,
+          users!inner(email, name)
+        `, { count: 'exact' })
+        .not('rating', 'is', null);
+
+      // Apply rating filters
+      if (minRating !== undefined) {
+        query = query.gte('rating', minRating);
+      }
+      if (maxRating !== undefined) {
+        query = query.lte('rating', maxRating);
+      }
+
+      const { data, error, count } = await query
+        .order('created_at', { ascending: false })
+        .range(offset, offset + limit - 1);
+
+      if (error) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch feedback',
+        });
+      }
+
+      // Calculate average rating
+      const { data: avgData } = await supabase
+        .from('reflections')
+        .select('rating')
+        .not('rating', 'is', null);
+
+      const averageRating = avgData && avgData.length > 0
+        ? avgData.reduce((sum, r) => sum + (r.rating || 0), 0) / avgData.length
+        : 0;
+
+      // Rating distribution
+      const distribution: Record<number, number> = {};
+      avgData?.forEach(r => {
+        if (r.rating) {
+          distribution[r.rating] = (distribution[r.rating] || 0) + 1;
+        }
+      });
+
+      return {
+        items: data || [],
+        page,
+        limit,
+        total: count || 0,
+        totalPages: Math.ceil((count || 0) / limit),
+        averageRating: Math.round(averageRating * 10) / 10,
+        totalFeedback: avgData?.length || 0,
+        distribution,
+      };
+    }),
+
   // Get API usage stats (Iteration 3)
   getApiUsageStats: creatorProcedure
     .input(

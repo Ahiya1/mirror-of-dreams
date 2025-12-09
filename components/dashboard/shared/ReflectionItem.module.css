@@ -13,6 +13,7 @@
   text-decoration: none;
   display: block;
   color: inherit;
+  min-width: 0; /* Prevent flex child from overflowing */
 }
 
 @keyframes reflectionSlide {

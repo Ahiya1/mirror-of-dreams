@@ -118,9 +118,13 @@ export default function ClarifyPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
-        <div className="flex flex-col items-center gap-4">
-          <CosmicLoader size="lg" />
-          <p className="text-small text-white/60">Loading your conversations...</p>
+        <div className="flex flex-col items-center gap-6 text-center">
+          <div className="text-5xl">🔮</div>
+          <CosmicLoader size="lg" label="Gathering your explorations" />
+          <div className="space-y-2">
+            <p className="text-lg text-white/80">Gathering your explorations...</p>
+            <p className="text-sm text-white/50">Your conversations are surfacing</p>
+          </div>
         </div>
       </div>
     );

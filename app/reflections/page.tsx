@@ -78,9 +78,10 @@ export default function ReflectionsPage() {
       <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-center min-h-[400px]">
-            <div className="text-center">
-              <CosmicLoader size="lg" label="Loading your reflections..." />
-              <p className="text-gray-300 mt-4">Loading your reflections...</p>
+            <div className="text-center space-y-4">
+              <div className="text-5xl">🪞</div>
+              <CosmicLoader size="lg" label="Gathering your reflections" />
+              <p className="text-white/70 text-lg">Gathering your reflections...</p>
             </div>
           </div>
         </div>

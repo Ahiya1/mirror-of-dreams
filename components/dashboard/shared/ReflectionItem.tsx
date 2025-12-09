@@ -9,6 +9,7 @@ interface ReflectionItemProps {
     id: string | number;
     title?: string | null;
     dream?: string;
+    dreams?: { title: string } | null; // Joined dream data
     content?: string;
     preview?: string;
     created_at?: string;
@@ -38,9 +39,12 @@ const ReflectionItem: React.FC<ReflectionItemProps> = ({
   const [isHovered, setIsHovered] = useState(false);
 
   // Format reflection data with fallbacks
+  // Priority for title: 1. joined dream title, 2. reflection title, 3. fallback
+  const displayTitle = reflection.dreams?.title || reflection.title || 'Reflection';
+
   const reflectionData = {
     id: reflection.id || index,
-    title: reflection.title || 'Sacred Reflection',
+    title: displayTitle,
     preview: getReflectionPreview(reflection),
     timeAgo: reflection.timeAgo || formatTimeAgo(reflection.created_at),
     tone: reflection.tone || 'fusion',
