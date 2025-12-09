@@ -1,0 +1,306 @@
+plan_id: plan-19
+created_at: 2025-12-10T00:00:00Z
+status: PLANNED
+total_iterations: 5
+
+strategy: |
+  Transform Mirror of Dreams from 7.2/10 to 9+/10 production-hardened system.
+
+  Order of operations designed to build foundational infrastructure first,
+  then layer on security, monitoring, and comprehensive testing.
+
+  Key insight: Testing infrastructure must come early so subsequent changes
+  have tests. Security changes are high-risk and need test coverage.
+
+  Iteration sequence:
+  1. Code Quality & Testing Foundation - ESLint, Prettier, Vitest, CI/CD basics
+  2. Security Hardening - JWT cookies, rate limiting, CSRF
+  3. Error Monitoring & Resilience - Sentry, error boundaries, retry logic
+  4. Integration & E2E Testing - tRPC router tests, Playwright E2E
+  5. Performance & Polish - N+1 fixes, code splitting, final coverage
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 29
+    name: "Code Quality & Testing Foundation"
+    vision: "Establish testing infrastructure and CI/CD pipeline"
+    scope: |
+      ## Goals
+      - Configure ESLint with Next.js strict rules
+      - Configure Prettier for consistent formatting
+      - Set up Husky pre-commit hooks with lint-staged
+      - Configure Vitest as unified test framework
+      - Migrate existing 2 test files to Vitest
+      - Write unit tests for critical business logic
+      - Create GitHub Actions CI workflow
+      - Add typecheck script to package.json
+
+      ## Critical Files to Create/Modify
+      - .eslintrc.json (new)
+      - .prettierrc (new)
+      - vitest.config.ts (new)
+      - tests/setup.ts (new)
+      - tests/mocks/supabase.ts (new)
+      - tests/mocks/anthropic.ts (new)
+      - .github/workflows/ci.yml (new)
+      - .husky/pre-commit (new)
+      - package.json (update scripts)
+      - tsconfig.json (stricter options)
+
+      ## Unit Tests to Write
+      - lib/utils/limits.ts - checkReflectionLimits
+      - server/lib/cost-calculator.ts - calculateCost, getThinkingBudget
+      - server/lib/temporal-distribution.ts - selectTemporalContext
+      - types/schemas.ts - Zod schema validation
+      - lib/clarify/consolidation.ts - extractPatternsFromSession
+
+      ## Success Criteria
+      - npm run lint passes with zero errors
+      - npm run format:check passes
+      - npm run test runs and passes
+      - npm run typecheck passes
+      - GitHub Actions CI runs on PR
+      - Pre-commit hooks prevent unlinted commits
+      - 5+ critical business logic functions have unit tests
+
+    status: PENDING
+    dependencies: []
+    risk_level: LOW
+    estimated_hours: 8-10
+
+  - iteration_id: 2
+    global_iteration: 30
+    name: "Security Hardening"
+    vision: "Fix critical security vulnerabilities"
+    scope: |
+      ## Goals
+      - Migrate JWT from localStorage to httpOnly cookies
+      - Implement rate limiting on auth and AI endpoints
+      - Add CSRF protection for mutations
+      - Remove CREATOR_SECRET_KEY auth pattern
+      - Add security headers via Next.js config
+      - Standardize password requirements
+
+      ## JWT Cookie Migration
+      - server/trpc/context.ts - Read token from cookies
+      - server/trpc/routers/auth.ts - Set token in cookies
+      - app/api/auth/refresh/route.ts (new) - Token refresh
+      - components/providers/TRPCProvider.tsx - Remove localStorage
+      - app/auth/signin/page.tsx - Remove localStorage.setItem
+      - app/auth/signup/page.tsx - Remove localStorage.setItem
+      - app/profile/page.tsx - Remove localStorage operations
+      - components/landing/LandingHero.tsx - Remove localStorage
+      - app/clarify/[sessionId]/page.tsx - Use cookie credentials
+      - app/api/clarify/stream/route.ts - Read from cookies
+
+      ## Rate Limiting
+      - server/lib/rate-limiter.ts (new) - Rate limit configuration
+      - server/trpc/middleware.ts - Add rate limit middleware
+      - Rate limits: auth 5/min, AI 10/min, writes 30/min
+
+      ## CSRF Protection
+      - server/lib/csrf.ts (new) - CSRF token utilities
+      - components/providers/TRPCProvider.tsx - Add CSRF header
+
+      ## Security Tests
+      - Write integration tests for auth flow with cookies
+      - Test rate limiting enforcement
+      - Test CSRF token validation
+
+      ## Success Criteria
+      - JWT no longer in localStorage (grep returns 0)
+      - All localStorage token keys removed
+      - Rate limiting active on auth endpoints
+      - CSRF tokens on mutations
+      - Security headers present in responses
+      - All existing auth functionality works
+      - Tests pass for auth flow
+
+    status: PENDING
+    dependencies: [1]
+    risk_level: HIGH
+    estimated_hours: 8-10
+
+  - iteration_id: 3
+    global_iteration: 31
+    name: "Error Monitoring & Resilience"
+    vision: "Production observability and fault tolerance"
+    scope: |
+      ## Goals
+      - Integrate Sentry for error monitoring
+      - Add global and route-level error boundaries
+      - Implement retry logic for AI API calls
+      - Add structured logging
+      - Replace console.log/error with proper logging
+
+      ## Sentry Integration
+      - Install @sentry/nextjs
+      - sentry.client.config.ts (new)
+      - sentry.server.config.ts (new)
+      - sentry.edge.config.ts (new)
+      - next.config.js - Add Sentry webpack config
+      - Configure source maps upload
+      - Set up error alerts
+
+      ## Error Boundaries
+      - app/error.tsx (new) - Global error boundary
+      - app/dashboard/error.tsx (new) - Dashboard error boundary
+      - app/reflection/error.tsx (new) - Reflection error boundary
+      - components/ui/ErrorFallback.tsx (new) - Reusable fallback
+
+      ## Retry Logic
+      - lib/utils/retry.ts (new) - Exponential backoff utility
+      - server/trpc/routers/reflection.ts - Wrap AI calls with retry
+      - server/trpc/routers/clarify.ts - Wrap AI calls with retry
+      - server/trpc/routers/evolution.ts - Wrap AI calls with retry
+      - Max 3 retries, 1s -> 2s -> 4s delays
+
+      ## Structured Logging
+      - server/lib/logger.ts (new) - Pino logger setup
+      - Replace console.error in routers with logger.error
+      - Add request ID tracking
+
+      ## Tests
+      - Test error boundary rendering
+      - Test retry logic behavior
+      - Test Sentry error capture (mock)
+
+      ## Success Criteria
+      - Sentry dashboard shows test errors
+      - Error boundaries catch and display errors gracefully
+      - AI calls retry on transient failures
+      - Logs are structured JSON with request IDs
+      - No console.log in production code
+
+    status: PENDING
+    dependencies: [1, 2]
+    risk_level: MEDIUM
+    estimated_hours: 6-8
+
+  - iteration_id: 4
+    global_iteration: 32
+    name: "Integration & E2E Testing"
+    vision: "Comprehensive test coverage for tRPC and user flows"
+    scope: |
+      ## Goals
+      - Write integration tests for all critical tRPC routers
+      - Set up Playwright for E2E testing
+      - Write E2E tests for 5 critical user flows
+      - Achieve 70%+ coverage on business logic
+      - Add CI job for E2E tests
+
+      ## Integration Tests
+      - tests/integration/routers/auth.test.ts
+      - tests/integration/routers/dreams.test.ts
+      - tests/integration/routers/reflections.test.ts
+      - tests/integration/routers/subscriptions.test.ts
+      - tests/integration/routers/clarify.test.ts
+      - tests/integration/routers/evolution.test.ts
+      - tests/integration/middleware.test.ts
+
+      ## Test Database Strategy
+      - Use Supabase local for integration tests
+      - tests/fixtures/users.ts - User factory
+      - tests/fixtures/dreams.ts - Dream factory
+      - tests/fixtures/reflections.ts - Reflection factory
+      - tests/helpers/db.ts - Setup/teardown helpers
+
+      ## E2E Tests (Playwright)
+      - playwright.config.ts (new)
+      - tests/e2e/auth.spec.ts - Registration & login
+      - tests/e2e/reflection.spec.ts - Reflection creation
+      - tests/e2e/subscription.spec.ts - Upgrade flow
+      - tests/e2e/dreams.spec.ts - Dream lifecycle
+      - tests/e2e/admin.spec.ts - Admin dashboard
+
+      ## CI Updates
+      - .github/workflows/e2e.yml (new) - E2E test workflow
+      - Update ci.yml to include integration tests
+
+      ## Success Criteria
+      - All critical tRPC routers have integration tests
+      - Auth flows fully tested (signup, signin, logout)
+      - 5 E2E tests passing in CI
+      - Coverage report shows 70%+ on lib/ and server/
+      - Tests run in under 5 minutes
+
+    status: PENDING
+    dependencies: [1, 2, 3]
+    risk_level: MEDIUM
+    estimated_hours: 12-16
+
+  - iteration_id: 5
+    global_iteration: 33
+    name: "Performance & Polish"
+    vision: "Final optimizations and production readiness"
+    scope: |
+      ## Goals
+      - Fix N+1 query in dreams.list
+      - Implement code splitting for heavy components
+      - Optimize React Query cache durations
+      - Activate Redis for caching (optional)
+      - Final coverage push and documentation
+
+      ## N+1 Query Fix
+      - server/trpc/routers/dreams.ts - Replace Promise.all with JOIN
+      - Reduce 11 queries to 1-2 for dreams with stats
+
+      ## Code Splitting
+      - components/dreams/CreateDreamModal.tsx - Dynamic import
+      - components/evolution/EvolutionModal.tsx - Dynamic import
+      - components/subscription/PayPalCheckoutModal.tsx - Dynamic import
+      - Lazy load Framer Motion where possible
+
+      ## Cache Optimization
+      - TRPCProvider.tsx - Per-operation staleTime
+        - AI responses: 30 minutes
+        - User profile: 5 minutes
+        - Dreams list: 10 minutes
+        - Dashboard stats: 5 minutes
+
+      ## Redis Integration (Optional)
+      - lib/cache.ts (new) - Redis cache layer
+      - Cache AI response summaries
+      - Cache user session data
+
+      ## Documentation & Polish
+      - Update README with test commands
+      - Document CI/CD process
+      - Add contributing guidelines
+      - Final lint/format cleanup
+
+      ## Final Tests
+      - Performance benchmarks for fixed queries
+      - Verify bundle size improvements
+      - Coverage gap analysis and final tests
+
+      ## Success Criteria
+      - Dreams page loads in <2s with stats
+      - Bundle size reduced by 10%+ for initial load
+      - No N+1 patterns remaining
+      - 75%+ overall test coverage
+      - All CI checks green
+      - Production deploy successful
+
+    status: PENDING
+    dependencies: [1, 2, 3, 4]
+    risk_level: LOW
+    estimated_hours: 6-8
+
+# Summary
+# Total Iterations: 5
+# Total Estimated Hours: 40-52
+# Global Iterations: 29-33
+#
+# Risk Profile:
+# - Iteration 1 (Foundation): LOW risk - new files, no breaking changes
+# - Iteration 2 (Security): HIGH risk - auth flow changes, user logout
+# - Iteration 3 (Monitoring): MEDIUM risk - new integrations
+# - Iteration 4 (Testing): MEDIUM risk - extensive new code
+# - Iteration 5 (Performance): LOW risk - optimizations only
+#
+# Dependencies:
+# - Iterations 1 must complete before 2 (tests needed for security changes)
+# - Iteration 2 must complete before 3 (security baseline for monitoring)
+# - Iterations 1-3 must complete before 4 (full infrastructure for E2E)
+# - Iteration 5 can technically run after 1, but scheduled last for polish
