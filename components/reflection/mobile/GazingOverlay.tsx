@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+
 import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
 import { gazingOverlayVariants, statusTextVariants } from '@/lib/animations/variants';
 
@@ -38,7 +39,7 @@ export function GazingOverlay({ isVisible }: GazingOverlayProps) {
     }
 
     const interval = setInterval(() => {
-      setStatusIndex(prev => (prev + 1) % STATUS_MESSAGES.length);
+      setStatusIndex((prev) => (prev + 1) % STATUS_MESSAGES.length);
     }, STATUS_INTERVAL);
 
     return () => clearInterval(interval);
@@ -52,7 +53,7 @@ export function GazingOverlay({ isVisible }: GazingOverlayProps) {
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-mirror-void-deep/98 backdrop-blur-xl"
+          className="bg-mirror-void-deep/98 fixed inset-0 z-[100] flex flex-col items-center justify-center backdrop-blur-xl"
         >
           {/* Cosmic Loader with breathing animation */}
           <motion.div
@@ -77,7 +78,7 @@ export function GazingOverlay({ isVisible }: GazingOverlayProps) {
           </motion.div>
 
           {/* Status Text */}
-          <div className="mt-8 h-16 flex items-center">
+          <div className="mt-8 flex h-16 items-center">
             <AnimatePresence mode="wait">
               <motion.p
                 key={statusIndex}
@@ -85,7 +86,7 @@ export function GazingOverlay({ isVisible }: GazingOverlayProps) {
                 initial={prefersReducedMotion ? undefined : 'hidden'}
                 animate={prefersReducedMotion ? undefined : 'visible'}
                 exit={prefersReducedMotion ? undefined : 'exit'}
-                className="text-white/90 text-xl font-light text-center px-6"
+                className="px-6 text-center text-xl font-light text-white/90"
               >
                 {STATUS_MESSAGES[statusIndex]}
               </motion.p>
@@ -93,13 +94,11 @@ export function GazingOverlay({ isVisible }: GazingOverlayProps) {
           </div>
 
           {/* Subtle helper text */}
-          <p className="text-white/50 text-sm mt-2">
-            This may take a few moments
-          </p>
+          <p className="mt-2 text-sm text-white/50">This may take a few moments</p>
 
           {/* Background breathing glow effect */}
           <motion.div
-            className="absolute inset-0 pointer-events-none"
+            className="pointer-events-none absolute inset-0"
             animate={
               prefersReducedMotion
                 ? undefined

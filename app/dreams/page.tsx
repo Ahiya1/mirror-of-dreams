@@ -2,23 +2,26 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { trpc } from '@/lib/trpc';
-import { DreamCard } from '@/components/dreams/DreamCard';
+import React, { useState, useEffect } from 'react';
+
 import { CreateDreamModal } from '@/components/dreams/CreateDreamModal';
-import { CosmicLoader, GlowButton, GlassCard, GradientText } from '@/components/ui/glass';
-import { AppNavigation } from '@/components/shared/AppNavigation';
+import { DreamCard } from '@/components/dreams/DreamCard';
 import { BottomNavigation } from '@/components/navigation';
+import { AppNavigation } from '@/components/shared/AppNavigation';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { Constellation } from '@/components/shared/illustrations/Constellation';
+import { CosmicLoader, GlowButton, GlassCard, GradientText } from '@/components/ui/glass';
 import { useAuth } from '@/hooks/useAuth';
+import { trpc } from '@/lib/trpc';
 
 export default function DreamsPage() {
   const router = useRouter();
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<'active' | 'achieved' | 'archived' | 'released' | undefined>('active');
+  const [statusFilter, setStatusFilter] = useState<
+    'active' | 'achieved' | 'archived' | 'released' | undefined
+  >('active');
 
   // Redirect to signin if not authenticated, or to verify-required if not verified
   useEffect(() => {
@@ -32,7 +35,11 @@ export default function DreamsPage() {
   }, [isAuthenticated, authLoading, user, router]);
 
   // Fetch dreams
-  const { data: dreams, isLoading, refetch } = trpc.dreams.list.useQuery({
+  const {
+    data: dreams,
+    isLoading,
+    refetch,
+  } = trpc.dreams.list.useQuery({
     status: statusFilter,
     includeStats: true,
   });
@@ -59,7 +66,7 @@ export default function DreamsPage() {
   // Auth loading state
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
+      <div className="from-mirror-dark via-mirror-midnight to-mirror-dark flex min-h-screen items-center justify-center bg-gradient-to-br p-8">
         <div className="flex flex-col items-center gap-4">
           <CosmicLoader size="lg" />
           <p className="text-small text-white/60">Loading...</p>
@@ -69,13 +76,16 @@ export default function DreamsPage() {
   }
 
   // Auth/verification guard - return null while redirect happens
-  if (!isAuthenticated || (user && !user.emailVerified && !user.isCreator && !user.isAdmin && !user.isDemo)) {
+  if (
+    !isAuthenticated ||
+    (user && !user.emailVerified && !user.isCreator && !user.isAdmin && !user.isDemo)
+  ) {
     return null;
   }
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
+      <div className="from-mirror-dark via-mirror-midnight to-mirror-dark flex min-h-screen items-center justify-center bg-gradient-to-br p-8">
         <div className="flex flex-col items-center gap-6 text-center">
           <div className="text-5xl">🌙</div>
           <CosmicLoader size="lg" label="Gathering your dreams" />
@@ -89,13 +99,13 @@ export default function DreamsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark pt-nav px-4 sm:px-8 pb-20 md:pb-8">
+    <div className="from-mirror-dark via-mirror-midnight to-mirror-dark min-h-screen bg-gradient-to-br px-4 pb-20 pt-nav sm:px-8 md:pb-8">
       <AppNavigation currentPage="dreams" />
 
-      <div className="max-w-7xl mx-auto">
+      <div className="mx-auto max-w-7xl">
         {/* Header */}
         <GlassCard elevated className="mb-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <div>
               <GradientText gradient="cosmic" className="text-h1 mb-2">
                 Your Dreams
@@ -109,7 +119,7 @@ export default function DreamsPage() {
               size="md"
               onClick={() => setIsCreateModalOpen(true)}
               disabled={limits && !limits.canCreate}
-              className="w-full sm:w-auto whitespace-nowrap"
+              className="w-full whitespace-nowrap sm:w-auto"
             >
               + Create Dream
             </GlowButton>
@@ -118,12 +128,11 @@ export default function DreamsPage() {
 
         {/* Limits Info */}
         {limits && (
-          <GlassCard
-            className="mb-6 border-l-4 border-mirror-purple/60"
-          >
-            <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-              <span className="text-white/90 font-medium">
-                {limits.dreamsUsed} / {limits.dreamsLimit === 999999 ? '∞' : limits.dreamsLimit} dreams
+          <GlassCard className="border-mirror-purple/60 mb-6 border-l-4">
+            <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+              <span className="font-medium text-white/90">
+                {limits.dreamsUsed} / {limits.dreamsLimit === 999999 ? '∞' : limits.dreamsLimit}{' '}
+                dreams
               </span>
               {!limits.canCreate && (
                 <span className="text-small text-mirror-warning">
@@ -135,7 +144,7 @@ export default function DreamsPage() {
         )}
 
         {/* Status Filter */}
-        <div className="flex gap-3 mb-6 flex-wrap">
+        <div className="mb-6 flex flex-wrap gap-3">
           <GlowButton
             variant={statusFilter === 'active' ? 'primary' : 'secondary'}
             size="sm"
@@ -168,7 +177,7 @@ export default function DreamsPage() {
 
         {/* Dreams Grid */}
         {dreams && dreams.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
             {dreams.map((dream: any) => (
               <DreamCard
                 key={dream.id}

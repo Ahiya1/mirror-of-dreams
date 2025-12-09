@@ -13,8 +13,9 @@
 
 import { useRouter } from 'next/navigation';
 import { useRef, useEffect } from 'react';
-import { useAuth } from '@/hooks/useAuth';
+
 import { GlowButton } from '@/components/ui/glass/GlowButton';
+import { useAuth } from '@/hooks/useAuth';
 
 export function DemoBanner() {
   const router = useRouter();
@@ -49,22 +50,23 @@ export function DemoBanner() {
   return (
     <div
       ref={bannerRef}
-      className="bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border-b border-amber-500/30 px-4 sm:px-6 py-2 sm:py-3 fixed top-0 left-0 right-0 z-[110]"
+      className="fixed left-0 right-0 top-0 z-[110] border-b border-amber-500/30 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 px-4 py-2 sm:px-6 sm:py-3"
     >
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4">
-        <div className="flex items-center gap-2 sm:gap-3 text-sm text-amber-200 text-center sm:text-left">
-          <span className="text-lg sm:text-2xl flex-shrink-0" aria-label="Demo indicator">
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 sm:flex-row sm:gap-4">
+        <div className="flex items-center gap-2 text-center text-sm text-amber-200 sm:gap-3 sm:text-left">
+          <span className="flex-shrink-0 text-lg sm:text-2xl" aria-label="Demo indicator">
             👁️
           </span>
           <span className="leading-tight">
-            You're viewing a demo account. Create your own to start reflecting and save your progress.
+            You're viewing a demo account. Create your own to start reflecting and save your
+            progress.
           </span>
         </div>
         <GlowButton
           variant="primary"
           size="sm"
           onClick={() => router.push('/auth/signup')}
-          className="whitespace-nowrap flex-shrink-0"
+          className="flex-shrink-0 whitespace-nowrap"
         >
           Sign Up for Free
         </GlowButton>

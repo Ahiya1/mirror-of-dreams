@@ -1,14 +1,11 @@
 // app/api/webhooks/paypal/route.ts - PayPal webhook handler
 // This MUST stay as a separate Next.js route handler for raw body signature verification
 
-import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { NextRequest, NextResponse } from 'next/server';
 
 // Create admin Supabase client for webhook operations
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
 // Import PayPal utilities (from Builder 2)
 // Note: These imports will be available after Builder 2 completes
@@ -174,9 +171,7 @@ async function handleSubscriptionCancelled(event: PayPalWebhookEvent) {
     .single();
 
   if (!user) {
-    console.error(
-      `[PayPal Webhook] User not found for subscription ${subscription.id}`
-    );
+    console.error(`[PayPal Webhook] User not found for subscription ${subscription.id}`);
     return;
   }
 

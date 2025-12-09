@@ -149,9 +149,7 @@ export function buildReflectionUserPrompt(data: {
 }): string {
   const { dream, plan, hasDate, dreamDate, relationship, offering } = data;
 
-  const dateContext = hasDate === 'yes' && dreamDate
-    ? `\nDream Date: ${dreamDate}`
-    : '';
+  const dateContext = hasDate === 'yes' && dreamDate ? `\nDream Date: ${dreamDate}` : '';
 
   return `
 SACRED REFLECTION REQUEST

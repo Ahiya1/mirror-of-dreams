@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useRef, useEffect, ReactNode } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import React, { useState, useRef, useEffect, ReactNode } from 'react';
+
 import { cardPressVariants } from '@/lib/animations/variants';
 
 interface DashboardCardProps {
@@ -139,11 +140,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
 export const CardHeader: React.FC<{ children: ReactNode; className?: string }> = ({
   children,
   className = '',
-}) => (
-  <div className={`dashboard-card__header ${className}`}>
-    {children}
-  </div>
-);
+}) => <div className={`dashboard-card__header ${className}`}>{children}</div>;
 
 /**
  * Card title component
@@ -165,11 +162,7 @@ export const CardTitle: React.FC<{ children: ReactNode; icon?: ReactNode; classN
 export const CardContent: React.FC<{ children: ReactNode; className?: string }> = ({
   children,
   className = '',
-}) => (
-  <div className={`dashboard-card__content-inner ${className}`}>
-    {children}
-  </div>
-);
+}) => <div className={`dashboard-card__content-inner ${className}`}>{children}</div>;
 
 /**
  * Card actions component
@@ -177,11 +170,7 @@ export const CardContent: React.FC<{ children: ReactNode; className?: string }> 
 export const CardActions: React.FC<{ children: ReactNode; className?: string }> = ({
   children,
   className = '',
-}) => (
-  <div className={`dashboard-card__actions ${className}`}>
-    {children}
-  </div>
-);
+}) => <div className={`dashboard-card__actions ${className}`}>{children}</div>;
 
 /**
  * Header action component (for top-right actions)

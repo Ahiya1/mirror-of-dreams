@@ -1,33 +1,23 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence, PanInfo, useReducedMotion } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Check, Sparkles } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 
-// Internal utilities
-import { cn } from '@/lib/utils';
-import { haptic } from '@/lib/utils/haptics';
-
-// Hooks
-import { useKeyboardHeight } from '@/hooks';
-
-// Context for navigation
-import { useHideBottomNav } from '@/contexts/NavigationContext';
-
-// Internal components
-import { GlassCard, GlowButton, CosmicLoader, GlassInput } from '@/components/ui/glass';
-import { ProgressOrbs } from '@/components/ui/glass/ProgressOrbs';
 import { ToneSelectionCard } from '@/components/reflection/ToneSelectionCard';
-
-// Animation variants
-import { stepTransitionVariants, gazingOverlayVariants, statusTextVariants } from '@/lib/animations/variants';
-
-// Types
-import type { ToneId } from '@/lib/utils/constants';
-
-// Question limits (matching desktop)
-import { QUESTION_LIMITS } from '@/lib/utils/constants';
+import { GlowButton, CosmicLoader, GlassInput } from '@/components/ui/glass';
+import { ProgressOrbs } from '@/components/ui/glass/ProgressOrbs';
+import { useHideBottomNav } from '@/contexts/NavigationContext';
+import { useKeyboardHeight } from '@/hooks';
+import {
+  stepTransitionVariants,
+  gazingOverlayVariants,
+  statusTextVariants,
+} from '@/lib/animations/variants';
+import { cn } from '@/lib/utils';
+import { QUESTION_LIMITS, type ToneId } from '@/lib/utils/constants';
+import { haptic } from '@/lib/utils/haptics';
 
 /**
  * Form data interface matching MirrorExperience
@@ -69,7 +59,7 @@ export interface MobileReflectionFlowProps {
 
 // Wizard steps
 const WIZARD_STEPS = ['dreamSelect', 'q1', 'q2', 'q3', 'q4', 'tone'] as const;
-type WizardStep = typeof WIZARD_STEPS[number];
+type WizardStep = (typeof WIZARD_STEPS)[number];
 
 // Question content
 const QUESTIONS = [
@@ -78,7 +68,7 @@ const QUESTIONS = [
     number: 1,
     text: 'What is your dream?',
     guide: 'Take a moment to describe your dream in vivid detail...',
-    placeholder: 'Your thoughts are safe here... what\'s present for you right now?',
+    placeholder: "Your thoughts are safe here... what's present for you right now?",
     limit: QUESTION_LIMITS.dream,
   },
   {
@@ -94,7 +84,7 @@ const QUESTIONS = [
     number: 3,
     text: 'What is your relationship with this dream?',
     guide: 'How does this dream connect to who you are becoming?',
-    placeholder: 'How does this dream connect to who you\'re becoming?',
+    placeholder: "How does this dream connect to who you're becoming?",
     limit: QUESTION_LIMITS.relationship,
   },
   {
@@ -123,20 +113,20 @@ const EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 // Category emoji mapping (using Unicode escape sequences for reliability)
 const CATEGORY_EMOJI: Record<string, string> = {
-  career: '\uD83D\uDCBC',        // Briefcase
-  health: '\uD83C\uDFC3',        // Runner
+  career: '\uD83D\uDCBC', // Briefcase
+  health: '\uD83C\uDFC3', // Runner
   relationships: '\u2764\uFE0F', // Heart
-  creativity: '\uD83C\uDFA8',    // Art palette
-  finance: '\uD83D\uDCB0',       // Money bag
-  personal: '\u2728',            // Sparkles
-  spiritual: '\uD83D\uDE4F',     // Praying hands
-  education: '\uD83D\uDCDA',     // Books
+  creativity: '\uD83C\uDFA8', // Art palette
+  finance: '\uD83D\uDCB0', // Money bag
+  personal: '\u2728', // Sparkles
+  spiritual: '\uD83D\uDE4F', // Praying hands
+  education: '\uD83D\uDCDA', // Books
   entrepreneurial: '\uD83D\uDE80', // Rocket
-  financial: '\uD83D\uDCB0',     // Money bag
+  financial: '\uD83D\uDCB0', // Money bag
   personal_growth: '\uD83C\uDF31', // Seedling
-  creative: '\uD83C\uDFA8',      // Art palette
-  other: '\u2B50',               // Star
-  default: '\uD83C\uDF1F',       // Glowing star
+  creative: '\uD83C\uDFA8', // Art palette
+  other: '\u2B50', // Star
+  default: '\uD83C\uDF1F', // Glowing star
 };
 
 /**
@@ -180,11 +170,11 @@ export function MobileReflectionFlow({
 
   // Get current step
   const currentStep = WIZARD_STEPS[currentStepIndex];
-  const selectedDream = dreams.find(d => d.id === selectedDreamId);
+  const selectedDream = dreams.find((d) => d.id === selectedDreamId);
 
   // Dirty form detection
   const isDirty = useMemo(() => {
-    return Object.values(formData).some(value => value.trim().length > 0);
+    return Object.values(formData).some((value) => value.trim().length > 0);
   }, [formData]);
 
   // Get question text - using simpler generic questions
@@ -196,7 +186,7 @@ export function MobileReflectionFlow({
   const goToNextStep = useCallback(() => {
     if (currentStepIndex < WIZARD_STEPS.length - 1) {
       setDirection(1);
-      setCurrentStepIndex(prev => prev + 1);
+      setCurrentStepIndex((prev) => prev + 1);
       haptic('light');
     }
   }, [currentStepIndex]);
@@ -204,32 +194,32 @@ export function MobileReflectionFlow({
   const goToPreviousStep = useCallback(() => {
     if (currentStepIndex > 0) {
       setDirection(-1);
-      setCurrentStepIndex(prev => prev - 1);
+      setCurrentStepIndex((prev) => prev - 1);
       haptic('light');
     }
   }, [currentStepIndex]);
 
   // Swipe handler
-  const handleDragEnd = useCallback((_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    if (isTextareaFocused) return;
+  const handleDragEnd = useCallback(
+    (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+      if (isTextareaFocused) return;
 
-    const SWIPE_THRESHOLD = 50;
-    const VELOCITY_THRESHOLD = 300;
+      const SWIPE_THRESHOLD = 50;
+      const VELOCITY_THRESHOLD = 300;
 
-    const shouldAdvance =
-      info.offset.x < -SWIPE_THRESHOLD ||
-      info.velocity.x < -VELOCITY_THRESHOLD;
+      const shouldAdvance =
+        info.offset.x < -SWIPE_THRESHOLD || info.velocity.x < -VELOCITY_THRESHOLD;
 
-    const shouldGoBack =
-      info.offset.x > SWIPE_THRESHOLD ||
-      info.velocity.x > VELOCITY_THRESHOLD;
+      const shouldGoBack = info.offset.x > SWIPE_THRESHOLD || info.velocity.x > VELOCITY_THRESHOLD;
 
-    if (shouldAdvance && canGoNext()) {
-      goToNextStep();
-    } else if (shouldGoBack) {
-      goToPreviousStep();
-    }
-  }, [isTextareaFocused, goToNextStep, goToPreviousStep]);
+      if (shouldAdvance && canGoNext()) {
+        goToNextStep();
+      } else if (shouldGoBack) {
+        goToPreviousStep();
+      }
+    },
+    [isTextareaFocused, goToNextStep, goToPreviousStep]
+  );
 
   // Can advance check
   const canGoNext = useCallback((): boolean => {
@@ -278,7 +268,7 @@ export function MobileReflectionFlow({
     }
 
     const interval = setInterval(() => {
-      setStatusIndex(prev => (prev + 1) % STATUS_MESSAGES.length);
+      setStatusIndex((prev) => (prev + 1) % STATUS_MESSAGES.length);
     }, STATUS_INTERVAL);
 
     return () => clearInterval(interval);
@@ -294,32 +284,36 @@ export function MobileReflectionFlow({
   }, [currentStep, onSubmit]);
 
   // Handle dream selection
-  const handleDreamSelection = useCallback((dream: Dream) => {
-    haptic('light');
-    onDreamSelect(dream);
-    setShowDreamSheet(false);
-    // Auto-advance to first question
-    setTimeout(() => {
-      goToNextStep();
-    }, 300);
-  }, [onDreamSelect, goToNextStep]);
+  const handleDreamSelection = useCallback(
+    (dream: Dream) => {
+      haptic('light');
+      onDreamSelect(dream);
+      setShowDreamSheet(false);
+      // Auto-advance to first question
+      setTimeout(() => {
+        goToNextStep();
+      }, 300);
+    },
+    [onDreamSelect, goToNextStep]
+  );
 
   // Render current step content
   const renderStepContent = () => {
     switch (currentStep) {
       case 'dreamSelect':
         return (
-          <div className="flex flex-col h-full px-6 pt-4 pb-safe">
-            <h2 className="text-2xl font-light text-white text-center mb-8">
+          <div className="pb-safe flex h-full flex-col px-6 pt-4">
+            <h2 className="mb-8 text-center text-2xl font-light text-white">
               Which dream are you reflecting on?
             </h2>
 
-            <div className="flex-1 overflow-y-auto space-y-3">
+            <div className="flex-1 space-y-3 overflow-y-auto">
               {dreams.length > 0 ? (
                 <>
                   {dreams.map((dream) => {
                     const isSelected = dream.id === selectedDreamId;
-                    const emoji = CATEGORY_EMOJI[dream.category || 'default'] || CATEGORY_EMOJI.default;
+                    const emoji =
+                      CATEGORY_EMOJI[dream.category || 'default'] || CATEGORY_EMOJI.default;
 
                     return (
                       <motion.button
@@ -327,31 +321,33 @@ export function MobileReflectionFlow({
                         onClick={() => handleDreamSelection(dream)}
                         whileTap={{ scale: 0.98 }}
                         className={cn(
-                          'w-full flex items-center gap-4 p-4',
+                          'flex w-full items-center gap-4 p-4',
                           'min-h-[60px]',
                           'rounded-2xl',
                           'transition-colors duration-200',
                           isSelected
-                            ? 'bg-purple-500/20 border border-purple-500/50'
-                            : 'bg-white/5 border border-white/10 active:bg-white/10'
+                            ? 'border border-purple-500/50 bg-purple-500/20'
+                            : 'border border-white/10 bg-white/5 active:bg-white/10'
                         )}
                       >
-                        <span className="text-2xl" role="img" aria-label={dream.category || 'dream'}>
+                        <span
+                          className="text-2xl"
+                          role="img"
+                          aria-label={dream.category || 'dream'}
+                        >
                           {emoji}
                         </span>
                         <div className="flex-1 text-left">
-                          <h3 className="text-white font-medium truncate">
-                            {dream.title}
-                          </h3>
+                          <h3 className="truncate font-medium text-white">{dream.title}</h3>
                           {dream.description && (
-                            <p className="text-white/60 text-sm truncate mt-0.5">
+                            <p className="mt-0.5 truncate text-sm text-white/60">
                               {dream.description}
                             </p>
                           )}
                         </div>
                         {isSelected && (
-                          <div className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center">
-                            <Check className="w-4 h-4 text-white" />
+                          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-purple-500">
+                            <Check className="h-4 w-4 text-white" />
                           </div>
                         )}
                       </motion.button>
@@ -359,13 +355,9 @@ export function MobileReflectionFlow({
                   })}
                 </>
               ) : (
-                <div className="text-center py-8">
-                  <p className="text-white/70 mb-6">No active dreams yet.</p>
-                  <GlowButton
-                    variant="primary"
-                    size="md"
-                    onClick={() => router.push('/dreams')}
-                  >
+                <div className="py-8 text-center">
+                  <p className="mb-6 text-white/70">No active dreams yet.</p>
+                  <GlowButton variant="primary" size="md" onClick={() => router.push('/dreams')}>
                     Create Your First Dream
                   </GlowButton>
                 </div>
@@ -383,27 +375,26 @@ export function MobileReflectionFlow({
 
         return (
           <div
-            className="flex flex-col h-full px-6 pt-4"
+            className="flex h-full flex-col px-6 pt-4"
             style={{
-              paddingBottom: keyboardHeight > 0 ? keyboardHeight + 16 : 'env(safe-area-inset-bottom, 16px)',
+              paddingBottom:
+                keyboardHeight > 0 ? keyboardHeight + 16 : 'env(safe-area-inset-bottom, 16px)',
             }}
           >
             {/* Question Header */}
             <div className="mb-6">
-              <p className="text-sm text-purple-400 mb-2">
+              <p className="mb-2 text-sm text-purple-400">
                 Question {question.number} of {QUESTIONS.length}
               </p>
-              <h2 className="text-2xl font-light text-white leading-relaxed mb-3">
+              <h2 className="mb-3 text-2xl font-light leading-relaxed text-white">
                 {getQuestionText(questionIndex)}
               </h2>
-              <p className="text-white/60 text-sm leading-relaxed">
-                {question.guide}
-              </p>
+              <p className="text-sm leading-relaxed text-white/60">{question.guide}</p>
             </div>
 
             {/* Textarea */}
             <div
-              className="flex-1 min-h-0"
+              className="min-h-0 flex-1"
               onFocusCapture={() => setIsTextareaFocused(true)}
               onBlurCapture={() => setIsTextareaFocused(false)}
             >
@@ -421,14 +412,14 @@ export function MobileReflectionFlow({
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex items-center justify-between pt-4 pb-2">
+            <div className="flex items-center justify-between pb-2 pt-4">
               <GlowButton
                 variant="secondary"
                 size="lg"
                 onClick={goToPreviousStep}
                 className="min-w-[100px]"
               >
-                <ChevronLeft className="w-5 h-5 mr-1" />
+                <ChevronLeft className="mr-1 h-5 w-5" />
                 Back
               </GlowButton>
 
@@ -440,7 +431,7 @@ export function MobileReflectionFlow({
                 className="min-w-[100px]"
               >
                 Next
-                <ChevronRight className="w-5 h-5 ml-1" />
+                <ChevronRight className="ml-1 h-5 w-5" />
               </GlowButton>
             </div>
           </div>
@@ -448,28 +439,25 @@ export function MobileReflectionFlow({
 
       case 'tone':
         return (
-          <div className="flex flex-col h-full px-6 pt-4 pb-safe">
-            <h2 className="text-2xl font-light text-white text-center mb-6">
+          <div className="pb-safe flex h-full flex-col px-6 pt-4">
+            <h2 className="mb-6 text-center text-2xl font-light text-white">
               Choose your reflection tone
             </h2>
 
             <div className="flex-1 overflow-y-auto">
-              <ToneSelectionCard
-                selectedTone={selectedTone}
-                onSelect={onToneSelect}
-              />
+              <ToneSelectionCard selectedTone={selectedTone} onSelect={onToneSelect} />
             </div>
 
             {/* Submit Button */}
-            <div className="pt-6 pb-4">
-              <div className="flex items-center justify-between mb-4">
+            <div className="pb-4 pt-6">
+              <div className="mb-4 flex items-center justify-between">
                 <GlowButton
                   variant="secondary"
                   size="lg"
                   onClick={goToPreviousStep}
                   className="min-w-[100px]"
                 >
-                  <ChevronLeft className="w-5 h-5 mr-1" />
+                  <ChevronLeft className="mr-1 h-5 w-5" />
                   Back
                 </GlowButton>
 
@@ -488,7 +476,7 @@ export function MobileReflectionFlow({
                   ) : (
                     <>
                       Gaze into the Mirror
-                      <Sparkles className="w-5 h-5 ml-2" />
+                      <Sparkles className="ml-2 h-5 w-5" />
                     </>
                   )}
                 </GlowButton>
@@ -503,35 +491,30 @@ export function MobileReflectionFlow({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-mirror-void-deep flex flex-col">
+    <div className="fixed inset-0 z-50 flex flex-col bg-mirror-void-deep">
       {/* Header with close button and progress */}
-      <div className="flex items-center justify-between px-4 pt-safe pb-4 border-b border-white/10">
+      <div className="pt-safe flex items-center justify-between border-b border-white/10 px-4 pb-4">
         <button
           onClick={handleCloseAttempt}
-          className="p-2 -m-2 text-white/60 hover:text-white transition-colors"
+          className="-m-2 p-2 text-white/60 transition-colors hover:text-white"
           aria-label="Close"
         >
-          <X className="w-6 h-6" />
+          <X className="h-6 w-6" />
         </button>
-
-        <ProgressOrbs
-          currentStep={currentStepIndex}
-          steps={WIZARD_STEPS.length}
-        />
-
+        <ProgressOrbs currentStep={currentStepIndex} steps={WIZARD_STEPS.length} />
         <div className="w-10" /> {/* Spacer for centering */}
       </div>
 
       {/* Step Content with swipe */}
-      <div className="flex-1 relative overflow-hidden">
+      <div className="relative flex-1 overflow-hidden">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={currentStepIndex}
             custom={direction}
             variants={!prefersReducedMotion ? stepTransitionVariants : undefined}
-            initial={!prefersReducedMotion ? "enter" : undefined}
-            animate={!prefersReducedMotion ? "center" : undefined}
-            exit={!prefersReducedMotion ? "exit" : undefined}
+            initial={!prefersReducedMotion ? 'enter' : undefined}
+            animate={!prefersReducedMotion ? 'center' : undefined}
+            exit={!prefersReducedMotion ? 'exit' : undefined}
             drag={isTextareaFocused ? false : 'x'}
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.5}
@@ -553,7 +536,8 @@ export function MobileReflectionFlow({
             exit="exit"
             className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden"
             style={{
-              background: 'radial-gradient(ellipse at center, rgba(15, 10, 30, 0.98) 0%, rgba(5, 2, 15, 1) 100%)',
+              background:
+                'radial-gradient(ellipse at center, rgba(15, 10, 30, 0.98) 0%, rgba(5, 2, 15, 1) 100%)',
             }}
           >
             {/* Twinkling stars background */}
@@ -569,10 +553,14 @@ export function MobileReflectionFlow({
                     height: `${1 + Math.random() * 2}px`,
                     boxShadow: '0 0 6px rgba(255, 255, 255, 0.8)',
                   }}
-                  animate={!prefersReducedMotion ? {
-                    opacity: [0.2, 0.8, 0.2],
-                    scale: [0.8, 1.2, 0.8],
-                  } : undefined}
+                  animate={
+                    !prefersReducedMotion
+                      ? {
+                          opacity: [0.2, 0.8, 0.2],
+                          scale: [0.8, 1.2, 0.8],
+                        }
+                      : undefined
+                  }
                   transition={{
                     duration: 2 + Math.random() * 3,
                     repeat: Infinity,
@@ -585,87 +573,109 @@ export function MobileReflectionFlow({
               {[...Array(12)].map((_, i) => (
                 <motion.div
                   key={`particle-${i}`}
-                  className="absolute w-1 h-1 rounded-full"
+                  className="absolute h-1 w-1 rounded-full"
                   style={{
                     left: `${20 + Math.random() * 60}%`,
                     top: `${20 + Math.random() * 60}%`,
-                    background: 'radial-gradient(circle, rgba(168, 85, 247, 0.9) 0%, rgba(236, 72, 153, 0.6) 50%, transparent 100%)',
+                    background:
+                      'radial-gradient(circle, rgba(168, 85, 247, 0.9) 0%, rgba(236, 72, 153, 0.6) 50%, transparent 100%)',
                     filter: 'blur(1px)',
                   }}
-                  animate={!prefersReducedMotion ? {
-                    x: [0, (Math.random() - 0.5) * 80, 0],
-                    y: [0, -40 - Math.random() * 40, 0],
-                    opacity: [0, 0.6, 0],
-                    scale: [0, 1, 0],
-                  } : undefined}
+                  animate={
+                    !prefersReducedMotion
+                      ? {
+                          x: [0, (Math.random() - 0.5) * 80, 0],
+                          y: [0, -40 - Math.random() * 40, 0],
+                          opacity: [0, 0.6, 0],
+                          scale: [0, 1, 0],
+                        }
+                      : undefined
+                  }
                   transition={{
                     duration: 4 + Math.random() * 3,
                     repeat: Infinity,
                     delay: Math.random() * 4,
-                    ease: "easeInOut",
+                    ease: 'easeInOut',
                   }}
                 />
               ))}
             </div>
 
             {/* Central mirror portal */}
-            <div className="relative flex items-center justify-center w-[200px] h-[200px]">
+            <div className="relative flex h-[200px] w-[200px] items-center justify-center">
               {/* Outer rotating ring */}
               <motion.div
-                className="absolute w-[200px] h-[200px] rounded-full"
+                className="absolute h-[200px] w-[200px] rounded-full"
                 style={{
-                  background: 'conic-gradient(from 0deg, transparent 0%, rgba(168, 85, 247, 0.3) 25%, transparent 50%, rgba(251, 191, 36, 0.3) 75%, transparent 100%)',
+                  background:
+                    'conic-gradient(from 0deg, transparent 0%, rgba(168, 85, 247, 0.3) 25%, transparent 50%, rgba(251, 191, 36, 0.3) 75%, transparent 100%)',
                   filter: 'blur(8px)',
                 }}
-                animate={!prefersReducedMotion ? {
-                  rotate: 360,
-                  scale: [1, 1.05, 1],
-                } : undefined}
+                animate={
+                  !prefersReducedMotion
+                    ? {
+                        rotate: 360,
+                        scale: [1, 1.05, 1],
+                      }
+                    : undefined
+                }
                 transition={{
-                  rotate: { duration: 30, repeat: Infinity, ease: "linear" },
-                  scale: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+                  rotate: { duration: 30, repeat: Infinity, ease: 'linear' },
+                  scale: { duration: 4, repeat: Infinity, ease: 'easeInOut' },
                 }}
               />
 
               {/* Middle rotating ring */}
               <motion.div
-                className="absolute w-[160px] h-[160px] rounded-full"
+                className="absolute h-[160px] w-[160px] rounded-full"
                 style={{
-                  background: 'conic-gradient(from 180deg, transparent 0%, rgba(236, 72, 153, 0.4) 25%, transparent 50%, rgba(168, 85, 247, 0.4) 75%, transparent 100%)',
+                  background:
+                    'conic-gradient(from 180deg, transparent 0%, rgba(236, 72, 153, 0.4) 25%, transparent 50%, rgba(168, 85, 247, 0.4) 75%, transparent 100%)',
                   filter: 'blur(4px)',
                 }}
-                animate={!prefersReducedMotion ? {
-                  rotate: -360,
-                  scale: [1.05, 1, 1.05],
-                } : undefined}
+                animate={
+                  !prefersReducedMotion
+                    ? {
+                        rotate: -360,
+                        scale: [1.05, 1, 1.05],
+                      }
+                    : undefined
+                }
                 transition={{
-                  rotate: { duration: 25, repeat: Infinity, ease: "linear" },
-                  scale: { duration: 3.5, repeat: Infinity, ease: "easeInOut" },
+                  rotate: { duration: 25, repeat: Infinity, ease: 'linear' },
+                  scale: { duration: 3.5, repeat: Infinity, ease: 'easeInOut' },
                 }}
               />
 
               {/* The mirror portal itself */}
               <motion.div
-                className="relative w-[120px] h-[120px] rounded-full overflow-hidden"
+                className="relative h-[120px] w-[120px] overflow-hidden rounded-full"
                 style={{
-                  background: 'radial-gradient(circle at 30% 30%, rgba(40, 30, 60, 0.9) 0%, rgba(20, 15, 35, 0.95) 50%, rgba(10, 5, 20, 1) 100%)',
-                  boxShadow: '0 0 60px rgba(168, 85, 247, 0.4), 0 0 100px rgba(168, 85, 247, 0.2), inset 0 0 40px rgba(0, 0, 0, 0.5), inset 0 0 80px rgba(168, 85, 247, 0.1)',
+                  background:
+                    'radial-gradient(circle at 30% 30%, rgba(40, 30, 60, 0.9) 0%, rgba(20, 15, 35, 0.95) 50%, rgba(10, 5, 20, 1) 100%)',
+                  boxShadow:
+                    '0 0 60px rgba(168, 85, 247, 0.4), 0 0 100px rgba(168, 85, 247, 0.2), inset 0 0 40px rgba(0, 0, 0, 0.5), inset 0 0 80px rgba(168, 85, 247, 0.1)',
                   border: '1px solid rgba(168, 85, 247, 0.3)',
                 }}
-                animate={!prefersReducedMotion ? {
-                  scale: [1, 1.02, 1],
-                } : undefined}
+                animate={
+                  !prefersReducedMotion
+                    ? {
+                        scale: [1, 1.02, 1],
+                      }
+                    : undefined
+                }
                 transition={{
                   duration: 3,
                   repeat: Infinity,
-                  ease: "easeInOut",
+                  ease: 'easeInOut',
                 }}
               >
                 {/* Surface shimmer */}
                 <div
                   className="absolute inset-0 rounded-full"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(255, 255, 255, 0.05) 100%)',
+                    background:
+                      'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(255, 255, 255, 0.05) 100%)',
                   }}
                 />
 
@@ -674,16 +684,21 @@ export function MobileReflectionFlow({
                   className="absolute rounded-full"
                   style={{
                     inset: '20%',
-                    background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(236, 72, 153, 0.1) 50%, rgba(251, 191, 36, 0.15) 100%)',
+                    background:
+                      'linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(236, 72, 153, 0.1) 50%, rgba(251, 191, 36, 0.15) 100%)',
                     filter: 'blur(10px)',
                   }}
-                  animate={!prefersReducedMotion ? {
-                    opacity: [0.3, 0.6, 0.3],
-                  } : undefined}
+                  animate={
+                    !prefersReducedMotion
+                      ? {
+                          opacity: [0.3, 0.6, 0.3],
+                        }
+                      : undefined
+                  }
                   transition={{
                     duration: 5,
                     repeat: Infinity,
-                    ease: "easeInOut",
+                    ease: 'easeInOut',
                   }}
                 />
 
@@ -692,16 +707,21 @@ export function MobileReflectionFlow({
                   className="absolute rounded-full"
                   style={{
                     inset: '30%',
-                    background: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(168, 85, 247, 0.1) 50%, transparent 100%)',
+                    background:
+                      'radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(168, 85, 247, 0.1) 50%, transparent 100%)',
                   }}
-                  animate={!prefersReducedMotion ? {
-                    opacity: [0.4, 0.8, 0.4],
-                    scale: [0.8, 1.1, 0.8],
-                  } : undefined}
+                  animate={
+                    !prefersReducedMotion
+                      ? {
+                          opacity: [0.4, 0.8, 0.4],
+                          scale: [0.8, 1.1, 0.8],
+                        }
+                      : undefined
+                  }
                   transition={{
                     duration: 2.5,
                     repeat: Infinity,
-                    ease: "easeInOut",
+                    ease: 'easeInOut',
                   }}
                 />
               </motion.div>
@@ -709,12 +729,12 @@ export function MobileReflectionFlow({
 
             {/* Status text */}
             <motion.div
-              className="relative text-center mt-10 z-10"
+              className="relative z-10 mt-10 text-center"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
             >
-              <div className="h-12 flex items-center justify-center">
+              <div className="flex h-12 items-center justify-center">
                 <AnimatePresence mode="wait">
                   <motion.p
                     key={statusIndex}
@@ -722,7 +742,7 @@ export function MobileReflectionFlow({
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className="text-white/95 text-xl font-light text-center px-6"
+                    className="px-6 text-center text-xl font-light text-white/95"
                     style={{
                       letterSpacing: '0.05em',
                       textShadow: '0 0 30px rgba(168, 85, 247, 0.5)',
@@ -733,7 +753,7 @@ export function MobileReflectionFlow({
                 </AnimatePresence>
               </div>
 
-              <p className="text-white/50 text-sm mt-2" style={{ letterSpacing: '0.1em' }}>
+              <p className="mt-2 text-sm text-white/50" style={{ letterSpacing: '0.1em' }}>
                 Your reflection is taking form...
               </p>
             </motion.div>
@@ -748,18 +768,16 @@ export function MobileReflectionFlow({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 backdrop-blur-sm p-6"
+            className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 p-6 backdrop-blur-sm"
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-mirror-void-deep/95 border border-white/10 rounded-2xl p-6 max-w-sm w-full"
+              className="w-full max-w-sm rounded-2xl border border-white/10 bg-mirror-void-deep/95 p-6"
             >
-              <h3 className="text-xl font-semibold text-white mb-3">
-                Leave reflection?
-              </h3>
-              <p className="text-white/70 mb-6 leading-relaxed">
+              <h3 className="mb-3 text-xl font-semibold text-white">Leave reflection?</h3>
+              <p className="mb-6 leading-relaxed text-white/70">
                 Your answers will be lost if you leave now. Are you sure you want to exit?
               </p>
 

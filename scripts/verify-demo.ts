@@ -1,9 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
 async function verify() {
   const { data: user } = await supabase
@@ -20,7 +17,9 @@ async function verify() {
     .eq('user_id', user!.id);
 
   console.log('\nDreams:', dreams?.length);
-  dreams?.forEach(d => console.log('  -', d.title, '(' + d.category + ', priority:', d.priority + ')'));
+  dreams?.forEach((d) =>
+    console.log('  -', d.title, '(' + d.category + ', priority:', d.priority + ')')
+  );
 
   const { data: reflections } = await supabase
     .from('reflections')

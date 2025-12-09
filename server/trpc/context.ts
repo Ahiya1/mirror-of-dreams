@@ -2,6 +2,8 @@
 
 import { type FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
 import jwt from 'jsonwebtoken';
+
+import { getAuthCookie } from '@/server/lib/cookies';
 import { supabase } from '@/server/lib/supabase';
 import { type User, type JWTPayload, userRowToUser } from '@/types';
 
@@ -13,8 +15,14 @@ if (!JWT_SECRET) {
 export async function createContext(opts: FetchCreateContextFnOptions) {
   const { req } = opts;
 
-  // Extract JWT token from Authorization header
-  const token = req.headers.get('authorization')?.replace('Bearer ', '');
+  // Try to get token from cookie first (preferred)
+  const cookieToken = await getAuthCookie();
+
+  // Fallback to Authorization header for backward compatibility
+  const headerToken = req.headers.get('authorization')?.replace('Bearer ', '');
+
+  // Prefer cookie, fallback to header
+  const token = cookieToken || headerToken;
 
   let user: User | null = null;
 
@@ -62,6 +70,7 @@ export async function createContext(opts: FetchCreateContextFnOptions) {
 
   return {
     user,
+    req, // Include request for rate limiting IP extraction
   };
 }
 

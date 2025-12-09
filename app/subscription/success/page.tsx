@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, Suspense } from 'react';
-import { useRouter } from 'next/navigation';
 import { CheckCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useEffect, Suspense } from 'react';
+
 import {
   GlassCard,
   GlowButton,
@@ -30,29 +31,23 @@ function SubscriptionSuccessContent() {
   }, [router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-4">
+    <div className="from-mirror-dark via-mirror-midnight to-mirror-dark flex min-h-screen items-center justify-center bg-gradient-to-br p-4">
       <AnimatedBackground />
 
-      <GlassCard className="max-w-md w-full p-8 text-center" elevated>
+      <GlassCard className="w-full max-w-md p-8 text-center" elevated>
         {/* Success Icon */}
         <div className="mb-6">
-          <CheckCircle className="w-16 h-16 text-mirror-success mx-auto animate-pulse" />
+          <CheckCircle className="mx-auto h-16 w-16 animate-pulse text-mirror-success" />
         </div>
 
         {/* Title */}
-        <GradientText className="text-h2 font-bold block mb-3">
-          Payment Successful!
-        </GradientText>
+        <GradientText className="text-h2 mb-3 block font-bold">Payment Successful!</GradientText>
 
         {/* Message */}
-        <p className="text-body text-white/80 mb-4">
-          Welcome to your upgraded experience
-        </p>
+        <p className="text-body mb-4 text-white/80">Welcome to your upgraded experience</p>
 
         {/* Redirect Notice */}
-        <p className="text-body-sm text-white/50">
-          Redirecting to your dashboard...
-        </p>
+        <p className="text-body-sm text-white/50">Redirecting to your dashboard...</p>
 
         {/* Visual Loading Indicator */}
         <div className="mt-6">
@@ -66,11 +61,11 @@ function SubscriptionSuccessContent() {
 // Loading fallback
 function SubscriptionSuccessLoading() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark">
+    <div className="from-mirror-dark via-mirror-midnight to-mirror-dark flex min-h-screen items-center justify-center bg-gradient-to-br">
       <AnimatedBackground />
       <GlassCard className="p-8 text-center" elevated>
         <CosmicLoader size="lg" label="Loading..." />
-        <p className="text-body text-white/80 mt-4">Loading...</p>
+        <p className="text-body mt-4 text-white/80">Loading...</p>
       </GlassCard>
     </div>
   );

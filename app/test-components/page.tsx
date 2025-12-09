@@ -6,13 +6,14 @@
 'use client';
 
 import { useState } from 'react';
-import CosmicBackground from '@/components/shared/CosmicBackground';
-import NavigationBase from '@/components/shared/NavigationBase';
-import LandingNavigation from '@/components/shared/LandingNavigation';
+
 import AuthLayout from '@/components/auth/AuthLayout';
-import { GlowButton } from '@/components/ui/glass/GlowButton';
-import { GlassInput } from '@/components/ui/glass/GlassInput';
+import CosmicBackground from '@/components/shared/CosmicBackground';
+import LandingNavigation from '@/components/shared/LandingNavigation';
+import NavigationBase from '@/components/shared/NavigationBase';
 import { GlassCard } from '@/components/ui/glass';
+import { GlassInput } from '@/components/ui/glass/GlassInput';
+import { GlowButton } from '@/components/ui/glass/GlowButton';
 
 export default function TestComponentsPage() {
   const [email, setEmail] = useState('');
@@ -22,30 +23,44 @@ export default function TestComponentsPage() {
   const [emailError, setEmailError] = useState('');
 
   return (
-    <div className="min-h-screen relative">
+    <div className="relative min-h-screen">
       <CosmicBackground animated={true} intensity={1} />
       <LandingNavigation />
 
-      <div className="relative z-10 pt-24 pb-12 px-4">
-        <div className="max-w-6xl mx-auto space-y-12">
+      <div className="relative z-10 px-4 pb-12 pt-24">
+        <div className="mx-auto max-w-6xl space-y-12">
           {/* GlowButton Variants */}
           <GlassCard elevated className="p-8">
-            <h2 className="text-2xl font-semibold text-white mb-6">GlowButton Variants</h2>
+            <h2 className="mb-6 text-2xl font-semibold text-white">GlowButton Variants</h2>
             <div className="flex flex-wrap gap-4">
-              <GlowButton variant="primary" size="sm">Primary Small</GlowButton>
-              <GlowButton variant="primary" size="md">Primary Medium</GlowButton>
-              <GlowButton variant="primary" size="lg">Primary Large</GlowButton>
-              <GlowButton variant="secondary" size="md">Secondary</GlowButton>
-              <GlowButton variant="ghost" size="md">Ghost</GlowButton>
-              <GlowButton variant="cosmic" size="md">Cosmic NEW</GlowButton>
-              <GlowButton variant="cosmic" size="lg">Cosmic Large</GlowButton>
+              <GlowButton variant="primary" size="sm">
+                Primary Small
+              </GlowButton>
+              <GlowButton variant="primary" size="md">
+                Primary Medium
+              </GlowButton>
+              <GlowButton variant="primary" size="lg">
+                Primary Large
+              </GlowButton>
+              <GlowButton variant="secondary" size="md">
+                Secondary
+              </GlowButton>
+              <GlowButton variant="ghost" size="md">
+                Ghost
+              </GlowButton>
+              <GlowButton variant="cosmic" size="md">
+                Cosmic NEW
+              </GlowButton>
+              <GlowButton variant="cosmic" size="lg">
+                Cosmic Large
+              </GlowButton>
             </div>
           </GlassCard>
 
           {/* GlassInput Enhancements */}
           <GlassCard elevated className="p-8">
-            <h2 className="text-2xl font-semibold text-white mb-6">GlassInput Enhancements</h2>
-            <div className="space-y-6 max-w-md">
+            <h2 className="mb-6 text-2xl font-semibold text-white">GlassInput Enhancements</h2>
+            <div className="max-w-md space-y-6">
               <GlassInput
                 type="text"
                 label="Text Input"
@@ -95,14 +110,15 @@ export default function TestComponentsPage() {
 
           {/* AuthLayout Preview */}
           <GlassCard elevated className="p-8">
-            <h2 className="text-2xl font-semibold text-white mb-6">AuthLayout Preview</h2>
-            <p className="text-white/70 mb-4">
-              AuthLayout component renders full-page centered card. See /auth/signin for live example.
+            <h2 className="mb-6 text-2xl font-semibold text-white">AuthLayout Preview</h2>
+            <p className="mb-4 text-white/70">
+              AuthLayout component renders full-page centered card. See /auth/signin for live
+              example.
             </p>
-            <div className="bg-white/5 rounded-lg p-8 border border-white/10">
-              <div className="max-w-md mx-auto">
+            <div className="rounded-lg border border-white/10 bg-white/5 p-8">
+              <div className="mx-auto max-w-md">
                 <AuthLayout title="Test Auth Layout">
-                  <p className="text-white/70 text-center">Form content goes here</p>
+                  <p className="text-center text-white/70">Form content goes here</p>
                 </AuthLayout>
               </div>
             </div>

@@ -11,21 +11,11 @@ export function PasswordToggle({ visible, onToggle }: PasswordToggleProps) {
     <button
       type="button"
       onClick={onToggle}
-      className="
-        p-2
-        text-gray-400
-        hover:text-gray-300
-        transition-colors duration-200
-      "
+      className="p-2 text-gray-400 transition-colors duration-200 hover:text-gray-300"
       aria-label={visible ? 'Hide password' : 'Show password'}
     >
       {visible ? (
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -34,12 +24,7 @@ export function PasswordToggle({ visible, onToggle }: PasswordToggleProps) {
           />
         </svg>
       ) : (
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"

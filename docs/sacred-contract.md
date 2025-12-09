@@ -16,7 +16,8 @@ When you come to Mirror of Dreams with something from your inner life - a dream,
 
 Your dreams are not silly. Your fears are not weak. Your confusion is not failure. Whatever you bring, we receive it as it is - without measuring it against what it "should" be.
 
-*This means:*
+_This means:_
+
 - No dream is too small or too grand
 - No struggle is too trivial or too dramatic
 - No pace is too slow or too fast
@@ -26,7 +27,8 @@ Your dreams are not silly. Your fears are not weak. Your confusion is not failur
 
 Growth has its own timeline. Clarity emerges when it's ready. We will never push you toward resolution, pressure you toward decisions, or make you feel like you're falling behind.
 
-*This means:*
+_This means:_
+
 - Sessions have no agenda
 - There's no "progress" you should be making
 - Sitting with uncertainty is welcome
@@ -36,7 +38,8 @@ Growth has its own timeline. Clarity emerges when it's ready. We will never push
 
 You are the expert on your own life. We may notice patterns. We may offer reflections. But we will never tell you what you "really" feel, what you "actually" mean, or what you "should" do.
 
-*This means:*
+_This means:_
+
 - Our observations are invitations, not diagnoses
 - You can disagree with any reflection
 - Your interpretation matters more than ours
@@ -46,7 +49,8 @@ You are the expert on your own life. We may notice patterns. We may offer reflec
 
 What you share in vulnerability will never become evidence for critique. Your earlier hopes won't be used to shame your current doubts. Your struggles won't be reframed as failures.
 
-*This means:*
+_This means:_
+
 - Changing your mind is welcome
 - Contradiction is human, not problematic
 - Past reflections are context, not ammunition
@@ -56,7 +60,8 @@ What you share in vulnerability will never become evidence for critique. Your ea
 
 Every dream you speak aloud is handled with reverence. We know it took courage to name it. We won't minimize it, analyze it to death, or make it smaller than it is.
 
-*This means:*
+_This means:_
+
 - Dreams are treated as sacred
 - We don't question whether dreams are "realistic"
 - We trust that your dreams mean something
@@ -66,7 +71,8 @@ Every dream you speak aloud is handled with reverence. We know it took courage t
 
 We are not above you as experts, ahead of you as guides, or behind you as cheerleaders. We are alongside you - present, patient, and humble about the mystery of becoming.
 
-*This means:*
+_This means:_
+
 - We don't have answers you lack
 - We learn from you as much as you learn from yourself
 - Your journey is yours to lead
@@ -76,7 +82,8 @@ We are not above you as experts, ahead of you as guides, or behind you as cheerl
 
 The inner world is sacred territory. We protect it from the noise, rush, and judgment of the outer world. When you're here, you can breathe. You can think. You can be exactly where you are.
 
-*This means:*
+_This means:_
+
 - No pressure from outside expectations
 - No metrics, scores, or performance tracking
 - No comparison to others' journeys
@@ -89,15 +96,19 @@ The inner world is sacred territory. We protect it from the noise, rush, and jud
 This is a mutual relationship. While we hold these promises sacred, we also invite you to:
 
 ### Trust Your Own Wisdom
+
 We can reflect, but we cannot know. Trust what resonates and release what doesn't. You are the authority on your own becoming.
 
 ### Be Honest With Yourself
+
 The mirror can only show what's brought to it. The more honest you are in what you share, the more meaningful our reflections can be.
 
 ### Give Yourself Time
+
 This is slow work. The examined life unfolds over years, not sessions. Trust the pace of your own becoming.
 
 ### Return When You're Ready
+
 There's no schedule to keep. Come when something stirs. Stay away when life calls you elsewhere. The mirror waits without judgment.
 
 ---
@@ -107,6 +118,7 @@ There's no schedule to keep. Come when something stirs. Stay away when life call
 We are a companion for the inner life, not a replacement for human connection or professional support.
 
 **We are not:**
+
 - Therapy or mental health treatment
 - Crisis support or emergency services
 - A substitute for human relationships
@@ -130,8 +142,7 @@ We're honored to witness it.
 
 ---
 
-*"You are held. You are safe. And you care for yourself in this space."*
-
+_"You are held. You are safe. And you care for yourself in this space."_
 
 ---
 
@@ -155,5 +166,5 @@ In return, we acknowledge that:
 
 ---
 
-*Effective for all users of Mirror of Dreams.*
-*This contract may evolve as we learn and grow, but these core promises will remain.*
+_Effective for all users of Mirror of Dreams._
+_This contract may evolve as we learn and grow, but these core promises will remain._

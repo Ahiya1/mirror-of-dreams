@@ -39,6 +39,7 @@ app/
 **Scope:** Migrate existing React components from .jsx to .tsx
 
 **Priority Files:**
+
 1. `app/page.tsx` - Migrate Portal component
 2. `app/auth/signin/page.tsx` - Migrate SigninForm
 3. `app/auth/signup/page.tsx` - Migrate SignupForm
@@ -47,6 +48,7 @@ app/
 6. `app/reflection/output/page.tsx` - Migrate Output
 
 **Source Files:**
+
 - `src/components/portal/Portal.jsx`
 - `src/components/auth/*.jsx`
 - `src/components/dashboard/*.jsx`
@@ -54,6 +56,7 @@ app/
 - `src/components/shared/*.jsx`
 
 **Key Tasks:**
+
 - Convert .jsx to .tsx with proper TypeScript types
 - Add 'use client' directive where needed
 - Replace React Router with Next.js navigation
@@ -66,10 +69,12 @@ app/
 **Scope:** Complete the NEW /reflections route with full functionality
 
 **Files to Complete:**
+
 1. `app/reflections/page.tsx` - Full list view
 2. `app/reflections/[id]/page.tsx` - Full detail view
 
 **Components to Create:**
+
 1. `components/reflections/ReflectionsList.tsx` - Main list component
 2. `components/reflections/ReflectionCard.tsx` - Individual card
 3. `components/reflections/ReflectionDetail.tsx` - Detail view component
@@ -78,6 +83,7 @@ app/
 **Features Required:**
 
 **List View:**
+
 - Pagination (20 reflections per page)
 - Search bar (search dream/plan/relationship content)
 - Filters:
@@ -97,6 +103,7 @@ app/
 - Mobile responsive
 
 **Detail View:**
+
 - Full AI reflection response (with markdown rendering)
 - Original questionnaire answers
 - Metadata display:
@@ -116,6 +123,7 @@ app/
 - Share/export options (optional)
 
 **tRPC Integration:**
+
 - Use `trpc.reflections.getHistory` for list
 - Use `trpc.reflections.getById` for detail
 - Use `trpc.reflections.update` for edits
@@ -134,6 +142,7 @@ app/
 ## Testing
 
 After sub-builders complete:
+
 1. Test all routes load without errors
 2. Test navigation between routes
 3. Test /reflections pagination

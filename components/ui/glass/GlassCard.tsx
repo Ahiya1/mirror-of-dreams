@@ -1,8 +1,10 @@
 'use client';
 
 import { motion, useReducedMotion } from 'framer-motion';
-import { cn } from '@/lib/utils';
+
 import type { GlassCardProps } from '@/types/glass-components';
+
+import { cn } from '@/lib/utils';
 
 /**
  * GlassCard - Simplified glass-morphism card (restrained design)
@@ -45,8 +47,8 @@ export function GlassCard({
       // Combined purple glow + golden warmth (70/20/10 formula)
       'hover:shadow-[0_8px_30px_rgba(124,58,237,0.12),0_4px_20px_rgba(251,191,36,0.08)]',
       'hover:border-purple-400/25',
-      'active:scale-[0.99]',  // Keep CSS fallback for non-animated state
-      'focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2'
+      'active:scale-[0.99]', // Keep CSS fallback for non-animated state
+      'focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2',
     ],
     // Custom classes
     className

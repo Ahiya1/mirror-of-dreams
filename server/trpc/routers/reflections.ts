@@ -1,10 +1,15 @@
 // server/trpc/routers/reflections.ts - Reflection CRUD operations
 
-import { z } from 'zod';
-import { router, publicProcedure } from '../trpc';
-import { protectedProcedure, usageLimitedProcedure } from '../middleware';
 import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
+
+import { protectedProcedure, usageLimitedProcedure } from '../middleware';
+import { router, publicProcedure } from '../trpc';
+
+import type { ReflectionRow } from '@/types/reflection';
+
 import { supabase } from '@/server/lib/supabase';
+import { reflectionRowToReflection } from '@/types/reflection';
 import {
   reflectionListSchema,
   updateReflectionSchema,
@@ -12,162 +17,149 @@ import {
   reflectionIdSchema,
   createReflectionSchema,
 } from '@/types/schemas';
-import { reflectionRowToReflection } from '@/types/reflection';
-import type { ReflectionRow } from '@/types/reflection';
 
 export const reflectionsRouter = router({
   // Get paginated reflection history
-  list: protectedProcedure
-    .input(reflectionListSchema)
-    .query(async ({ ctx, input }) => {
-      const { page, limit, tone, isPremium, search, sortBy, sortOrder } = input;
-      const offset = (page - 1) * limit;
+  list: protectedProcedure.input(reflectionListSchema).query(async ({ ctx, input }) => {
+    const { page, limit, tone, isPremium, search, sortBy, sortOrder } = input;
+    const offset = (page - 1) * limit;
 
-      // Build query - include dream title via join
-      let query = supabase
-        .from('reflections')
-        .select('*, dreams(title)', { count: 'exact' })
-        .eq('user_id', ctx.user.id);
+    // Build query - include dream title via join
+    let query = supabase
+      .from('reflections')
+      .select('*, dreams(title)', { count: 'exact' })
+      .eq('user_id', ctx.user.id);
 
-      // Apply filters
-      if (tone) {
-        query = query.eq('tone', tone);
-      }
-      if (isPremium !== undefined) {
-        query = query.eq('is_premium', isPremium);
-      }
-      if (search) {
-        query = query.or(
-          `dream.ilike.%${search}%,plan.ilike.%${search}%,relationship.ilike.%${search}%`
-        );
-      }
+    // Apply filters
+    if (tone) {
+      query = query.eq('tone', tone);
+    }
+    if (isPremium !== undefined) {
+      query = query.eq('is_premium', isPremium);
+    }
+    if (search) {
+      query = query.or(
+        `dream.ilike.%${search}%,plan.ilike.%${search}%,relationship.ilike.%${search}%`
+      );
+    }
 
-      // Apply sorting and pagination
-      query = query
-        .order(sortBy, { ascending: sortOrder === 'asc' })
-        .range(offset, offset + limit - 1);
+    // Apply sorting and pagination
+    query = query
+      .order(sortBy, { ascending: sortOrder === 'asc' })
+      .range(offset, offset + limit - 1);
 
-      const { data, error, count } = await query;
+    const { data, error, count } = await query;
 
-      if (error) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to fetch reflections',
-        });
-      }
+    if (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to fetch reflections',
+      });
+    }
 
-      return {
-        items: (data || []).map((row) => reflectionRowToReflection(row as ReflectionRow)),
-        page,
-        limit,
-        total: count || 0,
-        totalPages: Math.ceil((count || 0) / limit),
-        hasMore: (count || 0) > offset + limit,
-      };
-    }),
+    return {
+      items: (data || []).map((row) => reflectionRowToReflection(row as ReflectionRow)),
+      page,
+      limit,
+      total: count || 0,
+      totalPages: Math.ceil((count || 0) / limit),
+      hasMore: (count || 0) > offset + limit,
+    };
+  }),
 
   // Get single reflection by ID
-  getById: protectedProcedure
-    .input(reflectionIdSchema)
-    .query(async ({ ctx, input }) => {
-      const { data, error } = await supabase
-        .from('reflections')
-        .select('*')
-        .eq('id', input.id)
-        .eq('user_id', ctx.user.id) // Ensure user owns reflection
-        .single();
+  getById: protectedProcedure.input(reflectionIdSchema).query(async ({ ctx, input }) => {
+    const { data, error } = await supabase
+      .from('reflections')
+      .select('*')
+      .eq('id', input.id)
+      .eq('user_id', ctx.user.id) // Ensure user owns reflection
+      .single();
 
-      if (error || !data) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Reflection not found',
-        });
-      }
+    if (error || !data) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Reflection not found',
+      });
+    }
 
-      // Increment view count
-      await supabase
-        .from('reflections')
-        .update({ view_count: (data.view_count || 0) + 1 })
-        .eq('id', input.id);
+    // Increment view count
+    await supabase
+      .from('reflections')
+      .update({ view_count: (data.view_count || 0) + 1 })
+      .eq('id', input.id);
 
-      return reflectionRowToReflection(data as ReflectionRow);
-    }),
+    return reflectionRowToReflection(data as ReflectionRow);
+  }),
 
   // Update reflection (title/tags)
-  update: protectedProcedure
-    .input(updateReflectionSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { id, ...updates } = input;
+  update: protectedProcedure.input(updateReflectionSchema).mutation(async ({ ctx, input }) => {
+    const { id, ...updates } = input;
 
-      const { data, error } = await supabase
-        .from('reflections')
-        .update({
-          ...updates,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', id)
-        .eq('user_id', ctx.user.id)
-        .select()
-        .single();
+    const { data, error } = await supabase
+      .from('reflections')
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id)
+      .eq('user_id', ctx.user.id)
+      .select()
+      .single();
 
-      if (error) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to update reflection',
-        });
-      }
+    if (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to update reflection',
+      });
+    }
 
-      return {
-        reflection: reflectionRowToReflection(data as ReflectionRow),
-        message: 'Reflection updated successfully',
-      };
-    }),
+    return {
+      reflection: reflectionRowToReflection(data as ReflectionRow),
+      message: 'Reflection updated successfully',
+    };
+  }),
 
   // Delete reflection
-  delete: protectedProcedure
-    .input(reflectionIdSchema)
-    .mutation(async ({ ctx, input }) => {
-      // Verify ownership before delete
-      const { data: reflection } = await supabase
-        .from('reflections')
-        .select('id')
-        .eq('id', input.id)
-        .eq('user_id', ctx.user.id)
-        .single();
+  delete: protectedProcedure.input(reflectionIdSchema).mutation(async ({ ctx, input }) => {
+    // Verify ownership before delete
+    const { data: reflection } = await supabase
+      .from('reflections')
+      .select('id')
+      .eq('id', input.id)
+      .eq('user_id', ctx.user.id)
+      .single();
 
-      if (!reflection) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Reflection not found',
-        });
-      }
+    if (!reflection) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Reflection not found',
+      });
+    }
 
-      // Delete reflection
-      const { error } = await supabase
-        .from('reflections')
-        .delete()
-        .eq('id', input.id);
+    // Delete reflection
+    const { error } = await supabase.from('reflections').delete().eq('id', input.id);
 
-      if (error) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to delete reflection',
-        });
-      }
+    if (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to delete reflection',
+      });
+    }
 
-      // Decrement usage counters
-      await supabase
-        .from('users')
-        .update({
-          reflection_count_this_month: Math.max(0, ctx.user.reflectionCountThisMonth - 1),
-          total_reflections: Math.max(0, ctx.user.totalReflections - 1),
-        })
-        .eq('id', ctx.user.id);
+    // Decrement usage counters
+    await supabase
+      .from('users')
+      .update({
+        reflection_count_this_month: Math.max(0, ctx.user.reflectionCountThisMonth - 1),
+        total_reflections: Math.max(0, ctx.user.totalReflections - 1),
+      })
+      .eq('id', ctx.user.id);
 
-      return {
-        message: 'Reflection deleted successfully',
-      };
-    }),
+    return {
+      message: 'Reflection deleted successfully',
+    };
+  }),
 
   // Submit feedback for reflection
   submitFeedback: protectedProcedure
@@ -204,14 +196,12 @@ export const reflectionsRouter = router({
   checkUsage: protectedProcedure.query(async ({ ctx }) => {
     // Aligned with vision: Free tier gets 4 reflections/month
     const TIER_LIMITS = {
-      free: 4,        // Vision: 4 reflections/month for Free tier
-      pro: 10,        // Pro tier (formerly essential)
-      unlimited: 999999  // Unlimited for admin/creator
+      free: 4, // Vision: 4 reflections/month for Free tier
+      pro: 10, // Pro tier (formerly essential)
+      unlimited: 999999, // Unlimited for admin/creator
     };
 
-    const limit = ctx.user.isCreator || ctx.user.isAdmin
-      ? 999999
-      : TIER_LIMITS[ctx.user.tier] || 0;
+    const limit = ctx.user.isCreator || ctx.user.isAdmin ? 999999 : TIER_LIMITS[ctx.user.tier] || 0;
 
     const used = ctx.user.reflectionCountThisMonth;
     const remaining = Math.max(0, limit - used);

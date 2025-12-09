@@ -1,8 +1,10 @@
 'use client';
 
 import { motion, useReducedMotion } from 'framer-motion';
-import { cn } from '@/lib/utils';
+
 import type { CosmicLoaderProps } from '@/types/glass-components';
+
+import { cn } from '@/lib/utils';
 
 /**
  * CosmicLoader - Animated gradient ring loader
@@ -57,7 +59,7 @@ export function CosmicLoader({
           'rounded-full',
           sizes[size],
           borderSizes[size],
-          'border-transparent border-t-mirror-purple border-r-mirror-indigo border-b-mirror-violet',
+          'border-t-mirror-purple border-r-mirror-indigo border-b-mirror-violet border-transparent',
           'shadow-glow'
         )}
       />

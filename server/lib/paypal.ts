@@ -47,11 +47,7 @@ let cachedToken: { token: string; expiresAt: number } | null = null;
  * Get PayPal configuration from environment
  */
 function getPayPalConfig() {
-  const required = [
-    'PAYPAL_CLIENT_ID',
-    'PAYPAL_CLIENT_SECRET',
-    'PAYPAL_ENVIRONMENT',
-  ];
+  const required = ['PAYPAL_CLIENT_ID', 'PAYPAL_CLIENT_SECRET', 'PAYPAL_ENVIRONMENT'];
 
   for (const key of required) {
     if (!process.env[key]) {
@@ -64,9 +60,10 @@ function getPayPalConfig() {
     clientSecret: process.env.PAYPAL_CLIENT_SECRET!,
     environment: process.env.PAYPAL_ENVIRONMENT as 'sandbox' | 'live',
     webhookId: process.env.PAYPAL_WEBHOOK_ID || '', // Optional - only needed for webhook verification
-    baseUrl: process.env.PAYPAL_ENVIRONMENT === 'sandbox'
-      ? 'https://api-m.sandbox.paypal.com'
-      : 'https://api-m.paypal.com',
+    baseUrl:
+      process.env.PAYPAL_ENVIRONMENT === 'sandbox'
+        ? 'https://api-m.sandbox.paypal.com'
+        : 'https://api-m.paypal.com',
   };
 }
 
@@ -81,15 +78,13 @@ export async function getPayPalAccessToken(): Promise<string> {
   }
 
   const config = getPayPalConfig();
-  const auth = Buffer.from(
-    `${config.clientId}:${config.clientSecret}`
-  ).toString('base64');
+  const auth = Buffer.from(`${config.clientId}:${config.clientSecret}`).toString('base64');
 
   const response = await fetch(`${config.baseUrl}/v1/oauth2/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': `Basic ${auth}`,
+      Authorization: `Basic ${auth}`,
     },
     body: 'grant_type=client_credentials',
   });
@@ -111,10 +106,7 @@ export async function getPayPalAccessToken(): Promise<string> {
 /**
  * Internal helper for making authenticated PayPal API requests
  */
-async function paypalFetch<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
+async function paypalFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const token = await getPayPalAccessToken();
   const config = getPayPalConfig();
 
@@ -122,7 +114,7 @@ async function paypalFetch<T>(
     ...options,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
       ...options.headers,
     },
   });
@@ -174,7 +166,7 @@ export async function createSubscription(userId: string, planId: string): Promis
   });
 
   // Extract approval URL from links
-  const approvalLink = response.links.find(link => link.rel === 'approve');
+  const approvalLink = response.links.find((link) => link.rel === 'approve');
   if (!approvalLink) {
     throw new Error('PayPal did not return approval URL');
   }
@@ -217,8 +209,13 @@ export async function verifyWebhookSignature(
   const config = getPayPalConfig();
 
   // Check if all required headers are present
-  if (!headers.transmissionId || !headers.transmissionTime || !headers.certUrl ||
-      !headers.authAlgo || !headers.transmissionSig) {
+  if (
+    !headers.transmissionId ||
+    !headers.transmissionTime ||
+    !headers.certUrl ||
+    !headers.authAlgo ||
+    !headers.transmissionSig
+  ) {
     console.error('[PayPal] Missing required webhook headers');
     return false;
   }

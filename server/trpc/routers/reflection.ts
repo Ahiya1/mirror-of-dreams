@@ -1,13 +1,15 @@
 // server/trpc/routers/reflection.ts - AI reflection generation router
 
-import { z } from 'zod';
-import { router } from '../trpc';
-import { usageLimitedProcedure } from '../middleware';
+import Anthropic from '@anthropic-ai/sdk';
 import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
+
+import { usageLimitedProcedure } from '../middleware';
+import { router } from '../trpc';
+
+import { loadPrompts, buildReflectionUserPrompt } from '@/server/lib/prompts';
 import { supabase } from '@/server/lib/supabase';
 import { createReflectionSchema } from '@/types/schemas';
-import { loadPrompts, buildReflectionUserPrompt } from '@/server/lib/prompts';
-import Anthropic from '@anthropic-ai/sdk';
 
 // Lazy initialization - client created only when procedure called
 let anthropic: Anthropic | null = null;
@@ -32,60 +34,56 @@ const EVOLUTION_THRESHOLDS = {
 
 export const reflectionRouter = router({
   // Generate AI reflection
-  create: usageLimitedProcedure
-    .input(createReflectionSchema)
-    .mutation(async ({ ctx, input }) => {
-      const {
-        dreamId,
-        dream,
-        plan,
-        relationship,
-        offering,
-        tone = 'fusion',
-        isPremium: requestedPremium = false,
-      } = input;
+  create: usageLimitedProcedure.input(createReflectionSchema).mutation(async ({ ctx, input }) => {
+    const {
+      dreamId,
+      dream,
+      plan,
+      relationship,
+      offering,
+      tone = 'fusion',
+      isPremium: requestedPremium = false,
+    } = input;
 
-      // Get the dream title from linked dream if dreamId provided, otherwise use first 100 chars of dream answer
-      let reflectionTitle = dream.slice(0, 100);
-      if (dreamId) {
-        const { data: linkedDream } = await supabase
-          .from('dreams')
-          .select('title')
-          .eq('id', dreamId)
-          .single();
+    // Get the dream title from linked dream if dreamId provided, otherwise use first 100 chars of dream answer
+    let reflectionTitle = dream.slice(0, 100);
+    if (dreamId) {
+      const { data: linkedDream } = await supabase
+        .from('dreams')
+        .select('title')
+        .eq('id', dreamId)
+        .single();
 
-        if (linkedDream?.title) {
-          reflectionTitle = linkedDream.title;
-        }
+      if (linkedDream?.title) {
+        reflectionTitle = linkedDream.title;
       }
+    }
 
-      // Determine if premium features should be used (extended thinking for unlimited tier)
-      const shouldUsePremium =
-        requestedPremium || ctx.user.tier === 'unlimited' || ctx.user.isCreator;
+    // Determine if premium features should be used (extended thinking for unlimited tier)
+    const shouldUsePremium =
+      requestedPremium || ctx.user.tier === 'unlimited' || ctx.user.isCreator;
 
-      // Get current date for date awareness
-      const currentDate = new Date().toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      });
+    // Get current date for date awareness
+    const currentDate = new Date().toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
 
-      // Load system prompt
-      const systemPrompt = await loadPrompts(
-        tone,
-        shouldUsePremium,
-        ctx.user.isCreator
-      );
+    // Load system prompt
+    const systemPrompt = await loadPrompts(tone, shouldUsePremium, ctx.user.isCreator);
 
-      // Add date awareness to system prompt
-      const systemPromptWithDate = systemPrompt + `\n\nCURRENT DATE AWARENESS:\nToday's date is ${currentDate}. Be aware of this when reflecting on their plans, timing, and relationship with their dreams. Consider seasonal context, time of year, and how timing relates to their consciousness journey.`;
+    // Add date awareness to system prompt
+    const systemPromptWithDate =
+      systemPrompt +
+      `\n\nCURRENT DATE AWARENESS:\nToday's date is ${currentDate}. Be aware of this when reflecting on their plans, timing, and relationship with their dreams. Consider seasonal context, time of year, and how timing relates to their consciousness journey.`;
 
-      // Build user prompt (4-question format)
-      const userName = ctx.user.name || 'Friend';
-      const intro = userName ? `My name is ${userName}.\n\n` : '';
+    // Build user prompt (4-question format)
+    const userName = ctx.user.name || 'Friend';
+    const intro = userName ? `My name is ${userName}.\n\n` : '';
 
-      const userPrompt = `${intro}**My dream:** ${dream}
+    const userPrompt = `${intro}**My dream:** ${dream}
 
 **My plan:** ${plan}
 
@@ -95,110 +93,106 @@ export const reflectionRouter = router({
 
 Please mirror back what you see, in a flowing reflection I can return to months from now.`;
 
-      // Call Claude API (using Sonnet 4.5)
-      const requestConfig: Anthropic.MessageCreateParams = {
-        model: 'claude-sonnet-4-5-20250929',
-        temperature: 1,
-        max_tokens: shouldUsePremium ? 6000 : 4000,
-        system: systemPromptWithDate,
-        messages: [{ role: 'user', content: userPrompt }],
+    // Call Claude API (using Sonnet 4.5)
+    const requestConfig: Anthropic.MessageCreateParams = {
+      model: 'claude-sonnet-4-5-20250929',
+      temperature: 1,
+      max_tokens: shouldUsePremium ? 6000 : 4000,
+      system: systemPromptWithDate,
+      messages: [{ role: 'user', content: userPrompt }],
+    };
+
+    if (shouldUsePremium) {
+      requestConfig.thinking = {
+        type: 'enabled' as const,
+        budget_tokens: 5000,
       };
+    }
 
-      if (shouldUsePremium) {
-        requestConfig.thinking = {
-          type: 'enabled' as const,
-          budget_tokens: 5000,
-        };
+    let aiResponse: string;
+    try {
+      const client = getAnthropicClient();
+      const response = await client.messages.create(requestConfig);
+
+      const textBlock = response.content.find((block) => block.type === 'text');
+      if (!textBlock || textBlock.type !== 'text') {
+        throw new Error('No text response from Claude');
       }
 
-      let aiResponse: string;
-      try {
-        const client = getAnthropicClient();
-        const response = await client.messages.create(requestConfig);
+      aiResponse = textBlock.text;
+    } catch (error: unknown) {
+      console.error('Claude API error:', error);
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: `Failed to generate reflection: ${message}`,
+      });
+    }
 
-        const textBlock = response.content.find(block => block.type === 'text');
-        if (!textBlock || textBlock.type !== 'text') {
-          throw new Error('No text response from Claude');
-        }
+    // Calculate word count and estimated read time
+    const wordCount = aiResponse.split(/\s+/).length;
+    const estimatedReadTime = Math.ceil(wordCount / 200); // 200 words per minute
 
-        aiResponse = textBlock.text;
-      } catch (error: unknown) {
-        console.error('Claude API error:', error);
-        const message = error instanceof Error ? error.message : 'Unknown error';
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: `Failed to generate reflection: ${message}`,
-        });
-      }
+    // Store reflection in database (raw markdown - client handles rendering)
+    const { data: reflectionRecord, error: reflectionError } = await supabase
+      .from('reflections')
+      .insert({
+        user_id: ctx.user.id,
+        dream_id: dreamId, // Link to dream
+        dream,
+        plan,
+        relationship,
+        offering,
+        ai_response: aiResponse, // Store raw markdown, client renders with proper styling
+        tone,
+        is_premium: shouldUsePremium,
+        word_count: wordCount,
+        estimated_read_time: estimatedReadTime,
+        title: reflectionTitle, // Use dream name if linked, otherwise first 100 chars of dream answer
+        tags: [],
+      })
+      .select()
+      .single();
 
-      // Calculate word count and estimated read time
-      const wordCount = aiResponse.split(/\s+/).length;
-      const estimatedReadTime = Math.ceil(wordCount / 200); // 200 words per minute
+    if (reflectionError) {
+      console.error('Database error saving reflection:', reflectionError);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to save reflection',
+      });
+    }
 
-      // Store reflection in database (raw markdown - client handles rendering)
-      const { data: reflectionRecord, error: reflectionError } = await supabase
-        .from('reflections')
-        .insert({
-          user_id: ctx.user.id,
-          dream_id: dreamId, // Link to dream
-          dream,
-          plan,
-          relationship,
-          offering,
-          ai_response: aiResponse, // Store raw markdown, client renders with proper styling
-          tone,
-          is_premium: shouldUsePremium,
-          word_count: wordCount,
-          estimated_read_time: estimatedReadTime,
-          title: reflectionTitle, // Use dream name if linked, otherwise first 100 chars of dream answer
-          tags: [],
-        })
-        .select()
-        .single();
+    // Update user usage counters (both daily and monthly)
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const { error: updateError } = await supabase
+      .from('users')
+      .update({
+        reflection_count_this_month: ctx.user.reflectionCountThisMonth + 1,
+        reflections_today:
+          ctx.user.lastReflectionDate === today ? ctx.user.reflectionsToday + 1 : 1,
+        last_reflection_date: today,
+        total_reflections: ctx.user.totalReflections + 1,
+        last_reflection_at: new Date().toISOString(),
+      })
+      .eq('id', ctx.user.id);
 
-      if (reflectionError) {
-        console.error('Database error saving reflection:', reflectionError);
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to save reflection',
-        });
-      }
+    // Check if evolution report should be triggered
+    const shouldTriggerEvolution = await checkEvolutionEligibility(ctx.user.id, ctx.user.tier);
 
-      // Update user usage counters (both daily and monthly)
-      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-      const { error: updateError } = await supabase
-        .from('users')
-        .update({
-          reflection_count_this_month: ctx.user.reflectionCountThisMonth + 1,
-          reflections_today: ctx.user.lastReflectionDate === today
-            ? ctx.user.reflectionsToday + 1
-            : 1,
-          last_reflection_date: today,
-          total_reflections: ctx.user.totalReflections + 1,
-          last_reflection_at: new Date().toISOString(),
-        })
-        .eq('id', ctx.user.id);
-
-      // Check if evolution report should be triggered
-      const shouldTriggerEvolution = await checkEvolutionEligibility(ctx.user.id, ctx.user.tier);
-
-      return {
-        reflection: aiResponse,
-        reflectionId: reflectionRecord.id,
-        isPremium: shouldUsePremium,
-        shouldTriggerEvolution,
-        wordCount,
-        estimatedReadTime,
-        message: 'Reflection generated successfully',
-      };
-    }),
+    return {
+      reflection: aiResponse,
+      reflectionId: reflectionRecord.id,
+      isPremium: shouldUsePremium,
+      shouldTriggerEvolution,
+      wordCount,
+      estimatedReadTime,
+      message: 'Reflection generated successfully',
+    };
+  }),
 });
 
 // Helper: Check evolution report eligibility
-async function checkEvolutionEligibility(
-  userId: string,
-  tier: string
-): Promise<boolean> {
+async function checkEvolutionEligibility(userId: string, tier: string): Promise<boolean> {
   if (tier === 'free') return false;
 
   const threshold = EVOLUTION_THRESHOLDS[tier as 'pro' | 'unlimited'] || 6;

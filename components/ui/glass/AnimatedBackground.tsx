@@ -1,8 +1,10 @@
 'use client';
 
 import { motion, useReducedMotion } from 'framer-motion';
-import { cn } from '@/lib/utils';
+
 import type { AnimatedBackgroundProps } from '@/types/glass-components';
+
+import { cn } from '@/lib/utils';
 
 /**
  * AnimatedBackground - Three-layer atmospheric soul-sigh background
@@ -29,9 +31,9 @@ export function AnimatedBackground({
   // Gold values boosted 4x to create visible warmth (Dreams warmth formula)
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   const intensityConfig = {
-    subtle: { far: 0.3, mid: 0.15, near: 0.08, gold: 0.12 },   // gold: 0.03 -> 0.12
-    medium: { far: 0.5, mid: 0.25, near: 0.12, gold: 0.18 },   // gold: 0.05 -> 0.18
-    strong: { far: 0.7, mid: 0.35, near: 0.18, gold: 0.25 },   // gold: 0.08 -> 0.25
+    subtle: { far: 0.3, mid: 0.15, near: 0.08, gold: 0.12 }, // gold: 0.03 -> 0.12
+    medium: { far: 0.5, mid: 0.25, near: 0.12, gold: 0.18 }, // gold: 0.05 -> 0.18
+    strong: { far: 0.7, mid: 0.35, near: 0.18, gold: 0.25 }, // gold: 0.08 -> 0.25
   };
 
   const config = intensityConfig[intensity];
@@ -52,7 +54,13 @@ export function AnimatedBackground({
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   const amethystBreathe = {
     scale: [1, 1.15, 1.05, 1.12, 1],
-    opacity: [config.mid * 0.85, config.mid * 1.2, config.mid * 0.9, config.mid * 1.1, config.mid * 0.85],
+    opacity: [
+      config.mid * 0.85,
+      config.mid * 1.2,
+      config.mid * 0.9,
+      config.mid * 1.1,
+      config.mid * 0.85,
+    ],
     rotate: [0, 2, -1, 1, 0],
   };
 
@@ -64,14 +72,29 @@ export function AnimatedBackground({
     y: [0, 40, -25, 45, -10, 0],
     rotate: [0, 5, -3, 7, -2, 0],
     scale: [1, 1.08, 0.96, 1.05, 0.98, 1],
-    opacity: [config.near * 0.6, config.near * 1.1, config.near * 0.75, config.near, config.near * 0.85, config.near * 0.6],
+    opacity: [
+      config.near * 0.6,
+      config.near * 1.1,
+      config.near * 0.75,
+      config.near,
+      config.near * 0.85,
+      config.near * 0.6,
+    ],
   };
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // GOLDEN PRESENCE (Eternal breath - VERY SLOW 30s cycle)
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   const goldFlicker = {
-    opacity: [config.gold * 0.5, config.gold * 1.0, config.gold * 0.7, config.gold * 1.2, config.gold * 0.6, config.gold * 0.9, config.gold * 0.5],
+    opacity: [
+      config.gold * 0.5,
+      config.gold * 1.0,
+      config.gold * 0.7,
+      config.gold * 1.2,
+      config.gold * 0.6,
+      config.gold * 0.9,
+      config.gold * 0.5,
+    ],
     scale: [1, 1.15, 0.95, 1.2, 0.9, 1.1, 1],
     x: [0, 15, -10, 20, -5, 10, 0],
     y: [0, -20, 15, -25, 10, -15, 0],
@@ -101,7 +124,7 @@ export function AnimatedBackground({
   const variant_config = variantClasses[variant];
 
   return (
-    <div className={cn('absolute inset-0 overflow-hidden pointer-events-none', className)}>
+    <div className={cn('pointer-events-none absolute inset-0 overflow-hidden', className)}>
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           FAR PLANE: Purple Nebula (Slow Drift)
           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
@@ -112,11 +135,7 @@ export function AnimatedBackground({
           repeat: Infinity,
           ease: 'easeInOut',
         }}
-        className={cn(
-          'absolute inset-0 -top-1/4',
-          'blur-3xl',
-          variant_config.far
-        )}
+        className={cn('absolute inset-0 -top-1/4', 'blur-3xl', variant_config.far)}
         style={{ zIndex: 1 }}
       />
 
@@ -130,11 +149,7 @@ export function AnimatedBackground({
           repeat: Infinity,
           ease: 'easeInOut',
         }}
-        className={cn(
-          'absolute inset-0',
-          'blur-2xl',
-          variant_config.mid
-        )}
+        className={cn('absolute inset-0', 'blur-2xl', variant_config.mid)}
         style={{ zIndex: 2 }}
       />
 
@@ -148,11 +163,7 @@ export function AnimatedBackground({
           repeat: Infinity,
           ease: 'easeInOut',
         }}
-        className={cn(
-          'absolute inset-0',
-          'blur-xl',
-          variant_config.near
-        )}
+        className={cn('absolute inset-0', 'blur-xl', variant_config.near)}
         style={{ zIndex: 3 }}
       />
 
@@ -166,11 +177,7 @@ export function AnimatedBackground({
           repeat: Infinity,
           ease: 'easeInOut',
         }}
-        className={cn(
-          'absolute inset-0',
-          'blur-3xl',
-          'bg-warmth-ambient'
-        )}
+        className={cn('absolute inset-0', 'blur-3xl', 'bg-warmth-ambient')}
         style={{ zIndex: 4 }}
       />
     </div>

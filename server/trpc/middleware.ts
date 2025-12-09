@@ -1,8 +1,18 @@
 // server/trpc/middleware.ts - Authentication and permission middlewares
 
 import { TRPCError } from '@trpc/server';
+
 import { middleware, publicProcedure } from './trpc';
+
+import type { Context } from './context';
+
 import { TIER_LIMITS, DAILY_LIMITS, CLARIFY_SESSION_LIMITS } from '@/lib/utils/constants';
+import {
+  authRateLimiter,
+  aiRateLimiter,
+  writeRateLimiter,
+  checkRateLimit,
+} from '@/server/lib/rate-limiter';
 
 // Ensure user is authenticated
 export const isAuthed = middleware(({ ctx, next }) => {
@@ -105,7 +115,8 @@ export const notDemo = middleware(({ ctx, next }) => {
   if (ctx.user.isDemo) {
     throw new TRPCError({
       code: 'FORBIDDEN',
-      message: 'Create a free account to start your own reflection journey. The demo shows what\'s possible!',
+      message:
+        "Create a free account to start your own reflection journey. The demo shows what's possible!",
     });
   }
 
@@ -125,7 +136,8 @@ export const checkClarifyAccess = middleware(async ({ ctx, next }) => {
   if (ctx.user.tier === 'free' && !ctx.user.isCreator && !ctx.user.isAdmin) {
     throw new TRPCError({
       code: 'FORBIDDEN',
-      message: 'Clarify requires a Pro or Unlimited subscription. Upgrade to explore your dreams through conversation.',
+      message:
+        'Clarify requires a Pro or Unlimited subscription. Upgrade to explore your dreams through conversation.',
     });
   }
 
@@ -161,7 +173,10 @@ export const checkClarifySessionLimit = middleware(async ({ ctx, next }) => {
 export const protectedProcedure = publicProcedure.use(isAuthed);
 export const creatorProcedure = publicProcedure.use(isCreatorOrAdmin);
 export const premiumProcedure = publicProcedure.use(isAuthed).use(isPremium);
-export const usageLimitedProcedure = publicProcedure.use(isAuthed).use(notDemo).use(checkUsageLimit);
+export const usageLimitedProcedure = publicProcedure
+  .use(isAuthed)
+  .use(notDemo)
+  .use(checkUsageLimit);
 export const writeProcedure = publicProcedure.use(isAuthed).use(notDemo);
 
 // Export Clarify procedures
@@ -170,3 +185,76 @@ export const clarifyReadProcedure = publicProcedure.use(isAuthed).use(checkClari
 // Write procedure blocks demo users from creating/modifying sessions
 export const clarifyProcedure = publicProcedure.use(isAuthed).use(notDemo).use(checkClarifyAccess);
 export const clarifySessionLimitedProcedure = clarifyProcedure.use(checkClarifySessionLimit);
+
+// ============================================
+// RATE LIMITING MIDDLEWARES
+// ============================================
+
+/**
+ * Get client IP from context
+ */
+function getClientIp(ctx: Context & { req?: Request }): string {
+  if (!ctx.req) return 'unknown';
+  return (
+    ctx.req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    ctx.req.headers.get('x-real-ip') ||
+    'unknown'
+  );
+}
+
+/**
+ * Rate limit by IP (for unauthenticated endpoints)
+ */
+export const rateLimitByIp = (limiter: typeof authRateLimiter) =>
+  middleware(async ({ ctx, next }) => {
+    const ip = getClientIp(ctx as Context & { req?: Request });
+    const result = await checkRateLimit(limiter, ip);
+
+    if (!result.success) {
+      throw new TRPCError({
+        code: 'TOO_MANY_REQUESTS',
+        message: 'Too many requests. Please try again later.',
+      });
+    }
+
+    return next();
+  });
+
+/**
+ * Rate limit by user ID (for authenticated endpoints)
+ */
+export const rateLimitByUser = (limiter: typeof aiRateLimiter) =>
+  middleware(async ({ ctx, next }) => {
+    if (!ctx.user) {
+      throw new TRPCError({ code: 'UNAUTHORIZED' });
+    }
+
+    // Skip rate limiting for creators and admins
+    if (ctx.user.isCreator || ctx.user.isAdmin) {
+      return next({ ctx: { ...ctx, user: ctx.user } });
+    }
+
+    const result = await checkRateLimit(limiter, ctx.user.id);
+
+    if (!result.success) {
+      throw new TRPCError({
+        code: 'TOO_MANY_REQUESTS',
+        message: 'Rate limit exceeded. Please slow down.',
+      });
+    }
+
+    return next({ ctx: { ...ctx, user: ctx.user } });
+  });
+
+// ============================================
+// RATE-LIMITED PROCEDURES
+// ============================================
+
+// Auth rate-limited (5/min per IP) - for signin, signup, etc.
+export const authRateLimitedProcedure = publicProcedure.use(rateLimitByIp(authRateLimiter));
+
+// AI rate-limited (10/min per user) - for reflections, clarify, etc.
+export const aiRateLimitedProcedure = protectedProcedure.use(rateLimitByUser(aiRateLimiter));
+
+// Write rate-limited (30/min per user) - for dreams, lifecycle, etc.
+export const writeRateLimitedProcedure = protectedProcedure.use(rateLimitByUser(writeRateLimiter));

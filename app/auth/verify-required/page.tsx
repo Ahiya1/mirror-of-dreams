@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/useAuth';
-import { GlassCard, GlowButton, CosmicLoader } from '@/components/ui/glass';
+import { useState, useEffect, useCallback } from 'react';
+
 import CosmicBackground from '@/components/shared/CosmicBackground';
+import { GlassCard, GlowButton, CosmicLoader } from '@/components/ui/glass';
 import { useToast } from '@/contexts/ToastContext';
+import { useAuth } from '@/hooks/useAuth';
 
 const RESEND_COOLDOWN_SECONDS = 60;
 
@@ -34,6 +35,7 @@ export default function VerifyRequiredPage() {
       const timer = setTimeout(() => setCooldown((c) => c - 1), 1000);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [cooldown]);
 
   // Poll for verification status (every 5 seconds)
@@ -88,9 +90,9 @@ export default function VerifyRequiredPage() {
   // Loading state
   if (authLoading) {
     return (
-      <div className="min-h-screen relative">
+      <div className="relative min-h-screen">
         <CosmicBackground />
-        <div className="flex items-center justify-center min-h-screen">
+        <div className="flex min-h-screen items-center justify-center">
           <CosmicLoader size="lg" />
         </div>
       </div>
@@ -98,37 +100,40 @@ export default function VerifyRequiredPage() {
   }
 
   // Don't render if not in correct state
-  if (!isAuthenticated || !user || user.emailVerified || user.isCreator || user.isAdmin || user.isDemo) {
+  if (
+    !isAuthenticated ||
+    !user ||
+    user.emailVerified ||
+    user.isCreator ||
+    user.isAdmin ||
+    user.isDemo
+  ) {
     return null;
   }
 
   return (
-    <div className="min-h-screen relative">
+    <div className="relative min-h-screen">
       <CosmicBackground />
-      <div className="flex items-center justify-center min-h-screen px-4">
-        <GlassCard className="max-w-md w-full p-8 text-center">
+      <div className="flex min-h-screen items-center justify-center px-4">
+        <GlassCard className="w-full max-w-md p-8 text-center">
           {/* Email Icon */}
-          <div className="text-6xl mb-6">
-            <span role="img" aria-label="email">&#128231;</span>
+          <div className="mb-6 text-6xl">
+            <span role="img" aria-label="email">
+              &#128231;
+            </span>
           </div>
 
           {/* Title */}
-          <h1 className="text-2xl font-semibold text-white mb-2">
-            Verify Your Email
-          </h1>
+          <h1 className="mb-2 text-2xl font-semibold text-white">Verify Your Email</h1>
 
           {/* Message */}
-          <p className="text-white/70 mb-4">
-            We sent a verification link to
-          </p>
-          <p className="text-emerald-400 font-medium mb-6">
-            {user.email}
-          </p>
+          <p className="mb-4 text-white/70">We sent a verification link to</p>
+          <p className="mb-6 font-medium text-emerald-400">{user.email}</p>
 
           {/* Instructions */}
-          <p className="text-white/50 text-sm mb-8">
-            Check your inbox (and spam folder) for the verification email.
-            Click the link to verify your account.
+          <p className="mb-8 text-sm text-white/50">
+            Check your inbox (and spam folder) for the verification email. Click the link to verify
+            your account.
           </p>
 
           {/* Resend Button */}
@@ -148,7 +153,7 @@ export default function VerifyRequiredPage() {
           {/* Sign Out Link */}
           <button
             onClick={handleSignOut}
-            className="mt-6 text-white/50 text-sm hover:text-white/70 transition-colors"
+            className="mt-6 text-sm text-white/50 transition-colors hover:text-white/70"
           >
             Sign out and use a different email
           </button>

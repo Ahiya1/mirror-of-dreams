@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, Suspense } from 'react';
 
 /**
  * PayPal Cancel Redirect Handler Content
@@ -30,9 +30,9 @@ function SubscriptionCancelContent() {
   }, [router, searchParams]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black">
+    <div className="flex min-h-screen items-center justify-center bg-black">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white/20 mx-auto mb-4"></div>
+        <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-white/20"></div>
         <p className="text-white/80">Redirecting...</p>
       </div>
     </div>
@@ -42,9 +42,9 @@ function SubscriptionCancelContent() {
 // Loading fallback
 function SubscriptionCancelLoading() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black">
+    <div className="flex min-h-screen items-center justify-center bg-black">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white/20 mx-auto mb-4"></div>
+        <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-white/20"></div>
         <p className="text-white/80">Loading...</p>
       </div>
     </div>

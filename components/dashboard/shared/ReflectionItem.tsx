@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
 import Link from 'next/link';
+import React, { useState } from 'react';
+
 import styles from './ReflectionItem.module.css';
 
 interface ReflectionItemProps {
@@ -59,7 +60,10 @@ const ReflectionItem: React.FC<ReflectionItemProps> = ({
     // Use 120 chars as per plan requirement
     const maxLength = 120;
     // Strip any markdown/HTML for clean preview
-    const cleanText = text.replace(/<[^>]*>/g, '').replace(/[#*_]/g, '').trim();
+    const cleanText = text
+      .replace(/<[^>]*>/g, '')
+      .replace(/[#*_]/g, '')
+      .trim();
     return cleanText.length > maxLength ? cleanText.substring(0, maxLength) + '...' : cleanText;
   }
 
@@ -124,7 +128,9 @@ const ReflectionItem: React.FC<ReflectionItemProps> = ({
 
       {/* Reflection Meta */}
       <div className={styles.reflectionMeta}>
-        <div className={`${styles.reflectionTone} ${styles[`reflectionTone${reflectionData.tone}`]}`}>
+        <div
+          className={`${styles.reflectionTone} ${styles[`reflectionTone${reflectionData.tone}`]}`}
+        >
           {formatToneName(reflectionData.tone)}
         </div>
 

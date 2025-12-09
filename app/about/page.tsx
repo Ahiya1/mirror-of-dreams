@@ -9,6 +9,7 @@
 'use client';
 
 import Link from 'next/link';
+
 import CosmicBackground from '@/components/shared/CosmicBackground';
 import { GlassCard } from '@/components/ui/glass/GlassCard';
 import { GlowButton } from '@/components/ui/glass/GlowButton';
@@ -50,23 +51,21 @@ CONTENT STATUS: Pending from Ahiya`,
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen relative overflow-x-hidden">
+    <div className="relative min-h-screen overflow-x-hidden">
       <CosmicBackground animated={true} intensity={1} />
 
       {/* Simple navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/20 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <nav className="fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-black/20 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="text-xl font-bold text-white">
             Mirror of Dreams
           </Link>
           <div className="flex items-center gap-4">
-            <Link href="/auth/signin" className="text-white/80 hover:text-white transition-colors">
+            <Link href="/auth/signin" className="text-white/80 transition-colors hover:text-white">
               Sign In
             </Link>
             <Link href="/auth/signup">
-              <GlowButton size="sm">
-                Start Free
-              </GlowButton>
+              <GlowButton size="sm">Start Free</GlowButton>
             </Link>
           </div>
         </div>
@@ -74,26 +73,22 @@ export default function AboutPage() {
 
       <main className="relative z-10 pt-16">
         {/* Hero Section */}
-        <section className="min-h-screen flex items-center justify-center px-4 sm:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-h1 font-bold text-white mb-6">
-              About Mirror of Dreams
-            </h1>
-            <p className="text-xl sm:text-2xl text-white/60 max-w-2xl mx-auto">
+        <section className="flex min-h-screen items-center justify-center px-4 sm:px-8">
+          <div className="mx-auto max-w-4xl text-center">
+            <h1 className="text-h1 mb-6 font-bold text-white">About Mirror of Dreams</h1>
+            <p className="mx-auto max-w-2xl text-xl text-white/60 sm:text-2xl">
               {PLACEHOLDER_CONTENT.mission}
             </p>
           </div>
         </section>
 
         {/* Founder Story Section */}
-        <section className="py-20 px-4 sm:px-8">
-          <div className="max-w-4xl mx-auto">
+        <section className="px-4 py-20 sm:px-8">
+          <div className="mx-auto max-w-4xl">
             <GlassCard elevated>
-              <h2 className="text-3xl font-bold text-white mb-6">
-                Why I Built Mirror of Dreams
-              </h2>
+              <h2 className="mb-6 text-3xl font-bold text-white">Why I Built Mirror of Dreams</h2>
               <div className="prose prose-invert max-w-none">
-                <p className="text-white/80 text-lg leading-relaxed whitespace-pre-line">
+                <p className="whitespace-pre-line text-lg leading-relaxed text-white/80">
                   {PLACEHOLDER_CONTENT.founderStory}
                 </p>
               </div>
@@ -102,14 +97,12 @@ export default function AboutPage() {
         </section>
 
         {/* Product Philosophy Section */}
-        <section className="py-20 px-4 sm:px-8">
-          <div className="max-w-4xl mx-auto">
+        <section className="px-4 py-20 sm:px-8">
+          <div className="mx-auto max-w-4xl">
             <GlassCard elevated>
-              <h2 className="text-3xl font-bold text-white mb-6">
-                Why Reflection + AI?
-              </h2>
+              <h2 className="mb-6 text-3xl font-bold text-white">Why Reflection + AI?</h2>
               <div className="prose prose-invert max-w-none">
-                <p className="text-white/80 text-lg leading-relaxed whitespace-pre-line">
+                <p className="whitespace-pre-line text-lg leading-relaxed text-white/80">
                   {PLACEHOLDER_CONTENT.philosophy}
                 </p>
               </div>
@@ -118,20 +111,14 @@ export default function AboutPage() {
         </section>
 
         {/* Values Section */}
-        <section className="py-20 px-4 sm:px-8">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-white text-center mb-12">
-              Our Values
-            </h2>
-            <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+        <section className="px-4 py-20 sm:px-8">
+          <div className="mx-auto max-w-6xl">
+            <h2 className="mb-12 text-center text-3xl font-bold text-white">Our Values</h2>
+            <div className="grid gap-6 md:grid-cols-3 lg:gap-8">
               {PLACEHOLDER_CONTENT.values.map((value, idx) => (
                 <GlassCard key={idx} elevated>
-                  <h3 className="text-xl font-semibold text-white mb-3">
-                    {value.title}
-                  </h3>
-                  <p className="text-white/70">
-                    {value.description}
-                  </p>
+                  <h3 className="mb-3 text-xl font-semibold text-white">{value.title}</h3>
+                  <p className="text-white/70">{value.description}</p>
                 </GlassCard>
               ))}
             </div>
@@ -139,12 +126,10 @@ export default function AboutPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-20 px-4 sm:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-white mb-6">
-              Ready to Begin?
-            </h2>
-            <p className="text-white/60 text-lg mb-8">
+        <section className="px-4 py-20 sm:px-8">
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="mb-6 text-3xl font-bold text-white">Ready to Begin?</h2>
+            <p className="mb-8 text-lg text-white/60">
               Start your reflection journey today with a free account.
             </p>
             <Link href="/auth/signup">
@@ -157,56 +142,57 @@ export default function AboutPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-12 px-4 sm:px-6 mt-24 relative z-10">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+      <footer className="relative z-10 mt-24 border-t border-white/10 px-4 py-12 sm:px-6">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 md:grid-cols-4">
           <div>
-            <h3 className="text-white font-semibold mb-4">Mirror of Dreams</h3>
-            <p className="text-white/60 text-sm">
-              A sacred space for reflection, powered by AI.
-            </p>
+            <h3 className="mb-4 font-semibold text-white">Mirror of Dreams</h3>
+            <p className="text-sm text-white/60">A sacred space for reflection, powered by AI.</p>
           </div>
           <div>
-            <h3 className="text-white font-semibold mb-4">Product</h3>
+            <h3 className="mb-4 font-semibold text-white">Product</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/pricing" className="text-white/60 hover:text-white transition-colors">
+                <Link href="/pricing" className="text-white/60 transition-colors hover:text-white">
                   Pricing
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard" className="text-white/60 hover:text-white transition-colors">
+                <Link
+                  href="/dashboard"
+                  className="text-white/60 transition-colors hover:text-white"
+                >
                   Dashboard
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h3 className="text-white font-semibold mb-4">Company</h3>
+            <h3 className="mb-4 font-semibold text-white">Company</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/about" className="text-white/60 hover:text-white transition-colors">
+                <Link href="/about" className="text-white/60 transition-colors hover:text-white">
                   About
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h3 className="text-white font-semibold mb-4">Legal</h3>
+            <h3 className="mb-4 font-semibold text-white">Legal</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#" className="text-white/60 hover:text-white transition-colors">
+                <a href="#" className="text-white/60 transition-colors hover:text-white">
                   Privacy
                 </a>
               </li>
               <li>
-                <a href="#" className="text-white/60 hover:text-white transition-colors">
+                <a href="#" className="text-white/60 transition-colors hover:text-white">
                   Terms
                 </a>
               </li>
             </ul>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto mt-8 pt-8 border-t border-white/10 text-center text-white/40 text-sm">
+        <div className="mx-auto mt-8 max-w-7xl border-t border-white/10 pt-8 text-center text-sm text-white/40">
           &copy; {new Date().getFullYear()} Mirror of Dreams. All rights reserved.
         </div>
       </footer>

@@ -22,30 +22,35 @@ We built an app that **looks spiritual** but doesn't **deliver spiritual depth**
 ## Guiding Principles
 
 ### 1. Restraint is Respect
+
 - Users are intelligent. They don't need constant visual stimulation.
 - Every element must earn its place by serving function.
 - White space shows confidence, not emptiness.
 - One meaningful element > ten decorative ones.
 
 ### 2. Content Over Decoration
+
 - The reflection process itself must be transformative, not just the UI around it.
 - Insights come from deep analysis, not from congratulatory messages.
 - Real wisdom, not motivational platitudes.
 - Show, don't tell (if we claim "transformation," we must deliver it).
 
 ### 3. Clarity Over Mysticism
+
 - Users should understand what this is in 5 seconds.
 - Clear value proposition: what will I get?
 - Transparent about what the app does and doesn't do.
 - No false promises wrapped in spiritual language.
 
 ### 4. Function Before Form
+
 - Design serves understanding, not decoration.
 - Animations only if they aid comprehension or continuity.
 - Colors chosen for clarity and focus, not mystical vibes.
 - Typography for readability, not poetry.
 
 ### 5. Earned Beauty
+
 - Beauty emerges from a well-functioning system.
 - Don't add visual effects - let them emerge from meaning.
 - Simple, clean, focused = beautiful.
@@ -58,11 +63,13 @@ We built an app that **looks spiritual** but doesn't **deliver spiritual depth**
 ### 1. Landing Page
 
 **Current State**:
+
 - "The Mirror of Dreams" with floating shapes
 - Three CTAs: "Reflect Me", "Start Free Forever", "Explore Plans"
 - Generic tagline about becoming
 
 **Transformation**:
+
 ```
 HEADER
 Mirror of Dreams
@@ -81,6 +88,7 @@ Sign In
 ```
 
 **What Changed**:
+
 - Removed decorative elements and multiple CTAs
 - Clear value: "Reflect and understand"
 - Proof over promises
@@ -92,6 +100,7 @@ Sign In
 ### 2. Authentication Pages
 
 **Current State**:
+
 - Sign-in: Purple gradient button, "Continue your journey of self-discovery"
 - Sign-up: Purple-to-blue gradient, "Free Forever" badge, "Start your journey"
 - Inconsistent styling, marketing language
@@ -99,6 +108,7 @@ Sign In
 **Transformation**:
 
 **Sign In**:
+
 ```
 Welcome Back
 
@@ -110,6 +120,7 @@ New to Mirror of Dreams? Create Account
 ```
 
 **Sign Up**:
+
 ```
 Create Account
 
@@ -123,6 +134,7 @@ Already have an account? Sign In
 ```
 
 **What Changed**:
+
 - Removed marketing speak
 - Removed decorative gradients and badges
 - Consistent simple design
@@ -134,12 +146,14 @@ Already have an account? Sign In
 ### 3. Dashboard
 
 **Current State**:
+
 - "Deep night wisdom, Creator" (meaningless mystical greeting)
 - Six sections: Reflections, Dreams, Evolution, Visualizations, Plan, Usage
 - Empty states with emojis and CTAs everywhere
 - Stats like "100% Used, 0 Limit, ∞ Total" (confusing)
 
 **Transformation**:
+
 ```
 Good evening, Ahiya
 
@@ -159,6 +173,7 @@ SECONDARY INFO (smaller, below)
 ```
 
 **What Changed**:
+
 - Clear greeting (no mystical nonsense)
 - ONE primary action: your next reflection
 - Secondary info is simple, scannable
@@ -175,6 +190,7 @@ SECONDARY INFO (smaller, below)
 **Current Question**: What makes the reflection process genuinely transformative?
 
 **Requirements**:
+
 1. **Thoughtful prompts** that help users see themselves clearly
 2. **Structured process** that guides without constraining
 3. **Real analysis** of patterns, not just data collection
@@ -206,6 +222,7 @@ Step 5: Forward
 ```
 
 **What Makes This Work**:
+
 - Structure without rigidity
 - AI assists but doesn't dominate
 - Connects reflection to dreams (purpose)
@@ -219,6 +236,7 @@ Step 5: Forward
 **Current State**: Exists but unclear how it guides behavior
 
 **Transformation**:
+
 ```
 Dreams are your north star. Reflections connect to dreams.
 Evolution shows how you're moving toward your dreams.
@@ -235,6 +253,7 @@ ACTIVE DREAMS
 ```
 
 **What Changed**:
+
 - Clear purpose: dreams guide reflections
 - Visible connection: reflections → dreams → evolution
 - Progress tracking based on actual behavior, not just time
@@ -247,6 +266,7 @@ ACTIVE DREAMS
 **Current State**: Promises "advanced evolution analytics" but unclear what this means
 
 **Transformation**:
+
 ```
 After 4 reflections on a dream OR 12 total reflections:
 
@@ -271,6 +291,7 @@ EVOLUTION REPORT
 ```
 
 **What Makes This Work**:
+
 - REAL analysis, not generic feedback
 - Specific examples from user's own reflections
 - Constructive identification of patterns
@@ -282,6 +303,7 @@ EVOLUTION REPORT
 ## Design System (Simple, Unified, Restrained)
 
 ### Colors
+
 ```
 Background: Deep navy (not cosmic, just focused)
 Text: Clean white/light gray (high contrast, readable)
@@ -290,6 +312,7 @@ Interactive elements: Clear, simple (no gradients unless functional)
 ```
 
 ### Typography
+
 ```
 Headings: Clear, bold, generous spacing
 Body: High line-height (1.6-1.8), comfortable reading
@@ -298,6 +321,7 @@ Hierarchy: Obvious through size and weight, not decoration
 ```
 
 ### Components
+
 ```
 Buttons: Simple, clear, responsive (no glows, no gradients)
 Forms: Clean inputs with clear labels and validation
@@ -306,6 +330,7 @@ Spacing: Generous (use 8px grid: 16, 24, 32, 48, 64)
 ```
 
 ### Motion
+
 ```
 Transitions: Smooth page changes (200-300ms)
 Feedback: Clear confirmation of actions
@@ -313,6 +338,7 @@ Decorative: NONE - every animation serves understanding
 ```
 
 ### Emojis
+
 ```
 Use: MINIMAL (1-2 per page maximum, only if they genuinely help)
 Not: Decoration on every button/heading
@@ -324,6 +350,7 @@ Maybe: Dashboard section icons IF they aid scanning
 ## Content Guidelines
 
 ### Copy Principles
+
 1. **Clear over clever**: Say what you mean directly
 2. **Show, don't tell**: Demonstrate value, don't claim it
 3. **Honest**: Don't promise transformation you can't deliver
@@ -331,6 +358,7 @@ Maybe: Dashboard section icons IF they aid scanning
 5. **Human**: Not corporate, not trying to sound spiritual
 
 ### Voice
+
 - Direct and respectful
 - Supportive without being cheery
 - Intelligent without being academic
@@ -355,6 +383,7 @@ Maybe: Dashboard section icons IF they aid scanning
 ## Implementation Priorities for 2L
 
 ### Phase 1: Subtract (Remove Flash)
+
 **Goal**: Clean up visual noise, remove decoration
 
 1. **Remove excessive emojis**
@@ -384,6 +413,7 @@ Maybe: Dashboard section icons IF they aid scanning
    - File: `app/page.tsx`
 
 ### Phase 2: Build Substance (Add Real Content)
+
 **Goal**: Make the core experience actually transformative
 
 5. **Enhance reflection process**
@@ -404,6 +434,7 @@ Maybe: Dashboard section icons IF they aid scanning
    - Files: Dreams system + reflection connection
 
 ### Phase 3: Refine (Unified Simple Design)
+
 **Goal**: Consistent, clean, focused experience
 
 8. **Unified design system**
@@ -428,24 +459,28 @@ Maybe: Dashboard section icons IF they aid scanning
 ## Success Criteria
 
 ### Quantitative
+
 - Users understand what the app is within 5 seconds (test with new visitors)
 - 80%+ complete their first reflection without confusion
 - Users can identify their primary action on dashboard immediately
 - Page load times remain under 2s (no heavy animations/effects)
 
 ### Qualitative
+
 - Users say "this is clear" not "this is pretty"
 - Users report actual insights from reflections
 - Users return because it helps, not because they feel they should
 - Users describe it as "simple" and "focused" (positive)
 
 ### Design
+
 - No decorative elements without clear function
 - Consistent design language across all pages
 - High contrast, readable text throughout
 - Generous white space, not cluttered
 
 ### Content
+
 - Every word serves understanding
 - No marketing speak or empty spiritual language
 - Promises align with what the app delivers
@@ -456,9 +491,11 @@ Maybe: Dashboard section icons IF they aid scanning
 ## Example Implementation Plan (for 2L)
 
 ### Iteration 1: Landing Page Simplification
+
 **File**: `app/page.tsx`
 
 **Changes**:
+
 1. Remove decorative floating shapes
 2. Change "Reflect Me" to "Begin Reflecting"
 3. Remove "Start Free Forever" and "Explore Plans" CTAs (keep only one)
@@ -469,9 +506,11 @@ Maybe: Dashboard section icons IF they aid scanning
 **Result**: Clear, focused landing page that shows what the app does
 
 ### Iteration 2: Auth Pages Consistency
+
 **Files**: `app/auth/signin/page.tsx`, `app/auth/signup/page.tsx`
 
 **Changes**:
+
 1. Remove all gradient buttons (use simple solid button)
 2. Remove "Free Forever" badge
 3. Remove marketing taglines ("journey of self-discovery")
@@ -482,9 +521,11 @@ Maybe: Dashboard section icons IF they aid scanning
 **Result**: Consistent, functional auth experience
 
 ### Iteration 3: Dashboard Focus
+
 **File**: `app/dashboard/page.tsx`
 
 **Changes**:
+
 1. Change "Deep night wisdom, Creator" to "Good evening, [Name]"
 2. Remove excessive emoji decorations (keep max 1-2 total)
 3. Make "Reflect Now" the dominant, clear primary action
@@ -495,9 +536,11 @@ Maybe: Dashboard section icons IF they aid scanning
 **Result**: Focused dashboard with clear next action
 
 ### Iteration 4: Reflection Enhancement
+
 **Files**: `app/reflection/page.tsx` + backend reflection logic
 
 **Changes**:
+
 1. Review current reflection flow
 2. Add structured prompts (Ground → Examine → Connect → Insight → Forward)
 3. Make dream connection explicit and meaningful
@@ -507,9 +550,11 @@ Maybe: Dashboard section icons IF they aid scanning
 **Result**: Reflection process that actually generates insight
 
 ### Iteration 5: Design System Unification
+
 **Files**: Global styles, all components
 
 **Changes**:
+
 1. Define simple color palette (bg, text, one accent) and apply everywhere
 2. Consistent typography (sizes, weights, line-heights)
 3. Standard button component (simple, no gradients)

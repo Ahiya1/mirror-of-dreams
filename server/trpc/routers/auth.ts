@@ -1,16 +1,19 @@
 // server/trpc/routers/auth.ts - Authentication router
 
-import { router, publicProcedure } from '../trpc';
-import { protectedProcedure, writeProcedure } from '../middleware';
 import { TRPCError } from '@trpc/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { supabase } from '@/server/lib/supabase';
+
+import { protectedProcedure, writeProcedure, authRateLimitedProcedure } from '../middleware';
+import { router, publicProcedure } from '../trpc';
+
+import { setAuthCookie, clearAuthCookie } from '@/server/lib/cookies';
 import {
   sendVerificationEmail,
   generateToken,
   getVerificationTokenExpiration,
 } from '@/server/lib/email';
+import { supabase } from '@/server/lib/supabase';
 import { type JWTPayload, type UserRow, userRowToUser } from '@/types';
 import {
   signupSchema,
@@ -28,185 +31,191 @@ if (!JWT_SECRET) {
 const JWT_EXPIRY_DAYS = 30;
 
 export const authRouter = router({
-  // Sign up new user
-  signup: publicProcedure
-    .input(signupSchema)
-    .mutation(async ({ input }) => {
-      const { email, password, name, language } = input;
+  // Sign up new user (rate limited: 5/min per IP)
+  signup: authRateLimitedProcedure.input(signupSchema).mutation(async ({ input }) => {
+    const { email, password, name, language } = input;
 
-      // Check if user exists
-      const { data: existingUser } = await supabase
-        .from('users')
-        .select('id')
-        .eq('email', email.toLowerCase())
-        .single();
+    // Check if user exists
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email.toLowerCase())
+      .single();
 
-      if (existingUser) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'User already exists with this email',
-        });
-      }
+    if (existingUser) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'User already exists with this email',
+      });
+    }
 
-      // Hash password
-      const passwordHash = await bcrypt.hash(password, 12);
+    // Hash password
+    const passwordHash = await bcrypt.hash(password, 12);
 
-      // Create user
-      const { data: newUser, error } = await supabase
-        .from('users')
-        .insert({
-          email: email.toLowerCase(),
-          password_hash: passwordHash,
-          name,
-          language,
-          tier: 'free',
-          subscription_status: 'active',
-          reflection_count_this_month: 0,
-          total_reflections: 0,
-          current_month_year: new Date().toISOString().slice(0, 7),
-          last_sign_in_at: new Date().toISOString(),
-          email_verified: false,
-        })
-        .select()
-        .single();
+    // Create user
+    const { data: newUser, error } = await supabase
+      .from('users')
+      .insert({
+        email: email.toLowerCase(),
+        password_hash: passwordHash,
+        name,
+        language,
+        tier: 'free',
+        subscription_status: 'active',
+        reflection_count_this_month: 0,
+        total_reflections: 0,
+        current_month_year: new Date().toISOString().slice(0, 7),
+        last_sign_in_at: new Date().toISOString(),
+        email_verified: false,
+      })
+      .select()
+      .single();
 
-      if (error) {
-        console.error('Signup error:', error);
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to create user',
-        });
-      }
+    if (error) {
+      console.error('Signup error:', error);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to create user',
+      });
+    }
 
-      // Generate JWT
-      const payload: JWTPayload = {
-        userId: newUser.id,
-        email: newUser.email,
-        tier: newUser.tier,
-        isCreator: newUser.is_creator || false,
-        isAdmin: newUser.is_admin || false,
-        isDemo: newUser.is_demo || false,
-        iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * JWT_EXPIRY_DAYS,
-      };
+    // Generate JWT
+    const payload: JWTPayload = {
+      userId: newUser.id,
+      email: newUser.email,
+      tier: newUser.tier,
+      isCreator: newUser.is_creator || false,
+      isAdmin: newUser.is_admin || false,
+      isDemo: newUser.is_demo || false,
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * JWT_EXPIRY_DAYS,
+    };
 
-      const token = jwt.sign(payload, JWT_SECRET);
+    const token = jwt.sign(payload, JWT_SECRET);
 
-      // Include onboarding_completed flag (new users always need onboarding unless admin/creator)
-      const userResponse = userRowToUser(newUser);
+    // Set HTTP-only cookie
+    await setAuthCookie(token);
 
-      // Send verification email
-      let emailVerificationSent = false;
-      try {
-        const verificationToken = generateToken();
-        const expiresAt = getVerificationTokenExpiration();
+    // Include onboarding_completed flag (new users always need onboarding unless admin/creator)
+    const userResponse = userRowToUser(newUser);
 
-        // Store verification token
-        const { error: tokenError } = await supabase.from('email_verification_tokens').insert({
-          user_id: newUser.id,
-          token: verificationToken,
-          expires_at: expiresAt.toISOString(),
-        });
+    // Send verification email
+    let emailVerificationSent = false;
+    try {
+      const verificationToken = generateToken();
+      const expiresAt = getVerificationTokenExpiration();
 
-        if (tokenError) {
-          console.error('Failed to store verification token:', tokenError);
-        } else {
-          // Send email and await the result
-          const emailResult = await sendVerificationEmail(newUser.email, verificationToken, newUser.name);
-          if (emailResult.success) {
-            emailVerificationSent = true;
-          } else {
-            console.error('Failed to send verification email:', emailResult.error);
-          }
-        }
-      } catch (emailError) {
-        // Log but don't fail signup if email fails
-        console.error('Error setting up verification email:', emailError);
-      }
+      // Store verification token
+      const { error: tokenError } = await supabase.from('email_verification_tokens').insert({
+        user_id: newUser.id,
+        token: verificationToken,
+        expires_at: expiresAt.toISOString(),
+      });
 
-      return {
-        user: {
-          ...userResponse,
-          onboardingCompleted: newUser.onboarding_completed || false,
-        },
-        token,
-        message: 'Account created successfully',
-        emailVerificationSent,
-      };
-    }),
-
-  // Sign in existing user
-  signin: publicProcedure
-    .input(signinSchema)
-    .mutation(async ({ input }) => {
-      const { email, password } = input;
-
-      // Fetch user with password hash
-      const { data: user, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('email', email.toLowerCase())
-        .single();
-
-      if (error || !user) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'Invalid email or password',
-        });
-      }
-
-      // Verify password
-      const passwordValid = await bcrypt.compare(password, user.password_hash);
-
-      if (!passwordValid) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'Invalid email or password',
-        });
-      }
-
-      // Check if monthly usage needs reset
-      const currentMonthYear = new Date().toISOString().slice(0, 7);
-      if (user.current_month_year !== currentMonthYear) {
-        await supabase
-          .from('users')
-          .update({
-            reflection_count_this_month: 0,
-            current_month_year: currentMonthYear,
-            last_sign_in_at: new Date().toISOString(),
-          })
-          .eq('id', user.id);
-
-        user.reflection_count_this_month = 0;
-        user.current_month_year = currentMonthYear;
+      if (tokenError) {
+        console.error('Failed to store verification token:', tokenError);
       } else {
-        // Update last sign in
-        await supabase
-          .from('users')
-          .update({ last_sign_in_at: new Date().toISOString() })
-          .eq('id', user.id);
+        // Send email and await the result
+        const emailResult = await sendVerificationEmail(
+          newUser.email,
+          verificationToken,
+          newUser.name
+        );
+        if (emailResult.success) {
+          emailVerificationSent = true;
+        } else {
+          console.error('Failed to send verification email:', emailResult.error);
+        }
       }
+    } catch (emailError) {
+      // Log but don't fail signup if email fails
+      console.error('Error setting up verification email:', emailError);
+    }
 
-      // Generate JWT
-      const payload: JWTPayload = {
-        userId: user.id,
-        email: user.email,
-        tier: user.tier,
-        isCreator: user.is_creator || false,
-        isAdmin: user.is_admin || false,
-        isDemo: user.is_demo || false,
-        iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * JWT_EXPIRY_DAYS,
-      };
+    return {
+      user: {
+        ...userResponse,
+        onboardingCompleted: newUser.onboarding_completed || false,
+      },
+      token,
+      message: 'Account created successfully',
+      emailVerificationSent,
+    };
+  }),
 
-      const token = jwt.sign(payload, JWT_SECRET);
+  // Sign in existing user (rate limited: 5/min per IP)
+  signin: authRateLimitedProcedure.input(signinSchema).mutation(async ({ input }) => {
+    const { email, password } = input;
 
-      return {
-        user: userRowToUser(user),
-        token,
-        message: 'Signed in successfully',
-      };
-    }),
+    // Fetch user with password hash
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', email.toLowerCase())
+      .single();
+
+    if (error || !user) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'Invalid email or password',
+      });
+    }
+
+    // Verify password
+    const passwordValid = await bcrypt.compare(password, user.password_hash);
+
+    if (!passwordValid) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'Invalid email or password',
+      });
+    }
+
+    // Check if monthly usage needs reset
+    const currentMonthYear = new Date().toISOString().slice(0, 7);
+    if (user.current_month_year !== currentMonthYear) {
+      await supabase
+        .from('users')
+        .update({
+          reflection_count_this_month: 0,
+          current_month_year: currentMonthYear,
+          last_sign_in_at: new Date().toISOString(),
+        })
+        .eq('id', user.id);
+
+      user.reflection_count_this_month = 0;
+      user.current_month_year = currentMonthYear;
+    } else {
+      // Update last sign in
+      await supabase
+        .from('users')
+        .update({ last_sign_in_at: new Date().toISOString() })
+        .eq('id', user.id);
+    }
+
+    // Generate JWT
+    const payload: JWTPayload = {
+      userId: user.id,
+      email: user.email,
+      tier: user.tier,
+      isCreator: user.is_creator || false,
+      isAdmin: user.is_admin || false,
+      isDemo: user.is_demo || false,
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * JWT_EXPIRY_DAYS,
+    };
+
+    const token = jwt.sign(payload, JWT_SECRET);
+
+    // Set HTTP-only cookie
+    await setAuthCookie(token);
+
+    return {
+      user: userRowToUser(user),
+      token,
+      message: 'Signed in successfully',
+    };
+  }),
 
   // Verify token and get current user
   verifyToken: publicProcedure.query(async ({ ctx }) => {
@@ -223,8 +232,11 @@ export const authRouter = router({
     };
   }),
 
-  // Sign out (client-side token removal, no server action needed)
+  // Sign out - clear auth cookie
   signout: publicProcedure.mutation(async () => {
+    // Clear auth cookie
+    await clearAuthCookie();
+
     return {
       success: true,
       message: 'Signed out successfully',
@@ -237,32 +249,30 @@ export const authRouter = router({
   }),
 
   // Update user profile
-  updateProfile: protectedProcedure
-    .input(updateProfileSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { data, error } = await supabase
-        .from('users')
-        .update({
-          ...input,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', ctx.user.id)
-        .select()
-        .single();
+  updateProfile: protectedProcedure.input(updateProfileSchema).mutation(async ({ ctx, input }) => {
+    const { data, error } = await supabase
+      .from('users')
+      .update({
+        ...input,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', ctx.user.id)
+      .select()
+      .single();
 
-      if (error) {
-        console.error('Update profile error:', error);
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to update profile',
-        });
-      }
+    if (error) {
+      console.error('Update profile error:', error);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to update profile',
+      });
+    }
 
-      return {
-        user: userRowToUser(data),
-        message: 'Profile updated successfully',
-      };
-    }),
+    return {
+      user: userRowToUser(data),
+      message: 'Profile updated successfully',
+    };
+  }),
 
   // Change password
   changePassword: protectedProcedure
@@ -280,10 +290,7 @@ export const authRouter = router({
       }
 
       // Verify current password
-      const passwordValid = await bcrypt.compare(
-        input.currentPassword,
-        user.password_hash
-      );
+      const passwordValid = await bcrypt.compare(input.currentPassword, user.password_hash);
 
       if (!passwordValid) {
         throw new TRPCError({
@@ -293,10 +300,7 @@ export const authRouter = router({
       }
 
       // Check if new password is different
-      const samePassword = await bcrypt.compare(
-        input.newPassword,
-        user.password_hash
-      );
+      const samePassword = await bcrypt.compare(input.newPassword, user.password_hash);
 
       if (samePassword) {
         throw new TRPCError({
@@ -331,56 +335,54 @@ export const authRouter = router({
     }),
 
   // Delete account
-  deleteAccount: writeProcedure
-    .input(deleteAccountSchema)
-    .mutation(async ({ ctx, input }) => {
-      // Verify email matches
-      if (input.confirmEmail.toLowerCase() !== ctx.user.email.toLowerCase()) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Email confirmation does not match',
-        });
-      }
+  deleteAccount: writeProcedure.input(deleteAccountSchema).mutation(async ({ ctx, input }) => {
+    // Verify email matches
+    if (input.confirmEmail.toLowerCase() !== ctx.user.email.toLowerCase()) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Email confirmation does not match',
+      });
+    }
 
-      // Fetch user with password hash
-      const { data: user } = await supabase
-        .from('users')
-        .select('password_hash')
-        .eq('id', ctx.user.id)
-        .single();
+    // Fetch user with password hash
+    const { data: user } = await supabase
+      .from('users')
+      .select('password_hash')
+      .eq('id', ctx.user.id)
+      .single();
 
-      if (!user) {
-        throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' });
-      }
+    if (!user) {
+      throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' });
+    }
 
-      // Verify password
-      const passwordValid = await bcrypt.compare(input.password, user.password_hash);
+    // Verify password
+    const passwordValid = await bcrypt.compare(input.password, user.password_hash);
 
-      if (!passwordValid) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Password is incorrect',
-        });
-      }
+    if (!passwordValid) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Password is incorrect',
+      });
+    }
 
-      // Delete user (cascade deletes reflections)
-      const { error } = await supabase.from('users').delete().eq('id', ctx.user.id);
+    // Delete user (cascade deletes reflections)
+    const { error } = await supabase.from('users').delete().eq('id', ctx.user.id);
 
-      if (error) {
-        console.error('Delete account error:', error);
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to delete account',
-        });
-      }
+    if (error) {
+      console.error('Delete account error:', error);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to delete account',
+      });
+    }
 
-      return {
-        message: 'Account deleted successfully',
-      };
-    }),
+    return {
+      message: 'Account deleted successfully',
+    };
+  }),
 
-  // Demo login (no password required)
-  loginDemo: publicProcedure.mutation(async () => {
+  // Demo login (no password required, rate limited: 5/min per IP)
+  loginDemo: authRateLimitedProcedure.mutation(async () => {
     // Fetch demo user from database
     const { data: demoUser, error } = await supabase
       .from('users')
@@ -408,6 +410,9 @@ export const authRouter = router({
     };
 
     const token = jwt.sign(payload, JWT_SECRET);
+
+    // Set HTTP-only cookie (demo expiry - 7 days)
+    await setAuthCookie(token, true);
 
     return {
       user: userRowToUser(demoUser),

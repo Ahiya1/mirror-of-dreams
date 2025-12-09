@@ -1,10 +1,12 @@
 'use client';
 
 import React from 'react';
-import { TONES } from '@/lib/utils/constants';
+
 import type { ToneId } from '@/lib/utils/constants';
+
 import { GlowButton } from '@/components/ui/glass/GlowButton';
 import { cn } from '@/lib/utils';
+import { TONES } from '@/lib/utils/constants';
 
 interface ToneSelectionProps {
   selectedTone: ToneId;
@@ -28,10 +30,7 @@ const ToneSelection: React.FC<ToneSelectionProps> = ({
     onSelect(toneId);
   };
 
-  const handleKeyDown = (
-    event: React.KeyboardEvent,
-    toneId: ToneId
-  ) => {
+  const handleKeyDown = (event: React.KeyboardEvent, toneId: ToneId) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       handleToneSelect(toneId);

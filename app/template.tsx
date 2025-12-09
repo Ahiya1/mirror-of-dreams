@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
+
 import { pageTransitionVariants } from '@/lib/animations/variants';
 
 /**

@@ -12,12 +12,14 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Menu, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState } from 'react';
+
 import NavigationBase from './NavigationBase';
+
 import { GlowButton } from '@/components/ui/glass';
 import { cn } from '@/lib/utils';
 
@@ -36,11 +38,7 @@ export default function LandingNavigation({ transparent = false }: LandingNaviga
         <div className="flex items-center gap-4">
           {/* Desktop Sign In */}
           <div className="hidden sm:block">
-            <GlowButton
-              variant="secondary"
-              size="sm"
-              onClick={() => router.push('/auth/signin')}
-            >
+            <GlowButton variant="secondary" size="sm" onClick={() => router.push('/auth/signin')}>
               Sign In
             </GlowButton>
           </div>
@@ -48,13 +46,13 @@ export default function LandingNavigation({ transparent = false }: LandingNaviga
           {/* Mobile Menu Button */}
           <button
             onClick={() => setShowMobileMenu(!showMobileMenu)}
-            className="sm:hidden p-2 rounded-lg bg-white/8 hover:bg-white/12 transition-all"
+            className="bg-white/8 hover:bg-white/12 rounded-lg p-2 transition-all sm:hidden"
             aria-label="Toggle menu"
           >
             {showMobileMenu ? (
-              <X className="w-5 h-5 text-white" />
+              <X className="h-5 w-5 text-white" />
             ) : (
-              <Menu className="w-5 h-5 text-white" />
+              <Menu className="h-5 w-5 text-white" />
             )}
           </button>
         </div>
@@ -68,15 +66,15 @@ export default function LandingNavigation({ transparent = false }: LandingNaviga
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="fixed top-[52px] sm:top-[72px] left-0 right-0 z-[90] sm:hidden"
+            className="fixed left-0 right-0 top-[52px] z-[90] sm:top-[72px] sm:hidden"
           >
-            <div className="bg-mirror-void-deep/95 backdrop-blur-lg border-b border-white/10 p-4">
+            <div className="border-b border-white/10 bg-mirror-void-deep/95 p-4 backdrop-blur-lg">
               <Link
                 href="/auth/signin"
                 className={cn(
-                  'block px-4 py-3 rounded-lg',
+                  'block rounded-lg px-4 py-3',
                   'bg-white/5 hover:bg-white/10',
-                  'text-white text-center',
+                  'text-center text-white',
                   'transition-all'
                 )}
                 onClick={() => setShowMobileMenu(false)}

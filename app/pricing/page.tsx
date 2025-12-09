@@ -1,17 +1,19 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { useAuth } from '@/hooks/useAuth';
-import { useToast } from '@/contexts/ToastContext';
-import CosmicBackground from '@/components/shared/CosmicBackground';
-import { GlowButton } from '@/components/ui/glass/GlowButton';
-import { PricingCard } from '@/components/subscription/PricingCard';
-import { AppNavigation } from '@/components/shared/AppNavigation';
-import LandingNavigation from '@/components/shared/LandingNavigation';
-import { TIER_LIMITS, TIER_PRICING, DAILY_LIMITS, DREAM_LIMITS } from '@/lib/utils/constants';
+import { useSearchParams } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+
 import type { BillingPeriod } from '@/lib/utils/constants';
+
+import { AppNavigation } from '@/components/shared/AppNavigation';
+import CosmicBackground from '@/components/shared/CosmicBackground';
+import LandingNavigation from '@/components/shared/LandingNavigation';
+import { PricingCard } from '@/components/subscription/PricingCard';
+import { GlowButton } from '@/components/ui/glass/GlowButton';
+import { useToast } from '@/contexts/ToastContext';
+import { useAuth } from '@/hooks/useAuth';
+import { TIER_LIMITS, TIER_PRICING, DAILY_LIMITS, DREAM_LIMITS } from '@/lib/utils/constants';
 
 // Separate component that uses searchParams
 function PricingPageContent() {
@@ -48,7 +50,7 @@ function PricingPageContent() {
       features: [
         { name: `${TIER_LIMITS.free} conversations per month`, included: true },
         { name: `Hold ${DREAM_LIMITS.free} dreams at once`, included: true },
-        { name: 'Your companion\'s presence', included: true },
+        { name: "Your companion's presence", included: true },
         { name: 'All conversation styles', included: true },
         { name: 'Journey insights', included: false },
         { name: 'Pattern visualizations', included: false },
@@ -97,7 +99,7 @@ function PricingPageContent() {
     {
       question: 'Can I change plans later?',
       answer:
-        "Yes! You can upgrade or downgrade at any time. When upgrading, new features are available immediately. When downgrading, changes take effect at the end of your current billing period.",
+        'Yes! You can upgrade or downgrade at any time. When upgrading, new features are available immediately. When downgrading, changes take effect at the end of your current billing period.',
     },
     {
       question: 'What happens if I exceed my reflection limit?',
@@ -122,7 +124,7 @@ function PricingPageContent() {
   ];
 
   return (
-    <div className="min-h-screen relative">
+    <div className="relative min-h-screen">
       <CosmicBackground animated intensity={1} />
 
       {/* Navigation - Show app nav if authenticated, landing nav otherwise */}
@@ -132,23 +134,23 @@ function PricingPageContent() {
         <LandingNavigation transparent />
       )}
 
-      <main className="relative z-10 pt-32 pb-20 px-4">
-        <div className="max-w-7xl mx-auto">
+      <main className="relative z-10 px-4 pb-20 pt-32">
+        <div className="mx-auto max-w-7xl">
           {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-h1 text-white mb-4 bg-gradient-to-r from-purple-400 via-amber-300/80 to-purple-400 bg-clip-text text-transparent">
+          <div className="mb-8 text-center">
+            <h1 className="text-h1 mb-4 bg-gradient-to-r from-purple-400 via-amber-300/80 to-purple-400 bg-clip-text text-transparent text-white">
               Find Your Space
             </h1>
-            <p className="text-xl text-white/60 max-w-2xl mx-auto">
+            <p className="mx-auto max-w-2xl text-xl text-white/60">
               Choose what feels right for where you are now
             </p>
           </div>
 
           {/* Billing Period Toggle */}
-          <div className="flex justify-center items-center gap-4 mb-12">
+          <div className="mb-12 flex items-center justify-center gap-4">
             <button
               onClick={() => setBillingPeriod('monthly')}
-              className={`px-6 py-2 rounded-lg font-medium transition-all ${
+              className={`rounded-lg px-6 py-2 font-medium transition-all ${
                 billingPeriod === 'monthly'
                   ? 'bg-white/20 text-white'
                   : 'text-white/60 hover:text-white'
@@ -158,19 +160,19 @@ function PricingPageContent() {
             </button>
             <button
               onClick={() => setBillingPeriod('yearly')}
-              className={`px-6 py-2 rounded-lg font-medium transition-all ${
+              className={`rounded-lg px-6 py-2 font-medium transition-all ${
                 billingPeriod === 'yearly'
                   ? 'bg-white/20 text-white'
                   : 'text-white/60 hover:text-white'
               }`}
             >
               Yearly
-              <span className="ml-2 text-mirror-success text-sm">Save 17%</span>
+              <span className="ml-2 text-sm text-mirror-success">Save 17%</span>
             </button>
           </div>
 
           {/* Tier Cards */}
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mb-20">
+          <div className="mb-20 grid gap-6 md:grid-cols-3 lg:gap-8">
             {tiers.map((tier) => (
               <PricingCard
                 key={tier.tier}
@@ -182,19 +184,17 @@ function PricingPageContent() {
           </div>
 
           {/* FAQ Section */}
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold text-white text-center mb-8">
+          <div className="mx-auto max-w-3xl">
+            <h2 className="mb-8 text-center text-3xl font-bold text-white">
               Frequently Asked Questions
             </h2>
 
             <div className="space-y-4">
               {faqs.map((faq, idx) => (
                 <details key={idx} className="group">
-                  <summary className="flex items-center justify-between cursor-pointer bg-white/5 hover:bg-white/10 transition-colors rounded-xl p-4 border border-white/10">
-                    <span className="text-white font-medium">
-                      {faq.question}
-                    </span>
-                    <span className="text-white/60 group-open:rotate-180 transition-transform">
+                  <summary className="flex cursor-pointer items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4 transition-colors hover:bg-white/10">
+                    <span className="font-medium text-white">{faq.question}</span>
+                    <span className="text-white/60 transition-transform group-open:rotate-180">
                       ▼
                     </span>
                   </summary>
@@ -207,29 +207,24 @@ function PricingPageContent() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-12 px-4 sm:px-6 mt-24 relative z-10">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+      <footer className="relative z-10 mt-24 border-t border-white/10 px-4 py-12 sm:px-6">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 md:grid-cols-4">
           <div>
-            <h3 className="text-white font-semibold mb-4">Mirror of Dreams</h3>
-            <p className="text-white/60 text-sm">
-              A sacred space for reflection, powered by AI.
-            </p>
+            <h3 className="mb-4 font-semibold text-white">Mirror of Dreams</h3>
+            <p className="text-sm text-white/60">A sacred space for reflection, powered by AI.</p>
           </div>
           <div>
-            <h3 className="text-white font-semibold mb-4">Product</h3>
+            <h3 className="mb-4 font-semibold text-white">Product</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link
-                  href="/pricing"
-                  className="text-white/60 hover:text-white transition-colors"
-                >
+                <Link href="/pricing" className="text-white/60 transition-colors hover:text-white">
                   Pricing
                 </Link>
               </li>
               <li>
                 <Link
                   href="/dashboard"
-                  className="text-white/60 hover:text-white transition-colors"
+                  className="text-white/60 transition-colors hover:text-white"
                 >
                   Dashboard
                 </Link>
@@ -237,43 +232,33 @@ function PricingPageContent() {
             </ul>
           </div>
           <div>
-            <h3 className="text-white font-semibold mb-4">Company</h3>
+            <h3 className="mb-4 font-semibold text-white">Company</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link
-                  href="/about"
-                  className="text-white/60 hover:text-white transition-colors"
-                >
+                <Link href="/about" className="text-white/60 transition-colors hover:text-white">
                   About
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h3 className="text-white font-semibold mb-4">Legal</h3>
+            <h3 className="mb-4 font-semibold text-white">Legal</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a
-                  href="#"
-                  className="text-white/60 hover:text-white transition-colors"
-                >
+                <a href="#" className="text-white/60 transition-colors hover:text-white">
                   Privacy
                 </a>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="text-white/60 hover:text-white transition-colors"
-                >
+                <a href="#" className="text-white/60 transition-colors hover:text-white">
                   Terms
                 </a>
               </li>
             </ul>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto mt-8 pt-8 border-t border-white/10 text-center text-white/40 text-sm">
-          &copy; {new Date().getFullYear()} Mirror of Dreams. All rights
-          reserved.
+        <div className="mx-auto mt-8 max-w-7xl border-t border-white/10 pt-8 text-center text-sm text-white/40">
+          &copy; {new Date().getFullYear()} Mirror of Dreams. All rights reserved.
         </div>
       </footer>
     </div>
@@ -283,11 +268,11 @@ function PricingPageContent() {
 // Loading fallback component
 function PricingPageLoading() {
   return (
-    <div className="min-h-screen relative">
+    <div className="relative min-h-screen">
       <CosmicBackground animated intensity={1} />
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-purple-500"></div>
           <p className="text-white/80">Loading pricing...</p>
         </div>
       </div>

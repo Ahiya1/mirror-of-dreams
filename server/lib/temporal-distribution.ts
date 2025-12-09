@@ -32,8 +32,8 @@ export function selectTemporalContext(
   }
 
   // 1. Sort reflections by created_at ASC (earliest first)
-  const sorted = [...allReflections].sort((a, b) =>
-    new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+  const sorted = [...allReflections].sort(
+    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
   );
 
   // 2. Divide timeline into 3 equal periods

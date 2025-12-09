@@ -39,9 +39,7 @@ export interface EvolutionReportRow {
 /**
  * Transform database row to EvolutionReport type
  */
-export function evolutionReportRowToEvolutionReport(
-  row: EvolutionReportRow
-): EvolutionReport {
+export function evolutionReportRowToEvolutionReport(row: EvolutionReportRow): EvolutionReport {
   return {
     id: row.id,
     userId: row.user_id,

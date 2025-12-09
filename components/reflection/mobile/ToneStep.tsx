@@ -2,12 +2,14 @@
 
 import { motion, useReducedMotion } from 'framer-motion';
 import { Check } from 'lucide-react';
+
+import type { ToneId } from '@/lib/utils/constants';
+
 import { GlassCard } from '@/components/ui/glass/GlassCard';
 import { GlowButton } from '@/components/ui/glass/GlowButton';
-import { haptic } from '@/lib/utils/haptics';
 import { cn } from '@/lib/utils';
-import type { ToneId } from '@/lib/utils/constants';
 import { TONE_DESCRIPTIONS } from '@/lib/utils/constants';
+import { haptic } from '@/lib/utils/haptics';
 
 interface ToneOption {
   id: ToneId;
@@ -70,15 +72,13 @@ export function ToneStep({
   };
 
   return (
-    <div className="flex flex-col h-full px-6 pt-4 pb-[env(safe-area-inset-bottom,16px)]">
+    <div className="flex h-full flex-col px-6 pb-[env(safe-area-inset-bottom,16px)] pt-4">
       {/* Header */}
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-light bg-gradient-to-r from-mirror-purple via-mirror-violet to-mirror-blue bg-clip-text text-transparent mb-2">
+      <div className="mb-6 text-center">
+        <h2 className="from-mirror-purple via-mirror-violet to-mirror-blue mb-2 bg-gradient-to-r bg-clip-text text-2xl font-light text-transparent">
           Choose Your Reflection Tone
         </h2>
-        <p className="text-white/70 text-sm">
-          How shall the mirror speak to you?
-        </p>
+        <p className="text-sm text-white/70">How shall the mirror speak to you?</p>
       </div>
 
       {/* Tone Options */}
@@ -93,37 +93,35 @@ export function ToneStep({
               onClick={() => handleSelect(tone.id)}
               whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
               className={cn(
-                'w-full text-left rounded-2xl p-5',
+                'w-full rounded-2xl p-5 text-left',
                 'transition-all duration-200',
-                'focus:outline-none focus:ring-2 focus:ring-mirror-purple focus:ring-offset-2 focus:ring-offset-transparent',
+                'focus:ring-mirror-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent',
                 isSelected
-                  ? 'bg-purple-500/20 border-2 border-purple-500/50'
-                  : 'bg-white/5 border-2 border-white/10 active:bg-white/10'
+                  ? 'border-2 border-purple-500/50 bg-purple-500/20'
+                  : 'border-2 border-white/10 bg-white/5 active:bg-white/10'
               )}
               aria-pressed={isSelected}
               aria-label={`${tone.name}: ${tone.description}`}
             >
               <div className="flex items-start gap-4">
                 {/* Icon */}
-                <span className="text-4xl flex-shrink-0" role="img" aria-hidden="true">
+                <span className="flex-shrink-0 text-4xl" role="img" aria-hidden="true">
                   {tone.icon}
                 </span>
 
                 {/* Content */}
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0 flex-1">
                   <h3
                     className={cn(
-                      'text-lg font-semibold mb-1 transition-colors',
+                      'mb-1 text-lg font-semibold transition-colors',
                       isSelected
-                        ? 'bg-gradient-to-r from-mirror-purple to-mirror-blue bg-clip-text text-transparent'
+                        ? 'from-mirror-purple to-mirror-blue bg-gradient-to-r bg-clip-text text-transparent'
                         : 'text-white/95'
                     )}
                   >
                     {tone.name}
                   </h3>
-                  <p className="text-sm text-white/70 leading-relaxed">
-                    {tone.description}
-                  </p>
+                  <p className="text-sm leading-relaxed text-white/70">{tone.description}</p>
                 </div>
 
                 {/* Selection indicator */}
@@ -131,9 +129,9 @@ export function ToneStep({
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0"
+                    className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-purple-500"
                   >
-                    <Check className="w-4 h-4 text-white" />
+                    <Check className="h-4 w-4 text-white" />
                   </motion.div>
                 )}
               </div>
@@ -143,13 +141,13 @@ export function ToneStep({
       </div>
 
       {/* Navigation Buttons */}
-      <div className="flex items-center justify-between pt-4 pb-2 gap-4">
+      <div className="flex items-center justify-between gap-4 pb-2 pt-4">
         <GlowButton
           variant="secondary"
           size="lg"
           onClick={onPrevious}
           disabled={!canGoPrevious}
-          className={cn('flex-1', !canGoPrevious && 'opacity-0 pointer-events-none')}
+          className={cn('flex-1', !canGoPrevious && 'pointer-events-none opacity-0')}
         >
           Back
         </GlowButton>

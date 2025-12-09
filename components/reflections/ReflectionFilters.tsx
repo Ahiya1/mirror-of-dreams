@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { type ReflectionTone } from '@/types/reflection';
+
 import { type DateRangeOption, DATE_RANGE_OPTIONS } from '@/lib/utils/dateRange';
+import { type ReflectionTone } from '@/types/reflection';
 
 interface ReflectionFiltersProps {
   search: string;
@@ -54,9 +55,19 @@ export function ReflectionFilters({
     <div className="space-y-4">
       {/* Search bar */}
       <div className="relative">
-        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-          <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+          <svg
+            className="h-5 w-5 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
           </svg>
         </div>
         <input
@@ -72,7 +83,12 @@ export function ReflectionFilters({
             className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         )}
@@ -86,7 +102,12 @@ export function ReflectionFilters({
           className="inline-flex items-center gap-2 rounded-lg border border-purple-500/20 bg-slate-900/50 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-all hover:border-purple-500/50 hover:bg-slate-900/70"
         >
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+            />
           </svg>
           Filters
           {hasActiveFilters && (
@@ -116,11 +137,21 @@ export function ReflectionFilters({
         >
           {sortOrder === 'asc' ? (
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M7 11l5-5m0 0l5 5m-5-5v12"
+              />
             </svg>
           ) : (
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 13l-5 5m0 0l-5-5m5 5V6"
+              />
             </svg>
           )}
         </button>
@@ -129,7 +160,7 @@ export function ReflectionFilters({
         {(hasActiveFilters || search) && (
           <button
             onClick={clearFilters}
-            className="ml-auto text-sm text-purple-400 hover:text-purple-300 transition-colors"
+            className="ml-auto text-sm text-purple-400 transition-colors hover:text-purple-300"
           >
             Clear all
           </button>
@@ -138,11 +169,11 @@ export function ReflectionFilters({
 
       {/* Expandable filter panel */}
       {showFilters && (
-        <div className="rounded-lg border border-purple-500/20 bg-slate-900/50 p-4 backdrop-blur-sm space-y-4">
+        <div className="space-y-4 rounded-lg border border-purple-500/20 bg-slate-900/50 p-4 backdrop-blur-sm">
           {/* Date Range filter */}
           {onDateRangeChange && (
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Time Period</label>
+              <label className="mb-2 block text-sm font-medium text-gray-300">Time Period</label>
               <div className="flex flex-wrap gap-2">
                 {DATE_RANGE_OPTIONS.map((option) => (
                   <button
@@ -163,7 +194,7 @@ export function ReflectionFilters({
 
           {/* Tone filter */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Tone</label>
+            <label className="mb-2 block text-sm font-medium text-gray-300">Tone</label>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => onToneChange(undefined)}
@@ -210,7 +241,7 @@ export function ReflectionFilters({
 
           {/* Premium filter */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Type</label>
+            <label className="mb-2 block text-sm font-medium text-gray-300">Type</label>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => onIsPremiumChange(undefined)}

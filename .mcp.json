@@ -3,11 +3,7 @@
     "paypal-prod": {
       "type": "stdio",
       "command": "npx",
-      "args": [
-        "-y",
-        "@paypal/mcp",
-        "--tools=all"
-      ],
+      "args": ["-y", "@paypal/mcp", "--tools=all"],
       "env": {
         "PAYPAL_CLIENT_ID": "AYi3--5aZaMtxU36QcQgqzvyzN13xQv-N9HLGJWDDCsAki6gAXsr2HOxiLhZJXRVgeF9Mmu_vE-UgkEZ",
         "PAYPAL_CLIENT_SECRET": "EMMy0kPje6estVDFx9ivNeq_5nronOIh-aITvHL8IDGB6LCZNoNJ7yrn2L5YvLRzaPszYLZ54VYwTKuH",

@@ -18,8 +18,8 @@ if (!SUPABASE_SERVICE_KEY) {
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
   auth: {
     autoRefreshToken: false,
-    persistSession: false
-  }
+    persistSession: false,
+  },
 });
 
 async function createAdminUser() {
@@ -50,7 +50,7 @@ async function createAdminUser() {
           tier: 'premium',
           subscription_status: 'active',
           email_verified: true,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('email', email)
         .select()
@@ -109,7 +109,6 @@ async function createAdminUser() {
     console.log('\n🎉 You can now sign in with:');
     console.log('   Email:', email);
     console.log('   Password:', password);
-
   } catch (err) {
     console.error('❌ Unexpected error:', err);
     process.exit(1);

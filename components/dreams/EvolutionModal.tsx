@@ -2,10 +2,11 @@
 
 'use client';
 
-import React, { useState } from 'react';
-import { trpc } from '@/lib/trpc';
-import { GlassModal, GlowButton, GlassCard } from '@/components/ui/glass';
 import { AlertTriangle, ArrowRight, ArrowLeft, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+
+import { GlassModal, GlowButton, GlassCard } from '@/components/ui/glass';
+import { trpc } from '@/lib/trpc';
 
 interface EvolutionModalProps {
   isOpen: boolean;
@@ -137,8 +138,8 @@ export function EvolutionModal({ isOpen, onClose, onSuccess, dream }: EvolutionM
                 s === step
                   ? 'bg-mirror-purple'
                   : i < ['old', 'new', 'reflection'].indexOf(step)
-                  ? 'bg-mirror-purple/50'
-                  : 'bg-white/20'
+                    ? 'bg-mirror-purple/50'
+                    : 'bg-white/20'
               }`}
             />
           ))}
@@ -147,7 +148,7 @@ export function EvolutionModal({ isOpen, onClose, onSuccess, dream }: EvolutionM
         {error && (
           <GlassCard className="border-l-4 border-mirror-error/60">
             <div className="flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-mirror-error flex-shrink-0 mt-0.5" />
+              <AlertTriangle className="mt-0.5 h-5 w-5 flex-shrink-0 text-mirror-error" />
               <p className="text-sm text-mirror-error">{error}</p>
             </div>
           </GlassCard>
@@ -156,37 +157,41 @@ export function EvolutionModal({ isOpen, onClose, onSuccess, dream }: EvolutionM
         {/* Step 1: Current Dream (Read-only) */}
         {step === 'old' && (
           <div className="space-y-4">
-            <p className="text-white/70 text-sm">
+            <p className="text-sm text-white/70">
               This is your dream as it exists now. Review it before making changes.
             </p>
 
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-white/60 mb-1">Title</label>
-                <div className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white">
+                <label className="mb-1 block text-xs font-medium text-white/60">Title</label>
+                <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white">
                   {dream.title}
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-white/60 mb-1">Description</label>
-                <div className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/80 min-h-[80px]">
-                  {dream.description || <span className="text-white/40 italic">No description</span>}
+                <label className="mb-1 block text-xs font-medium text-white/60">Description</label>
+                <div className="min-h-[80px] rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white/80">
+                  {dream.description || (
+                    <span className="italic text-white/40">No description</span>
+                  )}
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-white/60 mb-1">Target Date</label>
-                  <div className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/80">
+                  <label className="mb-1 block text-xs font-medium text-white/60">
+                    Target Date
+                  </label>
+                  <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white/80">
                     {dream.target_date || <span className="text-white/40">Not set</span>}
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-white/60 mb-1">Category</label>
-                  <div className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/80">
-                    {CATEGORIES.find(c => c.value === dream.category)?.emoji}{' '}
-                    {CATEGORIES.find(c => c.value === dream.category)?.label || 'Other'}
+                  <label className="mb-1 block text-xs font-medium text-white/60">Category</label>
+                  <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white/80">
+                    {CATEGORIES.find((c) => c.value === dream.category)?.emoji}{' '}
+                    {CATEGORIES.find((c) => c.value === dream.category)?.label || 'Other'}
                   </div>
                 </div>
               </div>
@@ -197,13 +202,13 @@ export function EvolutionModal({ isOpen, onClose, onSuccess, dream }: EvolutionM
         {/* Step 2: New Form (Editable) */}
         {step === 'new' && (
           <div className="space-y-4">
-            <p className="text-white/70 text-sm">
+            <p className="text-sm text-white/70">
               Update your dream to reflect how it has evolved. What has changed?
             </p>
 
             <div className="space-y-3">
               <div>
-                <label htmlFor="newTitle" className="block text-sm font-medium text-white/90 mb-1">
+                <label htmlFor="newTitle" className="mb-1 block text-sm font-medium text-white/90">
                   New Title *
                 </label>
                 <input
@@ -213,12 +218,15 @@ export function EvolutionModal({ isOpen, onClose, onSuccess, dream }: EvolutionM
                   onChange={(e) => setNewTitle(e.target.value)}
                   maxLength={200}
                   required
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-glass-sm border-2 border-white/10 text-white placeholder:text-white/40 transition-all duration-300 focus:outline-none focus:border-mirror-purple/60 focus:shadow-glow"
+                  className="backdrop-blur-glass-sm focus:border-mirror-purple/60 focus:shadow-glow w-full rounded-xl border-2 border-white/10 bg-white/5 px-4 py-3 text-white transition-all duration-300 placeholder:text-white/40 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label htmlFor="newDescription" className="block text-sm font-medium text-white/90 mb-1">
+                <label
+                  htmlFor="newDescription"
+                  className="mb-1 block text-sm font-medium text-white/90"
+                >
                   New Description
                 </label>
                 <textarea
@@ -227,13 +235,16 @@ export function EvolutionModal({ isOpen, onClose, onSuccess, dream }: EvolutionM
                   onChange={(e) => setNewDescription(e.target.value)}
                   maxLength={2000}
                   rows={4}
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-glass-sm border-2 border-white/10 text-white placeholder:text-white/40 transition-all duration-300 focus:outline-none focus:border-mirror-purple/60 focus:shadow-glow resize-none"
+                  className="backdrop-blur-glass-sm focus:border-mirror-purple/60 focus:shadow-glow w-full resize-none rounded-xl border-2 border-white/10 bg-white/5 px-4 py-3 text-white transition-all duration-300 placeholder:text-white/40 focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label htmlFor="newTargetDate" className="block text-sm font-medium text-white/90 mb-1">
+                  <label
+                    htmlFor="newTargetDate"
+                    className="mb-1 block text-sm font-medium text-white/90"
+                  >
                     Target Date
                   </label>
                   <input
@@ -241,18 +252,21 @@ export function EvolutionModal({ isOpen, onClose, onSuccess, dream }: EvolutionM
                     type="date"
                     value={newTargetDate}
                     onChange={(e) => setNewTargetDate(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-glass-sm border-2 border-white/10 text-white transition-all duration-300 focus:outline-none focus:border-mirror-purple/60 focus:shadow-glow [color-scheme:dark]"
+                    className="backdrop-blur-glass-sm focus:border-mirror-purple/60 focus:shadow-glow w-full rounded-xl border-2 border-white/10 bg-white/5 px-4 py-3 text-white transition-all duration-300 [color-scheme:dark] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label htmlFor="newCategory" className="block text-sm font-medium text-white/90 mb-1">
+                  <label
+                    htmlFor="newCategory"
+                    className="mb-1 block text-sm font-medium text-white/90"
+                  >
                     Category
                   </label>
                   <select
                     id="newCategory"
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-glass-sm border-2 border-white/10 text-white transition-all duration-300 focus:outline-none focus:border-mirror-purple/60 focus:shadow-glow cursor-pointer"
+                    className="backdrop-blur-glass-sm focus:border-mirror-purple/60 focus:shadow-glow w-full cursor-pointer rounded-xl border-2 border-white/10 bg-white/5 px-4 py-3 text-white transition-all duration-300 focus:outline-none"
                   >
                     {CATEGORIES.map((cat) => (
                       <option key={cat.value} value={cat.value} className="bg-mirror-midnight">
@@ -269,12 +283,12 @@ export function EvolutionModal({ isOpen, onClose, onSuccess, dream }: EvolutionM
         {/* Step 3: Reflection */}
         {step === 'reflection' && (
           <div className="space-y-4">
-            <div className="text-center space-y-2">
-              <Sparkles className="w-8 h-8 text-mirror-purple mx-auto" />
+            <div className="space-y-2 text-center">
+              <Sparkles className="text-mirror-purple mx-auto h-8 w-8" />
               <p className="text-white/90">
                 What led to this evolution? Why is your dream transforming?
               </p>
-              <p className="text-white/60 text-sm">
+              <p className="text-sm text-white/60">
                 This reflection will be saved as part of your dream's history.
               </p>
             </div>
@@ -287,9 +301,9 @@ export function EvolutionModal({ isOpen, onClose, onSuccess, dream }: EvolutionM
                 placeholder="I've realized that... / What I truly want is... / This dream evolved because..."
                 maxLength={2000}
                 rows={6}
-                className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-glass-sm border-2 border-white/10 text-white placeholder:text-white/40 transition-all duration-300 focus:outline-none focus:border-mirror-purple/60 focus:shadow-glow resize-none"
+                className="backdrop-blur-glass-sm focus:border-mirror-purple/60 focus:shadow-glow w-full resize-none rounded-xl border-2 border-white/10 bg-white/5 px-4 py-3 text-white transition-all duration-300 placeholder:text-white/40 focus:outline-none"
               />
-              <div className="text-xs text-white/40 text-right mt-1">
+              <div className="mt-1 text-right text-xs text-white/40">
                 {evolutionReflection.length} / 2000 (min 10)
               </div>
             </div>
@@ -297,26 +311,20 @@ export function EvolutionModal({ isOpen, onClose, onSuccess, dream }: EvolutionM
         )}
 
         {/* Action Buttons */}
-        <div className="flex gap-3 justify-between pt-4 border-t border-white/10">
-          <GlowButton
-            variant="ghost"
-            size="md"
-            onClick={step === 'old' ? handleClose : handleBack}
-          >
-            {step === 'old' ? 'Cancel' : (
+        <div className="flex justify-between gap-3 border-t border-white/10 pt-4">
+          <GlowButton variant="ghost" size="md" onClick={step === 'old' ? handleClose : handleBack}>
+            {step === 'old' ? (
+              'Cancel'
+            ) : (
               <>
-                <ArrowLeft className="w-4 h-4 mr-1" /> Back
+                <ArrowLeft className="mr-1 h-4 w-4" /> Back
               </>
             )}
           </GlowButton>
 
           {step !== 'reflection' ? (
-            <GlowButton
-              variant="primary"
-              size="md"
-              onClick={handleNext}
-            >
-              Next <ArrowRight className="w-4 h-4 ml-1" />
+            <GlowButton variant="primary" size="md" onClick={handleNext}>
+              Next <ArrowRight className="ml-1 h-4 w-4" />
             </GlowButton>
           ) : (
             <GlowButton

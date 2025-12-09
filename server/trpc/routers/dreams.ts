@@ -1,9 +1,11 @@
 // server/trpc/routers/dreams.ts - Dreams CRUD operations
 
-import { z } from 'zod';
-import { router } from '../trpc';
-import { protectedProcedure } from '../middleware';
 import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
+
+import { protectedProcedure } from '../middleware';
+import { router } from '../trpc';
+
 import { supabase } from '@/server/lib/supabase';
 
 // =====================================================
@@ -157,61 +159,60 @@ async function getDreamWithStats(dreamId: string, userId: string) {
 
 export const dreamsRouter = router({
   // Create a new dream
-  create: protectedProcedure
-    .input(createDreamSchema)
-    .mutation(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
-      const userTier = ctx.user.tier;
+  create: protectedProcedure.input(createDreamSchema).mutation(async ({ ctx, input }) => {
+    const userId = ctx.user.id;
+    const userTier = ctx.user.tier;
 
-      // Check tier limit
-      const canCreate = await checkDreamLimit(userId, userTier);
-      if (!canCreate) {
-        const limit = TIER_LIMITS[userTier as keyof typeof TIER_LIMITS]?.dreams || 0;
-        throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: `Dream limit reached for ${userTier} tier. Maximum: ${limit} active dreams. Upgrade to create more dreams.`,
-        });
-      }
+    // Check tier limit
+    const canCreate = await checkDreamLimit(userId, userTier);
+    if (!canCreate) {
+      const limit = TIER_LIMITS[userTier as keyof typeof TIER_LIMITS]?.dreams || 0;
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: `Dream limit reached for ${userTier} tier. Maximum: ${limit} active dreams. Upgrade to create more dreams.`,
+      });
+    }
 
-      // Create dream
-      const { data, error } = await supabase
-        .from('dreams')
-        .insert({
-          user_id: userId,
-          title: input.title,
-          description: input.description,
-          target_date: input.targetDate,
-          category: input.category,
-          priority: input.priority,
-          status: 'active',
-        })
-        .select()
-        .single();
+    // Create dream
+    const { data, error } = await supabase
+      .from('dreams')
+      .insert({
+        user_id: userId,
+        title: input.title,
+        description: input.description,
+        target_date: input.targetDate,
+        category: input.category,
+        priority: input.priority,
+        status: 'active',
+      })
+      .select()
+      .single();
 
-      if (error) {
-        console.error('Failed to create dream:', error);
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to create dream',
-        });
-      }
+    if (error) {
+      console.error('Failed to create dream:', error);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to create dream',
+      });
+    }
 
-      // Get current dream count for usage response
-      const { count: activeCount } = await supabase
-        .from('dreams')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', userId)
-        .eq('status', 'active');
+    // Get current dream count for usage response
+    const { count: activeCount } = await supabase
+      .from('dreams')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId)
+      .eq('status', 'active');
 
-      return {
-        dream: data,
-        usage: {
-          dreamsUsed: activeCount || 0,
-          dreamsLimit: TIER_LIMITS[userTier as keyof typeof TIER_LIMITS]?.dreams || 0,
-          dreamLimitReached: (activeCount || 0) >= (TIER_LIMITS[userTier as keyof typeof TIER_LIMITS]?.dreams || 0),
-        },
-      };
-    }),
+    return {
+      dream: data,
+      usage: {
+        dreamsUsed: activeCount || 0,
+        dreamsLimit: TIER_LIMITS[userTier as keyof typeof TIER_LIMITS]?.dreams || 0,
+        dreamLimitReached:
+          (activeCount || 0) >= (TIER_LIMITS[userTier as keyof typeof TIER_LIMITS]?.dreams || 0),
+      },
+    };
+  }),
 
   // List user's dreams
   list: protectedProcedure.input(listDreamsSchema).query(async ({ ctx, input }) => {
@@ -322,54 +323,52 @@ export const dreamsRouter = router({
   }),
 
   // Update dream status
-  updateStatus: protectedProcedure
-    .input(updateStatusSchema)
-    .mutation(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+  updateStatus: protectedProcedure.input(updateStatusSchema).mutation(async ({ ctx, input }) => {
+    const userId = ctx.user.id;
 
-      // Verify ownership
-      const { data: existing, error: checkError } = await supabase
-        .from('dreams')
-        .select('id')
-        .eq('id', input.id)
-        .eq('user_id', userId)
-        .single();
+    // Verify ownership
+    const { data: existing, error: checkError } = await supabase
+      .from('dreams')
+      .select('id')
+      .eq('id', input.id)
+      .eq('user_id', userId)
+      .single();
 
-      if (checkError || !existing) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Dream not found',
-        });
-      }
+    if (checkError || !existing) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Dream not found',
+      });
+    }
 
-      // Prepare update data with timestamp
-      const updateData: any = { status: input.status };
+    // Prepare update data with timestamp
+    const updateData: any = { status: input.status };
 
-      if (input.status === 'achieved') {
-        updateData.achieved_at = new Date().toISOString();
-      } else if (input.status === 'archived') {
-        updateData.archived_at = new Date().toISOString();
-      } else if (input.status === 'released') {
-        updateData.released_at = new Date().toISOString();
-      }
+    if (input.status === 'achieved') {
+      updateData.achieved_at = new Date().toISOString();
+    } else if (input.status === 'archived') {
+      updateData.archived_at = new Date().toISOString();
+    } else if (input.status === 'released') {
+      updateData.released_at = new Date().toISOString();
+    }
 
-      // Update status
-      const { data, error } = await supabase
-        .from('dreams')
-        .update(updateData)
-        .eq('id', input.id)
-        .select()
-        .single();
+    // Update status
+    const { data, error } = await supabase
+      .from('dreams')
+      .update(updateData)
+      .eq('id', input.id)
+      .select()
+      .single();
 
-      if (error) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to update dream status',
-        });
-      }
+    if (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to update dream status',
+      });
+    }
 
-      return data;
-    }),
+    return data;
+  }),
 
   // Delete dream
   delete: protectedProcedure.input(dreamIdSchema).mutation(async ({ ctx, input }) => {

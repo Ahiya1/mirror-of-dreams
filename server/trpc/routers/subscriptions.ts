@@ -1,10 +1,11 @@
 // server/trpc/routers/subscriptions.ts - Subscription management with PayPal
 
-import { z } from 'zod';
-import { router } from '../trpc';
-import { protectedProcedure } from '../middleware';
 import { TRPCError } from '@trpc/server';
-import { supabase } from '@/server/lib/supabase';
+import { z } from 'zod';
+
+import { protectedProcedure } from '../middleware';
+import { router } from '../trpc';
+
 import {
   createSubscription,
   cancelSubscription,
@@ -13,6 +14,7 @@ import {
   determineTierFromPlanId,
   determinePeriodFromPlanId,
 } from '@/server/lib/paypal';
+import { supabase } from '@/server/lib/supabase';
 
 export const subscriptionsRouter = router({
   // Get current subscription status
@@ -84,10 +86,12 @@ export const subscriptionsRouter = router({
 
   // Create PayPal checkout session
   createCheckout: protectedProcedure
-    .input(z.object({
-      tier: z.enum(['pro', 'unlimited']),
-      period: z.enum(['monthly', 'yearly']),
-    }))
+    .input(
+      z.object({
+        tier: z.enum(['pro', 'unlimited']),
+        period: z.enum(['monthly', 'yearly']),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       try {
         // Get plan ID for the selected tier/period
@@ -107,10 +111,12 @@ export const subscriptionsRouter = router({
 
   // Get plan ID for embedded checkout (no redirect needed)
   getPlanId: protectedProcedure
-    .input(z.object({
-      tier: z.enum(['pro', 'unlimited']),
-      period: z.enum(['monthly', 'yearly']),
-    }))
+    .input(
+      z.object({
+        tier: z.enum(['pro', 'unlimited']),
+        period: z.enum(['monthly', 'yearly']),
+      })
+    )
     .query(({ input }) => {
       try {
         const planId = getPlanId(input.tier, input.period);
@@ -125,9 +131,11 @@ export const subscriptionsRouter = router({
 
   // Activate subscription after PayPal embedded checkout approval
   activateSubscription: protectedProcedure
-    .input(z.object({
-      subscriptionId: z.string(),
-    }))
+    .input(
+      z.object({
+        subscriptionId: z.string(),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       try {
         // Fetch subscription details from PayPal
@@ -203,10 +211,7 @@ export const subscriptionsRouter = router({
       await cancelSubscription(user.paypal_subscription_id);
 
       // Update local status (webhook will handle final state)
-      await supabase
-        .from('users')
-        .update({ cancel_at_period_end: true })
-        .eq('id', ctx.user.id);
+      await supabase.from('users').update({ cancel_at_period_end: true }).eq('id', ctx.user.id);
 
       return { success: true };
     } catch (error) {

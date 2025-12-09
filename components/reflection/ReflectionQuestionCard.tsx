@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+
 import { GlassInput } from '@/components/ui/glass';
 import { cn } from '@/lib/utils';
 
@@ -36,12 +37,10 @@ export const ReflectionQuestionCard: React.FC<ReflectionQuestionCardProps> = ({
   return (
     <div className="reflection-question-card">
       {/* Guiding text - sets contemplative tone */}
-      <p className="text-sm text-white/60 mb-2 font-light italic">
-        {guidingText}
-      </p>
+      <p className="mb-2 text-sm font-light italic text-white/60">{guidingText}</p>
 
       {/* Question text */}
-      <h3 className="text-lg md:text-xl mb-4 font-light bg-gradient-to-r from-mirror-purple via-mirror-violet to-mirror-blue bg-clip-text text-transparent">
+      <h3 className="from-mirror-purple via-mirror-violet to-mirror-blue mb-4 bg-gradient-to-r bg-clip-text text-lg font-light text-transparent md:text-xl">
         {questionNumber}. {questionText}
       </h3>
 

@@ -4,17 +4,18 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { trpc } from '@/lib/trpc';
-import { CosmicLoader, GlowButton, GlassCard, GradientText } from '@/components/ui/glass';
-import { AppNavigation } from '@/components/shared/AppNavigation';
-import { BottomNavigation } from '@/components/navigation';
-import { EmptyState } from '@/components/shared/EmptyState';
-import { Constellation } from '@/components/shared/illustrations/Constellation';
-import { useAuth } from '@/hooks/useAuth';
 import { formatDistanceToNow } from 'date-fns';
 import { MessageSquare, Archive, Trash2, MoreVertical, RotateCcw } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+
+import { BottomNavigation } from '@/components/navigation';
+import { AppNavigation } from '@/components/shared/AppNavigation';
+import { EmptyState } from '@/components/shared/EmptyState';
+import { Constellation } from '@/components/shared/illustrations/Constellation';
+import { CosmicLoader, GlowButton, GlassCard, GradientText } from '@/components/ui/glass';
+import { useAuth } from '@/hooks/useAuth';
+import { trpc } from '@/lib/trpc';
 
 export default function ClarifyPage() {
   const router = useRouter();
@@ -101,7 +102,7 @@ export default function ClarifyPage() {
   // Loading states
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
+      <div className="from-mirror-dark via-mirror-midnight to-mirror-dark flex min-h-screen items-center justify-center bg-gradient-to-br p-8">
         <div className="flex flex-col items-center gap-4">
           <CosmicLoader size="lg" />
           <p className="text-small text-white/60">Loading...</p>
@@ -117,7 +118,7 @@ export default function ClarifyPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
+      <div className="from-mirror-dark via-mirror-midnight to-mirror-dark flex min-h-screen items-center justify-center bg-gradient-to-br p-8">
         <div className="flex flex-col items-center gap-6 text-center">
           <div className="text-5xl">🔮</div>
           <CosmicLoader size="lg" label="Gathering your explorations" />
@@ -133,13 +134,13 @@ export default function ClarifyPage() {
   const sessions = data?.sessions || [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark pt-nav px-4 sm:px-8 pb-20 md:pb-8">
+    <div className="from-mirror-dark via-mirror-midnight to-mirror-dark min-h-screen bg-gradient-to-br px-4 pb-20 pt-nav sm:px-8 md:pb-8">
       <AppNavigation currentPage="clarify" />
 
-      <div className="max-w-4xl mx-auto">
+      <div className="mx-auto max-w-4xl">
         {/* Header */}
         <GlassCard elevated className="mb-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <div>
               <GradientText gradient="cosmic" className="text-h1 mb-2">
                 Clarify
@@ -153,7 +154,7 @@ export default function ClarifyPage() {
               size="md"
               onClick={handleNewSession}
               disabled={(limits && !limits.canCreateSession) || createSession.isPending}
-              className="w-full sm:w-auto whitespace-nowrap"
+              className="w-full whitespace-nowrap sm:w-auto"
             >
               {createSession.isPending ? 'Creating...' : '+ New Conversation'}
             </GlowButton>
@@ -163,8 +164,8 @@ export default function ClarifyPage() {
         {/* Limits Info */}
         {limits && (
           <GlassCard className="mb-6 border-l-4 border-purple-500/60">
-            <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-              <span className="text-white/90 font-medium">
+            <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+              <span className="font-medium text-white/90">
                 {limits.sessionsUsed} / {limits.sessionsLimit} sessions this month
               </span>
               {!limits.canCreateSession && (
@@ -177,7 +178,7 @@ export default function ClarifyPage() {
         )}
 
         {/* Status Filter */}
-        <div className="flex gap-3 mb-6">
+        <div className="mb-6 flex gap-3">
           <GlowButton
             variant={statusFilter === 'active' ? 'primary' : 'secondary'}
             size="sm"
@@ -207,17 +208,17 @@ export default function ClarifyPage() {
             {sessions.map((session) => (
               <GlassCard
                 key={session.id}
-                className="cursor-pointer hover:bg-white/8 transition-colors relative group"
+                className="hover:bg-white/8 group relative cursor-pointer transition-colors"
                 onClick={() => handleSessionClick(session.id)}
               >
                 <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-medium text-white truncate mb-1">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="mb-1 truncate text-lg font-medium text-white">
                       {session.title}
                     </h3>
                     <div className="flex items-center gap-4 text-sm text-white/60">
                       <span className="flex items-center gap-1">
-                        <MessageSquare className="w-4 h-4" />
+                        <MessageSquare className="h-4 w-4" />
                         {session.messageCount} messages
                       </span>
                       <span>
@@ -236,15 +237,15 @@ export default function ClarifyPage() {
                         e.stopPropagation();
                         setShowDropdownId(showDropdownId === session.id ? null : session.id);
                       }}
-                      className="p-2 rounded-lg hover:bg-white/10 transition-colors opacity-0 group-hover:opacity-100"
+                      className="rounded-lg p-2 opacity-0 transition-colors hover:bg-white/10 group-hover:opacity-100"
                       aria-label="Session options"
                     >
-                      <MoreVertical className="w-5 h-5 text-white/60" />
+                      <MoreVertical className="h-5 w-5 text-white/60" />
                     </button>
 
                     {showDropdownId === session.id && (
                       <div
-                        className="absolute right-0 top-full mt-1 z-10"
+                        className="absolute right-0 top-full z-10 mt-1"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <GlassCard elevated className="min-w-[160px] p-1">
@@ -254,9 +255,9 @@ export default function ClarifyPage() {
                                 e.stopPropagation();
                                 archiveSession.mutate({ sessionId: session.id });
                               }}
-                              className="flex items-center gap-2 w-full px-3 py-2 text-sm text-white/80 hover:bg-white/10 rounded-lg transition-colors"
+                              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-white/80 transition-colors hover:bg-white/10"
                             >
-                              <Archive className="w-4 h-4" />
+                              <Archive className="h-4 w-4" />
                               Archive
                             </button>
                           ) : (
@@ -265,9 +266,9 @@ export default function ClarifyPage() {
                                 e.stopPropagation();
                                 restoreSession.mutate({ sessionId: session.id });
                               }}
-                              className="flex items-center gap-2 w-full px-3 py-2 text-sm text-white/80 hover:bg-white/10 rounded-lg transition-colors"
+                              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-white/80 transition-colors hover:bg-white/10"
                             >
-                              <RotateCcw className="w-4 h-4" />
+                              <RotateCcw className="h-4 w-4" />
                               Restore
                             </button>
                           )}
@@ -278,9 +279,9 @@ export default function ClarifyPage() {
                                 deleteSession.mutate({ sessionId: session.id });
                               }
                             }}
-                            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-red-400 transition-colors hover:bg-red-500/10"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="h-4 w-4" />
                             Delete
                           </button>
                         </GlassCard>

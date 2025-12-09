@@ -1,7 +1,8 @@
 // server/trpc/__tests__/middleware.test.ts
 // Tests for daily limit checking in middleware
 
-import { describe, it, expect } from '@jest/globals';
+import { describe, it, expect } from 'vitest';
+
 import { DAILY_LIMITS } from '@/lib/utils/constants';
 
 describe('Daily Limit Logic', () => {

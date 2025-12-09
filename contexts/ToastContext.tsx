@@ -8,9 +8,10 @@
 
 'use client';
 
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import { Toast } from '@/components/shared/Toast';
 import { AnimatePresence } from 'framer-motion';
+import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+
+import { Toast } from '@/components/shared/Toast';
 
 interface ToastAction {
   label: string;
@@ -31,11 +32,7 @@ interface ToastOptions {
 }
 
 interface ToastContextValue {
-  showToast: (
-    type: ToastMessage['type'],
-    message: string,
-    options?: ToastOptions | number
-  ) => void;
+  showToast: (type: ToastMessage['type'], message: string, options?: ToastOptions | number) => void;
   dismissToast: (id: string) => void;
 }
 
@@ -45,17 +42,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   const showToast = useCallback(
-    (
-      type: ToastMessage['type'],
-      message: string,
-      options?: ToastOptions | number
-    ) => {
+    (type: ToastMessage['type'], message: string, options?: ToastOptions | number) => {
       const id = Math.random().toString(36).substring(7);
 
       // Support both old signature (duration as number) and new signature (options object)
-      const resolvedOptions: ToastOptions = typeof options === 'number'
-        ? { duration: options }
-        : options ?? {};
+      const resolvedOptions: ToastOptions =
+        typeof options === 'number' ? { duration: options } : (options ?? {});
 
       const duration = resolvedOptions.duration ?? 5000;
 
@@ -88,7 +80,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
 
       {/* Toast Container */}
-      <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 max-w-sm">
+      <div className="fixed bottom-6 right-6 z-[9999] flex max-w-sm flex-col gap-3">
         <AnimatePresence>
           {toasts.map((toast) => (
             <Toast

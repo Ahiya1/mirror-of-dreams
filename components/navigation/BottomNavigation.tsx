@@ -1,23 +1,16 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
+import { Home, Sparkles, Layers, TrendingUp, User, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Sparkles, Layers, TrendingUp, BarChart2, User, MessageSquare } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useAuth } from '@/hooks/useAuth';
 
-// Context imports
 import { useNavigation } from '@/contexts/NavigationContext';
-
-// Shared hook imports (from Builder-1)
 import { useScrollDirection } from '@/hooks';
-
-// Shared utility imports (from Builder-1)
-import { haptic } from '@/lib/utils/haptics';
-
-// Animation imports (from Builder-1)
+import { useAuth } from '@/hooks/useAuth';
 import { bottomNavVariants } from '@/lib/animations/variants';
+import { cn } from '@/lib/utils';
+import { haptic } from '@/lib/utils/haptics';
 
 // ============================================
 // Types (component-specific only)
@@ -113,7 +106,7 @@ export function BottomNavigation({ className }: BottomNavigationProps) {
           exit="exit"
           className={cn(
             // Positioning
-            'fixed bottom-0 inset-x-0 z-40',
+            'fixed inset-x-0 bottom-0 z-40',
 
             // Glass morphism styling
             'bg-white/5 backdrop-blur-lg backdrop-saturate-150',
@@ -133,7 +126,7 @@ export function BottomNavigation({ className }: BottomNavigationProps) {
           role="navigation"
           aria-label="Main navigation"
         >
-          <div className="flex items-center justify-around h-16">
+          <div className="flex h-16 items-center justify-around">
             {navItems.map((item) => {
               const isActive = isItemActive(item.href);
               const Icon = item.icon;
@@ -147,16 +140,16 @@ export function BottomNavigation({ className }: BottomNavigationProps) {
                   aria-label={`Navigate to ${item.label}`}
                   className={cn(
                     'flex flex-col items-center justify-center',
-                    'flex-1 h-full min-w-0',
+                    'h-full min-w-0 flex-1',
                     'transition-colors duration-200',
-                    'focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-inset'
+                    'focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white/50'
                   )}
                 >
                   <div className="relative flex flex-col items-center">
                     {/* Icon */}
                     <Icon
                       className={cn(
-                        'w-5 h-5 transition-colors duration-200',
+                        'h-5 w-5 transition-colors duration-200',
                         isActive ? 'text-purple-400' : 'text-white/60'
                       )}
                       aria-hidden="true"
@@ -165,7 +158,7 @@ export function BottomNavigation({ className }: BottomNavigationProps) {
                     {/* Label */}
                     <span
                       className={cn(
-                        'text-[10px] mt-0.5 transition-colors duration-200 truncate max-w-full',
+                        'mt-0.5 max-w-full truncate text-[10px] transition-colors duration-200',
                         isActive ? 'text-white' : 'text-white/60'
                       )}
                     >
@@ -176,7 +169,7 @@ export function BottomNavigation({ className }: BottomNavigationProps) {
                     {isActive && (
                       <motion.div
                         layoutId="bottomNavActiveTab"
-                        className="absolute -bottom-1 w-1 h-1 bg-purple-400 rounded-full"
+                        className="absolute -bottom-1 h-1 w-1 rounded-full bg-purple-400"
                         transition={{
                           type: 'spring',
                           stiffness: 500,

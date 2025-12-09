@@ -2,9 +2,12 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import { Trophy, Sparkles, Heart, Pen } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { trpc } from '@/lib/trpc';
+import React, { useState } from 'react';
+
+import { AIResponseRenderer } from '@/components/reflections/AIResponseRenderer';
+import { AppNavigation } from '@/components/shared/AppNavigation';
 import {
   GlassCard,
   GlowButton,
@@ -12,9 +15,7 @@ import {
   CosmicLoader,
   AnimatedBackground,
 } from '@/components/ui/glass';
-import { AppNavigation } from '@/components/shared/AppNavigation';
-import { Trophy, Sparkles, Heart, Pen } from 'lucide-react';
-import { AIResponseRenderer } from '@/components/reflections/AIResponseRenderer';
+import { trpc } from '@/lib/trpc';
 
 export default function CeremonyPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -23,10 +24,12 @@ export default function CeremonyPage({ params }: { params: { id: string } }) {
   const [noteError, setNoteError] = useState('');
 
   // Fetch ceremony
-  const { data: ceremony, isLoading, error, refetch } = trpc.lifecycle.getCeremony.useQuery(
-    { dreamId: params.id },
-    { retry: false }
-  );
+  const {
+    data: ceremony,
+    isLoading,
+    error,
+    refetch,
+  } = trpc.lifecycle.getCeremony.useQuery({ dreamId: params.id }, { retry: false });
 
   const updateNoteMutation = trpc.lifecycle.updateCeremonyNote.useMutation({
     onSuccess: () => {
@@ -51,9 +54,9 @@ export default function CeremonyPage({ params }: { params: { id: string } }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark">
+      <div className="from-mirror-dark via-mirror-midnight to-mirror-dark min-h-screen bg-gradient-to-br">
         <AnimatedBackground intensity="subtle" />
-        <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
+        <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4">
           <CosmicLoader size="lg" label="Loading ceremony..." />
         </div>
       </div>
@@ -62,17 +65,16 @@ export default function CeremonyPage({ params }: { params: { id: string } }) {
 
   if (error || !ceremony) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark">
+      <div className="from-mirror-dark via-mirror-midnight to-mirror-dark min-h-screen bg-gradient-to-br">
         <AnimatedBackground intensity="subtle" />
         <AppNavigation currentPage="dreams" />
-        <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="flex min-h-[50vh] items-center justify-center">
           <GlassCard className="p-8 text-center" elevated>
-            <p className="text-h3 text-white mb-4">Ceremony not found</p>
-            <p className="text-white/60 mb-4">This dream may not have an achievement ceremony yet.</p>
-            <GlowButton
-              variant="ghost"
-              onClick={() => router.push(`/dreams/${params.id}`)}
-            >
+            <p className="text-h3 mb-4 text-white">Ceremony not found</p>
+            <p className="mb-4 text-white/60">
+              This dream may not have an achievement ceremony yet.
+            </p>
+            <GlowButton variant="ghost" onClick={() => router.push(`/dreams/${params.id}`)}>
               Back to Dream
             </GlowButton>
           </GlassCard>
@@ -82,11 +84,11 @@ export default function CeremonyPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark">
+    <div className="from-mirror-dark via-mirror-midnight to-mirror-dark min-h-screen bg-gradient-to-br">
       <AnimatedBackground intensity="medium" />
       <AppNavigation currentPage="dreams" />
 
-      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-[calc(var(--nav-height)+var(--demo-banner-height,0px)+1rem)] pb-8">
+      <div className="relative z-10 mx-auto max-w-3xl px-4 pb-8 pt-[calc(var(--nav-height)+var(--demo-banner-height,0px)+1rem)] sm:px-6 lg:px-8">
         {/* Back Button */}
         <GlowButton
           variant="ghost"
@@ -98,16 +100,17 @@ export default function CeremonyPage({ params }: { params: { id: string } }) {
         </GlowButton>
 
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-mirror-gold to-mirror-warning mb-4">
-            <Trophy className="w-10 h-10 text-white" />
+        <div className="mb-8 text-center">
+          <div className="from-mirror-gold mb-4 inline-flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br to-mirror-warning">
+            <Trophy className="h-10 w-10 text-white" />
           </div>
-          <h1 className="text-h1 font-bold mb-2">
+          <h1 className="text-h1 mb-2 font-bold">
             <GradientText gradient="cosmic">Achievement Ceremony</GradientText>
           </h1>
-          <p className="text-white/70 text-lg">{ceremony.dream_title}</p>
-          <p className="text-white/50 text-sm mt-2">
-            Achieved on {new Date(ceremony.created_at).toLocaleDateString('en-US', {
+          <p className="text-lg text-white/70">{ceremony.dream_title}</p>
+          <p className="mt-2 text-sm text-white/50">
+            Achieved on{' '}
+            {new Date(ceremony.created_at).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'long',
               day: 'numeric',
@@ -121,8 +124,8 @@ export default function CeremonyPage({ params }: { params: { id: string } }) {
             {/* Who You Were */}
             {ceremony.who_you_were && (
               <GlassCard elevated className="border-mirror-purple/20">
-                <div className="flex items-center gap-2 mb-4">
-                  <Sparkles className="w-5 h-5 text-mirror-purple" />
+                <div className="mb-4 flex items-center gap-2">
+                  <Sparkles className="text-mirror-purple h-5 w-5" />
                   <h2 className="text-h3 font-semibold text-white">Who You Were</h2>
                 </div>
                 <AIResponseRenderer content={ceremony.who_you_were} />
@@ -132,8 +135,8 @@ export default function CeremonyPage({ params }: { params: { id: string } }) {
             {/* Who You Became */}
             {ceremony.who_you_became && (
               <GlassCard elevated className="border-mirror-success/20">
-                <div className="flex items-center gap-2 mb-4">
-                  <Trophy className="w-5 h-5 text-mirror-success" />
+                <div className="mb-4 flex items-center gap-2">
+                  <Trophy className="h-5 w-5 text-mirror-success" />
                   <h2 className="text-h3 font-semibold text-white">Who You Became</h2>
                 </div>
                 <AIResponseRenderer content={ceremony.who_you_became} />
@@ -142,19 +145,19 @@ export default function CeremonyPage({ params }: { params: { id: string } }) {
 
             {/* Journey Synthesis */}
             <GlassCard elevated className="border-mirror-gold/20">
-              <div className="flex items-center gap-2 mb-4">
-                <Heart className="w-5 h-5 text-mirror-gold" />
+              <div className="mb-4 flex items-center gap-2">
+                <Heart className="text-mirror-gold h-5 w-5" />
                 <h2 className="text-h3 font-semibold text-white">Your Journey</h2>
               </div>
               <AIResponseRenderer content={ceremony.journey_synthesis} />
             </GlassCard>
           </div>
         ) : (
-          <GlassCard elevated className="text-center py-8">
-            <p className="text-white/70 mb-2">
+          <GlassCard elevated className="py-8 text-center">
+            <p className="mb-2 text-white/70">
               This ceremony was created without reflections to analyze.
             </p>
-            <p className="text-white/50 text-sm">
+            <p className="text-sm text-white/50">
               Future ceremonies with reflections will include an AI-generated journey synthesis.
             </p>
           </GlassCard>
@@ -162,9 +165,9 @@ export default function CeremonyPage({ params }: { params: { id: string } }) {
 
         {/* Personal Note Section */}
         <GlassCard elevated className="mt-6">
-          <div className="flex items-center justify-between mb-4">
+          <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Pen className="w-5 h-5 text-mirror-purple" />
+              <Pen className="text-mirror-purple h-5 w-5" />
               <h2 className="text-h3 font-semibold text-white">Your Closing Words</h2>
             </div>
             {!isAddingNote && !ceremony.personal_note && (
@@ -189,17 +192,11 @@ export default function CeremonyPage({ params }: { params: { id: string } }) {
                 placeholder="What would you like to say to your future self about this achievement?"
                 maxLength={2000}
                 rows={4}
-                className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-glass-sm border-2 border-white/10 text-white placeholder:text-white/40 transition-all duration-300 focus:outline-none focus:border-mirror-purple/60 focus:shadow-glow resize-none"
+                className="backdrop-blur-glass-sm focus:border-mirror-purple/60 focus:shadow-glow w-full resize-none rounded-xl border-2 border-white/10 bg-white/5 px-4 py-3 text-white transition-all duration-300 placeholder:text-white/40 focus:outline-none"
               />
-              {noteError && (
-                <p className="text-sm text-mirror-error">{noteError}</p>
-              )}
-              <div className="flex gap-3 justify-end">
-                <GlowButton
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsAddingNote(false)}
-                >
+              {noteError && <p className="text-sm text-mirror-error">{noteError}</p>}
+              <div className="flex justify-end gap-3">
+                <GlowButton variant="ghost" size="sm" onClick={() => setIsAddingNote(false)}>
                   Cancel
                 </GlowButton>
                 <GlowButton
@@ -214,7 +211,7 @@ export default function CeremonyPage({ params }: { params: { id: string } }) {
             </div>
           ) : ceremony.personal_note ? (
             <div>
-              <p className="text-white/80 italic leading-relaxed whitespace-pre-wrap">
+              <p className="whitespace-pre-wrap italic leading-relaxed text-white/80">
                 "{ceremony.personal_note}"
               </p>
               <GlowButton
@@ -230,15 +227,14 @@ export default function CeremonyPage({ params }: { params: { id: string } }) {
               </GlowButton>
             </div>
           ) : (
-            <p className="text-white/50 italic">
-              No closing words added yet.
-            </p>
+            <p className="italic text-white/50">No closing words added yet.</p>
           )}
         </GlassCard>
 
         {/* Metadata */}
-        <div className="mt-6 text-center text-white/40 text-sm">
-          Based on {ceremony.reflection_count} reflection{ceremony.reflection_count !== 1 ? 's' : ''}
+        <div className="mt-6 text-center text-sm text-white/40">
+          Based on {ceremony.reflection_count} reflection
+          {ceremony.reflection_count !== 1 ? 's' : ''}
         </div>
       </div>
     </div>

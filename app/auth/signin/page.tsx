@@ -2,15 +2,16 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { trpc } from '@/lib/trpc';
-import CosmicBackground from '@/components/shared/CosmicBackground';
+import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+
 import AuthLayout from '@/components/auth/AuthLayout';
+import CosmicBackground from '@/components/shared/CosmicBackground';
+import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
 import { GlassInput } from '@/components/ui/glass/GlassInput';
 import { GlowButton } from '@/components/ui/glass/GlowButton';
-import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
+import { trpc } from '@/lib/trpc';
 
 /**
  * Signin page - unified with design system
@@ -32,9 +33,9 @@ export default function SignInPage() {
   const [message, setMessage] = useState<{ text: string; type: 'error' | 'success' } | null>(null);
 
   const signinMutation = trpc.auth.signin.useMutation({
-    onSuccess: (data) => {
-      // Store token in localStorage
-      localStorage.setItem('token', data.token);
+    onSuccess: () => {
+      // Token is now set as HTTP-only cookie by server
+      // No localStorage needed
 
       // Show success message
       setMessage({ text: 'Welcome back! Redirecting...', type: 'success' });
@@ -114,7 +115,7 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="min-h-screen relative">
+    <div className="relative min-h-screen">
       {/* Cosmic Background */}
       <CosmicBackground animated={true} intensity={1} />
 
@@ -154,10 +155,10 @@ export default function SignInPage() {
           />
 
           {/* Forgot Password Link */}
-          <div className="text-right -mt-2">
+          <div className="-mt-2 text-right">
             <Link
               href="/auth/forgot-password.html"
-              className="text-white/50 hover:text-purple-400 transition-colors text-sm"
+              className="text-sm text-white/50 transition-colors hover:text-purple-400"
             >
               Forgot password?
             </Link>
@@ -165,13 +166,7 @@ export default function SignInPage() {
 
           {/* Error/Success Message */}
           {message && (
-            <div
-              className={
-                message.type === 'error'
-                  ? 'status-box-error'
-                  : 'status-box-success'
-              }
-            >
+            <div className={message.type === 'error' ? 'status-box-error' : 'status-box-success'}>
               {message.text}
             </div>
           )}
@@ -195,11 +190,11 @@ export default function SignInPage() {
           </GlowButton>
 
           {/* Switch to Signup */}
-          <div className="text-center space-y-2">
-            <p className="text-white/60 text-sm">New here?</p>
+          <div className="space-y-2 text-center">
+            <p className="text-sm text-white/60">New here?</p>
             <Link
               href="/auth/signup"
-              className="inline-block text-purple-400 hover:text-purple-300 transition-colors text-sm font-medium"
+              className="inline-block text-sm font-medium text-purple-400 transition-colors hover:text-purple-300"
             >
               Begin your journey
             </Link>

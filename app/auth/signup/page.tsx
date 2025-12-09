@@ -2,15 +2,16 @@
 
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { trpc } from '@/lib/trpc';
-import CosmicBackground from '@/components/shared/CosmicBackground';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+
 import AuthLayout from '@/components/auth/AuthLayout';
+import CosmicBackground from '@/components/shared/CosmicBackground';
+import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
 import { GlassInput } from '@/components/ui/glass/GlassInput';
 import { GlowButton } from '@/components/ui/glass/GlowButton';
-import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
+import { trpc } from '@/lib/trpc';
 
 /**
  * Signup page - unified with design system
@@ -36,13 +37,14 @@ export default function SignupPage() {
   const [message, setMessage] = useState<{ text: string; type: 'error' | 'success' } | null>(null);
 
   const signupMutation = trpc.auth.signup.useMutation({
-    onSuccess: (data) => {
-      const { token } = data;
+    onSuccess: () => {
+      // Token is now set as HTTP-only cookie by server
+      // No localStorage needed
 
-      // Store token
-      localStorage.setItem('authToken', token);
-
-      setMessage({ text: 'Account created! Please check your email to verify your account.', type: 'success' });
+      setMessage({
+        text: 'Account created! Please check your email to verify your account.',
+        type: 'success',
+      });
       setTimeout(() => {
         // Always redirect to verify-required page after signup
         // User must verify email before accessing the app
@@ -118,7 +120,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen relative">
+    <div className="relative min-h-screen">
       {/* Cosmic Background */}
       <CosmicBackground animated={true} intensity={1} />
 
@@ -171,8 +173,8 @@ export default function SignupPage() {
               {formData.password.length === 0
                 ? '6+ characters required'
                 : formData.password.length >= 6
-                ? '✓ Valid password length'
-                : `${6 - formData.password.length} more character${6 - formData.password.length > 1 ? 's' : ''} needed`}
+                  ? '✓ Valid password length'
+                  : `${6 - formData.password.length} more character${6 - formData.password.length > 1 ? 's' : ''} needed`}
             </div>
           </div>
 
@@ -192,13 +194,7 @@ export default function SignupPage() {
 
           {/* Error/Success Message */}
           {message && (
-            <div
-              className={
-                message.type === 'error'
-                  ? 'status-box-error'
-                  : 'status-box-success'
-              }
-            >
+            <div className={message.type === 'error' ? 'status-box-error' : 'status-box-success'}>
               {message.text}
             </div>
           )}
@@ -222,11 +218,11 @@ export default function SignupPage() {
           </GlowButton>
 
           {/* Switch to Signin */}
-          <div className="text-center space-y-2">
-            <p className="text-white/60 text-sm">Already have a space?</p>
+          <div className="space-y-2 text-center">
+            <p className="text-sm text-white/60">Already have a space?</p>
             <Link
               href="/auth/signin"
-              className="inline-block text-purple-400 hover:text-purple-300 transition-colors text-sm font-medium"
+              className="inline-block text-sm font-medium text-purple-400 transition-colors hover:text-purple-300"
             >
               Welcome back
             </Link>

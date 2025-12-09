@@ -3,22 +3,20 @@
  * Generates AI-powered narrative visualizations of personal growth
  */
 
-import { router } from '../trpc';
-import { protectedProcedure } from '../middleware';
-import { z } from 'zod';
-import { TRPCError } from '@trpc/server';
 import Anthropic from '@anthropic-ai/sdk';
+import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
+
+import { protectedProcedure } from '../middleware';
+import { router } from '../trpc';
+
+import { calculateCost, getModelIdentifier, getThinkingBudget } from '@/server/lib/cost-calculator';
 import { supabase } from '@/server/lib/supabase';
 import {
   selectTemporalContext,
   getContextLimit,
   type Reflection,
 } from '@/server/lib/temporal-distribution';
-import {
-  calculateCost,
-  getModelIdentifier,
-  getThinkingBudget,
-} from '@/server/lib/cost-calculator';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -66,12 +64,11 @@ export const visualizationsRouter = router({
       currentMonth.setHours(0, 0, 0, 0);
 
       const vizType = isDreamSpecific ? 'dream_specific' : 'cross_dream';
-      const { data: canGenerate } = await supabase
-        .rpc('check_visualization_limit', {
-          p_user_id: userId,
-          p_user_tier: userTier,
-          p_viz_type: vizType,
-        });
+      const { data: canGenerate } = await supabase.rpc('check_visualization_limit', {
+        p_user_id: userId,
+        p_user_tier: userTier,
+        p_viz_type: vizType,
+      });
 
       if (!canGenerate) {
         throw new TRPCError({
@@ -153,11 +150,11 @@ export const visualizationsRouter = router({
       }
 
       // 4. Apply temporal distribution
-      const contextLimit = getContextLimit(userTier, isDreamSpecific ? 'dream_specific' : 'cross_dream');
-      const selectedReflections = selectTemporalContext(
-        reflections as Reflection[],
-        contextLimit
+      const contextLimit = getContextLimit(
+        userTier,
+        isDreamSpecific ? 'dream_specific' : 'cross_dream'
       );
+      const selectedReflections = selectTemporalContext(reflections as Reflection[], contextLimit);
 
       // 5. Build visualization prompt
       const prompt = buildVisualizationPrompt(
@@ -200,7 +197,8 @@ export const visualizationsRouter = router({
 
       // Extract thinking tokens if present
       const thinkingBlock = response.content.find((block: any) => block.type === 'thinking');
-      const thinkingTokens = thinkingBlock && 'thinking' in thinkingBlock ? thinkingBlock.thinking?.length || 0 : 0;
+      const thinkingTokens =
+        thinkingBlock && 'thinking' in thinkingBlock ? thinkingBlock.thinking?.length || 0 : 0;
 
       // 7. Calculate cost
       const costBreakdown = calculateCost({
@@ -248,7 +246,9 @@ export const visualizationsRouter = router({
       });
 
       // 10. Update usage tracking
-      const counterName = isDreamSpecific ? 'visualizations_dream_specific' : 'visualizations_cross_dream';
+      const counterName = isDreamSpecific
+        ? 'visualizations_dream_specific'
+        : 'visualizations_cross_dream';
       await supabase.rpc('increment_usage_counter', {
         p_user_id: userId,
         p_month: currentMonth.toISOString().split('T')[0],
@@ -265,67 +265,63 @@ export const visualizationsRouter = router({
   /**
    * List user's visualizations
    */
-  list: protectedProcedure
-    .input(listVisualizationsSchema)
-    .query(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
-      const { page, limit, dreamId } = input;
-      const offset = (page - 1) * limit;
+  list: protectedProcedure.input(listVisualizationsSchema).query(async ({ ctx, input }) => {
+    const userId = ctx.user.id;
+    const { page, limit, dreamId } = input;
+    const offset = (page - 1) * limit;
 
-      let query = supabase
-        .from('visualizations')
-        .select('*, dreams(title)', { count: 'exact' })
-        .eq('user_id', userId);
+    let query = supabase
+      .from('visualizations')
+      .select('*, dreams(title)', { count: 'exact' })
+      .eq('user_id', userId);
 
-      if (dreamId) {
-        query = query.eq('dream_id', dreamId);
-      }
+    if (dreamId) {
+      query = query.eq('dream_id', dreamId);
+    }
 
-      const { data, error, count } = await query
-        .order('created_at', { ascending: false })
-        .range(offset, offset + limit - 1);
+    const { data, error, count } = await query
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1);
 
-      if (error) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to fetch visualizations',
-        });
-      }
+    if (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to fetch visualizations',
+      });
+    }
 
-      return {
-        items: data || [],
-        page,
-        limit,
-        total: count || 0,
-        totalPages: Math.ceil((count || 0) / limit),
-        hasMore: (count || 0) > offset + limit,
-      };
-    }),
+    return {
+      items: data || [],
+      page,
+      limit,
+      total: count || 0,
+      totalPages: Math.ceil((count || 0) / limit),
+      hasMore: (count || 0) > offset + limit,
+    };
+  }),
 
   /**
    * Get specific visualization
    */
-  get: protectedProcedure
-    .input(getVisualizationSchema)
-    .query(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+  get: protectedProcedure.input(getVisualizationSchema).query(async ({ ctx, input }) => {
+    const userId = ctx.user.id;
 
-      const { data: visualization, error } = await supabase
-        .from('visualizations')
-        .select('*, dreams(title, category)')
-        .eq('id', input.id)
-        .eq('user_id', userId)
-        .single();
+    const { data: visualization, error } = await supabase
+      .from('visualizations')
+      .select('*, dreams(title, category)')
+      .eq('id', input.id)
+      .eq('user_id', userId)
+      .single();
 
-      if (error || !visualization) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Visualization not found',
-        });
-      }
+    if (error || !visualization) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Visualization not found',
+      });
+    }
 
-      return visualization;
-    }),
+    return visualization;
+  }),
 });
 
 /**
@@ -364,13 +360,20 @@ Structure: Network metaphor (stars, web, ecosystem)
 Focus on relationships between ideas and emergent patterns.`,
   };
 
-  const reflectionSummaries = reflections.map((r, i) => {
-    const period = i < reflections.length / 3 ? 'EARLY' : i < (reflections.length * 2) / 3 ? 'MIDDLE' : 'RECENT';
-    return `[${period}] ${new Date(r.created_at).toLocaleDateString()}
+  const reflectionSummaries = reflections
+    .map((r, i) => {
+      const period =
+        i < reflections.length / 3
+          ? 'EARLY'
+          : i < (reflections.length * 2) / 3
+            ? 'MIDDLE'
+            : 'RECENT';
+      return `[${period}] ${new Date(r.created_at).toLocaleDateString()}
 Dream: ${r.dream || 'N/A'}
 Relationship: ${r.relationship}
 Offering: ${r.offering}`;
-  }).join('\n\n');
+    })
+    .join('\n\n');
 
   const context = isDreamSpecific
     ? `DREAM-SPECIFIC VISUALIZATION\nDream: "${dreamTitle}"\nReflections: ${reflections.length} on this specific dream`

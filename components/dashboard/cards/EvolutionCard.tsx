@@ -1,15 +1,16 @@
 'use client';
 
-import React from 'react';
 import { useRouter } from 'next/navigation';
+import React from 'react';
+
 import DashboardCard, {
   CardHeader,
   CardTitle,
   CardContent,
   CardActions,
 } from '@/components/dashboard/shared/DashboardCard';
-import { GlowButton } from '@/components/ui/glass';
 import { MarkdownPreview } from '@/components/shared/MarkdownPreview';
+import { GlowButton } from '@/components/ui/glass';
 import { trpc } from '@/lib/trpc';
 
 interface EvolutionCardProps {
@@ -21,10 +22,7 @@ interface EvolutionCardProps {
  * Evolution card component - Shows latest evolution report preview or eligibility status
  * Iteration 20: Rebuilt with real data integration
  */
-const EvolutionCard: React.FC<EvolutionCardProps> = ({
-  animated = true,
-  className = '',
-}) => {
+const EvolutionCard: React.FC<EvolutionCardProps> = ({ animated = true, className = '' }) => {
   const router = useRouter();
 
   // Fetch latest evolution report
@@ -34,7 +32,8 @@ const EvolutionCard: React.FC<EvolutionCardProps> = ({
   });
 
   // Fetch eligibility status (simplified - just checking if user has any reports)
-  const { data: eligibilityData, isLoading: eligibilityLoading } = trpc.evolution.checkEligibility.useQuery();
+  const { data: eligibilityData, isLoading: eligibilityLoading } =
+    trpc.evolution.checkEligibility.useQuery();
 
   const isLoading = reportsLoading || eligibilityLoading;
   const latestReport = reportsData?.reports?.[0];
@@ -98,17 +97,12 @@ const EvolutionCard: React.FC<EvolutionCardProps> = ({
                     {latestReport.reflection_count} reflections analyzed
                   </span>
                   {latestReport.dreams && (
-                    <span className="meta-item meta-item--dream">
-                      {latestReport.dreams.title}
-                    </span>
+                    <span className="meta-item meta-item--dream">{latestReport.dreams.title}</span>
                   )}
                 </div>
               </div>
 
-              <button
-                onClick={() => router.push('/evolution')}
-                className="view-all-link"
-              >
+              <button onClick={() => router.push('/evolution')} className="view-all-link">
                 View all reports →
               </button>
             </div>
@@ -162,24 +156,15 @@ const EvolutionCard: React.FC<EvolutionCardProps> = ({
 
       <CardActions>
         {hasReports ? (
-          <GlowButton
-            variant="secondary"
-            onClick={() => router.push('/evolution')}
-          >
+          <GlowButton variant="secondary" onClick={() => router.push('/evolution')}>
             View Reports
           </GlowButton>
         ) : eligibilityData?.eligible ? (
-          <GlowButton
-            variant="cosmic"
-            onClick={() => router.push('/evolution')}
-          >
+          <GlowButton variant="cosmic" onClick={() => router.push('/evolution')}>
             Generate Report
           </GlowButton>
         ) : (
-          <GlowButton
-            variant="secondary"
-            onClick={() => router.push('/dreams')}
-          >
+          <GlowButton variant="secondary" onClick={() => router.push('/dreams')}>
             Create Reflections
           </GlowButton>
         )}

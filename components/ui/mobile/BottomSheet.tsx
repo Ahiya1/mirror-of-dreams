@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, animate, PanInfo } from 'framer-motion';
+import { useEffect, useRef, useCallback } from 'react';
 import FocusLock from 'react-focus-lock';
 
+import { bottomSheetVariants, bottomSheetBackdropVariants } from '@/lib/animations/variants';
 import { cn } from '@/lib/utils';
 import { haptic } from '@/lib/utils/haptics';
-import { bottomSheetVariants, bottomSheetBackdropVariants } from '@/lib/animations/variants';
 
 /**
  * Height modes for BottomSheet:
@@ -90,8 +90,7 @@ export function BottomSheet({
   const handleDragEnd = useCallback(
     (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
       const shouldDismiss =
-        info.offset.y > DISMISS_THRESHOLD_DISTANCE ||
-        info.velocity.y > DISMISS_THRESHOLD_VELOCITY;
+        info.offset.y > DISMISS_THRESHOLD_DISTANCE || info.velocity.y > DISMISS_THRESHOLD_VELOCITY;
 
       if (shouldDismiss) {
         haptic('light');
@@ -180,7 +179,7 @@ export function BottomSheet({
             style={{ y }}
             className={cn(
               // Positioning
-              'fixed bottom-0 inset-x-0 z-50',
+              'fixed inset-x-0 bottom-0 z-50',
 
               // Height based on mode
               HEIGHT_MAP[height],
@@ -211,27 +210,22 @@ export function BottomSheet({
             {/* Drag Handle */}
             <div
               ref={dragHandleRef}
-              className="flex justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing"
+              className="flex cursor-grab justify-center pb-2 pt-3 active:cursor-grabbing"
             >
-              <div className="w-12 h-1.5 bg-white/30 rounded-full" />
+              <div className="h-1.5 w-12 rounded-full bg-white/30" />
             </div>
 
             {/* Optional Title */}
             {title && (
-              <div className="px-6 pb-4 border-b border-white/10 shrink-0">
-                <h2
-                  id="bottom-sheet-title"
-                  className="text-lg font-semibold text-white"
-                >
+              <div className="shrink-0 border-b border-white/10 px-6 pb-4">
+                <h2 id="bottom-sheet-title" className="text-lg font-semibold text-white">
                   {title}
                 </h2>
               </div>
             )}
 
             {/* Content - scrollable if needed */}
-            <div className="flex-1 overflow-y-auto overscroll-contain min-h-0">
-              {children}
-            </div>
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">{children}</div>
           </motion.div>
         </FocusLock>
       )}

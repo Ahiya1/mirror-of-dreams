@@ -273,9 +273,9 @@ export const inputFocusVariants: Variants = {
   },
   focus: {
     boxShadow: [
-      '0 0 0 2px rgba(139, 92, 246, 0.5)',        // Purple ring
-      '0 0 20px rgba(139, 92, 246, 0.3)',         // Purple glow
-      'inset 0 0 20px rgba(139, 92, 246, 0.15)',  // Inner glow
+      '0 0 0 2px rgba(139, 92, 246, 0.5)', // Purple ring
+      '0 0 20px rgba(139, 92, 246, 0.3)', // Purple glow
+      'inset 0 0 20px rgba(139, 92, 246, 0.15)', // Inner glow
     ].join(', '),
     transition: { duration: 0.3, ease: 'easeOut' },
   },

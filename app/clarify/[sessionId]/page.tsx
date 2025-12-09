@@ -5,17 +5,18 @@
 
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import { trpc } from '@/lib/trpc';
-import { CosmicLoader, GlowButton, GlassCard } from '@/components/ui/glass';
-import { AppNavigation } from '@/components/shared/AppNavigation';
-import { BottomNavigation } from '@/components/navigation';
-import { AIResponseRenderer } from '@/components/reflections/AIResponseRenderer';
-import { useAuth } from '@/hooks/useAuth';
-import { useToast } from '@/contexts/ToastContext';
 import { formatDistanceToNow } from 'date-fns';
 import { ArrowLeft, Send, Loader2 } from 'lucide-react';
+import { useRouter, useParams } from 'next/navigation';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+
+import { BottomNavigation } from '@/components/navigation';
+import { AIResponseRenderer } from '@/components/reflections/AIResponseRenderer';
+import { AppNavigation } from '@/components/shared/AppNavigation';
+import { CosmicLoader, GlowButton, GlassCard } from '@/components/ui/glass';
+import { useToast } from '@/contexts/ToastContext';
+import { useAuth } from '@/hooks/useAuth';
+import { trpc } from '@/lib/trpc';
 import { cn } from '@/lib/utils';
 
 export default function ClarifySessionPage() {
@@ -53,7 +54,10 @@ export default function ClarifySessionPage() {
   const { data, isLoading, refetch } = trpc.clarify.getSession.useQuery(
     { sessionId },
     {
-      enabled: !!sessionId && isAuthenticated && (user?.tier !== 'free' || user?.isCreator || user?.isAdmin),
+      enabled:
+        !!sessionId &&
+        isAuthenticated &&
+        (user?.tier !== 'free' || user?.isCreator || user?.isAdmin),
     }
   );
 
@@ -130,44 +134,47 @@ export default function ClarifySessionPage() {
   };
 
   // Handle stream events from SSE
-  const handleStreamEvent = useCallback((eventType: string, data: Record<string, unknown>) => {
-    switch (eventType) {
-      case 'token':
-        setStreamingContent(prev => prev + (data.text as string));
-        break;
-      case 'tool_use_result':
-        if (data.success && data.dreamId) {
-          setToolUseResult({
-            dreamId: data.dreamId as string,
-            dreamTitle: data.dreamTitle as string,
-          });
-          toast.success(`Dream created: "${data.dreamTitle}"`, {
-            duration: 8000,
-            action: {
-              label: 'View Dream',
-              onClick: () => router.push(`/dreams/${data.dreamId}`),
-            },
-          });
-        }
-        break;
-      case 'done':
-        setStreamState('idle');
-        setPendingMessage(null);
-        setStreamingContent('');
-        refetch(); // Refresh messages from server
-        break;
-      case 'error':
-        setStreamState('error');
-        toast.error('Something went wrong. Please try again.');
-        // Restore input for retry
-        if (pendingMessage) {
-          setInputValue(pendingMessage);
-        }
-        setPendingMessage(null);
-        setStreamingContent('');
-        break;
-    }
-  }, [toast, router, refetch, pendingMessage]);
+  const handleStreamEvent = useCallback(
+    (eventType: string, data: Record<string, unknown>) => {
+      switch (eventType) {
+        case 'token':
+          setStreamingContent((prev) => prev + (data.text as string));
+          break;
+        case 'tool_use_result':
+          if (data.success && data.dreamId) {
+            setToolUseResult({
+              dreamId: data.dreamId as string,
+              dreamTitle: data.dreamTitle as string,
+            });
+            toast.success(`Dream created: "${data.dreamTitle}"`, {
+              duration: 8000,
+              action: {
+                label: 'View Dream',
+                onClick: () => router.push(`/dreams/${data.dreamId}`),
+              },
+            });
+          }
+          break;
+        case 'done':
+          setStreamState('idle');
+          setPendingMessage(null);
+          setStreamingContent('');
+          refetch(); // Refresh messages from server
+          break;
+        case 'error':
+          setStreamState('error');
+          toast.error('Something went wrong. Please try again.');
+          // Restore input for retry
+          if (pendingMessage) {
+            setInputValue(pendingMessage);
+          }
+          setPendingMessage(null);
+          setStreamingContent('');
+          break;
+      }
+    },
+    [toast, router, refetch, pendingMessage]
+  );
 
   // Streaming message handler
   const handleSendStreaming = useCallback(async () => {
@@ -182,13 +189,13 @@ export default function ClarifySessionPage() {
     setStreamState('streaming');
 
     try {
-      const token = localStorage.getItem('token');
+      // Auth is now handled via HTTP-only cookies, no localStorage needed
       const response = await fetch('/api/clarify/stream', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Send cookies with request
         body: JSON.stringify({ sessionId, content }),
       });
 
@@ -214,7 +221,7 @@ export default function ClarifySessionPage() {
 
         for (let i = 0; i < lines.length; i++) {
           const line = lines[i];
-          if (line.startsWith('event: ')) {
+          if (line?.startsWith('event: ')) {
             const eventType = line.slice(7);
             const dataLine = lines[i + 1];
             if (dataLine?.startsWith('data: ')) {
@@ -245,7 +252,7 @@ export default function ClarifySessionPage() {
   // Loading states
   if (authLoading || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
+      <div className="from-mirror-dark via-mirror-midnight to-mirror-dark flex min-h-screen items-center justify-center bg-gradient-to-br p-8">
         <div className="flex flex-col items-center gap-4">
           <CosmicLoader size="lg" />
           <p className="text-small text-white/60">Loading conversation...</p>
@@ -261,12 +268,10 @@ export default function ClarifySessionPage() {
 
   if (!data) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
-        <GlassCard className="text-center p-8">
-          <p className="text-white/70 mb-4">Session not found</p>
-          <GlowButton onClick={() => router.push('/clarify')}>
-            Back to Clarify
-          </GlowButton>
+      <div className="from-mirror-dark via-mirror-midnight to-mirror-dark flex min-h-screen items-center justify-center bg-gradient-to-br p-8">
+        <GlassCard className="p-8 text-center">
+          <p className="mb-4 text-white/70">Session not found</p>
+          <GlowButton onClick={() => router.push('/clarify')}>Back to Clarify</GlowButton>
         </GlassCard>
       </div>
     );
@@ -275,24 +280,22 @@ export default function ClarifySessionPage() {
   const { session, messages } = data;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark flex flex-col">
+    <div className="from-mirror-dark via-mirror-midnight to-mirror-dark flex min-h-screen flex-col bg-gradient-to-br">
       <AppNavigation currentPage="clarify" />
 
       {/* Session Header */}
       <div className="pt-nav">
-        <GlassCard className="mx-4 sm:mx-8 mt-4 rounded-lg">
+        <GlassCard className="mx-4 mt-4 rounded-lg sm:mx-8">
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.push('/clarify')}
-              className="p-2 rounded-lg hover:bg-white/10 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 transition-colors hover:bg-white/10"
               aria-label="Back to sessions"
             >
-              <ArrowLeft className="w-5 h-5 text-white/70" />
+              <ArrowLeft className="h-5 w-5 text-white/70" />
             </button>
-            <div className="flex-1 min-w-0">
-              <h1 className="text-lg font-medium text-white truncate">
-                {session.title}
-              </h1>
+            <div className="min-w-0 flex-1">
+              <h1 className="truncate text-lg font-medium text-white">{session.title}</h1>
               <p className="text-sm text-white/50">
                 {formatDistanceToNow(new Date(session.createdAt), { addSuffix: true })}
               </p>
@@ -302,14 +305,12 @@ export default function ClarifySessionPage() {
       </div>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-6">
-        <div className="max-w-3xl mx-auto space-y-6">
+      <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-8">
+        <div className="mx-auto max-w-3xl space-y-6">
           {messages.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-white/50 text-lg mb-2">
-                Start your conversation
-              </p>
-              <p className="text-white/30 text-sm">
+            <div className="py-12 text-center">
+              <p className="mb-2 text-lg text-white/50">Start your conversation</p>
+              <p className="text-sm text-white/30">
                 Share what's on your mind - there's no right or wrong here.
               </p>
             </div>
@@ -317,17 +318,14 @@ export default function ClarifySessionPage() {
             messages.map((message) => (
               <div
                 key={message.id}
-                className={cn(
-                  'flex',
-                  message.role === 'user' ? 'justify-end' : 'justify-start'
-                )}
+                className={cn('flex', message.role === 'user' ? 'justify-end' : 'justify-start')}
               >
                 <div
                   className={cn(
                     'max-w-[85%] sm:max-w-[75%]',
                     message.role === 'user'
-                      ? 'bg-purple-600/30 border border-purple-500/30 rounded-2xl rounded-br-md px-4 py-3'
-                      : 'bg-white/5 border border-white/10 rounded-2xl rounded-bl-md px-4 py-3'
+                      ? 'rounded-2xl rounded-br-md border border-purple-500/30 bg-purple-600/30 px-4 py-3'
+                      : 'rounded-2xl rounded-bl-md border border-white/10 bg-white/5 px-4 py-3'
                   )}
                 >
                   {message.role === 'assistant' ? (
@@ -335,9 +333,9 @@ export default function ClarifySessionPage() {
                       <AIResponseRenderer content={message.content} />
                     </div>
                   ) : (
-                    <p className="text-white whitespace-pre-wrap">{message.content}</p>
+                    <p className="whitespace-pre-wrap text-white">{message.content}</p>
                   )}
-                  <p className="text-xs text-white/30 mt-2">
+                  <p className="mt-2 text-xs text-white/30">
                     {formatDistanceToNow(new Date(message.createdAt), { addSuffix: true })}
                   </p>
                 </div>
@@ -348,9 +346,9 @@ export default function ClarifySessionPage() {
           {/* Pending user message (optimistic update) */}
           {pendingMessage && (
             <div className="flex justify-end">
-              <div className="max-w-[85%] sm:max-w-[75%] bg-purple-600/30 border border-purple-500/30 rounded-2xl rounded-br-md px-4 py-3">
-                <p className="text-white whitespace-pre-wrap">{pendingMessage}</p>
-                <p className="text-xs text-white/30 mt-2">Just now</p>
+              <div className="max-w-[85%] rounded-2xl rounded-br-md border border-purple-500/30 bg-purple-600/30 px-4 py-3 sm:max-w-[75%]">
+                <p className="whitespace-pre-wrap text-white">{pendingMessage}</p>
+                <p className="mt-2 text-xs text-white/30">Just now</p>
               </div>
             </div>
           )}
@@ -358,12 +356,12 @@ export default function ClarifySessionPage() {
           {/* Streaming assistant message */}
           {streamState === 'streaming' && streamingContent && (
             <div className="flex justify-start">
-              <div className="max-w-[85%] sm:max-w-[75%] bg-white/5 border border-white/10 rounded-2xl rounded-bl-md px-4 py-3">
+              <div className="max-w-[85%] rounded-2xl rounded-bl-md border border-white/10 bg-white/5 px-4 py-3 sm:max-w-[75%]">
                 <div className="prose prose-invert prose-sm max-w-none">
-                  <p className="text-white whitespace-pre-wrap">{streamingContent}</p>
+                  <p className="whitespace-pre-wrap text-white">{streamingContent}</p>
                 </div>
-                <div className="flex items-center gap-2 mt-2">
-                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
+                <div className="mt-2 flex items-center gap-2">
+                  <div className="h-2 w-2 animate-pulse rounded-full bg-purple-400" />
                   <span className="text-xs text-white/30">Streaming...</span>
                 </div>
               </div>
@@ -373,9 +371,9 @@ export default function ClarifySessionPage() {
           {/* Typing indicator - "Mirror is reflecting..." for streaming */}
           {streamState === 'streaming' && !streamingContent && (
             <div className="flex justify-start">
-              <div className="bg-white/5 border border-white/10 rounded-2xl rounded-bl-md px-4 py-3">
+              <div className="rounded-2xl rounded-bl-md border border-white/10 bg-white/5 px-4 py-3">
                 <div className="flex items-center gap-2 text-white/50">
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin" />
                   <span className="text-sm">Mirror is reflecting...</span>
                 </div>
               </div>
@@ -385,9 +383,9 @@ export default function ClarifySessionPage() {
           {/* Typing indicator - fallback for non-streaming */}
           {sendMessage.isPending && streamState !== 'streaming' && (
             <div className="flex justify-start">
-              <div className="bg-white/5 border border-white/10 rounded-2xl rounded-bl-md px-4 py-3">
+              <div className="rounded-2xl rounded-bl-md border border-white/10 bg-white/5 px-4 py-3">
                 <div className="flex items-center gap-2 text-white/50">
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin" />
                   <span className="text-sm">Thinking...</span>
                 </div>
               </div>
@@ -399,8 +397,8 @@ export default function ClarifySessionPage() {
       </div>
 
       {/* Input Area - Mobile optimized with safe-area padding */}
-      <div className="px-4 sm:px-8 pb-[calc(80px+env(safe-area-inset-bottom))] md:pb-6">
-        <div className="max-w-3xl mx-auto">
+      <div className="px-4 pb-[calc(80px+env(safe-area-inset-bottom))] sm:px-8 md:pb-6">
+        <div className="mx-auto max-w-3xl">
           <GlassCard className="flex items-end gap-3">
             <textarea
               ref={inputRef}
@@ -411,7 +409,7 @@ export default function ClarifySessionPage() {
               rows={1}
               inputMode="text"
               enterKeyHint="send"
-              className="flex-1 bg-transparent border-none outline-none text-white placeholder-white/40 resize-none max-h-32 text-base"
+              className="max-h-32 flex-1 resize-none border-none bg-transparent text-base text-white placeholder-white/40 outline-none"
               style={{
                 minHeight: '24px',
                 fontSize: '16px', // Prevents iOS zoom on focus
@@ -423,12 +421,12 @@ export default function ClarifySessionPage() {
               size="sm"
               onClick={handleSend}
               disabled={!inputValue.trim() || streamState === 'streaming' || sendMessage.isPending}
-              className="shrink-0 min-w-[44px] min-h-[44px]"
+              className="min-h-[44px] min-w-[44px] shrink-0"
             >
               {streamState === 'streaming' || sendMessage.isPending ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <Send className="w-4 h-4" />
+                <Send className="h-4 w-4" />
               )}
             </GlowButton>
           </GlassCard>

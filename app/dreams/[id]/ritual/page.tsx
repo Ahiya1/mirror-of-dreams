@@ -2,9 +2,20 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import {
+  Bird,
+  BookOpen,
+  Heart,
+  Feather,
+  Sparkles,
+  ArrowRight,
+  ArrowLeft,
+  AlertTriangle,
+} from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { trpc } from '@/lib/trpc';
+import React, { useState } from 'react';
+
+import { AppNavigation } from '@/components/shared/AppNavigation';
 import {
   GlassCard,
   GlowButton,
@@ -12,8 +23,7 @@ import {
   CosmicLoader,
   AnimatedBackground,
 } from '@/components/ui/glass';
-import { AppNavigation } from '@/components/shared/AppNavigation';
-import { Bird, BookOpen, Heart, Feather, Sparkles, ArrowRight, ArrowLeft, AlertTriangle } from 'lucide-react';
+import { trpc } from '@/lib/trpc';
 
 type Step = 'intro' | 'learned' | 'grateful' | 'release' | 'final' | 'complete';
 
@@ -90,7 +100,7 @@ export default function RitualPage({ params }: { params: { id: string } }) {
         whatImGratefulFor,
         whatIRelease,
         finalMessage: finalMessage || undefined,
-        reason: reason as any || undefined,
+        reason: (reason as any) || undefined,
       });
 
       setStep('complete');
@@ -104,9 +114,9 @@ export default function RitualPage({ params }: { params: { id: string } }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark">
+      <div className="from-mirror-dark via-mirror-midnight to-mirror-dark min-h-screen bg-gradient-to-br">
         <AnimatedBackground intensity="subtle" />
-        <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
+        <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4">
           <CosmicLoader size="lg" label="Loading..." />
         </div>
       </div>
@@ -116,11 +126,11 @@ export default function RitualPage({ params }: { params: { id: string } }) {
   // If ritual already exists, show it
   if (existingRitual) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark">
+      <div className="from-mirror-dark via-mirror-midnight to-mirror-dark min-h-screen bg-gradient-to-br">
         <AnimatedBackground intensity="subtle" />
         <AppNavigation currentPage="dreams" />
 
-        <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-[calc(var(--nav-height)+var(--demo-banner-height,0px)+1rem)] pb-8">
+        <div className="relative z-10 mx-auto max-w-3xl px-4 pb-8 pt-[calc(var(--nav-height)+var(--demo-banner-height,0px)+1rem)] sm:px-6 lg:px-8">
           <GlowButton
             variant="ghost"
             size="sm"
@@ -130,51 +140,55 @@ export default function RitualPage({ params }: { params: { id: string } }) {
             Back to Dream
           </GlowButton>
 
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-mirror-info to-mirror-purple mb-4">
-              <Bird className="w-10 h-10 text-white" />
+          <div className="mb-8 text-center">
+            <div className="to-mirror-purple mb-4 inline-flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-mirror-info">
+              <Bird className="h-10 w-10 text-white" />
             </div>
-            <h1 className="text-h1 font-bold mb-2">
+            <h1 className="text-h1 mb-2 font-bold">
               <GradientText gradient="cosmic">Release Ritual</GradientText>
             </h1>
-            <p className="text-white/70 text-lg">{existingRitual.dream_title}</p>
-            <p className="text-white/50 text-sm mt-2">
+            <p className="text-lg text-white/70">{existingRitual.dream_title}</p>
+            <p className="mt-2 text-sm text-white/50">
               Released on {new Date(existingRitual.created_at).toLocaleDateString()}
             </p>
           </div>
 
           <div className="space-y-6">
             <GlassCard elevated className="border-mirror-purple/20">
-              <div className="flex items-center gap-2 mb-3">
-                <BookOpen className="w-5 h-5 text-mirror-purple" />
+              <div className="mb-3 flex items-center gap-2">
+                <BookOpen className="text-mirror-purple h-5 w-5" />
                 <h3 className="font-semibold text-white">What I Learned</h3>
               </div>
-              <p className="text-white/80 whitespace-pre-wrap">{existingRitual.what_i_learned}</p>
+              <p className="whitespace-pre-wrap text-white/80">{existingRitual.what_i_learned}</p>
             </GlassCard>
 
             <GlassCard elevated className="border-mirror-success/20">
-              <div className="flex items-center gap-2 mb-3">
-                <Heart className="w-5 h-5 text-mirror-success" />
+              <div className="mb-3 flex items-center gap-2">
+                <Heart className="h-5 w-5 text-mirror-success" />
                 <h3 className="font-semibold text-white">What I'm Grateful For</h3>
               </div>
-              <p className="text-white/80 whitespace-pre-wrap">{existingRitual.what_im_grateful_for}</p>
+              <p className="whitespace-pre-wrap text-white/80">
+                {existingRitual.what_im_grateful_for}
+              </p>
             </GlassCard>
 
             <GlassCard elevated className="border-mirror-info/20">
-              <div className="flex items-center gap-2 mb-3">
-                <Feather className="w-5 h-5 text-mirror-info" />
+              <div className="mb-3 flex items-center gap-2">
+                <Feather className="h-5 w-5 text-mirror-info" />
                 <h3 className="font-semibold text-white">What I Release</h3>
               </div>
-              <p className="text-white/80 whitespace-pre-wrap">{existingRitual.what_i_release}</p>
+              <p className="whitespace-pre-wrap text-white/80">{existingRitual.what_i_release}</p>
             </GlassCard>
 
             {existingRitual.final_message && (
               <GlassCard elevated className="border-mirror-gold/20">
-                <div className="flex items-center gap-2 mb-3">
-                  <Sparkles className="w-5 h-5 text-mirror-gold" />
+                <div className="mb-3 flex items-center gap-2">
+                  <Sparkles className="text-mirror-gold h-5 w-5" />
                   <h3 className="font-semibold text-white">Final Words</h3>
                 </div>
-                <p className="text-white/80 italic whitespace-pre-wrap">"{existingRitual.final_message}"</p>
+                <p className="whitespace-pre-wrap italic text-white/80">
+                  "{existingRitual.final_message}"
+                </p>
               </GlassCard>
             )}
           </div>
@@ -186,19 +200,16 @@ export default function RitualPage({ params }: { params: { id: string } }) {
   // Dream not found or not active
   if (!dream || dream.status !== 'active') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark">
+      <div className="from-mirror-dark via-mirror-midnight to-mirror-dark min-h-screen bg-gradient-to-br">
         <AnimatedBackground intensity="subtle" />
         <AppNavigation currentPage="dreams" />
-        <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="flex min-h-[50vh] items-center justify-center">
           <GlassCard className="p-8 text-center" elevated>
-            <p className="text-h3 text-white mb-4">Cannot perform ritual</p>
-            <p className="text-white/60 mb-4">
+            <p className="text-h3 mb-4 text-white">Cannot perform ritual</p>
+            <p className="mb-4 text-white/60">
               {!dream ? 'Dream not found.' : 'Only active dreams can be released.'}
             </p>
-            <GlowButton
-              variant="ghost"
-              onClick={() => router.push('/dreams')}
-            >
+            <GlowButton variant="ghost" onClick={() => router.push('/dreams')}>
               Back to Dreams
             </GlowButton>
           </GlassCard>
@@ -210,30 +221,27 @@ export default function RitualPage({ params }: { params: { id: string } }) {
   // Completion screen
   if (step === 'complete') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark">
+      <div className="from-mirror-dark via-mirror-midnight to-mirror-dark min-h-screen bg-gradient-to-br">
         <AnimatedBackground intensity="medium" />
         <AppNavigation currentPage="dreams" />
 
-        <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-[calc(var(--nav-height)+var(--demo-banner-height,0px)+2rem)] pb-8">
-          <div className="text-center space-y-6">
-            <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-mirror-info to-mirror-purple mb-4">
-              <Bird className="w-12 h-12 text-white" />
+        <div className="relative z-10 mx-auto max-w-2xl px-4 pb-8 pt-[calc(var(--nav-height)+var(--demo-banner-height,0px)+2rem)] sm:px-6 lg:px-8">
+          <div className="space-y-6 text-center">
+            <div className="to-mirror-purple mb-4 inline-flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-mirror-info">
+              <Bird className="h-12 w-12 text-white" />
             </div>
 
             <h1 className="text-h1 font-bold">
               <GradientText gradient="cosmic">Released with Gratitude</GradientText>
             </h1>
 
-            <p className="text-white/80 text-lg max-w-md mx-auto">
-              Your dream "{dream.title}" has been released. The lessons and growth it brought you remain forever.
+            <p className="mx-auto max-w-md text-lg text-white/80">
+              Your dream "{dream.title}" has been released. The lessons and growth it brought you
+              remain forever.
             </p>
 
             <div className="pt-6">
-              <GlowButton
-                variant="primary"
-                size="lg"
-                onClick={() => router.push('/dreams')}
-              >
+              <GlowButton variant="primary" size="lg" onClick={() => router.push('/dreams')}>
                 Return to Dreams
               </GlowButton>
             </div>
@@ -257,7 +265,7 @@ export default function RitualPage({ params }: { params: { id: string } }) {
     },
     grateful: {
       icon: Heart,
-      title: 'What I\'m Grateful For',
+      title: "What I'm Grateful For",
       subtitle: 'Honor what this dream gave you',
     },
     release: {
@@ -278,11 +286,11 @@ export default function RitualPage({ params }: { params: { id: string } }) {
   const currentIndex = steps.indexOf(step);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark">
+    <div className="from-mirror-dark via-mirror-midnight to-mirror-dark min-h-screen bg-gradient-to-br">
       <AnimatedBackground intensity="subtle" />
       <AppNavigation currentPage="dreams" />
 
-      <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-[calc(var(--nav-height)+var(--demo-banner-height,0px)+1rem)] pb-8">
+      <div className="relative z-10 mx-auto max-w-2xl px-4 pb-8 pt-[calc(var(--nav-height)+var(--demo-banner-height,0px)+1rem)] sm:px-6 lg:px-8">
         {/* Back to Dream */}
         <GlowButton
           variant="ghost"
@@ -294,7 +302,7 @@ export default function RitualPage({ params }: { params: { id: string } }) {
         </GlowButton>
 
         {/* Progress Indicator */}
-        <div className="flex justify-center gap-2 mb-8">
+        <div className="mb-8 flex justify-center gap-2">
           {steps.map((s, i) => (
             <div
               key={s}
@@ -302,26 +310,26 @@ export default function RitualPage({ params }: { params: { id: string } }) {
                 i === currentIndex
                   ? 'bg-mirror-purple'
                   : i < currentIndex
-                  ? 'bg-mirror-purple/50'
-                  : 'bg-white/20'
+                    ? 'bg-mirror-purple/50'
+                    : 'bg-white/20'
               }`}
             />
           ))}
         </div>
 
         {/* Step Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-mirror-info to-mirror-purple mb-4">
-            <Icon className="w-8 h-8 text-white" />
+        <div className="mb-8 text-center">
+          <div className="to-mirror-purple mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-mirror-info">
+            <Icon className="h-8 w-8 text-white" />
           </div>
-          <h2 className="text-h2 font-bold text-white mb-2">{currentConfig.title}</h2>
+          <h2 className="text-h2 mb-2 font-bold text-white">{currentConfig.title}</h2>
           <p className="text-white/60">{currentConfig.subtitle}</p>
         </div>
 
         {error && (
-          <GlassCard className="border-l-4 border-mirror-error/60 mb-6">
+          <GlassCard className="mb-6 border-l-4 border-mirror-error/60">
             <div className="flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-mirror-error flex-shrink-0 mt-0.5" />
+              <AlertTriangle className="mt-0.5 h-5 w-5 flex-shrink-0 text-mirror-error" />
               <p className="text-sm text-mirror-error">{error}</p>
             </div>
           </GlassCard>
@@ -330,24 +338,22 @@ export default function RitualPage({ params }: { params: { id: string } }) {
         <GlassCard elevated className="mb-6">
           {step === 'intro' && (
             <div className="space-y-4 text-center">
-              <p className="text-white/80 leading-relaxed">
+              <p className="leading-relaxed text-white/80">
                 Releasing a dream is not failure - it is wisdom. Sometimes our dreams evolve,
-                sometimes our path changes, and sometimes we realize a dream was protecting
-                a deeper truth we were not ready to face.
+                sometimes our path changes, and sometimes we realize a dream was protecting a deeper
+                truth we were not ready to face.
               </p>
-              <p className="text-white/80 leading-relaxed">
-                This ritual guides you through releasing "{dream.title}" with gratitude
-                and intention, honoring what it gave you while letting it go.
+              <p className="leading-relaxed text-white/80">
+                This ritual guides you through releasing "{dream.title}" with gratitude and
+                intention, honoring what it gave you while letting it go.
               </p>
-              <p className="text-white/60 text-sm mt-4">
-                Take your time. There's no rush.
-              </p>
+              <p className="mt-4 text-sm text-white/60">Take your time. There's no rush.</p>
             </div>
           )}
 
           {step === 'learned' && (
             <div className="space-y-4">
-              <p className="text-white/70 text-sm">
+              <p className="text-sm text-white/70">
                 What did pursuing this dream teach you? What do you know now that you didn't before?
               </p>
               <textarea
@@ -356,9 +362,9 @@ export default function RitualPage({ params }: { params: { id: string } }) {
                 placeholder="Through this dream, I learned that..."
                 maxLength={2000}
                 rows={6}
-                className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-glass-sm border-2 border-white/10 text-white placeholder:text-white/40 transition-all duration-300 focus:outline-none focus:border-mirror-purple/60 focus:shadow-glow resize-none"
+                className="backdrop-blur-glass-sm focus:border-mirror-purple/60 focus:shadow-glow w-full resize-none rounded-xl border-2 border-white/10 bg-white/5 px-4 py-3 text-white transition-all duration-300 placeholder:text-white/40 focus:outline-none"
               />
-              <div className="text-xs text-white/40 text-right">
+              <div className="text-right text-xs text-white/40">
                 {whatILearned.length} / 2000 (min 10)
               </div>
             </div>
@@ -366,8 +372,9 @@ export default function RitualPage({ params }: { params: { id: string } }) {
 
           {step === 'grateful' && (
             <div className="space-y-4">
-              <p className="text-white/70 text-sm">
-                What gifts did this dream give you? What are you grateful for, even if the dream is ending?
+              <p className="text-sm text-white/70">
+                What gifts did this dream give you? What are you grateful for, even if the dream is
+                ending?
               </p>
               <textarea
                 value={whatImGratefulFor}
@@ -375,9 +382,9 @@ export default function RitualPage({ params }: { params: { id: string } }) {
                 placeholder="I am grateful for..."
                 maxLength={2000}
                 rows={6}
-                className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-glass-sm border-2 border-white/10 text-white placeholder:text-white/40 transition-all duration-300 focus:outline-none focus:border-mirror-purple/60 focus:shadow-glow resize-none"
+                className="backdrop-blur-glass-sm focus:border-mirror-purple/60 focus:shadow-glow w-full resize-none rounded-xl border-2 border-white/10 bg-white/5 px-4 py-3 text-white transition-all duration-300 placeholder:text-white/40 focus:outline-none"
               />
-              <div className="text-xs text-white/40 text-right">
+              <div className="text-right text-xs text-white/40">
                 {whatImGratefulFor.length} / 2000 (min 10)
               </div>
             </div>
@@ -385,7 +392,7 @@ export default function RitualPage({ params }: { params: { id: string } }) {
 
           {step === 'release' && (
             <div className="space-y-4">
-              <p className="text-white/70 text-sm">
+              <p className="text-sm text-white/70">
                 What are you consciously letting go of? What weight are you setting down?
               </p>
               <textarea
@@ -394,9 +401,9 @@ export default function RitualPage({ params }: { params: { id: string } }) {
                 placeholder="I release..."
                 maxLength={2000}
                 rows={6}
-                className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-glass-sm border-2 border-white/10 text-white placeholder:text-white/40 transition-all duration-300 focus:outline-none focus:border-mirror-purple/60 focus:shadow-glow resize-none"
+                className="backdrop-blur-glass-sm focus:border-mirror-purple/60 focus:shadow-glow w-full resize-none rounded-xl border-2 border-white/10 bg-white/5 px-4 py-3 text-white transition-all duration-300 placeholder:text-white/40 focus:outline-none"
               />
-              <div className="text-xs text-white/40 text-right">
+              <div className="text-right text-xs text-white/40">
                 {whatIRelease.length} / 2000 (min 10)
               </div>
             </div>
@@ -405,7 +412,7 @@ export default function RitualPage({ params }: { params: { id: string } }) {
           {step === 'final' && (
             <div className="space-y-6">
               <div className="space-y-4">
-                <p className="text-white/70 text-sm">
+                <p className="text-sm text-white/70">
                   Any final words you want to record? (Optional)
                 </p>
                 <textarea
@@ -414,20 +421,20 @@ export default function RitualPage({ params }: { params: { id: string } }) {
                   placeholder="As I close this chapter..."
                   maxLength={2000}
                   rows={4}
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-glass-sm border-2 border-white/10 text-white placeholder:text-white/40 transition-all duration-300 focus:outline-none focus:border-mirror-purple/60 focus:shadow-glow resize-none"
+                  className="backdrop-blur-glass-sm focus:border-mirror-purple/60 focus:shadow-glow w-full resize-none rounded-xl border-2 border-white/10 bg-white/5 px-4 py-3 text-white transition-all duration-300 placeholder:text-white/40 focus:outline-none"
                 />
               </div>
 
               <div className="space-y-3">
-                <p className="text-white/70 text-sm">Why are you releasing this dream?</p>
+                <p className="text-sm text-white/70">Why are you releasing this dream?</p>
                 <div className="space-y-2">
                   {RELEASE_REASONS.map((r) => (
                     <label
                       key={r.value}
-                      className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                      className={`flex cursor-pointer items-center gap-3 rounded-lg p-3 transition-colors ${
                         reason === r.value
-                          ? 'bg-mirror-purple/20 border border-mirror-purple/40'
-                          : 'bg-white/5 border border-transparent hover:bg-white/10'
+                          ? 'bg-mirror-purple/20 border-mirror-purple/40 border'
+                          : 'border border-transparent bg-white/5 hover:bg-white/10'
                       }`}
                     >
                       <input
@@ -438,14 +445,16 @@ export default function RitualPage({ params }: { params: { id: string } }) {
                         onChange={(e) => setReason(e.target.value)}
                         className="sr-only"
                       />
-                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                        reason === r.value ? 'border-mirror-purple bg-mirror-purple' : 'border-white/40'
-                      }`}>
-                        {reason === r.value && (
-                          <div className="w-2 h-2 rounded-full bg-white" />
-                        )}
+                      <div
+                        className={`flex h-4 w-4 items-center justify-center rounded-full border-2 ${
+                          reason === r.value
+                            ? 'border-mirror-purple bg-mirror-purple'
+                            : 'border-white/40'
+                        }`}
+                      >
+                        {reason === r.value && <div className="h-2 w-2 rounded-full bg-white" />}
                       </div>
-                      <span className="text-white/80 text-sm">{r.label}</span>
+                      <span className="text-sm text-white/80">{r.label}</span>
                     </label>
                   ))}
                 </div>
@@ -455,23 +464,15 @@ export default function RitualPage({ params }: { params: { id: string } }) {
         </GlassCard>
 
         {/* Navigation Buttons */}
-        <div className="flex gap-3 justify-between">
-          <GlowButton
-            variant="ghost"
-            size="md"
-            onClick={handleBack}
-            disabled={step === 'intro'}
-          >
-            <ArrowLeft className="w-4 h-4 mr-1" /> Back
+        <div className="flex justify-between gap-3">
+          <GlowButton variant="ghost" size="md" onClick={handleBack} disabled={step === 'intro'}>
+            <ArrowLeft className="mr-1 h-4 w-4" /> Back
           </GlowButton>
 
           {step !== 'final' ? (
-            <GlowButton
-              variant="primary"
-              size="md"
-              onClick={handleNext}
-            >
-              {step === 'intro' ? 'Begin Ritual' : 'Continue'} <ArrowRight className="w-4 h-4 ml-1" />
+            <GlowButton variant="primary" size="md" onClick={handleNext}>
+              {step === 'intro' ? 'Begin Ritual' : 'Continue'}{' '}
+              <ArrowRight className="ml-1 h-4 w-4" />
             </GlowButton>
           ) : (
             <GlowButton

@@ -1,7 +1,8 @@
 'use client';
 
-import { cn } from '@/lib/utils';
 import type { GlowBadgeProps } from '@/types/glass-components';
+
+import { cn } from '@/lib/utils';
 
 /**
  * GlowBadge - Status badge (simplified - no pulsing animation)
@@ -10,11 +11,7 @@ import type { GlowBadgeProps } from '@/types/glass-components';
  * @param className - Additional Tailwind classes
  * @param children - Badge content
  */
-export function GlowBadge({
-  variant = 'info',
-  className,
-  children,
-}: GlowBadgeProps) {
+export function GlowBadge({ variant = 'info', className, children }: GlowBadgeProps) {
   const variants = {
     success: {
       bg: 'bg-mirror-success/20',

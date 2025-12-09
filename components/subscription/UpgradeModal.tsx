@@ -1,9 +1,10 @@
 'use client';
 
-import { GlassModal } from '@/components/ui/glass/GlassModal';
-import { GlowButton } from '@/components/ui/glass/GlowButton';
 import { Lock, Zap, Infinity, Clock } from 'lucide-react';
 import Link from 'next/link';
+
+import { GlassModal } from '@/components/ui/glass/GlassModal';
+import { GlowButton } from '@/components/ui/glass/GlowButton';
 
 type UpgradeReason = 'monthly_limit' | 'daily_limit' | 'feature_locked' | 'dream_limit';
 
@@ -30,7 +31,8 @@ export function UpgradeModal({
         return {
           icon: Infinity,
           title: "You've Filled This Month's Space",
-          message: "Your reflections are held safe. Come back next month, or expand your space if you'd like to continue.",
+          message:
+            "Your reflections are held safe. Come back next month, or expand your space if you'd like to continue.",
         };
       case 'daily_limit':
         return {
@@ -50,13 +52,15 @@ export function UpgradeModal({
         return {
           icon: Zap,
           title: 'Your Dreams Are Full',
-          message: "You're holding the maximum number of dreams. Complete one to begin another, or expand your space to hold more.",
+          message:
+            "You're holding the maximum number of dreams. Complete one to begin another, or expand your space to hold more.",
         };
       default:
         return {
           icon: Lock,
           title: 'Expand Your Space',
-          message: 'When you feel ready for deeper conversations, your expanded space will be waiting.',
+          message:
+            'When you feel ready for deeper conversations, your expanded space will be waiting.',
         };
     }
   };
@@ -68,31 +72,33 @@ export function UpgradeModal({
       <div className="space-y-6">
         {/* Icon and Message */}
         <div className="flex items-start gap-4">
-          <div className="p-3 bg-purple-500/20 rounded-lg flex-shrink-0">
-            <Icon className="w-6 h-6 text-purple-400" />
+          <div className="flex-shrink-0 rounded-lg bg-purple-500/20 p-3">
+            <Icon className="h-6 w-6 text-purple-400" />
           </div>
-          <p className="text-white/80 pt-2">{message}</p>
+          <p className="pt-2 text-white/80">{message}</p>
         </div>
 
         {/* Tier Comparison Cards */}
         <div className="grid grid-cols-2 gap-4">
           {/* Seeker Tier */}
-          <div className={`p-4 rounded-lg border transition-all ${
-            currentTier === 'free'
-              ? 'bg-white/5 border-white/10 hover:border-purple-500/50'
-              : 'bg-white/5 border-white/10 opacity-50'
-          }`}>
-            <div className="flex items-center gap-2 mb-3">
-              <Zap className="w-5 h-5 text-purple-400" />
+          <div
+            className={`rounded-lg border p-4 transition-all ${
+              currentTier === 'free'
+                ? 'border-white/10 bg-white/5 hover:border-purple-500/50'
+                : 'border-white/10 bg-white/5 opacity-50'
+            }`}
+          >
+            <div className="mb-3 flex items-center gap-2">
+              <Zap className="h-5 w-5 text-purple-400" />
               <h4 className="font-semibold text-white">Seeker</h4>
             </div>
 
-            <p className="text-2xl font-bold text-white mb-1">
+            <p className="mb-1 text-2xl font-bold text-white">
               $19
-              <span className="text-sm text-white/60 font-normal">/mo</span>
+              <span className="text-sm font-normal text-white/60">/mo</span>
             </p>
 
-            <ul className="text-sm text-white/80 space-y-1.5 mb-4">
+            <ul className="mb-4 space-y-1.5 text-sm text-white/80">
               <li>• 30 conversations/month</li>
               <li>• Hold 5 dreams at once</li>
               <li>• Journey insights</li>
@@ -109,18 +115,18 @@ export function UpgradeModal({
           </div>
 
           {/* Devoted Tier */}
-          <div className="p-4 bg-white/5 border-2 border-purple-500/30 rounded-lg hover:border-purple-500/50 transition-all">
-            <div className="flex items-center gap-2 mb-3">
-              <Infinity className="w-5 h-5 text-purple-400" />
+          <div className="rounded-lg border-2 border-purple-500/30 bg-white/5 p-4 transition-all hover:border-purple-500/50">
+            <div className="mb-3 flex items-center gap-2">
+              <Infinity className="h-5 w-5 text-purple-400" />
               <h4 className="font-semibold text-white">Devoted</h4>
             </div>
 
-            <p className="text-2xl font-bold text-white mb-1">
+            <p className="mb-1 text-2xl font-bold text-white">
               $39
-              <span className="text-sm text-white/60 font-normal">/mo</span>
+              <span className="text-sm font-normal text-white/60">/mo</span>
             </p>
 
-            <ul className="text-sm text-white/80 space-y-1.5 mb-4">
+            <ul className="mb-4 space-y-1.5 text-sm text-white/80">
               <li>• 60 conversations/month</li>
               <li>• Hold unlimited dreams</li>
               <li>• Deeper reflection time</li>
@@ -137,12 +143,10 @@ export function UpgradeModal({
 
         {/* Annual Pricing Note */}
         <div className="text-center">
-          <p className="text-white/60 text-sm mb-2">
-            Save 17% with annual billing
-          </p>
+          <p className="mb-2 text-sm text-white/60">Save 17% with annual billing</p>
           <Link
             href="/pricing"
-            className="text-purple-400 hover:text-purple-300 text-sm transition-colors inline-flex items-center gap-1"
+            className="inline-flex items-center gap-1 text-sm text-purple-400 transition-colors hover:text-purple-300"
             onClick={onClose}
           >
             View full pricing comparison

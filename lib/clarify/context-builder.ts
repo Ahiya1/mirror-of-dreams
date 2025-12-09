@@ -1,8 +1,9 @@
 // lib/clarify/context-builder.ts - Build context for Clarify conversations
 
-import { supabase } from '@/server/lib/supabase';
-import { CLARIFY_CONTEXT_LIMITS, PATTERN_CONSOLIDATION } from '@/lib/utils/constants';
 import type { ClarifyPattern, ClarifyPatternRow } from '@/types/pattern';
+
+import { CLARIFY_CONTEXT_LIMITS, PATTERN_CONSOLIDATION } from '@/lib/utils/constants';
+import { supabase } from '@/server/lib/supabase';
 
 /**
  * Estimate token count for text (rough approximation)
@@ -61,7 +62,7 @@ Experience: ${user.total_reflections || 0} reflections, ${user.total_clarify_ses
 
   if (dreams && dreams.length > 0) {
     const dreamsContext = `[Active Dreams]
-${dreams.map(d => `- "${d.title}" (${d.category || 'general'}): ${d.description?.slice(0, 100) || 'No description'}${d.description && d.description.length > 100 ? '...' : ''}`).join('\n')}`;
+${dreams.map((d) => `- "${d.title}" (${d.category || 'general'}): ${d.description?.slice(0, 100) || 'No description'}${d.description && d.description.length > 100 ? '...' : ''}`).join('\n')}`;
     sections.push({
       priority: 2,
       content: dreamsContext,
@@ -87,7 +88,7 @@ ${dreams.map(d => `- "${d.title}" (${d.category || 'general'}): ${d.description?
     };
 
     const patternsContext = `[Patterns Observed]
-${patterns.map(p => `- ${patternLabels[p.pattern_type] || p.pattern_type}: ${p.content}`).join('\n')}`;
+${patterns.map((p) => `- ${patternLabels[p.pattern_type] || p.pattern_type}: ${p.content}`).join('\n')}`;
     sections.push({
       priority: 2,
       content: patternsContext,
@@ -107,7 +108,7 @@ ${patterns.map(p => `- ${patternLabels[p.pattern_type] || p.pattern_type}: ${p.c
 
   if (recentSessions && recentSessions.length > 0) {
     const sessionsContext = `[Recent Conversations]
-${recentSessions.map(s => `- "${s.title}" (${s.message_count} messages)`).join('\n')}`;
+${recentSessions.map((s) => `- "${s.title}" (${s.message_count} messages)`).join('\n')}`;
     sections.push({
       priority: 3,
       content: sessionsContext,
@@ -126,7 +127,7 @@ ${recentSessions.map(s => `- "${s.title}" (${s.message_count} messages)`).join('
   // Get associated dreams for context
   if (reflections && reflections.length > 0) {
     const reflectionsContext = `[Recent Reflections]
-${reflections.length} reflection${reflections.length > 1 ? 's' : ''} in the last period, using tones: ${[...new Set(reflections.map(r => r.tone))].join(', ')}`;
+${reflections.length} reflection${reflections.length > 1 ? 's' : ''} in the last period, using tones: ${[...new Set(reflections.map((r) => r.tone))].join(', ')}`;
     sections.push({
       priority: 4,
       content: reflectionsContext,

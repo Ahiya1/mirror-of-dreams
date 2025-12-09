@@ -1,10 +1,12 @@
 'use client';
 
-import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import React from 'react';
+
+import type { ToneId } from '@/lib/utils/constants';
+
 import { GlassCard } from '@/components/ui/glass';
 import { cn } from '@/lib/utils';
-import type { ToneId } from '@/lib/utils/constants';
 import { TONE_DESCRIPTIONS } from '@/lib/utils/constants';
 
 interface ToneOption {
@@ -55,26 +57,21 @@ interface ToneSelectionCardProps {
  * - Clear descriptions
  * - Selection state with cosmic glow
  */
-export const ToneSelectionCard: React.FC<ToneSelectionCardProps> = ({
-  selectedTone,
-  onSelect,
-}) => {
+export const ToneSelectionCard: React.FC<ToneSelectionCardProps> = ({ selectedTone, onSelect }) => {
   const prefersReducedMotion = useReducedMotion();
 
   return (
     <div className="tone-selection-cards">
       {/* Section header */}
-      <div className="text-center mb-6">
-        <h2 className="text-2xl md:text-3xl font-light bg-gradient-to-r from-mirror-purple via-mirror-violet to-mirror-blue bg-clip-text text-transparent mb-2">
+      <div className="mb-6 text-center">
+        <h2 className="from-mirror-purple via-mirror-violet to-mirror-blue mb-2 bg-gradient-to-r bg-clip-text text-2xl font-light text-transparent md:text-3xl">
           Choose Your Reflection Tone
         </h2>
-        <p className="text-white/70 text-sm md:text-base">
-          How shall the mirror speak to you?
-        </p>
+        <p className="text-sm text-white/70 md:text-base">How shall the mirror speak to you?</p>
       </div>
 
       {/* Tone cards grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {TONE_OPTIONS.map((tone) => {
           const isSelected = selectedTone === tone.id;
           const glowColor = TONE_GLOW_COLORS[tone.id];
@@ -90,24 +87,29 @@ export const ToneSelectionCard: React.FC<ToneSelectionCardProps> = ({
                   onSelect(tone.id);
                 }
               }}
-              className="text-left w-full focus:outline-none focus:ring-2 focus:ring-mirror-purple focus:ring-offset-2 focus:ring-offset-transparent rounded-xl"
+              className="focus:ring-mirror-purple w-full rounded-xl text-left focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent"
               aria-pressed={isSelected}
               aria-label={`${tone.name}: ${tone.description}`}
-              whileHover={prefersReducedMotion ? undefined : {
-                boxShadow: `0 0 30px ${glowColor}`,
-                y: -2,
-              }}
+              whileHover={
+                prefersReducedMotion
+                  ? undefined
+                  : {
+                      boxShadow: `0 0 30px ${glowColor}`,
+                      y: -2,
+                    }
+              }
               whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
             >
               <GlassCard
                 elevated={isSelected}
                 interactive
                 className={cn(
-                  'cursor-pointer transition-all duration-300 h-full',
-                  isSelected && 'border-mirror-purple/60 bg-mirror-purple/10 shadow-lg shadow-mirror-purple/20'
+                  'h-full cursor-pointer transition-all duration-300',
+                  isSelected &&
+                    'border-mirror-purple/60 bg-mirror-purple/10 shadow-mirror-purple/20 shadow-lg'
                 )}
               >
-                <div className="text-center py-6 px-4 space-y-4">
+                <div className="space-y-4 px-4 py-6 text-center">
                   {/* Icon */}
                   <motion.div
                     className="text-5xl"
@@ -122,7 +124,7 @@ export const ToneSelectionCard: React.FC<ToneSelectionCardProps> = ({
                     className={cn(
                       'text-lg font-semibold transition-colors',
                       isSelected
-                        ? 'bg-gradient-to-r from-mirror-purple to-mirror-blue bg-clip-text text-transparent'
+                        ? 'from-mirror-purple to-mirror-blue bg-gradient-to-r bg-clip-text text-transparent'
                         : 'text-white/95'
                     )}
                   >
@@ -130,9 +132,7 @@ export const ToneSelectionCard: React.FC<ToneSelectionCardProps> = ({
                   </h3>
 
                   {/* Description */}
-                  <p className="text-sm text-white/70 leading-relaxed">
-                    {tone.description}
-                  </p>
+                  <p className="text-sm leading-relaxed text-white/70">{tone.description}</p>
 
                   {/* Selection indicator */}
                   {isSelected && (
@@ -140,10 +140,10 @@ export const ToneSelectionCard: React.FC<ToneSelectionCardProps> = ({
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.2 }}
-                      className="flex items-center justify-center gap-2 text-mirror-purple text-sm font-medium"
+                      className="text-mirror-purple flex items-center justify-center gap-2 text-sm font-medium"
                     >
                       <svg
-                        className="w-4 h-4"
+                        className="h-4 w-4"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"

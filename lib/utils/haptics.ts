@@ -1,11 +1,11 @@
 export type HapticStyle = 'light' | 'medium' | 'heavy' | 'success' | 'warning';
 
 const HAPTIC_DURATIONS: Record<HapticStyle, number | number[]> = {
-  light: 10,              // Quick tap feedback
-  medium: 25,             // Button press
-  heavy: 50,              // Significant action
-  success: [15, 50, 30],  // Double-tap pattern
-  warning: [30, 30, 30],  // Triple-tap pattern
+  light: 10, // Quick tap feedback
+  medium: 25, // Button press
+  heavy: 50, // Significant action
+  success: [15, 50, 30], // Double-tap pattern
+  warning: [30, 30, 30], // Triple-tap pattern
 };
 
 /**

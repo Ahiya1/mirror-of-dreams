@@ -1,15 +1,22 @@
 'use client';
 
 import { AnimatePresence, motion, PanInfo, useReducedMotion } from 'framer-motion';
-import FocusLock from 'react-focus-lock';
 import { X } from 'lucide-react';
 import { useEffect, useRef, useCallback } from 'react';
-import { modalOverlayVariants, modalContentVariants, mobileModalVariants } from '@/lib/animations/variants';
+import FocusLock from 'react-focus-lock';
+
 import { GlassCard } from './GlassCard';
+
+import type { GlassModalProps } from '@/types/glass-components';
+
 import { useIsMobile } from '@/hooks';
+import {
+  modalOverlayVariants,
+  modalContentVariants,
+  mobileModalVariants,
+} from '@/lib/animations/variants';
 import { cn } from '@/lib/utils';
 import { haptic } from '@/lib/utils/haptics';
-import type { GlassModalProps } from '@/types/glass-components';
 
 /**
  * GlassModal - Modal dialog with glass overlay
@@ -75,13 +82,16 @@ export function GlassModal({
   }, [isOpen, onClose]);
 
   // Handle swipe-to-dismiss gesture
-  const handleDragEnd = useCallback((_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    // Dismiss if dragged down more than 100px OR with high velocity (> 500px/s)
-    if (info.offset.y > 100 || info.velocity.y > 500) {
-      haptic('light');
-      onClose();
-    }
-  }, [onClose]);
+  const handleDragEnd = useCallback(
+    (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+      // Dismiss if dragged down more than 100px OR with high velocity (> 500px/s)
+      if (info.offset.y > 100 || info.velocity.y > 500) {
+        haptic('light');
+        onClose();
+      }
+    },
+    [onClose]
+  );
 
   // Handle close with haptic feedback
   const handleClose = useCallback(() => {
@@ -103,26 +113,34 @@ export function GlassModal({
             animate="visible"
             exit="exit"
             onClick={handleClose}
-            className="fixed inset-0 z-[110] bg-mirror-dark/80 backdrop-blur-glass"
+            className="bg-mirror-dark/80 fixed inset-0 z-[110] backdrop-blur-glass"
           />
 
           {/* Modal Container */}
-          <div className={cn(
-            'fixed z-[110]',
-            isMobile
-              ? 'inset-0'  // Full screen container on mobile
-              : 'inset-0 flex items-center justify-center p-4'  // Centered on desktop
-          )}>
+          <div
+            className={cn(
+              'fixed z-[110]',
+              isMobile
+                ? 'inset-0' // Full screen container on mobile
+                : 'inset-0 flex items-center justify-center p-4' // Centered on desktop
+            )}
+          >
             <motion.div
-              variants={prefersReducedMotion ? undefined : (isMobile ? mobileModalVariants : modalContentVariants)}
+              variants={
+                prefersReducedMotion
+                  ? undefined
+                  : isMobile
+                    ? mobileModalVariants
+                    : modalContentVariants
+              }
               initial="hidden"
               animate="visible"
               exit="exit"
               onClick={(e) => e.stopPropagation()}
               className={cn(
                 isMobile
-                  ? 'h-full w-full flex flex-col'  // Full screen on mobile
-                  : 'w-full max-w-lg'              // Card on desktop
+                  ? 'flex h-full w-full flex-col' // Full screen on mobile
+                  : 'w-full max-w-lg' // Card on desktop
               )}
               role="dialog"
               aria-modal="true"
@@ -135,16 +153,18 @@ export function GlassModal({
             >
               {isMobile ? (
                 // Mobile: Full-screen glass container
-                <div className={cn(
-                  'flex-1 flex flex-col',
-                  'bg-mirror-void-deep/95 backdrop-blur-xl',
-                  'overflow-hidden',
-                  className
-                )}>
+                <div
+                  className={cn(
+                    'flex flex-1 flex-col',
+                    'bg-mirror-void-deep/95 backdrop-blur-xl',
+                    'overflow-hidden',
+                    className
+                  )}
+                >
                   {/* Drag handle indicator (only shown when swipe is enabled) */}
                   {!disableSwipeDismiss && (
-                    <div className="flex justify-center py-3 flex-shrink-0">
-                      <div className="w-12 h-1.5 bg-white/30 rounded-full" />
+                    <div className="flex flex-shrink-0 justify-center py-3">
+                      <div className="h-1.5 w-12 rounded-full bg-white/30" />
                     </div>
                   )}
 
@@ -156,7 +176,7 @@ export function GlassModal({
                       'absolute z-10',
                       disableSwipeDismiss ? 'top-4' : 'top-2',
                       'right-4',
-                      'p-3 min-w-[44px] min-h-[44px]',
+                      'min-h-[44px] min-w-[44px] p-3',
                       'flex items-center justify-center',
                       'rounded-lg bg-white/10 hover:bg-white/20',
                       'transition-colors',
@@ -164,7 +184,7 @@ export function GlassModal({
                     )}
                     aria-label="Close modal"
                   >
-                    <X className="w-5 h-5 text-white" />
+                    <X className="h-5 w-5 text-white" />
                   </button>
 
                   {/* Title - Mobile */}
@@ -172,7 +192,7 @@ export function GlassModal({
                     <h2
                       id="modal-title"
                       className={cn(
-                        'text-2xl font-bold text-white px-6 pb-4 pr-16 flex-shrink-0',
+                        'flex-shrink-0 px-6 pb-4 pr-16 text-2xl font-bold text-white',
                         disableSwipeDismiss ? 'pt-4' : 'pt-0'
                       )}
                     >
@@ -181,7 +201,7 @@ export function GlassModal({
                   )}
 
                   {/* Scrollable Content - Mobile */}
-                  <div className="flex-1 overflow-y-auto px-6 pb-6 pb-safe">
+                  <div className="pb-safe flex-1 overflow-y-auto px-6 pb-6">
                     <div className="text-white/80">{children}</div>
                   </div>
                 </div>
@@ -193,8 +213,8 @@ export function GlassModal({
                     ref={closeButtonRef}
                     onClick={handleClose}
                     className={cn(
-                      'absolute top-4 right-4',
-                      'p-3 min-w-[44px] min-h-[44px]',
+                      'absolute right-4 top-4',
+                      'min-h-[44px] min-w-[44px] p-3',
                       'flex items-center justify-center',
                       'rounded-lg bg-white/10 hover:bg-white/20',
                       'transition-colors',
@@ -202,12 +222,12 @@ export function GlassModal({
                     )}
                     aria-label="Close modal"
                   >
-                    <X className="w-5 h-5 text-white" />
+                    <X className="h-5 w-5 text-white" />
                   </button>
 
                   {/* Title - Desktop */}
                   {title && (
-                    <h2 id="modal-title" className="text-2xl font-bold text-white mb-4 pr-14">
+                    <h2 id="modal-title" className="mb-4 pr-14 text-2xl font-bold text-white">
                       {title}
                     </h2>
                   )}

@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import React from 'react';
+
 import DashboardCard, {
   CardHeader,
   CardTitle,
@@ -24,7 +25,11 @@ const DreamsCard: React.FC<DreamsCardProps> = ({ animated = true, className = ''
   const router = useRouter();
 
   // Fetch active dreams from tRPC
-  const { data: dreams, isLoading, error } = trpc.dreams.list.useQuery({
+  const {
+    data: dreams,
+    isLoading,
+    error,
+  } = trpc.dreams.list.useQuery({
     status: 'active',
     includeStats: true,
   });
@@ -111,18 +116,20 @@ const DreamsCard: React.FC<DreamsCardProps> = ({ animated = true, className = ''
                       <div className="dream-item__title">{dream.title}</div>
                       <div className="dream-item__meta">
                         {daysLeft !== null && daysLeft !== undefined && (
-                          <span className={`dream-item__days ${
-                            daysLeft < 0
-                              ? 'dream-item__days--overdue'
-                              : daysLeft <= 7
-                              ? 'dream-item__days--soon'
-                              : 'dream-item__days--normal'
-                          }`}>
+                          <span
+                            className={`dream-item__days ${
+                              daysLeft < 0
+                                ? 'dream-item__days--overdue'
+                                : daysLeft <= 7
+                                  ? 'dream-item__days--soon'
+                                  : 'dream-item__days--normal'
+                            }`}
+                          >
                             {daysLeft < 0
                               ? `${Math.abs(daysLeft)}d overdue`
                               : daysLeft === 0
-                              ? 'Today!'
-                              : `${daysLeft}d left`}
+                                ? 'Today!'
+                                : `${daysLeft}d left`}
                           </span>
                         )}
                         <span className="dream-item__reflections">

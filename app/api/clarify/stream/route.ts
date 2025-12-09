@@ -1,12 +1,16 @@
 // app/api/clarify/stream/route.ts - SSE streaming for Clarify conversations
-import { NextRequest } from 'next/server';
-import jwt from 'jsonwebtoken';
-import Anthropic from '@anthropic-ai/sdk';
-import { supabase } from '@/server/lib/supabase';
-import { type User, userRowToUser } from '@/types';
-import { buildClarifyContext } from '@/lib/clarify/context-builder';
 import fs from 'fs';
 import path from 'path';
+
+import Anthropic from '@anthropic-ai/sdk';
+import jwt from 'jsonwebtoken';
+import { cookies } from 'next/headers';
+import { NextRequest } from 'next/server';
+
+import { buildClarifyContext } from '@/lib/clarify/context-builder';
+import { AUTH_COOKIE_NAME } from '@/server/lib/cookies';
+import { supabase } from '@/server/lib/supabase';
+import { type User, userRowToUser } from '@/types';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -41,26 +45,39 @@ async function verifyAndGetUser(token: string): Promise<User | null> {
 
 const createDreamTool = {
   name: 'createDream',
-  description: 'Creates a new dream for the user when they have clearly articulated what they want to pursue and are ready to commit to tracking it. Only use this when the user has expressed genuine clarity and readiness, and after asking their permission.',
+  description:
+    'Creates a new dream for the user when they have clearly articulated what they want to pursue and are ready to commit to tracking it. Only use this when the user has expressed genuine clarity and readiness, and after asking their permission.',
   input_schema: {
     type: 'object' as const,
     properties: {
       title: {
         type: 'string',
-        description: 'A concise, meaningful title for the dream (max 200 characters)'
+        description: 'A concise, meaningful title for the dream (max 200 characters)',
       },
       description: {
         type: 'string',
-        description: 'Optional longer description capturing the essence of the dream (max 2000 characters)'
+        description:
+          'Optional longer description capturing the essence of the dream (max 2000 characters)',
       },
       category: {
         type: 'string',
-        enum: ['health', 'career', 'relationships', 'financial', 'personal_growth', 'creative', 'spiritual', 'entrepreneurial', 'educational', 'other'],
-        description: 'The category that best fits this dream'
-      }
+        enum: [
+          'health',
+          'career',
+          'relationships',
+          'financial',
+          'personal_growth',
+          'creative',
+          'spiritual',
+          'entrepreneurial',
+          'educational',
+          'other',
+        ],
+        description: 'The category that best fits this dream',
+      },
     },
-    required: ['title']
-  }
+    required: ['title'],
+  },
 } as const;
 
 // =====================================================
@@ -82,9 +99,11 @@ function getClarifySystemPrompt(): string {
 // =====================================================
 
 export async function POST(request: NextRequest) {
-  // 1. Authenticate
-  const authHeader = request.headers.get('authorization');
-  const token = authHeader?.replace('Bearer ', '');
+  // 1. Authenticate - try cookie first, fallback to header
+  const cookieStore = await cookies();
+  const cookieToken = cookieStore.get(AUTH_COOKIE_NAME)?.value;
+  const headerToken = request.headers.get('authorization')?.replace('Bearer ', '');
+  const token = cookieToken || headerToken;
 
   if (!token) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
@@ -158,7 +177,7 @@ export async function POST(request: NextRequest) {
     .eq('session_id', sessionId)
     .order('created_at', { ascending: true });
 
-  const anthropicMessages = (messages || []).map(msg => ({
+  const anthropicMessages = (messages || []).map((msg) => ({
     role: msg.role as 'user' | 'assistant',
     content: msg.content,
   }));
@@ -173,9 +192,7 @@ export async function POST(request: NextRequest) {
       const encoder = new TextEncoder();
 
       function sendEvent(event: string, data: object) {
-        controller.enqueue(
-          encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`)
-        );
+        controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
       }
 
       try {
@@ -241,14 +258,14 @@ export async function POST(request: NextRequest) {
             // Execute the tool
             sendEvent('tool_use_start', {
               name: toolUseBlock.name,
-              input: toolUseBlock.input
+              input: toolUseBlock.input,
             });
 
             if (toolUseBlock.name === 'createDream') {
               const toolInput = toolUseBlock.input as {
                 title: string;
                 description?: string;
-                category?: string
+                category?: string;
               };
 
               // Execute dream creation
@@ -306,15 +323,17 @@ export async function POST(request: NextRequest) {
                     },
                     {
                       role: 'user',
-                      content: [{
-                        type: 'tool_result' as const,
-                        tool_use_id: toolUseBlock.id,
-                        content: JSON.stringify({
-                          success: true,
-                          dreamId: dream.id,
-                          dreamTitle: dream.title,
-                        }),
-                      }],
+                      content: [
+                        {
+                          type: 'tool_result' as const,
+                          tool_use_id: toolUseBlock.id,
+                          content: JSON.stringify({
+                            success: true,
+                            dreamId: dream.id,
+                            dreamTitle: dream.title,
+                          }),
+                        },
+                      ],
                     },
                   ],
                   tools: [createDreamTool],
@@ -378,21 +397,20 @@ export async function POST(request: NextRequest) {
           .single();
 
         sendEvent('done', { messageId: savedMsg?.id || '', tokenCount });
-
       } catch (error) {
         console.error('Streaming error:', error);
         sendEvent('error', { message: 'Failed to generate response' });
       } finally {
         controller.close();
       }
-    }
+    },
   });
 
   return new Response(stream, {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
+      Connection: 'keep-alive',
     },
   });
 }

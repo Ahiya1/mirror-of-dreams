@@ -22,50 +22,50 @@ Before deploying to production, ensure all of the following environment variable
 
 #### Database (Supabase)
 
-| Variable | Description | How to Get |
-|----------|-------------|------------|
-| `SUPABASE_URL` | Supabase project URL | Supabase Dashboard > Settings > API |
-| `SUPABASE_ANON_KEY` | Public anonymous key | Supabase Dashboard > Settings > API |
+| Variable                    | Description               | How to Get                          |
+| --------------------------- | ------------------------- | ----------------------------------- |
+| `SUPABASE_URL`              | Supabase project URL      | Supabase Dashboard > Settings > API |
+| `SUPABASE_ANON_KEY`         | Public anonymous key      | Supabase Dashboard > Settings > API |
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key (SECRET) | Supabase Dashboard > Settings > API |
 
 #### Authentication
 
-| Variable | Description | How to Get |
-|----------|-------------|------------|
+| Variable     | Description        | How to Get                          |
+| ------------ | ------------------ | ----------------------------------- |
 | `JWT_SECRET` | JWT signing secret | Generate: `openssl rand -base64 32` |
 
 #### Email (Gmail SMTP)
 
-| Variable | Description | How to Get |
-|----------|-------------|------------|
-| `GMAIL_USER` | Gmail address | Your Gmail account |
-| `GMAIL_APP_PASSWORD` | 16-character app password | Google Account > Security > App passwords |
-| `NEXT_PUBLIC_APP_URL` | Production URL | e.g., `https://mirror-of-truth.com` |
+| Variable              | Description               | How to Get                                |
+| --------------------- | ------------------------- | ----------------------------------------- |
+| `GMAIL_USER`          | Gmail address             | Your Gmail account                        |
+| `GMAIL_APP_PASSWORD`  | 16-character app password | Google Account > Security > App passwords |
+| `NEXT_PUBLIC_APP_URL` | Production URL            | e.g., `https://mirror-of-truth.com`       |
 
 #### Payments (PayPal)
 
-| Variable | Description | How to Get |
-|----------|-------------|------------|
-| `PAYPAL_CLIENT_ID` | PayPal client ID | PayPal Developer Dashboard |
-| `PAYPAL_CLIENT_SECRET` | PayPal client secret | PayPal Developer Dashboard |
-| `PAYPAL_WEBHOOK_ID` | Webhook ID for verification | PayPal Developer Dashboard > Webhooks |
-| `PAYPAL_ENVIRONMENT` | `live` for production | Set to `live` |
-| `PAYPAL_PRO_MONTHLY_PLAN_ID` | Pro monthly plan ID | Created via setup script |
-| `PAYPAL_PRO_YEARLY_PLAN_ID` | Pro yearly plan ID | Created via setup script |
-| `PAYPAL_UNLIMITED_MONTHLY_PLAN_ID` | Unlimited monthly plan ID | Created via setup script |
-| `PAYPAL_UNLIMITED_YEARLY_PLAN_ID` | Unlimited yearly plan ID | Created via setup script |
+| Variable                           | Description                 | How to Get                            |
+| ---------------------------------- | --------------------------- | ------------------------------------- |
+| `PAYPAL_CLIENT_ID`                 | PayPal client ID            | PayPal Developer Dashboard            |
+| `PAYPAL_CLIENT_SECRET`             | PayPal client secret        | PayPal Developer Dashboard            |
+| `PAYPAL_WEBHOOK_ID`                | Webhook ID for verification | PayPal Developer Dashboard > Webhooks |
+| `PAYPAL_ENVIRONMENT`               | `live` for production       | Set to `live`                         |
+| `PAYPAL_PRO_MONTHLY_PLAN_ID`       | Pro monthly plan ID         | Created via setup script              |
+| `PAYPAL_PRO_YEARLY_PLAN_ID`        | Pro yearly plan ID          | Created via setup script              |
+| `PAYPAL_UNLIMITED_MONTHLY_PLAN_ID` | Unlimited monthly plan ID   | Created via setup script              |
+| `PAYPAL_UNLIMITED_YEARLY_PLAN_ID`  | Unlimited yearly plan ID    | Created via setup script              |
 
 #### AI (Anthropic)
 
-| Variable | Description | How to Get |
-|----------|-------------|------------|
+| Variable            | Description    | How to Get            |
+| ------------------- | -------------- | --------------------- |
 | `ANTHROPIC_API_KEY` | Claude API key | console.anthropic.com |
 
 #### Redis (Upstash)
 
-| Variable | Description | How to Get |
-|----------|-------------|------------|
-| `UPSTASH_REDIS_REST_URL` | Redis REST URL | upstash.com dashboard |
+| Variable                   | Description      | How to Get            |
+| -------------------------- | ---------------- | --------------------- |
+| `UPSTASH_REDIS_REST_URL`   | Redis REST URL   | upstash.com dashboard |
 | `UPSTASH_REDIS_REST_TOKEN` | Redis REST token | upstash.com dashboard |
 
 ### Verifying Environment Variables
@@ -97,6 +97,7 @@ To check if variables are set correctly in Vercel:
 8. Check the "Messages" tab for results
 
 Expected output:
+
 ```
 ADMIN SEEDING COMPLETE
 Status: UPDATED (or NO CHANGES NEEDED)
@@ -147,11 +148,13 @@ After running the script, verify in Supabase Dashboard:
 4. Check for success or error messages
 
 Expected success log:
+
 ```
 Email sent successfully to: test@example.com
 ```
 
 Possible error logs:
+
 ```
 Failed to send email: Invalid login
 Failed to send email: SMTP connection failed
@@ -308,12 +311,14 @@ If emails are not sending:
 **Symptom:** Users cannot access the app after signup
 
 **Quick Fix (Temporary):**
+
 ```typescript
 // In /hooks/useAuth.ts, change line ~99 to:
 emailVerified: true, // TEMPORARY: Bypass verification
 ```
 
 **Proper Fix:**
+
 1. Check Vercel logs for email sending errors
 2. Verify Gmail credentials are correct
 3. Redeploy with fixed credentials
@@ -323,11 +328,13 @@ emailVerified: true, // TEMPORARY: Bypass verification
 **Symptom:** `/admin` page shows errors or doesn't load
 
 **Quick Fix:**
+
 1. Check browser console for specific error
 2. Check Vercel function logs for tRPC errors
 3. If persistent, disable route temporarily
 
 **Database Fix (if needed):**
+
 ```sql
 -- Ensure admin user has correct permissions
 UPDATE public.users
@@ -340,6 +347,7 @@ WHERE email = 'ahiya.butman@gmail.com';
 **Symptom:** Payments complete but tiers don't update
 
 **Manual Tier Update:**
+
 ```sql
 -- Find the user
 SELECT id, email, tier, paypal_subscription_id FROM public.users WHERE email = 'user@example.com';
@@ -354,6 +362,7 @@ WHERE email = 'user@example.com';
 ```
 
 **Check Webhook Configuration:**
+
 1. Go to PayPal Developer Dashboard
 2. Check webhook delivery logs
 3. Verify webhook URL is correct
@@ -380,6 +389,7 @@ If critical issues require complete rollback:
 **Cause:** The user hasn't signed up yet
 
 **Solution:**
+
 1. Have the user sign up through the application
 2. Run the seeding script again
 
@@ -388,6 +398,7 @@ If critical issues require complete rollback:
 **Cause:** Gmail reputation for new senders
 
 **Solutions:**
+
 1. Add clear "check spam" instructions on verification page
 2. Ask users to mark email as "Not Spam"
 3. Long-term: Set up SPF/DKIM records for custom domain
@@ -397,6 +408,7 @@ If critical issues require complete rollback:
 **Cause:** Missing or incorrect PayPal environment variables
 
 **Solution:**
+
 1. Verify all `PAYPAL_*` env vars are set
 2. Verify `PAYPAL_ENVIRONMENT` is set to `live`
 3. Check browser console for PayPal SDK errors
@@ -406,6 +418,7 @@ If critical issues require complete rollback:
 **Cause:** Authorization issues or database connection problems
 
 **Debug Steps:**
+
 1. Check if user has `is_admin: true` in database
 2. Check Vercel function logs for specific errors
 3. Verify `SUPABASE_SERVICE_ROLE_KEY` is correct
@@ -415,6 +428,7 @@ If critical issues require complete rollback:
 **Cause:** Webhook verification failing or database insert error
 
 **Debug Steps:**
+
 1. Check Vercel logs for `/api/webhooks/paypal`
 2. Verify `PAYPAL_WEBHOOK_ID` matches PayPal Dashboard
 3. Check if `webhook_events` table exists
@@ -430,12 +444,12 @@ If critical issues require complete rollback:
 
 ## Reference: File Locations
 
-| Purpose | File |
-|---------|------|
-| Admin seeding script | `/scripts/seed-admin-production.sql` |
-| PayPal setup script | `/scripts/setup-paypal-production.sh` |
-| Environment template | `/.env.example` |
-| Email configuration | `/server/lib/email.ts` |
-| PayPal webhook handler | `/app/api/webhooks/paypal/route.ts` |
-| Admin router | `/server/trpc/routers/admin.ts` |
-| Auth hook | `/hooks/useAuth.ts` |
+| Purpose                | File                                  |
+| ---------------------- | ------------------------------------- |
+| Admin seeding script   | `/scripts/seed-admin-production.sql`  |
+| PayPal setup script    | `/scripts/setup-paypal-production.sh` |
+| Environment template   | `/.env.example`                       |
+| Email configuration    | `/server/lib/email.ts`                |
+| PayPal webhook handler | `/app/api/webhooks/paypal/route.ts`   |
+| Admin router           | `/server/trpc/routers/admin.ts`       |
+| Auth hook              | `/hooks/useAuth.ts`                   |

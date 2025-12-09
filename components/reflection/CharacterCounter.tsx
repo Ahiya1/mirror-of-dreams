@@ -17,11 +17,7 @@ const CharacterCounter: React.FC<CharacterCounterProps> = ({
   const isWarning = current >= warning;
   const isError = current >= max;
 
-  const className = [
-    'character-counter',
-    isError && 'error',
-    isWarning && !isError && 'warning',
-  ]
+  const className = ['character-counter', isError && 'error', isWarning && !isError && 'warning']
     .filter(Boolean)
     .join(' ');
 

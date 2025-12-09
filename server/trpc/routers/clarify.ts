@@ -1,22 +1,29 @@
 // server/trpc/routers/clarify.ts - Clarify Agent router
 
-import { z } from 'zod';
-import { router } from '../trpc';
-import { clarifyProcedure, clarifyReadProcedure, clarifySessionLimitedProcedure } from '../middleware';
+import fs from 'fs';
+import path from 'path';
+
+import Anthropic from '@anthropic-ai/sdk';
 import { TRPCError } from '@trpc/server';
-import { supabase } from '@/server/lib/supabase';
+import { z } from 'zod';
+
+import {
+  clarifyProcedure,
+  clarifyReadProcedure,
+  clarifySessionLimitedProcedure,
+} from '../middleware';
+import { router } from '../trpc';
+
+import { buildClarifyContext, getUserPatterns } from '@/lib/clarify/context-builder';
 import { CLARIFY_SESSION_LIMITS } from '@/lib/utils/constants';
+import { supabase } from '@/server/lib/supabase';
 import {
   clarifySessionRowToSession,
   clarifyMessageRowToMessage,
   type ClarifySession,
   type ClarifyMessage,
+  type ClarifyToolUse,
 } from '@/types/clarify';
-import { buildClarifyContext, getUserPatterns } from '@/lib/clarify/context-builder';
-import Anthropic from '@anthropic-ai/sdk';
-import fs from 'fs';
-import path from 'path';
-import { type ClarifyToolUse } from '@/types/clarify';
 
 // =====================================================
 // ANTHROPIC CLIENT (Lazy initialization)
@@ -56,26 +63,39 @@ function getClarifySystemPrompt(): string {
 
 const createDreamTool = {
   name: 'createDream',
-  description: 'Creates a new dream for the user when they have clearly articulated what they want to pursue and are ready to commit to tracking it. Only use this when the user has expressed genuine clarity and readiness, and after asking their permission.',
+  description:
+    'Creates a new dream for the user when they have clearly articulated what they want to pursue and are ready to commit to tracking it. Only use this when the user has expressed genuine clarity and readiness, and after asking their permission.',
   input_schema: {
     type: 'object' as const,
     properties: {
       title: {
         type: 'string',
-        description: 'A concise, meaningful title for the dream (max 200 characters)'
+        description: 'A concise, meaningful title for the dream (max 200 characters)',
       },
       description: {
         type: 'string',
-        description: 'Optional longer description capturing the essence of the dream (max 2000 characters)'
+        description:
+          'Optional longer description capturing the essence of the dream (max 2000 characters)',
       },
       category: {
         type: 'string',
-        enum: ['health', 'career', 'relationships', 'financial', 'personal_growth', 'creative', 'spiritual', 'entrepreneurial', 'educational', 'other'],
-        description: 'The category that best fits this dream'
-      }
+        enum: [
+          'health',
+          'career',
+          'relationships',
+          'financial',
+          'personal_growth',
+          'creative',
+          'spiritual',
+          'entrepreneurial',
+          'educational',
+          'other',
+        ],
+        description: 'The category that best fits this dream',
+      },
     },
-    required: ['title']
-  }
+    required: ['title'],
+  },
 } as const;
 
 // =====================================================
@@ -119,10 +139,7 @@ async function executeCreateDreamTool(
     }
 
     // Link session to dream
-    await supabase
-      .from('clarify_sessions')
-      .update({ dream_id: dream.id })
-      .eq('id', sessionId);
+    await supabase.from('clarify_sessions').update({ dream_id: dream.id }).eq('id', sessionId);
 
     return {
       dreamId: dream.id,
@@ -246,13 +263,11 @@ export const clarifyRouter = router({
       let initialToolUseResult: ClarifyToolUse['result'] | null = null;
       if (input.initialMessage) {
         // Store user message
-        const { error: msgError } = await supabase
-          .from('clarify_messages')
-          .insert({
-            session_id: session.id,
-            role: 'user',
-            content: input.initialMessage,
-          });
+        const { error: msgError } = await supabase.from('clarify_messages').insert({
+          session_id: session.id,
+          role: 'user',
+          content: input.initialMessage,
+        });
 
         // Generate AI response with context and tools
         try {
@@ -266,9 +281,7 @@ export const clarifyRouter = router({
             model: 'claude-sonnet-4-5-20250929',
             max_tokens: 1500,
             system: systemPrompt,
-            messages: [
-              { role: 'user', content: input.initialMessage }
-            ],
+            messages: [{ role: 'user', content: input.initialMessage }],
             tools: [createDreamTool],
           });
 
@@ -304,16 +317,18 @@ export const clarifyRouter = router({
                 { role: 'assistant', content: response.content },
                 {
                   role: 'user',
-                  content: [{
-                    type: 'tool_result',
-                    tool_use_id: toolUseBlock.id,
-                    content: JSON.stringify({
-                      success: toolResult.success,
-                      dreamId: toolResult.dreamId,
-                      dreamTitle: toolResult.dreamTitle,
-                    })
-                  }]
-                }
+                  content: [
+                    {
+                      type: 'tool_result',
+                      tool_use_id: toolUseBlock.id,
+                      content: JSON.stringify({
+                        success: toolResult.success,
+                        dreamId: toolResult.dreamId,
+                        dreamTitle: toolResult.dreamTitle,
+                      }),
+                    },
+                  ],
+                },
               ],
               tools: [createDreamTool],
             });
@@ -321,7 +336,7 @@ export const clarifyRouter = router({
             const followUpText = followUp.content.find(
               (b): b is Anthropic.TextBlock => b.type === 'text'
             );
-            initialResponse = followUpText?.text || 'I\'ve created that dream for you.';
+            initialResponse = followUpText?.text || "I've created that dream for you.";
             tokenCount += followUp.usage?.output_tokens || 0;
           } else {
             // Standard text response
@@ -335,15 +350,13 @@ export const clarifyRouter = router({
 
           // Store AI response with tool_use if applicable
           if (initialResponse) {
-            await supabase
-              .from('clarify_messages')
-              .insert({
-                session_id: session.id,
-                role: 'assistant',
-                content: initialResponse,
-                token_count: tokenCount || null,
-                tool_use: toolUseRecord,
-              });
+            await supabase.from('clarify_messages').insert({
+              session_id: session.id,
+              role: 'assistant',
+              content: initialResponse,
+              token_count: tokenCount || null,
+              tool_use: toolUseRecord,
+            });
           }
         } catch {
           // Continue without AI response if generation fails
@@ -362,335 +375,318 @@ export const clarifyRouter = router({
     }),
 
   // Get session with messages (read-only, allows demo users)
-  getSession: clarifyReadProcedure
-    .input(getSessionSchema)
-    .query(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+  getSession: clarifyReadProcedure.input(getSessionSchema).query(async ({ ctx, input }) => {
+    const userId = ctx.user.id;
 
-      // Get session
-      const { data: session, error: sessionError } = await supabase
-        .from('clarify_sessions')
-        .select('*')
-        .eq('id', input.sessionId)
-        .eq('user_id', userId)
-        .single();
+    // Get session
+    const { data: session, error: sessionError } = await supabase
+      .from('clarify_sessions')
+      .select('*')
+      .eq('id', input.sessionId)
+      .eq('user_id', userId)
+      .single();
 
-      if (sessionError || !session) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Session not found',
-        });
-      }
+    if (sessionError || !session) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Session not found',
+      });
+    }
 
-      // Get messages
-      const messages = await getSessionMessages(input.sessionId);
+    // Get messages
+    const messages = await getSessionMessages(input.sessionId);
 
-      return {
-        session: clarifySessionRowToSession(session),
-        messages,
-      };
-    }),
+    return {
+      session: clarifySessionRowToSession(session),
+      messages,
+    };
+  }),
 
   // List user's sessions (read-only, allows demo users)
-  listSessions: clarifyReadProcedure
-    .input(listSessionsSchema)
-    .query(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+  listSessions: clarifyReadProcedure.input(listSessionsSchema).query(async ({ ctx, input }) => {
+    const userId = ctx.user.id;
 
-      let query = supabase
+    let query = supabase
+      .from('clarify_sessions')
+      .select('*')
+      .eq('user_id', userId)
+      .order('last_message_at', { ascending: false })
+      .limit(input.limit + 1); // +1 for cursor
+
+    if (input.status) {
+      query = query.eq('status', input.status);
+    }
+
+    if (input.cursor) {
+      // Get cursor session's last_message_at
+      const { data: cursorSession } = await supabase
         .from('clarify_sessions')
-        .select('*')
-        .eq('user_id', userId)
-        .order('last_message_at', { ascending: false })
-        .limit(input.limit + 1); // +1 for cursor
+        .select('last_message_at')
+        .eq('id', input.cursor)
+        .single();
 
-      if (input.status) {
-        query = query.eq('status', input.status);
+      if (cursorSession) {
+        query = query.lt('last_message_at', cursorSession.last_message_at);
       }
+    }
 
-      if (input.cursor) {
-        // Get cursor session's last_message_at
-        const { data: cursorSession } = await supabase
-          .from('clarify_sessions')
-          .select('last_message_at')
-          .eq('id', input.cursor)
-          .single();
+    const { data, error } = await query;
 
-        if (cursorSession) {
-          query = query.lt('last_message_at', cursorSession.last_message_at);
-        }
-      }
+    if (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to fetch sessions',
+      });
+    }
 
-      const { data, error } = await query;
+    const sessions = (data || []).map(clarifySessionRowToSession);
+    const hasMore = sessions.length > input.limit;
+    const items = hasMore ? sessions.slice(0, -1) : sessions;
+    const nextCursor = hasMore ? items[items.length - 1]?.id : undefined;
 
-      if (error) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to fetch sessions',
-        });
-      }
-
-      const sessions = (data || []).map(clarifySessionRowToSession);
-      const hasMore = sessions.length > input.limit;
-      const items = hasMore ? sessions.slice(0, -1) : sessions;
-      const nextCursor = hasMore ? items[items.length - 1]?.id : undefined;
-
-      return {
-        sessions: items,
-        nextCursor,
-      };
-    }),
+    return {
+      sessions: items,
+      nextCursor,
+    };
+  }),
 
   // Send message and get response (non-streaming)
-  sendMessage: clarifyProcedure
-    .input(sendMessageSchema)
-    .mutation(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+  sendMessage: clarifyProcedure.input(sendMessageSchema).mutation(async ({ ctx, input }) => {
+    const userId = ctx.user.id;
 
-      // Verify ownership
-      await verifySessionOwnership(input.sessionId, userId);
+    // Verify ownership
+    await verifySessionOwnership(input.sessionId, userId);
 
-      // Store user message
-      const { error: userMsgError } = await supabase
-        .from('clarify_messages')
-        .insert({
-          session_id: input.sessionId,
-          role: 'user',
-          content: input.content,
-        });
+    // Store user message
+    const { error: userMsgError } = await supabase.from('clarify_messages').insert({
+      session_id: input.sessionId,
+      role: 'user',
+      content: input.content,
+    });
 
-      if (userMsgError) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to save message',
-        });
-      }
+    if (userMsgError) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to save message',
+      });
+    }
 
-      // Get conversation history
-      const messages = await getSessionMessages(input.sessionId);
+    // Get conversation history
+    const messages = await getSessionMessages(input.sessionId);
 
-      // Build Anthropic messages (excluding the message we just added, it's already in the list)
-      const anthropicMessages = messages.map(msg => ({
-        role: msg.role as 'user' | 'assistant',
-        content: msg.content,
-      }));
+    // Build Anthropic messages (excluding the message we just added, it's already in the list)
+    const anthropicMessages = messages.map((msg) => ({
+      role: msg.role as 'user' | 'assistant',
+      content: msg.content,
+    }));
 
-      // Build context for this user
-      const context = await buildClarifyContext(userId, input.sessionId);
-      const systemPrompt = context + getClarifySystemPrompt();
+    // Build context for this user
+    const context = await buildClarifyContext(userId, input.sessionId);
+    const systemPrompt = context + getClarifySystemPrompt();
 
-      // Generate AI response with tools
-      let aiResponse: string;
-      let tokenCount: number | null = null;
-      let toolUseRecord: ClarifyToolUse | null = null;
+    // Generate AI response with tools
+    let aiResponse: string;
+    let tokenCount: number | null = null;
+    let toolUseRecord: ClarifyToolUse | null = null;
 
-      try {
-        const client = getAnthropicClient();
-        const response = await client.messages.create({
+    try {
+      const client = getAnthropicClient();
+      const response = await client.messages.create({
+        model: 'claude-sonnet-4-5-20250929',
+        max_tokens: 1500,
+        system: systemPrompt,
+        messages: anthropicMessages,
+        tools: [createDreamTool],
+      });
+
+      // Check for tool_use
+      const toolUseBlock = response.content.find(
+        (block): block is Anthropic.ToolUseBlock => block.type === 'tool_use'
+      );
+
+      if (toolUseBlock && toolUseBlock.name === 'createDream') {
+        const toolInput = toolUseBlock.input as CreateDreamToolInput;
+        const toolResult = await executeCreateDreamTool(userId, input.sessionId, toolInput);
+
+        toolUseRecord = {
+          name: 'createDream',
+          input: toolInput,
+          result: {
+            dreamId: toolResult.dreamId,
+            success: toolResult.success,
+          },
+        };
+
+        // Get Claude's acknowledgment with tool result
+        const followUp = await client.messages.create({
           model: 'claude-sonnet-4-5-20250929',
           max_tokens: 1500,
           system: systemPrompt,
-          messages: anthropicMessages,
-          tools: [createDreamTool],
-        });
-
-        // Check for tool_use
-        const toolUseBlock = response.content.find(
-          (block): block is Anthropic.ToolUseBlock => block.type === 'tool_use'
-        );
-
-        if (toolUseBlock && toolUseBlock.name === 'createDream') {
-          const toolInput = toolUseBlock.input as CreateDreamToolInput;
-          const toolResult = await executeCreateDreamTool(userId, input.sessionId, toolInput);
-
-          toolUseRecord = {
-            name: 'createDream',
-            input: toolInput,
-            result: {
-              dreamId: toolResult.dreamId,
-              success: toolResult.success,
-            },
-          };
-
-          // Get Claude's acknowledgment with tool result
-          const followUp = await client.messages.create({
-            model: 'claude-sonnet-4-5-20250929',
-            max_tokens: 1500,
-            system: systemPrompt,
-            messages: [
-              ...anthropicMessages,
-              { role: 'assistant', content: response.content },
-              {
-                role: 'user',
-                content: [{
+          messages: [
+            ...anthropicMessages,
+            { role: 'assistant', content: response.content },
+            {
+              role: 'user',
+              content: [
+                {
                   type: 'tool_result',
                   tool_use_id: toolUseBlock.id,
                   content: JSON.stringify({
                     success: toolResult.success,
                     dreamId: toolResult.dreamId,
                     dreamTitle: toolResult.dreamTitle,
-                  })
-                }]
-              }
-            ],
-            tools: [createDreamTool],
-          });
-
-          const followUpText = followUp.content.find(
-            (b): b is Anthropic.TextBlock => b.type === 'text'
-          );
-          aiResponse = followUpText?.text || 'I\'ve created that dream for you.';
-          tokenCount = (response.usage?.output_tokens || 0) + (followUp.usage?.output_tokens || 0);
-        } else {
-          // Standard text response
-          const textBlock = response.content.find(
-            (block): block is Anthropic.TextBlock => block.type === 'text'
-          );
-          if (!textBlock) {
-            throw new Error('No text response from Claude');
-          }
-          aiResponse = textBlock.text;
-          tokenCount = response.usage?.output_tokens || null;
-        }
-      } catch {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to generate response. Please try again.',
+                  }),
+                },
+              ],
+            },
+          ],
+          tools: [createDreamTool],
         });
+
+        const followUpText = followUp.content.find(
+          (b): b is Anthropic.TextBlock => b.type === 'text'
+        );
+        aiResponse = followUpText?.text || "I've created that dream for you.";
+        tokenCount = (response.usage?.output_tokens || 0) + (followUp.usage?.output_tokens || 0);
+      } else {
+        // Standard text response
+        const textBlock = response.content.find(
+          (block): block is Anthropic.TextBlock => block.type === 'text'
+        );
+        if (!textBlock) {
+          throw new Error('No text response from Claude');
+        }
+        aiResponse = textBlock.text;
+        tokenCount = response.usage?.output_tokens || null;
       }
+    } catch {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to generate response. Please try again.',
+      });
+    }
 
-      // Store AI response with tool_use if applicable
-      const { data: assistantMsg, error: assistantMsgError } = await supabase
-        .from('clarify_messages')
-        .insert({
-          session_id: input.sessionId,
-          role: 'assistant',
-          content: aiResponse,
-          token_count: tokenCount,
-          tool_use: toolUseRecord, // Will be null if no tool was used
-        })
-        .select()
-        .single();
+    // Store AI response with tool_use if applicable
+    const { data: assistantMsg, error: assistantMsgError } = await supabase
+      .from('clarify_messages')
+      .insert({
+        session_id: input.sessionId,
+        role: 'assistant',
+        content: aiResponse,
+        token_count: tokenCount,
+        tool_use: toolUseRecord, // Will be null if no tool was used
+      })
+      .select()
+      .single();
 
-      return {
-        message: assistantMsg ? clarifyMessageRowToMessage(assistantMsg) : {
-          id: 'temp',
-          sessionId: input.sessionId,
-          createdAt: new Date().toISOString(),
-          role: 'assistant' as const,
-          content: aiResponse,
-          tokenCount,
-          toolUse: toolUseRecord,
-        },
-        toolUseResult: toolUseRecord?.result || null,
-      };
-    }),
+    return {
+      message: assistantMsg
+        ? clarifyMessageRowToMessage(assistantMsg)
+        : {
+            id: 'temp',
+            sessionId: input.sessionId,
+            createdAt: new Date().toISOString(),
+            role: 'assistant' as const,
+            content: aiResponse,
+            tokenCount,
+            toolUse: toolUseRecord,
+          },
+      toolUseResult: toolUseRecord?.result || null,
+    };
+  }),
 
   // Archive session
-  archiveSession: clarifyProcedure
-    .input(archiveSessionSchema)
-    .mutation(async ({ ctx, input }) => {
-      await verifySessionOwnership(input.sessionId, ctx.user.id);
+  archiveSession: clarifyProcedure.input(archiveSessionSchema).mutation(async ({ ctx, input }) => {
+    await verifySessionOwnership(input.sessionId, ctx.user.id);
 
-      const { error } = await supabase
-        .from('clarify_sessions')
-        .update({ status: 'archived', updated_at: new Date().toISOString() })
-        .eq('id', input.sessionId);
+    const { error } = await supabase
+      .from('clarify_sessions')
+      .update({ status: 'archived', updated_at: new Date().toISOString() })
+      .eq('id', input.sessionId);
 
-      if (error) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to archive session',
-        });
-      }
+    if (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to archive session',
+      });
+    }
 
-      return { success: true };
-    }),
+    return { success: true };
+  }),
 
   // Restore archived session
-  restoreSession: clarifyProcedure
-    .input(archiveSessionSchema)
-    .mutation(async ({ ctx, input }) => {
-      await verifySessionOwnership(input.sessionId, ctx.user.id);
+  restoreSession: clarifyProcedure.input(archiveSessionSchema).mutation(async ({ ctx, input }) => {
+    await verifySessionOwnership(input.sessionId, ctx.user.id);
 
-      const { error } = await supabase
-        .from('clarify_sessions')
-        .update({ status: 'active', updated_at: new Date().toISOString() })
-        .eq('id', input.sessionId);
+    const { error } = await supabase
+      .from('clarify_sessions')
+      .update({ status: 'active', updated_at: new Date().toISOString() })
+      .eq('id', input.sessionId);
 
-      if (error) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to restore session',
-        });
-      }
+    if (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to restore session',
+      });
+    }
 
-      return { success: true };
-    }),
+    return { success: true };
+  }),
 
   // Update session title
-  updateTitle: clarifyProcedure
-    .input(updateTitleSchema)
-    .mutation(async ({ ctx, input }) => {
-      await verifySessionOwnership(input.sessionId, ctx.user.id);
+  updateTitle: clarifyProcedure.input(updateTitleSchema).mutation(async ({ ctx, input }) => {
+    await verifySessionOwnership(input.sessionId, ctx.user.id);
 
-      const { error } = await supabase
-        .from('clarify_sessions')
-        .update({ title: input.title, updated_at: new Date().toISOString() })
-        .eq('id', input.sessionId);
+    const { error } = await supabase
+      .from('clarify_sessions')
+      .update({ title: input.title, updated_at: new Date().toISOString() })
+      .eq('id', input.sessionId);
 
-      if (error) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to update title',
-        });
-      }
+    if (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to update title',
+      });
+    }
 
-      return { success: true };
-    }),
+    return { success: true };
+  }),
 
   // Delete session
-  deleteSession: clarifyProcedure
-    .input(getSessionSchema)
-    .mutation(async ({ ctx, input }) => {
-      await verifySessionOwnership(input.sessionId, ctx.user.id);
+  deleteSession: clarifyProcedure.input(getSessionSchema).mutation(async ({ ctx, input }) => {
+    await verifySessionOwnership(input.sessionId, ctx.user.id);
 
-      const { error } = await supabase
-        .from('clarify_sessions')
-        .delete()
-        .eq('id', input.sessionId);
+    const { error } = await supabase.from('clarify_sessions').delete().eq('id', input.sessionId);
 
-      if (error) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to delete session',
-        });
-      }
+    if (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to delete session',
+      });
+    }
 
-      return { success: true };
-    }),
+    return { success: true };
+  }),
 
   // Get usage limits (read-only, allows demo users)
-  getLimits: clarifyReadProcedure
-    .query(async ({ ctx }) => {
-      const limit = CLARIFY_SESSION_LIMITS[ctx.user.tier];
-      const used = ctx.user.clarifySessionsThisMonth;
+  getLimits: clarifyReadProcedure.query(async ({ ctx }) => {
+    const limit = CLARIFY_SESSION_LIMITS[ctx.user.tier];
+    const used = ctx.user.clarifySessionsThisMonth;
 
-      return {
-        tier: ctx.user.tier,
-        sessionsUsed: used,
-        sessionsLimit: limit,
-        sessionsRemaining: Math.max(0, limit - used),
-        canCreateSession: used < limit || ctx.user.isCreator || ctx.user.isAdmin,
-      };
-    }),
+    return {
+      tier: ctx.user.tier,
+      sessionsUsed: used,
+      sessionsLimit: limit,
+      sessionsRemaining: Math.max(0, limit - used),
+      canCreateSession: used < limit || ctx.user.isCreator || ctx.user.isAdmin,
+    };
+  }),
 
   // Get user's extracted patterns
-  getPatterns: clarifyProcedure
-    .query(async ({ ctx }) => {
-      const patterns = await getUserPatterns(ctx.user.id);
-      return { patterns };
-    }),
+  getPatterns: clarifyProcedure.query(async ({ ctx }) => {
+    const patterns = await getUserPatterns(ctx.user.id);
+    return { patterns };
+  }),
 });
 
 export type ClarifyRouter = typeof clarifyRouter;

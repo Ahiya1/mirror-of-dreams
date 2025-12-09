@@ -1,11 +1,13 @@
 'use client';
 
-import { GlassCard } from '@/components/ui/glass/GlassCard';
-import { GlowButton } from '@/components/ui/glass/GlowButton';
 import { AlertTriangle, TrendingUp, Ban } from 'lucide-react';
 import Link from 'next/link';
-import { TIER_LIMITS } from '@/lib/utils/constants';
+
 import type { TierName } from '@/lib/utils/constants';
+
+import { GlassCard } from '@/components/ui/glass/GlassCard';
+import { GlowButton } from '@/components/ui/glass/GlowButton';
+import { TIER_LIMITS } from '@/lib/utils/constants';
 
 interface UsageWarningBannerProps {
   tier: TierName;
@@ -85,18 +87,18 @@ export function UsageWarningBanner({
     <GlassCard className={`border-l-4 ${bgClass} ${className}`}>
       <div className="flex items-start gap-4">
         {/* Icon */}
-        <Icon className={`w-6 h-6 flex-shrink-0 mt-1 ${iconClass}`} />
+        <Icon className={`mt-1 h-6 w-6 flex-shrink-0 ${iconClass}`} />
 
         {/* Content */}
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           {/* Title */}
-          <h4 className="text-white font-semibold mb-1">{title}</h4>
+          <h4 className="mb-1 font-semibold text-white">{title}</h4>
 
           {/* Message */}
-          <p className="text-white/80 text-sm mb-3">{getMessage()}</p>
+          <p className="mb-3 text-sm text-white/80">{getMessage()}</p>
 
           {/* Progress Bar */}
-          <div className="w-full bg-white/10 rounded-full h-2 mb-3 overflow-hidden">
+          <div className="mb-3 h-2 w-full overflow-hidden rounded-full bg-white/10">
             <div
               className={`h-2 rounded-full transition-all duration-500 ${progressClass}`}
               style={{ width: `${percentage}%` }}
@@ -105,12 +107,10 @@ export function UsageWarningBanner({
 
           {/* Usage Stats */}
           <div className="flex items-center justify-between">
-            <span className="text-white/60 text-sm">
+            <span className="text-sm text-white/60">
               {used} / {limit} reflections used
             </span>
-            <span className="text-white/60 text-sm">
-              {percentage.toFixed(0)}%
-            </span>
+            <span className="text-sm text-white/60">{percentage.toFixed(0)}%</span>
           </div>
         </div>
 

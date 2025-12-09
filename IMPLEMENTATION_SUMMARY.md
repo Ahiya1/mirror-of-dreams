@@ -8,12 +8,14 @@
 ## What We Discovered
 
 ### Technical Issues
+
 1. **Reflection AI broken** - Returns 400 errors, doesn't generate response
 2. **Wrong reflection flow** - 5 questions across multiple pages, should be 4 questions on one page
 3. **Wrong questions** - Generic questions, should be specific to THE dream you're reflecting on
 4. **Dashboard not engaging** - Even when populated, too busy and confusing
 
 ### Design Issues (All Flash, No Restraint)
+
 1. **Too many emojis** - Decoration everywhere (🪞, ✨, 💎, 🌙, 🎁, 🦋, 🏔️)
 2. **Too many gradients** - Buttons, badges, decorative glows
 3. **Pop-up animations** - Buttons and elements popping/bouncing
@@ -22,6 +24,7 @@
 6. **Competing sections** - 6+ sections all screaming for attention
 
 ### Core Misunderstanding
+
 - **Currently**: Decorating with spirituality (glows, emojis, cosmic effects)
 - **Should be**: Delivering transformation through genuine insight
 
@@ -32,17 +35,20 @@
 ### Three Vision Documents Created
 
 #### 1. `CURRENT_STATE_ASSESSMENT.md`
+
 - Honest assessment of what's broken
 - Core problem: All flash, no substance, no restraint
 - Key insight: Stop decorating and start delivering
 
 #### 2. `2L_VISION_RESTRAINED_DEPTH.md`
+
 - Comprehensive guide for 2L implementation
 - 5 guiding principles (Restraint, Substance, Clarity, Function, Earned Beauty)
 - Specific transformations for each page
 - Phase-by-phase implementation plan
 
 #### 3. `SYNTHESIZED_VISION.md` ← **THE MAIN VISION**
+
 - Combines plan-1 UX + plan-3 essence + restraint principles + your feedback
 - Complete user journey with correct flow
 - Technical architecture that works
@@ -56,6 +62,7 @@
 ### Reflection Flow (MOST IMPORTANT)
 
 **Current (WRONG)**:
+
 - 5 questions across multiple pages
 - Questions 1-5:
   1. What is your dream? (generic)
@@ -66,6 +73,7 @@
   6. What are you willing to give?
 
 **Correct (FROM VISION)**:
+
 - **4 questions on ONE page**
 - All refer to THE SPECIFIC DREAM you're reflecting on
 - Questions:
@@ -75,11 +83,13 @@
   4. **What are you willing to give?** (for THIS dream)
 
 **Why No Date Question?**:
+
 - Date is already in the dream object (when dream was created)
 - No need to ask again
 - Streamlines the flow
 
 **Why One Page?**:
+
 - Like mirror-of-truth (the original, more grounded version)
 - Less clicking, more contemplation
 - All questions visible - fill at own pace
@@ -88,6 +98,7 @@
 ### Dashboard (SECOND PRIORITY)
 
 **Current (WRONG)**:
+
 ```
 - "Deep night wisdom, Creator"
 - 6 sections competing for attention
@@ -97,6 +108,7 @@
 ```
 
 **Correct (FROM VISION)**:
+
 ```
 Good evening, [Name]
 
@@ -115,6 +127,7 @@ YOUR PLAN
 ```
 
 **Key Changes**:
+
 - Clear greeting (no mysticism)
 - ONE primary action
 - Simplified stats
@@ -123,6 +136,7 @@ YOUR PLAN
 ### Design Restraint
 
 **Remove**:
+
 - ❌ Excessive emojis (keep max 2 per page)
 - ❌ Decorative gradients on buttons
 - ❌ Pop-up/bounce animations
@@ -132,6 +146,7 @@ YOUR PLAN
 - ❌ Flashy tone selection cards
 
 **Apply**:
+
 - ✓ Simple, clear buttons (no glows)
 - ✓ One accent color used sparingly
 - ✓ Generous white space
@@ -140,6 +155,7 @@ YOUR PLAN
 - ✓ Function-first animations only
 
 **Specific**:
+
 - NO elements that "pop" or bounce
 - Transitions for continuity only (200-300ms smooth)
 - Buttons respond on click (clear state change)
@@ -212,6 +228,7 @@ YOUR PLAN
 ## Key Principles for 2L
 
 ### When Adding Any Element, Ask:
+
 1. **Does this serve the user's understanding?**
 2. **Would this be better with less?**
 3. **Am I decorating or communicating?**
@@ -219,6 +236,7 @@ YOUR PLAN
 5. **Would I use this if I were trying to understand myself?**
 
 ### Restraint Checklist:
+
 - [ ] No decorative animations or pop-ups
 - [ ] Maximum 2 emojis per page
 - [ ] No marketing speak in copy
@@ -229,6 +247,7 @@ YOUR PLAN
 - [ ] Show don't tell
 
 ### Substance Checklist:
+
 - [ ] Insights reference user's actual answers
 - [ ] Patterns include specific examples
 - [ ] Visualizations pull from reflection content
@@ -241,6 +260,7 @@ YOUR PLAN
 ## Files for 2L to Reference
 
 ### Primary Vision
+
 - **`SYNTHESIZED_VISION.md`** ← Main reference
   - Complete user journey (corrected)
   - Correct reflection flow (4 questions, one page)
@@ -249,6 +269,7 @@ YOUR PLAN
   - Implementation priorities
 
 ### Supporting Documents
+
 - **`CURRENT_STATE_ASSESSMENT.md`**
   - What's broken and why
   - Core problem diagnosis
@@ -259,6 +280,7 @@ YOUR PLAN
   - Phase-by-phase plan
 
 ### Original Plans (For Reference)
+
 - **`.2l/plan-1/vision.md`**
   - Original detailed UX flow
   - Sarah's complete journey
@@ -274,6 +296,7 @@ YOUR PLAN
 ## What NOT to Do
 
 ### Don't Add More:
+
 - ❌ Visual effects or cosmic animations
 - ❌ More tones
 - ❌ More questions
@@ -283,6 +306,7 @@ YOUR PLAN
 - ❌ More marketing copy
 
 ### Don't Use:
+
 - ❌ "Journey of self-discovery"
 - ❌ "Deep wisdom"
 - ❌ "Transform your consciousness"
@@ -292,6 +316,7 @@ YOUR PLAN
 - ❌ Multiple competing CTAs
 
 ### Instead:
+
 - ✓ "Reflect on what matters"
 - ✓ "Understand yourself"
 - ✓ "See your growth"
@@ -304,6 +329,7 @@ YOUR PLAN
 ## Success = Working Transformation
 
 When we succeed:
+
 - User completes reflection without errors ✓
 - Receives insights that feel specific to them ✓
 - Returns because it helps, not because it's pretty ✓
@@ -330,6 +356,7 @@ When we succeed:
 ---
 
 **Remember**:
+
 - Less is more
 - Function before form
 - Substance over style

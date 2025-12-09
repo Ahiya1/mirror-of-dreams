@@ -5,8 +5,9 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
 import { useState } from 'react';
-import { trpc } from '@/lib/trpc';
 import superjson from 'superjson';
+
+import { trpc } from '@/lib/trpc';
 
 export function TRPCProvider({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -27,9 +28,11 @@ export function TRPCProvider({ children }: { children: React.ReactNode }) {
         httpBatchLink({
           url: '/api/trpc',
           transformer: superjson,
-          headers() {
-            const token = localStorage.getItem('token');
-            return token ? { Authorization: `Bearer ${token}` } : {};
+          fetch(url, options) {
+            return fetch(url, {
+              ...options,
+              credentials: 'include', // Send cookies with requests
+            });
           },
         }),
       ],

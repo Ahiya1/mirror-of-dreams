@@ -8,9 +8,10 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+
 import {
   GlassCard,
   GlowButton,
@@ -19,8 +20,8 @@ import {
   AnimatedBackground,
   CosmicLoader,
 } from '@/components/ui/glass';
-import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/hooks/useAuth';
+import { trpc } from '@/lib/trpc';
 
 interface OnboardingStep {
   title: string;
@@ -32,25 +33,25 @@ const steps: OnboardingStep[] = [
   {
     title: 'Welcome, Dreamer',
     content:
-      'This is your companion for inner listening.\n\nYour dreams know things. We\'re here to help you listen to what they\'re trying to tell you—gently, with warmth and presence.',
+      "This is your companion for inner listening.\n\nYour dreams know things. We're here to help you listen to what they're trying to tell you—gently, with warmth and presence.",
     visual: '🌙',
   },
   {
     title: 'How Conversations Work',
     content:
-      'When you\'re ready, you\'ll explore 5 questions about what you\'re holding:\n\n1. What\'s the dream you\'re carrying?\n2. What feels like your next step?\n3. Is there a time horizon?\n4. How do you relate to this dream?\n5. What are you willing to give for it?\n\nOver time, patterns begin to emerge—not because we reveal them, but because you start to see them yourself.',
+      "When you're ready, you'll explore 5 questions about what you're holding:\n\n1. What's the dream you're carrying?\n2. What feels like your next step?\n3. Is there a time horizon?\n4. How do you relate to this dream?\n5. What are you willing to give for it?\n\nOver time, patterns begin to emerge—not because we reveal them, but because you start to see them yourself.",
     visual: '✨',
   },
   {
     title: 'Clarify: Your Exploration Space',
     content:
-      'Before naming a dream, explore what\'s stirring in you.\n\nHave open conversations to discover what truly resonates. When something feels clear, you can give it a name and begin tending to it.',
+      "Before naming a dream, explore what's stirring in you.\n\nHave open conversations to discover what truly resonates. When something feels clear, you can give it a name and begin tending to it.",
     visual: '🔮',
   },
   {
     title: 'Your Wanderer Space',
     content:
-      'As a Wanderer, you receive:\n✓ 2 dreams to hold\n✓ 4 conversations per month\n✓ Access to your journey insights\n✓ Pattern visualizations\n\nWhen you\'re ready for more space, Seeker and Devoted paths await.\n\nNo rush. Begin where you are.',
+      "As a Wanderer, you receive:\n✓ 2 dreams to hold\n✓ 4 conversations per month\n✓ Access to your journey insights\n✓ Pattern visualizations\n\nWhen you're ready for more space, Seeker and Devoted paths await.\n\nNo rush. Begin where you are.",
     visual: '🌱',
   },
 ];
@@ -101,7 +102,7 @@ export default function OnboardingPage() {
   // Show loading while checking auth
   if (authLoading || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark">
+      <div className="from-mirror-dark via-mirror-midnight to-mirror-dark flex min-h-screen items-center justify-center bg-gradient-to-br">
         <CosmicLoader size="lg" />
       </div>
     );
@@ -113,16 +114,12 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-4">
+    <div className="from-mirror-dark via-mirror-midnight to-mirror-dark flex min-h-screen items-center justify-center bg-gradient-to-br p-4">
       <AnimatedBackground />
 
-      <GlassCard className="max-w-2xl w-full p-8" elevated>
+      <GlassCard className="w-full max-w-2xl p-8" elevated>
         {/* Progress Indicator */}
-        <ProgressOrbs
-          steps={steps.length}
-          currentStep={step}
-          className="mb-8 justify-center"
-        />
+        <ProgressOrbs steps={steps.length} currentStep={step} className="mb-8 justify-center" />
 
         {/* Step Content with Animation */}
         <AnimatePresence mode="wait">
@@ -132,42 +129,30 @@ export default function OnboardingPage() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
-            className="text-center mb-8"
+            className="mb-8 text-center"
           >
             {/* Visual Emoji */}
-            <div className="text-6xl mb-4">{steps[step].visual}</div>
+            <div className="mb-4 text-6xl">{steps[step].visual}</div>
 
             {/* Title */}
-            <GradientText className="text-3xl font-bold mb-4">
-              {steps[step].title}
-            </GradientText>
+            <GradientText className="mb-4 text-3xl font-bold">{steps[step].title}</GradientText>
 
             {/* Content */}
-            <p className="text-lg text-white/80 whitespace-pre-line">
-              {steps[step].content}
-            </p>
+            <p className="whitespace-pre-line text-lg text-white/80">{steps[step].content}</p>
           </motion.div>
         </AnimatePresence>
 
         {/* Navigation Buttons */}
-        <div className="flex gap-4 justify-center">
-          <GlowButton
-            variant="ghost"
-            onClick={handleSkip}
-            disabled={completeOnboarding.isPending}
-          >
+        <div className="flex justify-center gap-4">
+          <GlowButton variant="ghost" onClick={handleSkip} disabled={completeOnboarding.isPending}>
             Skip
           </GlowButton>
-          <GlowButton
-            variant="warm"
-            onClick={handleNext}
-            disabled={completeOnboarding.isPending}
-          >
+          <GlowButton variant="warm" onClick={handleNext} disabled={completeOnboarding.isPending}>
             {completeOnboarding.isPending
               ? 'Preparing your space...'
               : step < steps.length - 1
-              ? 'Continue'
-              : 'Enter Your Space'}
+                ? 'Continue'
+                : 'Enter Your Space'}
           </GlowButton>
         </div>
       </GlassCard>

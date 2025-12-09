@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+
 import {
   GlassCard,
   GlowButton,
@@ -21,17 +22,17 @@ export default function DesignSystemPage() {
   const [currentStep, setCurrentStep] = useState(1);
 
   return (
-    <div className="min-h-screen bg-mirror-dark relative">
+    <div className="bg-mirror-dark relative min-h-screen">
       {/* Animated Background */}
       <AnimatedBackground variant="cosmic" intensity="subtle" />
 
-      <div className="relative z-10 p-8 space-y-16 max-w-7xl mx-auto">
+      <div className="relative z-10 mx-auto max-w-7xl space-y-16 p-8">
         {/* Header */}
-        <header className="text-center space-y-4 py-12">
+        <header className="space-y-4 py-12 text-center">
           <GradientText gradient="cosmic" className="text-5xl font-bold">
             Glass Design System
           </GradientText>
-          <p className="text-white/70 text-lg max-w-2xl mx-auto">
+          <p className="mx-auto max-w-2xl text-lg text-white/70">
             A comprehensive collection of glassmorphism components with smooth animations,
             accessibility support, and mystical aesthetics.
           </p>
@@ -43,26 +44,20 @@ export default function DesignSystemPage() {
           <p className="text-white/70">
             Foundation cards with different variants and glass intensities
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             <GlassCard>
-              <h3 className="text-lg font-semibold text-white mb-2">Default Card</h3>
-              <p className="text-white/70">
-                Standard glass card with subtle blur and border
-              </p>
+              <h3 className="mb-2 text-lg font-semibold text-white">Default Card</h3>
+              <p className="text-white/70">Standard glass card with subtle blur and border</p>
             </GlassCard>
 
             <GlassCard elevated>
-              <h3 className="text-lg font-semibold text-white mb-2">Elevated Card</h3>
-              <p className="text-white/70">
-                Card with enhanced shadow and border highlight
-              </p>
+              <h3 className="mb-2 text-lg font-semibold text-white">Elevated Card</h3>
+              <p className="text-white/70">Card with enhanced shadow and border highlight</p>
             </GlassCard>
 
             <GlassCard interactive>
-              <h3 className="text-lg font-semibold text-white mb-2">Interactive Card</h3>
-              <p className="text-white/70">
-                Card with subtle hover lift effect
-              </p>
+              <h3 className="mb-2 text-lg font-semibold text-white">Interactive Card</h3>
+              <p className="text-white/70">Card with subtle hover lift effect</p>
             </GlassCard>
           </div>
         </section>
@@ -102,13 +97,13 @@ export default function DesignSystemPage() {
           <h2 className="text-3xl font-bold text-white">Gradient Text</h2>
           <p className="text-white/70">Text with animated gradient colors</p>
           <div className="space-y-4">
-            <GradientText gradient="cosmic" className="text-4xl font-bold block">
+            <GradientText gradient="cosmic" className="block text-4xl font-bold">
               Cosmic Gradient Effect
             </GradientText>
-            <GradientText gradient="primary" className="text-4xl font-bold block">
+            <GradientText gradient="primary" className="block text-4xl font-bold">
               Primary Gradient Effect
             </GradientText>
-            <GradientText gradient="dream" className="text-4xl font-bold block">
+            <GradientText gradient="dream" className="block text-4xl font-bold">
               Dream Gradient Effect
             </GradientText>
           </div>
@@ -128,8 +123,8 @@ export default function DesignSystemPage() {
             title="Welcome to the Mirror"
           >
             <p className="mb-4">
-              This is a glass modal with animated entrance and backdrop blur effect. The
-              overlay can be clicked to close, or use the X button.
+              This is a glass modal with animated entrance and backdrop blur effect. The overlay can
+              be clicked to close, or use the X button.
             </p>
             <div className="flex gap-3">
               <GlowButton variant="primary" onClick={() => setIsModalOpen(false)}>
@@ -149,15 +144,15 @@ export default function DesignSystemPage() {
           <div className="flex items-center gap-8">
             <div className="space-y-2 text-center">
               <CosmicLoader size="sm" />
-              <p className="text-white/60 text-sm">Small</p>
+              <p className="text-sm text-white/60">Small</p>
             </div>
             <div className="space-y-2 text-center">
               <CosmicLoader size="md" />
-              <p className="text-white/60 text-sm">Medium</p>
+              <p className="text-sm text-white/60">Medium</p>
             </div>
             <div className="space-y-2 text-center">
               <CosmicLoader size="lg" />
-              <p className="text-white/60 text-sm">Large</p>
+              <p className="text-sm text-white/60">Large</p>
             </div>
           </div>
         </section>
@@ -198,15 +193,10 @@ export default function DesignSystemPage() {
             <GlowBadge variant="warning">Warning</GlowBadge>
             <GlowBadge variant="error">Error</GlowBadge>
             <GlowBadge variant="info">Info</GlowBadge>
-            <GlowBadge variant="success">
-              Success
-            </GlowBadge>
-            <GlowBadge variant="info">
-              Info
-            </GlowBadge>
+            <GlowBadge variant="success">Success</GlowBadge>
+            <GlowBadge variant="info">Info</GlowBadge>
           </div>
         </section>
-
       </div>
     </div>
   );

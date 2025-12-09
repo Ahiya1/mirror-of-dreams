@@ -1,4 +1,42 @@
 /** @type {import('next').NextConfig} */
+
+// Security headers to protect against common web vulnerabilities
+const securityHeaders = [
+  {
+    // Prevent XSS attacks by enabling browser's built-in XSS filter
+    key: 'X-XSS-Protection',
+    value: '1; mode=block',
+  },
+  {
+    // Prevent MIME type sniffing
+    key: 'X-Content-Type-Options',
+    value: 'nosniff',
+  },
+  {
+    // Prevent clickjacking by denying iframe embedding
+    key: 'X-Frame-Options',
+    value: 'DENY',
+  },
+  {
+    // Control referrer information sent with requests
+    key: 'Referrer-Policy',
+    value: 'strict-origin-when-cross-origin',
+  },
+  {
+    // Restrict access to sensitive browser features
+    key: 'Permissions-Policy',
+    value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+  },
+];
+
+// Add HSTS header in production to enforce HTTPS
+if (process.env.NODE_ENV === 'production') {
+  securityHeaders.push({
+    key: 'Strict-Transport-Security',
+    value: 'max-age=63072000; includeSubDomains; preload',
+  });
+}
+
 const nextConfig = {
   reactStrictMode: true,
   images: {
@@ -18,6 +56,15 @@ const nextConfig = {
         ],
         destination: '/reflections/:id',
         permanent: true,
+      },
+    ];
+  },
+  // Security headers applied to all routes
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: securityHeaders,
       },
     ];
   },

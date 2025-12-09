@@ -1,11 +1,14 @@
 'use client';
 
 import { Check, X } from 'lucide-react';
-import { GlassCard } from '@/components/ui/glass/GlassCard';
-import { CheckoutButton } from './CheckoutButton';
-import { GlowButton } from '@/components/ui/glass/GlowButton';
 import Link from 'next/link';
+
+import { CheckoutButton } from './CheckoutButton';
+
 import type { TierName, BillingPeriod } from '@/lib/utils/constants';
+
+import { GlassCard } from '@/components/ui/glass/GlassCard';
+import { GlowButton } from '@/components/ui/glass/GlowButton';
 
 interface Feature {
   name: string;
@@ -40,9 +43,10 @@ export function PricingCard({
   const period = billingPeriod === 'monthly' ? 'per month' : 'per year';
 
   // Calculate savings for yearly
-  const yearlySavings = billingPeriod === 'yearly' && tier !== 'free'
-    ? Math.round((1 - yearlyPrice / (monthlyPrice * 12)) * 100)
-    : 0;
+  const yearlySavings =
+    billingPeriod === 'yearly' && tier !== 'free'
+      ? Math.round((1 - yearlyPrice / (monthlyPrice * 12)) * 100)
+      : 0;
 
   return (
     <GlassCard
@@ -54,27 +58,27 @@ export function PricingCard({
     >
       {/* Popular badge */}
       {popular && !isCurrentPlan && (
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-500 to-blue-500 text-white text-sm font-semibold px-4 py-1 rounded-full">
+        <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 py-1 text-sm font-semibold text-white">
           Most Popular
         </div>
       )}
 
       {/* Current plan badge */}
       {isCurrentPlan && (
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-sm font-semibold px-4 py-1 rounded-full">
+        <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 px-4 py-1 text-sm font-semibold text-white">
           Current Plan
         </div>
       )}
 
       <div className="p-6">
-        <h3 className="text-2xl font-bold text-white mb-2">{name}</h3>
-        <p className="text-white/60 text-sm mb-6">{description}</p>
+        <h3 className="mb-2 text-2xl font-bold text-white">{name}</h3>
+        <p className="mb-6 text-sm text-white/60">{description}</p>
 
         <div className="mb-6">
           <span className="text-4xl font-bold text-white">${price}</span>
-          <span className="text-white/60 ml-2">{period}</span>
+          <span className="ml-2 text-white/60">{period}</span>
           {yearlySavings > 0 && (
-            <div className="text-mirror-success text-sm mt-1">Save {yearlySavings}% yearly</div>
+            <div className="mt-1 text-sm text-mirror-success">Save {yearlySavings}% yearly</div>
           )}
         </div>
 
@@ -105,9 +109,9 @@ export function PricingCard({
           {features.map((feature, idx) => (
             <div key={idx} className="flex items-start gap-3">
               {feature.included ? (
-                <Check className="w-5 h-5 text-mirror-success flex-shrink-0 mt-0.5" />
+                <Check className="mt-0.5 h-5 w-5 flex-shrink-0 text-mirror-success" />
               ) : (
-                <X className="w-5 h-5 text-white/30 flex-shrink-0 mt-0.5" />
+                <X className="mt-0.5 h-5 w-5 flex-shrink-0 text-white/30" />
               )}
               <span className={feature.included ? 'text-white' : 'text-white/40'}>
                 {feature.name}

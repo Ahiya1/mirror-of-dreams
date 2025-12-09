@@ -51,10 +51,7 @@ async function verifyEnvironment() {
   // 2. Check Supabase connection
   log('\n🗄️  Checking Supabase connection...', 'blue');
   try {
-    const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-    );
+    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
     const { data, error } = await supabase
       .from('users')
@@ -74,10 +71,7 @@ async function verifyEnvironment() {
   // 3. Check database tables
   log('\n📊 Checking database tables...', 'blue');
   try {
-    const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-    );
+    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
     const tables = ['users', 'reflections', 'evolution_reports', 'usage_tracking'];
 
@@ -101,12 +95,14 @@ async function verifyEnvironment() {
   // 4. Check test users
   log('\n👥 Checking test users...', 'blue');
   try {
-    const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-    );
+    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-    const testEmails = ['free@test.com', 'essential@test.com', 'premium@test.com', 'creator@test.com'];
+    const testEmails = [
+      'free@test.com',
+      'essential@test.com',
+      'premium@test.com',
+      'creator@test.com',
+    ];
 
     for (const email of testEmails) {
       const { data, error } = await supabase
@@ -171,7 +167,7 @@ async function verifyEnvironment() {
   }
 }
 
-verifyEnvironment().catch(error => {
+verifyEnvironment().catch((error) => {
   log(`\n❌ Verification failed: ${error.message}`, 'red');
   console.error(error);
   process.exit(1);

@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { trpc } from '@/lib/trpc';
-import { useAuth } from '@/hooks/useAuth';
-import { useToast } from '@/contexts/ToastContext';
-import CosmicBackground from '@/components/shared/CosmicBackground';
+import React, { useState, useEffect, Suspense } from 'react';
+
 import { AIResponseRenderer } from '@/components/reflections/AIResponseRenderer';
+import CosmicBackground from '@/components/shared/CosmicBackground';
+import { useToast } from '@/contexts/ToastContext';
+import { useAuth } from '@/hooks/useAuth';
+import { trpc } from '@/lib/trpc';
 import '@/styles/mirror.css';
 
 // Separate component that uses searchParams
@@ -19,10 +20,11 @@ function ReflectionOutputContent() {
   const reflectionId = searchParams.get('id');
   const [reflectionVisible, setReflectionVisible] = useState(false);
 
-  const { data: reflection, isLoading, error } = trpc.reflections.getById.useQuery(
-    { id: reflectionId || '' },
-    { enabled: !!reflectionId }
-  );
+  const {
+    data: reflection,
+    isLoading,
+    error,
+  } = trpc.reflections.getById.useQuery({ id: reflectionId || '' }, { enabled: !!reflectionId });
 
   useEffect(() => {
     if (reflection && !reflectionVisible) {
@@ -112,11 +114,7 @@ function ReflectionOutputContent() {
             <div className="mirror-glow-center" />
 
             {/* Reflection content */}
-            <div
-              className={`reflection-text ${
-                reflectionVisible ? 'visible' : ''
-              }`}
-            >
+            <div className={`reflection-text ${reflectionVisible ? 'visible' : ''}`}>
               <AIResponseRenderer content={reflection.aiResponse || ''} />
             </div>
 
@@ -134,20 +132,12 @@ function ReflectionOutputContent() {
 
         {/* Action Buttons */}
         <div className="action-grid">
-          <button
-            className="action-button"
-            onClick={handleCopy}
-            title="Copy reflection"
-          >
+          <button className="action-button" onClick={handleCopy} title="Copy reflection">
             <span className="button-icon">📋</span>
             <span>Copy Text</span>
           </button>
 
-          <button
-            className="action-button"
-            onClick={startNewReflection}
-            title="New reflection"
-          >
+          <button className="action-button" onClick={startNewReflection} title="New reflection">
             <span>New Reflection</span>
           </button>
 

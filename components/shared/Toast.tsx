@@ -10,6 +10,7 @@
 
 import { motion } from 'framer-motion';
 import { X, CheckCircle, XCircle, AlertTriangle, Info } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
 
 interface ToastAction {
@@ -26,10 +27,10 @@ interface ToastProps {
 
 export function Toast({ type, message, onDismiss, action }: ToastProps) {
   const icons = {
-    success: <CheckCircle className="w-5 h-5 text-mirror-success" />,
-    error: <XCircle className="w-5 h-5 text-mirror-error" />,
-    warning: <AlertTriangle className="w-5 h-5 text-mirror-warning" />,
-    info: <Info className="w-5 h-5 text-mirror-info" />,
+    success: <CheckCircle className="h-5 w-5 text-mirror-success" />,
+    error: <XCircle className="h-5 w-5 text-mirror-error" />,
+    warning: <AlertTriangle className="h-5 w-5 text-mirror-warning" />,
+    info: <Info className="h-5 w-5 text-mirror-info" />,
   };
 
   const colors = {
@@ -46,19 +47,19 @@ export function Toast({ type, message, onDismiss, action }: ToastProps) {
       exit={{ opacity: 0, x: 100, scale: 0.8 }}
       transition={{ duration: 0.3 }}
       className={cn(
-        'flex items-start gap-3 p-4 rounded-xl',
-        'border backdrop-blur-xl shadow-2xl',
-        'max-w-sm w-full',
+        'flex items-start gap-3 rounded-xl p-4',
+        'border shadow-2xl backdrop-blur-xl',
+        'w-full max-w-sm',
         colors[type]
       )}
     >
       {/* Icon */}
-      <div className="flex-shrink-0 mt-0.5">{icons[type]}</div>
+      <div className="mt-0.5 flex-shrink-0">{icons[type]}</div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         {/* Message */}
-        <p className="text-sm text-white/90 leading-relaxed">{message}</p>
+        <p className="text-sm leading-relaxed text-white/90">{message}</p>
 
         {/* Action Button */}
         {action && (
@@ -67,7 +68,7 @@ export function Toast({ type, message, onDismiss, action }: ToastProps) {
               action.onClick();
               onDismiss();
             }}
-            className="mt-2 text-sm font-medium text-purple-400 hover:text-purple-300 transition-colors"
+            className="mt-2 text-sm font-medium text-purple-400 transition-colors hover:text-purple-300"
           >
             {action.label}
           </button>
@@ -77,10 +78,10 @@ export function Toast({ type, message, onDismiss, action }: ToastProps) {
       {/* Dismiss Button */}
       <button
         onClick={onDismiss}
-        className="flex-shrink-0 p-1 rounded-lg hover:bg-white/10 transition-colors"
+        className="flex-shrink-0 rounded-lg p-1 transition-colors hover:bg-white/10"
         aria-label="Dismiss notification"
       >
-        <X className="w-4 h-4 text-white/60" />
+        <X className="h-4 w-4 text-white/60" />
       </button>
     </motion.div>
   );

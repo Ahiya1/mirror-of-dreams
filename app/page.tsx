@@ -16,10 +16,11 @@
 'use client';
 
 import { motion } from 'framer-motion';
+
+import LandingFeatureCard from '@/components/landing/LandingFeatureCard';
+import LandingHero from '@/components/landing/LandingHero';
 import CosmicBackground from '@/components/shared/CosmicBackground';
 import LandingNavigation from '@/components/shared/LandingNavigation';
-import LandingHero from '@/components/landing/LandingHero';
-import LandingFeatureCard from '@/components/landing/LandingFeatureCard';
 
 export default function LandingPage() {
   const useCases = [
@@ -34,7 +35,7 @@ export default function LandingPage() {
     {
       id: 'patterns',
       icon: '✨',
-      title: 'Notice What\'s Emerging',
+      title: "Notice What's Emerging",
       description:
         'Over time, patterns reveal themselves—not because someone points them out, but because you begin to see them for yourself through the mirror of your own words.',
       example: 'Your journey, witnessed over time',
@@ -44,13 +45,13 @@ export default function LandingPage() {
       icon: '🌸',
       title: 'Walk Your Own Path',
       description:
-        'This is your journey. Your companion walks alongside you, reflecting back what you share, celebrating where you\'ve been and where you\'re going.',
+        "This is your journey. Your companion walks alongside you, reflecting back what you share, celebrating where you've been and where you're going.",
       example: 'Growth at your own pace',
     },
   ];
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden">
+    <div className="relative min-h-screen overflow-x-hidden">
       {/* Background (consistent with authenticated app) */}
       <CosmicBackground animated={true} intensity={1} />
 
@@ -60,20 +61,20 @@ export default function LandingPage() {
       {/* Main Content */}
       <main className="relative z-10">
         {/* Hero Section */}
-        <section className="min-h-screen flex items-center justify-center px-4 sm:px-8 pt-24 pb-8 sm:pt-0 sm:pb-0">
+        <section className="flex min-h-screen items-center justify-center px-4 pb-8 pt-24 sm:px-8 sm:pb-0 sm:pt-0">
           <LandingHero />
         </section>
 
         {/* Use Cases Section */}
-        <section id="features" className="py-20 px-4 sm:px-8">
-          <div className="max-w-7xl mx-auto">
+        <section id="features" className="px-4 py-20 sm:px-8">
+          <div className="mx-auto max-w-7xl">
             {/* Section Headline */}
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="text-4xl sm:text-5xl font-bold text-center mb-16"
+              className="mb-16 text-center text-4xl font-bold sm:text-5xl"
             >
               <span className="bg-gradient-to-r from-purple-400 via-amber-300/80 to-purple-400 bg-clip-text text-transparent">
                 A Space for Dreamers
@@ -82,7 +83,7 @@ export default function LandingPage() {
 
             {/* Use Case Cards Grid */}
             <motion.div
-              className="grid grid-cols-1 md:grid-cols-3 gap-8"
+              className="grid grid-cols-1 gap-8 md:grid-cols-3"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
@@ -107,9 +108,7 @@ export default function LandingPage() {
                     title={useCase.title}
                     description={useCase.description}
                   />
-                  <p className="text-sm text-purple-400 mt-3 text-center">
-                    {useCase.example}
-                  </p>
+                  <p className="mt-3 text-center text-sm text-purple-400">{useCase.example}</p>
                 </motion.div>
               ))}
             </motion.div>
@@ -117,29 +116,29 @@ export default function LandingPage() {
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-white/10 py-12 px-4 sm:px-6 mt-24">
-          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+        <footer className="mt-24 border-t border-white/10 px-4 py-12 sm:px-6">
+          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 md:grid-cols-4">
             {/* Brand */}
             <div>
-              <h3 className="text-xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <h3 className="mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-xl font-bold text-transparent">
                 Mirror of Dreams
               </h3>
-              <p className="text-white/60 text-sm leading-relaxed">
+              <p className="text-sm leading-relaxed text-white/60">
                 A sacred space for dreamers who want to listen more deeply to themselves.
               </p>
             </div>
 
             {/* Product */}
             <div>
-              <h4 className="font-semibold mb-3 text-white/90">Product</h4>
+              <h4 className="mb-3 font-semibold text-white/90">Product</h4>
               <ul className="space-y-2 text-sm text-white/60">
                 <li>
-                  <a href="/pricing" className="hover:text-purple-400 transition-colors">
+                  <a href="/pricing" className="transition-colors hover:text-purple-400">
                     Pricing
                   </a>
                 </li>
                 <li>
-                  <a href="#demo" className="hover:text-purple-400 transition-colors">
+                  <a href="#demo" className="transition-colors hover:text-purple-400">
                     See Demo
                   </a>
                 </li>
@@ -148,10 +147,10 @@ export default function LandingPage() {
 
             {/* Company */}
             <div>
-              <h4 className="font-semibold mb-3 text-white/90">Company</h4>
+              <h4 className="mb-3 font-semibold text-white/90">Company</h4>
               <ul className="space-y-2 text-sm text-white/60">
                 <li>
-                  <a href="/about" className="hover:text-purple-400 transition-colors">
+                  <a href="/about" className="transition-colors hover:text-purple-400">
                     About
                   </a>
                 </li>
@@ -160,15 +159,15 @@ export default function LandingPage() {
 
             {/* Legal */}
             <div>
-              <h4 className="font-semibold mb-3 text-white/90">Legal</h4>
+              <h4 className="mb-3 font-semibold text-white/90">Legal</h4>
               <ul className="space-y-2 text-sm text-white/60">
                 <li>
-                  <a href="/privacy" className="hover:text-purple-400 transition-colors">
+                  <a href="/privacy" className="transition-colors hover:text-purple-400">
                     Privacy Policy
                   </a>
                 </li>
                 <li>
-                  <a href="/terms" className="hover:text-purple-400 transition-colors">
+                  <a href="/terms" className="transition-colors hover:text-purple-400">
                     Terms of Service
                   </a>
                 </li>
@@ -177,7 +176,7 @@ export default function LandingPage() {
           </div>
 
           {/* Copyright */}
-          <div className="max-w-6xl mx-auto mt-8 pt-8 border-t border-white/10 text-center text-sm text-white/40">
+          <div className="mx-auto mt-8 max-w-6xl border-t border-white/10 pt-8 text-center text-sm text-white/40">
             © {new Date().getFullYear()} Mirror of Dreams. All rights reserved.
           </div>
         </footer>

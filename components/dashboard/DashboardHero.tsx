@@ -1,11 +1,12 @@
 'use client';
 
-import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import React from 'react';
+
+import { GlowButton } from '@/components/ui/glass';
 import { useAuth } from '@/hooks/useAuth';
 import { trpc } from '@/lib/trpc';
-import { GlowButton } from '@/components/ui/glass';
 
 /**
  * Dashboard Hero Section
@@ -37,7 +38,7 @@ export const DashboardHero: React.FC = () => {
     if (!hasActiveDreams) {
       return "When you're ready, name what you're holding";
     }
-    return "Your dreams are waiting to be heard";
+    return 'Your dreams are waiting to be heard';
   };
 
   const handleReflectNow = () => {
@@ -55,9 +56,7 @@ export const DashboardHero: React.FC = () => {
           <span className="dashboard-hero__sparkle">✨</span>
         </h1>
 
-        <p className="dashboard-hero__subtitle">
-          {getMotivationalCopy()}
-        </p>
+        <p className="dashboard-hero__subtitle">{getMotivationalCopy()}</p>
 
         <div className="dashboard-hero__actions">
           <GlowButton
@@ -114,7 +113,8 @@ export const DashboardHero: React.FC = () => {
         }
 
         @keyframes heroGradientShift {
-          0%, 100% {
+          0%,
+          100% {
             background-position: 0% 50%;
           }
           50% {
@@ -137,7 +137,8 @@ export const DashboardHero: React.FC = () => {
         }
 
         @keyframes sparkleFloat {
-          0%, 100% {
+          0%,
+          100% {
             transform: translateY(0) rotate(0deg);
           }
           50% {

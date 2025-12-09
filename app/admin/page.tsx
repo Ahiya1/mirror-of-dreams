@@ -13,19 +13,15 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
+import { BottomNavigation } from '@/components/navigation';
+import { AppNavigation } from '@/components/shared/AppNavigation';
+import CosmicBackground from '@/components/shared/CosmicBackground';
+import { GlassCard, CosmicLoader, GradientText, GlowBadge } from '@/components/ui/glass';
 import { useAuth } from '@/hooks/useAuth';
 import { trpc } from '@/lib/trpc';
-import {
-  GlassCard,
-  CosmicLoader,
-  GradientText,
-  GlowBadge,
-} from '@/components/ui/glass';
-import CosmicBackground from '@/components/shared/CosmicBackground';
-import { AppNavigation } from '@/components/shared/AppNavigation';
-import { BottomNavigation } from '@/components/navigation';
 import { cn, timeAgo } from '@/lib/utils';
 
 // Type definitions for admin data
@@ -136,14 +132,12 @@ function StatCard({
         <span className="text-2xl sm:text-3xl" aria-hidden="true">
           {icon}
         </span>
-        <div className="flex-1 min-w-0">
-          <p className="text-white/50 text-xs sm:text-sm truncate">{label}</p>
-          <p className="text-2xl sm:text-3xl font-bold text-white mt-1">
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-xs text-white/50 sm:text-sm">{label}</p>
+          <p className="mt-1 text-2xl font-bold text-white sm:text-3xl">
             {typeof value === 'number' ? value.toLocaleString() : value}
           </p>
-          {subValue && (
-            <p className="text-white/40 text-xs mt-1 truncate">{subValue}</p>
-          )}
+          {subValue && <p className="mt-1 truncate text-xs text-white/40">{subValue}</p>}
         </div>
       </div>
     </GlassCard>
@@ -151,21 +145,11 @@ function StatCard({
 }
 
 // Badge Component for tiers and status
-function Badge({
-  variant,
-  children,
-}: {
-  variant: string;
-  children: React.ReactNode;
-}) {
-  const colorClass =
-    tierStyles[variant] || statusStyles[variant] || 'bg-gray-500/20 text-gray-300';
+function Badge({ variant, children }: { variant: string; children: React.ReactNode }) {
+  const colorClass = tierStyles[variant] || statusStyles[variant] || 'bg-gray-500/20 text-gray-300';
   return (
     <span
-      className={cn(
-        'px-2 py-0.5 rounded-full text-xs font-medium border inline-block',
-        colorClass
-      )}
+      className={cn('inline-block rounded-full border px-2 py-0.5 text-xs font-medium', colorClass)}
     >
       {children}
     </span>
@@ -173,13 +157,7 @@ function Badge({
 }
 
 // Users Table Component
-function UsersTable({
-  users,
-  isLoading,
-}: {
-  users: AdminUser[];
-  isLoading: boolean;
-}) {
+function UsersTable({ users, isLoading }: { users: AdminUser[]; isLoading: boolean }) {
   if (isLoading) {
     return (
       <div className="flex justify-center py-8">
@@ -189,11 +167,7 @@ function UsersTable({
   }
 
   if (!users || users.length === 0) {
-    return (
-      <div className="text-center py-8 text-white/50">
-        No users found
-      </div>
-    );
+    return <div className="py-8 text-center text-white/50">No users found</div>;
   }
 
   return (
@@ -201,34 +175,22 @@ function UsersTable({
       <table className="w-full min-w-[600px]">
         <thead>
           <tr className="border-b border-white/10">
-            <th className="text-left py-3 px-4 text-white/50 font-medium text-sm">
-              Email
-            </th>
-            <th className="text-left py-3 px-4 text-white/50 font-medium text-sm">
-              Tier
-            </th>
-            <th className="text-left py-3 px-4 text-white/50 font-medium text-sm">
-              Status
-            </th>
-            <th className="text-left py-3 px-4 text-white/50 font-medium text-sm">
-              Reflections
-            </th>
-            <th className="text-left py-3 px-4 text-white/50 font-medium text-sm">
-              Joined
-            </th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-white/50">Email</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-white/50">Tier</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-white/50">Status</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-white/50">Reflections</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-white/50">Joined</th>
           </tr>
         </thead>
         <tbody>
           {users.map((user) => (
             <tr
               key={user.id}
-              className="border-b border-white/5 hover:bg-white/5 transition-colors"
+              className="border-b border-white/5 transition-colors hover:bg-white/5"
             >
-              <td className="py-3 px-4">
+              <td className="px-4 py-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-white/80 text-sm truncate max-w-[200px]">
-                    {user.email}
-                  </span>
+                  <span className="max-w-[200px] truncate text-sm text-white/80">{user.email}</span>
                   {(user.is_admin || user.is_creator) && (
                     <span className="text-xs text-amber-400">
                       {user.is_admin ? 'Admin' : 'Creator'}
@@ -236,20 +198,16 @@ function UsersTable({
                   )}
                 </div>
               </td>
-              <td className="py-3 px-4">
+              <td className="px-4 py-3">
                 <Badge variant={user.tier}>{mapTierName(user.tier)}</Badge>
               </td>
-              <td className="py-3 px-4">
+              <td className="px-4 py-3">
                 <Badge variant={user.subscription_status || 'pending'}>
                   {user.subscription_status || 'N/A'}
                 </Badge>
               </td>
-              <td className="py-3 px-4 text-white/70 text-sm">
-                {user.total_reflections}
-              </td>
-              <td className="py-3 px-4 text-white/50 text-sm">
-                {formatDate(user.created_at)}
-              </td>
+              <td className="px-4 py-3 text-sm text-white/70">{user.total_reflections}</td>
+              <td className="px-4 py-3 text-sm text-white/50">{formatDate(user.created_at)}</td>
             </tr>
           ))}
         </tbody>
@@ -259,13 +217,7 @@ function UsersTable({
 }
 
 // Webhook Events Table Component
-function WebhookEventsTable({
-  events,
-  isLoading,
-}: {
-  events: WebhookEvent[];
-  isLoading: boolean;
-}) {
+function WebhookEventsTable({ events, isLoading }: { events: WebhookEvent[]; isLoading: boolean }) {
   if (isLoading) {
     return (
       <div className="flex justify-center py-8">
@@ -276,9 +228,9 @@ function WebhookEventsTable({
 
   if (!events || events.length === 0) {
     return (
-      <div className="text-center py-8 text-white/50">
+      <div className="py-8 text-center text-white/50">
         <p>No webhook events yet</p>
-        <p className="text-sm mt-2 text-white/30">
+        <p className="mt-2 text-sm text-white/30">
           Events will appear here when PayPal webhooks are received
         </p>
       </div>
@@ -289,9 +241,11 @@ function WebhookEventsTable({
   const formatEventType = (eventType: string): string => {
     const parts = eventType.split('.');
     if (parts.length >= 2) {
-      const action = parts[parts.length - 1];
-      const subject = parts[parts.length - 2];
-      return `${subject.charAt(0)}${subject.slice(1).toLowerCase()} ${action.charAt(0)}${action.slice(1).toLowerCase()}`;
+      const action = parts[parts.length - 1] ?? '';
+      const subject = parts[parts.length - 2] ?? '';
+      if (subject && action) {
+        return `${subject.charAt(0)}${subject.slice(1).toLowerCase()} ${action.charAt(0)}${action.slice(1).toLowerCase()}`;
+      }
     }
     return eventType;
   };
@@ -301,35 +255,27 @@ function WebhookEventsTable({
       <table className="w-full min-w-[500px]">
         <thead>
           <tr className="border-b border-white/10">
-            <th className="text-left py-3 px-4 text-white/50 font-medium text-sm">
-              Event Type
-            </th>
-            <th className="text-left py-3 px-4 text-white/50 font-medium text-sm">
-              Event ID
-            </th>
-            <th className="text-left py-3 px-4 text-white/50 font-medium text-sm">
-              Processed At
-            </th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-white/50">Event Type</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-white/50">Event ID</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-white/50">Processed At</th>
           </tr>
         </thead>
         <tbody>
           {events.map((event) => (
             <tr
               key={event.id}
-              className="border-b border-white/5 hover:bg-white/5 transition-colors"
+              className="border-b border-white/5 transition-colors hover:bg-white/5"
             >
-              <td className="py-3 px-4">
-                <span className="text-emerald-400 text-sm font-medium">
+              <td className="px-4 py-3">
+                <span className="text-sm font-medium text-emerald-400">
                   {formatEventType(event.event_type)}
                 </span>
-                <p className="text-white/40 text-xs mt-0.5 font-mono">
-                  {event.event_type}
-                </p>
+                <p className="mt-0.5 font-mono text-xs text-white/40">{event.event_type}</p>
               </td>
-              <td className="py-3 px-4 text-white/50 text-xs font-mono truncate max-w-[150px]">
+              <td className="max-w-[150px] truncate px-4 py-3 font-mono text-xs text-white/50">
                 {event.event_id.slice(0, 20)}...
               </td>
-              <td className="py-3 px-4 text-white/50 text-sm">
+              <td className="px-4 py-3 text-sm text-white/50">
                 {event.processed_at ? timeAgo(event.processed_at) : '-'}
               </td>
             </tr>
@@ -387,31 +333,25 @@ export default function AdminPage() {
     data: usersData,
     isLoading: usersLoading,
     error: usersError,
-  } = trpc.admin.getAllUsers.useQuery(
-    { page: 1, limit: 10 },
-    { enabled: isAdmin }
-  );
+  } = trpc.admin.getAllUsers.useQuery({ page: 1, limit: 10 }, { enabled: isAdmin });
 
   const {
     data: webhookData,
     isLoading: webhooksLoading,
     error: webhooksError,
-  } = trpc.admin.getWebhookEvents.useQuery(
-    { limit: 10 },
-    { enabled: isAdmin }
-  );
+  } = trpc.admin.getWebhookEvents.useQuery({ limit: 10 }, { enabled: isAdmin });
 
   // Loading state
   if (authLoading) {
     return (
       <div
-        className="min-h-screen relative"
+        className="relative min-h-screen"
         style={{ opacity: isPageVisible ? 1 : 0, transition: 'opacity 0.6s ease-out' }}
       >
         <CosmicBackground />
-        <div className="flex flex-col items-center justify-center min-h-screen gap-4 z-10 relative">
+        <div className="relative z-10 flex min-h-screen flex-col items-center justify-center gap-4">
           <CosmicLoader size="lg" />
-          <p className="text-white/60 text-sm">Loading admin dashboard...</p>
+          <p className="text-sm text-white/60">Loading admin dashboard...</p>
         </div>
       </div>
     );
@@ -430,7 +370,7 @@ export default function AdminPage() {
 
   return (
     <div
-      className="min-h-screen relative bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark"
+      className="from-mirror-dark via-mirror-midnight to-mirror-dark relative min-h-screen bg-gradient-to-br"
       style={{ opacity: isPageVisible ? 1 : 0, transition: 'opacity 0.6s ease-out' }}
     >
       <CosmicBackground />
@@ -439,83 +379,59 @@ export default function AdminPage() {
       <AppNavigation currentPage="admin" />
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto pt-[calc(var(--nav-height)+var(--demo-banner-height,0px))] px-4 sm:px-8 pb-24 relative z-10">
+      <main className="relative z-10 mx-auto max-w-6xl px-4 pb-24 pt-[calc(var(--nav-height)+var(--demo-banner-height,0px))] sm:px-8">
         {/* Header */}
         <div className="mb-8 pt-6">
-          <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-3xl sm:text-4xl font-bold">
+          <div className="mb-2 flex items-center gap-3">
+            <h1 className="text-3xl font-bold sm:text-4xl">
               <GradientText>Admin Dashboard</GradientText>
             </h1>
-            <span className="px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full text-xs font-medium">
+            <span className="rounded-full border border-amber-500/30 bg-amber-500/20 px-3 py-1 text-xs font-medium text-amber-300">
               {user?.isAdmin ? 'Admin' : 'Creator'}
             </span>
           </div>
-          <p className="text-white/60">
-            System overview and management
-          </p>
+          <p className="text-white/60">System overview and management</p>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
           <StatCard
             label="Total Users"
             value={stats?.users?.total || 0}
             icon="👥"
             subValue={`${stats?.users?.active || 0} active`}
           />
-          <StatCard
-            label="Free Tier"
-            value={stats?.users?.free || 0}
-            icon="🆓"
-          />
-          <StatCard
-            label="Pro Tier"
-            value={proCount}
-            icon="✨"
-          />
-          <StatCard
-            label="Unlimited"
-            value={unlimitedCount}
-            icon="💎"
-          />
+          <StatCard label="Free Tier" value={stats?.users?.free || 0} icon="🆓" />
+          <StatCard label="Pro Tier" value={proCount} icon="✨" />
+          <StatCard label="Unlimited" value={unlimitedCount} icon="💎" />
         </div>
 
         {/* Secondary Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-          <StatCard
-            label="Total Reflections"
-            value={stats?.reflections?.total || 0}
-            icon="🪞"
-          />
+        <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-3">
+          <StatCard label="Total Reflections" value={stats?.reflections?.total || 0} icon="🪞" />
           <StatCard
             label="Evolution Reports"
             value={stats?.evolutionReports?.total || 0}
             icon="📊"
           />
-          <StatCard
-            label="Artifacts"
-            value={stats?.artifacts?.total || 0}
-            icon="🎨"
-          />
+          <StatCard label="Artifacts" value={stats?.artifacts?.total || 0} icon="🎨" />
         </div>
 
         {/* Recent Users Section */}
         <GlassCard className="mb-8">
-          <div className="p-6 border-b border-white/10">
-            <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+          <div className="border-b border-white/10 p-6">
+            <h2 className="flex items-center gap-2 text-xl font-semibold text-white">
               <span>👥</span>
               Recent Users
             </h2>
-            <p className="text-white/50 text-sm mt-1">
-              Last 10 registered users
-            </p>
+            <p className="mt-1 text-sm text-white/50">Last 10 registered users</p>
           </div>
           <div className="p-4">
             {usersError ? (
               <ErrorDisplay message={usersError.message} />
             ) : (
               <UsersTable
-                users={usersData?.items as AdminUser[] || []}
+                users={(usersData?.items as AdminUser[]) || []}
                 isLoading={usersLoading}
               />
             )}
@@ -524,21 +440,19 @@ export default function AdminPage() {
 
         {/* Webhook Events Section */}
         <GlassCard className="mb-8">
-          <div className="p-6 border-b border-white/10">
-            <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+          <div className="border-b border-white/10 p-6">
+            <h2 className="flex items-center gap-2 text-xl font-semibold text-white">
               <span>🔔</span>
               Recent Webhook Events
             </h2>
-            <p className="text-white/50 text-sm mt-1">
-              Last 10 PayPal webhook events
-            </p>
+            <p className="mt-1 text-sm text-white/50">Last 10 PayPal webhook events</p>
           </div>
           <div className="p-4">
             {webhooksError ? (
               <ErrorDisplay message={webhooksError.message} />
             ) : (
               <WebhookEventsTable
-                events={webhookData?.items as WebhookEvent[] || []}
+                events={(webhookData?.items as WebhookEvent[]) || []}
                 isLoading={webhooksLoading}
               />
             )}

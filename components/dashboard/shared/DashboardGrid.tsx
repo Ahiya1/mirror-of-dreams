@@ -1,6 +1,7 @@
 'use client';
 
 import React, { ReactNode } from 'react';
+
 import styles from './DashboardGrid.module.css';
 
 interface DashboardGridProps {
@@ -19,11 +20,7 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({
   isLoading = false,
   className = '',
 }) => {
-  return (
-    <div className={`${styles.dashboardGrid} ${className}`}>
-      {children}
-    </div>
-  );
+  return <div className={`${styles.dashboardGrid} ${className}`}>{children}</div>;
 };
 
 export default DashboardGrid;

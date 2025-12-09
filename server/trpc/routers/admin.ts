@@ -1,41 +1,39 @@
 // server/trpc/routers/admin.ts - Admin operations
 
-import { z } from 'zod';
-import { router, publicProcedure } from '../trpc';
-import { creatorProcedure } from '../middleware';
 import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
+
+import { creatorProcedure } from '../middleware';
+import { router, publicProcedure } from '../trpc';
+
 import { supabase } from '@/server/lib/supabase';
 import { adminCreatorAuthSchema } from '@/types/schemas';
 
 export const adminRouter = router({
   // Authenticate as creator/admin
-  authenticate: publicProcedure
-    .input(adminCreatorAuthSchema)
-    .mutation(async ({ input }) => {
-      const { creatorSecret } = input;
+  authenticate: publicProcedure.input(adminCreatorAuthSchema).mutation(async ({ input }) => {
+    const { creatorSecret } = input;
 
-      if (creatorSecret === process.env.CREATOR_SECRET_KEY) {
-        return {
-          success: true,
-          authenticated: true,
-          message: 'Creator authenticated successfully',
-        };
-      }
+    if (creatorSecret === process.env.CREATOR_SECRET_KEY) {
+      return {
+        success: true,
+        authenticated: true,
+        message: 'Creator authenticated successfully',
+      };
+    }
 
-      throw new TRPCError({
-        code: 'UNAUTHORIZED',
-        message: 'Invalid creator secret',
-      });
-    }),
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'Invalid creator secret',
+    });
+  }),
 
   // Check if authenticated (for persistent sessions)
-  checkAuth: publicProcedure
-    .input(z.object({ key: z.string() }))
-    .query(async ({ input }) => {
-      return {
-        authenticated: input.key === process.env.CREATOR_SECRET_KEY,
-      };
-    }),
+  checkAuth: publicProcedure.input(z.object({ key: z.string() })).query(async ({ input }) => {
+    return {
+      authenticated: input.key === process.env.CREATOR_SECRET_KEY,
+    };
+  }),
 
   // Get all users (creator/admin only)
   getAllUsers: creatorProcedure
@@ -50,16 +48,14 @@ export const adminRouter = router({
       const { page, limit, tier } = input;
       const offset = (page - 1) * limit;
 
-      let query = supabase
-        .from('users')
-        .select(
-          `
+      let query = supabase.from('users').select(
+        `
           id, email, name, tier, subscription_status,
           total_reflections, reflection_count_this_month,
           created_at, last_sign_in_at, is_creator, is_admin
         `,
-          { count: 'exact' }
-        );
+        { count: 'exact' }
+      );
 
       if (tier) {
         query = query.eq('tier', tier);
@@ -98,9 +94,7 @@ export const adminRouter = router({
       const { page, limit, userId } = input;
       const offset = (page - 1) * limit;
 
-      let query = supabase
-        .from('reflections')
-        .select('*', { count: 'exact' });
+      let query = supabase.from('reflections').select('*', { count: 'exact' });
 
       if (userId) {
         query = query.eq('user_id', userId);
@@ -142,10 +136,10 @@ export const adminRouter = router({
 
     const userStats = {
       total: users?.length || 0,
-      free: users?.filter(u => u.tier === 'free').length || 0,
-      essential: users?.filter(u => u.tier === 'essential').length || 0,
-      premium: users?.filter(u => u.tier === 'premium').length || 0,
-      active: users?.filter(u => u.subscription_status === 'active').length || 0,
+      free: users?.filter((u) => u.tier === 'free').length || 0,
+      essential: users?.filter((u) => u.tier === 'essential').length || 0,
+      premium: users?.filter((u) => u.tier === 'premium').length || 0,
+      active: users?.filter((u) => u.subscription_status === 'active').length || 0,
     };
 
     // Get reflection counts
@@ -285,10 +279,13 @@ export const adminRouter = router({
       // Use user_id foreign key relationship to users table
       let query = supabase
         .from('reflections')
-        .select(`
+        .select(
+          `
           id, dream, rating, user_feedback, created_at, user_id,
           users:user_id(email, name)
-        `, { count: 'exact' })
+        `,
+          { count: 'exact' }
+        )
         .not('rating', 'is', null);
 
       // Apply rating filters
@@ -316,13 +313,14 @@ export const adminRouter = router({
         .select('rating')
         .not('rating', 'is', null);
 
-      const averageRating = avgData && avgData.length > 0
-        ? avgData.reduce((sum, r) => sum + (r.rating || 0), 0) / avgData.length
-        : 0;
+      const averageRating =
+        avgData && avgData.length > 0
+          ? avgData.reduce((sum, r) => sum + (r.rating || 0), 0) / avgData.length
+          : 0;
 
       // Rating distribution
       const distribution: Record<number, number> = {};
-      avgData?.forEach(r => {
+      avgData?.forEach((r) => {
         if (r.rating) {
           distribution[r.rating] = (distribution[r.rating] || 0) + 1;
         }
@@ -371,13 +369,26 @@ export const adminRouter = router({
       }
 
       // Calculate totals
-      const totalCost = usageLogs?.reduce((sum, log) => sum + parseFloat(String(log.cost_usd || 0)), 0) || 0;
-      const totalInputTokens = usageLogs?.reduce((sum, log) => sum + (log.input_tokens || 0), 0) || 0;
-      const totalOutputTokens = usageLogs?.reduce((sum, log) => sum + (log.output_tokens || 0), 0) || 0;
-      const totalThinkingTokens = usageLogs?.reduce((sum, log) => sum + (log.thinking_tokens || 0), 0) || 0;
+      const totalCost =
+        usageLogs?.reduce((sum, log) => sum + parseFloat(String(log.cost_usd || 0)), 0) || 0;
+      const totalInputTokens =
+        usageLogs?.reduce((sum, log) => sum + (log.input_tokens || 0), 0) || 0;
+      const totalOutputTokens =
+        usageLogs?.reduce((sum, log) => sum + (log.output_tokens || 0), 0) || 0;
+      const totalThinkingTokens =
+        usageLogs?.reduce((sum, log) => sum + (log.thinking_tokens || 0), 0) || 0;
 
       // Group by operation type
-      const byOperationType: Record<string, { count: number; cost: number; inputTokens: number; outputTokens: number; thinkingTokens: number }> = {};
+      const byOperationType: Record<
+        string,
+        {
+          count: number;
+          cost: number;
+          inputTokens: number;
+          outputTokens: number;
+          thinkingTokens: number;
+        }
+      > = {};
 
       usageLogs?.forEach((log) => {
         const opType = log.operation_type || 'unknown';

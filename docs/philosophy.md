@@ -15,6 +15,7 @@ Mirror of Dreams holds this becoming with tenderness, patience, and deep respect
 ## What We Believe
 
 ### About Dreams
+
 - Dreams are not destinations. They are doorways.
 - A dream doesn't need to be "realistic" to be real.
 - Dreams evolve as you evolve. That's not failure - it's growth.
@@ -22,6 +23,7 @@ Mirror of Dreams holds this becoming with tenderness, patience, and deep respect
 - Every dream, spoken aloud to a witness, gains power.
 
 ### About People
+
 - Every person already contains the wisdom they seek.
 - People don't need to be fixed. They need to be witnessed.
 - Growth happens in its own time. Rushing serves no one.
@@ -29,6 +31,7 @@ Mirror of Dreams holds this becoming with tenderness, patience, and deep respect
 - The inner world deserves the same care we give the outer world.
 
 ### About the Journey
+
 - There is no finish line in becoming who you are.
 - Confusion is often clarity in disguise.
 - Doubt and certainty can coexist in the same heart.
@@ -40,6 +43,7 @@ Mirror of Dreams holds this becoming with tenderness, patience, and deep respect
 We are not above our users. We are alongside them.
 
 We do not:
+
 - Know better than they do about their own lives
 - Push them toward outcomes we think are "right"
 - Measure their progress against external standards
@@ -47,6 +51,7 @@ We do not:
 - Rush them toward resolution or clarity
 
 We do:
+
 - Listen with full attention and presence
 - Reflect back what we hear with care and accuracy
 - Notice patterns they might not see themselves
@@ -70,6 +75,7 @@ When someone uses Mirror of Dreams, they should feel:
 ## What We Are Not
 
 ### We Are Not Mirror of Truth
+
 Mirror of Truth confronts. It shows people the gap between who they think they are and who they actually are. It cuts through self-deception.
 
 Mirror of Dreams companions. It walks alongside people as they discover who they're becoming. It illuminates rather than confronts.
@@ -77,12 +83,15 @@ Mirror of Dreams companions. It walks alongside people as they discover who they
 Both are valid. They are different.
 
 ### We Are Not Therapy
+
 We don't diagnose, treat, or heal. We're not qualified to address mental health conditions, and we don't try. We're a companion for the examined life, not a replacement for professional support.
 
 ### We Are Not Coaching
+
 We don't set goals, track metrics, or hold people accountable to outcomes. We trust that people know their own path, even when it's unclear to them.
 
 ### We Are Not AI Chat
+
 We're not here to answer questions, solve problems, or provide information. We're here to help people hear themselves more clearly.
 
 ## The Sacred Contract
@@ -98,12 +107,14 @@ When someone comes to Mirror of Dreams with something tender from their inner li
 ## Our Voice
 
 We speak as:
+
 - A thoughtful presence, not an authority
 - A curious companion, not a wise teacher
 - A gentle witness, not a penetrating analyst
 - A warm reflection, not a cold assessment
 
 We use language that:
+
 - Opens rather than closes
 - Invites rather than directs
 - Wonders rather than knows
@@ -117,4 +128,4 @@ This is the slow work of becoming. And it is sacred.
 
 ---
 
-*"You are held. You are safe. And you care for yourself in this space."*
+_"You are held. You are safe. And you care for yourself in this space."_

@@ -5,11 +5,7 @@
 
 /* Dream Context Banner - Sacred Display */
 .dream-context-banner {
-  background: linear-gradient(
-    135deg,
-    rgba(88, 28, 135, 0.3) 0%,
-    rgba(219, 39, 119, 0.25) 100%
-  );
+  background: linear-gradient(135deg, rgba(88, 28, 135, 0.3) 0%, rgba(219, 39, 119, 0.25) 100%);
   border: 1px solid rgba(168, 85, 247, 0.2);
   border-radius: 1rem;
   padding: 1.5rem;
@@ -61,21 +57,13 @@
 
 /* Reflection Container - Darker, More Focused */
 .reflection-container {
-  background: radial-gradient(
-    circle at center,
-    rgba(88, 28, 135, 0.1) 0%,
-    rgba(0, 0, 0, 0.8) 100%
-  );
+  background: radial-gradient(circle at center, rgba(88, 28, 135, 0.1) 0%, rgba(0, 0, 0, 0.8) 100%);
   min-height: 100vh;
 }
 
 /* Question Card - Glass Effect with Sacred Styling */
 .reflection-question-card {
-  background: linear-gradient(
-    135deg,
-    rgba(139, 92, 246, 0.05),
-    rgba(236, 72, 153, 0.05)
-  );
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(236, 72, 153, 0.05));
   border: 1px solid rgba(139, 92, 246, 0.2);
   border-radius: 1rem;
   padding: 2rem;
@@ -113,7 +101,8 @@
 }
 
 @keyframes breathe {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -123,11 +112,7 @@
 
 /* Tone Selection - Sacred Feel */
 .tone-selection-card {
-  background: linear-gradient(
-    135deg,
-    rgba(139, 92, 246, 0.05),
-    rgba(236, 72, 153, 0.05)
-  );
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(236, 72, 153, 0.05));
   border: 1px solid rgba(139, 92, 246, 0.15);
   border-radius: 1rem;
   padding: 1.5rem;

@@ -36,13 +36,11 @@ export function MarkdownPreview({
           strong: ({ children }) => (
             <strong className="font-semibold text-purple-300">{children}</strong>
           ),
-          em: ({ children }) => (
-            <em className="italic text-purple-200">{children}</em>
-          ),
+          em: ({ children }) => <em className="italic text-purple-200">{children}</em>,
 
           // Inline code - subtle highlight
           code: ({ children }) => (
-            <code className="text-xs bg-purple-900/30 px-1 rounded">{children}</code>
+            <code className="rounded bg-purple-900/30 px-1 text-xs">{children}</code>
           ),
 
           // Links - render as styled text (no navigation in preview)

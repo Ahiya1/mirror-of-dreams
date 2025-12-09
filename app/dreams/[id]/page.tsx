@@ -2,9 +2,12 @@
 
 'use client';
 
-import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { trpc } from '@/lib/trpc';
+import React, { useState } from 'react';
+
+import { EvolutionHistory } from '@/components/dreams/EvolutionHistory';
+import { EvolutionModal } from '@/components/dreams/EvolutionModal';
+import { AppNavigation } from '@/components/shared/AppNavigation';
 import {
   GlassCard,
   GlowButton,
@@ -12,9 +15,7 @@ import {
   CosmicLoader,
   AnimatedBackground,
 } from '@/components/ui/glass';
-import { AppNavigation } from '@/components/shared/AppNavigation';
-import { EvolutionModal } from '@/components/dreams/EvolutionModal';
-import { EvolutionHistory } from '@/components/dreams/EvolutionHistory';
+import { trpc } from '@/lib/trpc';
 
 const MIN_REFLECTIONS_FOR_GENERATION = 4;
 
@@ -43,9 +44,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
   );
 
   // Filter reflections by dreamId (camelCase from API response)
-  const dreamReflections = reflections?.items?.filter(
-    (r: any) => r.dreamId === params.id
-  ) || [];
+  const dreamReflections = reflections?.items?.filter((r: any) => r.dreamId === params.id) || [];
 
   const reflectionCount = dreamReflections.length;
   const isEligibleForGeneration = reflectionCount >= MIN_REFLECTIONS_FOR_GENERATION;
@@ -115,9 +114,9 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark">
+      <div className="from-mirror-dark via-mirror-midnight to-mirror-dark min-h-screen bg-gradient-to-br">
         <AnimatedBackground intensity="subtle" />
-        <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
+        <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4">
           <CosmicLoader size="lg" label="Loading dream..." />
           <p className="text-body text-white/80">Loading dream...</p>
         </div>
@@ -127,16 +126,12 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
 
   if (!dream) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark">
+      <div className="from-mirror-dark via-mirror-midnight to-mirror-dark min-h-screen bg-gradient-to-br">
         <AnimatedBackground intensity="subtle" />
-        <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="flex min-h-[50vh] items-center justify-center">
           <GlassCard className="p-8 text-center" elevated>
             <p className="text-h3 text-white">Dream not found</p>
-            <GlowButton
-              variant="ghost"
-              onClick={() => router.push('/dreams')}
-              className="mt-4"
-            >
+            <GlowButton variant="ghost" onClick={() => router.push('/dreams')} className="mt-4">
               Back to Dreams
             </GlowButton>
           </GlassCard>
@@ -176,11 +171,11 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark">
+    <div className="from-mirror-dark via-mirror-midnight to-mirror-dark min-h-screen bg-gradient-to-br">
       <AnimatedBackground intensity="subtle" />
       <AppNavigation currentPage="dreams" />
 
-      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-[calc(var(--nav-height)+var(--demo-banner-height,0px)+1rem)] pb-8">
+      <div className="relative z-10 mx-auto max-w-4xl px-4 pb-8 pt-[calc(var(--nav-height)+var(--demo-banner-height,0px)+1rem)] sm:px-6 lg:px-8">
         {/* Back Button */}
         <GlowButton
           variant="ghost"
@@ -193,14 +188,16 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
 
         {/* Header Card */}
         <GlassCard className="mb-6" elevated>
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             {/* Left: Title & Meta */}
-            <div className="flex gap-4 flex-1">
+            <div className="flex flex-1 gap-4">
               <div className="text-5xl">{categoryEmoji}</div>
               <div>
-                <h1 className="text-h2 font-bold text-white mb-2">{dream.title}</h1>
-                <div className="flex flex-wrap gap-3 items-center">
-                  <span className={`px-3 py-1 rounded-full text-body-sm font-medium border ${statusStyles[dream.status as string] || statusStyles.active}`}>
+                <h1 className="text-h2 mb-2 font-bold text-white">{dream.title}</h1>
+                <div className="flex flex-wrap items-center gap-3">
+                  <span
+                    className={`text-body-sm rounded-full border px-3 py-1 font-medium ${statusStyles[dream.status as string] || statusStyles.active}`}
+                  >
                     {statusEmoji} {dream.status}
                   </span>
                   {dream.daysLeft !== null && dream.daysLeft !== undefined && (
@@ -208,8 +205,8 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
                       {dream.daysLeft < 0
                         ? `${Math.abs(dream.daysLeft)} days overdue`
                         : dream.daysLeft === 0
-                        ? 'Today!'
-                        : `${dream.daysLeft} days left`}
+                          ? 'Today!'
+                          : `${dream.daysLeft} days left`}
                     </span>
                   )}
                 </div>
@@ -219,10 +216,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
             {/* Right: Actions */}
             <div className="flex gap-3 sm:flex-shrink-0">
               {dream.status === 'active' && (
-                <GlowButton
-                  variant="secondary"
-                  onClick={() => setIsEvolutionModalOpen(true)}
-                >
+                <GlowButton variant="secondary" onClick={() => setIsEvolutionModalOpen(true)}>
                   Evolve Dream
                 </GlowButton>
               )}
@@ -232,10 +226,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
               >
                 Reflect
               </GlowButton>
-              <GlowButton
-                variant="danger"
-                onClick={handleDelete}
-              >
+              <GlowButton variant="danger" onClick={handleDelete}>
                 Delete
               </GlowButton>
             </div>
@@ -245,38 +236,35 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
         {/* Description */}
         {dream.description && (
           <GlassCard className="mb-6">
-            <h2 className="text-h3 font-semibold text-white mb-3">Description</h2>
-            <p className="text-body text-white/80 leading-relaxed">{dream.description}</p>
+            <h2 className="text-h3 mb-3 font-semibold text-white">Description</h2>
+            <p className="text-body leading-relaxed text-white/80">{dream.description}</p>
           </GlassCard>
         )}
 
         {/* Evolution Report Generation Section */}
-        <GlassCard className="mb-6 border-mirror-purple/20" elevated>
-          <h2 className="text-h3 font-semibold mb-4">
-            <GradientText gradient="cosmic">
-              Evolution Report
-            </GradientText>
+        <GlassCard className="border-mirror-purple/20 mb-6" elevated>
+          <h2 className="text-h3 mb-4 font-semibold">
+            <GradientText gradient="cosmic">Evolution Report</GradientText>
           </h2>
 
           {isGeneratingEvolution ? (
-            <div className="flex flex-col items-center py-8 gap-6">
+            <div className="flex flex-col items-center gap-6 py-8">
               <CosmicLoader size="lg" label="Generating evolution report..." />
-              <div className="text-center space-y-2">
+              <div className="space-y-2 text-center">
                 <p className="text-body text-mirror-purple-light font-medium">
                   Analyzing your journey across time...
                 </p>
                 <p className="text-body-sm text-mirror-purple/80">
                   This takes approximately 30-45 seconds
                 </p>
-                <p className="text-body-sm text-white/60 italic">
-                  Don't close this tab
-                </p>
+                <p className="text-body-sm italic text-white/60">Don't close this tab</p>
               </div>
             </div>
           ) : isEligibleForGeneration ? (
             <div className="space-y-4">
               <p className="text-body text-white/90">
-                You have {reflectionCount} reflections. Generate an evolution report to see your growth patterns.
+                You have {reflectionCount} reflections. Generate an evolution report to see your
+                growth patterns.
               </p>
               <GlowButton
                 variant="cosmic"
@@ -290,16 +278,16 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
           ) : (
             <div className="space-y-4">
               <p className="text-body text-mirror-purple-light">
-                You have {reflectionCount} reflection{reflectionCount !== 1 ? 's' : ''}.
-                Create {remainingReflections} more to unlock evolution reports.
+                You have {reflectionCount} reflection{reflectionCount !== 1 ? 's' : ''}. Create{' '}
+                {remainingReflections} more to unlock evolution reports.
               </p>
-              <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
                 <div
-                  className="h-full bg-gradient-to-r from-mirror-purple via-mirror-indigo to-mirror-violet rounded-full transition-all duration-500"
+                  className="from-mirror-purple via-mirror-indigo to-mirror-violet h-full rounded-full bg-gradient-to-r transition-all duration-500"
                   style={{ width: `${(reflectionCount / MIN_REFLECTIONS_FOR_GENERATION) * 100}%` }}
                 />
               </div>
-              <p className="text-body-sm text-white/70 text-center">
+              <p className="text-body-sm text-center text-white/70">
                 {reflectionCount} of {MIN_REFLECTIONS_FOR_GENERATION} reflections needed
               </p>
             </div>
@@ -307,26 +295,22 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
         </GlassCard>
 
         {/* Visualization Generation Section */}
-        <GlassCard className="mb-6 border-mirror-purple/20" elevated>
-          <h2 className="text-h3 font-semibold mb-4">
-            <GradientText gradient="cosmic">
-              Visualization
-            </GradientText>
+        <GlassCard className="border-mirror-purple/20 mb-6" elevated>
+          <h2 className="text-h3 mb-4 font-semibold">
+            <GradientText gradient="cosmic">Visualization</GradientText>
           </h2>
 
           {isGeneratingVisualization ? (
-            <div className="flex flex-col items-center py-8 gap-6">
+            <div className="flex flex-col items-center gap-6 py-8">
               <CosmicLoader size="lg" label="Generating visualization..." />
-              <div className="text-center space-y-2">
+              <div className="space-y-2 text-center">
                 <p className="text-body text-mirror-purple-light font-medium">
                   Crafting your achievement narrative...
                 </p>
                 <p className="text-body-sm text-mirror-purple/80">
                   This takes approximately 25-35 seconds
                 </p>
-                <p className="text-body-sm text-white/60 italic">
-                  Don't close this tab
-                </p>
+                <p className="text-body-sm italic text-white/60">Don't close this tab</p>
               </div>
             </div>
           ) : isEligibleForGeneration ? (
@@ -346,16 +330,16 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
           ) : (
             <div className="space-y-4">
               <p className="text-body text-mirror-purple-light">
-                You have {reflectionCount} reflection{reflectionCount !== 1 ? 's' : ''}.
-                Create {remainingReflections} more to unlock visualizations.
+                You have {reflectionCount} reflection{reflectionCount !== 1 ? 's' : ''}. Create{' '}
+                {remainingReflections} more to unlock visualizations.
               </p>
-              <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
                 <div
-                  className="h-full bg-gradient-to-r from-mirror-purple via-mirror-indigo to-mirror-violet rounded-full transition-all duration-500"
+                  className="from-mirror-purple via-mirror-indigo to-mirror-violet h-full rounded-full bg-gradient-to-r transition-all duration-500"
                   style={{ width: `${(reflectionCount / MIN_REFLECTIONS_FOR_GENERATION) * 100}%` }}
                 />
               </div>
-              <p className="text-body-sm text-white/70 text-center">
+              <p className="text-body-sm text-center text-white/70">
                 {reflectionCount} of {MIN_REFLECTIONS_FOR_GENERATION} reflections needed
               </p>
             </div>
@@ -364,7 +348,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
 
         {/* Status Actions */}
         <GlassCard className="mb-6">
-          <h2 className="text-h3 font-semibold text-white mb-4">Update Status</h2>
+          <h2 className="text-h3 mb-4 font-semibold text-white">Update Status</h2>
           <div className="flex flex-wrap gap-3">
             <GlowButton
               variant={dream.status === 'active' ? 'primary' : 'ghost'}
@@ -418,9 +402,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
 
         {/* Reflections */}
         <GlassCard>
-          <h2 className="text-h3 font-semibold text-white mb-4">
-            Reflections ({reflectionCount})
-          </h2>
+          <h2 className="text-h3 mb-4 font-semibold text-white">Reflections ({reflectionCount})</h2>
           {dreamReflections.length > 0 ? (
             <div className="space-y-4">
               {dreamReflections.map((reflection: any) => (
@@ -430,13 +412,13 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
                   onClick={() => router.push(`/reflections/${reflection.id}`)}
                   className="p-4"
                 >
-                  <div className="text-body-sm text-white/60 mb-2">
+                  <div className="text-body-sm mb-2 text-white/60">
                     {new Date(reflection.created_at).toLocaleDateString()}
                   </div>
-                  <div className="text-body text-white/90 mb-2 line-clamp-2">
+                  <div className="text-body mb-2 line-clamp-2 text-white/90">
                     {reflection.dream?.substring(0, 150)}...
                   </div>
-                  <div className="flex gap-4 text-body-sm">
+                  <div className="text-body-sm flex gap-4">
                     <span className="text-mirror-purple-light capitalize">{reflection.tone}</span>
                     <span className="text-white/60">{reflection.word_count} words</span>
                   </div>
@@ -444,8 +426,8 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
               ))}
             </div>
           ) : (
-            <div className="text-center py-8">
-              <p className="text-body text-white/60 mb-4">
+            <div className="py-8 text-center">
+              <p className="text-body mb-4 text-white/60">
                 No reflections yet. Create your first reflection for this dream!
               </p>
               <GlowButton

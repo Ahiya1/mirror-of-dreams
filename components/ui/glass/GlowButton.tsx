@@ -1,8 +1,9 @@
 'use client';
 
+import type { GlowButtonProps } from '@/types/glass-components';
+
 import { cn } from '@/lib/utils';
 import { haptic } from '@/lib/utils/haptics';
-import type { GlowButtonProps } from '@/types/glass-components';
 
 /**
  * GlowButton - Enhanced button with cosmic and semantic variants
@@ -27,7 +28,7 @@ export function GlowButton({
   // Haptic-enhanced click handler
   const handleClick = () => {
     if (!disabled) {
-      haptic('light');  // Trigger haptic feedback on tap
+      haptic('light'); // Trigger haptic feedback on tap
     }
     onClick?.();
   };
@@ -118,7 +119,7 @@ export function GlowButton({
         'relative',
         // Fast transitions (200ms - snappy and responsive)
         'transition-all duration-200',
-        'disabled:opacity-50 disabled:cursor-not-allowed',
+        'disabled:cursor-not-allowed disabled:opacity-50',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2',
         // Variant
         variants[variant],

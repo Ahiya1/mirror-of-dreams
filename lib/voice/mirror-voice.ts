@@ -24,7 +24,7 @@ export const greetings = {
 
   dashboard: {
     withDreams: 'Your dreams are waiting to be heard',
-    noDreams: 'When you\'re ready, name what you\'re holding',
+    noDreams: "When you're ready, name what you're holding",
   },
 
   returning: 'Welcome back',
@@ -57,19 +57,22 @@ export const landing = {
       id: 'witness',
       icon: '🌙',
       title: 'Be Witnessed, Not Fixed',
-      description: 'Share your dreams and reflections with a presence that listens without judgment, advice, or agenda. Sometimes the most profound shifts come from simply being heard.',
+      description:
+        'Share your dreams and reflections with a presence that listens without judgment, advice, or agenda. Sometimes the most profound shifts come from simply being heard.',
     },
     {
       id: 'patterns',
       icon: '✨',
-      title: 'Notice What\'s Emerging',
-      description: 'Over time, patterns reveal themselves—not because someone points them out, but because you begin to see them for yourself through the mirror of your own words.',
+      title: "Notice What's Emerging",
+      description:
+        'Over time, patterns reveal themselves—not because someone points them out, but because you begin to see them for yourself through the mirror of your own words.',
     },
     {
       id: 'journey',
       icon: '🌸',
       title: 'Walk Your Own Path',
-      description: 'This is your journey. Your companion walks alongside you, reflecting back what you share, celebrating where you\'ve been and where you\'re going.',
+      description:
+        "This is your journey. Your companion walks alongside you, reflecting back what you share, celebrating where you've been and where you're going.",
     },
   ],
 
@@ -121,7 +124,7 @@ export const pricing = {
 export const emptyStates = {
   dreams: {
     title: 'No dreams yet',
-    message: 'When you\'re ready, name something you\'re holding—a hope, a question, a longing.',
+    message: "When you're ready, name something you're holding—a hope, a question, a longing.",
     cta: 'Name Your First Dream',
   },
 
@@ -133,7 +136,8 @@ export const emptyStates = {
 
   evolution: {
     title: 'Your journey unfolds here',
-    message: 'After a few reflections, patterns begin to emerge. Come back when you\'ve had some conversations.',
+    message:
+      "After a few reflections, patterns begin to emerge. Come back when you've had some conversations.",
     cta: 'Reflect Now',
   },
 
@@ -169,7 +173,7 @@ export const errors = {
 
   network: {
     title: 'Connection lost',
-    message: 'We\'ll find our way back. Check your connection and return when ready.',
+    message: "We'll find our way back. Check your connection and return when ready.",
     cta: 'Reconnect',
   },
 
@@ -180,8 +184,9 @@ export const errors = {
   },
 
   limitReached: {
-    title: 'You\'ve filled this month\'s space',
-    message: 'Your reflections are safe. Come back next month, or expand your space if you\'d like to continue.',
+    title: "You've filled this month's space",
+    message:
+      "Your reflections are safe. Come back next month, or expand your space if you'd like to continue.",
     cta: 'Expand Your Space',
   },
 };
@@ -239,7 +244,7 @@ export const auth = {
 
   forgotPassword: {
     title: 'Lost Your Way?',
-    subtitle: 'We\'ll help you find it',
+    subtitle: "We'll help you find it",
     cta: 'Send Reset Link',
   },
 
@@ -255,14 +260,14 @@ export const auth = {
 export const dashboard = {
   hero: {
     withDreams: 'Your dreams await your presence',
-    noDreams: 'When you\'re ready, name what you\'re holding',
+    noDreams: "When you're ready, name what you're holding",
     noDreamsCta: 'Name your first dream',
   },
 
   cards: {
     dreams: {
       title: 'Your Dreams',
-      empty: 'Name something you\'re carrying',
+      empty: "Name something you're carrying",
     },
     reflections: {
       title: 'Recent Reflections',
@@ -283,7 +288,7 @@ export const dashboard = {
 // ============================================
 export const reflection = {
   intro: 'What would you like to explore?',
-  placeholder: 'Share what\'s present for you...',
+  placeholder: "Share what's present for you...",
   submit: 'Send to Mirror',
   generating: 'The mirror is listening...',
   complete: 'Your reflection',

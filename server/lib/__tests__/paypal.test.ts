@@ -1,6 +1,7 @@
 // server/lib/__tests__/paypal.test.ts - PayPal client library tests
 
 import { describe, test, expect, beforeEach, vi } from 'vitest';
+
 import {
   getPayPalAccessToken,
   createSubscription,

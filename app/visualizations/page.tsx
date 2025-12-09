@@ -1,9 +1,14 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { trpc } from '@/lib/trpc';
-import { useAuth } from '@/hooks/useAuth';
+import { useState } from 'react';
+
+import { BottomNavigation } from '@/components/navigation';
+import { AppNavigation } from '@/components/shared/AppNavigation';
+import { EmptyState } from '@/components/shared/EmptyState';
+import { CanvasVisual } from '@/components/shared/illustrations/CanvasVisual';
+import { MarkdownPreview } from '@/components/shared/MarkdownPreview';
+import { FeatureLockOverlay } from '@/components/subscription/FeatureLockOverlay';
 import {
   GlassCard,
   GlowButton,
@@ -11,12 +16,8 @@ import {
   GradientText,
   GlowBadge,
 } from '@/components/ui/glass';
-import { AppNavigation } from '@/components/shared/AppNavigation';
-import { BottomNavigation } from '@/components/navigation';
-import { EmptyState } from '@/components/shared/EmptyState';
-import { CanvasVisual } from '@/components/shared/illustrations/CanvasVisual';
-import { FeatureLockOverlay } from '@/components/subscription/FeatureLockOverlay';
-import { MarkdownPreview } from '@/components/shared/MarkdownPreview';
+import { useAuth } from '@/hooks/useAuth';
+import { trpc } from '@/lib/trpc';
 import { cn } from '@/lib/utils';
 
 type VisualizationStyle = 'achievement' | 'spiral' | 'synthesis';
@@ -56,10 +57,11 @@ export default function VisualizationsPage() {
   );
 
   // Fetch visualizations
-  const { data: visualizationsData, isLoading: visualizationsLoading, refetch: refetchVisualizations } = trpc.visualizations.list.useQuery(
-    { page: 1, limit: 20 },
-    { enabled: !!user }
-  );
+  const {
+    data: visualizationsData,
+    isLoading: visualizationsLoading,
+    refetch: refetchVisualizations,
+  } = trpc.visualizations.list.useQuery({ page: 1, limit: 20 }, { enabled: !!user });
 
   // Count total reflections for progress indicator
   const { data: reflectionsData } = trpc.reflections.list.useQuery(
@@ -111,7 +113,7 @@ export default function VisualizationsPage() {
   // Loading state - show if auth OR queries are loading
   if (authLoading || dreamsLoading || visualizationsLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
+      <div className="from-mirror-dark via-mirror-midnight to-mirror-dark flex min-h-screen items-center justify-center bg-gradient-to-br p-8">
         <div className="flex flex-col items-center gap-4">
           <CosmicLoader size="lg" label="Loading visualizations" />
           <p className="text-small text-white/60">Loading visualizations...</p>
@@ -127,10 +129,10 @@ export default function VisualizationsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark pt-nav px-4 sm:px-8 pb-20 md:pb-8">
+    <div className="from-mirror-dark via-mirror-midnight to-mirror-dark min-h-screen bg-gradient-to-br px-4 pb-20 pt-nav sm:px-8 md:pb-8">
       <AppNavigation currentPage="visualizations" />
 
-      <div className="max-w-6xl mx-auto">
+      <div className="mx-auto max-w-6xl">
         {/* Page Title */}
         <div className="mb-8">
           <GradientText gradient="cosmic" className="text-h1 mb-2">
@@ -166,10 +168,10 @@ export default function VisualizationsPage() {
           <div className="space-y-6">
             {/* Style Selection */}
             <div>
-              <GradientText gradient="primary" className="text-lg font-medium mb-4">
+              <GradientText gradient="primary" className="mb-4 text-lg font-medium">
                 Choose Visualization Style
               </GradientText>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 {visualizationStyles.map((style) => (
                   <GlassCard
                     key={style.id}
@@ -181,16 +183,14 @@ export default function VisualizationsPage() {
                     )}
                     onClick={() => setSelectedStyle(style.id)}
                   >
-                    <div className="text-4xl mb-3">{style.icon}</div>
+                    <div className="mb-3 text-4xl">{style.icon}</div>
                     <GradientText
                       gradient={selectedStyle === style.id ? 'cosmic' : 'primary'}
-                      className="text-base font-bold mb-2"
+                      className="mb-2 text-base font-bold"
                     >
                       {style.name}
                     </GradientText>
-                    <p className="text-white/60 text-xs">
-                      {style.description}
-                    </p>
+                    <p className="text-xs text-white/60">{style.description}</p>
                   </GlassCard>
                 ))}
               </div>
@@ -198,16 +198,16 @@ export default function VisualizationsPage() {
 
             {/* Dream Selection */}
             <div>
-              <label className="block text-white/80 mb-3 font-medium">
+              <label className="mb-3 block font-medium text-white/80">
                 Select Dream (optional - leave blank for cross-dream)
               </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+              <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <GlowButton
                   variant="secondary"
                   size="md"
                   onClick={() => setSelectedDreamId('')}
                   className={cn(
-                    'text-left justify-start',
+                    'justify-start text-left',
                     selectedDreamId === '' && 'border-mirror-purple shadow-glow'
                   )}
                   disabled={generating}
@@ -224,12 +224,12 @@ export default function VisualizationsPage() {
                     size="md"
                     onClick={() => setSelectedDreamId(dream.id)}
                     className={cn(
-                      'text-left justify-start',
+                      'justify-start text-left',
                       selectedDreamId === dream.id && 'border-mirror-purple shadow-glow'
                     )}
                     disabled={generating}
                   >
-                    <div className="flex-1 min-w-0">
+                    <div className="min-w-0 flex-1">
                       <div className="truncate text-white/90">{dream.title}</div>
                       <div className="text-xs text-white/50">
                         {dream.reflection_count || 0} reflections
@@ -275,14 +275,14 @@ export default function VisualizationsPage() {
               progress={{
                 current: Math.min(totalReflections, minReflections),
                 total: minReflections,
-                label: 'reflections to unlock visualizations'
+                label: 'reflections to unlock visualizations',
               }}
               ctaLabel="Add Another Reflection"
               ctaAction={() => router.push('/reflection')}
               variant="compact"
             />
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               {visualizationsData.items.map((viz: any) => (
                 <GlassCard
                   key={viz.id}
@@ -290,7 +290,7 @@ export default function VisualizationsPage() {
                   className="cursor-pointer"
                   onClick={() => router.push(`/visualizations/${viz.id}`)}
                 >
-                  <div className="flex items-start justify-between mb-3">
+                  <div className="mb-3 flex items-start justify-between">
                     <div className="flex items-center gap-2">
                       <span className="text-2xl">
                         {styleDescriptions[viz.style as VisualizationStyle]?.icon}
@@ -299,16 +299,14 @@ export default function VisualizationsPage() {
                         {styleDescriptions[viz.style as VisualizationStyle]?.title}
                       </GradientText>
                     </div>
-                    <GlowBadge variant="info">
-                      {viz.dreams ? 'Dream' : 'Cross'}
-                    </GlowBadge>
+                    <GlowBadge variant="info">{viz.dreams ? 'Dream' : 'Cross'}</GlowBadge>
                   </div>
 
-                  <p className="text-white/50 text-sm mb-3">
+                  <p className="mb-3 text-sm text-white/50">
                     {viz.dreams?.title || 'Cross-Dream'} • {viz.reflection_count} reflections
                   </p>
 
-                  <p className="text-white/70 text-sm line-clamp-3 mb-3">
+                  <p className="mb-3 line-clamp-3 text-sm text-white/70">
                     <MarkdownPreview
                       content={viz.narrative || ''}
                       maxLength={150}

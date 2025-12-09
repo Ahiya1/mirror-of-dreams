@@ -1,14 +1,16 @@
 'use client';
 
-import { useState, useCallback } from 'react';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import { X } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
-import { useToast } from '@/contexts/ToastContext';
-import { trpc } from '@/lib/trpc';
-import { GlassCard } from '@/components/ui/glass/GlassCard';
-import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
+import { useState, useCallback } from 'react';
+
 import type { TierName, BillingPeriod } from '@/lib/utils/constants';
+
+import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
+import { GlassCard } from '@/components/ui/glass/GlassCard';
+import { useToast } from '@/contexts/ToastContext';
+import { useAuth } from '@/hooks/useAuth';
+import { trpc } from '@/lib/trpc';
 import { TIER_PRICING } from '@/lib/utils/constants';
 
 interface PayPalCheckoutModalProps {
@@ -31,10 +33,11 @@ export function PayPalCheckoutModal({
   const [isActivating, setIsActivating] = useState(false);
 
   // Get plan ID using tRPC
-  const { data: planData, isLoading, error } = trpc.subscriptions.getPlanId.useQuery(
-    { tier, period },
-    { enabled: isOpen }
-  );
+  const {
+    data: planData,
+    isLoading,
+    error,
+  } = trpc.subscriptions.getPlanId.useQuery({ tier, period }, { enabled: isOpen });
 
   // Activate subscription mutation
   const activateMutation = trpc.subscriptions.activateSubscription.useMutation({
@@ -51,21 +54,27 @@ export function PayPalCheckoutModal({
   });
 
   // Handle successful subscription approval
-  const handleApprove = useCallback(async (data: { subscriptionID?: string | null }) => {
-    if (!data.subscriptionID) {
-      toast.error('Subscription creation failed');
-      return;
-    }
+  const handleApprove = useCallback(
+    async (data: { subscriptionID?: string | null }) => {
+      if (!data.subscriptionID) {
+        toast.error('Subscription creation failed');
+        return;
+      }
 
-    setIsActivating(true);
-    activateMutation.mutate({ subscriptionId: data.subscriptionID });
-  }, [activateMutation, toast]);
+      setIsActivating(true);
+      activateMutation.mutate({ subscriptionId: data.subscriptionID });
+    },
+    [activateMutation, toast]
+  );
 
   // Handle errors
-  const handleError = useCallback((err: Record<string, unknown>) => {
-    console.error('PayPal error:', err);
-    toast.error('Payment failed. Please try again.');
-  }, [toast]);
+  const handleError = useCallback(
+    (err: Record<string, unknown>) => {
+      console.error('PayPal error:', err);
+      toast.error('Payment failed. Please try again.');
+    },
+    [toast]
+  );
 
   // Handle cancel
   const handleCancel = useCallback(() => {
@@ -74,35 +83,30 @@ export function PayPalCheckoutModal({
 
   if (!isOpen) return null;
 
-  const price = period === 'monthly'
-    ? TIER_PRICING[tier].monthly
-    : TIER_PRICING[tier].yearly;
+  const price = period === 'monthly' ? TIER_PRICING[tier].monthly : TIER_PRICING[tier].yearly;
 
   const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal */}
-      <GlassCard className="relative z-10 w-full max-w-md mx-4 p-6" elevated>
+      <GlassCard className="relative z-10 mx-4 w-full max-w-md p-6" elevated>
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-white/60 hover:text-white transition-colors"
+          className="absolute right-4 top-4 text-white/60 transition-colors hover:text-white"
           aria-label="Close"
           disabled={isActivating}
         >
-          <X className="w-5 h-5" />
+          <X className="h-5 w-5" />
         </button>
 
         {/* Header */}
-        <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-white mb-2">
+        <div className="mb-6 text-center">
+          <h2 className="mb-2 text-2xl font-bold text-white">
             Upgrade to {tier.charAt(0).toUpperCase() + tier.slice(1)}
           </h2>
           <p className="text-white/60">
@@ -112,19 +116,16 @@ export function PayPalCheckoutModal({
 
         {/* Content */}
         {isLoading || isActivating || !user ? (
-          <div className="flex flex-col items-center justify-center py-8 gap-3">
+          <div className="flex flex-col items-center justify-center gap-3 py-8">
             <CosmicLoader size="lg" />
             {isActivating && (
-              <p className="text-white/60 text-sm">Activating your subscription...</p>
+              <p className="text-sm text-white/60">Activating your subscription...</p>
             )}
           </div>
         ) : error ? (
-          <div className="text-center py-8">
-            <p className="text-mirror-error mb-4">{error.message || 'Failed to load checkout'}</p>
-            <button
-              onClick={onClose}
-              className="text-white/60 hover:text-white transition-colors"
-            >
+          <div className="py-8 text-center">
+            <p className="mb-4 text-mirror-error">{error.message || 'Failed to load checkout'}</p>
+            <button onClick={onClose} className="text-white/60 transition-colors hover:text-white">
               Close
             </button>
           </div>
@@ -164,15 +165,13 @@ export function PayPalCheckoutModal({
             />
           </PayPalScriptProvider>
         ) : (
-          <div className="text-center py-8">
+          <div className="py-8 text-center">
             <p className="text-mirror-error">PayPal is not configured</p>
           </div>
         )}
 
         {/* Footer note */}
-        <p className="text-center text-white/40 text-xs mt-4">
-          Secure payment powered by PayPal
-        </p>
+        <p className="mt-4 text-center text-xs text-white/40">Secure payment powered by PayPal</p>
       </GlassCard>
     </div>
   );

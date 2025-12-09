@@ -5,9 +5,10 @@ const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
 const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET;
 const PAYPAL_ENVIRONMENT = process.env.PAYPAL_ENVIRONMENT || 'sandbox';
 
-const BASE_URL = PAYPAL_ENVIRONMENT === 'sandbox'
-  ? 'https://api-m.sandbox.paypal.com'
-  : 'https://api-m.paypal.com';
+const BASE_URL =
+  PAYPAL_ENVIRONMENT === 'sandbox'
+    ? 'https://api-m.sandbox.paypal.com'
+    : 'https://api-m.paypal.com';
 
 // Change this to your production URL when deploying
 const WEBHOOK_URL = 'https://mirror-of-dreams.vercel.app/api/webhooks/paypal';
@@ -18,7 +19,7 @@ async function getAccessToken(): Promise<string> {
   const response = await fetch(`${BASE_URL}/v1/oauth2/token`, {
     method: 'POST',
     headers: {
-      'Authorization': `Basic ${auth}`,
+      Authorization: `Basic ${auth}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: 'grant_type=client_credentials',
@@ -39,7 +40,7 @@ async function createWebhook() {
   const response = await fetch(`${BASE_URL}/v1/notifications/webhooks`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -71,7 +72,7 @@ async function createWebhook() {
     if (data.name === 'WEBHOOK_URL_ALREADY_EXISTS') {
       console.log('\n📋 Listing existing webhooks...');
       const listResponse = await fetch(`${BASE_URL}/v1/notifications/webhooks`, {
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
       const webhooks = await listResponse.json();
       console.log(JSON.stringify(webhooks, null, 2));

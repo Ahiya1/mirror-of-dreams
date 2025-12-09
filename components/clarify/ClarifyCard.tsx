@@ -1,7 +1,10 @@
 'use client';
 
-import React from 'react';
+import { formatDistanceToNow } from 'date-fns';
+import { MessageCircle, Sparkles } from 'lucide-react';
 import Link from 'next/link';
+import React from 'react';
+
 import DashboardCard, {
   CardHeader,
   CardTitle,
@@ -9,11 +12,9 @@ import DashboardCard, {
   HeaderAction,
 } from '@/components/dashboard/shared/DashboardCard';
 import { CosmicLoader, GlowButton } from '@/components/ui/glass';
-import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/hooks/useAuth';
+import { trpc } from '@/lib/trpc';
 import { CLARIFY_SESSION_LIMITS } from '@/lib/utils/constants';
-import { formatDistanceToNow } from 'date-fns';
-import { MessageCircle, Sparkles } from 'lucide-react';
 
 interface ClarifyCardProps {
   animated?: boolean;
@@ -34,12 +35,15 @@ const ClarifyCard: React.FC<ClarifyCardProps> = ({ animated = true, className = 
   const { data: limits, isLoading: limitsLoading } = trpc.clarify.getLimits.useQuery(undefined, {
     enabled: canAccess,
   });
-  const { data: sessionsData, isLoading: sessionsLoading } = trpc.clarify.listSessions.useQuery({
-    status: 'active',
-    limit: 3,
-  }, {
-    enabled: canAccess,
-  });
+  const { data: sessionsData, isLoading: sessionsLoading } = trpc.clarify.listSessions.useQuery(
+    {
+      status: 'active',
+      limit: 3,
+    },
+    {
+      enabled: canAccess,
+    }
+  );
 
   // Don't render for free tier (after hooks)
   if (!canAccess || !user) {
@@ -53,11 +57,13 @@ const ClarifyCard: React.FC<ClarifyCardProps> = ({ animated = true, className = 
   // Empty state
   const EmptyState = () => (
     <div className="empty-state">
-      <Sparkles className="w-8 h-8 text-purple-400/60 mb-2" />
+      <Sparkles className="mb-2 h-8 w-8 text-purple-400/60" />
       <h4>Start Exploring</h4>
       <p>Begin a Clarify session to explore what's emerging.</p>
       <Link href="/clarify">
-        <GlowButton variant="cosmic" size="sm">Start Session</GlowButton>
+        <GlowButton variant="cosmic" size="sm">
+          Start Session
+        </GlowButton>
       </Link>
     </div>
   );
@@ -72,7 +78,7 @@ const ClarifyCard: React.FC<ClarifyCardProps> = ({ animated = true, className = 
     >
       <CardHeader>
         <CardTitle>
-          <MessageCircle className="w-5 h-5 inline-block mr-2 text-purple-400" />
+          <MessageCircle className="mr-2 inline-block h-5 w-5 text-purple-400" />
           Clarify Sessions
         </CardTitle>
         <HeaderAction href="/clarify">
@@ -91,7 +97,7 @@ const ClarifyCard: React.FC<ClarifyCardProps> = ({ animated = true, className = 
             <div
               className="usage-fill"
               style={{
-                width: `${Math.min(100, ((limits?.sessionsUsed || 0) / limit) * 100)}%`
+                width: `${Math.min(100, ((limits?.sessionsUsed || 0) / limit) * 100)}%`,
               }}
             />
           </div>
@@ -106,11 +112,7 @@ const ClarifyCard: React.FC<ClarifyCardProps> = ({ animated = true, className = 
         ) : (
           <div className="sessions-list">
             {sessions.map((session) => (
-              <Link
-                key={session.id}
-                href={`/clarify/${session.id}`}
-                className="session-item"
-              >
+              <Link key={session.id} href={`/clarify/${session.id}`} className="session-item">
                 <div className="session-title">{session.title}</div>
                 <div className="session-meta">
                   {session.messageCount} messages

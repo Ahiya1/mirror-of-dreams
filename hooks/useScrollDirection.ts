@@ -19,9 +19,7 @@ interface UseScrollDirectionOptions {
  * const scrollDirection = useScrollDirection();
  * const isNavVisible = scrollDirection !== 'down';
  */
-export function useScrollDirection(
-  options: UseScrollDirectionOptions = {}
-): ScrollDirection {
+export function useScrollDirection(options: UseScrollDirectionOptions = {}): ScrollDirection {
   const { threshold = 10, throttleMs = 100 } = options;
 
   const [direction, setDirection] = useState<ScrollDirection>(null);

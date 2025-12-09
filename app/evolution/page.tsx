@@ -1,9 +1,13 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { trpc } from '@/lib/trpc';
-import { useAuth } from '@/hooks/useAuth';
+import { useState } from 'react';
+
+import { BottomNavigation } from '@/components/navigation';
+import { AppNavigation } from '@/components/shared/AppNavigation';
+import { EmptyState } from '@/components/shared/EmptyState';
+import { MarkdownPreview } from '@/components/shared/MarkdownPreview';
+import { FeatureLockOverlay } from '@/components/subscription/FeatureLockOverlay';
 import {
   GlassCard,
   GlowButton,
@@ -11,11 +15,8 @@ import {
   GradientText,
   GlowBadge,
 } from '@/components/ui/glass';
-import { AppNavigation } from '@/components/shared/AppNavigation';
-import { BottomNavigation } from '@/components/navigation';
-import { EmptyState } from '@/components/shared/EmptyState';
-import { FeatureLockOverlay } from '@/components/subscription/FeatureLockOverlay';
-import { MarkdownPreview } from '@/components/shared/MarkdownPreview';
+import { useAuth } from '@/hooks/useAuth';
+import { trpc } from '@/lib/trpc';
 import { cn } from '@/lib/utils';
 
 export default function EvolutionPage() {
@@ -31,15 +32,17 @@ export default function EvolutionPage() {
   );
 
   // Fetch evolution reports
-  const { data: reportsData, isLoading: reportsLoading, refetch: refetchReports } = trpc.evolution.list.useQuery(
-    { page: 1, limit: 20 },
-    { enabled: !!user }
-  );
+  const {
+    data: reportsData,
+    isLoading: reportsLoading,
+    refetch: refetchReports,
+  } = trpc.evolution.list.useQuery({ page: 1, limit: 20 }, { enabled: !!user });
 
   // Check eligibility
-  const { data: eligibility, isLoading: eligibilityLoading } = trpc.evolution.checkEligibility.useQuery(undefined, {
-    enabled: !!user,
-  });
+  const { data: eligibility, isLoading: eligibilityLoading } =
+    trpc.evolution.checkEligibility.useQuery(undefined, {
+      enabled: !!user,
+    });
 
   // Count total reflections for progress indicator
   const { data: reflectionsData } = trpc.reflections.list.useQuery(
@@ -89,9 +92,9 @@ export default function EvolutionPage() {
   // Loading state - show if auth OR queries are loading
   if (authLoading || dreamsLoading || reportsLoading || eligibilityLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark p-8">
+      <div className="from-mirror-dark via-mirror-midnight to-mirror-dark flex min-h-screen items-center justify-center bg-gradient-to-br p-8">
         <div className="flex flex-col items-center gap-6 text-center">
-          <div className="text-5xl mb-2">🌱</div>
+          <div className="mb-2 text-5xl">🌱</div>
           <CosmicLoader size="lg" label="Gathering your journey" />
           <div className="space-y-2">
             <p className="text-lg text-white/80">Gathering your journey...</p>
@@ -109,10 +112,10 @@ export default function EvolutionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-mirror-dark via-mirror-midnight to-mirror-dark pt-nav px-4 sm:px-8 pb-20 md:pb-8">
+    <div className="from-mirror-dark via-mirror-midnight to-mirror-dark min-h-screen bg-gradient-to-br px-4 pb-20 pt-nav sm:px-8 md:pb-8">
       <AppNavigation currentPage="evolution" />
 
-      <div className="max-w-6xl mx-auto">
+      <div className="mx-auto max-w-6xl">
         {/* Page Title */}
         <div className="mb-8">
           <GradientText gradient="cosmic" className="text-h1 mb-2">
@@ -145,19 +148,19 @@ export default function EvolutionPage() {
             <div className="space-y-6">
               {/* Dream-Specific Report */}
               <GlassCard>
-                <GradientText gradient="primary" className="text-lg font-medium mb-2">
+                <GradientText gradient="primary" className="mb-2 text-lg font-medium">
                   Dream-Specific Report
                 </GradientText>
-                <p className="text-white/60 text-sm mb-4">
+                <p className="mb-4 text-sm text-white/60">
                   Analyze your evolution on a single dream (requires 4+ reflections)
                 </p>
 
                 {/* Dream Selection Buttons */}
                 <div className="mb-4">
-                  <label className="block text-white/80 mb-3 font-medium text-sm">
+                  <label className="mb-3 block text-sm font-medium text-white/80">
                     Select Dream
                   </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     {dreamsData?.map((dream) => (
                       <GlowButton
                         key={dream.id}
@@ -165,12 +168,12 @@ export default function EvolutionPage() {
                         size="md"
                         onClick={() => setSelectedDreamId(dream.id)}
                         className={cn(
-                          'text-left justify-start',
+                          'justify-start text-left',
                           selectedDreamId === dream.id && 'border-mirror-purple shadow-glow'
                         )}
                         disabled={generating}
                       >
-                        <div className="flex-1 min-w-0">
+                        <div className="min-w-0 flex-1">
                           <div className="truncate text-white/90">{dream.title}</div>
                           <div className="text-xs text-white/50">
                             {dream.reflection_count || 0} reflections
@@ -201,10 +204,10 @@ export default function EvolutionPage() {
 
               {/* Cross-Dream Report */}
               <GlassCard>
-                <GradientText gradient="primary" className="text-lg font-medium mb-2">
+                <GradientText gradient="primary" className="mb-2 text-lg font-medium">
                   Cross-Dream Report
                 </GradientText>
-                <p className="text-white/60 text-sm mb-4">
+                <p className="mb-4 text-sm text-white/60">
                   Analyze patterns across all your dreams (requires 12+ total reflections)
                 </p>
 
@@ -228,12 +231,10 @@ export default function EvolutionPage() {
 
               {/* Eligibility Info */}
               {eligibility && !eligibility.eligible && (
-                <GlassCard
-                  className="border-l-4 border-blue-500"
-                >
+                <GlassCard className="border-l-4 border-blue-500">
                   <div className="flex items-center gap-3">
                     <GlowBadge variant="info">i</GlowBadge>
-                    <p className="text-white/80 text-sm">{eligibility.reason}</p>
+                    <p className="text-sm text-white/80">{eligibility.reason}</p>
                   </div>
                 </GlassCard>
               )}
@@ -255,13 +256,13 @@ export default function EvolutionPage() {
               progress={{
                 current: Math.min(totalReflections, minReflections),
                 total: minReflections,
-                label: 'reflections to unlock evolution'
+                label: 'reflections to unlock evolution',
               }}
               ctaLabel="Continue Reflecting"
               ctaAction={() => router.push('/reflection')}
             />
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               {reportsData.reports.map((report: any) => (
                 <GlassCard
                   key={report.id}
@@ -269,8 +270,8 @@ export default function EvolutionPage() {
                   className="cursor-pointer"
                   onClick={() => router.push(`/evolution/${report.id}`)}
                 >
-                  <div className="flex items-start justify-between mb-3">
-                    <GradientText gradient="cosmic" className="text-lg font-bold flex-1">
+                  <div className="mb-3 flex items-start justify-between">
+                    <GradientText gradient="cosmic" className="flex-1 text-lg font-bold">
                       {report.report_category === 'dream-specific' ? (
                         <>{report.dreams?.title || 'Dream Report'}</>
                       ) : (
@@ -282,11 +283,11 @@ export default function EvolutionPage() {
                     </GlowBadge>
                   </div>
 
-                  <p className="text-white/50 text-sm mb-3">
+                  <p className="mb-3 text-sm text-white/50">
                     {report.reflection_count} reflections analyzed
                   </p>
 
-                  <p className="text-white/70 text-sm line-clamp-2 mb-3">
+                  <p className="mb-3 line-clamp-2 text-sm text-white/70">
                     <MarkdownPreview
                       content={report.analysis || ''}
                       maxLength={200}

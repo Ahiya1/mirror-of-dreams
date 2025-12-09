@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
 import { motion } from 'framer-motion';
+import React from 'react';
+
 import { cn } from '@/lib/utils';
 
 interface ProgressBarProps {
@@ -18,11 +19,7 @@ interface ProgressBarProps {
  * - Current step highlighted with cosmic glow
  * - Completed steps filled
  */
-export const ProgressBar: React.FC<ProgressBarProps> = ({
-  currentStep,
-  totalSteps,
-  className,
-}) => {
+export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep, totalSteps, className }) => {
   return (
     <div className={cn('flex items-center justify-center gap-2', className)}>
       {/* Progress segments */}
@@ -37,8 +34,8 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
             key={index}
             className={cn(
               'h-2 rounded-full transition-all duration-500',
-              isCurrent && 'w-16 bg-mirror-purple shadow-lg shadow-mirror-purple/40',
-              isCompleted && 'w-12 bg-mirror-purple/80',
+              isCurrent && 'bg-mirror-purple shadow-mirror-purple/40 w-16 shadow-lg',
+              isCompleted && 'bg-mirror-purple/80 w-12',
               isPending && 'w-10 bg-white/20'
             )}
             initial={{ width: 0, opacity: 0 }}
@@ -52,7 +49,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
       })}
 
       {/* Step counter text */}
-      <span className="ml-3 text-sm text-white/60 font-light">
+      <span className="ml-3 text-sm font-light text-white/60">
         Step {currentStep} of {totalSteps}
       </span>
     </div>

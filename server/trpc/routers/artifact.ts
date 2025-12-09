@@ -1,83 +1,83 @@
 // server/trpc/routers/artifact.ts - Artifact generation (visual, soundscape, poetic)
 
-import { z } from 'zod';
-import { router } from '../trpc';
-import { protectedProcedure } from '../middleware';
 import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
+
+import { protectedProcedure } from '../middleware';
+import { router } from '../trpc';
+
 import { supabase } from '@/server/lib/supabase';
 import { createArtifactSchema } from '@/types/schemas';
 
 export const artifactRouter = router({
   // Generate artifact from reflection
-  generate: protectedProcedure
-    .input(createArtifactSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { reflectionId, artifactType, title, description } = input;
+  generate: protectedProcedure.input(createArtifactSchema).mutation(async ({ ctx, input }) => {
+    const { reflectionId, artifactType, title, description } = input;
 
-      // Get reflection data
-      const { data: reflection, error: reflectionError } = await supabase
-        .from('reflections')
-        .select('*')
-        .eq('id', reflectionId)
-        .eq('user_id', ctx.user.id)
-        .single();
+    // Get reflection data
+    const { data: reflection, error: reflectionError } = await supabase
+      .from('reflections')
+      .select('*')
+      .eq('id', reflectionId)
+      .eq('user_id', ctx.user.id)
+      .single();
 
-      if (reflectionError || !reflection) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Reflection not found',
-        });
-      }
+    if (reflectionError || !reflection) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Reflection not found',
+      });
+    }
 
-      // Check if artifact already exists
-      const { data: existingArtifact } = await supabase
-        .from('artifacts')
-        .select('*')
-        .eq('reflection_id', reflectionId)
-        .eq('artifact_type', artifactType)
-        .single();
+    // Check if artifact already exists
+    const { data: existingArtifact } = await supabase
+      .from('artifacts')
+      .select('*')
+      .eq('reflection_id', reflectionId)
+      .eq('artifact_type', artifactType)
+      .single();
 
-      if (existingArtifact) {
-        return {
-          artifact: existingArtifact,
-          message: 'Artifact already exists for this reflection',
-          isNew: false,
-        };
-      }
-
-      // For now, we'll create a placeholder artifact
-      // Full implementation would use GPT-4o analysis, canvas generation, and R2 upload
-      const { data: artifact, error: artifactError } = await supabase
-        .from('artifacts')
-        .insert({
-          user_id: ctx.user.id,
-          reflection_id: reflectionId,
-          artifact_type: artifactType,
-          title: title || `${artifactType} artifact for reflection`,
-          description: description || `Generated ${artifactType} artifact`,
-          artifact_url: '', // Would be populated after R2 upload
-          metadata: {
-            tone: reflection.tone,
-            isPremium: reflection.is_premium,
-            generatedAt: new Date().toISOString(),
-          },
-        })
-        .select()
-        .single();
-
-      if (artifactError) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to create artifact',
-        });
-      }
-
+    if (existingArtifact) {
       return {
-        artifact,
-        message: 'Artifact generated successfully',
-        isNew: true,
+        artifact: existingArtifact,
+        message: 'Artifact already exists for this reflection',
+        isNew: false,
       };
-    }),
+    }
+
+    // For now, we'll create a placeholder artifact
+    // Full implementation would use GPT-4o analysis, canvas generation, and R2 upload
+    const { data: artifact, error: artifactError } = await supabase
+      .from('artifacts')
+      .insert({
+        user_id: ctx.user.id,
+        reflection_id: reflectionId,
+        artifact_type: artifactType,
+        title: title || `${artifactType} artifact for reflection`,
+        description: description || `Generated ${artifactType} artifact`,
+        artifact_url: '', // Would be populated after R2 upload
+        metadata: {
+          tone: reflection.tone,
+          isPremium: reflection.is_premium,
+          generatedAt: new Date().toISOString(),
+        },
+      })
+      .select()
+      .single();
+
+    if (artifactError) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to create artifact',
+      });
+    }
+
+    return {
+      artifact,
+      message: 'Artifact generated successfully',
+      isNew: true,
+    };
+  }),
 
   // Get artifacts list
   list: protectedProcedure
@@ -192,10 +192,7 @@ export const artifactRouter = router({
         });
       }
 
-      const { error } = await supabase
-        .from('artifacts')
-        .delete()
-        .eq('id', input.id);
+      const { error } = await supabase.from('artifacts').delete().eq('id', input.id);
 
       if (error) {
         throw new TRPCError({

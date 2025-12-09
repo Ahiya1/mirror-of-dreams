@@ -1,8 +1,10 @@
 'use client';
 
 import { motion, useReducedMotion } from 'framer-motion';
-import { cn } from '@/lib/utils';
+
 import type { ProgressOrbsProps } from '@/types/glass-components';
+
+import { cn } from '@/lib/utils';
 
 /**
  * ProgressOrbs - Multi-step progress indicator with orbs
@@ -41,10 +43,13 @@ export function ProgressOrbs({ steps, currentStep, className }: ProgressOrbsProp
                 repeatType: 'reverse',
               }}
               className={cn(
-                'w-4 h-4 rounded-full relative',
-                isActive && 'bg-gradient-to-br from-mirror-amethyst via-mirror-amethyst-bright to-mirror-amethyst-light shadow-amethyst-breath',
-                isCompleted && !isActive && 'bg-gradient-to-br from-mirror-amethyst-deep via-mirror-amethyst to-mirror-amethyst shadow-amethyst-mid',
-                !isActive && !isCompleted && 'bg-white/5 border border-white/15'
+                'relative h-4 w-4 rounded-full',
+                isActive &&
+                  'bg-gradient-to-br from-mirror-amethyst via-mirror-amethyst-bright to-mirror-amethyst-light shadow-amethyst-breath',
+                isCompleted &&
+                  !isActive &&
+                  'bg-gradient-to-br from-mirror-amethyst-deep via-mirror-amethyst to-mirror-amethyst shadow-amethyst-mid',
+                !isActive && !isCompleted && 'border border-white/15 bg-white/5'
               )}
             >
               {/* Inner glow layer */}
@@ -52,7 +57,8 @@ export function ProgressOrbs({ steps, currentStep, className }: ProgressOrbsProp
                 <motion.div
                   className="absolute inset-0 rounded-full"
                   style={{
-                    background: 'radial-gradient(circle, rgba(124, 58, 237, 0.6) 0%, transparent 70%)',
+                    background:
+                      'radial-gradient(circle, rgba(124, 58, 237, 0.6) 0%, transparent 70%)',
                   }}
                   animate={{
                     scale: [1, 1.3, 1.1],
@@ -88,8 +94,10 @@ export function ProgressOrbs({ steps, currentStep, className }: ProgressOrbsProp
                   repeatType: 'reverse',
                 }}
                 className={cn(
-                  'w-8 h-0.5 mx-1',
-                  isCompleted ? 'bg-gradient-to-r from-mirror-amethyst via-mirror-amethyst-bright to-mirror-amethyst' : 'bg-white/8'
+                  'mx-1 h-0.5 w-8',
+                  isCompleted
+                    ? 'bg-gradient-to-r from-mirror-amethyst via-mirror-amethyst-bright to-mirror-amethyst'
+                    : 'bg-white/8'
                 )}
                 style={{ transformOrigin: 'left' }}
               />

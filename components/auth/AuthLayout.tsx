@@ -12,8 +12,9 @@
 
 'use client';
 
-import React, { ReactNode } from 'react';
 import Link from 'next/link';
+import React, { ReactNode } from 'react';
+
 import { GlassCard } from '@/components/ui/glass';
 
 interface AuthLayoutProps {
@@ -27,13 +28,13 @@ interface AuthLayoutProps {
 
 export default function AuthLayout({ title = 'Welcome', subtitle, children }: AuthLayoutProps) {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 relative z-10">
+    <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <GlassCard elevated className="p-8 md:p-10">
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center justify-center gap-3 mb-8 text-white/90 hover:text-white transition-all hover:-translate-y-0.5"
+            className="mb-8 flex items-center justify-center gap-3 text-white/90 transition-all hover:-translate-y-0.5 hover:text-white"
           >
             <span className="text-4xl">🪞</span>
             <span className="text-2xl font-light">Mirror of Dreams</span>
@@ -41,15 +42,13 @@ export default function AuthLayout({ title = 'Welcome', subtitle, children }: Au
 
           {/* Title */}
           {title && (
-            <h1 className="text-3xl font-light text-center mb-2 bg-gradient-to-r from-purple-400 via-amber-300/80 to-purple-400 bg-clip-text text-transparent">
+            <h1 className="mb-2 bg-gradient-to-r from-purple-400 via-amber-300/80 to-purple-400 bg-clip-text text-center text-3xl font-light text-transparent">
               {title}
             </h1>
           )}
 
           {/* Subtitle */}
-          {subtitle && (
-            <p className="text-white/60 text-center mb-8 text-lg">{subtitle}</p>
-          )}
+          {subtitle && <p className="mb-8 text-center text-lg text-white/60">{subtitle}</p>}
 
           {/* Spacer if no subtitle */}
           {!subtitle && title && <div className="mb-6" />}

@@ -26,14 +26,11 @@ export function formatWordCount(count: number): string {
  * Based on estimated average of 5 characters per word
  * Returns: 'low' (0-50%) | 'mid' (50-90%) | 'high' (90-100%)
  */
-export function getWordCountState(
-  count: number,
-  maxChars: number
-): 'low' | 'mid' | 'high' {
+export function getWordCountState(count: number, maxChars: number): 'low' | 'mid' | 'high' {
   const estimatedMaxWords = maxChars / 5; // Average word length
   const percentage = count / estimatedMaxWords;
 
-  if (percentage < 0.5) return 'low';   // 0-50%: white/70
-  if (percentage < 0.9) return 'mid';   // 50-90%: gold
-  return 'high';                         // 90-100%: purple
+  if (percentage < 0.5) return 'low'; // 0-50%: white/70
+  if (percentage < 0.9) return 'mid'; // 50-90%: gold
+  return 'high'; // 90-100%: purple
 }

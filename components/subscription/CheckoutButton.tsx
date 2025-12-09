@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/useAuth';
-import { useToast } from '@/contexts/ToastContext';
-import { trpc } from '@/lib/trpc';
-import { GlowButton } from '@/components/ui/glass/GlowButton';
+import { useState } from 'react';
+
 import type { TierName, BillingPeriod } from '@/lib/utils/constants';
+
+import { GlowButton } from '@/components/ui/glass/GlowButton';
+import { useToast } from '@/contexts/ToastContext';
+import { useAuth } from '@/hooks/useAuth';
+import { trpc } from '@/lib/trpc';
 
 interface CheckoutButtonProps {
   tier: Exclude<TierName, 'free'>;
@@ -15,7 +17,12 @@ interface CheckoutButtonProps {
   variant?: 'primary' | 'secondary';
 }
 
-export function CheckoutButton({ tier, period, className, variant = 'primary' }: CheckoutButtonProps) {
+export function CheckoutButton({
+  tier,
+  period,
+  className,
+  variant = 'primary',
+}: CheckoutButtonProps) {
   const { isAuthenticated, user } = useAuth();
   const router = useRouter();
   const toast = useToast();
@@ -79,12 +86,7 @@ export function CheckoutButton({ tier, period, className, variant = 'primary' }:
   };
 
   return (
-    <GlowButton
-      variant={variant}
-      onClick={handleClick}
-      disabled={isLoading}
-      className={className}
-    >
+    <GlowButton variant={variant} onClick={handleClick} disabled={isLoading} className={className}>
       {isLoading ? 'Processing...' : `Start ${tier.charAt(0).toUpperCase() + tier.slice(1)}`}
     </GlowButton>
   );

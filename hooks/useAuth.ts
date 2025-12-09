@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { trpc } from '@/lib/trpc';
 import { useRouter } from 'next/navigation';
+import { useState, useEffect, useCallback } from 'react';
+
 import type { User } from '@/types';
+
+import { trpc } from '@/lib/trpc';
 
 interface UseAuthReturn {
   user: User | null;
@@ -28,13 +30,14 @@ export function useAuth(): UseAuthReturn {
   const [error, setError] = useState<string | null>(null);
 
   // Get current user (auto-fetches on mount)
-  const { data: userData, isLoading: userLoading, refetch } = trpc.users.getProfile.useQuery(
-    undefined,
-    {
-      retry: 1,
-      refetchOnWindowFocus: false,
-    }
-  );
+  const {
+    data: userData,
+    isLoading: userLoading,
+    refetch,
+  } = trpc.users.getProfile.useQuery(undefined, {
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
 
   // Signin mutation
   const signinMutation = trpc.auth.signin.useMutation({
@@ -158,7 +161,11 @@ export function useAuth(): UseAuthReturn {
 
   return {
     user,
-    isLoading: isLoading || signinMutation.isPending || signupMutation.isPending || signoutMutation.isPending,
+    isLoading:
+      isLoading ||
+      signinMutation.isPending ||
+      signupMutation.isPending ||
+      signoutMutation.isPending,
     isAuthenticated: !!user,
     error,
     signin,

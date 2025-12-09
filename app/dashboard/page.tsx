@@ -15,29 +15,27 @@
 
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { useDashboard } from '@/hooks/useDashboard';
-import { useAuth } from '@/hooks/useAuth';
-import { useToast } from '@/contexts/ToastContext';
-import { useStaggerAnimation } from '@/hooks/useStaggerAnimation';
-import {
-  GlowButton,
-  CosmicLoader
-} from '@/components/ui/glass';
-import CosmicBackground from '@/components/shared/CosmicBackground';
-import { AppNavigation } from '@/components/shared/AppNavigation';
-import { BottomNavigation } from '@/components/navigation';
+import React, { useEffect, useState, useCallback } from 'react';
+
+import ClarifyCard from '@/components/clarify/ClarifyCard';
+import DreamsCard from '@/components/dashboard/cards/DreamsCard';
+import EvolutionCard from '@/components/dashboard/cards/EvolutionCard';
+import ProgressStatsCard from '@/components/dashboard/cards/ProgressStatsCard';
+import ReflectionsCard from '@/components/dashboard/cards/ReflectionsCard';
+import SubscriptionCard from '@/components/dashboard/cards/SubscriptionCard';
+import VisualizationCard from '@/components/dashboard/cards/VisualizationCard';
 import DashboardHero from '@/components/dashboard/DashboardHero';
 import DashboardGrid from '@/components/dashboard/shared/DashboardGrid';
-import DreamsCard from '@/components/dashboard/cards/DreamsCard';
-import ReflectionsCard from '@/components/dashboard/cards/ReflectionsCard';
-import ProgressStatsCard from '@/components/dashboard/cards/ProgressStatsCard';
-import EvolutionCard from '@/components/dashboard/cards/EvolutionCard';
-import VisualizationCard from '@/components/dashboard/cards/VisualizationCard';
-import SubscriptionCard from '@/components/dashboard/cards/SubscriptionCard';
-import ClarifyCard from '@/components/clarify/ClarifyCard';
+import { BottomNavigation } from '@/components/navigation';
+import { AppNavigation } from '@/components/shared/AppNavigation';
+import CosmicBackground from '@/components/shared/CosmicBackground';
 import { UsageWarningBanner } from '@/components/subscription/UsageWarningBanner';
+import { GlowButton, CosmicLoader } from '@/components/ui/glass';
+import { useToast } from '@/contexts/ToastContext';
+import { useAuth } from '@/hooks/useAuth';
+import { useDashboard } from '@/hooks/useDashboard';
+import { useStaggerAnimation } from '@/hooks/useStaggerAnimation';
 import { TIER_LIMITS } from '@/lib/utils/constants';
 import '@/styles/dashboard.css';
 
@@ -92,22 +90,24 @@ export default function DashboardPage() {
     }
   }, [isAuthenticated, authLoading, user, router]);
 
-
   // Loading state - show skeleton while auth loads
   if (authLoading) {
     return (
       <div className="dashboard" style={{ opacity: isPageVisible ? 1 : 0 }}>
         <CosmicBackground />
-        <div className="flex flex-col items-center justify-center min-h-screen gap-4 z-10 relative">
+        <div className="relative z-10 flex min-h-screen flex-col items-center justify-center gap-4">
           <CosmicLoader size="lg" />
-          <p className="text-white/60 text-sm">Loading your dashboard...</p>
+          <p className="text-sm text-white/60">Loading your dashboard...</p>
         </div>
       </div>
     );
   }
 
   // Redirect to signin if not authenticated or to verify-required if not verified (but don't show loading)
-  if (!isAuthenticated || (user && !user.emailVerified && !user.isCreator && !user.isAdmin && !user.isDemo)) {
+  if (
+    !isAuthenticated ||
+    (user && !user.emailVerified && !user.isCreator && !user.isAdmin && !user.isDemo)
+  ) {
     return null; // Let the useEffect handle the redirect
   }
 
@@ -132,9 +132,11 @@ export default function DashboardPage() {
               tier={user.tier}
               used={user.reflectionCountThisMonth}
               variant={
-                user.reflectionCountThisMonth >= TIER_LIMITS[user.tier] ? 'error' :
-                user.reflectionCountThisMonth / TIER_LIMITS[user.tier] >= 0.9 ? 'warning' :
-                'info'
+                user.reflectionCountThisMonth >= TIER_LIMITS[user.tier]
+                  ? 'error'
+                  : user.reflectionCountThisMonth / TIER_LIMITS[user.tier] >= 0.9
+                    ? 'warning'
+                    : 'info'
               }
             />
           )}
@@ -246,13 +248,13 @@ export default function DashboardPage() {
 
         @media (max-width: 768px) {
           .dashboard-container {
-            padding: 1rem;  /* 16px - consistent with px-4 on other pages */
+            padding: 1rem; /* 16px - consistent with px-4 on other pages */
           }
         }
 
         @media (max-width: 480px) {
           .dashboard-container {
-            padding: 1rem;  /* Same 16px for consistency */
+            padding: 1rem; /* Same 16px for consistency */
           }
         }
       `}</style>

@@ -1,15 +1,16 @@
 'use client';
 
-import React from 'react';
 import { useRouter } from 'next/navigation';
+import React from 'react';
+
 import DashboardCard, {
   CardHeader,
   CardTitle,
   CardContent,
   CardActions,
 } from '@/components/dashboard/shared/DashboardCard';
-import { GlowButton } from '@/components/ui/glass';
 import { MarkdownPreview } from '@/components/shared/MarkdownPreview';
+import { GlowButton } from '@/components/ui/glass';
 import { trpc } from '@/lib/trpc';
 
 interface VisualizationCardProps {
@@ -69,7 +70,9 @@ const VisualizationCard: React.FC<VisualizationCardProps> = ({
                       {styleIcons[latestVisualization.style] || '🌌'}
                     </span>
                     <span className="preview-label">
-                      {latestVisualization.style.charAt(0).toUpperCase() + latestVisualization.style.slice(1)} Style
+                      {latestVisualization.style.charAt(0).toUpperCase() +
+                        latestVisualization.style.slice(1)}{' '}
+                      Style
                     </span>
                   </div>
                   <span className="preview-date">
@@ -100,10 +103,7 @@ const VisualizationCard: React.FC<VisualizationCardProps> = ({
                 </div>
               </div>
 
-              <button
-                onClick={() => router.push('/visualizations')}
-                className="view-all-link"
-              >
+              <button onClick={() => router.push('/visualizations')} className="view-all-link">
                 View all visualizations →
               </button>
             </div>
@@ -125,17 +125,11 @@ const VisualizationCard: React.FC<VisualizationCardProps> = ({
 
       <CardActions>
         {hasVisualizations ? (
-          <GlowButton
-            variant="secondary"
-            onClick={() => router.push('/visualizations')}
-          >
+          <GlowButton variant="secondary" onClick={() => router.push('/visualizations')}>
             View All
           </GlowButton>
         ) : (
-          <GlowButton
-            variant="cosmic"
-            onClick={() => router.push('/visualizations')}
-          >
+          <GlowButton variant="cosmic" onClick={() => router.push('/visualizations')}>
             Create Visualization
           </GlowButton>
         )}

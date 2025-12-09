@@ -1,18 +1,18 @@
 // server/trpc/routers/_app.ts - Root router
 
 import { router } from '../trpc';
-import { authRouter } from './auth';
-import { reflectionsRouter } from './reflections';
-import { reflectionRouter } from './reflection';
-import { usersRouter } from './users';
-import { evolutionRouter } from './evolution';
-import { visualizationsRouter } from './visualizations';
-import { artifactRouter } from './artifact';
-import { subscriptionsRouter } from './subscriptions';
 import { adminRouter } from './admin';
-import { dreamsRouter } from './dreams';
-import { lifecycleRouter } from './lifecycle';
+import { artifactRouter } from './artifact';
+import { authRouter } from './auth';
 import { clarifyRouter } from './clarify';
+import { dreamsRouter } from './dreams';
+import { evolutionRouter } from './evolution';
+import { lifecycleRouter } from './lifecycle';
+import { reflectionRouter } from './reflection';
+import { reflectionsRouter } from './reflections';
+import { subscriptionsRouter } from './subscriptions';
+import { usersRouter } from './users';
+import { visualizationsRouter } from './visualizations';
 
 export const appRouter = router({
   auth: authRouter,

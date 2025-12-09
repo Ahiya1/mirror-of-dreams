@@ -1,9 +1,11 @@
 // lib/clarify/consolidation.ts - Pattern extraction and consolidation
 
 import Anthropic from '@anthropic-ai/sdk';
-import { supabase } from '@/server/lib/supabase';
-import { PATTERN_CONSOLIDATION } from '@/lib/utils/constants';
+
 import type { ExtractedPattern, ConsolidationResult, PatternType } from '@/types/pattern';
+
+import { PATTERN_CONSOLIDATION } from '@/lib/utils/constants';
+import { supabase } from '@/server/lib/supabase';
 
 // Lazy Anthropic client
 let anthropicClient: Anthropic | null = null;
@@ -54,30 +56,31 @@ export async function extractPatternsFromSession(
   messages: Array<{ id: string; content: string; role: string }>
 ): Promise<ExtractedPattern[]> {
   // Filter to user messages only (assistant messages don't reveal patterns)
-  const userMessages = messages.filter(m => m.role === 'user');
+  const userMessages = messages.filter((m) => m.role === 'user');
 
   if (userMessages.length < PATTERN_CONSOLIDATION.minMessagesForConsolidation) {
     return [];
   }
 
   // Format messages for the prompt
-  const formattedMessages = userMessages
-    .map(m => m.content)
-    .join('\n---\n');
+  const formattedMessages = userMessages.map((m) => m.content).join('\n---\n');
 
   try {
     const client = getAnthropicClient();
     const response = await client.messages.create({
       model: 'claude-3-5-haiku-20241022',
       max_tokens: 2000,
-      system: 'You are a pattern extraction assistant. Output valid JSON only. No markdown, no explanation.',
-      messages: [{
-        role: 'user',
-        content: CONSOLIDATION_PROMPT.replace('{messages}', formattedMessages)
-      }]
+      system:
+        'You are a pattern extraction assistant. Output valid JSON only. No markdown, no explanation.',
+      messages: [
+        {
+          role: 'user',
+          content: CONSOLIDATION_PROMPT.replace('{messages}', formattedMessages),
+        },
+      ],
     });
 
-    const textBlock = response.content.find(b => b.type === 'text');
+    const textBlock = response.content.find((b) => b.type === 'text');
     if (!textBlock || textBlock.type !== 'text') {
       console.error('No text response from Haiku');
       return [];
@@ -91,16 +94,22 @@ export async function extractPatternsFromSession(
     }
 
     // Validate each pattern
-    const validTypes: PatternType[] = ['recurring_theme', 'tension', 'potential_dream', 'identity_signal'];
+    const validTypes: PatternType[] = [
+      'recurring_theme',
+      'tension',
+      'potential_dream',
+      'identity_signal',
+    ];
     const validPatterns: ExtractedPattern[] = parsed
-      .filter((p: any) =>
-        p.type &&
-        validTypes.includes(p.type) &&
-        p.content &&
-        typeof p.content === 'string' &&
-        typeof p.strength === 'number' &&
-        p.strength >= 1 &&
-        p.strength <= 10
+      .filter(
+        (p: any) =>
+          p.type &&
+          validTypes.includes(p.type) &&
+          p.content &&
+          typeof p.content === 'string' &&
+          typeof p.strength === 'number' &&
+          p.strength >= 1 &&
+          p.strength <= 10
       )
       .map((p: any) => ({
         type: p.type as PatternType,
@@ -135,7 +144,7 @@ export async function consolidateUserPatterns(userId: string): Promise<Consolida
       };
     }
 
-    const sessionIds = sessions.map(s => s.id);
+    const sessionIds = sessions.map((s) => s.id);
 
     // 2. Get unconsolidated messages
     const { data: messages, error: messagesError } = await supabase
@@ -175,15 +184,13 @@ export async function consolidateUserPatterns(userId: string): Promise<Consolida
 
       // 5. Insert patterns into database
       for (const pattern of patterns) {
-        const { error: insertError } = await supabase
-          .from('clarify_patterns')
-          .insert({
-            user_id: userId,
-            session_id: sessionId,
-            pattern_type: pattern.type,
-            content: pattern.content,
-            strength: pattern.strength,
-          });
+        const { error: insertError } = await supabase.from('clarify_patterns').insert({
+          user_id: userId,
+          session_id: sessionId,
+          pattern_type: pattern.type,
+          content: pattern.content,
+          strength: pattern.strength,
+        });
 
         if (insertError) {
           console.error('Failed to insert pattern:', insertError);
@@ -194,7 +201,7 @@ export async function consolidateUserPatterns(userId: string): Promise<Consolida
     }
 
     // 6. Mark messages as consolidated
-    const messageIds = messages.map(m => m.id);
+    const messageIds = messages.map((m) => m.id);
     const { error: updateError } = await supabase
       .from('clarify_messages')
       .update({ consolidated: true })

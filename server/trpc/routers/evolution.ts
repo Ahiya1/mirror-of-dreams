@@ -3,11 +3,14 @@
  * Generates AI-powered evolution reports using temporal distribution
  */
 
-import { router } from '../trpc';
-import { protectedProcedure } from '../middleware';
-import { z } from 'zod';
-import { TRPCError } from '@trpc/server';
 import Anthropic from '@anthropic-ai/sdk';
+import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
+
+import { protectedProcedure } from '../middleware';
+import { router } from '../trpc';
+
+import { calculateCost, getModelIdentifier, getThinkingBudget } from '@/server/lib/cost-calculator';
 import { supabase } from '@/server/lib/supabase';
 import {
   selectTemporalContext,
@@ -15,11 +18,6 @@ import {
   getContextLimit,
   type Reflection,
 } from '@/server/lib/temporal-distribution';
-import {
-  calculateCost,
-  getModelIdentifier,
-  getThinkingBudget,
-} from '@/server/lib/cost-calculator';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -90,12 +88,11 @@ export const evolutionRouter = router({
       }
 
       // 4. Check monthly limit
-      const { data: canGenerate, error: limitError } = await supabase
-        .rpc('check_evolution_limit', {
-          p_user_id: userId,
-          p_user_tier: userTier,
-          p_report_type: 'dream_specific',
-        });
+      const { data: canGenerate, error: limitError } = await supabase.rpc('check_evolution_limit', {
+        p_user_id: userId,
+        p_user_tier: userTier,
+        p_report_type: 'dream_specific',
+      });
 
       if (limitError || !canGenerate) {
         throw new TRPCError({
@@ -106,10 +103,7 @@ export const evolutionRouter = router({
 
       // 5. Apply temporal distribution
       const contextLimit = getContextLimit(userTier, 'dream_specific');
-      const selectedReflections = selectTemporalContext(
-        reflections as Reflection[],
-        contextLimit
-      );
+      const selectedReflections = selectTemporalContext(reflections as Reflection[], contextLimit);
 
       // 6. Build context for Claude
       const contextText = selectedReflections
@@ -188,8 +182,10 @@ Length: 800-1200 words. Tone: Warm, insightful, empowering.`;
       const costBreakdown = calculateCost({
         inputTokens: response.usage.input_tokens,
         outputTokens: response.usage.output_tokens,
-        thinkingTokens: thinkingBlock && 'thinking' in thinkingBlock ?
-          (response.usage as any).thinking_tokens || 0 : 0,
+        thinkingTokens:
+          thinkingBlock && 'thinking' in thinkingBlock
+            ? (response.usage as any).thinking_tokens || 0
+            : 0,
       });
 
       // 9. Store evolution report
@@ -203,7 +199,9 @@ Length: 800-1200 words. Tone: Warm, insightful, empowering.`;
           analysis: evolutionText,
           reflections_analyzed: selectedReflections.map((r) => r.id),
           reflection_count: selectedReflections.length,
-          time_period_start: selectedReflections[selectedReflections.length - 1]?.created_at || new Date().toISOString(),
+          time_period_start:
+            selectedReflections[selectedReflections.length - 1]?.created_at ||
+            new Date().toISOString(),
           time_period_end: selectedReflections[0]?.created_at || new Date().toISOString(),
         })
         .select()
@@ -223,8 +221,10 @@ Length: 800-1200 words. Tone: Warm, insightful, empowering.`;
         model_used: modelId,
         input_tokens: response.usage.input_tokens,
         output_tokens: response.usage.output_tokens,
-        thinking_tokens: thinkingBlock && 'thinking' in thinkingBlock ?
-          (response.usage as any).thinking_tokens || 0 : 0,
+        thinking_tokens:
+          thinkingBlock && 'thinking' in thinkingBlock
+            ? (response.usage as any).thinking_tokens || 0
+            : 0,
         cost_usd: costBreakdown.totalCost,
         dream_id: input.dreamId,
         metadata: {
@@ -259,93 +259,90 @@ Length: 800-1200 words. Tone: Warm, insightful, empowering.`;
    * Generate cross-dream evolution report
    * Threshold: >= 12 total reflections across all dreams
    */
-  generateCrossDreamEvolution: protectedProcedure
-    .mutation(async ({ ctx }) => {
-      const userId = ctx.user.id;
-      const userTier = ctx.user.tier as 'free' | 'pro' | 'unlimited';
+  generateCrossDreamEvolution: protectedProcedure.mutation(async ({ ctx }) => {
+    const userId = ctx.user.id;
+    const userTier = ctx.user.tier as 'free' | 'pro' | 'unlimited';
 
-      // 1. Check if cross-dream is available for this tier
-      if (userTier === 'free') {
-        throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: 'Cross-dream evolution reports are not available on the Free tier. Please upgrade to Pro or higher.',
-        });
-      }
-
-      // 2. Get all reflections across all dreams
-      const { data: reflections, error: reflectionsError } = await supabase
-        .from('reflections')
-        .select('*, dreams!inner(title, category)')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: true });
-
-      if (reflectionsError || !reflections) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to fetch reflections',
-        });
-      }
-
-      // 3. Check threshold (>= 12 total reflections)
-      if (!meetsEvolutionThreshold(reflections.length, 'cross_dream')) {
-        throw new TRPCError({
-          code: 'PRECONDITION_FAILED',
-          message: `Need at least 12 total reflections to generate a cross-dream evolution report. Currently have ${reflections.length}.`,
-        });
-      }
-
-      // 4. Check monthly limit
-      const { data: canGenerate, error: limitError } = await supabase
-        .rpc('check_evolution_limit', {
-          p_user_id: userId,
-          p_user_tier: userTier,
-          p_report_type: 'cross_dream',
-        });
-
-      if (limitError || !canGenerate) {
-        throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: 'Monthly limit for cross-dream evolution reports reached. Upgrade to generate more.',
-        });
-      }
-
-      // 5. Apply temporal distribution
-      const contextLimit = getContextLimit(userTier, 'cross_dream');
-      const selectedReflections = selectTemporalContext(
-        reflections as Reflection[],
-        contextLimit
-      );
-
-      // 6. Build context for Claude (grouped by dream)
-      const dreamGroups = new Map<string, any[]>();
-      selectedReflections.forEach((r: any) => {
-        const dreamId = r.dream_id;
-        if (!dreamGroups.has(dreamId)) {
-          dreamGroups.set(dreamId, []);
-        }
-        dreamGroups.get(dreamId)!.push(r);
+    // 1. Check if cross-dream is available for this tier
+    if (userTier === 'free') {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message:
+          'Cross-dream evolution reports are not available on the Free tier. Please upgrade to Pro or higher.',
       });
+    }
 
-      const contextText = Array.from(dreamGroups.entries())
-        .map(([dreamId, refs]) => {
-          const dreamTitle = (refs[0] as any).dreams?.title || 'Unknown Dream';
-          const dreamCategory = (refs[0] as any).dreams?.category || 'other';
-          const reflectionsText = refs
-            .map((r, i) => {
-              const date = new Date(r.created_at).toLocaleDateString();
-              return `  Reflection ${i + 1} (${date}): ${r.dream.substring(0, 200)}...`;
-            })
-            .join('\n');
+    // 2. Get all reflections across all dreams
+    const { data: reflections, error: reflectionsError } = await supabase
+      .from('reflections')
+      .select('*, dreams!inner(title, category)')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: true });
 
-          return `Dream: "${dreamTitle}" (${dreamCategory})\n${reflectionsText}`;
-        })
-        .join('\n\n---\n\n');
+    if (reflectionsError || !reflections) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to fetch reflections',
+      });
+    }
 
-      // 7. Call Claude with extended thinking
-      const thinkingBudget = getThinkingBudget(userTier);
-      const modelId = getModelIdentifier();
+    // 3. Check threshold (>= 12 total reflections)
+    if (!meetsEvolutionThreshold(reflections.length, 'cross_dream')) {
+      throw new TRPCError({
+        code: 'PRECONDITION_FAILED',
+        message: `Need at least 12 total reflections to generate a cross-dream evolution report. Currently have ${reflections.length}.`,
+      });
+    }
 
-      const prompt = `You are analyzing someone's journey across multiple life dreams. They have made ${selectedReflections.length} reflections across ${dreamGroups.size} different dreams (selected from ${reflections.length} total using temporal distribution).
+    // 4. Check monthly limit
+    const { data: canGenerate, error: limitError } = await supabase.rpc('check_evolution_limit', {
+      p_user_id: userId,
+      p_user_tier: userTier,
+      p_report_type: 'cross_dream',
+    });
+
+    if (limitError || !canGenerate) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message:
+          'Monthly limit for cross-dream evolution reports reached. Upgrade to generate more.',
+      });
+    }
+
+    // 5. Apply temporal distribution
+    const contextLimit = getContextLimit(userTier, 'cross_dream');
+    const selectedReflections = selectTemporalContext(reflections as Reflection[], contextLimit);
+
+    // 6. Build context for Claude (grouped by dream)
+    const dreamGroups = new Map<string, any[]>();
+    selectedReflections.forEach((r: any) => {
+      const dreamId = r.dream_id;
+      if (!dreamGroups.has(dreamId)) {
+        dreamGroups.set(dreamId, []);
+      }
+      dreamGroups.get(dreamId)!.push(r);
+    });
+
+    const contextText = Array.from(dreamGroups.entries())
+      .map(([dreamId, refs]) => {
+        const dreamTitle = (refs[0] as any).dreams?.title || 'Unknown Dream';
+        const dreamCategory = (refs[0] as any).dreams?.category || 'other';
+        const reflectionsText = refs
+          .map((r, i) => {
+            const date = new Date(r.created_at).toLocaleDateString();
+            return `  Reflection ${i + 1} (${date}): ${r.dream.substring(0, 200)}...`;
+          })
+          .join('\n');
+
+        return `Dream: "${dreamTitle}" (${dreamCategory})\n${reflectionsText}`;
+      })
+      .join('\n\n---\n\n');
+
+    // 7. Call Claude with extended thinking
+    const thinkingBudget = getThinkingBudget(userTier);
+    const modelId = getModelIdentifier();
+
+    const prompt = `You are analyzing someone's journey across multiple life dreams. They have made ${selectedReflections.length} reflections across ${dreamGroups.size} different dreams (selected from ${reflections.length} total using temporal distribution).
 
 Here are their reflections organized by dream:
 
@@ -362,173 +359,175 @@ Write as if you're a wise mentor seeing the full tapestry of their aspirations. 
 
 Length: 1000-1500 words. Tone: Profound, holistic, empowering.`;
 
-      const requestConfig: any = {
-        model: modelId,
-        max_tokens: 4000,
-        temperature: 1,
-        messages: [
-          {
-            role: 'user',
-            content: prompt,
-          },
-        ],
-      };
-
-      if (thinkingBudget > 0) {
-        requestConfig.thinking = {
-          type: 'enabled',
-          budget_tokens: thinkingBudget,
-        };
-      }
-
-      const response = await anthropic.messages.create(requestConfig);
-
-      const contentBlock = response.content.find((block) => block.type === 'text');
-      const thinkingBlock = response.content.find((block) => block.type === 'thinking');
-
-      if (!contentBlock || contentBlock.type !== 'text') {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'No text response from Claude',
-        });
-      }
-
-      const evolutionText = contentBlock.text;
-
-      // 8. Calculate cost
-      const costBreakdown = calculateCost({
-        inputTokens: response.usage.input_tokens,
-        outputTokens: response.usage.output_tokens,
-        thinkingTokens: thinkingBlock && 'thinking' in thinkingBlock ?
-          (response.usage as any).thinking_tokens || 0 : 0,
-      });
-
-      // 9. Store evolution report (dream_id = NULL for cross-dream)
-      const { data: evolutionReport, error: insertError } = await supabase
-        .from('evolution_reports')
-        .insert({
-          user_id: userId,
-          dream_id: null,
-          report_category: 'cross-dream',
-          report_type: userTier === 'unlimited' ? 'premium' : 'essential',
-          analysis: evolutionText,
-          reflections_analyzed: selectedReflections.map((r) => r.id),
-          reflection_count: selectedReflections.length,
-          time_period_start: selectedReflections[selectedReflections.length - 1]?.created_at || new Date().toISOString(),
-          time_period_end: selectedReflections[0]?.created_at || new Date().toISOString(),
-        })
-        .select()
-        .single();
-
-      if (insertError || !evolutionReport) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to store evolution report',
-        });
-      }
-
-      // 10. Log API usage
-      await supabase.from('api_usage_log').insert({
-        user_id: userId,
-        operation_type: 'evolution_cross',
-        model_used: modelId,
-        input_tokens: response.usage.input_tokens,
-        output_tokens: response.usage.output_tokens,
-        thinking_tokens: thinkingBlock && 'thinking' in thinkingBlock ?
-          (response.usage as any).thinking_tokens || 0 : 0,
-        cost_usd: costBreakdown.totalCost,
-        metadata: {
-          reflections_analyzed: selectedReflections.length,
-          total_reflections: reflections.length,
-          dreams_analyzed: dreamGroups.size,
-          context_limit: contextLimit,
-          thinking_enabled: thinkingBudget > 0,
+    const requestConfig: any = {
+      model: modelId,
+      max_tokens: 4000,
+      temperature: 1,
+      messages: [
+        {
+          role: 'user',
+          content: prompt,
         },
-      });
+      ],
+    };
 
-      // 11. Update usage tracking
-      const currentMonth = new Date();
-      currentMonth.setDate(1);
-      currentMonth.setHours(0, 0, 0, 0);
-
-      await supabase.rpc('increment_usage_counter', {
-        p_user_id: userId,
-        p_month: currentMonth.toISOString().split('T')[0],
-        p_counter_name: 'evolution_cross_dream',
-      });
-
-      return {
-        evolutionId: evolutionReport.id,
-        evolution: evolutionText,
-        reflectionsAnalyzed: selectedReflections.length,
-        totalReflections: reflections.length,
-        dreamsAnalyzed: dreamGroups.size,
-        cost: costBreakdown.totalCost,
+    if (thinkingBudget > 0) {
+      requestConfig.thinking = {
+        type: 'enabled',
+        budget_tokens: thinkingBudget,
       };
-    }),
+    }
+
+    const response = await anthropic.messages.create(requestConfig);
+
+    const contentBlock = response.content.find((block) => block.type === 'text');
+    const thinkingBlock = response.content.find((block) => block.type === 'thinking');
+
+    if (!contentBlock || contentBlock.type !== 'text') {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'No text response from Claude',
+      });
+    }
+
+    const evolutionText = contentBlock.text;
+
+    // 8. Calculate cost
+    const costBreakdown = calculateCost({
+      inputTokens: response.usage.input_tokens,
+      outputTokens: response.usage.output_tokens,
+      thinkingTokens:
+        thinkingBlock && 'thinking' in thinkingBlock
+          ? (response.usage as any).thinking_tokens || 0
+          : 0,
+    });
+
+    // 9. Store evolution report (dream_id = NULL for cross-dream)
+    const { data: evolutionReport, error: insertError } = await supabase
+      .from('evolution_reports')
+      .insert({
+        user_id: userId,
+        dream_id: null,
+        report_category: 'cross-dream',
+        report_type: userTier === 'unlimited' ? 'premium' : 'essential',
+        analysis: evolutionText,
+        reflections_analyzed: selectedReflections.map((r) => r.id),
+        reflection_count: selectedReflections.length,
+        time_period_start:
+          selectedReflections[selectedReflections.length - 1]?.created_at ||
+          new Date().toISOString(),
+        time_period_end: selectedReflections[0]?.created_at || new Date().toISOString(),
+      })
+      .select()
+      .single();
+
+    if (insertError || !evolutionReport) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to store evolution report',
+      });
+    }
+
+    // 10. Log API usage
+    await supabase.from('api_usage_log').insert({
+      user_id: userId,
+      operation_type: 'evolution_cross',
+      model_used: modelId,
+      input_tokens: response.usage.input_tokens,
+      output_tokens: response.usage.output_tokens,
+      thinking_tokens:
+        thinkingBlock && 'thinking' in thinkingBlock
+          ? (response.usage as any).thinking_tokens || 0
+          : 0,
+      cost_usd: costBreakdown.totalCost,
+      metadata: {
+        reflections_analyzed: selectedReflections.length,
+        total_reflections: reflections.length,
+        dreams_analyzed: dreamGroups.size,
+        context_limit: contextLimit,
+        thinking_enabled: thinkingBudget > 0,
+      },
+    });
+
+    // 11. Update usage tracking
+    const currentMonth = new Date();
+    currentMonth.setDate(1);
+    currentMonth.setHours(0, 0, 0, 0);
+
+    await supabase.rpc('increment_usage_counter', {
+      p_user_id: userId,
+      p_month: currentMonth.toISOString().split('T')[0],
+      p_counter_name: 'evolution_cross_dream',
+    });
+
+    return {
+      evolutionId: evolutionReport.id,
+      evolution: evolutionText,
+      reflectionsAnalyzed: selectedReflections.length,
+      totalReflections: reflections.length,
+      dreamsAnalyzed: dreamGroups.size,
+      cost: costBreakdown.totalCost,
+    };
+  }),
 
   /**
    * List user's evolution reports
    */
-  list: protectedProcedure
-    .input(listEvolutionReportsSchema)
-    .query(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+  list: protectedProcedure.input(listEvolutionReportsSchema).query(async ({ ctx, input }) => {
+    const userId = ctx.user.id;
 
-      let query = supabase
-        .from('evolution_reports')
-        .select('*, dreams(title)', { count: 'exact' })
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
-        .range((input.page - 1) * input.limit, input.page * input.limit - 1);
+    let query = supabase
+      .from('evolution_reports')
+      .select('*, dreams(title)', { count: 'exact' })
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .range((input.page - 1) * input.limit, input.page * input.limit - 1);
 
-      // Filter by dream if specified
-      if (input.dreamId) {
-        query = query.eq('dream_id', input.dreamId);
-      }
+    // Filter by dream if specified
+    if (input.dreamId) {
+      query = query.eq('dream_id', input.dreamId);
+    }
 
-      const { data: reports, error, count } = await query;
+    const { data: reports, error, count } = await query;
 
-      if (error) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to fetch evolution reports',
-        });
-      }
+    if (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to fetch evolution reports',
+      });
+    }
 
-      return {
-        reports: reports || [],
-        page: input.page,
-        limit: input.limit,
-        total: count || 0,
-        totalPages: Math.ceil((count || 0) / input.limit),
-      };
-    }),
+    return {
+      reports: reports || [],
+      page: input.page,
+      limit: input.limit,
+      total: count || 0,
+      totalPages: Math.ceil((count || 0) / input.limit),
+    };
+  }),
 
   /**
    * Get specific evolution report
    */
-  get: protectedProcedure
-    .input(getEvolutionReportSchema)
-    .query(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+  get: protectedProcedure.input(getEvolutionReportSchema).query(async ({ ctx, input }) => {
+    const userId = ctx.user.id;
 
-      const { data: report, error } = await supabase
-        .from('evolution_reports')
-        .select('*, dreams(title, category)')
-        .eq('id', input.id)
-        .eq('user_id', userId)
-        .single();
+    const { data: report, error } = await supabase
+      .from('evolution_reports')
+      .select('*, dreams(title, category)')
+      .eq('id', input.id)
+      .eq('user_id', userId)
+      .single();
 
-      if (error || !report) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Evolution report not found',
-        });
-      }
+    if (error || !report) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Evolution report not found',
+      });
+    }
 
-      return report;
-    }),
+    return report;
+  }),
 
   /**
    * Check eligibility for evolution reports (backward compatibility)
@@ -568,7 +567,7 @@ Length: 1000-1500 words. Tone: Profound, holistic, empowering.`;
       }
     });
 
-    const hasDreamEligible = Array.from(dreamReflectionCounts.values()).some(count => count >= 4);
+    const hasDreamEligible = Array.from(dreamReflectionCounts.values()).some((count) => count >= 4);
     const hasCrossDreamEligible = (totalReflections || 0) >= 12;
 
     const eligible = hasDreamEligible || hasCrossDreamEligible;

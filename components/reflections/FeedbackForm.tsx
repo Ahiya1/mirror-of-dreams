@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+
 import { GlowButton } from '@/components/ui/glass/GlowButton';
 
 interface FeedbackFormProps {
@@ -31,10 +32,10 @@ export function FeedbackForm({
 
   // Warm response messages based on rating
   const getRatingMessage = (value: number) => {
-    if (value <= 3) return "Thank you for your honesty";
-    if (value <= 5) return "Your feedback helps me grow";
+    if (value <= 3) return 'Thank you for your honesty';
+    if (value <= 5) return 'Your feedback helps me grow';
     if (value <= 7) return "I'm glad this resonated";
-    if (value <= 9) return "That means a lot";
+    if (value <= 9) return 'That means a lot';
     return "I'm honored to walk with you";
   };
 
@@ -42,12 +43,12 @@ export function FeedbackForm({
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Heart-based rating */}
       <div>
-        <label className="block text-sm font-medium text-white/80 mb-4">
+        <label className="mb-4 block text-sm font-medium text-white/80">
           How did this reflection land for you?
         </label>
 
         {/* Heart rating display */}
-        <div className="flex items-center gap-1 mb-4">
+        <div className="mb-4 flex items-center gap-1">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
             <button
               key={star}
@@ -55,14 +56,12 @@ export function FeedbackForm({
               onClick={() => setRating(star)}
               onMouseEnter={() => setHoveredRating(star)}
               onMouseLeave={() => setHoveredRating(null)}
-              className="transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-purple-400/50 rounded"
+              className="rounded transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-purple-400/50"
               aria-label={`Rate ${star} out of 10`}
             >
               <svg
                 className={`h-7 w-7 transition-colors ${
-                  star <= displayRating
-                    ? 'text-amber-400 fill-current'
-                    : 'text-white/20'
+                  star <= displayRating ? 'fill-current text-amber-400' : 'text-white/20'
                 }`}
                 fill={star <= displayRating ? 'currentColor' : 'none'}
                 stroke="currentColor"
@@ -81,12 +80,12 @@ export function FeedbackForm({
         </div>
 
         {/* Warm message based on rating */}
-        <p className="text-sm text-white/50 italic">{getRatingMessage(displayRating)}</p>
+        <p className="text-sm italic text-white/50">{getRatingMessage(displayRating)}</p>
       </div>
 
       {/* Feedback text */}
       <div>
-        <label htmlFor="feedback" className="block text-sm font-medium text-white/80 mb-3">
+        <label htmlFor="feedback" className="mb-3 block text-sm font-medium text-white/80">
           Anything you'd like to share? (optional)
         </label>
         <textarea
@@ -95,33 +94,39 @@ export function FeedbackForm({
           onChange={(e) => setFeedback(e.target.value)}
           rows={4}
           placeholder="What resonated? What would you like more of?"
-          className="block w-full rounded-xl border border-purple-500/20 bg-white/5 px-4 py-3 text-white placeholder-white/40 backdrop-blur-sm transition-all focus:border-amber-400/50 focus:outline-none focus:ring-2 focus:ring-amber-400/20 resize-none"
+          className="block w-full resize-none rounded-xl border border-purple-500/20 bg-white/5 px-4 py-3 text-white placeholder-white/40 backdrop-blur-sm transition-all focus:border-amber-400/50 focus:outline-none focus:ring-2 focus:ring-amber-400/20"
           maxLength={500}
         />
-        <div className="flex justify-end mt-2">
-          <span className="text-xs text-white/40">
-            {feedback.length}/500
-          </span>
+        <div className="mt-2 flex justify-end">
+          <span className="text-xs text-white/40">{feedback.length}/500</span>
         </div>
       </div>
 
       {/* Submit button */}
-      <GlowButton
-        type="submit"
-        variant="warm"
-        disabled={isSubmitting}
-        className="w-full"
-      >
+      <GlowButton type="submit" variant="warm" disabled={isSubmitting} className="w-full">
         {isSubmitting ? (
           <span className="flex items-center justify-center gap-2">
-            <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
             </svg>
             Sharing...
           </span>
+        ) : currentRating ? (
+          'Update'
         ) : (
-          currentRating ? 'Update' : 'Share Feedback'
+          'Share Feedback'
         )}
       </GlowButton>
     </form>

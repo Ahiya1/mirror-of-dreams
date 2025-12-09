@@ -1,6 +1,7 @@
 // app/api/auth/verify-email/route.ts - Verify email with token
 
 import { NextRequest, NextResponse } from 'next/server';
+
 import { supabase } from '@/server/lib/supabase';
 
 export async function POST(request: NextRequest) {
@@ -10,10 +11,7 @@ export async function POST(request: NextRequest) {
 
     // Validate token
     if (!token || typeof token !== 'string') {
-      return NextResponse.json(
-        { success: false, error: 'Token is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ success: false, error: 'Token is required' }, { status: 400 });
     }
 
     // Look up token
@@ -35,10 +33,7 @@ export async function POST(request: NextRequest) {
     const expiresAt = new Date(verificationToken.expires_at);
     if (expiresAt < new Date()) {
       // Delete expired token
-      await supabase
-        .from('email_verification_tokens')
-        .delete()
-        .eq('id', verificationToken.id);
+      await supabase.from('email_verification_tokens').delete().eq('id', verificationToken.id);
 
       return NextResponse.json({
         success: false,
@@ -64,10 +59,7 @@ export async function POST(request: NextRequest) {
     // Check if already verified
     if (user.email_verified) {
       // Clean up token
-      await supabase
-        .from('email_verification_tokens')
-        .delete()
-        .eq('id', verificationToken.id);
+      await supabase.from('email_verification_tokens').delete().eq('id', verificationToken.id);
 
       return NextResponse.json({
         success: true,
@@ -103,13 +95,9 @@ export async function POST(request: NextRequest) {
       success: true,
       message: 'Email verified successfully! You can now sign in.',
     });
-
   } catch (error) {
     console.error('Verify email error:', error);
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 });
   }
 }
 

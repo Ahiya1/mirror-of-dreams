@@ -1,13 +1,15 @@
 'use client';
 
-import { useState } from 'react';
-import { GlassCard } from '@/components/ui/glass/GlassCard';
-import { GlowButton } from '@/components/ui/glass/GlowButton';
-import { GlowBadge } from '@/components/ui/glass/GlowBadge';
-import { CancelSubscriptionModal } from './CancelSubscriptionModal';
-import { trpc } from '@/lib/trpc';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
+import { useState } from 'react';
+
+import { CancelSubscriptionModal } from './CancelSubscriptionModal';
+
+import { GlassCard } from '@/components/ui/glass/GlassCard';
+import { GlowBadge } from '@/components/ui/glass/GlowBadge';
+import { GlowButton } from '@/components/ui/glass/GlowButton';
+import { trpc } from '@/lib/trpc';
 import { TIER_LIMITS } from '@/lib/utils/constants';
 
 export function SubscriptionStatusCard() {
@@ -18,11 +20,11 @@ export function SubscriptionStatusCard() {
     return (
       <GlassCard elevated>
         <div className="p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Subscription & Billing</h3>
+          <h3 className="mb-4 text-lg font-semibold text-white">Subscription & Billing</h3>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-white/10 rounded w-1/3"></div>
-            <div className="h-8 bg-white/10 rounded w-1/2"></div>
-            <div className="h-4 bg-white/10 rounded w-2/3"></div>
+            <div className="h-4 w-1/3 rounded bg-white/10"></div>
+            <div className="h-8 w-1/2 rounded bg-white/10"></div>
+            <div className="h-4 w-2/3 rounded bg-white/10"></div>
           </div>
         </div>
       </GlassCard>
@@ -37,22 +39,22 @@ export function SubscriptionStatusCard() {
   const periodName = subscription.period === 'monthly' ? 'Monthly' : 'Yearly';
 
   // Determine status badge variant
-  const statusVariant = subscription.isActive ? 'success' as const :
-                        subscription.isCanceled ? 'warning' as const :
-                        'info' as const;
+  const statusVariant = subscription.isActive
+    ? ('success' as const)
+    : subscription.isCanceled
+      ? ('warning' as const)
+      : ('info' as const);
 
   return (
     <>
       <GlassCard elevated>
         <div className="p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">
-            Subscription & Billing
-          </h3>
+          <h3 className="mb-4 text-lg font-semibold text-white">Subscription & Billing</h3>
 
           <div className="space-y-4">
             {/* Current Plan */}
             <div>
-              <div className="text-sm text-white/60 mb-1">Current Plan</div>
+              <div className="mb-1 text-sm text-white/60">Current Plan</div>
               <div className="flex items-center gap-2">
                 <span className="text-xl font-semibold text-white">{tierName}</span>
                 {subscription.tier !== 'free' && subscription.status && (
@@ -66,7 +68,7 @@ export function SubscriptionStatusCard() {
             {/* Billing Period (paid tiers only) */}
             {subscription.tier !== 'free' && subscription.period && (
               <div>
-                <div className="text-sm text-white/60 mb-1">Billing Period</div>
+                <div className="mb-1 text-sm text-white/60">Billing Period</div>
                 <div className="text-white">{periodName}</div>
               </div>
             )}
@@ -74,14 +76,14 @@ export function SubscriptionStatusCard() {
             {/* Next Billing Date */}
             {subscription.isActive && subscription.expiresAt && !subscription.isCanceled && (
               <div>
-                <div className="text-sm text-white/60 mb-1">Next Billing Date</div>
+                <div className="mb-1 text-sm text-white/60">Next Billing Date</div>
                 <div className="text-white">
                   {new Date(subscription.expiresAt).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
                   })}
-                  <span className="text-white/60 text-sm ml-2">
+                  <span className="ml-2 text-sm text-white/60">
                     ({formatDistanceToNow(new Date(subscription.expiresAt), { addSuffix: true })})
                   </span>
                 </div>
@@ -90,18 +92,16 @@ export function SubscriptionStatusCard() {
 
             {/* Cancellation Notice */}
             {subscription.isCanceled && subscription.expiresAt && (
-              <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-                <p className="text-yellow-500 font-semibold mb-1">
-                  Subscription Canceling
-                </p>
-                <p className="text-white/80 text-sm">
+              <div className="rounded-lg border border-yellow-500/30 bg-yellow-500/10 p-4">
+                <p className="mb-1 font-semibold text-yellow-500">Subscription Canceling</p>
+                <p className="text-sm text-white/80">
                   Your subscription will end on{' '}
                   {new Date(subscription.expiresAt).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
-                  })}.
-                  You'll be downgraded to Free tier after this date.
+                  })}
+                  . You'll be downgraded to Free tier after this date.
                 </p>
               </div>
             )}

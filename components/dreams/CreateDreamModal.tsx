@@ -2,10 +2,11 @@
 
 'use client';
 
-import React, { useState } from 'react';
-import { trpc } from '@/lib/trpc';
-import { GlassModal, GlowButton, GlassCard } from '@/components/ui/glass';
 import { AlertTriangle } from 'lucide-react';
+import React, { useState } from 'react';
+
+import { GlassModal, GlowButton, GlassCard } from '@/components/ui/glass';
+import { trpc } from '@/lib/trpc';
 
 interface CreateDreamModalProps {
   isOpen: boolean;
@@ -79,7 +80,7 @@ export function CreateDreamModal({ isOpen, onClose, onSuccess }: CreateDreamModa
         {error && (
           <GlassCard className="border-l-4 border-mirror-error/60">
             <div className="flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-mirror-error flex-shrink-0 mt-0.5" />
+              <AlertTriangle className="mt-0.5 h-5 w-5 flex-shrink-0 text-mirror-error" />
               <p className="text-sm text-mirror-error">{error}</p>
             </div>
           </GlassCard>
@@ -98,11 +99,9 @@ export function CreateDreamModal({ isOpen, onClose, onSuccess }: CreateDreamModa
             placeholder="Launch Sustainable Fashion Brand"
             maxLength={200}
             required
-            className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-glass-sm border-2 border-white/10 text-white placeholder:text-white/40 transition-all duration-300 focus:outline-none focus:border-mirror-purple/60 focus:shadow-glow"
+            className="backdrop-blur-glass-sm focus:border-mirror-purple/60 focus:shadow-glow w-full rounded-xl border-2 border-white/10 bg-white/5 px-4 py-3 text-white transition-all duration-300 placeholder:text-white/40 focus:outline-none"
           />
-          <div className="text-xs text-white/40 text-right">
-            {title.length} / 200
-          </div>
+          <div className="text-right text-xs text-white/40">{title.length} / 200</div>
         </div>
 
         {/* Description Field */}
@@ -117,11 +116,9 @@ export function CreateDreamModal({ isOpen, onClose, onSuccess }: CreateDreamModa
             placeholder="Create an ethical, sustainable clothing line that proves fashion can be both beautiful and environmentally responsible..."
             maxLength={2000}
             rows={5}
-            className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-glass-sm border-2 border-white/10 text-white placeholder:text-white/40 transition-all duration-300 focus:outline-none focus:border-mirror-purple/60 focus:shadow-glow resize-vertical"
+            className="backdrop-blur-glass-sm focus:border-mirror-purple/60 focus:shadow-glow resize-vertical w-full rounded-xl border-2 border-white/10 bg-white/5 px-4 py-3 text-white transition-all duration-300 placeholder:text-white/40 focus:outline-none"
           />
-          <div className="text-xs text-white/40 text-right">
-            {description.length} / 2000
-          </div>
+          <div className="text-right text-xs text-white/40">{description.length} / 2000</div>
         </div>
 
         {/* Target Date Field */}
@@ -135,7 +132,7 @@ export function CreateDreamModal({ isOpen, onClose, onSuccess }: CreateDreamModa
             value={targetDate}
             onChange={(e) => setTargetDate(e.target.value)}
             min={new Date().toISOString().split('T')[0]}
-            className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-glass-sm border-2 border-white/10 text-white transition-all duration-300 focus:outline-none focus:border-mirror-purple/60 focus:shadow-glow [color-scheme:dark]"
+            className="backdrop-blur-glass-sm focus:border-mirror-purple/60 focus:shadow-glow w-full rounded-xl border-2 border-white/10 bg-white/5 px-4 py-3 text-white transition-all duration-300 [color-scheme:dark] focus:outline-none"
           />
         </div>
 
@@ -148,7 +145,7 @@ export function CreateDreamModal({ isOpen, onClose, onSuccess }: CreateDreamModa
             id="category"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-glass-sm border-2 border-white/10 text-white transition-all duration-300 focus:outline-none focus:border-mirror-purple/60 focus:shadow-glow cursor-pointer"
+            className="backdrop-blur-glass-sm focus:border-mirror-purple/60 focus:shadow-glow w-full cursor-pointer rounded-xl border-2 border-white/10 bg-white/5 px-4 py-3 text-white transition-all duration-300 focus:outline-none"
           >
             {CATEGORIES.map((cat) => (
               <option key={cat.value} value={cat.value} className="bg-mirror-midnight">
@@ -159,13 +156,8 @@ export function CreateDreamModal({ isOpen, onClose, onSuccess }: CreateDreamModa
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-3 justify-end pt-4 border-t border-white/10">
-          <GlowButton
-            variant="ghost"
-            size="md"
-            onClick={onClose}
-            className="px-6"
-          >
+        <div className="flex justify-end gap-3 border-t border-white/10 pt-4">
+          <GlowButton variant="ghost" size="md" onClick={onClose} className="px-6">
             Cancel
           </GlowButton>
           <GlowButton

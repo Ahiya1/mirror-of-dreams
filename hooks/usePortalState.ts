@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+
 import type { User } from '@/types';
 
 interface PortalStateReturn {
@@ -61,7 +62,7 @@ export function usePortalState(user: User | null): PortalStateReturn {
         sub: '<strong>Your reflection awaits.</strong> Continue your journey.',
       },
       {
-        main: 'See how far<br/>you\'ve traveled.',
+        main: "See how far<br/>you've traveled.",
         sub: '<strong>Your reflections</strong> hold your evolution.',
       },
     ];

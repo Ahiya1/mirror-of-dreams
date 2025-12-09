@@ -1,4 +1,5 @@
 # Mirror of Dreams: Synthesized Vision
+
 **Created**: November 27, 2025
 **Synthesizes**: Plan-1 UX + Plan-3 Essence + Restraint Principles + Current Feedback
 
@@ -16,6 +17,7 @@ Mirror of Dreams is a **soft, glossy, sharp AI companion** that helps you see ho
 ## Core Principles
 
 ### 1. Restraint Over Flash
+
 - Every element serves function, not decoration
 - Beauty emerges from well-functioning systems
 - One meaningful insight > hundred glowing buttons
@@ -23,6 +25,7 @@ Mirror of Dreams is a **soft, glossy, sharp AI companion** that helps you see ho
 - Emojis used sparingly (1-2 per page max, only if they genuinely help)
 
 ### 2. Substance Over Style
+
 - **The transformation comes from genuine insight**, not from purple glows
 - Content first: The reflection experience must be transformative
 - Real analysis that reveals authentic patterns
@@ -30,12 +33,14 @@ Mirror of Dreams is a **soft, glossy, sharp AI companion** that helps you see ho
 - Show don't tell: Demonstrate value, don't claim it
 
 ### 3. Soft/Glossy/Sharp Companion
+
 - **Soft**: Gentle, nurturing, understanding tone
 - **Glossy**: Polished cosmic glass aesthetics (but earned, not decorative)
 - **Sharp**: Precise insights that cut through self-deception
 - **Companion**: Feels alive, knows your journey, reflects truth with compassion
 
 ### 4. Clarity Over Mysticism
+
 - Users understand what this is in 5 seconds
 - Clear value proposition: what will I get?
 - Transparent about what the app does and doesn't do
@@ -46,6 +51,7 @@ Mirror of Dreams is a **soft, glossy, sharp AI companion** that helps you see ho
 ## The Core Experience (Fixed from Current Issues)
 
 ### Current Problems
+
 1. **Reflection doesn't work** - AI response fails (400 errors)
 2. **Wrong questions** - Should be 4 questions **per dream**, not generic 5
 3. **Multi-page flow** - Should be **one page** like mirror-of-truth
@@ -56,6 +62,7 @@ Mirror of Dreams is a **soft, glossy, sharp AI companion** that helps you see ho
 ### Correct Flow
 
 #### Creating a Dream
+
 ```
 Simple form:
 - Dream Title
@@ -107,6 +114,7 @@ JUST clear, functional form
 ```
 
 **Key Changes from Current**:
+
 1. **4 questions** (not 5) - all on ONE page
 2. **Dream-specific** - "What is YOUR dream?" (referring to the specific dream you're reflecting on)
 3. **NO "Have you set a date?" question** - date is already in the dream object
@@ -115,6 +123,7 @@ JUST clear, functional form
 6. **Tone selection** - simple buttons, no elaborate cards
 
 **Why This Works**:
+
 - Questions refer to THE SPECIFIC DREAM you're reflecting on
 - Vision already set when dream was created
 - No redundant date question
@@ -124,6 +133,7 @@ JUST clear, functional form
 #### AI Response (Substantive, Not Just Beautiful)
 
 **Must deliver**:
+
 - Specific insights from their actual answers
 - Pattern recognition that feels authentic
 - Connection to their dream progress
@@ -131,6 +141,7 @@ JUST clear, functional form
 - Written in the chosen tone (soft/sharp/fusion)
 
 **Format**:
+
 - Clean, readable text
 - Generous line-height
 - Minimal decoration
@@ -141,7 +152,9 @@ JUST clear, functional form
 ## Dashboard (Fix Empty/Non-Engaging State)
 
 ### Current Problem
+
 Empty dashboard with:
+
 - Too many competing sections
 - Confusing stats (100% Used, 0 Limit, ∞ Total)
 - Empty states with emojis everywhere
@@ -187,6 +200,7 @@ Empty dashboard with:
 ```
 
 **Key Changes**:
+
 1. **Clear greeting** - "Good evening, [Name]" (no mysticism)
 2. **ONE primary action** - Reflect Now (prominent)
 3. **Simple dream cards** - title, stats, actions (no excessive decoration)
@@ -199,6 +213,7 @@ Empty dashboard with:
    - Empty state CTAs everywhere
 
 **Engagement Through Substance**:
+
 - Shows your actual progress (reflection count)
 - Clear next actions per dream
 - Recent reflections create narrative
@@ -209,6 +224,7 @@ Empty dashboard with:
 ## Evolution Reports (Make Them Real)
 
 ### Current State
+
 Promises "advanced evolution analytics" but unclear what this means.
 
 ### What It Must Deliver
@@ -238,6 +254,7 @@ NEXT LEVEL
 ```
 
 **Must Include**:
+
 - SPECIFIC examples from user's reflections
 - REAL patterns (not generic)
 - Quotes or references to their actual words
@@ -245,6 +262,7 @@ NEXT LEVEL
 - Actionable next steps
 
 **Cannot Include**:
+
 - Generic motivational speak
 - Vague affirmations
 - Insights that could apply to anyone
@@ -260,12 +278,14 @@ NEXT LEVEL
 Written from future-self perspective, experiencing the dream as already achieved.
 
 **Must Include**:
+
 - Specific details from their reflections
 - Sensory, immersive language
 - References to their actual plan elements
 - Feels like THEIR future, not generic success
 
 **Example** (based on user's reflections):
+
 ```
 December 31, 2025
 
@@ -287,13 +307,16 @@ fashion...
 From plan-1, these are **correct and should not change**:
 
 ### Dreams as First-Class Entities
+
 - Dreams are separate objects in database
 - Reflections link to specific dreams
 - Each dream has: title, description, target_date, status, category
 - Days remaining calculated automatically
 
 ### 4-Question Reflection
+
 **Critical**: Questions refer to THE SPECIFIC DREAM being reflected on:
+
 1. **What is your dream?** → Elaborate on THIS dream (not "what dream do you have?")
 2. **What is your plan?** → For THIS dream
 3. **What's your relationship with this dream?** → With THIS specific dream
@@ -302,16 +325,19 @@ From plan-1, these are **correct and should not change**:
 **NOT 5 questions** - Remove "Have you set a date?" (already in dream object)
 
 ### Evolution Thresholds (Fixed, Not Tiered)
+
 - **Dream-specific**: 4 reflections on a dream
 - **Dream-agnostic**: 12 reflections total
 - Same threshold for all tiers (keeps UX simple)
 
 ### Context Quality (Tiered)
+
 - **Free**: 4 reflections analyzed
 - **Optimal**: 9 reflections analyzed
 - Better tier = deeper analysis (not longer wait)
 
 ### Temporal Distribution (The Innovation!)
+
 Always 1/3 early, 1/3 middle, 1/3 recent - shows authentic growth over time
 
 ---
@@ -319,6 +345,7 @@ Always 1/3 early, 1/3 middle, 1/3 recent - shows authentic growth over time
 ## Design System (Earned Beauty)
 
 ### Colors
+
 ```
 Background: Deep navy (for focus, not mysticism)
 Text: Clean white/light gray (high contrast)
@@ -327,6 +354,7 @@ Interactive: Clear, simple (no decorative gradients)
 ```
 
 ### Typography
+
 ```
 Headings: Clear, bold, generous spacing
 Body: Line-height 1.7-1.8 (comfortable reading)
@@ -335,6 +363,7 @@ Hierarchy: Obvious through size/weight, not decoration
 ```
 
 ### Components
+
 ```
 Buttons: Simple, clear (no glows unless functional)
 Forms: Clean inputs with clear labels
@@ -343,6 +372,7 @@ Spacing: 8px grid (16, 24, 32, 48, 64)
 ```
 
 ### Emojis
+
 ```
 Use: MINIMAL (1-2 per page max)
 Purpose: Aid scanning/recognition ONLY
@@ -353,6 +383,7 @@ Example:
 ```
 
 ### Motion
+
 ```
 Transitions: Smooth page changes (200-300ms)
 Feedback: Clear confirmation of actions
@@ -365,6 +396,7 @@ Purpose: Continuity and understanding only
 ## Content Guidelines
 
 ### Voice
+
 - Direct and respectful
 - Supportive without being cheery
 - Intelligent without being academic
@@ -394,6 +426,7 @@ Purpose: Continuity and understanding only
 ## Success Criteria
 
 ### User Experience
+
 - User understands what this is in 5 seconds ✓
 - Can complete first reflection without confusion ✓
 - Receives insights that feel specific and authentic ✓
@@ -401,6 +434,7 @@ Purpose: Continuity and understanding only
 - Recommends by saying "this helped me understand myself" ✓
 
 ### Technical
+
 - Reflection AI response works (no 400 errors) ✓
 - 4 questions per dream, one-page flow ✓
 - Dashboard shows clear next action ✓
@@ -408,6 +442,7 @@ Purpose: Continuity and understanding only
 - Visualizations feel immersive and personal ✓
 
 ### Design
+
 - No decorative elements without function ✓
 - Consistent design across all pages ✓
 - High contrast, readable text ✓
@@ -415,6 +450,7 @@ Purpose: Continuity and understanding only
 - Maximum 2 emojis per page ✓
 
 ### Content
+
 - Every word serves understanding ✓
 - No marketing speak or empty spiritual language ✓
 - Promises align with delivery ✓
@@ -425,6 +461,7 @@ Purpose: Continuity and understanding only
 ## Implementation Priorities
 
 ### Phase 1: Fix Broken Core (URGENT)
+
 1. **Fix reflection AI response** (currently returning 400)
    - Debug why `reflection.create` mutation fails
    - Ensure Anthropic API key is being used
@@ -442,6 +479,7 @@ Purpose: Continuity and understanding only
    - Show recent reflections for narrative
 
 ### Phase 2: Remove Flash, Add Substance
+
 4. **Simplify auth pages**
    - Remove gradient buttons
    - Remove "Free Forever" badge and marketing taglines
@@ -459,6 +497,7 @@ Purpose: Continuity and understanding only
    - Remove competing CTAs
 
 ### Phase 3: Build Real Depth
+
 7. **Enhance evolution insights**
    - Ensure pattern recognition uses specific quotes
    - Temporal comparison (early vs recent)
@@ -497,6 +536,7 @@ Get that loop perfect. Make it transformative. Then expand (if needed).
 ## The One Perfect User Journey (Sarah's Story - Corrected)
 
 ### Day 0: First Reflection (15 minutes)
+
 1. Sarah creates dream: "Launch Sustainable Fashion Brand"
 2. Clicks "Reflect Now"
 3. Selects dream from list
@@ -512,6 +552,7 @@ Get that loop perfect. Make it transformative. Then expand (if needed).
 9. Returns to dashboard - sees "1 reflection" on her dream
 
 ### Day 8: Evolution Unlocked (15 minutes)
+
 1. Completes 4th reflection on fashion brand
 2. Dashboard shows: "Evolution Report Available"
 3. Generates report
@@ -525,6 +566,7 @@ Get that loop perfect. Make it transformative. Then expand (if needed).
 8. Feels it in her body
 
 ### Day 30: Tier Decision
+
 1. Hits Free tier limit (4 reflections)
 2. Sees clear upgrade options
 3. Upgrades to Optimal ($19/month)
@@ -557,6 +599,7 @@ Mirror of Dreams should be the same: **clean**, **clear**, and **true**.
 ---
 
 **Remember**:
+
 - We're not building an app that **looks** spiritual
 - We're building an app that **delivers** transformation through genuine insight
 - **The substance is in the reflections**, not in the purple glows

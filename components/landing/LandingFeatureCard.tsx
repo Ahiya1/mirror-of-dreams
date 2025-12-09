@@ -24,27 +24,21 @@ interface LandingFeatureCardProps {
   description: string;
 }
 
-export default function LandingFeatureCard({
-  icon,
-  title,
-  description,
-}: LandingFeatureCardProps) {
+export default function LandingFeatureCard({ icon, title, description }: LandingFeatureCardProps) {
   return (
-    <GlassCard interactive className="p-8 text-center h-full">
+    <GlassCard interactive className="h-full p-8 text-center">
       {/* Icon */}
-      <div className="text-6xl mb-4" aria-hidden="true">
+      <div className="mb-4 text-6xl" aria-hidden="true">
         {icon}
       </div>
 
       {/* Title */}
-      <h3 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+      <h3 className="mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-2xl font-semibold text-transparent">
         {title}
       </h3>
 
       {/* Description */}
-      <p className="text-white/70 leading-relaxed">
-        {description}
-      </p>
+      <p className="leading-relaxed text-white/70">{description}</p>
     </GlassCard>
   );
 }

@@ -2,8 +2,9 @@
 // Vercel cron job for nightly pattern consolidation
 
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/server/lib/supabase';
+
 import { consolidateUserPatterns } from '@/lib/clarify/consolidation';
+import { supabase } from '@/server/lib/supabase';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60; // 60 seconds max
@@ -28,9 +29,11 @@ export async function GET(request: NextRequest) {
     // Find users with unconsolidated messages
     const { data: usersWithMessages, error: queryError } = await supabase
       .from('clarify_messages')
-      .select(`
+      .select(
+        `
         session:clarify_sessions!inner(user_id)
-      `)
+      `
+      )
       .eq('consolidated', false)
       .limit(100);
 
@@ -39,11 +42,9 @@ export async function GET(request: NextRequest) {
     }
 
     // Extract unique user IDs
-    const userIds = [...new Set(
-      (usersWithMessages || [])
-        .map((m: any) => m.session?.user_id)
-        .filter(Boolean)
-    )];
+    const userIds = [
+      ...new Set((usersWithMessages || []).map((m: any) => m.session?.user_id).filter(Boolean)),
+    ];
 
     // Process each user
     const results = [];
@@ -57,7 +58,7 @@ export async function GET(request: NextRequest) {
     }
 
     const duration = Date.now() - startTime;
-    const successCount = results.filter(r => r.success).length;
+    const successCount = results.filter((r) => r.success).length;
     const totalPatterns = results.reduce((sum, r) => sum + r.patternsExtracted, 0);
     const totalMessages = results.reduce((sum, r) => sum + r.messagesProcessed, 0);
 
@@ -68,7 +69,7 @@ export async function GET(request: NextRequest) {
       successCount,
       totalPatterns,
       totalMessages,
-      results: results.map(r => ({
+      results: results.map((r) => ({
         userId: r.userId.slice(0, 8) + '...', // Truncate for privacy
         success: r.success,
         patterns: r.patternsExtracted,

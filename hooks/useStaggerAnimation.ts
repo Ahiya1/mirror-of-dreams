@@ -52,8 +52,8 @@ export function useStaggerAnimation(
         }
       },
       {
-        threshold: 0.01,  // Lower threshold for earlier triggering
-        rootMargin: '100px',  // Larger margin to trigger before element is in view
+        threshold: 0.01, // Lower threshold for earlier triggering
+        rootMargin: '100px', // Larger margin to trigger before element is in view
       }
     );
 

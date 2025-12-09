@@ -1,35 +1,36 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Check } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
 // Internal utilities
+import type { ToneId } from '@/lib/utils/constants';
+
+import { MobileReflectionFlow } from '@/components/reflection/mobile/MobileReflectionFlow';
+import { ProgressBar } from '@/components/reflection/ProgressBar';
+import { ReflectionQuestionCard } from '@/components/reflection/ReflectionQuestionCard';
+import { ToneSelectionCard } from '@/components/reflection/ToneSelectionCard';
+import { AIResponseRenderer } from '@/components/reflections/AIResponseRenderer';
+import CosmicBackground from '@/components/shared/CosmicBackground';
+import { UpgradeModal } from '@/components/subscription/UpgradeModal';
+import { GlassCard, GlowButton, CosmicLoader, GlassInput } from '@/components/ui/glass';
+import { useToast } from '@/contexts/ToastContext';
+import { useIsMobile } from '@/hooks';
+import { useAuth } from '@/hooks/useAuth';
 import { trpc } from '@/lib/trpc';
 import { cn } from '@/lib/utils';
+import { QUESTION_LIMITS, REFLECTION_MICRO_COPY } from '@/lib/utils/constants';
 import { checkReflectionLimits } from '@/lib/utils/limits';
 
 // Internal hooks
-import { useAuth } from '@/hooks/useAuth';
-import { useIsMobile } from '@/hooks';
 
 // Internal contexts
-import { useToast } from '@/contexts/ToastContext';
 
 // Internal components
-import CosmicBackground from '@/components/shared/CosmicBackground';
-import { GlassCard, GlowButton, CosmicLoader, GlassInput } from '@/components/ui/glass';
-import { ReflectionQuestionCard } from '@/components/reflection/ReflectionQuestionCard';
-import { ToneSelectionCard } from '@/components/reflection/ToneSelectionCard';
-import { ProgressBar } from '@/components/reflection/ProgressBar';
-import { AIResponseRenderer } from '@/components/reflections/AIResponseRenderer';
-import { UpgradeModal } from '@/components/subscription/UpgradeModal';
-import { MobileReflectionFlow } from '@/components/reflection/mobile/MobileReflectionFlow';
 
 // Types and constants
-import type { ToneId } from '@/lib/utils/constants';
-import { QUESTION_LIMITS, REFLECTION_MICRO_COPY } from '@/lib/utils/constants';
 
 // LocalStorage persistence
 const STORAGE_KEY = 'MIRROR_REFLECTION_DRAFT';
@@ -63,9 +64,9 @@ const QUESTION_GUIDES = {
 
 // Warm placeholder text - creates sacred, welcoming space
 const WARM_PLACEHOLDERS = {
-  dream: 'Your thoughts are safe here... what\'s present for you right now?',
+  dream: "Your thoughts are safe here... what's present for you right now?",
   plan: 'What step feels right to take next?',
-  relationship: 'How does this dream connect to who you\'re becoming?',
+  relationship: "How does this dream connect to who you're becoming?",
   offering: 'What gift is this dream offering you?',
 };
 
@@ -113,10 +114,13 @@ export default function MirrorExperience() {
   }>({ reason: 'monthly_limit' });
 
   // Fetch user's dreams for selection
-  const { data: dreams } = trpc.dreams.list.useQuery({
-    status: 'active',
-    includeStats: true,
-  }, { enabled: viewMode === 'questionnaire' });
+  const { data: dreams } = trpc.dreams.list.useQuery(
+    {
+      status: 'active',
+      includeStats: true,
+    },
+    { enabled: viewMode === 'questionnaire' }
+  );
 
   const [formData, setFormData] = useState<FormData>({
     dream: '',
@@ -217,15 +221,18 @@ export default function MirrorExperience() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     // Only save if there's actual content
-    const hasContent = Object.values(formData).some(v => v.trim().length > 0);
+    const hasContent = Object.values(formData).some((v) => v.trim().length > 0);
     if (hasContent || selectedDreamId) {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          data: formData,
-          dreamId: selectedDreamId,
-          tone: selectedTone,
-          timestamp: Date.now(),
-        }));
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({
+            data: formData,
+            dreamId: selectedDreamId,
+            tone: selectedTone,
+            timestamp: Date.now(),
+          })
+        );
       } catch (e) {
         // Ignore localStorage errors
       }
@@ -233,7 +240,7 @@ export default function MirrorExperience() {
   }, [formData, selectedDreamId, selectedTone]);
 
   const handleFieldChange = (field: keyof FormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleDreamSelect = (dreamId: string) => {
@@ -264,7 +271,7 @@ export default function MirrorExperience() {
     }
 
     if (!formData.offering.trim()) {
-      toast.warning('Please describe what you\'re willing to give');
+      toast.warning("Please describe what you're willing to give");
       return false;
     }
 
@@ -360,7 +367,7 @@ export default function MirrorExperience() {
     return (
       <div className="reflection-experience">
         <CosmicBackground />
-        <div className="flex items-center justify-center min-h-screen">
+        <div className="flex min-h-screen items-center justify-center">
           <CosmicLoader size="lg" />
         </div>
       </div>
@@ -368,7 +375,10 @@ export default function MirrorExperience() {
   }
 
   // Auth/verification guard - return null while redirect happens
-  if (!isAuthenticated || (user && !user.emailVerified && !user.isCreator && !user.isAdmin && !user.isDemo)) {
+  if (
+    !isAuthenticated ||
+    (user && !user.emailVerified && !user.isCreator && !user.isAdmin && !user.isDemo)
+  ) {
     return null;
   }
 
@@ -379,54 +389,53 @@ export default function MirrorExperience() {
         <CosmicBackground />
         <div className="reflection-vignette" />
 
-        <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="flex min-h-screen items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="max-w-xl w-full"
+            className="w-full max-w-xl"
           >
             <GlassCard className="p-8 text-center">
               {/* Mirror icon */}
               <div className="mb-6">
-                <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-purple-500/30 to-pink-500/30 flex items-center justify-center border border-purple-500/40">
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-purple-500/40 bg-gradient-to-br from-purple-500/30 to-pink-500/30">
                   <span className="text-4xl">🪞</span>
                 </div>
               </div>
 
               {/* Heading */}
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
+              <h1 className="mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-3xl font-bold text-transparent">
                 Ready to Start Your Journey?
               </h1>
 
               {/* Description */}
-              <p className="text-white/70 text-lg mb-6 leading-relaxed">
-                You've explored what Mirror of Dreams can offer.
-                Now it's time to create your own reflections and
-                discover insights unique to your path.
+              <p className="mb-6 text-lg leading-relaxed text-white/70">
+                You've explored what Mirror of Dreams can offer. Now it's time to create your own
+                reflections and discover insights unique to your path.
               </p>
 
               {/* What you get */}
-              <div className="bg-white/5 rounded-xl p-4 mb-8 text-left">
-                <p className="text-purple-300 font-medium mb-3">With a free account, you get:</p>
+              <div className="mb-8 rounded-xl bg-white/5 p-4 text-left">
+                <p className="mb-3 font-medium text-purple-300">With a free account, you get:</p>
                 <ul className="space-y-2 text-white/70">
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-mirror-success" />
+                    <Check className="h-4 w-4 text-mirror-success" />
                     <span>2 reflections per month</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-mirror-success" />
+                    <Check className="h-4 w-4 text-mirror-success" />
                     <span>Track up to 2 dreams</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-mirror-success" />
+                    <Check className="h-4 w-4 text-mirror-success" />
                     <span>Personal reflection history</span>
                   </li>
                 </ul>
               </div>
 
               {/* CTA buttons */}
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col gap-4 sm:flex-row">
                 <GlowButton
                   variant="primary"
                   size="lg"
@@ -446,11 +455,11 @@ export default function MirrorExperience() {
               </div>
 
               {/* Already have account */}
-              <p className="mt-6 text-white/50 text-sm">
+              <p className="mt-6 text-sm text-white/50">
                 Already have an account?{' '}
                 <button
                   onClick={() => router.push('/auth/signin')}
-                  className="text-purple-400 hover:text-purple-300 transition-colors"
+                  className="text-purple-400 transition-colors hover:text-purple-300"
                 >
                   Sign in
                 </button>
@@ -494,19 +503,25 @@ export default function MirrorExperience() {
       <div className="tone-elements">
         {selectedTone === 'fusion' && (
           <>
-            <div className="fusion-breath" style={{
-              left: '20%',
-              top: '30%',
-              width: 'clamp(220px, 45vw, 300px)',
-              height: 'clamp(220px, 45vw, 300px)',
-            }} />
-            <div className="fusion-breath" style={{
-              right: '15%',
-              bottom: '25%',
-              width: 'clamp(180px, 35vw, 240px)',
-              height: 'clamp(180px, 35vw, 240px)',
-              animationDelay: '-12s',
-            }} />
+            <div
+              className="fusion-breath"
+              style={{
+                left: '20%',
+                top: '30%',
+                width: 'clamp(220px, 45vw, 300px)',
+                height: 'clamp(220px, 45vw, 300px)',
+              }}
+            />
+            <div
+              className="fusion-breath"
+              style={{
+                right: '15%',
+                bottom: '25%',
+                width: 'clamp(180px, 35vw, 240px)',
+                height: 'clamp(180px, 35vw, 240px)',
+                animationDelay: '-12s',
+              }}
+            />
           </>
         )}
         {selectedTone === 'gentle' && (
@@ -518,15 +533,21 @@ export default function MirrorExperience() {
         )}
         {selectedTone === 'intense' && (
           <>
-            <div className="intense-swirl" style={{
-              left: '15%',
-              top: '20%',
-            }} />
-            <div className="intense-swirl" style={{
-              right: '10%',
-              bottom: '15%',
-              animationDelay: '-9s',
-            }} />
+            <div
+              className="intense-swirl"
+              style={{
+                left: '15%',
+                top: '20%',
+              }}
+            />
+            <div
+              className="intense-swirl"
+              style={{
+                right: '10%',
+                bottom: '15%',
+                animationDelay: '-9s',
+              }}
+            />
           </>
         )}
       </div>
@@ -560,7 +581,7 @@ export default function MirrorExperience() {
                 {!selectedDreamId ? (
                   /* Dream selection view */
                   <div className="question-view">
-                    <h2 className="text-center mb-8 text-2xl md:text-3xl font-light bg-gradient-to-r from-mirror-amethyst via-mirror-amethyst-light to-cosmic-blue bg-clip-text text-transparent">
+                    <h2 className="mb-8 bg-gradient-to-r from-mirror-amethyst via-mirror-amethyst-light to-cosmic-blue bg-clip-text text-center text-2xl font-light text-transparent md:text-3xl">
                       Which dream are you reflecting on?
                     </h2>
 
@@ -592,8 +613,8 @@ export default function MirrorExperience() {
                                 )}
                               >
                                 <div className="flex items-center gap-4">
-                                  <span className="text-4xl flex-shrink-0">{emoji}</span>
-                                  <div className="flex-1 min-w-0">
+                                  <span className="flex-shrink-0 text-4xl">{emoji}</span>
+                                  <div className="min-w-0 flex-1">
                                     <h3 className="mb-1 text-lg font-medium text-white">
                                       {dream.title}
                                     </h3>
@@ -602,8 +623,8 @@ export default function MirrorExperience() {
                                         {dream.daysLeft < 0
                                           ? `${Math.abs(dream.daysLeft)}d overdue`
                                           : dream.daysLeft === 0
-                                          ? 'Today!'
-                                          : `${dream.daysLeft}d left`}
+                                            ? 'Today!'
+                                            : `${dream.daysLeft}d left`}
                                       </p>
                                     )}
                                   </div>
@@ -611,7 +632,7 @@ export default function MirrorExperience() {
                                     <motion.div
                                       initial={{ scale: 0 }}
                                       animate={{ scale: 1 }}
-                                      className="text-mirror-amethyst flex-shrink-0"
+                                      className="flex-shrink-0 text-mirror-amethyst"
                                     >
                                       <Check className="h-6 w-6" />
                                     </motion.div>
@@ -623,7 +644,7 @@ export default function MirrorExperience() {
                         })
                       ) : (
                         <GlassCard elevated className="text-center">
-                          <p className="text-white/70 mb-6">No active dreams yet.</p>
+                          <p className="mb-6 text-white/70">No active dreams yet.</p>
                           <GlowButton
                             variant="primary"
                             size="md"
@@ -640,7 +661,7 @@ export default function MirrorExperience() {
                   <div className="one-page-form">
                     {/* Welcome Message */}
                     <div className="mb-6 text-center">
-                      <p className="text-white/80 text-base md:text-lg font-light italic">
+                      <p className="text-base font-light italic text-white/80 md:text-lg">
                         {REFLECTION_MICRO_COPY.welcome}
                       </p>
                     </div>
@@ -648,24 +669,21 @@ export default function MirrorExperience() {
                     {/* Enhanced Dream Context Banner - Sacred Display */}
                     {selectedDream && (
                       <div className="dream-context-banner">
-                        <h2>
-                          Reflecting on: {selectedDream.title}
-                        </h2>
+                        <h2>Reflecting on: {selectedDream.title}</h2>
                         <div className="dream-meta">
                           {selectedDream.category && (
-                            <span className="category-badge">
-                              {selectedDream.category}
-                            </span>
+                            <span className="category-badge">{selectedDream.category}</span>
                           )}
-                          {selectedDream.daysLeft !== null && selectedDream.daysLeft !== undefined && (
-                            <span className="days-remaining">
-                              {selectedDream.daysLeft < 0
-                                ? `${Math.abs(selectedDream.daysLeft)} days overdue`
-                                : selectedDream.daysLeft === 0
-                                ? 'Today!'
-                                : `${selectedDream.daysLeft} days remaining`}
-                            </span>
-                          )}
+                          {selectedDream.daysLeft !== null &&
+                            selectedDream.daysLeft !== undefined && (
+                              <span className="days-remaining">
+                                {selectedDream.daysLeft < 0
+                                  ? `${Math.abs(selectedDream.daysLeft)} days overdue`
+                                  : selectedDream.daysLeft === 0
+                                    ? 'Today!'
+                                    : `${selectedDream.daysLeft} days remaining`}
+                              </span>
+                            )}
                         </div>
                       </div>
                     )}
@@ -694,15 +712,12 @@ export default function MirrorExperience() {
 
                     {/* Enhanced Tone Selection */}
                     <div className="mb-8">
-                      <ToneSelectionCard
-                        selectedTone={selectedTone}
-                        onSelect={setSelectedTone}
-                      />
+                      <ToneSelectionCard selectedTone={selectedTone} onSelect={setSelectedTone} />
                     </div>
 
                     {/* Ready message before submit */}
-                    <div className="text-center mb-6">
-                      <p className="text-white/70 text-sm italic">
+                    <div className="mb-6 text-center">
+                      <p className="text-sm italic text-white/70">
                         {REFLECTION_MICRO_COPY.readyToSubmit}
                       </p>
                     </div>
@@ -714,7 +729,7 @@ export default function MirrorExperience() {
                         size="lg"
                         onClick={handleSubmit}
                         disabled={isSubmitting}
-                        className="min-w-[280px] text-lg font-medium submit-button-breathe"
+                        className="submit-button-breathe min-w-[280px] text-lg font-medium"
                       >
                         {isSubmitting ? (
                           <span className="flex items-center gap-3">
@@ -722,9 +737,7 @@ export default function MirrorExperience() {
                             Gazing...
                           </span>
                         ) : (
-                          <>
-                            ✨ Gaze into the Mirror ✨
-                          </>
+                          <>✨ Gaze into the Mirror ✨</>
                         )}
                       </GlowButton>
                     </div>
@@ -748,23 +761,22 @@ export default function MirrorExperience() {
             {!newReflection && reflectionLoading ? (
               <div className="flex flex-col items-center justify-center gap-6 py-20">
                 <CosmicLoader size="lg" />
-                <p className="text-white/70 text-lg">Loading reflection...</p>
+                <p className="text-lg text-white/70">Loading reflection...</p>
               </div>
-            ) : (newReflection || reflection) ? (
-              <GlassCard
-                elevated
-                className="reflection-card"
-              >
+            ) : newReflection || reflection ? (
+              <GlassCard elevated className="reflection-card">
                 <div className="mirror-surface">
                   <div className="reflection-content">
-                    <h1 className="text-center mb-8 text-h1 font-semibold bg-gradient-to-r from-[#fbbf24] to-[#9333ea] bg-clip-text text-transparent">
+                    <h1 className="text-h1 mb-8 bg-gradient-to-r from-[#fbbf24] to-[#9333ea] bg-clip-text text-center font-semibold text-transparent">
                       Your Reflection
                     </h1>
                     <div className="reflection-text">
                       {/* Use newReflection if just created, otherwise fetched reflection */}
-                      <AIResponseRenderer content={newReflection?.content || reflection?.aiResponse || ''} />
+                      <AIResponseRenderer
+                        content={newReflection?.content || reflection?.aiResponse || ''}
+                      />
                     </div>
-                    <div className="flex justify-center mt-8">
+                    <div className="mt-8 flex justify-center">
                       <GlowButton
                         variant="primary"
                         size="lg"
@@ -816,10 +828,14 @@ export default function MirrorExperience() {
                     width: `${1 + Math.random() * 2}px`,
                     height: `${1 + Math.random() * 2}px`,
                   }}
-                  animate={!prefersReducedMotion ? {
-                    opacity: [0.2, 0.8, 0.2],
-                    scale: [0.8, 1.2, 0.8],
-                  } : undefined}
+                  animate={
+                    !prefersReducedMotion
+                      ? {
+                          opacity: [0.2, 0.8, 0.2],
+                          scale: [0.8, 1.2, 0.8],
+                        }
+                      : undefined
+                  }
                   transition={{
                     duration: 2 + Math.random() * 3,
                     repeat: Infinity,
@@ -837,17 +853,21 @@ export default function MirrorExperience() {
                     left: `${20 + Math.random() * 60}%`,
                     top: `${20 + Math.random() * 60}%`,
                   }}
-                  animate={!prefersReducedMotion ? {
-                    x: [0, (Math.random() - 0.5) * 100, 0],
-                    y: [0, -50 - Math.random() * 50, 0],
-                    opacity: [0, 0.6, 0],
-                    scale: [0, 1, 0],
-                  } : undefined}
+                  animate={
+                    !prefersReducedMotion
+                      ? {
+                          x: [0, (Math.random() - 0.5) * 100, 0],
+                          y: [0, -50 - Math.random() * 50, 0],
+                          opacity: [0, 0.6, 0],
+                          scale: [0, 1, 0],
+                        }
+                      : undefined
+                  }
                   transition={{
                     duration: 4 + Math.random() * 3,
                     repeat: Infinity,
                     delay: Math.random() * 4,
-                    ease: "easeInOut",
+                    ease: 'easeInOut',
                   }}
                 />
               ))}
@@ -858,37 +878,49 @@ export default function MirrorExperience() {
               {/* Outer glow rings */}
               <motion.div
                 className="mirror-ring mirror-ring-outer"
-                animate={!prefersReducedMotion ? {
-                  rotate: 360,
-                  scale: [1, 1.05, 1],
-                } : undefined}
+                animate={
+                  !prefersReducedMotion
+                    ? {
+                        rotate: 360,
+                        scale: [1, 1.05, 1],
+                      }
+                    : undefined
+                }
                 transition={{
-                  rotate: { duration: 30, repeat: Infinity, ease: "linear" },
-                  scale: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+                  rotate: { duration: 30, repeat: Infinity, ease: 'linear' },
+                  scale: { duration: 4, repeat: Infinity, ease: 'easeInOut' },
                 }}
               />
               <motion.div
                 className="mirror-ring mirror-ring-middle"
-                animate={!prefersReducedMotion ? {
-                  rotate: -360,
-                  scale: [1.05, 1, 1.05],
-                } : undefined}
+                animate={
+                  !prefersReducedMotion
+                    ? {
+                        rotate: -360,
+                        scale: [1.05, 1, 1.05],
+                      }
+                    : undefined
+                }
                 transition={{
-                  rotate: { duration: 25, repeat: Infinity, ease: "linear" },
-                  scale: { duration: 3.5, repeat: Infinity, ease: "easeInOut" },
+                  rotate: { duration: 25, repeat: Infinity, ease: 'linear' },
+                  scale: { duration: 3.5, repeat: Infinity, ease: 'easeInOut' },
                 }}
               />
 
               {/* The mirror itself */}
               <motion.div
                 className="mirror-portal"
-                animate={!prefersReducedMotion ? {
-                  scale: [1, 1.02, 1],
-                } : undefined}
+                animate={
+                  !prefersReducedMotion
+                    ? {
+                        scale: [1, 1.02, 1],
+                      }
+                    : undefined
+                }
                 transition={{
                   duration: 3,
                   repeat: Infinity,
-                  ease: "easeInOut",
+                  ease: 'easeInOut',
                 }}
               >
                 {/* Mirror surface shimmer */}
@@ -897,28 +929,36 @@ export default function MirrorExperience() {
                 {/* Inner reflection */}
                 <motion.div
                   className="mirror-reflection-inner"
-                  animate={!prefersReducedMotion ? {
-                    opacity: [0.3, 0.6, 0.3],
-                    backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'],
-                  } : undefined}
+                  animate={
+                    !prefersReducedMotion
+                      ? {
+                          opacity: [0.3, 0.6, 0.3],
+                          backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'],
+                        }
+                      : undefined
+                  }
                   transition={{
                     duration: 5,
                     repeat: Infinity,
-                    ease: "easeInOut",
+                    ease: 'easeInOut',
                   }}
                 />
 
                 {/* Central glow */}
                 <motion.div
                   className="mirror-glow-center"
-                  animate={!prefersReducedMotion ? {
-                    opacity: [0.4, 0.8, 0.4],
-                    scale: [0.8, 1.1, 0.8],
-                  } : undefined}
+                  animate={
+                    !prefersReducedMotion
+                      ? {
+                          opacity: [0.4, 0.8, 0.4],
+                          scale: [0.8, 1.1, 0.8],
+                        }
+                      : undefined
+                  }
                   transition={{
                     duration: 2.5,
                     repeat: Infinity,
-                    ease: "easeInOut",
+                    ease: 'easeInOut',
                   }}
                 />
               </motion.div>
@@ -933,20 +973,22 @@ export default function MirrorExperience() {
             >
               <motion.p
                 className="gazing-status"
-                animate={!prefersReducedMotion ? {
-                  opacity: [0.7, 1, 0.7],
-                } : undefined}
+                animate={
+                  !prefersReducedMotion
+                    ? {
+                        opacity: [0.7, 1, 0.7],
+                      }
+                    : undefined
+                }
                 transition={{
                   duration: 2.5,
                   repeat: Infinity,
-                  ease: "easeInOut",
+                  ease: 'easeInOut',
                 }}
               >
                 {statusText}
               </motion.p>
-              <p className="gazing-subtitle">
-                Your reflection is taking form...
-              </p>
+              <p className="gazing-subtitle">Your reflection is taking form...</p>
             </motion.div>
           </motion.div>
         )}
@@ -959,7 +1001,7 @@ export default function MirrorExperience() {
           display: flex;
           align-items: center;
           justify-content: center;
-          overflow-x: hidden;  /* Prevent horizontal wobble from animated elements */
+          overflow-x: hidden; /* Prevent horizontal wobble from animated elements */
           overflow-y: auto;
           /* Darker background for depth */
           background: radial-gradient(
@@ -974,11 +1016,7 @@ export default function MirrorExperience() {
           position: fixed;
           inset: 0;
           pointer-events: none;
-          background: radial-gradient(
-            ellipse at center,
-            transparent 0%,
-            rgba(0, 0, 0, 0.4) 100%
-          );
+          background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
           z-index: 1;
         }
 
@@ -1004,7 +1042,8 @@ export default function MirrorExperience() {
         }
 
         @keyframes fusionBreathe {
-          0%, 100% {
+          0%,
+          100% {
             opacity: 0;
             transform: scale(0.4) translate(0, 0);
           }
@@ -1028,12 +1067,15 @@ export default function MirrorExperience() {
           height: 3px;
           background: rgba(255, 255, 255, 0.95);
           border-radius: 50%;
-          box-shadow: 0 0 8px rgba(255, 255, 255, 0.7), 0 0 15px rgba(255, 255, 255, 0.4);
+          box-shadow:
+            0 0 8px rgba(255, 255, 255, 0.7),
+            0 0 15px rgba(255, 255, 255, 0.4);
           animation: gentleTwinkle 10s ease-in-out infinite;
         }
 
         @keyframes gentleTwinkle {
-          0%, 100% {
+          0%,
+          100% {
             opacity: 0;
             transform: scale(0.4);
           }
@@ -1060,7 +1102,8 @@ export default function MirrorExperience() {
         }
 
         @keyframes intenseSwirl {
-          0%, 100% {
+          0%,
+          100% {
             opacity: 0;
             transform: rotate(0deg) scale(0.2);
           }
@@ -1124,7 +1167,9 @@ export default function MirrorExperience() {
         .reflection-card {
           padding: 3rem;
           border-radius: 30px;
-          transition: border-color 0.8s ease, box-shadow 0.8s ease;
+          transition:
+            border-color 0.8s ease,
+            box-shadow 0.8s ease;
         }
 
         .mirror-surface {

@@ -13,8 +13,9 @@
 
 'use client';
 
-import React, { ReactNode } from 'react';
 import Link from 'next/link';
+import React, { ReactNode } from 'react';
+
 import { GlassCard } from '@/components/ui/glass';
 import { cn } from '@/lib/utils';
 
@@ -39,17 +40,17 @@ export default function NavigationBase({
     <GlassCard
       elevated
       className={cn(
-        'fixed top-0 left-0 right-0 z-[100]',
+        'fixed left-0 right-0 top-0 z-[100]',
         'rounded-none border-b border-white/10',
         transparent && 'bg-transparent backdrop-blur-sm',
         className
       )}
     >
-      <div className="container mx-auto px-4 sm:px-6 py-2 sm:py-4 flex items-center justify-between">
+      <div className="container mx-auto flex items-center justify-between px-4 py-2 sm:px-6 sm:py-4">
         {/* Logo */}
         <Link
           href={homeHref}
-          className="flex items-center gap-2 sm:gap-3 text-white/90 hover:text-white transition-all hover:-translate-y-0.5 text-lg font-normal"
+          className="flex items-center gap-2 text-lg font-normal text-white/90 transition-all hover:-translate-y-0.5 hover:text-white sm:gap-3"
         >
           <span className="text-xl sm:text-2xl">🪞</span>
           <span className="hidden md:inline">Mirror of Dreams</span>

@@ -19,9 +19,15 @@ interface BreathingReturn {
 
 const presets: Record<BreathingPreset, { duration: number; options: BreathingOptions }> = {
   card: { duration: 4000, options: { intensity: 0.015, opacityChange: 0, pauseOnHover: true } },
-  background: { duration: 8000, options: { intensity: 0.01, opacityChange: 0, pauseOnHover: false } },
+  background: {
+    duration: 8000,
+    options: { intensity: 0.01, opacityChange: 0, pauseOnHover: false },
+  },
   focus: { duration: 3000, options: { intensity: 0.03, opacityChange: 0, pauseOnHover: true } },
-  meditation: { duration: 6000, options: { intensity: 0.02, opacityChange: 0.05, pauseOnHover: false } },
+  meditation: {
+    duration: 6000,
+    options: { intensity: 0.02, opacityChange: 0.05, pauseOnHover: false },
+  },
   active: { duration: 2000, options: { intensity: 0.025, opacityChange: 0, pauseOnHover: true } },
 };
 
@@ -58,8 +64,7 @@ export function useBreathingEffect(
 
   // Check for reduced motion preference
   const prefersReducedMotion =
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // Return no animation if reduced motion is preferred
   if (prefersReducedMotion || duration <= 0) {

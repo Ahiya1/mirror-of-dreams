@@ -14,17 +14,19 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+
+import type { UserPreferences } from '@/types/user';
+
+import { BottomNavigation } from '@/components/navigation';
+import { AppNavigation } from '@/components/shared/AppNavigation';
+import CosmicBackground from '@/components/shared/CosmicBackground';
+import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
+import { GlassCard } from '@/components/ui/glass/GlassCard';
+import { useToast } from '@/contexts/ToastContext';
 import { useAuth } from '@/hooks/useAuth';
 import { trpc } from '@/lib/trpc';
-import { useToast } from '@/contexts/ToastContext';
-import { AppNavigation } from '@/components/shared/AppNavigation';
-import { BottomNavigation } from '@/components/navigation';
-import CosmicBackground from '@/components/shared/CosmicBackground';
-import { GlassCard } from '@/components/ui/glass/GlassCard';
-import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
-import type { UserPreferences } from '@/types/user';
 
 export default function SettingsPage() {
   const { user, isLoading: authLoading, isAuthenticated, setUser } = useAuth();
@@ -50,7 +52,7 @@ export default function SettingsPage() {
   // Update preferences mutation
   const updatePreferencesMutation = trpc.users.updatePreferences.useMutation({
     onSuccess: (data) => {
-      setUser((prev) => prev ? { ...prev, preferences: data.preferences } : null);
+      setUser((prev) => (prev ? { ...prev, preferences: data.preferences } : null));
       toast.success('Setting saved', 2000);
     },
     onError: (error) => {
@@ -77,9 +79,9 @@ export default function SettingsPage() {
   // Loading state
   if (authLoading) {
     return (
-      <div className="min-h-screen relative">
+      <div className="relative min-h-screen">
         <CosmicBackground />
-        <div className="flex items-center justify-center min-h-screen">
+        <div className="flex min-h-screen items-center justify-center">
           <CosmicLoader size="lg" />
         </div>
       </div>
@@ -90,17 +92,17 @@ export default function SettingsPage() {
   if (!isAuthenticated || !preferences) return null;
 
   return (
-    <div className="min-h-screen relative">
+    <div className="relative min-h-screen">
       <CosmicBackground />
       <AppNavigation currentPage="settings" />
 
-      <main className="relative z-10 pt-nav min-h-screen pb-20 md:pb-0">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-3xl font-bold text-white mb-8">Settings</h1>
+      <main className="relative z-10 min-h-screen pb-20 pt-nav md:pb-0">
+        <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+          <h1 className="mb-8 text-3xl font-bold text-white">Settings</h1>
 
           {/* Notification Preferences */}
           <GlassCard elevated className="mb-6">
-            <h2 className="text-xl font-semibold text-white mb-4">Notification Preferences</h2>
+            <h2 className="mb-4 text-xl font-semibold text-white">Notification Preferences</h2>
 
             <SettingRow
               label="Email Notifications"
@@ -135,7 +137,7 @@ export default function SettingsPage() {
 
           {/* Reflection Preferences */}
           <GlassCard elevated className="mb-6">
-            <h2 className="text-xl font-semibold text-white mb-4">Reflection Preferences</h2>
+            <h2 className="mb-4 text-xl font-semibold text-white">Reflection Preferences</h2>
 
             <SettingRow
               label="Default Tone"
@@ -162,7 +164,7 @@ export default function SettingsPage() {
 
           {/* Display Preferences */}
           <GlassCard elevated className="mb-6">
-            <h2 className="text-xl font-semibold text-white mb-4">Display Preferences</h2>
+            <h2 className="mb-4 text-xl font-semibold text-white">Display Preferences</h2>
 
             <SettingRow
               label="Reduce Motion"
@@ -181,7 +183,7 @@ export default function SettingsPage() {
 
           {/* Privacy Preferences */}
           <GlassCard elevated>
-            <h2 className="text-xl font-semibold text-white mb-4">Privacy & Data</h2>
+            <h2 className="mb-4 text-xl font-semibold text-white">Privacy & Data</h2>
 
             <SettingRow
               label="Analytics"
@@ -231,22 +233,22 @@ function SettingRow({
   options = [],
 }: SettingRowProps) {
   return (
-    <div className="flex items-center justify-between py-4 border-b border-white/10 last:border-0">
+    <div className="flex items-center justify-between border-b border-white/10 py-4 last:border-0">
       <div className="flex-1">
-        <p className="text-white font-medium">{label}</p>
-        <p className="text-sm text-white/60 mt-1">{description}</p>
+        <p className="font-medium text-white">{label}</p>
+        <p className="mt-1 text-sm text-white/60">{description}</p>
       </div>
 
       {type === 'toggle' && (
-        <label className="relative inline-flex items-center cursor-pointer ml-4">
+        <label className="relative ml-4 inline-flex cursor-pointer items-center">
           <input
             type="checkbox"
             checked={checked}
             onChange={(e) => onChange(e.target.checked)}
             disabled={disabled}
-            className="sr-only peer"
+            className="peer sr-only"
           />
-          <div className="w-11 h-6 bg-white/10 peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-purple-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-disabled:opacity-50 peer-disabled:cursor-not-allowed"></div>
+          <div className="peer h-6 w-11 rounded-full bg-white/10 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-purple-500 peer-checked:after:translate-x-full peer-focus:ring-2 peer-focus:ring-purple-500 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"></div>
         </label>
       )}
 
@@ -255,7 +257,7 @@ function SettingRow({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
-          className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed ml-4"
+          className="ml-4 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {options.map((option) => (
             <option key={option.value} value={option.value} className="bg-gray-900">
@@ -273,7 +275,7 @@ function SettingRow({
             onChange(val === 'null' ? null : val === 'true');
           }}
           disabled={disabled}
-          className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed ml-4"
+          className="ml-4 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {options.map((option) => (
             <option

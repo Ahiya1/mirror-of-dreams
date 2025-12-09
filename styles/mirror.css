@@ -1,6 +1,6 @@
 /* styles/mirror.css - Enhanced Square Mirror Styles */
 
-@import "./variables.css";
+@import './variables.css';
 
 /* ╭─ RESET & FOUNDATION ────────────────────────────────────────────────╮ */
 *,
@@ -50,64 +50,31 @@ body {
 .cosmic-gradient {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-      circle at 20% 30%,
-      rgba(59, 130, 246, 0.08) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 80% 70%,
-      rgba(147, 51, 234, 0.06) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 50% 50%,
-      rgba(251, 191, 36, 0.04) 0%,
-      transparent 70%
-    ),
-    radial-gradient(
-      circle at 90% 20%,
-      rgba(16, 185, 129, 0.03) 0%,
-      transparent 60%
-    );
+  background:
+    radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(147, 51, 234, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.04) 0%, transparent 70%),
+    radial-gradient(circle at 90% 20%, rgba(16, 185, 129, 0.03) 0%, transparent 60%);
   animation: cosmicShift 120s ease-in-out infinite;
 }
 
 .starfield {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-      circle at 15% 25%,
-      rgba(255, 255, 255, 0.4) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 85% 75%,
-      rgba(255, 255, 255, 0.3) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 45% 15%,
-      rgba(255, 255, 255, 0.35) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 75% 85%,
-      rgba(255, 255, 255, 0.25) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 25% 75%,
-      rgba(255, 255, 255, 0.3) 0 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 65% 35%,
-      rgba(255, 255, 255, 0.28) 0 1px,
-      transparent 2px
-    );
-  background-size: 800px 600px, 1200px 900px, 600px 800px, 1000px 700px,
-    900px 1100px, 700px 500px;
+  background:
+    radial-gradient(circle at 15% 25%, rgba(255, 255, 255, 0.4) 0 1px, transparent 2px),
+    radial-gradient(circle at 85% 75%, rgba(255, 255, 255, 0.3) 0 1px, transparent 2px),
+    radial-gradient(circle at 45% 15%, rgba(255, 255, 255, 0.35) 0 1px, transparent 2px),
+    radial-gradient(circle at 75% 85%, rgba(255, 255, 255, 0.25) 0 1px, transparent 2px),
+    radial-gradient(circle at 25% 75%, rgba(255, 255, 255, 0.3) 0 1px, transparent 2px),
+    radial-gradient(circle at 65% 35%, rgba(255, 255, 255, 0.28) 0 1px, transparent 2px);
+  background-size:
+    800px 600px,
+    1200px 900px,
+    600px 800px,
+    1000px 700px,
+    900px 1100px,
+    700px 500px;
   opacity: var(--opacity-15);
   animation: starfieldDrift 300s linear infinite;
 }
@@ -149,7 +116,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-lg);  /* 24-32px responsive */
+  padding: var(--space-lg); /* 24-32px responsive */
   background: radial-gradient(
     ellipse at center,
     rgba(30, 41, 59, 0.2) 0%,
@@ -162,7 +129,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-2xl);  /* 48-64px responsive */
+  gap: var(--space-2xl); /* 48-64px responsive */
   width: 100%;
   max-width: 900px;
   position: relative;
@@ -173,7 +140,7 @@ body {
   width: clamp(400px, 60vw, 700px);
   height: clamp(400px, 60vw, 700px);
   aspect-ratio: 1;
-  padding: var(--space-xl);  /* 32-48px responsive */
+  padding: var(--space-xl); /* 32-48px responsive */
   background: radial-gradient(
     circle at center,
     rgba(147, 51, 234, 0.2) 0%,
@@ -190,22 +157,28 @@ body {
 @keyframes frameGlow {
   0%,
   100% {
-    box-shadow: 0 0 100px rgba(147, 51, 234, 0.4),
-      0 0 200px rgba(59, 130, 246, 0.3), 0 0 300px rgba(251, 191, 36, 0.1),
+    box-shadow:
+      0 0 100px rgba(147, 51, 234, 0.4),
+      0 0 200px rgba(59, 130, 246, 0.3),
+      0 0 300px rgba(251, 191, 36, 0.1),
       inset 0 0 80px rgba(255, 255, 255, 0.05);
     filter: drop-shadow(0 0 100px rgba(147, 51, 234, 0.3))
       drop-shadow(0 0 50px rgba(59, 130, 246, 0.2));
   }
   33% {
-    box-shadow: 0 0 120px rgba(59, 130, 246, 0.5),
-      0 0 220px rgba(147, 51, 234, 0.4), 0 0 320px rgba(251, 191, 36, 0.15),
+    box-shadow:
+      0 0 120px rgba(59, 130, 246, 0.5),
+      0 0 220px rgba(147, 51, 234, 0.4),
+      0 0 320px rgba(251, 191, 36, 0.15),
       inset 0 0 100px rgba(255, 255, 255, 0.08);
     filter: drop-shadow(0 0 120px rgba(59, 130, 246, 0.4))
       drop-shadow(0 0 60px rgba(147, 51, 234, 0.3));
   }
   66% {
-    box-shadow: 0 0 110px rgba(251, 191, 36, 0.4),
-      0 0 210px rgba(147, 51, 234, 0.3), 0 0 310px rgba(59, 130, 246, 0.2),
+    box-shadow:
+      0 0 110px rgba(251, 191, 36, 0.4),
+      0 0 210px rgba(147, 51, 234, 0.3),
+      0 0 310px rgba(59, 130, 246, 0.2),
       inset 0 0 90px rgba(255, 255, 255, 0.06);
     filter: drop-shadow(0 0 110px rgba(251, 191, 36, 0.3))
       drop-shadow(0 0 55px rgba(147, 51, 234, 0.25));
@@ -232,16 +205,18 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-lg);  /* 24-32px responsive */
-  box-shadow: inset 0 0 150px rgba(147, 51, 234, 0.15),
+  padding: var(--space-lg); /* 24-32px responsive */
+  box-shadow:
+    inset 0 0 150px rgba(147, 51, 234, 0.15),
     inset 0 0 100px rgba(59, 130, 246, 0.2),
-    inset 0 0 50px rgba(255, 255, 255, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    inset 0 0 50px rgba(255, 255, 255, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
   position: relative;
 }
 
 /* Mirror reflection effects */
 .square-mirror-surface::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 8%;
   left: 15%;
@@ -261,7 +236,7 @@ body {
 }
 
 .square-mirror-surface::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   background: linear-gradient(
@@ -347,7 +322,7 @@ body {
   position: relative;
   background: rgba(0, 0, 0, 0.02);
   border-radius: 15px;
-  padding: var(--space-lg);  /* 24-32px responsive */
+  padding: var(--space-lg); /* 24-32px responsive */
   backdrop-filter: blur(10px);
 }
 
@@ -378,18 +353,19 @@ body {
 .matrix-header {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);  /* 12-16px responsive */
-  margin-bottom: var(--space-lg);  /* 24-32px responsive */
+  gap: var(--space-sm); /* 12-16px responsive */
+  margin-bottom: var(--space-lg); /* 24-32px responsive */
   font-family: var(--font-family-mono);
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
   color: rgba(59, 130, 246, 0.8);
   border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: var(--space-md);  /* 16-24px responsive */
+  padding-bottom: var(--space-md); /* 16-24px responsive */
   background: rgba(0, 0, 0, 0.1);
-  padding: var(--space-md);  /* 16-24px responsive */
+  padding: var(--space-md); /* 16-24px responsive */
   border-radius: 10px;
-  margin: calc(-1 * var(--space-xs)) calc(-1 * var(--space-xs)) var(--space-lg) calc(-1 * var(--space-xs));
+  margin: calc(-1 * var(--space-xs)) calc(-1 * var(--space-xs)) var(--space-lg)
+    calc(-1 * var(--space-xs));
 }
 
 .matrix-prompt {
@@ -433,13 +409,13 @@ body {
 /* ╭─ ENHANCED NAVIGATION ────────────────────────────────────────────────╮ */
 .cosmic-back-link {
   position: fixed;
-  top: var(--space-lg);  /* 24-32px responsive */
-  left: var(--space-lg);  /* 24-32px responsive */
+  top: var(--space-lg); /* 24-32px responsive */
+  left: var(--space-lg); /* 24-32px responsive */
   z-index: 200;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-sm);  /* 12-16px responsive */
-  padding: var(--space-md) var(--space-lg);  /* 16-24px and 24-32px responsive */
+  gap: var(--space-sm); /* 12-16px responsive */
+  padding: var(--space-md) var(--space-lg); /* 16-24px and 24-32px responsive */
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(30px) saturate(150%);
   border: 2px solid rgba(255, 255, 255, 0.15);
@@ -454,15 +430,10 @@ body {
 }
 
 .cosmic-back-link::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    45deg,
-    transparent,
-    rgba(255, 255, 255, 0.1),
-    transparent
-  );
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
   border-radius: 50px;
   transform: translateX(-100%);
   transition: transform 0.6s ease;
@@ -489,18 +460,18 @@ body {
 .mirror-controls {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: var(--space-lg);  /* 24-32px responsive */
+  gap: var(--space-lg); /* 24-32px responsive */
   width: 100%;
   max-width: 600px;
-  margin-top: var(--space-md);  /* 16-24px responsive */
+  margin-top: var(--space-md); /* 16-24px responsive */
 }
 
 .control-button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-sm);  /* 12-16px responsive */
-  padding: var(--space-lg) var(--space-md);  /* 24-32px and 16-24px responsive */
+  gap: var(--space-sm); /* 12-16px responsive */
+  padding: var(--space-lg) var(--space-md); /* 24-32px and 16-24px responsive */
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(25px) saturate(150%);
   border: 2px solid rgba(255, 255, 255, 0.12);
@@ -517,15 +488,10 @@ body {
 }
 
 .control-button::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    transparent,
-    rgba(255, 255, 255, 0.1),
-    transparent
-  );
+  background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1), transparent);
   transform: translateY(-100%);
   transition: transform 0.5s ease;
 }
@@ -571,32 +537,32 @@ body {
   .square-mirror-frame {
     width: clamp(350px, 70vw, 600px);
     height: clamp(350px, 70vw, 600px);
-    padding: var(--space-lg);  /* 24-32px responsive */
+    padding: var(--space-lg); /* 24-32px responsive */
   }
 }
 
 @media (max-width: 768px) {
   .square-mirror-container {
-    padding: var(--space-md);  /* 16-24px responsive */
+    padding: var(--space-md); /* 16-24px responsive */
   }
 
   .mirror-content {
-    gap: var(--space-lg);  /* 24-32px responsive */
+    gap: var(--space-lg); /* 24-32px responsive */
   }
 
   .square-mirror-frame {
     width: clamp(300px, 85vw, 500px);
     height: clamp(300px, 85vw, 500px);
-    padding: var(--space-lg);  /* 24-32px responsive */
+    padding: var(--space-lg); /* 24-32px responsive */
   }
 
   .square-mirror-surface {
-    padding: var(--space-lg);  /* 24-32px responsive */
+    padding: var(--space-lg); /* 24-32px responsive */
     border-radius: 15px;
   }
 
   .reflection-matrix {
-    padding: var(--space-md);  /* 16-24px responsive */
+    padding: var(--space-md); /* 16-24px responsive */
   }
 
   .matrix-output {
@@ -606,13 +572,13 @@ body {
 
   .mirror-controls {
     grid-template-columns: 1fr 1fr;
-    gap: var(--space-md);  /* 16-24px responsive */
+    gap: var(--space-md); /* 16-24px responsive */
   }
 
   .cosmic-back-link {
-    top: var(--space-md);  /* 16-24px responsive */
-    left: var(--space-md);  /* 16-24px responsive */
-    padding: var(--space-sm) var(--space-md);  /* 12-16px and 16-24px responsive */
+    top: var(--space-md); /* 16-24px responsive */
+    left: var(--space-md); /* 16-24px responsive */
+    padding: var(--space-sm) var(--space-md); /* 12-16px and 16-24px responsive */
     font-size: var(--text-xs);
   }
 }
@@ -621,18 +587,18 @@ body {
   .square-mirror-frame {
     width: clamp(280px, 90vw, 400px);
     height: clamp(280px, 90vw, 400px);
-    padding: var(--space-md);  /* 16-24px responsive */
+    padding: var(--space-md); /* 16-24px responsive */
   }
 
   .square-mirror-surface {
-    padding: var(--space-md);  /* 16-24px responsive */
+    padding: var(--space-md); /* 16-24px responsive */
     border-radius: 12px;
   }
 
   .matrix-header {
     font-size: var(--text-xs);
-    padding: var(--space-sm);  /* 12-16px responsive */
-    margin-bottom: var(--space-lg);  /* 24-32px responsive */
+    padding: var(--space-sm); /* 12-16px responsive */
+    margin-bottom: var(--space-lg); /* 24-32px responsive */
   }
 
   .matrix-output {
@@ -640,7 +606,7 @@ body {
   }
 
   .control-button {
-    padding: var(--space-md) var(--space-sm);  /* 16-24px and 12-16px responsive */
+    padding: var(--space-md) var(--space-sm); /* 16-24px and 12-16px responsive */
     font-size: var(--text-xs);
   }
 
@@ -677,7 +643,7 @@ body {
 @media (hover: none) and (pointer: coarse) {
   .control-button {
     min-height: 60px;
-    padding: var(--space-lg) var(--space-md);  /* 20-32px and 16-24px responsive */
+    padding: var(--space-lg) var(--space-md); /* 20-32px and 16-24px responsive */
   }
 
   .control-button:active {
@@ -687,7 +653,7 @@ body {
 
   .cosmic-back-link {
     min-height: 48px;
-    padding: var(--space-md) var(--space-lg);  /* 16-24px and 20-32px responsive */
+    padding: var(--space-md) var(--space-lg); /* 16-24px and 20-32px responsive */
   }
 }
 

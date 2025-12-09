@@ -1,8 +1,10 @@
 'use client';
 
 import React from 'react';
-import { useAuth } from '@/hooks/useAuth';
+
 import styles from './WelcomeSection.module.css';
+
+import { useAuth } from '@/hooks/useAuth';
 
 interface WelcomeSectionProps {
   className?: string;
@@ -12,9 +14,7 @@ interface WelcomeSectionProps {
  * Simple welcome section with time-based greeting
  * Simplified from 258 lines to ~50 lines for restraint
  */
-const WelcomeSection: React.FC<WelcomeSectionProps> = ({
-  className = '',
-}) => {
+const WelcomeSection: React.FC<WelcomeSectionProps> = ({ className = '' }) => {
   const { user } = useAuth();
 
   /**

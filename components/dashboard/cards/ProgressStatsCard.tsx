@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+
 import DashboardCard, {
   CardHeader,
   CardTitle,
@@ -78,12 +79,8 @@ const ProgressStatsCard: React.FC<ProgressStatsCardProps> = ({
           <div className="stats-container">
             {/* Primary stat: This month */}
             <div className="stat-primary">
-              <div className="stat-primary__value">
-                {stats.thisMonth}
-              </div>
-              <div className="stat-primary__label">
-                reflections this month
-              </div>
+              <div className="stat-primary__value">{stats.thisMonth}</div>
+              <div className="stat-primary__label">reflections this month</div>
             </div>
 
             {/* Secondary stats */}
@@ -94,9 +91,7 @@ const ProgressStatsCard: React.FC<ProgressStatsCardProps> = ({
               </div>
 
               <div className="stat-item">
-                <div className="stat-item__value">
-                  {stats.thisMonth > 0 ? '🔥' : '💫'}
-                </div>
+                <div className="stat-item__value">{stats.thisMonth > 0 ? '🔥' : '💫'}</div>
                 <div className="stat-item__label">
                   {stats.thisMonth > 0
                     ? `${stats.thisMonth} day${stats.thisMonth > 1 ? 's' : ''} active`
@@ -159,7 +154,8 @@ const ProgressStatsCard: React.FC<ProgressStatsCardProps> = ({
         }
 
         @keyframes statPulse {
-          0%, 100% {
+          0%,
+          100% {
             opacity: 1;
           }
           50% {
@@ -222,13 +218,18 @@ const ProgressStatsCard: React.FC<ProgressStatsCardProps> = ({
         }
 
         .motivation-message--special {
-          background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+          background: linear-gradient(
+            135deg,
+            rgba(139, 92, 246, 0.1) 0%,
+            rgba(168, 85, 247, 0.1) 100%
+          );
           border-color: rgba(139, 92, 246, 0.3);
           animation: specialGlow 3s ease-in-out infinite;
         }
 
         @keyframes specialGlow {
-          0%, 100% {
+          0%,
+          100% {
             box-shadow: 0 0 0 rgba(139, 92, 246, 0);
           }
           50% {

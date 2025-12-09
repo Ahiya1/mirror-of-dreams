@@ -36,10 +36,7 @@ async function setupLocalDatabase() {
   }
 
   // Initialize Supabase client with service role key (bypasses RLS)
-  const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
-  );
+  const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
   log('✓ Connected to Supabase', 'green');
 
@@ -50,36 +47,36 @@ async function setupLocalDatabase() {
       password: 'password123',
       name: 'Free Tier User',
       tier: 'free',
-      is_creator: false
+      is_creator: false,
     },
     {
       email: 'essential@test.com',
       password: 'password123',
       name: 'Essential User',
       tier: 'essential',
-      is_creator: false
+      is_creator: false,
     },
     {
       email: 'optimal@test.com',
       password: 'password123',
       name: 'Optimal User',
       tier: 'optimal',
-      is_creator: false
+      is_creator: false,
     },
     {
       email: 'premium@test.com',
       password: 'password123',
       name: 'Premium User',
       tier: 'premium',
-      is_creator: false
+      is_creator: false,
     },
     {
       email: 'creator@test.com',
       password: 'password123',
       name: 'Creator (Ahiya)',
       tier: 'premium',
-      is_creator: true
-    }
+      is_creator: true,
+    },
   ];
 
   log('\n📝 Creating test users...', 'blue');
@@ -114,7 +111,7 @@ async function setupLocalDatabase() {
           reflection_count_this_month: 0,
           total_reflections: 0,
           current_month_year: new Date().toISOString().slice(0, 7),
-          email_verified: true
+          email_verified: true,
         })
         .select('id, email, name, tier')
         .single();
@@ -132,20 +129,15 @@ async function setupLocalDatabase() {
   log('\n📊 Database summary:', 'blue');
 
   // Get total user count
-  const { count } = await supabase
-    .from('users')
-    .select('*', { count: 'exact', head: true });
+  const { count } = await supabase.from('users').select('*', { count: 'exact', head: true });
 
   log(`Total users: ${count}`, 'green');
 
   // Get user count by tier
-  const { data: tiers } = await supabase
-    .from('users')
-    .select('tier')
-    .order('tier');
+  const { data: tiers } = await supabase.from('users').select('tier').order('tier');
 
   const tierCounts = {};
-  tiers?.forEach(u => {
+  tiers?.forEach((u) => {
     tierCounts[u.tier] = (tierCounts[u.tier] || 0) + 1;
   });
 
@@ -155,7 +147,9 @@ async function setupLocalDatabase() {
 
   log('\n✨ Local database setup complete!', 'bright');
   log('\n📝 Test credentials:', 'blue');
-  log('  Email: free@test.com, essential@test.com, optimal@test.com, premium@test.com, creator@test.com');
+  log(
+    '  Email: free@test.com, essential@test.com, optimal@test.com, premium@test.com, creator@test.com'
+  );
   log('  Password: password123 (for all test users)\n');
   log('🌐 Access Supabase Studio at: http://127.0.0.1:54323\n', 'yellow');
 }
@@ -163,7 +157,7 @@ async function setupLocalDatabase() {
 // Run the setup
 setupLocalDatabase()
   .then(() => process.exit(0))
-  .catch(error => {
+  .catch((error) => {
     log(`\n❌ Setup failed: ${error.message}`, 'red');
     console.error(error);
     process.exit(1);

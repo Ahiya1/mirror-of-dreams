@@ -47,11 +47,7 @@ const CosmicBackground: React.FC<CosmicBackgroundProps> = ({
   };
 
   return (
-    <div
-      className={`cosmic-background ${className}`}
-      style={backgroundStyle}
-      aria-hidden="true"
-    >
+    <div className={`cosmic-background ${className}`} style={backgroundStyle} aria-hidden="true">
       {/* Primary cosmic gradient layer */}
       <div className="cosmic-gradient" />
 
@@ -83,9 +79,7 @@ const CosmicBackground: React.FC<CosmicBackgroundProps> = ({
                   transparent 60%
                 )
               `,
-              animation: shouldAnimate
-                ? 'nebulaFlow 120s ease-in-out infinite'
-                : 'none',
+              animation: shouldAnimate ? 'nebulaFlow 120s ease-in-out infinite' : 'none',
               opacity: intensity,
             }}
           />
@@ -107,9 +101,7 @@ const CosmicBackground: React.FC<CosmicBackgroundProps> = ({
                 }) 0 1px, transparent 2px)
               `,
               backgroundSize: '400px 400px, 600px 600px, 800px 800px',
-              animation: shouldAnimate
-                ? 'particleDrift 200s linear infinite'
-                : 'none',
+              animation: shouldAnimate ? 'particleDrift 200s linear infinite' : 'none',
               opacity: intensity * 0.6,
             }}
           />

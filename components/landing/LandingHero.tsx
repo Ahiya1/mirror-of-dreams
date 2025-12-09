@@ -18,6 +18,7 @@
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+
 import { GlowButton } from '@/components/ui/glass';
 import { trpc } from '@/lib/trpc';
 
@@ -29,12 +30,10 @@ export default function LandingHero() {
   const handleSeeDemoClick = async () => {
     setIsLoggingIn(true);
     try {
-      const { token, user } = await loginDemo.mutateAsync();
+      await loginDemo.mutateAsync();
 
-      // Store token
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('token', token);
-      }
+      // Token is now set as HTTP-only cookie by server
+      // No localStorage needed
 
       // Redirect to dashboard
       router.push('/dashboard');
@@ -53,22 +52,22 @@ export default function LandingHero() {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: 'easeOut' }}
-      className="text-center max-w-4xl mx-auto px-4"
+      className="mx-auto max-w-4xl px-4 text-center"
     >
       {/* Headline */}
-      <h1 className="text-h1 font-bold mb-6">
+      <h1 className="text-h1 mb-6 font-bold">
         <span className="bg-gradient-to-r from-purple-400 via-amber-300/90 to-purple-600 bg-clip-text text-transparent">
           Your dreams know things
         </span>
       </h1>
 
       {/* Subheadline */}
-      <p className="text-xl sm:text-2xl text-white/70 mb-12 leading-relaxed">
+      <p className="mb-12 text-xl leading-relaxed text-white/70 sm:text-2xl">
         A companion for listening to what your inner life is trying to tell you
       </p>
 
       {/* CTAs */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+      <div className="flex flex-col justify-center gap-4 sm:flex-row">
         <GlowButton
           variant="warm"
           size="lg"
@@ -77,11 +76,7 @@ export default function LandingHero() {
         >
           {isLoggingIn || loginDemo.isPending ? 'Opening the door...' : 'Try It'}
         </GlowButton>
-        <GlowButton
-          variant="cosmic"
-          size="lg"
-          onClick={() => router.push('/auth/signup')}
-        >
+        <GlowButton variant="cosmic" size="lg" onClick={() => router.push('/auth/signup')}>
           Begin
         </GlowButton>
       </div>

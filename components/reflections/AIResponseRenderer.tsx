@@ -2,6 +2,7 @@
 
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+
 import { GradientText } from '@/components/ui/glass/GradientText';
 
 interface AIResponseRendererProps {
@@ -53,7 +54,10 @@ function stripHtmlToText(html: string): string {
 export function AIResponseRenderer({ content }: AIResponseRendererProps) {
   // Detect if content is HTML (legacy format from toSacredHTML)
   // Also check for HTML entities that might indicate encoded HTML
-  const isHtml = /<div[^>]*class="mirror-reflection"|<p\s+style="|<span\s+style="|&lt;div|&lt;p\s+style/i.test(content);
+  const isHtml =
+    /<div[^>]*class="mirror-reflection"|<p\s+style="|<span\s+style="|&lt;div|&lt;p\s+style/i.test(
+      content
+    );
 
   // If it's HTML, convert to markdown-like format for consistent rendering
   let processedContent = content;
@@ -62,18 +66,20 @@ export function AIResponseRenderer({ content }: AIResponseRendererProps) {
   }
 
   // Detect if content has markdown syntax (anywhere in content)
-  const hasMarkdown = /#{1,3}\s|\*\*[^*]+\*\*|\*[^*]+\*|_[^_]+_|^\s*[-*]\s|^\s*>\s|```|\[[^\]]+\]\([^)]+\)/m.test(processedContent);
+  const hasMarkdown =
+    /#{1,3}\s|\*\*[^*]+\*\*|\*[^*]+\*|_[^_]+_|^\s*[-*]\s|^\s*>\s|```|\[[^\]]+\]\([^)]+\)/m.test(
+      processedContent
+    );
 
   // Fallback for plain text (no markdown detected)
   if (!hasMarkdown) {
     return (
-      <div className="max-w-[720px] mx-auto space-y-4">
+      <div className="mx-auto max-w-[720px] space-y-4">
         {processedContent.split('\n\n').map((para, i) => (
           <p
             key={i}
-            className={i === 0
-              ? "text-xl leading-[1.8] text-white"
-              : "text-lg leading-[1.8] text-white/95"
+            className={
+              i === 0 ? 'text-xl leading-[1.8] text-white' : 'text-lg leading-[1.8] text-white/95'
             }
           >
             {para}
@@ -85,7 +91,7 @@ export function AIResponseRenderer({ content }: AIResponseRendererProps) {
 
   // Render markdown with custom components
   return (
-    <div className="max-w-[720px] mx-auto">
+    <div className="mx-auto max-w-[720px]">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
@@ -93,70 +99,69 @@ export function AIResponseRenderer({ content }: AIResponseRendererProps) {
           h1: ({ node, ...props }) => (
             <GradientText
               gradient="cosmic"
-              className="block text-4xl font-bold mb-6 mt-8 first:mt-0"
+              className="mb-6 mt-8 block text-4xl font-bold first:mt-0"
             >
               {props.children}
             </GradientText>
           ),
           h2: ({ node, ...props }) => (
-            <GradientText
-              gradient="cosmic"
-              className="block text-3xl font-semibold mb-4 mt-6"
-            >
+            <GradientText gradient="cosmic" className="mb-4 mt-6 block text-3xl font-semibold">
               {props.children}
             </GradientText>
           ),
           h3: ({ node, ...props }) => (
-            <h3 className="text-2xl font-medium text-purple-300 mb-3 mt-4" {...props} />
+            <h3 className="mb-3 mt-4 text-2xl font-medium text-purple-300" {...props} />
           ),
 
           // Body text with optimal readability (18px, line-height 1.8)
           // First paragraph is larger (1.25rem) to draw reader in
           p: ({ node, ...props }) => (
-            <p className="text-lg leading-[1.8] text-white/95 mb-4 first:text-xl first:text-white" {...props} />
+            <p
+              className="mb-4 text-lg leading-[1.8] text-white/95 first:text-xl first:text-white"
+              {...props}
+            />
           ),
 
           // Blockquotes with cosmic accent
           blockquote: ({ node, ...props }) => (
             <blockquote
-              className="border-l-4 border-purple-400/60 pl-6 py-3 my-6 bg-purple-500/5 rounded-r-lg"
+              className="my-6 rounded-r-lg border-l-4 border-purple-400/60 bg-purple-500/5 py-3 pl-6"
               {...props}
             >
-              <div className="text-white/90 italic">{props.children}</div>
+              <div className="italic text-white/90">{props.children}</div>
             </blockquote>
           ),
 
           // Lists with proper spacing
           ul: ({ node, ...props }) => (
-            <ul className="list-disc list-inside mb-4 space-y-2 text-white/90 ml-4" {...props} />
+            <ul className="mb-4 ml-4 list-inside list-disc space-y-2 text-white/90" {...props} />
           ),
           ol: ({ node, ...props }) => (
-            <ol className="list-decimal list-inside mb-4 space-y-2 text-white/90 ml-4" {...props} />
+            <ol className="mb-4 ml-4 list-inside list-decimal space-y-2 text-white/90" {...props} />
           ),
-          li: ({ node, ...props }) => (
-            <li className="text-white/90 leading-relaxed" {...props} />
-          ),
+          li: ({ node, ...props }) => <li className="leading-relaxed text-white/90" {...props} />,
 
           // Strong (bold) with gold background highlight for key insights
           strong: ({ node, ...props }) => (
-            <strong className="font-semibold text-amber-400 bg-amber-400/10 px-1 rounded" {...props} />
+            <strong
+              className="rounded bg-amber-400/10 px-1 font-semibold text-amber-400"
+              {...props}
+            />
           ),
 
           // Emphasis (italic)
-          em: ({ node, ...props }) => (
-            <em className="text-purple-200 italic" {...props} />
-          ),
+          em: ({ node, ...props }) => <em className="italic text-purple-200" {...props} />,
 
           // Code blocks (inline and block)
           code: ({ node, inline, ...props }: any) =>
             inline ? (
               <code
-                className="bg-purple-900/30 text-purple-200 px-2 py-1 rounded text-sm font-mono"
+                className="rounded bg-purple-900/30 px-2 py-1 font-mono text-sm text-purple-200"
                 {...props}
               />
             ) : (
               <code
-                className="block bg-purple-900/30 text-purple-200 p-4 rounded-lg my-4 text-sm font-mono overflow-x-auto border border-purple-500/20"
+                className="my-4 block overflow-x-auto rounded-lg border border-purple-500/20 bg-purple-900/30 p-4 font-mono text-sm text-purple-200"
                 {...props}
               />
             ),

@@ -1,5 +1,6 @@
-import { DAILY_LIMITS, TIER_LIMITS } from '@/lib/utils/constants';
 import type { User } from '@/types';
+
+import { DAILY_LIMITS, TIER_LIMITS } from '@/lib/utils/constants';
 
 /**
  * Check if user can create a reflection based on daily and monthly limits

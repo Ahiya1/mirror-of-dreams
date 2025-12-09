@@ -1,15 +1,16 @@
 'use client';
 
-import React from 'react';
 import Link from 'next/link';
+import React from 'react';
+
 import DashboardCard, {
   CardHeader,
   CardTitle,
   CardContent,
   CardActions,
 } from '@/components/dashboard/shared/DashboardCard';
-import { GlowButton } from '@/components/ui/glass';
 import TierBadge from '@/components/dashboard/shared/TierBadge';
+import { GlowButton } from '@/components/ui/glass';
 import { useAuth } from '@/hooks/useAuth';
 
 interface SubscriptionCardProps {
@@ -188,12 +189,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         <div className="subscription-content">
           {/* Current Tier Display */}
           <div className="tier-display">
-            <TierBadge
-              tier={userData.tier}
-              size="lg"
-              animated={animated}
-              showGlow={true}
-            />
+            <TierBadge tier={userData.tier} size="lg" animated={animated} showGlow={true} />
 
             <div className="tier-description">{tierInfo.description}</div>
           </div>
@@ -249,8 +245,8 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
               subscriptionAction.color === 'fusion'
                 ? 'cosmic'
                 : subscriptionAction.color === 'primary'
-                ? 'cosmic'
-                : 'secondary'
+                  ? 'cosmic'
+                  : 'secondary'
             }
           >
             {subscriptionAction.icon && <span>{subscriptionAction.icon}</span>}

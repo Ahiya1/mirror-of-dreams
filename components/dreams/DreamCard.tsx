@@ -2,8 +2,9 @@
 
 'use client';
 
-import React from 'react';
 import Link from 'next/link';
+import React from 'react';
+
 import { GlassCard, GlowButton, GlowBadge } from '@/components/ui/glass';
 
 interface DreamCardProps {
@@ -88,43 +89,31 @@ export function DreamCard({
     daysLeft === null || daysLeft === undefined
       ? ''
       : daysLeft < 0
-      ? 'text-mirror-error'
-      : daysLeft <= 7
-      ? 'text-mirror-warning'
-      : daysLeft <= 30
-      ? 'text-mirror-warning/80'
-      : 'text-white/60';
+        ? 'text-mirror-error'
+        : daysLeft <= 7
+          ? 'text-mirror-warning'
+          : daysLeft <= 30
+            ? 'text-mirror-warning/80'
+            : 'text-white/60';
 
   return (
-    <GlassCard
-      elevated
-      interactive
-      className="h-full flex flex-col"
-    >
+    <GlassCard elevated interactive className="flex h-full flex-col">
       <Link href={`/dreams/${id}`} className="flex-1 text-white no-underline">
-        <div className="flex justify-between items-center mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <div className="text-4xl">{categoryEmoji}</div>
           <GlowBadge variant={statusBadgeVariant}>
             {statusEmoji} {status.charAt(0).toUpperCase() + status.slice(1)}
           </GlowBadge>
         </div>
 
-        <h3 className="text-xl font-semibold text-white mb-2 leading-tight">
-          {title}
-        </h3>
+        <h3 className="mb-2 text-xl font-semibold leading-tight text-white">{title}</h3>
 
         {description && (
-          <p className="text-white/70 text-sm leading-relaxed mb-4 line-clamp-2">
-            {description}
-          </p>
+          <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-white/70">{description}</p>
         )}
 
-        <div className="flex gap-4 items-center text-sm mb-4">
-          {daysLeftText && (
-            <div className={`font-medium ${daysLeftColor}`}>
-              {daysLeftText}
-            </div>
-          )}
+        <div className="mb-4 flex items-center gap-4 text-sm">
+          {daysLeftText && <div className={`font-medium ${daysLeftColor}`}>{daysLeftText}</div>}
           <div className="text-mirror-purple font-medium">
             {reflectionCount} {reflectionCount === 1 ? 'reflection' : 'reflections'}
           </div>
@@ -132,13 +121,8 @@ export function DreamCard({
       </Link>
 
       {status === 'active' && (
-        <div className="flex gap-2 flex-wrap pt-4 border-t border-white/10">
-          <GlowButton
-            variant="primary"
-            size="sm"
-            onClick={() => onReflect?.()}
-            className="flex-1"
-          >
+        <div className="flex flex-wrap gap-2 border-t border-white/10 pt-4">
+          <GlowButton variant="primary" size="sm" onClick={() => onReflect?.()} className="flex-1">
             Reflect
           </GlowButton>
           {reflectionCount >= 4 && (

@@ -1,28 +1,29 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue, animate, PanInfo } from 'framer-motion';
 import { Plus, Check, Sparkles } from 'lucide-react';
-import { haptic } from '@/lib/utils/haptics';
-import { cn } from '@/lib/utils';
+import { useEffect, useRef } from 'react';
+
 import { bottomSheetVariants, bottomSheetBackdropVariants } from '@/lib/animations/variants';
+import { cn } from '@/lib/utils';
+import { haptic } from '@/lib/utils/haptics';
 
 // Category emoji mapping (using Unicode escape sequences for reliability)
 const CATEGORY_EMOJI: Record<string, string> = {
-  career: '\uD83D\uDCBC',        // Briefcase
-  health: '\uD83C\uDFC3',        // Runner
+  career: '\uD83D\uDCBC', // Briefcase
+  health: '\uD83C\uDFC3', // Runner
   relationships: '\u2764\uFE0F', // Heart
-  creativity: '\uD83C\uDFA8',    // Art palette
-  finance: '\uD83D\uDCB0',       // Money bag
-  personal: '\u2728',            // Sparkles
-  spiritual: '\uD83D\uDE4F',     // Praying hands
-  education: '\uD83D\uDCDA',     // Books
+  creativity: '\uD83C\uDFA8', // Art palette
+  finance: '\uD83D\uDCB0', // Money bag
+  personal: '\u2728', // Sparkles
+  spiritual: '\uD83D\uDE4F', // Praying hands
+  education: '\uD83D\uDCDA', // Books
   personal_growth: '\uD83C\uDF31', // Seedling
-  creative: '\uD83C\uDFA8',      // Art palette
+  creative: '\uD83C\uDFA8', // Art palette
   entrepreneurial: '\uD83D\uDE80', // Rocket
-  financial: '\uD83D\uDCB0',     // Money bag
-  other: '\u2B50',               // Star
-  default: '\uD83C\uDF1F',       // Glowing star
+  financial: '\uD83D\uDCB0', // Money bag
+  other: '\u2B50', // Star
+  default: '\uD83C\uDF1F', // Glowing star
 };
 
 interface Dream {
@@ -90,8 +91,7 @@ export function DreamBottomSheet({
   // Handle drag end - dismiss or snap back
   const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const shouldDismiss =
-      info.offset.y > DISMISS_THRESHOLD_DISTANCE ||
-      info.velocity.y > DISMISS_THRESHOLD_VELOCITY;
+      info.offset.y > DISMISS_THRESHOLD_DISTANCE || info.velocity.y > DISMISS_THRESHOLD_VELOCITY;
 
     if (shouldDismiss) {
       onClose();
@@ -145,7 +145,7 @@ export function DreamBottomSheet({
             style={{ y }}
             className={cn(
               // Positioning
-              'fixed bottom-0 inset-x-0 z-50',
+              'fixed inset-x-0 bottom-0 z-50',
 
               // Height - half viewport
               'h-[60vh] max-h-[600px]',
@@ -172,29 +172,25 @@ export function DreamBottomSheet({
             aria-labelledby="dream-sheet-title"
           >
             {/* Drag Handle */}
-            <div className="flex justify-center pt-3 pb-2 flex-shrink-0">
-              <div className="w-12 h-1.5 bg-white/30 rounded-full" />
+            <div className="flex flex-shrink-0 justify-center pb-2 pt-3">
+              <div className="h-1.5 w-12 rounded-full bg-white/30" />
             </div>
 
             {/* Title */}
-            <div className="px-6 pb-4 border-b border-white/10 flex-shrink-0">
-              <h2
-                id="dream-sheet-title"
-                className="text-lg font-semibold text-white"
-              >
+            <div className="flex-shrink-0 border-b border-white/10 px-6 pb-4">
+              <h2 id="dream-sheet-title" className="text-lg font-semibold text-white">
                 Choose a Dream
               </h2>
             </div>
 
             {/* Dream List - scrollable */}
-            <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 space-y-2">
+            <div className="flex-1 space-y-2 overflow-y-auto overscroll-contain px-4 py-4">
               {dreams.length > 0 ? (
                 <>
                   {dreams.map((dream) => {
                     const isSelected = dream.id === selectedDreamId;
                     const emoji =
-                      CATEGORY_EMOJI[dream.category || 'default'] ||
-                      CATEGORY_EMOJI.default;
+                      CATEGORY_EMOJI[dream.category || 'default'] || CATEGORY_EMOJI.default;
 
                     return (
                       <motion.button
@@ -203,20 +199,20 @@ export function DreamBottomSheet({
                         whileTap={{ scale: 0.98 }}
                         className={cn(
                           // Layout
-                          'w-full flex items-center gap-4 p-4',
+                          'flex w-full items-center gap-4 p-4',
                           // Touch target: minimum 60px height
                           'min-h-[60px]',
                           // Styling
                           'rounded-2xl',
                           'transition-colors duration-200',
                           isSelected
-                            ? 'bg-purple-500/20 border border-purple-500/50'
-                            : 'bg-white/5 border border-white/10 active:bg-white/10'
+                            ? 'border border-purple-500/50 bg-purple-500/20'
+                            : 'border border-white/10 bg-white/5 active:bg-white/10'
                         )}
                       >
                         {/* Emoji */}
                         <span
-                          className="text-2xl flex-shrink-0"
+                          className="flex-shrink-0 text-2xl"
                           role="img"
                           aria-label={dream.category || 'dream'}
                         >
@@ -224,25 +220,23 @@ export function DreamBottomSheet({
                         </span>
 
                         {/* Dream Info */}
-                        <div className="flex-1 text-left min-w-0">
-                          <h3 className="text-white font-medium truncate">
-                            {dream.title}
-                          </h3>
+                        <div className="min-w-0 flex-1 text-left">
+                          <h3 className="truncate font-medium text-white">{dream.title}</h3>
                           {dream.daysLeft !== null && dream.daysLeft !== undefined && (
-                            <p className="text-white/60 text-sm truncate mt-0.5">
+                            <p className="mt-0.5 truncate text-sm text-white/60">
                               {dream.daysLeft < 0
                                 ? `${Math.abs(dream.daysLeft)} days overdue`
                                 : dream.daysLeft === 0
-                                ? 'Today!'
-                                : `${dream.daysLeft} days left`}
+                                  ? 'Today!'
+                                  : `${dream.daysLeft} days left`}
                             </p>
                           )}
                         </div>
 
                         {/* Selection Indicator */}
                         {isSelected && (
-                          <div className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
-                            <Check className="w-4 h-4 text-white" />
+                          <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-purple-500">
+                            <Check className="h-4 w-4 text-white" />
                           </div>
                         )}
                       </motion.button>
@@ -250,8 +244,8 @@ export function DreamBottomSheet({
                   })}
                 </>
               ) : (
-                <div className="text-center py-8">
-                  <p className="text-white/70 mb-4">No dreams yet</p>
+                <div className="py-8 text-center">
+                  <p className="mb-4 text-white/70">No dreams yet</p>
                 </div>
               )}
 
@@ -260,7 +254,7 @@ export function DreamBottomSheet({
                 onClick={handleCreateDream}
                 whileTap={{ scale: 0.98 }}
                 className={cn(
-                  'w-full flex items-center gap-4 p-4',
+                  'flex w-full items-center gap-4 p-4',
                   'min-h-[60px]',
                   'rounded-2xl',
                   'bg-gradient-to-r from-purple-500/20 to-pink-500/20',
@@ -268,16 +262,14 @@ export function DreamBottomSheet({
                   'active:opacity-80'
                 )}
               >
-                <div className="w-10 h-10 bg-purple-500/30 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Plus className="w-5 h-5 text-purple-400" />
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-purple-500/30">
+                  <Plus className="h-5 w-5 text-purple-400" />
                 </div>
                 <div className="flex-1 text-left">
-                  <h3 className="text-purple-400 font-medium">Create New Dream</h3>
-                  <p className="text-white/60 text-sm">
-                    Start fresh with a new aspiration
-                  </p>
+                  <h3 className="font-medium text-purple-400">Create New Dream</h3>
+                  <p className="text-sm text-white/60">Start fresh with a new aspiration</p>
                 </div>
-                <Sparkles className="w-5 h-5 text-purple-400/60 flex-shrink-0" />
+                <Sparkles className="h-5 w-5 flex-shrink-0 text-purple-400/60" />
               </motion.button>
             </div>
           </motion.div>

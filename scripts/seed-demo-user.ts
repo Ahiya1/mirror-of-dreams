@@ -13,8 +13,8 @@
  *   npx tsx scripts/seed-demo-user.ts
  */
 
-import { config } from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
+import { config } from 'dotenv';
 
 // Load environment variables from .env.local
 config({ path: '.env.local' });
@@ -27,10 +27,7 @@ if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
 }
 
 // Initialize Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 // Demo user configuration
 const DEMO_USER_EMAIL = 'demo@mirrorofdreams.com';
@@ -94,10 +91,13 @@ const DEMO_REFLECTIONS = {
       daysAgo: 18,
       tone: 'fusion',
       questions: {
-        dream: "I want to build a SaaS product that generates $10k MRR. It's a tool for indie makers to track their build-in-public journey - metrics, audience growth, revenue milestones. The market is crowded but I have a unique angle: integrating real-time social proof widgets.",
-        plan: "Phase 1: Build MVP in 30 days using Next.js and Supabase. Phase 2: Validate with 10 early users from Twitter. Phase 3: Iterate based on feedback. Phase 4: Launch on Product Hunt. Phase 5: Scale to $10k MRR via content marketing and partnerships.",
-        relationship: "I've attempted SaaS products before and failed. Two products never got past 100 users. I'm afraid of wasting another 6 months. But this time feels different - I have a clear ICP (ideal customer profile) and I've already talked to 20 potential users.",
-        offering: "I'm willing to work nights and weekends for the next 6 months. I'll invest $5k for tools and ads. I'll sacrifice some social time and hobbies. Most importantly, I'll ship even when the product isn't perfect - my biggest blocker before was perfectionism.",
+        dream:
+          "I want to build a SaaS product that generates $10k MRR. It's a tool for indie makers to track their build-in-public journey - metrics, audience growth, revenue milestones. The market is crowded but I have a unique angle: integrating real-time social proof widgets.",
+        plan: 'Phase 1: Build MVP in 30 days using Next.js and Supabase. Phase 2: Validate with 10 early users from Twitter. Phase 3: Iterate based on feedback. Phase 4: Launch on Product Hunt. Phase 5: Scale to $10k MRR via content marketing and partnerships.',
+        relationship:
+          "I've attempted SaaS products before and failed. Two products never got past 100 users. I'm afraid of wasting another 6 months. But this time feels different - I have a clear ICP (ideal customer profile) and I've already talked to 20 potential users.",
+        offering:
+          "I'm willing to work nights and weekends for the next 6 months. I'll invest $5k for tools and ads. I'll sacrifice some social time and hobbies. Most importantly, I'll ship even when the product isn't perfect - my biggest blocker before was perfectionism.",
       },
       aiResponse: `What strikes me most powerfully in your reflection is this phrase: "I'm afraid of wasting another 6 months." There's such raw honesty there—the weight of past attempts that didn't reach their destination, the vulnerability of trying again when you've already tasted disappointment.
 
@@ -131,10 +131,13 @@ The difference is everything.`,
       daysAgo: 12,
       tone: 'intense',
       questions: {
-        dream: "Still building the SaaS. Hit a wall with the data visualization library - it's not playing nice with SSR (server-side rendering). Frustrated.",
+        dream:
+          "Still building the SaaS. Hit a wall with the data visualization library - it's not playing nice with SSR (server-side rendering). Frustrated.",
         plan: "Debug for 2 more hours max, then switch to a simpler charting library. Can't let one technical issue derail the whole timeline.",
-        relationship: "Honestly doubting myself. Maybe I'm not technical enough. Maybe I should just hire a developer. But I know this is just resistance. I can figure this out.",
-        offering: "Burning the midnight oil tonight. Already messaged the beta users that launch will be delayed 3 days. Accepting that perfection is the enemy of done. Willing to ship something 'good enough' and iterate.",
+        relationship:
+          "Honestly doubting myself. Maybe I'm not technical enough. Maybe I should just hire a developer. But I know this is just resistance. I can figure this out.",
+        offering:
+          "Burning the midnight oil tonight. Already messaged the beta users that launch will be delayed 3 days. Accepting that perfection is the enemy of done. Willing to ship something 'good enough' and iterate.",
       },
       aiResponse: `Let's cut straight to the heart of this.
 
@@ -174,10 +177,13 @@ Trust it.`,
       daysAgo: 7,
       tone: 'fusion',
       questions: {
-        dream: "Same SaaS goal. I've built the landing page and set up authentication. The core feature (dashboard for tracking metrics) is 40% done.",
-        plan: "This week: Finish dashboard layout. Next week: Add data visualization charts. Week 3: Build social proof widget. Week 4: Soft launch to beta users.",
-        relationship: "Feeling more confident now that I have tangible progress. But also anxious about scope creep - I keep wanting to add features. Need to stay focused on MVP.",
-        offering: "This week I'm dedicating 15 hours. Already blocked calendar. Saying no to a friend's party on Saturday. Also committed to shipping even if the UI isn't polished - functionality first.",
+        dream:
+          "Same SaaS goal. I've built the landing page and set up authentication. The core feature (dashboard for tracking metrics) is 40% done.",
+        plan: 'This week: Finish dashboard layout. Next week: Add data visualization charts. Week 3: Build social proof widget. Week 4: Soft launch to beta users.',
+        relationship:
+          'Feeling more confident now that I have tangible progress. But also anxious about scope creep - I keep wanting to add features. Need to stay focused on MVP.',
+        offering:
+          "This week I'm dedicating 15 hours. Already blocked calendar. Saying no to a friend's party on Saturday. Also committed to shipping even if the UI isn't polished - functionality first.",
       },
       aiResponse: `There's a subtle shift happening in you, and I want to name it.
 
@@ -221,10 +227,13 @@ Keep building.`,
       daysAgo: 2,
       tone: 'fusion',
       questions: {
-        dream: "SaaS MVP is DONE. Soft launched to 10 beta users yesterday. Already got 3 sign-ups and amazing feedback. One user said 'This is exactly what I needed.' Feeling electric.",
-        plan: "This week: Fix 2 critical bugs reported. Add email notifications. Next week: Product Hunt launch. Start outreach to micro-influencers in the indie maker space.",
-        relationship: "This is the validation I needed. For the first time, I actually believe I can hit $10k MRR. The product resonates. People are willing to pay. Now it's just about execution.",
-        offering: "Going all-in. Took a week off from my day job to focus on launch. Willing to invest another $2k in ads. Most importantly, willing to show up every day even when momentum drops. This is real now.",
+        dream:
+          "SaaS MVP is DONE. Soft launched to 10 beta users yesterday. Already got 3 sign-ups and amazing feedback. One user said 'This is exactly what I needed.' Feeling electric.",
+        plan: 'This week: Fix 2 critical bugs reported. Add email notifications. Next week: Product Hunt launch. Start outreach to micro-influencers in the indie maker space.',
+        relationship:
+          "This is the validation I needed. For the first time, I actually believe I can hit $10k MRR. The product resonates. People are willing to pay. Now it's just about execution.",
+        offering:
+          'Going all-in. Took a week off from my day job to focus on launch. Willing to invest another $2k in ads. Most importantly, willing to show up every day even when momentum drops. This is real now.',
       },
       aiResponse: `Read that back to yourself: "This is exactly what I needed."
 
@@ -270,10 +279,13 @@ Act accordingly.`,
       daysAgo: 28,
       tone: 'gentle',
       questions: {
-        dream: "I want to run a full marathon in under 4 hours. I'm currently running 3-4 times a week, averaging 20km per week. Never ran more than 10km in one go.",
-        plan: "Follow a 16-week training plan. Gradually increase weekly mileage by 10% max. Include one long run per week. Add strength training twice a week. Get proper running shoes fitted.",
-        relationship: "Running has always been meditation for me. But I've never committed to a big goal like this. Part of me doubts I can do it. Another part knows I just need to trust the process.",
-        offering: "Early morning runs 4-5 days a week. Saying no to late-night social events the night before long runs. Investing in a running coach ($300/month). Willing to embrace discomfort during speed work.",
+        dream:
+          "I want to run a full marathon in under 4 hours. I'm currently running 3-4 times a week, averaging 20km per week. Never ran more than 10km in one go.",
+        plan: 'Follow a 16-week training plan. Gradually increase weekly mileage by 10% max. Include one long run per week. Add strength training twice a week. Get proper running shoes fitted.',
+        relationship:
+          "Running has always been meditation for me. But I've never committed to a big goal like this. Part of me doubts I can do it. Another part knows I just need to trust the process.",
+        offering:
+          'Early morning runs 4-5 days a week. Saying no to late-night social events the night before long runs. Investing in a running coach ($300/month). Willing to embrace discomfort during speed work.',
       },
       aiResponse: `There's something beautiful in how you describe running as meditation. It tells me this goal isn't just about crossing a finish line or hitting a time. It's about deepening a relationship with something that already nourishes you.
 
@@ -315,10 +327,13 @@ Treasure both.`,
       daysAgo: 14,
       tone: 'gentle',
       questions: {
-        dream: "Marathon training is going well. Hit my first 15km long run last Sunday. Legs were sore for 2 days but I felt accomplished.",
-        plan: "This week: 25km total. Sunday: 16km long run. Focus on keeping heart rate in Zone 2 (conversational pace).",
-        relationship: "Starting to believe this is possible. My body is adapting. But I'm also learning to listen to it - took an extra rest day when my knee felt tweaky.",
-        offering: "Meal prepping healthy dinners on Sundays. Going to bed by 10pm on long run weekends. Stretching and foam rolling even when I don't feel like it.",
+        dream:
+          'Marathon training is going well. Hit my first 15km long run last Sunday. Legs were sore for 2 days but I felt accomplished.',
+        plan: 'This week: 25km total. Sunday: 16km long run. Focus on keeping heart rate in Zone 2 (conversational pace).',
+        relationship:
+          "Starting to believe this is possible. My body is adapting. But I'm also learning to listen to it - took an extra rest day when my knee felt tweaky.",
+        offering:
+          "Meal prepping healthy dinners on Sundays. Going to bed by 10pm on long run weekends. Stretching and foam rolling even when I don't feel like it.",
       },
       aiResponse: `Fifteen kilometers. That's not nothing. That's further than most people will ever run in their entire lives. And you did it on a Sunday morning while others slept.
 
@@ -362,10 +377,13 @@ That's exactly what marathon training looks like when it's done right.`,
       daysAgo: 5,
       tone: 'gentle',
       questions: {
-        dream: "Just finished my first half marathon distance (21km) in training. Time: 2:05. If I maintain this pace, I can definitely hit sub-4 hours for the full.",
-        plan: "Next 8 weeks: Peak mileage phase (60km per week). Two more 30km+ long runs. Then taper for race day.",
-        relationship: "Feeling strong and confident. Running has become non-negotiable. It's part of who I am now, not just something I'm 'trying.'",
-        offering: "Signed up for the marathon officially ($150 entry fee). Told all my friends so I'm publicly committed. Willing to embrace race-day nerves and uncertainty.",
+        dream:
+          'Just finished my first half marathon distance (21km) in training. Time: 2:05. If I maintain this pace, I can definitely hit sub-4 hours for the full.',
+        plan: 'Next 8 weeks: Peak mileage phase (60km per week). Two more 30km+ long runs. Then taper for race day.',
+        relationship:
+          "Feeling strong and confident. Running has become non-negotiable. It's part of who I am now, not just something I'm 'trying.'",
+        offering:
+          "Signed up for the marathon officially ($150 entry fee). Told all my friends so I'm publicly committed. Willing to embrace race-day nerves and uncertainty.",
       },
       aiResponse: `Twenty-one kilometers. You just ran a half marathon in training—a distance that would be a lifetime achievement goal for many people—and you did it as preparation for something bigger.
 
@@ -415,10 +433,13 @@ You've already proven you can do this. Now you just have to show up and collect 
       daysAgo: 42,
       tone: 'gentle',
       questions: {
-        dream: "I want to play Chopin's Nocturne in E-flat major beautifully. I've been playing piano on-and-off for years but never seriously. I can read sheet music and play simple pieces.",
-        plan: "Practice 30 minutes daily. Break the piece into 4-bar sections. Master each section slowly before speeding up. Work with a piano teacher once a week ($60/lesson).",
-        relationship: "Piano brings me so much joy, but I'm intimidated by classical pieces. This Nocturne feels impossible right now. But I know it's about consistent practice, not talent.",
-        offering: "Blocking 6:30-7am every morning for practice (before work). Investing in a better keyboard ($800). Willing to sound terrible for months before I sound good.",
+        dream:
+          "I want to play Chopin's Nocturne in E-flat major beautifully. I've been playing piano on-and-off for years but never seriously. I can read sheet music and play simple pieces.",
+        plan: 'Practice 30 minutes daily. Break the piece into 4-bar sections. Master each section slowly before speeding up. Work with a piano teacher once a week ($60/lesson).',
+        relationship:
+          "Piano brings me so much joy, but I'm intimidated by classical pieces. This Nocturne feels impossible right now. But I know it's about consistent practice, not talent.",
+        offering:
+          'Blocking 6:30-7am every morning for practice (before work). Investing in a better keyboard ($800). Willing to sound terrible for months before I sound good.',
       },
       aiResponse: `Chopin's Nocturne in E-flat major, Op. 9 No. 2. One of the most beloved pieces in the piano repertoire—that singing melody floating over rippling left-hand arpeggios, the delicate ornamentation, the way it seems to breathe and sigh.
 
@@ -470,10 +491,13 @@ Practice tomorrow at 6:30am. And the day after. And the day after that. One day,
       daysAgo: 21,
       tone: 'fusion',
       questions: {
-        dream: "Learning the first 8 bars of the Nocturne. It's incredibly challenging but also meditative. My fingers don't want to cooperate with the tempo changes.",
+        dream:
+          "Learning the first 8 bars of the Nocturne. It's incredibly challenging but also meditative. My fingers don't want to cooperate with the tempo changes.",
         plan: "Focus on right hand melody first. Practice left-hand accompaniment separately. Then combine at 50% speed. My teacher says I need to 'feel' the rubato, not count it mathematically.",
-        relationship: "I'm in that frustrating stage where I know what it should sound like but can't execute yet. Reminding myself this is part of the process. Trusting slow progress.",
-        offering: "Extended my practice to 45 minutes on weekends. Recording myself weekly to track improvement. Willing to repeat boring finger exercises because I know they'll pay off.",
+        relationship:
+          "I'm in that frustrating stage where I know what it should sound like but can't execute yet. Reminding myself this is part of the process. Trusting slow progress.",
+        offering:
+          "Extended my practice to 45 minutes on weekends. Recording myself weekly to track improvement. Willing to repeat boring finger exercises because I know they'll pay off.",
       },
       aiResponse: `Eight bars. In the Nocturne, those first eight bars contain the primary melody, the signature left-hand pattern, and the first glimpse of Chopin's expressive markings. You're not just learning notes—you're learning to speak a new emotional language.
 
@@ -517,10 +541,13 @@ Keep practicing. The music is waiting for you to catch up to it.`,
       daysAgo: 3,
       tone: 'gentle',
       questions: {
-        dream: "I played the first 16 bars for my teacher today and she said 'It's starting to sound musical.' That was such validating feedback. I can hear the piece coming alive.",
-        plan: "Learn the middle section (bars 17-32) over the next month. Then work on connecting all sections smoothly.",
-        relationship: "I'm falling in love with this piece more every day. It's teaching me patience. It's teaching me that mastery is a slow unfolding, not a sudden breakthrough.",
-        offering: "Committed to practice even on tired days (even if just 15 minutes). Willing to play in front of friends once I have the full piece ready, even though performing terrifies me.",
+        dream:
+          "I played the first 16 bars for my teacher today and she said 'It's starting to sound musical.' That was such validating feedback. I can hear the piece coming alive.",
+        plan: 'Learn the middle section (bars 17-32) over the next month. Then work on connecting all sections smoothly.',
+        relationship:
+          "I'm falling in love with this piece more every day. It's teaching me patience. It's teaching me that mastery is a slow unfolding, not a sudden breakthrough.",
+        offering:
+          'Committed to practice even on tired days (even if just 15 minutes). Willing to play in front of friends once I have the full piece ready, even though performing terrifies me.',
       },
       aiResponse: `"It's starting to sound musical."
 
@@ -574,10 +601,13 @@ Keep unfolding.`,
       daysAgo: 29,
       tone: 'fusion',
       questions: {
-        dream: "I want to build 3-5 truly deep friendships. Right now I have a lot of acquaintances but very few people I can be vulnerable with. I want friendships based on mutual growth, honesty, and showing up for each other.",
-        plan: "Identify 5-7 people I genuinely resonate with. Reach out for 1-on-1 hangouts (not group settings). Share something real about myself early to set the tone. Be consistent - check in weekly.",
-        relationship: "I've been hurt before by friends who ghosted or only showed up when convenient for them. I'm scared of investing in people who won't reciprocate. But I also know I can't build deep connections without risk.",
-        offering: "Willing to initiate even when it feels awkward. Will drive to meet people on their schedule. Commit to showing up even when I'd rather stay home. Most importantly, willing to be emotionally honest.",
+        dream:
+          'I want to build 3-5 truly deep friendships. Right now I have a lot of acquaintances but very few people I can be vulnerable with. I want friendships based on mutual growth, honesty, and showing up for each other.',
+        plan: 'Identify 5-7 people I genuinely resonate with. Reach out for 1-on-1 hangouts (not group settings). Share something real about myself early to set the tone. Be consistent - check in weekly.',
+        relationship:
+          "I've been hurt before by friends who ghosted or only showed up when convenient for them. I'm scared of investing in people who won't reciprocate. But I also know I can't build deep connections without risk.",
+        offering:
+          "Willing to initiate even when it feels awkward. Will drive to meet people on their schedule. Commit to showing up even when I'd rather stay home. Most importantly, willing to be emotionally honest.",
       },
       aiResponse: `What strikes me most in your reflection is the clarity of what you're seeking: not more contacts, not a bigger social calendar, but depth. Vulnerability. Mutual growth. People who show up.
 
@@ -619,10 +649,13 @@ The friends who match your depth will recognize you.`,
       daysAgo: 15,
       tone: 'fusion',
       questions: {
-        dream: "I reached out to 4 people this week. Had coffee with 2 of them - one conversation was surface-level, the other felt genuinely connective. We talked about creative struggles and both shared vulnerable stories.",
-        plan: "Follow up with the person I connected with. Suggest a hike next week. Reach out to 2 more people on my list.",
-        relationship: "I'm noticing how much effort this takes. But also realizing that good friendships require intentionality. You can't just wait for them to happen.",
-        offering: "Blocked off Saturday for a longer hangout (hiking). Sent a thoughtful text checking in on someone who mentioned they were stressed. Willing to keep initiating even if not everyone reciprocates.",
+        dream:
+          'I reached out to 4 people this week. Had coffee with 2 of them - one conversation was surface-level, the other felt genuinely connective. We talked about creative struggles and both shared vulnerable stories.',
+        plan: 'Follow up with the person I connected with. Suggest a hike next week. Reach out to 2 more people on my list.',
+        relationship:
+          "I'm noticing how much effort this takes. But also realizing that good friendships require intentionality. You can't just wait for them to happen.",
+        offering:
+          'Blocked off Saturday for a longer hangout (hiking). Sent a thoughtful text checking in on someone who mentioned they were stressed. Willing to keep initiating even if not everyone reciprocates.',
       },
       aiResponse: `Two coffee conversations. One surface-level. One genuinely connective.
 
@@ -668,10 +701,13 @@ The garden is being planted. Flowers don't bloom overnight.`,
       daysAgo: 6,
       tone: 'gentle',
       questions: {
-        dream: "Had my second hangout with Alex (from the coffee chat). We went deeper - talked about fear of failure, family dynamics, what we actually want from life. Felt like I made a real friend.",
-        plan: "Keep building this friendship. Also nurture the other 2-3 promising connections. Host a small dinner party to bring people together.",
-        relationship: "It's working. Vulnerability begets vulnerability. When I show up as my real self, people feel safe to do the same. This is how real friendships form.",
-        offering: "Willing to invest time and energy into this. Committing to weekly check-ins with close friends. Will keep showing up consistently, not just when I need something.",
+        dream:
+          'Had my second hangout with Alex (from the coffee chat). We went deeper - talked about fear of failure, family dynamics, what we actually want from life. Felt like I made a real friend.',
+        plan: 'Keep building this friendship. Also nurture the other 2-3 promising connections. Host a small dinner party to bring people together.',
+        relationship:
+          "It's working. Vulnerability begets vulnerability. When I show up as my real self, people feel safe to do the same. This is how real friendships form.",
+        offering:
+          'Willing to invest time and energy into this. Committing to weekly check-ins with close friends. Will keep showing up consistently, not just when I need something.',
       },
       aiResponse: `"Felt like I made a real friend."
 
@@ -721,10 +757,13 @@ Keep going. The relationships you're building will be part of your life for deca
       daysAgo: 35,
       tone: 'intense',
       questions: {
-        dream: "Financial freedom: $5k/month in passive income. Right now I have a full-time job ($6k/month after tax) and zero passive income. I want freedom to work on projects I care about without financial stress.",
-        plan: "Three income streams: (1) Build a productized service ($2k/mo target), (2) Create a paid course/ebook ($1.5k/mo), (3) Invest in dividend stocks ($1.5k/mo). Timeline: 2 years.",
-        relationship: "I'm tired of trading time for money. Tired of asking permission for time off. Tired of anxiety about job security. But I'm also scared of failing at entrepreneurship. Passive income isn't actually passive - it requires massive upfront work.",
-        offering: "Working side projects 10-15 hours/week for the next 2 years. Investing $1k/month into stocks. Saying no to lifestyle inflation. Willing to live frugally now for freedom later.",
+        dream:
+          'Financial freedom: $5k/month in passive income. Right now I have a full-time job ($6k/month after tax) and zero passive income. I want freedom to work on projects I care about without financial stress.',
+        plan: 'Three income streams: (1) Build a productized service ($2k/mo target), (2) Create a paid course/ebook ($1.5k/mo), (3) Invest in dividend stocks ($1.5k/mo). Timeline: 2 years.',
+        relationship:
+          "I'm tired of trading time for money. Tired of asking permission for time off. Tired of anxiety about job security. But I'm also scared of failing at entrepreneurship. Passive income isn't actually passive - it requires massive upfront work.",
+        offering:
+          'Working side projects 10-15 hours/week for the next 2 years. Investing $1k/month into stocks. Saying no to lifestyle inflation. Willing to live frugally now for freedom later.',
       },
       aiResponse: `Let's be direct with you.
 
@@ -772,10 +811,13 @@ Are you ready for it?`,
       daysAgo: 8,
       tone: 'fusion',
       questions: {
-        dream: "Made first $200 from my productized service (design templates). It's not much but it proves the concept works. People will pay for productized expertise.",
+        dream:
+          "Made first $200 from my productized service (design templates). It's not much but it proves the concept works. People will pay for productized expertise.",
         plan: "Double down on what's working. Create 10 more template packs. Build an email list. Aim for $500/month in the next 60 days.",
-        relationship: "This is the spark I needed. For the first time, I'm making money while I sleep (literally - sales came in overnight). It's addictive. I want more of this feeling.",
-        offering: "Reinvesting all earnings back into the business. Spending weekends building instead of scrolling. Willing to experiment and fail fast. Embracing the long game.",
+        relationship:
+          "This is the spark I needed. For the first time, I'm making money while I sleep (literally - sales came in overnight). It's addictive. I want more of this feeling.",
+        offering:
+          'Reinvesting all earnings back into the business. Spending weekends building instead of scrolling. Willing to experiment and fail fast. Embracing the long game.',
       },
       aiResponse: `$200.
 
@@ -938,7 +980,8 @@ const DEMO_CLARIFY_SESSIONS: ClarifyDemoSession[] = [
     messages: [
       {
         role: 'user',
-        content: "I've been feeling restless about my work lately. Not sure if I'm in the right place anymore.",
+        content:
+          "I've been feeling restless about my work lately. Not sure if I'm in the right place anymore.",
         minutesAgo: 30,
       },
       {
@@ -950,7 +993,8 @@ What aspects of your work feel most unsettling right now? Is it the nature of th
       },
       {
         role: 'user',
-        content: "I think it's the lack of creativity. My role has become very routine. I used to solve interesting problems, now I just maintain systems.",
+        content:
+          "I think it's the lack of creativity. My role has become very routine. I used to solve interesting problems, now I just maintain systems.",
         minutesAgo: 25,
       },
       {
@@ -964,7 +1008,8 @@ Have you identified any outlets that might help? That could mean advocating for 
       },
       {
         role: 'user',
-        content: "Not really. Maybe I just need to sit with this feeling for a while longer. I don't think I'm ready to make any decisions yet.",
+        content:
+          "Not really. Maybe I just need to sit with this feeling for a while longer. I don't think I'm ready to make any decisions yet.",
         minutesAgo: 18,
       },
       {
@@ -988,7 +1033,8 @@ When you feel ready to explore this further - whether that's next week or next m
     messages: [
       {
         role: 'user',
-        content: "I've been journaling more lately and people keep asking me for advice on how to start.",
+        content:
+          "I've been journaling more lately and people keep asking me for advice on how to start.",
         minutesAgo: 45,
       },
       {
@@ -1002,7 +1048,8 @@ What kind of advice do people usually ask for? Is it about getting started, stay
       },
       {
         role: 'user',
-        content: "Mostly how to get started and what to actually write about. They feel intimidated by the blank page. I remember feeling that way too before I found my rhythm.",
+        content:
+          'Mostly how to get started and what to actually write about. They feel intimidated by the blank page. I remember feeling that way too before I found my rhythm.',
         minutesAgo: 38,
       },
       {
@@ -1016,7 +1063,8 @@ Have you ever thought about packaging what you know into something more structur
       },
       {
         role: 'user',
-        content: "I've thought about creating some kind of guide or course. Nothing fancy, just practical steps that actually work. The stuff I wish I had when I started.",
+        content:
+          "I've thought about creating some kind of guide or course. Nothing fancy, just practical steps that actually work. The stuff I wish I had when I started.",
         minutesAgo: 30,
       },
       {
@@ -1047,7 +1095,8 @@ What feels like the right first step?`,
           name: 'createDream',
           input: {
             title: 'Create a Practical Journaling Course',
-            description: 'Develop a beginner-friendly journaling course with practical exercises and templates to help others start and maintain a journaling practice.',
+            description:
+              'Develop a beginner-friendly journaling course with practical exercises and templates to help others start and maintain a journaling practice.',
             category: 'creative',
           },
           result: {
@@ -1058,7 +1107,8 @@ What feels like the right first step?`,
       },
       {
         role: 'user',
-        content: "I think I'll start by writing down the 5 most common questions people ask me. That could become the structure.",
+        content:
+          "I think I'll start by writing down the 5 most common questions people ask me. That could become the structure.",
         minutesAgo: 15,
       },
       {
@@ -1094,7 +1144,8 @@ How is your body adapting? Any tightness, energy shifts, or changes in how the r
       },
       {
         role: 'user',
-        content: "Good so far. The early mornings are tough but I'm sticking with it. My legs feel stronger than last week.",
+        content:
+          "Good so far. The early mornings are tough but I'm sticking with it. My legs feel stronger than last week.",
         minutesAgo: 8,
       },
       {
@@ -1186,7 +1237,13 @@ async function seedDemoUser() {
 
     // 3. Create dreams
     console.log('✨ Creating demo dreams...');
-    const createdDreams: { id: string; title: string; description: string; category: string; target_date: string | null }[] = [];
+    const createdDreams: {
+      id: string;
+      title: string;
+      description: string;
+      category: string;
+      target_date: string | null;
+    }[] = [];
 
     for (const dreamData of DEMO_DREAMS) {
       const { data: dream, error } = await supabase
@@ -1279,7 +1336,9 @@ async function seedDemoUser() {
           saasReflectionIds.push(createdReflection.id);
         }
 
-        console.log(`   ✅ Reflection (${reflection.daysAgo} days ago, ${wordCount} words, ~${estimatedReadTime} min read)`);
+        console.log(
+          `   ✅ Reflection (${reflection.daysAgo} days ago, ${wordCount} words, ~${estimatedReadTime} min read)`
+        );
         totalReflections++;
       }
 
@@ -1334,10 +1393,15 @@ async function seedDemoUser() {
 
     // 7. Clean existing Clarify data
     console.log('🧹 Cleaning existing Clarify data...');
-    await supabase.from('clarify_messages').delete().in(
-      'session_id',
-      (await supabase.from('clarify_sessions').select('id').eq('user_id', demoUser.id)).data?.map(s => s.id) || []
-    );
+    await supabase
+      .from('clarify_messages')
+      .delete()
+      .in(
+        'session_id',
+        (await supabase.from('clarify_sessions').select('id').eq('user_id', demoUser.id)).data?.map(
+          (s) => s.id
+        ) || []
+      );
     await supabase.from('clarify_sessions').delete().eq('user_id', demoUser.id);
     console.log('✅ Cleaned existing Clarify data\n');
 
@@ -1348,17 +1412,22 @@ async function seedDemoUser() {
 
     // First, we need to create the Journaling Course dream that will be linked from Session 2
     // Check if it already exists in createdDreams
-    let journalingDream = createdDreams.find(d => d.title === 'Create a Practical Journaling Course');
+    let journalingDream = createdDreams.find(
+      (d) => d.title === 'Create a Practical Journaling Course'
+    );
 
     // If it doesn't exist, create it
     if (!journalingDream) {
-      console.log('   📝 Creating "Create a Practical Journaling Course" dream for Clarify session link...');
+      console.log(
+        '   📝 Creating "Create a Practical Journaling Course" dream for Clarify session link...'
+      );
       const { data: newJournalingDream, error: journalingError } = await supabase
         .from('dreams')
         .insert({
           user_id: demoUser.id,
           title: 'Create a Practical Journaling Course',
-          description: 'Develop a beginner-friendly journaling course with practical exercises and templates to help others start and maintain a journaling practice.',
+          description:
+            'Develop a beginner-friendly journaling course with practical exercises and templates to help others start and maintain a journaling practice.',
           category: 'creative',
           status: 'active',
           priority: 5,
@@ -1401,7 +1470,10 @@ async function seedDemoUser() {
           status: sessionData.status,
           dream_id: linkedDreamId,
           message_count: sessionData.messages.length,
-          last_message_at: new Date(sessionCreatedAt.getTime() - sessionData.messages[sessionData.messages.length - 1].minutesAgo * 60 * 1000).toISOString(),
+          last_message_at: new Date(
+            sessionCreatedAt.getTime() -
+              sessionData.messages[sessionData.messages.length - 1].minutesAgo * 60 * 1000
+          ).toISOString(),
           created_at: sessionCreatedAt.toISOString(),
           updated_at: sessionCreatedAt.toISOString(),
         })
@@ -1414,11 +1486,15 @@ async function seedDemoUser() {
       }
 
       totalSessions++;
-      console.log(`   📖 Session: "${sessionData.title}" (${sessionData.messages.length} messages, ${sessionData.status})`);
+      console.log(
+        `   📖 Session: "${sessionData.title}" (${sessionData.messages.length} messages, ${sessionData.status})`
+      );
 
       // Create messages for this session
       for (const msgData of sessionData.messages) {
-        const messageCreatedAt = new Date(sessionCreatedAt.getTime() - msgData.minutesAgo * 60 * 1000);
+        const messageCreatedAt = new Date(
+          sessionCreatedAt.getTime() - msgData.minutesAgo * 60 * 1000
+        );
 
         // Prepare tool_use with actual dream ID if applicable
         let toolUseData = null;
@@ -1433,16 +1509,14 @@ async function seedDemoUser() {
           };
         }
 
-        const { error: msgError } = await supabase
-          .from('clarify_messages')
-          .insert({
-            session_id: session.id,
-            role: msgData.role,
-            content: msgData.content,
-            tool_use: toolUseData,
-            token_count: msgData.role === 'assistant' ? Math.ceil(msgData.content.length / 4) : null,
-            created_at: messageCreatedAt.toISOString(),
-          });
+        const { error: msgError } = await supabase.from('clarify_messages').insert({
+          session_id: session.id,
+          role: msgData.role,
+          content: msgData.content,
+          tool_use: toolUseData,
+          token_count: msgData.role === 'assistant' ? Math.ceil(msgData.content.length / 4) : null,
+          created_at: messageCreatedAt.toISOString(),
+        });
 
         if (msgError) {
           console.error(`      ❌ Failed to create message:`, msgError);

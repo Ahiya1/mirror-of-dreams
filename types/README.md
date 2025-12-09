@@ -75,6 +75,7 @@ import { createReflectionSchema, signupSchema } from '@/types/schemas';
 ### Validation Schemas (`schemas.ts`)
 
 All Zod schemas for tRPC input validation:
+
 - **signupSchema**, **signinSchema**
 - **createReflectionSchema**, **reflectionListSchema**
 - **evolutionReportInputSchema**
@@ -84,15 +85,18 @@ All Zod schemas for tRPC input validation:
 ## Naming Conventions
 
 ### Types/Interfaces
+
 - **PascalCase** for types and interfaces
 - Suffix `Input` for creation/update inputs
 - Suffix `Row` for database row types
 
 ### Functions
+
 - **camelCase** for transformation functions
 - Pattern: `{entityName}RowTo{EntityName}`
 
 ### Enums/Unions
+
 - **PascalCase** for type names
 - **kebab-case** for string literal values
 
@@ -117,17 +121,16 @@ Validation schemas are used in tRPC procedures:
 import { createReflectionSchema } from '@/types/schemas';
 
 export const reflectionsRouter = router({
-  create: protectedProcedure
-    .input(createReflectionSchema)
-    .mutation(async ({ ctx, input }) => {
-      // input is fully typed and validated
-    }),
+  create: protectedProcedure.input(createReflectionSchema).mutation(async ({ ctx, input }) => {
+    // input is fully typed and validated
+  }),
 });
 ```
 
 ## TypeScript Configuration
 
 All types use strict mode:
+
 - `strict: true`
 - `strictNullChecks: true`
 - `noImplicitAny: true`

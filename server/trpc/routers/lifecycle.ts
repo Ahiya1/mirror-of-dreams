@@ -1,13 +1,16 @@
 // server/trpc/routers/lifecycle.ts - Dream Lifecycle: Evolution, Ceremony, Ritual
 
-import { z } from 'zod';
-import { router } from '../trpc';
-import { protectedProcedure } from '../middleware';
-import { TRPCError } from '@trpc/server';
-import { supabase } from '@/server/lib/supabase';
-import Anthropic from '@anthropic-ai/sdk';
 import * as fs from 'fs';
 import * as path from 'path';
+
+import Anthropic from '@anthropic-ai/sdk';
+import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
+
+import { protectedProcedure } from '../middleware';
+import { router } from '../trpc';
+
+import { supabase } from '@/server/lib/supabase';
 
 // =====================================================
 // ANTHROPIC CLIENT (Lazy initialization)
@@ -36,10 +39,20 @@ const evolveSchema = z.object({
   newTitle: z.string().min(1).max(200),
   newDescription: z.string().max(2000).optional(),
   newTargetDate: z.string().nullable().optional(),
-  newCategory: z.enum([
-    'health', 'career', 'relationships', 'financial', 'personal_growth',
-    'creative', 'spiritual', 'entrepreneurial', 'educational', 'other',
-  ]).optional(),
+  newCategory: z
+    .enum([
+      'health',
+      'career',
+      'relationships',
+      'financial',
+      'personal_growth',
+      'creative',
+      'spiritual',
+      'entrepreneurial',
+      'educational',
+      'other',
+    ])
+    .optional(),
   evolutionReflection: z.string().min(10).max(2000),
 });
 
@@ -54,7 +67,15 @@ const releaseSchema = z.object({
   whatImGratefulFor: z.string().min(10).max(2000),
   whatIRelease: z.string().min(10).max(2000),
   finalMessage: z.string().max(2000).optional(),
-  reason: z.enum(['evolved_beyond', 'no_longer_resonates', 'completed_differently', 'circumstances_changed', 'other']).optional(),
+  reason: z
+    .enum([
+      'evolved_beyond',
+      'no_longer_resonates',
+      'completed_differently',
+      'circumstances_changed',
+      'other',
+    ])
+    .optional(),
 });
 
 const dreamIdSchema = z.object({
@@ -98,213 +119,210 @@ export const lifecycleRouter = router({
   // =====================================================
   // EVOLUTION: Transform dream in-place
   // =====================================================
-  evolve: protectedProcedure
-    .input(evolveSchema)
-    .mutation(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
-      const { dreamId, newTitle, newDescription, newTargetDate, newCategory, evolutionReflection } = input;
+  evolve: protectedProcedure.input(evolveSchema).mutation(async ({ ctx, input }) => {
+    const userId = ctx.user.id;
+    const { dreamId, newTitle, newDescription, newTargetDate, newCategory, evolutionReflection } =
+      input;
 
-      // 1. Fetch current dream state
-      const { data: dream, error: dreamError } = await supabase
-        .from('dreams')
-        .select('*')
-        .eq('id', dreamId)
-        .eq('user_id', userId)
-        .single();
+    // 1. Fetch current dream state
+    const { data: dream, error: dreamError } = await supabase
+      .from('dreams')
+      .select('*')
+      .eq('id', dreamId)
+      .eq('user_id', userId)
+      .single();
 
-      if (dreamError || !dream) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Dream not found',
-        });
-      }
+    if (dreamError || !dream) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Dream not found',
+      });
+    }
 
-      // 2. Only active dreams can be evolved
-      if (dream.status !== 'active') {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Only active dreams can be evolved',
-        });
-      }
+    // 2. Only active dreams can be evolved
+    if (dream.status !== 'active') {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Only active dreams can be evolved',
+      });
+    }
 
-      // 3. Create evolution event (captures before/after)
-      const { data: evolutionEvent, error: evolutionError } = await supabase
-        .from('evolution_events')
-        .insert({
-          user_id: userId,
-          dream_id: dreamId,
-          old_title: dream.title,
-          old_description: dream.description,
-          old_target_date: dream.target_date,
-          old_category: dream.category,
-          new_title: newTitle,
-          new_description: newDescription || null,
-          new_target_date: newTargetDate || null,
-          new_category: newCategory || dream.category,
-          evolution_reflection: evolutionReflection,
-        })
-        .select()
-        .single();
+    // 3. Create evolution event (captures before/after)
+    const { data: evolutionEvent, error: evolutionError } = await supabase
+      .from('evolution_events')
+      .insert({
+        user_id: userId,
+        dream_id: dreamId,
+        old_title: dream.title,
+        old_description: dream.description,
+        old_target_date: dream.target_date,
+        old_category: dream.category,
+        new_title: newTitle,
+        new_description: newDescription || null,
+        new_target_date: newTargetDate || null,
+        new_category: newCategory || dream.category,
+        evolution_reflection: evolutionReflection,
+      })
+      .select()
+      .single();
 
-      if (evolutionError) {
-        console.error('Failed to create evolution event:', evolutionError);
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to record evolution',
-        });
-      }
+    if (evolutionError) {
+      console.error('Failed to create evolution event:', evolutionError);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to record evolution',
+      });
+    }
 
-      // 4. Update dream with new values (trigger auto-increments evolution_count)
-      const { data: updatedDream, error: updateError } = await supabase
-        .from('dreams')
-        .update({
-          title: newTitle,
-          description: newDescription || null,
-          target_date: newTargetDate || null,
-          category: newCategory || dream.category,
-        })
-        .eq('id', dreamId)
-        .select()
-        .single();
+    // 4. Update dream with new values (trigger auto-increments evolution_count)
+    const { data: updatedDream, error: updateError } = await supabase
+      .from('dreams')
+      .update({
+        title: newTitle,
+        description: newDescription || null,
+        target_date: newTargetDate || null,
+        category: newCategory || dream.category,
+      })
+      .eq('id', dreamId)
+      .select()
+      .single();
 
-      if (updateError) {
-        console.error('Failed to update dream:', updateError);
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to update dream',
-        });
-      }
+    if (updateError) {
+      console.error('Failed to update dream:', updateError);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to update dream',
+      });
+    }
 
-      return {
-        evolutionEvent,
-        dream: updatedDream,
-        message: 'Dream evolved successfully',
-      };
-    }),
+    return {
+      evolutionEvent,
+      dream: updatedDream,
+      message: 'Dream evolved successfully',
+    };
+  }),
 
   // =====================================================
   // GET EVOLUTION HISTORY: Timeline of dream transformations
   // =====================================================
-  getEvolutionHistory: protectedProcedure
-    .input(dreamIdSchema)
-    .query(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
-      const { dreamId } = input;
+  getEvolutionHistory: protectedProcedure.input(dreamIdSchema).query(async ({ ctx, input }) => {
+    const userId = ctx.user.id;
+    const { dreamId } = input;
 
-      // Verify dream ownership
-      const { data: dream, error: dreamError } = await supabase
-        .from('dreams')
-        .select('id, title')
-        .eq('id', dreamId)
-        .eq('user_id', userId)
-        .single();
+    // Verify dream ownership
+    const { data: dream, error: dreamError } = await supabase
+      .from('dreams')
+      .select('id, title')
+      .eq('id', dreamId)
+      .eq('user_id', userId)
+      .single();
 
-      if (dreamError || !dream) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Dream not found',
-        });
-      }
+    if (dreamError || !dream) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Dream not found',
+      });
+    }
 
-      // Fetch all evolution events
-      const { data: events, error: eventsError } = await supabase
-        .from('evolution_events')
-        .select('*')
-        .eq('dream_id', dreamId)
-        .order('created_at', { ascending: true });
+    // Fetch all evolution events
+    const { data: events, error: eventsError } = await supabase
+      .from('evolution_events')
+      .select('*')
+      .eq('dream_id', dreamId)
+      .order('created_at', { ascending: true });
 
-      if (eventsError) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to fetch evolution history',
-        });
-      }
+    if (eventsError) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to fetch evolution history',
+      });
+    }
 
-      return {
-        dreamId,
-        dreamTitle: dream.title,
-        events: events || [],
-        evolutionCount: events?.length || 0,
-      };
-    }),
+    return {
+      dreamId,
+      dreamTitle: dream.title,
+      events: events || [],
+      evolutionCount: events?.length || 0,
+    };
+  }),
 
   // =====================================================
   // ACHIEVE: Create achievement ceremony and mark dream achieved
   // =====================================================
-  achieve: protectedProcedure
-    .input(achieveSchema)
-    .mutation(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
-      const { dreamId, personalNote } = input;
+  achieve: protectedProcedure.input(achieveSchema).mutation(async ({ ctx, input }) => {
+    const userId = ctx.user.id;
+    const { dreamId, personalNote } = input;
 
-      // 1. Fetch dream
-      const { data: dream, error: dreamError } = await supabase
-        .from('dreams')
-        .select('*')
-        .eq('id', dreamId)
-        .eq('user_id', userId)
-        .single();
+    // 1. Fetch dream
+    const { data: dream, error: dreamError } = await supabase
+      .from('dreams')
+      .select('*')
+      .eq('id', dreamId)
+      .eq('user_id', userId)
+      .single();
 
-      if (dreamError || !dream) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Dream not found',
-        });
-      }
+    if (dreamError || !dream) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Dream not found',
+      });
+    }
 
-      // 2. Only active dreams can be achieved
-      if (dream.status !== 'active') {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Only active dreams can be marked as achieved',
-        });
-      }
+    // 2. Only active dreams can be achieved
+    if (dream.status !== 'active') {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Only active dreams can be marked as achieved',
+      });
+    }
 
-      // 3. Check if ceremony already exists
-      const { data: existingCeremony } = await supabase
-        .from('achievement_ceremonies')
-        .select('id')
-        .eq('dream_id', dreamId)
-        .single();
+    // 3. Check if ceremony already exists
+    const { data: existingCeremony } = await supabase
+      .from('achievement_ceremonies')
+      .select('id')
+      .eq('dream_id', dreamId)
+      .single();
 
-      if (existingCeremony) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Achievement ceremony already exists for this dream',
-        });
-      }
+    if (existingCeremony) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Achievement ceremony already exists for this dream',
+      });
+    }
 
-      // 4. Fetch reflections for this dream
-      const { data: reflections, error: reflectionsError } = await supabase
-        .from('reflections')
-        .select('id, dream, plan, relationship, offering, ai_response, created_at')
-        .eq('dream_id', dreamId)
-        .order('created_at', { ascending: true });
+    // 4. Fetch reflections for this dream
+    const { data: reflections, error: reflectionsError } = await supabase
+      .from('reflections')
+      .select('id, dream, plan, relationship, offering, ai_response, created_at')
+      .eq('dream_id', dreamId)
+      .order('created_at', { ascending: true });
 
-      const reflectionCount = reflections?.length || 0;
-      const reflectionIds = reflections?.map(r => r.id) || [];
+    const reflectionCount = reflections?.length || 0;
+    const reflectionIds = reflections?.map((r) => r.id) || [];
 
-      // 5. Generate AI synthesis if we have reflections
-      let whoYouWere: string | null = null;
-      let whoYouBecame: string | null = null;
-      let journeySynthesis: string | null = null;
+    // 5. Generate AI synthesis if we have reflections
+    let whoYouWere: string | null = null;
+    let whoYouBecame: string | null = null;
+    let journeySynthesis: string | null = null;
 
-      if (reflectionCount > 0) {
-        try {
-          const client = getAnthropicClient();
-          const systemPrompt = await loadCeremonyPrompt();
+    if (reflectionCount > 0) {
+      try {
+        const client = getAnthropicClient();
+        const systemPrompt = await loadCeremonyPrompt();
 
-          // Build context from reflections
-          const reflectionContext = reflections!.map((r, i) => {
+        // Build context from reflections
+        const reflectionContext = reflections!
+          .map((r, i) => {
             const date = new Date(r.created_at).toLocaleDateString();
             return `**Reflection ${i + 1} (${date}):**
 Dream: ${r.dream}
 Plan: ${r.plan}
 Relationship: ${r.relationship}
 Offering: ${r.offering}`;
-          }).join('\n\n---\n\n');
+          })
+          .join('\n\n---\n\n');
 
-          const userPrompt = `The dream "${dream.title}" has been achieved.
+        const userPrompt = `The dream "${dream.title}" has been achieved.
 
 Dream Description: ${dream.description || 'No description provided.'}
 
@@ -325,120 +343,126 @@ Format your response exactly like this:
 ---JOURNEY_SYNTHESIS---
 [your narrative here]`;
 
-          const response = await client.messages.create({
-            model: 'claude-sonnet-4-5-20250929',
-            max_tokens: 3000,
-            system: systemPrompt,
-            messages: [{ role: 'user', content: userPrompt }],
-          });
+        const response = await client.messages.create({
+          model: 'claude-sonnet-4-5-20250929',
+          max_tokens: 3000,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: userPrompt }],
+        });
 
-          const textBlock = response.content.find(block => block.type === 'text');
-          if (textBlock && textBlock.type === 'text') {
-            const text = textBlock.text;
+        const textBlock = response.content.find((block) => block.type === 'text');
+        if (textBlock && textBlock.type === 'text') {
+          const text = textBlock.text;
 
-            // Parse the response
-            const whoYouWereMatch = text.match(/---WHO_YOU_WERE---\n([\s\S]*?)(?=---WHO_YOU_BECAME---|$)/);
-            const whoYouBecameMatch = text.match(/---WHO_YOU_BECAME---\n([\s\S]*?)(?=---JOURNEY_SYNTHESIS---|$)/);
-            const journeySynthesisMatch = text.match(/---JOURNEY_SYNTHESIS---\n([\s\S]*?)$/);
+          // Parse the response
+          const whoYouWereMatch = text.match(
+            /---WHO_YOU_WERE---\n([\s\S]*?)(?=---WHO_YOU_BECAME---|$)/
+          );
+          const whoYouBecameMatch = text.match(
+            /---WHO_YOU_BECAME---\n([\s\S]*?)(?=---JOURNEY_SYNTHESIS---|$)/
+          );
+          const journeySynthesisMatch = text.match(/---JOURNEY_SYNTHESIS---\n([\s\S]*?)$/);
 
-            whoYouWere = whoYouWereMatch ? toSacredHTML(whoYouWereMatch[1].trim()) : null;
-            whoYouBecame = whoYouBecameMatch ? toSacredHTML(whoYouBecameMatch[1].trim()) : null;
-            journeySynthesis = journeySynthesisMatch ? toSacredHTML(journeySynthesisMatch[1].trim()) : null;
-          }
-        } catch (aiError) {
-          console.error('Failed to generate ceremony synthesis:', aiError);
-          // Continue without AI synthesis - ceremony still gets created
+          whoYouWere = whoYouWereMatch ? toSacredHTML(whoYouWereMatch[1].trim()) : null;
+          whoYouBecame = whoYouBecameMatch ? toSacredHTML(whoYouBecameMatch[1].trim()) : null;
+          journeySynthesis = journeySynthesisMatch
+            ? toSacredHTML(journeySynthesisMatch[1].trim())
+            : null;
         }
+      } catch (aiError) {
+        console.error('Failed to generate ceremony synthesis:', aiError);
+        // Continue without AI synthesis - ceremony still gets created
       }
+    }
 
-      // 6. Create ceremony record
-      const { data: ceremony, error: ceremonyError } = await supabase
-        .from('achievement_ceremonies')
-        .insert({
-          user_id: userId,
-          dream_id: dreamId,
-          dream_title: dream.title,
-          dream_description: dream.description,
-          dream_category: dream.category,
-          who_you_were: whoYouWere,
-          who_you_became: whoYouBecame,
-          journey_synthesis: journeySynthesis,
-          personal_note: personalNote || null,
-          reflections_analyzed: reflectionIds,
-          reflection_count: reflectionCount,
-        })
-        .select()
-        .single();
+    // 6. Create ceremony record
+    const { data: ceremony, error: ceremonyError } = await supabase
+      .from('achievement_ceremonies')
+      .insert({
+        user_id: userId,
+        dream_id: dreamId,
+        dream_title: dream.title,
+        dream_description: dream.description,
+        dream_category: dream.category,
+        who_you_were: whoYouWere,
+        who_you_became: whoYouBecame,
+        journey_synthesis: journeySynthesis,
+        personal_note: personalNote || null,
+        reflections_analyzed: reflectionIds,
+        reflection_count: reflectionCount,
+      })
+      .select()
+      .single();
 
-      if (ceremonyError) {
-        console.error('Failed to create ceremony:', ceremonyError);
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to create achievement ceremony',
-        });
-      }
+    if (ceremonyError) {
+      console.error('Failed to create ceremony:', ceremonyError);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to create achievement ceremony',
+      });
+    }
 
-      // 7. Update dream status to achieved
-      const { error: statusError } = await supabase
-        .from('dreams')
-        .update({
-          status: 'achieved',
-          achieved_at: new Date().toISOString(),
-          has_ceremony: true,
-        })
-        .eq('id', dreamId);
+    // 7. Update dream status to achieved
+    const { error: statusError } = await supabase
+      .from('dreams')
+      .update({
+        status: 'achieved',
+        achieved_at: new Date().toISOString(),
+        has_ceremony: true,
+      })
+      .eq('id', dreamId);
 
-      if (statusError) {
-        console.error('Failed to update dream status:', statusError);
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to update dream status',
-        });
-      }
+    if (statusError) {
+      console.error('Failed to update dream status:', statusError);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to update dream status',
+      });
+    }
 
-      return {
-        ceremonyId: ceremony.id,
-        ceremony,
-        hasSynthesis: !!journeySynthesis,
-        reflectionCount,
-        message: 'Achievement ceremony created successfully',
-      };
-    }),
+    return {
+      ceremonyId: ceremony.id,
+      ceremony,
+      hasSynthesis: !!journeySynthesis,
+      reflectionCount,
+      message: 'Achievement ceremony created successfully',
+    };
+  }),
 
   // =====================================================
   // GET CEREMONY: Retrieve achievement ceremony for a dream
   // =====================================================
-  getCeremony: protectedProcedure
-    .input(dreamIdSchema)
-    .query(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
-      const { dreamId } = input;
+  getCeremony: protectedProcedure.input(dreamIdSchema).query(async ({ ctx, input }) => {
+    const userId = ctx.user.id;
+    const { dreamId } = input;
 
-      const { data: ceremony, error } = await supabase
-        .from('achievement_ceremonies')
-        .select('*')
-        .eq('dream_id', dreamId)
-        .eq('user_id', userId)
-        .single();
+    const { data: ceremony, error } = await supabase
+      .from('achievement_ceremonies')
+      .select('*')
+      .eq('dream_id', dreamId)
+      .eq('user_id', userId)
+      .single();
 
-      if (error || !ceremony) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Ceremony not found',
-        });
-      }
+    if (error || !ceremony) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Ceremony not found',
+      });
+    }
 
-      return ceremony;
-    }),
+    return ceremony;
+  }),
 
   // =====================================================
   // UPDATE CEREMONY: Add or update personal note
   // =====================================================
   updateCeremonyNote: protectedProcedure
-    .input(z.object({
-      dreamId: z.string().uuid(),
-      personalNote: z.string().max(2000),
-    }))
+    .input(
+      z.object({
+        dreamId: z.string().uuid(),
+        personalNote: z.string().max(2000),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.user.id;
       const { dreamId, personalNote } = input;
@@ -464,132 +488,128 @@ Format your response exactly like this:
   // =====================================================
   // RELEASE: Create release ritual and mark dream released
   // =====================================================
-  release: protectedProcedure
-    .input(releaseSchema)
-    .mutation(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
-      const { dreamId, whatILearned, whatImGratefulFor, whatIRelease, finalMessage, reason } = input;
+  release: protectedProcedure.input(releaseSchema).mutation(async ({ ctx, input }) => {
+    const userId = ctx.user.id;
+    const { dreamId, whatILearned, whatImGratefulFor, whatIRelease, finalMessage, reason } = input;
 
-      // 1. Fetch dream
-      const { data: dream, error: dreamError } = await supabase
-        .from('dreams')
-        .select('*')
-        .eq('id', dreamId)
-        .eq('user_id', userId)
-        .single();
+    // 1. Fetch dream
+    const { data: dream, error: dreamError } = await supabase
+      .from('dreams')
+      .select('*')
+      .eq('id', dreamId)
+      .eq('user_id', userId)
+      .single();
 
-      if (dreamError || !dream) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Dream not found',
-        });
-      }
+    if (dreamError || !dream) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Dream not found',
+      });
+    }
 
-      // 2. Only active dreams can be released
-      if (dream.status !== 'active') {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Only active dreams can be released',
-        });
-      }
+    // 2. Only active dreams can be released
+    if (dream.status !== 'active') {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Only active dreams can be released',
+      });
+    }
 
-      // 3. Check if ritual already exists
-      const { data: existingRitual } = await supabase
-        .from('release_rituals')
-        .select('id')
-        .eq('dream_id', dreamId)
-        .single();
+    // 3. Check if ritual already exists
+    const { data: existingRitual } = await supabase
+      .from('release_rituals')
+      .select('id')
+      .eq('dream_id', dreamId)
+      .single();
 
-      if (existingRitual) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Release ritual already exists for this dream',
-        });
-      }
+    if (existingRitual) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Release ritual already exists for this dream',
+      });
+    }
 
-      // 4. Get reflection count
-      const { count: reflectionCount } = await supabase
-        .from('reflections')
-        .select('*', { count: 'exact', head: true })
-        .eq('dream_id', dreamId);
+    // 4. Get reflection count
+    const { count: reflectionCount } = await supabase
+      .from('reflections')
+      .select('*', { count: 'exact', head: true })
+      .eq('dream_id', dreamId);
 
-      // 5. Create ritual record
-      const { data: ritual, error: ritualError } = await supabase
-        .from('release_rituals')
-        .insert({
-          user_id: userId,
-          dream_id: dreamId,
-          dream_title: dream.title,
-          dream_description: dream.description,
-          dream_category: dream.category,
-          what_i_learned: whatILearned,
-          what_im_grateful_for: whatImGratefulFor,
-          what_i_release: whatIRelease,
-          final_message: finalMessage || null,
-          reason: reason || null,
-          reflection_count: reflectionCount || 0,
-        })
-        .select()
-        .single();
+    // 5. Create ritual record
+    const { data: ritual, error: ritualError } = await supabase
+      .from('release_rituals')
+      .insert({
+        user_id: userId,
+        dream_id: dreamId,
+        dream_title: dream.title,
+        dream_description: dream.description,
+        dream_category: dream.category,
+        what_i_learned: whatILearned,
+        what_im_grateful_for: whatImGratefulFor,
+        what_i_release: whatIRelease,
+        final_message: finalMessage || null,
+        reason: reason || null,
+        reflection_count: reflectionCount || 0,
+      })
+      .select()
+      .single();
 
-      if (ritualError) {
-        console.error('Failed to create ritual:', ritualError);
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to create release ritual',
-        });
-      }
+    if (ritualError) {
+      console.error('Failed to create ritual:', ritualError);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to create release ritual',
+      });
+    }
 
-      // 6. Update dream status to released
-      const { error: statusError } = await supabase
-        .from('dreams')
-        .update({
-          status: 'released',
-          released_at: new Date().toISOString(),
-          has_ritual: true,
-        })
-        .eq('id', dreamId);
+    // 6. Update dream status to released
+    const { error: statusError } = await supabase
+      .from('dreams')
+      .update({
+        status: 'released',
+        released_at: new Date().toISOString(),
+        has_ritual: true,
+      })
+      .eq('id', dreamId);
 
-      if (statusError) {
-        console.error('Failed to update dream status:', statusError);
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to update dream status',
-        });
-      }
+    if (statusError) {
+      console.error('Failed to update dream status:', statusError);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to update dream status',
+      });
+    }
 
-      return {
-        ritualId: ritual.id,
-        ritual,
-        message: 'Release ritual completed successfully',
-      };
-    }),
+    return {
+      ritualId: ritual.id,
+      ritual,
+      message: 'Release ritual completed successfully',
+    };
+  }),
 
   // =====================================================
   // GET RITUAL: Retrieve release ritual for a dream
   // =====================================================
-  getRitual: protectedProcedure
-    .input(dreamIdSchema)
-    .query(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
-      const { dreamId } = input;
+  getRitual: protectedProcedure.input(dreamIdSchema).query(async ({ ctx, input }) => {
+    const userId = ctx.user.id;
+    const { dreamId } = input;
 
-      const { data: ritual, error } = await supabase
-        .from('release_rituals')
-        .select('*')
-        .eq('dream_id', dreamId)
-        .eq('user_id', userId)
-        .single();
+    const { data: ritual, error } = await supabase
+      .from('release_rituals')
+      .select('*')
+      .eq('dream_id', dreamId)
+      .eq('user_id', userId)
+      .single();
 
-      if (error || !ritual) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Ritual not found',
-        });
-      }
+    if (error || !ritual) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Ritual not found',
+      });
+    }
 
-      return ritual;
-    }),
+    return ritual;
+  }),
 });
 
 export type LifecycleRouter = typeof lifecycleRouter;

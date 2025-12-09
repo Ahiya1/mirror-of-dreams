@@ -1,16 +1,19 @@
 // server/trpc/routers/users.ts - User profile and usage management
 
-import { z } from 'zod';
-import { router } from '../trpc';
-import { protectedProcedure, writeProcedure } from '../middleware';
 import { TRPCError } from '@trpc/server';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { z } from 'zod';
+
+import { protectedProcedure, writeProcedure } from '../middleware';
+import { router } from '../trpc';
+
+import type { UserRow, JWTPayload } from '@/types/user';
+
+import { TIER_LIMITS } from '@/lib/utils/constants';
 import { supabase } from '@/server/lib/supabase';
 import { updateProfileSchema, changeEmailSchema, updatePreferencesSchema } from '@/types/schemas';
 import { userRowToUser, DEFAULT_PREFERENCES } from '@/types/user';
-import type { UserRow, JWTPayload } from '@/types/user';
-import { TIER_LIMITS } from '@/lib/utils/constants';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
@@ -68,9 +71,10 @@ export const usersRouter = router({
       (new Date().getTime() - new Date(userProfile.created_at).getTime()) / (1000 * 60 * 60 * 24)
     );
 
-    const averageReflectionsPerMonth = userProfile.total_reflections > 0
-      ? Math.round((userProfile.total_reflections / Math.max(1, daysSinceJoining / 30)) * 10) / 10
-      : 0;
+    const averageReflectionsPerMonth =
+      userProfile.total_reflections > 0
+        ? Math.round((userProfile.total_reflections / Math.max(1, daysSinceJoining / 30)) * 10) / 10
+        : 0;
 
     return {
       ...userProfile,
@@ -84,117 +88,110 @@ export const usersRouter = router({
   }),
 
   // Update user profile
-  updateProfile: protectedProcedure
-    .input(updateProfileSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { data, error } = await supabase
-        .from('users')
-        .update({
-          ...input,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', ctx.user.id)
-        .select()
-        .single();
+  updateProfile: protectedProcedure.input(updateProfileSchema).mutation(async ({ ctx, input }) => {
+    const { data, error } = await supabase
+      .from('users')
+      .update({
+        ...input,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', ctx.user.id)
+      .select()
+      .single();
 
-      if (error) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to update profile',
-        });
-      }
+    if (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to update profile',
+      });
+    }
 
-      return {
-        user: userRowToUser(data as UserRow),
-        message: 'Profile updated successfully',
-      };
-    }),
+    return {
+      user: userRowToUser(data as UserRow),
+      message: 'Profile updated successfully',
+    };
+  }),
 
   // Change email (password-protected, issues new JWT)
-  changeEmail: writeProcedure
-    .input(changeEmailSchema)
-    .mutation(async ({ ctx, input }) => {
-      // 1. Check if email already in use
-      const { data: existingUser } = await supabase
-        .from('users')
-        .select('id')
-        .eq('email', input.newEmail.toLowerCase())
-        .single();
+  changeEmail: writeProcedure.input(changeEmailSchema).mutation(async ({ ctx, input }) => {
+    // 1. Check if email already in use
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', input.newEmail.toLowerCase())
+      .single();
 
-      if (existingUser) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Email already in use',
-        });
-      }
+    if (existingUser) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Email already in use',
+      });
+    }
 
-      // 2. Fetch user with password_hash (never returned to client)
-      const { data: user } = await supabase
-        .from('users')
-        .select('password_hash')
-        .eq('id', ctx.user.id)
-        .single();
+    // 2. Fetch user with password_hash (never returned to client)
+    const { data: user } = await supabase
+      .from('users')
+      .select('password_hash')
+      .eq('id', ctx.user.id)
+      .single();
 
-      if (!user) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'User not found',
-        });
-      }
+    if (!user) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'User not found',
+      });
+    }
 
-      // 3. Verify current password
-      const passwordValid = await bcrypt.compare(
-        input.currentPassword,
-        user.password_hash
-      );
+    // 3. Verify current password
+    const passwordValid = await bcrypt.compare(input.currentPassword, user.password_hash);
 
-      if (!passwordValid) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Current password is incorrect',
-        });
-      }
+    if (!passwordValid) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Current password is incorrect',
+      });
+    }
 
-      // 4. Update email in database
-      const { data: updatedUser, error } = await supabase
-        .from('users')
-        .update({
-          email: input.newEmail.toLowerCase(),
-          updated_at: new Date().toISOString(),
-          email_verified: false, // Reset verification (future: send email)
-        })
-        .eq('id', ctx.user.id)
-        .select()
-        .single();
+    // 4. Update email in database
+    const { data: updatedUser, error } = await supabase
+      .from('users')
+      .update({
+        email: input.newEmail.toLowerCase(),
+        updated_at: new Date().toISOString(),
+        email_verified: false, // Reset verification (future: send email)
+      })
+      .eq('id', ctx.user.id)
+      .select()
+      .single();
 
-      if (error) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to update email',
-        });
-      }
+    if (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to update email',
+      });
+    }
 
-      // 5. Generate new JWT with updated email (invalidate old token)
-      const payload: JWTPayload = {
-        userId: updatedUser.id,
-        email: updatedUser.email, // NEW EMAIL
-        tier: updatedUser.tier as any,
-        isCreator: updatedUser.is_creator || false,
-        isAdmin: updatedUser.is_admin || false,
-        isDemo: updatedUser.is_demo || false,
-        iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30, // Fresh 30 days
-      };
+    // 5. Generate new JWT with updated email (invalidate old token)
+    const payload: JWTPayload = {
+      userId: updatedUser.id,
+      email: updatedUser.email, // NEW EMAIL
+      tier: updatedUser.tier as any,
+      isCreator: updatedUser.is_creator || false,
+      isAdmin: updatedUser.is_admin || false,
+      isDemo: updatedUser.is_demo || false,
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30, // Fresh 30 days
+    };
 
-      const token = jwt.sign(payload, JWT_SECRET);
+    const token = jwt.sign(payload, JWT_SECRET);
 
-      // 6. Return new token + updated user
-      return {
-        user: userRowToUser(updatedUser as UserRow),
-        token, // Client MUST replace old token with this
-        message: 'Email updated successfully',
-      };
-    }),
+    // 6. Return new token + updated user
+    return {
+      user: userRowToUser(updatedUser as UserRow),
+      token, // Client MUST replace old token with this
+      message: 'Email updated successfully',
+    };
+  }),
 
   // Update user preferences (partial JSONB update)
   updatePreferences: protectedProcedure
@@ -263,13 +260,15 @@ export const usersRouter = router({
     const stats = {
       totalReflections: reflections?.length || 0,
       reflectionsByTone: {
-        gentle: reflections?.filter(r => r.tone === 'gentle').length || 0,
-        intense: reflections?.filter(r => r.tone === 'intense').length || 0,
-        fusion: reflections?.filter(r => r.tone === 'fusion').length || 0,
+        gentle: reflections?.filter((r) => r.tone === 'gentle').length || 0,
+        intense: reflections?.filter((r) => r.tone === 'intense').length || 0,
+        fusion: reflections?.filter((r) => r.tone === 'fusion').length || 0,
       },
-      premiumReflections: reflections?.filter(r => r.is_premium).length || 0,
+      premiumReflections: reflections?.filter((r) => r.is_premium).length || 0,
       averageWordCount: reflections?.length
-        ? Math.round(reflections.reduce((sum, r) => sum + (r.word_count || 0), 0) / reflections.length)
+        ? Math.round(
+            reflections.reduce((sum, r) => sum + (r.word_count || 0), 0) / reflections.length
+          )
         : 0,
       thisMonth: ctx.user.reflectionCountThisMonth,
       tier: ctx.user.tier,
@@ -303,16 +302,15 @@ export const usersRouter = router({
     }
 
     // Get usage limits
-    const limit = ctx.user.isCreator || ctx.user.isAdmin
-      ? 999999
-      : TIER_LIMITS[ctx.user.tier];
+    const limit = ctx.user.isCreator || ctx.user.isAdmin ? 999999 : TIER_LIMITS[ctx.user.tier];
 
     const usage = {
       tier: ctx.user.tier,
       limit,
       used: ctx.user.reflectionCountThisMonth,
       remaining: Math.max(0, limit - ctx.user.reflectionCountThisMonth),
-      canReflect: ctx.user.reflectionCountThisMonth < limit || ctx.user.isCreator || ctx.user.isAdmin,
+      canReflect:
+        ctx.user.reflectionCountThisMonth < limit || ctx.user.isCreator || ctx.user.isAdmin,
       currentMonth: ctx.user.currentMonthYear,
     };
 
@@ -346,7 +344,7 @@ function calculateMonthlyBreakdown(reflections: any[]) {
   }
 
   // Count reflections by month
-  reflections.forEach(r => {
+  reflections.forEach((r) => {
     const date = new Date(r.created_at);
     const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     if (monthlyData.hasOwnProperty(key)) {

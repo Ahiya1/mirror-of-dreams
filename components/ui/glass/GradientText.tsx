@@ -1,7 +1,8 @@
 'use client';
 
-import { cn } from '@/lib/utils';
 import type { GradientTextProps } from '@/types/glass-components';
+
+import { cn } from '@/lib/utils';
 
 /**
  * GradientText - Text with gradient color effect
@@ -10,11 +11,7 @@ import type { GradientTextProps } from '@/types/glass-components';
  * @param className - Additional Tailwind classes
  * @param children - Text content
  */
-export function GradientText({
-  gradient = 'cosmic',
-  className,
-  children,
-}: GradientTextProps) {
+export function GradientText({ gradient = 'cosmic', className, children }: GradientTextProps) {
   // Use the gradient-text-* classes defined in globals.css
   // which include the background-clip and text-fill-color properties
   const gradientClasses = {
