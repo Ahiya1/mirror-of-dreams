@@ -282,11 +282,12 @@ export const adminRouter = router({
       const offset = (page - 1) * limit;
 
       // Get reflections that have ratings/feedback
+      // Use user_id foreign key relationship to users table
       let query = supabase
         .from('reflections')
         .select(`
-          id, dream, rating, user_feedback, created_at,
-          users!inner(email, name)
+          id, dream, rating, user_feedback, created_at, user_id,
+          users:user_id(email, name)
         `, { count: 'exact' })
         .not('rating', 'is', null);
 

@@ -83,7 +83,11 @@ CREATE TABLE public.reflections (
     title TEXT, -- Auto-generated or user-set title
     tags TEXT[], -- For categorization
     mood_score INTEGER CHECK (mood_score BETWEEN 1 AND 10),
-    
+
+    -- User Feedback
+    rating INTEGER CHECK (rating >= 1 AND rating <= 10), -- User rating (1-10)
+    user_feedback TEXT, -- Optional text feedback
+
     -- Analytics
     view_count INTEGER DEFAULT 0,
     last_viewed_at TIMESTAMP WITH TIME ZONE
