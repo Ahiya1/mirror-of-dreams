@@ -1,7 +1,9 @@
 /**
  * ToastContext - Global toast notification system
- * Iteration: 21 (Plan plan-3)
- * Builder: Builder-2
+ * Iteration: 21 (Plan plan-3), Updated: Iteration 26 (Plan 17)
+ * Builder: Builder-2, Updated by Builder-3
+ *
+ * Added action button support for toast notifications
  */
 
 'use client';
@@ -10,15 +12,30 @@ import { createContext, useContext, useState, useCallback, ReactNode } from 'rea
 import { Toast } from '@/components/shared/Toast';
 import { AnimatePresence } from 'framer-motion';
 
+interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
+
 interface ToastMessage {
   id: string;
   type: 'success' | 'error' | 'warning' | 'info';
   message: string;
   duration?: number;
+  action?: ToastAction;
+}
+
+interface ToastOptions {
+  duration?: number;
+  action?: ToastAction;
 }
 
 interface ToastContextValue {
-  showToast: (type: ToastMessage['type'], message: string, duration?: number) => void;
+  showToast: (
+    type: ToastMessage['type'],
+    message: string,
+    options?: ToastOptions | number
+  ) => void;
   dismissToast: (id: string) => void;
 }
 
@@ -28,9 +45,27 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   const showToast = useCallback(
-    (type: ToastMessage['type'], message: string, duration = 5000) => {
+    (
+      type: ToastMessage['type'],
+      message: string,
+      options?: ToastOptions | number
+    ) => {
       const id = Math.random().toString(36).substring(7);
-      const newToast: ToastMessage = { id, type, message, duration };
+
+      // Support both old signature (duration as number) and new signature (options object)
+      const resolvedOptions: ToastOptions = typeof options === 'number'
+        ? { duration: options }
+        : options ?? {};
+
+      const duration = resolvedOptions.duration ?? 5000;
+
+      const newToast: ToastMessage = {
+        id,
+        type,
+        message,
+        duration,
+        action: resolvedOptions.action,
+      };
 
       setToasts((prev) => [...prev, newToast]);
 
@@ -61,6 +96,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               type={toast.type}
               message={toast.message}
               onDismiss={() => dismissToast(toast.id)}
+              action={toast.action}
             />
           ))}
         </AnimatePresence>
@@ -75,9 +111,16 @@ export function useToast() {
     throw new Error('useToast must be used within ToastProvider');
   }
   return {
-    success: (message: string, duration?: number) => context.showToast('success', message, duration),
-    error: (message: string, duration?: number) => context.showToast('error', message, duration),
-    warning: (message: string, duration?: number) => context.showToast('warning', message, duration),
-    info: (message: string, duration?: number) => context.showToast('info', message, duration),
+    success: (message: string, options?: ToastOptions | number) =>
+      context.showToast('success', message, options),
+    error: (message: string, options?: ToastOptions | number) =>
+      context.showToast('error', message, options),
+    warning: (message: string, options?: ToastOptions | number) =>
+      context.showToast('warning', message, options),
+    info: (message: string, options?: ToastOptions | number) =>
+      context.showToast('info', message, options),
   };
 }
+
+// Export types for use in other components
+export type { ToastAction, ToastOptions };

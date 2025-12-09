@@ -1,7 +1,9 @@
 /**
- * Onboarding Page - 3-step wizard for new users
- * Iteration: 21 (Plan plan-3)
- * Builder: Builder-2
+ * Onboarding Page - 4-step wizard for new users
+ * Iteration: 27 (Iteration 2 of Plan 17)
+ * Builder: Builder-1
+ *
+ * Updated: Added Clarify explanation step (step 3 of 4)
  */
 
 'use client';
@@ -38,6 +40,12 @@ const steps: OnboardingStep[] = [
     content:
       'Every few days, answer 5 deep questions about your dream:\n\n1. What is your dream?\n2. What is your plan?\n3. Have you set a date?\n4. What\'s your relationship with this dream?\n5. What are you willing to give in return?\n\nAfter 4 reflections, your Mirror reveals the patterns you couldn\'t see.',
     visual: '✨',
+  },
+  {
+    title: 'Clarify: Your Exploration Space',
+    content:
+      'Before committing to a dream, use Clarify to explore your thoughts and discover what truly resonates with you.\n\nHave conversations with our AI guide to clarify your aspirations. When you\'re ready, transform your insights into actionable dreams.',
+    visual: '🔮',
   },
   {
     title: 'Your Free Tier',

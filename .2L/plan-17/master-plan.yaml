@@ -1,0 +1,203 @@
+plan_id: plan-17
+created_at: "2025-12-09T16:15:00Z"
+status: PLANNED
+total_iterations: 2
+
+strategy: |
+  Split into 2 iterations for clean separation of concerns:
+
+  Iteration 1 (Core Fixes): Fix critical bugs (tier mismatch, createDream tool),
+  add streaming responses, and toast notifications. These are foundational changes
+  that make the Clarify agent actually work as intended.
+
+  Iteration 2 (UX & Demo): Add Clarify to onboarding, re-enter onboarding button,
+  and seed demo Clarify conversations. These are polish features that improve
+  discoverability and demo experience.
+
+  This split allows:
+  - Iteration 1 to be validated independently (core functionality works)
+  - Iteration 2 to build on working foundation (demo shows real tool_use)
+  - Parallel builder work within each iteration
+
+  Key architectural decisions:
+  - Streaming uses new /api/clarify/stream SSE endpoint (tRPC doesn't support SSE)
+  - createDream tool uses Claude's native tool_use API
+  - Toast component enhanced to support action buttons for "View Dream" link
+  - Keep existing sendMessage mutation as non-streaming fallback
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 26
+    name: "Core Fixes & Streaming"
+    vision: "Fix critical Clarify bugs and add real-time streaming responses"
+    scope: |
+      ## Must Complete
+
+      ### 1. Fix Tier Name Mismatch Bug
+      - File: /server/trpc/routers/dreams.ts
+      - Change TIER_LIMITS from {free, essential, optimal, premium} to {free, pro, unlimited}
+      - Ensures unlimited tier users see "X / ∞" not "0 / 0"
+      - Complexity: LOW (15 min)
+
+      ### 2. Implement createDream Tool with Claude API
+      - File: /server/trpc/routers/clarify.ts
+      - Add tools parameter to client.messages.create() calls
+      - Define createDream tool schema matching ClarifyToolUse type
+      - Handle tool_use content blocks in Claude response
+      - Execute dream creation via dreams.create logic
+      - Return tool result to Claude for acknowledgment
+      - Store tool_use in clarify_messages.tool_use column
+      - Update clarify_sessions.dream_id when dream created
+      - Complexity: MEDIUM-HIGH (6-8 hours)
+
+      ### 3. Add Streaming SSE Endpoint
+      - New file: /app/api/clarify/stream/route.ts
+      - SSE endpoint with text/event-stream content type
+      - JWT authentication via Authorization header
+      - Use client.messages.stream() from Anthropic SDK
+      - Event types: token, tool_use, tool_result, done, error
+      - Handle tool_use mid-stream (execute, return result)
+      - Save final message to database after stream completes
+      - Complexity: HIGH (5-7 hours)
+
+      ### 4. Update Clarify Chat UI for Streaming
+      - File: /app/clarify/[sessionId]/page.tsx
+      - Add EventSource connection to streaming endpoint
+      - Display tokens as they arrive using useState append
+      - Replace "Thinking..." with "Mirror is reflecting..." indicator
+      - Handle stream states: idle, connecting, streaming, completing, error
+      - Keep sendMessage mutation as fallback
+      - Complexity: MEDIUM (3-4 hours)
+
+      ### 5. Enhance Toast Component for Actions
+      - File: /contexts/ToastContext.tsx and /components/shared/Toast.tsx
+      - Add action support: { label: string, onClick: () => void }
+      - Render action button in toast with link styling
+      - Complexity: LOW (1 hour)
+
+      ### 6. Add Dream Creation Toast to Clarify
+      - File: /app/clarify/[sessionId]/page.tsx
+      - Detect tool_use result from stream events
+      - Show toast: "Dream created: [title]" with "View Dream" action
+      - Navigate to /dreams/[id] on click
+      - Complexity: LOW (1 hour)
+
+      ## Builder Task Distribution
+
+      Builder-1: Backend Infrastructure
+      - Tier fix (30 min)
+      - createDream tool implementation (6-8 hours)
+      - Output: Working tool_use with Claude API
+
+      Builder-2: Streaming Implementation
+      - SSE endpoint (5-7 hours)
+      - Streaming with tool_use integration
+      - Output: /api/clarify/stream endpoint
+
+      Builder-3: Frontend & Toast
+      - Toast enhancement (1 hour)
+      - Clarify UI streaming updates (3-4 hours)
+      - Dream creation toast integration (1 hour)
+      - Output: Updated Clarify chat page
+
+    status: PENDING
+    dependencies: []
+    success_criteria:
+      - Dreams created from Clarify appear in Dreams tab (100% success rate)
+      - Unlimited tier users see correct dream limits
+      - First streaming token appears within 500ms
+      - Toast appears with "View Dream" link when dream created
+
+  - iteration_id: 2
+    global_iteration: 27
+    name: "UX Polish & Demo Data"
+    vision: "Improve feature discoverability and complete demo experience"
+    scope: |
+      ## Must Complete
+
+      ### 1. Add Clarify Step to Onboarding
+      - File: /app/onboarding/page.tsx
+      - Insert new step as Step 3 (before "Your Free Tier")
+      - Title: "Clarify: Your Exploration Space"
+      - Content: Explain Clarify as pre-dream exploration, mention paid feature
+      - Visual: crystal ball emoji (🔮) or speech bubble (💬)
+      - Update ProgressOrbs from 3 to 4 steps
+      - Complexity: LOW (1-2 hours)
+
+      ### 2. Add Re-enter Onboarding Button to Profile
+      - File: /app/profile/page.tsx
+      - Add "View Tutorial" button in Account Actions section
+      - Navigate to /onboarding on click
+      - Onboarding already handles re-entry (just updates timestamp)
+      - Complexity: LOW (30 min)
+
+      ### 3. Seed Demo User Clarify Conversations
+      - Option A: Extend /scripts/seed-demo-user.ts
+      - Option B: New migration file
+      - Recommendation: Extend existing script for consistency
+
+      Create 3 demo sessions:
+
+      Session 1: "Late-night thoughts about work"
+      - 5 messages, exploration that doesn't crystallize
+      - Shows that not everything needs to become a dream
+      - Status: active
+
+      Session 2: "Something is emerging about writing"
+      - 7 messages, exploration that crystallizes
+      - Includes tool_use showing dream creation
+      - Links to demo dream "Create a Practical Journaling Course"
+      - Status: active
+
+      Session 3: "Quick thought about the marathon training"
+      - 3 messages, brief check-in
+      - Links to existing marathon dream
+      - Status: archived
+
+      - Complexity: LOW-MEDIUM (3-4 hours for content + scripting)
+
+      ## Builder Task Distribution
+
+      Builder-1: Onboarding & Profile
+      - Clarify onboarding step (1-2 hours)
+      - Re-enter onboarding button (30 min)
+      - Output: Updated onboarding flow
+
+      Builder-2: Demo Data Seeding
+      - Extend seed-demo-user.ts with Clarify sessions (2-3 hours)
+      - Create realistic conversations (content writing)
+      - Include tool_use example with dream creation
+      - Output: Runnable seed script with Clarify data
+
+    status: PENDING
+    dependencies:
+      - iteration_id: 1
+        reason: "Demo data needs working createDream tool_use schema"
+    success_criteria:
+      - New users see Clarify explanation in onboarding (step 3 of 4)
+      - Profile page has "View Tutorial" button that works
+      - Demo user has 3 Clarify sessions visible
+      - At least one demo session shows tool_use dream creation
+
+exploration_summary:
+  explorers_spawned: 3
+  complexity_assessment: MEDIUM-HIGH
+  total_estimated_hours: 20-28
+
+  key_findings:
+    - Toast notification system already exists and is production-ready
+    - ClarifyToolUse type already defined in types/clarify.ts
+    - Database schema supports tool_use (JSONB) and dream_id (FK) already
+    - tRPC doesn't support SSE - need separate API route for streaming
+    - Clarify prompt already mentions createDream tool - just needs wiring
+    - Demo seed script exists as template for Clarify data
+
+  risks:
+    - MEDIUM: Streaming + tool_use interaction requires careful handling
+    - CERTAIN: SSE requires architectural divergence from tRPC pattern
+    - LOW: Tier mismatch might exist elsewhere (audit recommended)
+
+  dependencies:
+    - createDream tool blocks: toast notification, demo seeding
+    - Streaming can be developed in parallel with tool_use
+    - Onboarding and profile changes are fully independent

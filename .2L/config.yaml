@@ -181,5 +181,19 @@ plan-16:
     current_iteration: 25
     current_phase: complete
     completed_at: '2025-12-09T14:30:00Z'
-current_plan: plan-16
-global_iteration_counter: 25
+plan-17:
+    status: COMPLETE
+    created: '2025-12-09'
+    vision_file: plan-17/vision.md
+    master_plan_file: plan-17/master-plan.yaml
+    description: Clarify Agent Enhancement & Bug Fixes - Fix createDream tool, tier bugs, add streaming, improve onboarding
+    github_repo: git@github.com:Ahiya1/mirror-of-dreams.git
+    master_exploration:
+      num_explorers: 3
+      complexity_level: MEDIUM-HIGH
+    total_iterations: 2
+    current_iteration: 27
+    current_phase: complete
+    completed_at: '2025-12-09T16:30:00Z'
+current_plan: plan-17
+global_iteration_counter: 27

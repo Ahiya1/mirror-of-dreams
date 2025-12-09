@@ -11,9 +11,8 @@ import { supabase } from '@/server/lib/supabase';
 // =====================================================
 const TIER_LIMITS = {
   free: { dreams: 2 },
-  essential: { dreams: 5 },
-  optimal: { dreams: 7 },
-  premium: { dreams: 999999 }, // Unlimited
+  pro: { dreams: 5 },
+  unlimited: { dreams: 999999 }, // Effectively unlimited
 } as const;
 
 // =====================================================

@@ -1,7 +1,9 @@
 /**
  * Toast - Toast notification component
- * Iteration: 21 (Plan plan-3)
- * Builder: Builder-2
+ * Iteration: 21 (Plan plan-3), Updated: Iteration 26 (Plan 17)
+ * Builder: Builder-2, Updated by Builder-3
+ *
+ * Added action button support for interactive toasts
  */
 
 'use client';
@@ -10,13 +12,19 @@ import { motion } from 'framer-motion';
 import { X, CheckCircle, XCircle, AlertTriangle, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
+
 interface ToastProps {
   type: 'success' | 'error' | 'warning' | 'info';
   message: string;
   onDismiss: () => void;
+  action?: ToastAction;
 }
 
-export function Toast({ type, message, onDismiss }: ToastProps) {
+export function Toast({ type, message, onDismiss, action }: ToastProps) {
   const icons = {
     success: <CheckCircle className="w-5 h-5 text-mirror-success" />,
     error: <XCircle className="w-5 h-5 text-mirror-error" />,
@@ -47,8 +55,24 @@ export function Toast({ type, message, onDismiss }: ToastProps) {
       {/* Icon */}
       <div className="flex-shrink-0 mt-0.5">{icons[type]}</div>
 
-      {/* Message */}
-      <p className="flex-1 text-sm text-white/90 leading-relaxed">{message}</p>
+      {/* Content */}
+      <div className="flex-1 min-w-0">
+        {/* Message */}
+        <p className="text-sm text-white/90 leading-relaxed">{message}</p>
+
+        {/* Action Button */}
+        {action && (
+          <button
+            onClick={() => {
+              action.onClick();
+              onDismiss();
+            }}
+            className="mt-2 text-sm font-medium text-purple-400 hover:text-purple-300 transition-colors"
+          >
+            {action.label}
+          </button>
+        )}
+      </div>
 
       {/* Dismiss Button */}
       <button

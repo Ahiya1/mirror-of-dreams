@@ -1,10 +1,11 @@
 // app/clarify/[sessionId]/page.tsx - Clarify conversation page
-// Builder: Phase 1 Part C (Iteration 24)
+// Builder: Phase 1 Part C (Iteration 24), Updated: Iteration 26 (Plan 17) by Builder-3
 // Purpose: Chat interface with message list and input field
+// Added: Streaming UI, dream creation toast notifications
 
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { trpc } from '@/lib/trpc';
 import { CosmicLoader, GlowButton, GlassCard } from '@/components/ui/glass';
@@ -12,6 +13,7 @@ import { AppNavigation } from '@/components/shared/AppNavigation';
 import { BottomNavigation } from '@/components/navigation';
 import { AIResponseRenderer } from '@/components/reflections/AIResponseRenderer';
 import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/contexts/ToastContext';
 import { formatDistanceToNow } from 'date-fns';
 import { ArrowLeft, Send, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -21,11 +23,20 @@ export default function ClarifySessionPage() {
   const params = useParams();
   const sessionId = params.sessionId as string;
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+  const toast = useToast();
 
   const [inputValue, setInputValue] = useState('');
   const [pendingMessage, setPendingMessage] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Streaming state
+  const [streamState, setStreamState] = useState<'idle' | 'streaming' | 'error'>('idle');
+  const [streamingContent, setStreamingContent] = useState('');
+  const [toolUseResult, setToolUseResult] = useState<{
+    dreamId: string;
+    dreamTitle: string;
+  } | null>(null);
 
   // Auth redirects
   useEffect(() => {
@@ -62,12 +73,12 @@ export default function ClarifySessionPage() {
     },
   });
 
-  // Scroll to bottom when messages change or pending message appears
+  // Scroll to bottom when messages change, pending message appears, or streaming content updates
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [data?.messages, pendingMessage]);
+  }, [data?.messages, pendingMessage, streamingContent]);
 
   // Focus input on load
   useEffect(() => {
@@ -90,6 +101,15 @@ export default function ClarifySessionPage() {
 
   const handleSend = () => {
     const content = inputValue.trim();
+    if (!content || streamState === 'streaming') return;
+
+    // Use streaming handler
+    handleSendStreaming();
+  };
+
+  // Fallback non-streaming handler (kept for potential fallback scenarios)
+  const handleSendNonStreaming = () => {
+    const content = inputValue.trim();
     if (!content || sendMessage.isPending) return;
 
     // Optimistic update: show message immediately
@@ -108,6 +128,119 @@ export default function ClarifySessionPage() {
       handleSend();
     }
   };
+
+  // Handle stream events from SSE
+  const handleStreamEvent = useCallback((eventType: string, data: Record<string, unknown>) => {
+    switch (eventType) {
+      case 'token':
+        setStreamingContent(prev => prev + (data.text as string));
+        break;
+      case 'tool_use_result':
+        if (data.success && data.dreamId) {
+          setToolUseResult({
+            dreamId: data.dreamId as string,
+            dreamTitle: data.dreamTitle as string,
+          });
+          toast.success(`Dream created: "${data.dreamTitle}"`, {
+            duration: 8000,
+            action: {
+              label: 'View Dream',
+              onClick: () => router.push(`/dreams/${data.dreamId}`),
+            },
+          });
+        }
+        break;
+      case 'done':
+        setStreamState('idle');
+        setPendingMessage(null);
+        setStreamingContent('');
+        refetch(); // Refresh messages from server
+        break;
+      case 'error':
+        setStreamState('error');
+        toast.error('Something went wrong. Please try again.');
+        // Restore input for retry
+        if (pendingMessage) {
+          setInputValue(pendingMessage);
+        }
+        setPendingMessage(null);
+        setStreamingContent('');
+        break;
+    }
+  }, [toast, router, refetch, pendingMessage]);
+
+  // Streaming message handler
+  const handleSendStreaming = useCallback(async () => {
+    const content = inputValue.trim();
+    if (!content || streamState === 'streaming') return;
+
+    // Optimistic update
+    setPendingMessage(content);
+    setInputValue('');
+    setStreamingContent('');
+    setToolUseResult(null);
+    setStreamState('streaming');
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/clarify/stream', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ sessionId, content }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Stream request failed');
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error('No reader available');
+
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+
+        // Parse SSE events from buffer
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || ''; // Keep incomplete line in buffer
+
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          if (line.startsWith('event: ')) {
+            const eventType = line.slice(7);
+            const dataLine = lines[i + 1];
+            if (dataLine?.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(dataLine.slice(6));
+                handleStreamEvent(eventType, data);
+              } catch {
+                // Skip malformed JSON
+              }
+              i++; // Skip data line
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Streaming error:', error);
+      setStreamState('error');
+      toast.error('Failed to send message. Please try again.');
+      // Fallback: restore input for retry
+      if (pendingMessage) {
+        setInputValue(pendingMessage);
+      }
+      setPendingMessage(null);
+      setStreamingContent('');
+    }
+  }, [inputValue, streamState, sessionId, handleStreamEvent, toast, pendingMessage]);
 
   // Loading states
   if (authLoading || isLoading) {
@@ -222,8 +355,35 @@ export default function ClarifySessionPage() {
             </div>
           )}
 
-          {/* Typing indicator */}
-          {sendMessage.isPending && (
+          {/* Streaming assistant message */}
+          {streamState === 'streaming' && streamingContent && (
+            <div className="flex justify-start">
+              <div className="max-w-[85%] sm:max-w-[75%] bg-white/5 border border-white/10 rounded-2xl rounded-bl-md px-4 py-3">
+                <div className="prose prose-invert prose-sm max-w-none">
+                  <p className="text-white whitespace-pre-wrap">{streamingContent}</p>
+                </div>
+                <div className="flex items-center gap-2 mt-2">
+                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
+                  <span className="text-xs text-white/30">Streaming...</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Typing indicator - "Mirror is reflecting..." for streaming */}
+          {streamState === 'streaming' && !streamingContent && (
+            <div className="flex justify-start">
+              <div className="bg-white/5 border border-white/10 rounded-2xl rounded-bl-md px-4 py-3">
+                <div className="flex items-center gap-2 text-white/50">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="text-sm">Mirror is reflecting...</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Typing indicator - fallback for non-streaming */}
+          {sendMessage.isPending && streamState !== 'streaming' && (
             <div className="flex justify-start">
               <div className="bg-white/5 border border-white/10 rounded-2xl rounded-bl-md px-4 py-3">
                 <div className="flex items-center gap-2 text-white/50">
@@ -256,16 +416,16 @@ export default function ClarifySessionPage() {
                 minHeight: '24px',
                 fontSize: '16px', // Prevents iOS zoom on focus
               }}
-              disabled={sendMessage.isPending}
+              disabled={streamState === 'streaming' || sendMessage.isPending}
             />
             <GlowButton
               variant="primary"
               size="sm"
               onClick={handleSend}
-              disabled={!inputValue.trim() || sendMessage.isPending}
+              disabled={!inputValue.trim() || streamState === 'streaming' || sendMessage.isPending}
               className="shrink-0 min-w-[44px] min-h-[44px]"
             >
-              {sendMessage.isPending ? (
+              {streamState === 'streaming' || sendMessage.isPending ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <Send className="w-4 h-4" />

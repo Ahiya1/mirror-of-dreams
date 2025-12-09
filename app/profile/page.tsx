@@ -1,13 +1,13 @@
 /**
  * Profile Page - User Account Management
  *
- * Iteration: 13 (Plan plan-7)
+ * Iteration: 27 (Iteration 2 of Plan 17)
  * Builder: Builder-1
  *
  * Features:
  * - Account information (name editable, email display, member since)
  * - Tier and subscription display (current tier, usage stats)
- * - Account actions (change email, change password)
+ * - Account actions (change email, change password, view tutorial)
  * - Danger zone (delete account with confirmation)
  */
 
@@ -28,6 +28,7 @@ import { GlassModal } from '@/components/ui/glass/GlassModal';
 import { CosmicLoader } from '@/components/ui/glass/CosmicLoader';
 import { SubscriptionStatusCard } from '@/components/subscription/SubscriptionStatusCard';
 import { formatDistanceToNow } from 'date-fns';
+import { BookOpen } from 'lucide-react';
 import { CLARIFY_SESSION_LIMITS } from '@/lib/utils/constants';
 
 export default function ProfilePage() {
@@ -421,6 +422,21 @@ export default function ProfilePage() {
                   Change Password
                 </GlowButton>
               )}
+            </div>
+
+            {/* View Tutorial */}
+            <div className="pt-4 border-t border-white/10">
+              <label className="text-sm text-white/60 block mb-2">Tutorial</label>
+              <button
+                onClick={() => router.push('/onboarding')}
+                className="w-full flex items-center justify-between px-4 py-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <BookOpen className="w-5 h-5 text-purple-400" />
+                  <span className="text-white">View Tutorial</span>
+                </div>
+                <span className="text-white/40">&rarr;</span>
+              </button>
             </div>
           </GlassCard>
 

@@ -901,6 +901,213 @@ That identity will follow you into every future project. It's worth more than $1
 
 This is real now. You made it real.`;
 
+// ============================================================================
+// CLARIFY SESSIONS AND MESSAGES (Demo content for Clarify agent)
+// ============================================================================
+
+interface ClarifyDemoSession {
+  title: string;
+  status: 'active' | 'archived';
+  daysAgo: number;
+  linkedToDream?: string; // Dream title to link to (for sessions that created dreams)
+  messages: Array<{
+    role: 'user' | 'assistant';
+    content: string;
+    minutesAgo: number; // Relative to session creation
+    toolUse?: {
+      name: 'createDream';
+      input: {
+        title: string;
+        description?: string;
+        category?: string;
+      };
+      result?: {
+        dreamId: string;
+        success: boolean;
+      };
+    };
+  }>;
+}
+
+const DEMO_CLARIFY_SESSIONS: ClarifyDemoSession[] = [
+  // Session 1: Exploration that doesn't crystallize into a dream
+  {
+    title: 'Late-night thoughts about work',
+    status: 'active',
+    daysAgo: 5,
+    messages: [
+      {
+        role: 'user',
+        content: "I've been feeling restless about my work lately. Not sure if I'm in the right place anymore.",
+        minutesAgo: 30,
+      },
+      {
+        role: 'assistant',
+        content: `That restlessness you're describing often signals something important trying to emerge. It's not always about being in the wrong place - sometimes it's about outgrowing the current shape of things.
+
+What aspects of your work feel most unsettling right now? Is it the nature of the work itself, the environment, or something about how you're showing up in it?`,
+        minutesAgo: 29,
+      },
+      {
+        role: 'user',
+        content: "I think it's the lack of creativity. My role has become very routine. I used to solve interesting problems, now I just maintain systems.",
+        minutesAgo: 25,
+      },
+      {
+        role: 'assistant',
+        content: `Creative fulfillment is a fundamental need for many people - when it's missing, everything else can start to feel flat, even if the job is objectively "good."
+
+There's something worth noting here: you said your role "has become" routine. That suggests a drift over time rather than a fundamental mismatch. Sometimes roles evolve away from what initially drew us to them.
+
+Have you identified any outlets that might help? That could mean advocating for different projects at work, finding creative expression outside work, or exploring whether a shift - internally or externally - might be needed.`,
+        minutesAgo: 23,
+      },
+      {
+        role: 'user',
+        content: "Not really. Maybe I just need to sit with this feeling for a while longer. I don't think I'm ready to make any decisions yet.",
+        minutesAgo: 18,
+      },
+      {
+        role: 'assistant',
+        content: `That's a wise instinct. Not every restless feeling needs immediate action - sometimes the most productive thing is to stay present with the discomfort and let it reveal what it's actually pointing toward.
+
+Sitting with uncertainty takes more courage than rushing to resolve it. The clarity will come.
+
+When you feel ready to explore this further - whether that's next week or next month - I'm here. Sometimes just naming what we're experiencing is the first step toward understanding it.`,
+        minutesAgo: 15,
+      },
+    ],
+  },
+
+  // Session 2: Exploration that crystallizes into a dream (with tool_use)
+  {
+    title: 'Something is emerging about writing',
+    status: 'active',
+    daysAgo: 3,
+    linkedToDream: 'Create a Practical Journaling Course',
+    messages: [
+      {
+        role: 'user',
+        content: "I've been journaling more lately and people keep asking me for advice on how to start.",
+        minutesAgo: 45,
+      },
+      {
+        role: 'assistant',
+        content: `That's wonderful! There's something meaningful happening when others start seeking your guidance - it often means you've developed a practice that's visibly transformed something in you.
+
+Teaching what we practice can actually deepen our own understanding. When we articulate what we know intuitively, we discover layers we hadn't consciously recognized.
+
+What kind of advice do people usually ask for? Is it about getting started, staying consistent, or something else?`,
+        minutesAgo: 43,
+      },
+      {
+        role: 'user',
+        content: "Mostly how to get started and what to actually write about. They feel intimidated by the blank page. I remember feeling that way too before I found my rhythm.",
+        minutesAgo: 38,
+      },
+      {
+        role: 'assistant',
+        content: `That's a powerful position to teach from - you remember the struggle, but you've also found your way through it. The best teachers are often those who can bridge that gap with genuine empathy.
+
+"What to actually write about" is such a universal blocker. Most journaling advice is either too vague ("just write what you feel") or too prescriptive ("use these 5 prompts every day"). There's space for something that meets people where they are.
+
+Have you ever thought about packaging what you know into something more structured? Or does sharing advice informally feel like enough?`,
+        minutesAgo: 35,
+      },
+      {
+        role: 'user',
+        content: "I've thought about creating some kind of guide or course. Nothing fancy, just practical steps that actually work. The stuff I wish I had when I started.",
+        minutesAgo: 30,
+      },
+      {
+        role: 'assistant',
+        content: `A practical journaling course sounds like a meaningful project. "The stuff I wish I had when I started" - that's often the best foundation for teaching. You're not creating content from theory; you're sharing what actually worked.
+
+The fact that you said "nothing fancy, just practical steps" tells me you already have a clear sense of what this should be. That clarity is valuable - many courses fail because they try to be too comprehensive.
+
+Is this something you'd want to pursue? If so, we could create a dream to track it - give it shape and commitment. What do you think?`,
+        minutesAgo: 27,
+      },
+      {
+        role: 'user',
+        content: "Yes, let's do it. Can you create a dream for this?",
+        minutesAgo: 22,
+      },
+      {
+        role: 'assistant',
+        content: `I've created your dream: "Create a Practical Journaling Course."
+
+This is now a real commitment in your Mirror of Dreams. You can add reflections to track your progress, explore what emerges as you build it, and let it evolve.
+
+The journey from "people keep asking me for advice" to "I'm creating something to help them" - that's a beautiful crystallization. You're not just journaling anymore; you're becoming someone who helps others discover what journaling can do for them.
+
+What feels like the right first step?`,
+        minutesAgo: 20,
+        toolUse: {
+          name: 'createDream',
+          input: {
+            title: 'Create a Practical Journaling Course',
+            description: 'Develop a beginner-friendly journaling course with practical exercises and templates to help others start and maintain a journaling practice.',
+            category: 'creative',
+          },
+          result: {
+            dreamId: '', // Will be populated with actual dream ID
+            success: true,
+          },
+        },
+      },
+      {
+        role: 'user',
+        content: "I think I'll start by writing down the 5 most common questions people ask me. That could become the structure.",
+        minutesAgo: 15,
+      },
+      {
+        role: 'assistant',
+        content: `Perfect. Starting with real questions from real people is the best way to build something genuinely useful. You're not guessing what people need - you already know.
+
+Those 5 questions could become your modules, your chapters, your core framework. Let the structure emerge from the problems you've actually solved.
+
+I'm excited for you. This dream has roots - in your practice, in others' genuine need, in your desire to help. That's the best kind of foundation.`,
+        minutesAgo: 12,
+      },
+    ],
+  },
+
+  // Session 3: Brief check-in about an existing dream
+  {
+    title: 'Quick thought about marathon training',
+    status: 'archived',
+    daysAgo: 7,
+    linkedToDream: 'Run a Marathon',
+    messages: [
+      {
+        role: 'user',
+        content: "Just checking in about the marathon training - I'm on week 3 now.",
+        minutesAgo: 15,
+      },
+      {
+        role: 'assistant',
+        content: `Week 3 is when consistency starts building! The first two weeks are often about getting back into rhythm - by week 3, your body is beginning to remember what it can do.
+
+How is your body adapting? Any tightness, energy shifts, or changes in how the runs feel?`,
+        minutesAgo: 13,
+      },
+      {
+        role: 'user',
+        content: "Good so far. The early mornings are tough but I'm sticking with it. My legs feel stronger than last week.",
+        minutesAgo: 8,
+      },
+      {
+        role: 'assistant',
+        content: `That's exactly what adaptation feels like - the same effort yielding better results. The early mornings are always a negotiation with comfort, but you're choosing the run anyway. That's the real training.
+
+Keep honoring the process. Week 3 is behind you now. On to week 4.`,
+        minutesAgo: 5,
+      },
+    ],
+  },
+];
+
 // Visualization for SaaS dream (hardcoded, high-quality content)
 const SAAS_VISUALIZATION = `# The Mountain You're Climbing
 
@@ -1125,13 +1332,145 @@ async function seedDemoUser() {
       }
     }
 
-    // 7. Update user stats
+    // 7. Clean existing Clarify data
+    console.log('🧹 Cleaning existing Clarify data...');
+    await supabase.from('clarify_messages').delete().in(
+      'session_id',
+      (await supabase.from('clarify_sessions').select('id').eq('user_id', demoUser.id)).data?.map(s => s.id) || []
+    );
+    await supabase.from('clarify_sessions').delete().eq('user_id', demoUser.id);
+    console.log('✅ Cleaned existing Clarify data\n');
+
+    // 8. Create Clarify sessions and messages
+    console.log('💬 Creating Clarify demo sessions...\n');
+    let totalSessions = 0;
+    let totalMessages = 0;
+
+    // First, we need to create the Journaling Course dream that will be linked from Session 2
+    // Check if it already exists in createdDreams
+    let journalingDream = createdDreams.find(d => d.title === 'Create a Practical Journaling Course');
+
+    // If it doesn't exist, create it
+    if (!journalingDream) {
+      console.log('   📝 Creating "Create a Practical Journaling Course" dream for Clarify session link...');
+      const { data: newJournalingDream, error: journalingError } = await supabase
+        .from('dreams')
+        .insert({
+          user_id: demoUser.id,
+          title: 'Create a Practical Journaling Course',
+          description: 'Develop a beginner-friendly journaling course with practical exercises and templates to help others start and maintain a journaling practice.',
+          category: 'creative',
+          status: 'active',
+          priority: 5,
+          created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+          updated_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        })
+        .select()
+        .single();
+
+      if (journalingError) {
+        console.error('   ❌ Failed to create journaling dream:', journalingError);
+      } else {
+        journalingDream = newJournalingDream;
+        createdDreams.push(newJournalingDream);
+        console.log('   ✅ Created journaling dream\n');
+      }
+    }
+
+    // Create a map of dream titles to IDs for linking
+    const dreamTitleToId: Record<string, string> = {};
+    for (const dream of createdDreams) {
+      dreamTitleToId[dream.title] = dream.id;
+    }
+
+    for (const sessionData of DEMO_CLARIFY_SESSIONS) {
+      const sessionCreatedAt = new Date(Date.now() - sessionData.daysAgo * 24 * 60 * 60 * 1000);
+
+      // Determine linked dream ID
+      let linkedDreamId: string | null = null;
+      if (sessionData.linkedToDream) {
+        linkedDreamId = dreamTitleToId[sessionData.linkedToDream] || null;
+      }
+
+      // Create the session
+      const { data: session, error: sessionError } = await supabase
+        .from('clarify_sessions')
+        .insert({
+          user_id: demoUser.id,
+          title: sessionData.title,
+          status: sessionData.status,
+          dream_id: linkedDreamId,
+          message_count: sessionData.messages.length,
+          last_message_at: new Date(sessionCreatedAt.getTime() - sessionData.messages[sessionData.messages.length - 1].minutesAgo * 60 * 1000).toISOString(),
+          created_at: sessionCreatedAt.toISOString(),
+          updated_at: sessionCreatedAt.toISOString(),
+        })
+        .select()
+        .single();
+
+      if (sessionError || !session) {
+        console.error(`   ❌ Failed to create session "${sessionData.title}":`, sessionError);
+        continue;
+      }
+
+      totalSessions++;
+      console.log(`   📖 Session: "${sessionData.title}" (${sessionData.messages.length} messages, ${sessionData.status})`);
+
+      // Create messages for this session
+      for (const msgData of sessionData.messages) {
+        const messageCreatedAt = new Date(sessionCreatedAt.getTime() - msgData.minutesAgo * 60 * 1000);
+
+        // Prepare tool_use with actual dream ID if applicable
+        let toolUseData = null;
+        if (msgData.toolUse) {
+          toolUseData = {
+            name: msgData.toolUse.name,
+            input: msgData.toolUse.input,
+            result: {
+              dreamId: linkedDreamId || '',
+              success: true,
+            },
+          };
+        }
+
+        const { error: msgError } = await supabase
+          .from('clarify_messages')
+          .insert({
+            session_id: session.id,
+            role: msgData.role,
+            content: msgData.content,
+            tool_use: toolUseData,
+            token_count: msgData.role === 'assistant' ? Math.ceil(msgData.content.length / 4) : null,
+            created_at: messageCreatedAt.toISOString(),
+          });
+
+        if (msgError) {
+          console.error(`      ❌ Failed to create message:`, msgError);
+        } else {
+          totalMessages++;
+        }
+      }
+
+      // If this session created a dream, link the dream back to the session (pre_session_id)
+      if (linkedDreamId && sessionData.linkedToDream === 'Create a Practical Journaling Course') {
+        await supabase
+          .from('dreams')
+          .update({ pre_session_id: session.id })
+          .eq('id', linkedDreamId);
+      }
+    }
+
+    console.log(`\n✅ Created ${totalSessions} Clarify sessions with ${totalMessages} messages\n`);
+
+    // 9. Update user stats
     console.log('📊 Updating user stats...');
     await supabase
       .from('users')
       .update({
         total_reflections: totalReflections,
         reflection_count_this_month: totalReflections,
+        clarify_sessions_this_month: totalSessions,
+        total_clarify_sessions: totalSessions,
         updated_at: new Date().toISOString(),
       })
       .eq('id', demoUser.id);
@@ -1146,6 +1485,8 @@ async function seedDemoUser() {
     console.log(`   • Reflections created: ${totalReflections}`);
     console.log(`   • Evolution reports: 1`);
     console.log(`   • Visualizations: 1`);
+    console.log(`   • Clarify sessions: ${totalSessions}`);
+    console.log(`   • Clarify messages: ${totalMessages}`);
     console.log(`\n✨ Demo account is ready for testing!\n`);
   } catch (error) {
     console.error('\n❌ Seeding failed:', error);

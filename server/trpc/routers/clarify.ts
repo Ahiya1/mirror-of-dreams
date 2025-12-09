@@ -16,6 +16,7 @@ import { buildClarifyContext, getUserPatterns } from '@/lib/clarify/context-buil
 import Anthropic from '@anthropic-ai/sdk';
 import fs from 'fs';
 import path from 'path';
+import { type ClarifyToolUse } from '@/types/clarify';
 
 // =====================================================
 // ANTHROPIC CLIENT (Lazy initialization)
@@ -47,6 +48,92 @@ function getClarifySystemPrompt(): string {
     cachedSystemPrompt = fs.readFileSync(promptPath, 'utf8');
   }
   return cachedSystemPrompt;
+}
+
+// =====================================================
+// CREATEDREAM TOOL DEFINITION
+// =====================================================
+
+const createDreamTool = {
+  name: 'createDream',
+  description: 'Creates a new dream for the user when they have clearly articulated what they want to pursue and are ready to commit to tracking it. Only use this when the user has expressed genuine clarity and readiness, and after asking their permission.',
+  input_schema: {
+    type: 'object' as const,
+    properties: {
+      title: {
+        type: 'string',
+        description: 'A concise, meaningful title for the dream (max 200 characters)'
+      },
+      description: {
+        type: 'string',
+        description: 'Optional longer description capturing the essence of the dream (max 2000 characters)'
+      },
+      category: {
+        type: 'string',
+        enum: ['health', 'career', 'relationships', 'financial', 'personal_growth', 'creative', 'spiritual', 'entrepreneurial', 'educational', 'other'],
+        description: 'The category that best fits this dream'
+      }
+    },
+    required: ['title']
+  }
+} as const;
+
+// =====================================================
+// TOOL EXECUTION HELPERS
+// =====================================================
+
+interface CreateDreamToolInput {
+  title: string;
+  description?: string;
+  category?: string;
+}
+
+interface ToolExecutionResult {
+  dreamId: string;
+  dreamTitle: string;
+  success: boolean;
+}
+
+async function executeCreateDreamTool(
+  userId: string,
+  sessionId: string,
+  toolInput: CreateDreamToolInput
+): Promise<ToolExecutionResult> {
+  try {
+    // Create the dream
+    const { data: dream, error } = await supabase
+      .from('dreams')
+      .insert({
+        user_id: userId,
+        title: toolInput.title,
+        description: toolInput.description || null,
+        category: toolInput.category || 'other',
+        status: 'active',
+        priority: 5,
+      })
+      .select('id, title')
+      .single();
+
+    if (error) {
+      console.error('Failed to create dream via tool:', error);
+      return { dreamId: '', dreamTitle: '', success: false };
+    }
+
+    // Link session to dream
+    await supabase
+      .from('clarify_sessions')
+      .update({ dream_id: dream.id })
+      .eq('id', sessionId);
+
+    return {
+      dreamId: dream.id,
+      dreamTitle: dream.title,
+      success: true,
+    };
+  } catch (error) {
+    console.error('Tool execution error:', error);
+    return { dreamId: '', dreamTitle: '', success: false };
+  }
 }
 
 // =====================================================
@@ -163,6 +250,7 @@ export const clarifyRouter = router({
 
       // If initial message provided, send it
       let initialResponse: string | null = null;
+      let initialToolUseResult: ClarifyToolUse['result'] | null = null;
       if (input.initialMessage) {
         // Store user message
         const { error: msgError } = await supabase
@@ -177,7 +265,7 @@ export const clarifyRouter = router({
           console.error('Failed to save initial message:', msgError);
         }
 
-        // Generate AI response with context
+        // Generate AI response with context and tools
         try {
           const client = getAnthropicClient();
 
@@ -192,20 +280,80 @@ export const clarifyRouter = router({
             messages: [
               { role: 'user', content: input.initialMessage }
             ],
+            tools: [createDreamTool],
           });
 
-          const textBlock = response.content.find(block => block.type === 'text');
-          if (textBlock && textBlock.type === 'text') {
-            initialResponse = textBlock.text;
+          let toolUseRecord: ClarifyToolUse | null = null;
+          let tokenCount = response.usage?.output_tokens || 0;
 
-            // Store AI response
+          // Check for tool_use
+          const toolUseBlock = response.content.find(
+            (block): block is Anthropic.ToolUseBlock => block.type === 'tool_use'
+          );
+
+          if (toolUseBlock && toolUseBlock.name === 'createDream') {
+            const toolInput = toolUseBlock.input as CreateDreamToolInput;
+            const toolResult = await executeCreateDreamTool(userId, session.id, toolInput);
+
+            toolUseRecord = {
+              name: 'createDream',
+              input: toolInput,
+              result: {
+                dreamId: toolResult.dreamId,
+                success: toolResult.success,
+              },
+            };
+            initialToolUseResult = toolUseRecord.result;
+
+            // Get Claude's acknowledgment with tool result
+            const followUp = await client.messages.create({
+              model: 'claude-sonnet-4-5-20250929',
+              max_tokens: 1500,
+              system: systemPrompt,
+              messages: [
+                { role: 'user', content: input.initialMessage },
+                { role: 'assistant', content: response.content },
+                {
+                  role: 'user',
+                  content: [{
+                    type: 'tool_result',
+                    tool_use_id: toolUseBlock.id,
+                    content: JSON.stringify({
+                      success: toolResult.success,
+                      dreamId: toolResult.dreamId,
+                      dreamTitle: toolResult.dreamTitle,
+                    })
+                  }]
+                }
+              ],
+              tools: [createDreamTool],
+            });
+
+            const followUpText = followUp.content.find(
+              (b): b is Anthropic.TextBlock => b.type === 'text'
+            );
+            initialResponse = followUpText?.text || 'I\'ve created that dream for you.';
+            tokenCount += followUp.usage?.output_tokens || 0;
+          } else {
+            // Standard text response
+            const textBlock = response.content.find(
+              (block): block is Anthropic.TextBlock => block.type === 'text'
+            );
+            if (textBlock) {
+              initialResponse = textBlock.text;
+            }
+          }
+
+          // Store AI response with tool_use if applicable
+          if (initialResponse) {
             await supabase
               .from('clarify_messages')
               .insert({
                 session_id: session.id,
                 role: 'assistant',
                 content: initialResponse,
-                token_count: response.usage?.output_tokens || null,
+                token_count: tokenCount || null,
+                tool_use: toolUseRecord,
               });
           }
         } catch (aiError) {
@@ -216,6 +364,7 @@ export const clarifyRouter = router({
       return {
         session: clarifySessionRowToSession(session),
         initialResponse,
+        toolUseResult: initialToolUseResult,
         usage: {
           sessionsUsed: ctx.user.clarifySessionsThisMonth + 1,
           sessionsLimit: CLARIFY_SESSION_LIMITS[ctx.user.tier],
@@ -342,9 +491,10 @@ export const clarifyRouter = router({
       const context = await buildClarifyContext(userId, input.sessionId);
       const systemPrompt = context + getClarifySystemPrompt();
 
-      // Generate AI response
+      // Generate AI response with tools
       let aiResponse: string;
       let tokenCount: number | null = null;
+      let toolUseRecord: ClarifyToolUse | null = null;
 
       try {
         const client = getAnthropicClient();
@@ -353,16 +503,68 @@ export const clarifyRouter = router({
           max_tokens: 1500,
           system: systemPrompt,
           messages: anthropicMessages,
+          tools: [createDreamTool],
         });
 
-        const textBlock = response.content.find(block => block.type === 'text');
-        if (!textBlock || textBlock.type !== 'text') {
-          throw new Error('No text response from Claude');
-        }
+        // Check for tool_use
+        const toolUseBlock = response.content.find(
+          (block): block is Anthropic.ToolUseBlock => block.type === 'tool_use'
+        );
 
-        aiResponse = textBlock.text;
-        tokenCount = response.usage?.output_tokens || null;
-      } catch (aiError: any) {
+        if (toolUseBlock && toolUseBlock.name === 'createDream') {
+          const toolInput = toolUseBlock.input as CreateDreamToolInput;
+          const toolResult = await executeCreateDreamTool(userId, input.sessionId, toolInput);
+
+          toolUseRecord = {
+            name: 'createDream',
+            input: toolInput,
+            result: {
+              dreamId: toolResult.dreamId,
+              success: toolResult.success,
+            },
+          };
+
+          // Get Claude's acknowledgment with tool result
+          const followUp = await client.messages.create({
+            model: 'claude-sonnet-4-5-20250929',
+            max_tokens: 1500,
+            system: systemPrompt,
+            messages: [
+              ...anthropicMessages,
+              { role: 'assistant', content: response.content },
+              {
+                role: 'user',
+                content: [{
+                  type: 'tool_result',
+                  tool_use_id: toolUseBlock.id,
+                  content: JSON.stringify({
+                    success: toolResult.success,
+                    dreamId: toolResult.dreamId,
+                    dreamTitle: toolResult.dreamTitle,
+                  })
+                }]
+              }
+            ],
+            tools: [createDreamTool],
+          });
+
+          const followUpText = followUp.content.find(
+            (b): b is Anthropic.TextBlock => b.type === 'text'
+          );
+          aiResponse = followUpText?.text || 'I\'ve created that dream for you.';
+          tokenCount = (response.usage?.output_tokens || 0) + (followUp.usage?.output_tokens || 0);
+        } else {
+          // Standard text response
+          const textBlock = response.content.find(
+            (block): block is Anthropic.TextBlock => block.type === 'text'
+          );
+          if (!textBlock) {
+            throw new Error('No text response from Claude');
+          }
+          aiResponse = textBlock.text;
+          tokenCount = response.usage?.output_tokens || null;
+        }
+      } catch (aiError: unknown) {
         console.error('Claude API error:', aiError);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
@@ -370,7 +572,7 @@ export const clarifyRouter = router({
         });
       }
 
-      // Store AI response
+      // Store AI response with tool_use if applicable
       const { data: assistantMsg, error: assistantMsgError } = await supabase
         .from('clarify_messages')
         .insert({
@@ -378,6 +580,7 @@ export const clarifyRouter = router({
           role: 'assistant',
           content: aiResponse,
           token_count: tokenCount,
+          tool_use: toolUseRecord, // Will be null if no tool was used
         })
         .select()
         .single();
@@ -394,8 +597,9 @@ export const clarifyRouter = router({
           role: 'assistant' as const,
           content: aiResponse,
           tokenCount,
-          toolUse: null,
+          toolUse: toolUseRecord,
         },
+        toolUseResult: toolUseRecord?.result || null,
       };
     }),
 
