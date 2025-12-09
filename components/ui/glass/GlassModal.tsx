@@ -103,12 +103,12 @@ export function GlassModal({
             animate="visible"
             exit="exit"
             onClick={handleClose}
-            className="fixed inset-0 z-50 bg-mirror-dark/80 backdrop-blur-glass"
+            className="fixed inset-0 z-[110] bg-mirror-dark/80 backdrop-blur-glass"
           />
 
           {/* Modal Container */}
           <div className={cn(
-            'fixed z-50',
+            'fixed z-[110]',
             isMobile
               ? 'inset-0'  // Full screen container on mobile
               : 'inset-0 flex items-center justify-center p-4'  // Centered on desktop

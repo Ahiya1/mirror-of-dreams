@@ -168,6 +168,7 @@ export function CreateDreamModal({ isOpen, onClose, onSuccess }: CreateDreamModa
             Cancel
           </GlowButton>
           <GlowButton
+            type="submit"
             variant="primary"
             size="md"
             disabled={createDream.isPending}
