@@ -16,8 +16,8 @@ interface AIResponseRendererProps {
  * Pattern: Copied from Evolution page (proven, working code)
  */
 export function AIResponseRenderer({ content }: AIResponseRendererProps) {
-  // Detect if content has markdown syntax
-  const hasMarkdown = /^#{1,3}\s|^\*\s|^-\s|^>\s|```/.test(content);
+  // Detect if content has markdown syntax (anywhere in content)
+  const hasMarkdown = /#{1,3}\s|\*\*[^*]+\*\*|\*[^*]+\*|_[^_]+_|^\s*[-*]\s|^\s*>\s|```|\[[^\]]+\]\([^)]+\)/m.test(content);
 
   // Fallback for plain text (no markdown detected)
   if (!hasMarkdown) {
