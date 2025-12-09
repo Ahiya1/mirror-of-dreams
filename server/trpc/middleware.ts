@@ -165,5 +165,8 @@ export const usageLimitedProcedure = publicProcedure.use(isAuthed).use(notDemo).
 export const writeProcedure = publicProcedure.use(isAuthed).use(notDemo);
 
 // Export Clarify procedures
+// Read-only procedure allows demo users to view sessions
+export const clarifyReadProcedure = publicProcedure.use(isAuthed).use(checkClarifyAccess);
+// Write procedure blocks demo users from creating/modifying sessions
 export const clarifyProcedure = publicProcedure.use(isAuthed).use(notDemo).use(checkClarifyAccess);
 export const clarifySessionLimitedProcedure = clarifyProcedure.use(checkClarifySessionLimit);

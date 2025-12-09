@@ -2,7 +2,7 @@
 
 import { z } from 'zod';
 import { router } from '../trpc';
-import { clarifyProcedure, clarifySessionLimitedProcedure } from '../middleware';
+import { clarifyProcedure, clarifyReadProcedure, clarifySessionLimitedProcedure } from '../middleware';
 import { TRPCError } from '@trpc/server';
 import { supabase } from '@/server/lib/supabase';
 import { CLARIFY_SESSION_LIMITS } from '@/lib/utils/constants';
@@ -372,8 +372,8 @@ export const clarifyRouter = router({
       };
     }),
 
-  // Get session with messages
-  getSession: clarifyProcedure
+  // Get session with messages (read-only, allows demo users)
+  getSession: clarifyReadProcedure
     .input(getSessionSchema)
     .query(async ({ ctx, input }) => {
       const userId = ctx.user.id;
@@ -402,8 +402,8 @@ export const clarifyRouter = router({
       };
     }),
 
-  // List user's sessions
-  listSessions: clarifyProcedure
+  // List user's sessions (read-only, allows demo users)
+  listSessions: clarifyReadProcedure
     .input(listSessionsSchema)
     .query(async ({ ctx, input }) => {
       const userId = ctx.user.id;
@@ -687,8 +687,8 @@ export const clarifyRouter = router({
       return { success: true };
     }),
 
-  // Get usage limits
-  getLimits: clarifyProcedure
+  // Get usage limits (read-only, allows demo users)
+  getLimits: clarifyReadProcedure
     .query(async ({ ctx }) => {
       const limit = CLARIFY_SESSION_LIMITS[ctx.user.tier];
       const used = ctx.user.clarifySessionsThisMonth;
