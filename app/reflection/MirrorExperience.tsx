@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Check } from 'lucide-react';
@@ -30,6 +30,10 @@ import { MobileReflectionFlow } from '@/components/reflection/mobile/MobileRefle
 // Types and constants
 import type { ToneId } from '@/lib/utils/constants';
 import { QUESTION_LIMITS, REFLECTION_MICRO_COPY } from '@/lib/utils/constants';
+
+// LocalStorage persistence
+const STORAGE_KEY = 'MIRROR_REFLECTION_DRAFT';
+const STORAGE_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 interface FormData {
   dream: string;
@@ -125,14 +129,33 @@ export default function MirrorExperience() {
     { enabled: !!reflectionId && viewMode === 'output' }
   );
 
+  // Memoize gentle star positions to prevent repositioning on every render
+  const gentleStarPositions = useMemo(() => {
+    return Array.from({ length: 12 }, (_, i) => ({
+      left: `${10 + Math.random() * 80}%`,
+      top: `${10 + Math.random() * 80}%`,
+      animationDelay: `${-i * 0.8}s`,
+    }));
+  }, []); // Empty deps - positions computed once on mount
+
+  // Memoize cosmic particle positions
+  const cosmicParticlePositions = useMemo(() => {
+    return Array.from({ length: 20 }, () => ({
+      left: `${Math.random() * 100}%`,
+      animationDelay: `${Math.random() * 20}s`,
+      animationDuration: `${15 + Math.random() * 10}s`,
+    }));
+  }, []);
+
   const createReflection = trpc.reflection.create.useMutation({
     onSuccess: (data) => {
+      // Clear localStorage on successful submit
+      localStorage.removeItem(STORAGE_KEY);
       // Transition to output with smooth animation
       setStatusText('Reflection complete!');
       setMirrorGlow(true);
       setTimeout(() => {
         router.push(`/reflection?id=${data.reflectionId}`);
-        setViewMode('output');
       }, 1000);
     },
     onError: (error) => {
@@ -140,6 +163,14 @@ export default function MirrorExperience() {
       setIsSubmitting(false);
     },
   });
+
+  // Sync viewMode with URL params (handles client-side navigation after submit)
+  useEffect(() => {
+    const targetMode: ViewMode = reflectionId ? 'output' : 'questionnaire';
+    if (viewMode !== targetMode) {
+      setViewMode(targetMode);
+    }
+  }, [reflectionId]); // Only depend on reflectionId to avoid infinite loops
 
   // Update selected dream when dreams load or selection changes
   useEffect(() => {
@@ -150,6 +181,46 @@ export default function MirrorExperience() {
       }
     }
   }, [dreams, selectedDreamId]);
+
+  // Load saved form data from localStorage on mount
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const { data, timestamp, dreamId: savedDreamId, tone: savedTone } = JSON.parse(saved);
+        // Check if still valid (5 minutes)
+        if (Date.now() - timestamp < STORAGE_EXPIRY_MS) {
+          setFormData(data);
+          if (savedDreamId) setSelectedDreamId(savedDreamId);
+          if (savedTone) setSelectedTone(savedTone);
+        } else {
+          localStorage.removeItem(STORAGE_KEY);
+        }
+      }
+    } catch (e) {
+      // Ignore localStorage errors
+    }
+  }, []);
+
+  // Save form data to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    // Only save if there's actual content
+    const hasContent = Object.values(formData).some(v => v.trim().length > 0);
+    if (hasContent || selectedDreamId) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          data: formData,
+          dreamId: selectedDreamId,
+          tone: selectedTone,
+          timestamp: Date.now(),
+        }));
+      } catch (e) {
+        // Ignore localStorage errors
+      }
+    }
+  }, [formData, selectedDreamId, selectedTone]);
 
   const handleFieldChange = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -229,7 +300,7 @@ export default function MirrorExperience() {
     {
       id: 'dream' as keyof FormData,
       number: 1,
-      text: selectedDream ? `What is ${selectedDream.title}?` : 'What is this dream?',
+      text: 'What is your dream?',
       guide: QUESTION_GUIDES.dream,
       placeholder: WARM_PLACEHOLDERS.dream,
       limit: QUESTION_LIMITS.dream,
@@ -237,7 +308,7 @@ export default function MirrorExperience() {
     {
       id: 'plan' as keyof FormData,
       number: 2,
-      text: selectedDream ? `What is your plan for ${selectedDream.title}?` : 'What is your plan to bring it to life?',
+      text: 'What is your plan to bring it to life?',
       guide: QUESTION_GUIDES.plan,
       placeholder: WARM_PLACEHOLDERS.plan,
       limit: QUESTION_LIMITS.plan,
@@ -245,7 +316,7 @@ export default function MirrorExperience() {
     {
       id: 'relationship' as keyof FormData,
       number: 3,
-      text: selectedDream ? `What's your relationship with ${selectedDream.title}?` : 'What relationship do you seek with your dream?',
+      text: 'What relationship do you seek with your dream?',
       guide: QUESTION_GUIDES.relationship,
       placeholder: WARM_PLACEHOLDERS.relationship,
       limit: QUESTION_LIMITS.relationship,
@@ -253,7 +324,7 @@ export default function MirrorExperience() {
     {
       id: 'offering' as keyof FormData,
       number: 4,
-      text: selectedDream ? `What are you willing to give for ${selectedDream.title}?` : 'What are you willing to offer in service of this dream?',
+      text: 'What are you willing to offer in service of this dream?',
       guide: QUESTION_GUIDES.offering,
       placeholder: WARM_PLACEHOLDERS.offering,
       limit: QUESTION_LIMITS.sacrifice,
@@ -430,12 +501,8 @@ export default function MirrorExperience() {
         )}
         {selectedTone === 'gentle' && (
           <>
-            {[...Array(12)].map((_, i) => (
-              <div key={i} className="gentle-star" style={{
-                left: `${10 + Math.random() * 80}%`,
-                top: `${10 + Math.random() * 80}%`,
-                animationDelay: `${-i * 0.8}s`,
-              }} />
+            {gentleStarPositions.map((pos, i) => (
+              <div key={i} className="gentle-star" style={pos} />
             ))}
           </>
         )}
@@ -456,12 +523,8 @@ export default function MirrorExperience() {
 
       {/* Floating cosmic particles */}
       <div className="cosmic-particles">
-        {[...Array(20)].map((_, i) => (
-          <div key={i} className="particle" style={{
-            left: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 20}s`,
-            animationDuration: `${15 + Math.random() * 10}s`
-          }} />
+        {cosmicParticlePositions.map((pos, i) => (
+          <div key={i} className="particle" style={pos} />
         ))}
       </div>
 

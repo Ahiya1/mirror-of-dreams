@@ -187,23 +187,9 @@ export function MobileReflectionFlow({
     return Object.values(formData).some(value => value.trim().length > 0);
   }, [formData]);
 
-  // Update question text based on selected dream
+  // Get question text - using simpler generic questions
   const getQuestionText = (questionIndex: number): string => {
-    const baseQuestion = QUESTIONS[questionIndex];
-    if (!selectedDream) return baseQuestion.text;
-
-    switch (questionIndex) {
-      case 0:
-        return `What is ${selectedDream.title}?`;
-      case 1:
-        return `What is your plan for ${selectedDream.title}?`;
-      case 2:
-        return `What's your relationship with ${selectedDream.title}?`;
-      case 3:
-        return `What are you willing to give for ${selectedDream.title}?`;
-      default:
-        return baseQuestion.text;
-    }
+    return QUESTIONS[questionIndex].text;
   };
 
   // Navigation helpers
