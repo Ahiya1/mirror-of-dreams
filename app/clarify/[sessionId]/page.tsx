@@ -48,8 +48,9 @@ export default function ClarifySessionPage() {
 
   // Send message mutation
   const sendMessage = trpc.clarify.sendMessage.useMutation({
-    onSuccess: () => {
-      refetch();
+    onSuccess: async () => {
+      // Wait for refetch to complete before clearing pending message
+      await refetch();
       setPendingMessage(null);
     },
     onError: () => {
