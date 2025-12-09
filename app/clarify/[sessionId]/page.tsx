@@ -23,6 +23,7 @@ export default function ClarifySessionPage() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
 
   const [inputValue, setInputValue] = useState('');
+  const [pendingMessage, setPendingMessage] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -49,16 +50,23 @@ export default function ClarifySessionPage() {
   const sendMessage = trpc.clarify.sendMessage.useMutation({
     onSuccess: () => {
       refetch();
-      setInputValue('');
+      setPendingMessage(null);
+    },
+    onError: () => {
+      // On error, restore the message to input
+      if (pendingMessage) {
+        setInputValue(pendingMessage);
+      }
+      setPendingMessage(null);
     },
   });
 
-  // Scroll to bottom when messages change
+  // Scroll to bottom when messages change or pending message appears
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [data?.messages]);
+  }, [data?.messages, pendingMessage]);
 
   // Focus input on load
   useEffect(() => {
@@ -80,11 +88,16 @@ export default function ClarifySessionPage() {
   }, [inputValue]);
 
   const handleSend = () => {
-    if (!inputValue.trim() || sendMessage.isPending) return;
+    const content = inputValue.trim();
+    if (!content || sendMessage.isPending) return;
+
+    // Optimistic update: show message immediately
+    setPendingMessage(content);
+    setInputValue('');
 
     sendMessage.mutate({
       sessionId,
-      content: inputValue.trim(),
+      content,
     });
   };
 
@@ -196,6 +209,16 @@ export default function ClarifySessionPage() {
                 </div>
               </div>
             ))
+          )}
+
+          {/* Pending user message (optimistic update) */}
+          {pendingMessage && (
+            <div className="flex justify-end">
+              <div className="max-w-[85%] sm:max-w-[75%] bg-purple-600/30 border border-purple-500/30 rounded-2xl rounded-br-md px-4 py-3">
+                <p className="text-white whitespace-pre-wrap">{pendingMessage}</p>
+                <p className="text-xs text-white/30 mt-2">Just now</p>
+              </div>
+            </div>
           )}
 
           {/* Typing indicator */}
