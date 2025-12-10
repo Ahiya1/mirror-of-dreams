@@ -1,5 +1,6 @@
 // test/integration/dreams/list.test.ts - Dreams list integration tests
 // Tests for the dreams.list tRPC procedure
+// Updated to support N+1 optimized batch query with .in() method
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
@@ -14,6 +15,23 @@ import {
 } from '@/test/fixtures/dreams';
 import { freeTierUser } from '@/test/fixtures/users';
 
+/**
+ * Helper to create a mock chain for Supabase queries
+ * Includes .in() method to support the N+1 optimized batch query
+ */
+function createMockChain(resolveData: { data: any; error: any; count?: number }) {
+  const mock: any = {
+    select: vi.fn().mockReturnThis(),
+    eq: vi.fn().mockReturnThis(),
+    in: vi.fn().mockReturnThis(),
+    order: vi.fn().mockReturnThis(),
+    limit: vi.fn().mockReturnThis(),
+    single: vi.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } }),
+    then: vi.fn((resolve: any) => resolve(resolveData)),
+  };
+  return mock;
+}
+
 describe('dreams.list', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -26,23 +44,13 @@ describe('dreams.list', () => {
       const dreams = createMockDreams(3, freeTierUser.id);
 
       supabase.from.mockImplementation((table: string) => {
-        const mock = {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockReturnThis(),
-          order: vi.fn().mockReturnThis(),
-          limit: vi.fn().mockReturnThis(),
-          single: vi.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } }),
-          then: vi.fn((resolve: any) => {
-            if (table === 'dreams') {
-              resolve({ data: dreams, error: null });
-            } else if (table === 'reflections') {
-              resolve({ data: null, error: null, count: 0 });
-            } else {
-              resolve({ data: null, error: null });
-            }
-          }),
-        };
-        return mock;
+        if (table === 'dreams') {
+          return createMockChain({ data: dreams, error: null });
+        } else if (table === 'reflections') {
+          // For batch query with .in()
+          return createMockChain({ data: [], error: null });
+        }
+        return createMockChain({ data: null, error: null });
       });
 
       const result = await caller.dreams.list({});
@@ -54,23 +62,12 @@ describe('dreams.list', () => {
       const { caller, supabase } = createTestCaller(freeTierUser);
 
       supabase.from.mockImplementation((table: string) => {
-        const mock = {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockReturnThis(),
-          order: vi.fn().mockReturnThis(),
-          limit: vi.fn().mockReturnThis(),
-          single: vi.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } }),
-          then: vi.fn((resolve: any) => {
-            if (table === 'dreams') {
-              resolve({ data: [achievedDream], error: null });
-            } else if (table === 'reflections') {
-              resolve({ data: null, error: null, count: 0 });
-            } else {
-              resolve({ data: null, error: null });
-            }
-          }),
-        };
-        return mock;
+        if (table === 'dreams') {
+          return createMockChain({ data: [achievedDream], error: null });
+        } else if (table === 'reflections') {
+          return createMockChain({ data: [], error: null });
+        }
+        return createMockChain({ data: null, error: null });
       });
 
       const result = await caller.dreams.list({ status: 'achieved' });
@@ -82,27 +79,23 @@ describe('dreams.list', () => {
     it('should include stats when requested (default)', async () => {
       const { caller, supabase } = createTestCaller(freeTierUser);
 
+      // Mock reflections data for the batch query
+      const mockReflections = [
+        { dream_id: activeDream.id, created_at: '2025-01-01T00:00:00Z' },
+        { dream_id: activeDream.id, created_at: '2024-12-15T00:00:00Z' },
+        { dream_id: activeDream.id, created_at: '2024-12-01T00:00:00Z' },
+        { dream_id: activeDream.id, created_at: '2024-11-15T00:00:00Z' },
+        { dream_id: activeDream.id, created_at: '2024-11-01T00:00:00Z' },
+      ];
+
       supabase.from.mockImplementation((table: string) => {
-        const mock = {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockReturnThis(),
-          order: vi.fn().mockReturnThis(),
-          limit: vi.fn().mockReturnThis(),
-          single: vi.fn().mockResolvedValue({
-            data: { created_at: '2025-01-01T00:00:00Z' },
-            error: null,
-          }),
-          then: vi.fn((resolve: any) => {
-            if (table === 'dreams') {
-              resolve({ data: [activeDream], error: null });
-            } else if (table === 'reflections') {
-              resolve({ data: null, error: null, count: 5 });
-            } else {
-              resolve({ data: null, error: null });
-            }
-          }),
-        };
-        return mock;
+        if (table === 'dreams') {
+          return createMockChain({ data: [activeDream], error: null });
+        } else if (table === 'reflections') {
+          // Return reflections for batch query
+          return createMockChain({ data: mockReflections, error: null });
+        }
+        return createMockChain({ data: null, error: null });
       });
 
       const result = await caller.dreams.list({ includeStats: true });
@@ -110,6 +103,8 @@ describe('dreams.list', () => {
       expect(result[0]).toHaveProperty('reflectionCount');
       expect(result[0]).toHaveProperty('lastReflectionAt');
       expect(result[0]).toHaveProperty('daysLeft');
+      expect(result[0].reflectionCount).toBe(5);
+      expect(result[0].lastReflectionAt).toBe('2025-01-01T00:00:00Z');
     });
 
     it('should calculate daysLeft correctly for future date', async () => {
@@ -124,23 +119,12 @@ describe('dreams.list', () => {
       });
 
       supabase.from.mockImplementation((table: string) => {
-        const mock = {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockReturnThis(),
-          order: vi.fn().mockReturnThis(),
-          limit: vi.fn().mockReturnThis(),
-          single: vi.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } }),
-          then: vi.fn((resolve: any) => {
-            if (table === 'dreams') {
-              resolve({ data: [dreamWithDate], error: null });
-            } else if (table === 'reflections') {
-              resolve({ data: null, error: null, count: 0 });
-            } else {
-              resolve({ data: null, error: null });
-            }
-          }),
-        };
-        return mock;
+        if (table === 'dreams') {
+          return createMockChain({ data: [dreamWithDate], error: null });
+        } else if (table === 'reflections') {
+          return createMockChain({ data: [], error: null });
+        }
+        return createMockChain({ data: null, error: null });
       });
 
       const result = await caller.dreams.list({ includeStats: true });
@@ -158,23 +142,12 @@ describe('dreams.list', () => {
       });
 
       supabase.from.mockImplementation((table: string) => {
-        const mock = {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockReturnThis(),
-          order: vi.fn().mockReturnThis(),
-          limit: vi.fn().mockReturnThis(),
-          single: vi.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } }),
-          then: vi.fn((resolve: any) => {
-            if (table === 'dreams') {
-              resolve({ data: [dreamNoDate], error: null });
-            } else if (table === 'reflections') {
-              resolve({ data: null, error: null, count: 0 });
-            } else {
-              resolve({ data: null, error: null });
-            }
-          }),
-        };
-        return mock;
+        if (table === 'dreams') {
+          return createMockChain({ data: [dreamNoDate], error: null });
+        } else if (table === 'reflections') {
+          return createMockChain({ data: [], error: null });
+        }
+        return createMockChain({ data: null, error: null });
       });
 
       const result = await caller.dreams.list({});
@@ -194,23 +167,12 @@ describe('dreams.list', () => {
       });
 
       supabase.from.mockImplementation((table: string) => {
-        const mock = {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockReturnThis(),
-          order: vi.fn().mockReturnThis(),
-          limit: vi.fn().mockReturnThis(),
-          single: vi.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } }),
-          then: vi.fn((resolve: any) => {
-            if (table === 'dreams') {
-              resolve({ data: [overdueDream], error: null });
-            } else if (table === 'reflections') {
-              resolve({ data: null, error: null, count: 0 });
-            } else {
-              resolve({ data: null, error: null });
-            }
-          }),
-        };
-        return mock;
+        if (table === 'dreams') {
+          return createMockChain({ data: [overdueDream], error: null });
+        } else if (table === 'reflections') {
+          return createMockChain({ data: [], error: null });
+        }
+        return createMockChain({ data: null, error: null });
       });
 
       const result = await caller.dreams.list({});
@@ -221,16 +183,8 @@ describe('dreams.list', () => {
     it('should return empty array for user with no dreams', async () => {
       const { caller, supabase } = createTestCaller(freeTierUser);
 
-      supabase.from.mockImplementation((table: string) => {
-        const mock = {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockReturnThis(),
-          order: vi.fn().mockReturnThis(),
-          then: vi.fn((resolve: any) => {
-            resolve({ data: [], error: null });
-          }),
-        };
-        return mock;
+      supabase.from.mockImplementation(() => {
+        return createMockChain({ data: [], error: null });
       });
 
       const result = await caller.dreams.list({});
@@ -243,23 +197,12 @@ describe('dreams.list', () => {
       const { caller, supabase } = createTestCaller(freeTierUser);
 
       supabase.from.mockImplementation((table: string) => {
-        const mock = {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockReturnThis(),
-          order: vi.fn().mockReturnThis(),
-          limit: vi.fn().mockReturnThis(),
-          single: vi.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } }),
-          then: vi.fn((resolve: any) => {
-            if (table === 'dreams') {
-              resolve({ data: [activeDream], error: null });
-            } else if (table === 'reflections') {
-              resolve({ data: null, error: null, count: 0 });
-            } else {
-              resolve({ data: null, error: null });
-            }
-          }),
-        };
-        return mock;
+        if (table === 'dreams') {
+          return createMockChain({ data: [activeDream], error: null });
+        } else if (table === 'reflections') {
+          return createMockChain({ data: [], error: null });
+        }
+        return createMockChain({ data: null, error: null });
       });
 
       const result = await caller.dreams.list({ status: 'active' });
@@ -272,23 +215,12 @@ describe('dreams.list', () => {
       const { caller, supabase } = createTestCaller(freeTierUser);
 
       supabase.from.mockImplementation((table: string) => {
-        const mock = {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockReturnThis(),
-          order: vi.fn().mockReturnThis(),
-          limit: vi.fn().mockReturnThis(),
-          single: vi.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } }),
-          then: vi.fn((resolve: any) => {
-            if (table === 'dreams') {
-              resolve({ data: [archivedDream], error: null });
-            } else if (table === 'reflections') {
-              resolve({ data: null, error: null, count: 0 });
-            } else {
-              resolve({ data: null, error: null });
-            }
-          }),
-        };
-        return mock;
+        if (table === 'dreams') {
+          return createMockChain({ data: [archivedDream], error: null });
+        } else if (table === 'reflections') {
+          return createMockChain({ data: [], error: null });
+        }
+        return createMockChain({ data: null, error: null });
       });
 
       const result = await caller.dreams.list({ status: 'archived' });
@@ -302,27 +234,19 @@ describe('dreams.list', () => {
     it('should include reflection count in stats', async () => {
       const { caller, supabase } = createTestCaller(freeTierUser);
 
+      // 10 reflections for the dream
+      const mockReflections = Array.from({ length: 10 }, (_, i) => ({
+        dream_id: activeDream.id,
+        created_at: new Date(2025, 0, 10 - i).toISOString(),
+      }));
+
       supabase.from.mockImplementation((table: string) => {
-        const mock = {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockReturnThis(),
-          order: vi.fn().mockReturnThis(),
-          limit: vi.fn().mockReturnThis(),
-          single: vi.fn().mockResolvedValue({
-            data: { created_at: '2025-01-01T00:00:00Z' },
-            error: null,
-          }),
-          then: vi.fn((resolve: any) => {
-            if (table === 'dreams') {
-              resolve({ data: [activeDream], error: null });
-            } else if (table === 'reflections') {
-              resolve({ data: null, error: null, count: 10 });
-            } else {
-              resolve({ data: null, error: null });
-            }
-          }),
-        };
-        return mock;
+        if (table === 'dreams') {
+          return createMockChain({ data: [activeDream], error: null });
+        } else if (table === 'reflections') {
+          return createMockChain({ data: mockReflections, error: null });
+        }
+        return createMockChain({ data: null, error: null });
       });
 
       const result = await caller.dreams.list({ includeStats: true });
@@ -334,28 +258,18 @@ describe('dreams.list', () => {
       const { caller, supabase } = createTestCaller(freeTierUser);
 
       const lastReflectionDate = '2025-06-15T10:30:00Z';
+      const mockReflections = [
+        { dream_id: activeDream.id, created_at: lastReflectionDate },
+        { dream_id: activeDream.id, created_at: '2025-06-01T10:30:00Z' },
+      ];
 
       supabase.from.mockImplementation((table: string) => {
-        const mock = {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockReturnThis(),
-          order: vi.fn().mockReturnThis(),
-          limit: vi.fn().mockReturnThis(),
-          single: vi.fn().mockResolvedValue({
-            data: { created_at: lastReflectionDate },
-            error: null,
-          }),
-          then: vi.fn((resolve: any) => {
-            if (table === 'dreams') {
-              resolve({ data: [activeDream], error: null });
-            } else if (table === 'reflections') {
-              resolve({ data: null, error: null, count: 5 });
-            } else {
-              resolve({ data: null, error: null });
-            }
-          }),
-        };
-        return mock;
+        if (table === 'dreams') {
+          return createMockChain({ data: [activeDream], error: null });
+        } else if (table === 'reflections') {
+          return createMockChain({ data: mockReflections, error: null });
+        }
+        return createMockChain({ data: null, error: null });
       });
 
       const result = await caller.dreams.list({ includeStats: true });
@@ -367,23 +281,13 @@ describe('dreams.list', () => {
       const { caller, supabase } = createTestCaller(freeTierUser);
 
       supabase.from.mockImplementation((table: string) => {
-        const mock = {
-          select: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockReturnThis(),
-          order: vi.fn().mockReturnThis(),
-          limit: vi.fn().mockReturnThis(),
-          single: vi.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } }),
-          then: vi.fn((resolve: any) => {
-            if (table === 'dreams') {
-              resolve({ data: [activeDream], error: null });
-            } else if (table === 'reflections') {
-              resolve({ data: null, error: null, count: 0 });
-            } else {
-              resolve({ data: null, error: null });
-            }
-          }),
-        };
-        return mock;
+        if (table === 'dreams') {
+          return createMockChain({ data: [activeDream], error: null });
+        } else if (table === 'reflections') {
+          // Empty array - no reflections
+          return createMockChain({ data: [], error: null });
+        }
+        return createMockChain({ data: null, error: null });
       });
 
       const result = await caller.dreams.list({ includeStats: true });

@@ -2,11 +2,11 @@
 
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
 import { EvolutionHistory } from '@/components/dreams/EvolutionHistory';
-import { EvolutionModal } from '@/components/dreams/EvolutionModal';
 import { AppNavigation } from '@/components/shared/AppNavigation';
 import {
   GlassCard,
@@ -16,6 +16,12 @@ import {
   AnimatedBackground,
 } from '@/components/ui/glass';
 import { trpc } from '@/lib/trpc';
+
+// Lazy load EvolutionModal - reduces initial bundle size
+const EvolutionModal = dynamic(
+  () => import('@/components/dreams/EvolutionModal').then((mod) => mod.EvolutionModal),
+  { ssr: false }
+);
 
 const MIN_REFLECTIONS_FOR_GENERATION = 4;
 

@@ -238,33 +238,52 @@ export const dreamsRouter = router({
       });
     }
 
-    // If includeStats, get reflection counts for each dream
-    if (input.includeStats && data) {
-      const dreamsWithStats = await Promise.all(
-        data.map(async (dream) => {
-          const { count: reflectionCount } = await supabase
-            .from('reflections')
-            .select('*', { count: 'exact', head: true })
-            .eq('dream_id', dream.id);
+    // If includeStats, get reflection counts for all dreams in a single batch query
+    // This replaces the N+1 pattern (2N queries) with a single query approach
+    if (input.includeStats && data && data.length > 0) {
+      // Get all dream IDs for batch query
+      const dreamIds = data.map((d) => d.id);
 
-          const { data: lastReflection } = await supabase
-            .from('reflections')
-            .select('created_at')
-            .eq('dream_id', dream.id)
-            .order('created_at', { ascending: false })
-            .limit(1)
-            .single();
+      // Single query to get all reflections for all dreams (ordered by created_at desc)
+      const { data: allReflections } = await supabase
+        .from('reflections')
+        .select('dream_id, created_at')
+        .in('dream_id', dreamIds)
+        .order('created_at', { ascending: false });
 
-          return {
-            ...dream,
-            daysLeft: calculateDaysLeft(dream.target_date),
-            reflectionCount: reflectionCount || 0,
-            lastReflectionAt: lastReflection?.created_at || null,
-          };
-        })
+      // Group reflections by dream_id and calculate stats in memory
+      const statsByDream = (allReflections || []).reduce(
+        (acc, reflection) => {
+          const dreamId = reflection.dream_id;
+          if (!dreamId) return acc; // Skip if dream_id is null
+
+          if (!acc[dreamId]) {
+            // First reflection we encounter is the most recent (ordered desc)
+            acc[dreamId] = {
+              count: 0,
+              lastReflectionAt: reflection.created_at,
+            };
+          }
+          acc[dreamId].count++;
+          return acc;
+        },
+        {} as Record<string, { count: number; lastReflectionAt: string | null }>
       );
 
+      // Merge stats with dreams
+      const dreamsWithStats = data.map((dream) => ({
+        ...dream,
+        daysLeft: calculateDaysLeft(dream.target_date),
+        reflectionCount: statsByDream[dream.id]?.count || 0,
+        lastReflectionAt: statsByDream[dream.id]?.lastReflectionAt || null,
+      }));
+
       return dreamsWithStats;
+    }
+
+    // Handle empty data array with includeStats
+    if (input.includeStats && data && data.length === 0) {
+      return [];
     }
 
     // Even without stats, add daysLeft

@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Check } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
@@ -14,7 +15,6 @@ import { ReflectionQuestionCard } from '@/components/reflection/ReflectionQuesti
 import { ToneSelectionCard } from '@/components/reflection/ToneSelectionCard';
 import { AIResponseRenderer } from '@/components/reflections/AIResponseRenderer';
 import CosmicBackground from '@/components/shared/CosmicBackground';
-import { UpgradeModal } from '@/components/subscription/UpgradeModal';
 import { GlassCard, GlowButton, CosmicLoader, GlassInput } from '@/components/ui/glass';
 import { useToast } from '@/contexts/ToastContext';
 import { useIsMobile } from '@/hooks';
@@ -23,6 +23,12 @@ import { trpc } from '@/lib/trpc';
 import { cn } from '@/lib/utils';
 import { QUESTION_LIMITS, REFLECTION_MICRO_COPY } from '@/lib/utils/constants';
 import { checkReflectionLimits } from '@/lib/utils/limits';
+
+// Lazy load UpgradeModal - reduces initial bundle size
+const UpgradeModal = dynamic(
+  () => import('@/components/subscription/UpgradeModal').then((mod) => mod.UpgradeModal),
+  { ssr: false }
+);
 
 // Internal hooks
 

@@ -2,10 +2,10 @@
 
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
-import { CreateDreamModal } from '@/components/dreams/CreateDreamModal';
 import { DreamCard } from '@/components/dreams/DreamCard';
 import { BottomNavigation } from '@/components/navigation';
 import { AppNavigation } from '@/components/shared/AppNavigation';
@@ -14,6 +14,12 @@ import { Constellation } from '@/components/shared/illustrations/Constellation';
 import { CosmicLoader, GlowButton, GlassCard, GradientText } from '@/components/ui/glass';
 import { useAuth } from '@/hooks/useAuth';
 import { trpc } from '@/lib/trpc';
+
+// Lazy load CreateDreamModal - reduces initial bundle size
+const CreateDreamModal = dynamic(
+  () => import('@/components/dreams/CreateDreamModal').then((mod) => mod.CreateDreamModal),
+  { ssr: false }
+);
 
 export default function DreamsPage() {
   const router = useRouter();
