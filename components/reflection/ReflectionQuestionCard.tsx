@@ -1,9 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 import { GlassInput } from '@/components/ui/glass';
-import { cn } from '@/lib/utils';
 
 interface ReflectionQuestionCardProps {
   questionNumber: number;
@@ -23,8 +22,12 @@ interface ReflectionQuestionCardProps {
  * - Question number and guiding text
  * - Spacious textarea input
  * - Subtle character counter
+ *
+ * Wrapped in React.memo to prevent unnecessary re-renders when parent re-renders
+ * with the same props. For memoization to work effectively, parent should wrap
+ * the onChange callback in useCallback.
  */
-export const ReflectionQuestionCard: React.FC<ReflectionQuestionCardProps> = ({
+export const ReflectionQuestionCard = memo(function ReflectionQuestionCard({
   questionNumber,
   totalQuestions,
   questionText,
@@ -33,7 +36,7 @@ export const ReflectionQuestionCard: React.FC<ReflectionQuestionCardProps> = ({
   value,
   onChange,
   maxLength,
-}) => {
+}: ReflectionQuestionCardProps) {
   return (
     <div className="reflection-question-card">
       {/* Guiding text - sets contemplative tone */}
@@ -58,6 +61,6 @@ export const ReflectionQuestionCard: React.FC<ReflectionQuestionCardProps> = ({
       />
     </div>
   );
-};
+});
 
 export default ReflectionQuestionCard;

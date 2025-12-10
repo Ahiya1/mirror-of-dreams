@@ -1,5 +1,7 @@
 'use client';
 
+import { memo } from 'react';
+
 import { cn } from '@/lib/utils';
 
 const TONE_COLORS = {
@@ -36,8 +38,15 @@ interface ToneBadgeProps {
  * - gentle: Purple (soft wisdom)
  * - fusion: Gold (balanced harmony)
  * - intense: Red (piercing truth)
+ *
+ * Wrapped in React.memo to prevent unnecessary re-renders when parent re-renders
+ * with the same props.
  */
-export function ToneBadge({ tone, className, showGlow = true }: ToneBadgeProps) {
+export const ToneBadge = memo(function ToneBadge({
+  tone,
+  className,
+  showGlow = true,
+}: ToneBadgeProps) {
   const colors = TONE_COLORS[tone as keyof typeof TONE_COLORS] || TONE_COLORS.gentle;
 
   return (
@@ -54,4 +63,4 @@ export function ToneBadge({ tone, className, showGlow = true }: ToneBadgeProps) 
       {tone}
     </span>
   );
-}
+});

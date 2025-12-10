@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 interface TierBadgeProps {
   tier?: 'free' | 'pro' | 'unlimited' | 'essential' | 'premium' | 'creator';
@@ -14,15 +14,18 @@ interface TierBadgeProps {
 /**
  * Tier badge component with glow effects and animations
  * Migrated from: src/components/dashboard/shared/TierBadge.jsx
+ *
+ * Wrapped in React.memo to prevent unnecessary re-renders when parent re-renders
+ * with the same props.
  */
-const TierBadge: React.FC<TierBadgeProps> = ({
+const TierBadge = memo(function TierBadge({
   tier = 'free',
   size = 'md',
   animated = true,
   showGlow = false,
   showIcon = true,
   className = '',
-}) => {
+}: TierBadgeProps) {
   // Tier configurations
   const tierConfigs = {
     free: {
@@ -131,6 +134,6 @@ const TierBadge: React.FC<TierBadgeProps> = ({
       {showGlow && <div className="tier-glow" style={{ borderRadius: sizeConfig.borderRadius }} />}
     </div>
   );
-};
+});
 
 export default TierBadge;

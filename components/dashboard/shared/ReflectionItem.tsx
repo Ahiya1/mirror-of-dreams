@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 
 import styles from './ReflectionItem.module.css';
 
@@ -17,6 +17,7 @@ interface ReflectionItemProps {
     timeAgo?: string;
     tone?: string;
     is_premium?: boolean;
+    updatedAt?: string; // For custom comparator
   };
   index?: number;
   animated?: boolean;
@@ -26,17 +27,41 @@ interface ReflectionItemProps {
 }
 
 /**
+ * Custom comparator for ReflectionItem memoization.
+ * Compares reflection by id and updatedAt to detect actual changes,
+ * avoiding re-renders when the object reference changes but content is same.
+ */
+function areReflectionItemPropsEqual(
+  prevProps: ReflectionItemProps,
+  nextProps: ReflectionItemProps
+): boolean {
+  return (
+    prevProps.reflection.id === nextProps.reflection.id &&
+    prevProps.reflection.updatedAt === nextProps.reflection.updatedAt &&
+    prevProps.reflection.created_at === nextProps.reflection.created_at &&
+    prevProps.index === nextProps.index &&
+    prevProps.animated === nextProps.animated &&
+    prevProps.animationDelay === nextProps.animationDelay &&
+    prevProps.className === nextProps.className &&
+    prevProps.onClick === nextProps.onClick
+  );
+}
+
+/**
  * Individual reflection item with rich preview and interactions
  * Migrated from: src/components/dashboard/shared/ReflectionItem.jsx
+ *
+ * Wrapped in React.memo with custom comparator to prevent unnecessary re-renders
+ * when the reflection object reference changes but the actual data is unchanged.
  */
-const ReflectionItem: React.FC<ReflectionItemProps> = ({
+const ReflectionItem = memo(function ReflectionItem({
   reflection,
   index = 0,
   animated = true,
   animationDelay = 0,
   onClick,
   className = '',
-}) => {
+}: ReflectionItemProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   // Format reflection data with fallbacks
@@ -139,10 +164,10 @@ const ReflectionItem: React.FC<ReflectionItemProps> = ({
 
       {/* Hover indicator */}
       <div className={`${styles.reflectionHoverIndicator} ${isHovered ? styles.visible : ''}`}>
-        <span>→</span>
+        <span>&rarr;</span>
       </div>
     </Link>
   );
-};
+}, areReflectionItemPropsEqual);
 
 export default ReflectionItem;

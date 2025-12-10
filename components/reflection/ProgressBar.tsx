@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { memo } from 'react';
 
 import { cn } from '@/lib/utils';
 
@@ -18,8 +18,15 @@ interface ProgressBarProps {
  * - Horizontal bar segments
  * - Current step highlighted with cosmic glow
  * - Completed steps filled
+ *
+ * Wrapped in React.memo to prevent unnecessary re-renders when parent re-renders
+ * with the same props.
  */
-export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep, totalSteps, className }) => {
+export const ProgressBar = memo(function ProgressBar({
+  currentStep,
+  totalSteps,
+  className,
+}: ProgressBarProps) {
   return (
     <div className={cn('flex items-center justify-center gap-2', className)}>
       {/* Progress segments */}
@@ -54,6 +61,6 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep, totalStep
       </span>
     </div>
   );
-};
+});
 
 export default ProgressBar;

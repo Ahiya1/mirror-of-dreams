@@ -1,5 +1,7 @@
 'use client';
 
+import { memo } from 'react';
+
 import type { GlowButtonProps } from '@/types/glass-components';
 
 import { cn } from '@/lib/utils';
@@ -7,6 +9,9 @@ import { haptic } from '@/lib/utils/haptics';
 
 /**
  * GlowButton - Enhanced button with cosmic and semantic variants
+ *
+ * Wrapped in React.memo to prevent unnecessary re-renders when parent re-renders
+ * with the same props.
  *
  * @param variant - Button style variant (primary | secondary | ghost | cosmic | success | danger | info)
  * @param size - Button size (sm | md | lg)
@@ -16,7 +21,7 @@ import { haptic } from '@/lib/utils/haptics';
  * @param className - Additional Tailwind classes
  * @param children - Button content
  */
-export function GlowButton({
+export const GlowButton = memo(function GlowButton({
   variant = 'primary',
   size = 'md',
   type = 'button',
@@ -132,4 +137,4 @@ export function GlowButton({
       {children}
     </button>
   );
-}
+});

@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, useReducedMotion } from 'framer-motion';
+import { memo } from 'react';
 
 import type { CosmicLoaderProps } from '@/types/glass-components';
 
@@ -9,11 +10,14 @@ import { cn } from '@/lib/utils';
 /**
  * CosmicLoader - Animated gradient ring loader
  *
+ * Wrapped in React.memo to prevent unnecessary re-renders when parent re-renders
+ * with the same props.
+ *
  * @param size - Loader size (sm | md | lg)
  * @param className - Additional Tailwind classes
  * @param label - Custom loading message for screen readers
  */
-export function CosmicLoader({
+export const CosmicLoader = memo(function CosmicLoader({
   size = 'md',
   className,
   label = 'Loading content',
@@ -66,4 +70,4 @@ export function CosmicLoader({
       <span className="sr-only">{label}</span>
     </div>
   );
-}
+});

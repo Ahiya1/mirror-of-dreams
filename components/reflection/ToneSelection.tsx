@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 import type { ToneId } from '@/lib/utils/constants';
 
@@ -14,11 +14,18 @@ interface ToneSelectionProps {
   disabled?: boolean;
 }
 
-const ToneSelection: React.FC<ToneSelectionProps> = ({
+/**
+ * ToneSelection - Tone picker for reflections
+ *
+ * Wrapped in React.memo to prevent unnecessary re-renders when parent re-renders
+ * with the same props. For memoization to work effectively, parent should wrap
+ * the onSelect callback in useCallback.
+ */
+const ToneSelection = memo(function ToneSelection({
   selectedTone,
   onSelect,
   disabled = false,
-}) => {
+}: ToneSelectionProps) {
   const handleToneSelect = (toneId: ToneId) => {
     if (disabled || toneId === selectedTone) return;
 
@@ -91,6 +98,6 @@ const ToneSelection: React.FC<ToneSelectionProps> = ({
       </div>
     </div>
   );
-};
+});
 
 export default ToneSelection;

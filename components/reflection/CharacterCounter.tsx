@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 interface CharacterCounterProps {
   current: number;
@@ -8,11 +8,17 @@ interface CharacterCounterProps {
   warning?: number;
 }
 
-const CharacterCounter: React.FC<CharacterCounterProps> = ({
+/**
+ * CharacterCounter - Visual character count indicator with progress bar
+ *
+ * Wrapped in React.memo to prevent unnecessary re-renders when parent re-renders
+ * with the same props.
+ */
+const CharacterCounter = memo(function CharacterCounter({
   current,
   max,
   warning = max * 0.85,
-}) => {
+}: CharacterCounterProps) {
   const percentage = (current / max) * 100;
   const isWarning = current >= warning;
   const isError = current >= max;
@@ -57,6 +63,6 @@ const CharacterCounter: React.FC<CharacterCounterProps> = ({
       )}
     </div>
   );
-};
+});
 
 export default CharacterCounter;
