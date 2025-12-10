@@ -1,0 +1,222 @@
+plan_id: plan-21
+created_at: '2025-12-10T12:30:00Z'
+status: PLANNED
+mode: production
+total_iterations: 5
+complexity: COMPLEX
+
+strategy: |
+  Plan-21 focuses on transforming Mirror of Dreams from "production-ready" (7.8/10) to
+  "excellent" (9+/10) through comprehensive hardening across security, performance,
+  testing, and code quality.
+
+  Based on master exploration findings:
+  - Security fixes are well-understood with low-medium complexity
+  - Performance optimization has clear parallelization opportunities (70-80% improvement expected)
+  - Testing requires @testing-library/react installation and Playwright setup
+  - Code quality involves significant MirrorExperience.tsx refactoring (1504 LOC -> <400 LOC)
+
+  Implementation order follows dependency chain: Security first (foundation), then
+  Performance (user-facing), Testing (quality gate), TypeScript (type safety),
+  and finally Refactoring (maintainability).
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 35
+    name: "Security & Observability"
+    vision: "Establish production-grade security and error monitoring foundation"
+    scope: |
+      1. Config Validation at Startup
+         - Create server/lib/config.ts with Zod schema
+         - Validate all env vars from .env.example
+         - Import in context.ts for startup validation
+
+      2. JWT Expiry Enforcement
+         - Add expiry check in server/trpc/context.ts (5 lines)
+         - Return null user for expired tokens
+         - Add test for expiry rejection
+
+      3. Rate Limiter Fail-Closed
+         - Change catch block in server/lib/rate-limiter.ts:74-78
+         - Implement circuit breaker pattern
+         - Update tests for fail-closed behavior
+
+      4. Sentry Integration
+         - Install @sentry/nextjs via npx @sentry/wizard
+         - Configure source maps
+         - Update 6 error.tsx files to use Sentry
+         - Add Sentry to AI and PayPal error paths
+    status: PENDING
+    dependencies: []
+    estimated_hours: 6-8
+
+  - iteration_id: 2
+    global_iteration: 36
+    name: "Performance Optimization"
+    vision: "Reduce Clarify context build time from ~400ms to <100ms"
+    scope: |
+      1. Query Parallelization
+         - Refactor lib/clarify/context-builder.ts
+         - Use Promise.all() for 5 independent queries
+         - Keep section building sequential (depends on query results)
+         - Add performance timing logs
+
+      2. Redis Caching Layer
+         - Create server/lib/cache.ts utility
+         - Use existing Upstash Redis connection
+         - Implement TTL-based caching:
+           - User context: 5 minutes
+           - Active dreams: 5 minutes
+           - Patterns: 10 minutes
+           - Sessions/reflections: 2-5 minutes
+
+      3. Cache Integration
+         - Wrap queries with cache-first strategy
+         - Add cache hit/miss logging
+         - Implement graceful fallback (cache miss -> DB)
+
+      4. Performance Monitoring
+         - Add timing metrics to context builder
+         - Log cache performance statistics
+    status: PENDING
+    dependencies: [1]
+    estimated_hours: 6-8
+
+  - iteration_id: 3
+    global_iteration: 37
+    name: "Testing Infrastructure"
+    vision: "Establish comprehensive testing with CI enforcement"
+    scope: |
+      1. Fix Unhandled Promise Rejections
+         - Refactor lib/utils/__tests__/retry.test.ts (7 rejections)
+         - Refactor lib/utils/__tests__/anthropic-retry.test.ts (5 rejections)
+         - Use proper try/catch patterns before timer advancement
+         - Target: 0 errors in test output
+
+      2. CI Test Blocking
+         - Remove continue-on-error: true from .github/workflows/ci.yml:60
+         - Add coverage threshold (70% minimum)
+         - Add npm audit step
+
+      3. Playwright E2E Setup
+         - Install @playwright/test
+         - Configure playwright.config.ts for Next.js 14
+         - Create test fixtures and helpers
+         - Add E2E job to CI workflow
+
+      4. Initial E2E Tests
+         - Auth flow: Signup -> Login -> Dashboard
+         - Reflection flow: Login -> Create -> View
+         - Basic smoke tests for critical paths
+    status: PENDING
+    dependencies: [1, 2]
+    estimated_hours: 8-10
+
+  - iteration_id: 4
+    global_iteration: 38
+    name: "TypeScript & Component Tests"
+    vision: "Achieve type safety and component test coverage"
+    scope: |
+      1. Anthropic Type Definitions
+         - Create types/anthropic.ts
+         - Define ContentBlock, TextBlock, ThinkingBlock types
+         - Add type guards: isTextBlock(), isThinkingBlock()
+
+      2. Remove any Types from API Layer
+         - Fix evolution.ts (3 any types)
+         - Fix visualizations.ts (4 any types)
+         - Replace requestConfig: any with typed objects
+         - Target: <20 any types (excluding tests)
+
+      3. Component Test Setup
+         - Install @testing-library/react
+         - Create test utilities in test/component-helpers.ts
+
+      4. Component Tests
+         - ReflectionQuestionCard.test.tsx
+         - ToneSelection.test.tsx
+         - GlassInput.test.tsx
+         - DashboardCard.test.tsx
+         - Target: 10+ component test files
+    status: PENDING
+    dependencies: [3]
+    estimated_hours: 8-10
+
+  - iteration_id: 5
+    global_iteration: 39
+    name: "Code Quality & Refactoring"
+    vision: "Transform MirrorExperience.tsx and optimize React rendering"
+    scope: |
+      1. Extract Reflection Hooks
+         - Create hooks/useReflectionForm.ts (form state, validation)
+         - Create hooks/useReflectionViewMode.ts (view state management)
+         - Move from MirrorExperience.tsx
+
+      2. Extract View Components
+         - Create components/reflection/views/DreamSelectionView.tsx
+         - Create components/reflection/views/ReflectionFormView.tsx
+         - Create components/reflection/views/ReflectionOutputView.tsx
+         - Create components/reflection/views/GazingOverlay.tsx
+
+      3. MirrorExperience.tsx Cleanup
+         - Import extracted hooks and components
+         - Remove duplicated code
+         - Target: <400 lines (from 1504)
+
+      4. React.memo Optimization
+         - Add React.memo to ReflectionQuestionCard
+         - Add React.memo to ToneSelection
+         - Add React.memo to all 7 dashboard cards
+         - Add useCallback wrappers where needed
+         - Target: 10+ memoized components
+
+      5. Final Verification
+         - Run full test suite
+         - Verify all acceptance criteria
+         - Performance benchmarks
+    status: PENDING
+    dependencies: [4]
+    estimated_hours: 10-12
+
+success_criteria:
+  - name: "JWT Expiry Enforced"
+    metric: "Expired tokens rejected"
+    target: "100%"
+
+  - name: "Rate Limiter Fail-Closed"
+    metric: "Redis failure handling"
+    target: "Requests rejected on Redis failure"
+
+  - name: "Sentry Integrated"
+    metric: "Errors captured in dashboard"
+    target: "All unhandled exceptions"
+
+  - name: "Clarify Context Time"
+    metric: "P95 build time"
+    target: "<100ms (from ~400ms)"
+
+  - name: "Test Pass Rate"
+    metric: "All tests pass"
+    target: "100% with 0 errors"
+
+  - name: "CI Enforcement"
+    metric: "Tests block deployment"
+    target: "No continue-on-error"
+
+  - name: "E2E Coverage"
+    metric: "Critical flows tested"
+    target: "3+ E2E tests"
+
+  - name: "any Types"
+    metric: "Count excluding tests"
+    target: "<20"
+
+  - name: "MirrorExperience LOC"
+    metric: "Line count"
+    target: "<400 (from 1504)"
+
+  - name: "React.memo Usage"
+    metric: "Memoized components"
+    target: "10+"
+
+total_estimated_hours: 38-48

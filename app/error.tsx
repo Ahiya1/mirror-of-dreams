@@ -1,5 +1,6 @@
 'use client';
 
+import * as Sentry from '@sentry/nextjs';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -24,7 +25,18 @@ export default function Error({
   const router = useRouter();
 
   useEffect(() => {
-    // Log error to console (future: integrate with Sentry)
+    // Capture error in Sentry with context
+    Sentry.captureException(error, {
+      tags: {
+        errorBoundary: 'root',
+        digest: error.digest,
+      },
+      extra: {
+        componentStack: error.stack,
+      },
+    });
+
+    // Also log to console for development
     console.error('[Error Boundary] Route error:', {
       message: error.message,
       digest: error.digest,

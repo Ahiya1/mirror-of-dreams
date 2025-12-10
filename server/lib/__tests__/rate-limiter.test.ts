@@ -1,9 +1,9 @@
-// server/lib/__tests__/rate-limiter.test.ts - Rate limiting tests
+// server/lib/__tests__/rate-limiter.test.ts - Rate limiting tests with fail-closed circuit breaker
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import { logger as mockLogger } from '../logger';
-import { checkRateLimit } from '../rate-limiter';
+import { checkRateLimit, getCircuitBreakerStatus, resetCircuitBreaker } from '../rate-limiter';
 
 import type { Ratelimit } from '@upstash/ratelimit';
 
@@ -52,10 +52,12 @@ const asMockRateLimiter = (mock: MockLimiter): Ratelimit | null => mock as unkno
 describe('Rate Limiter', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    resetCircuitBreaker();
   });
 
   afterEach(() => {
     vi.resetModules();
+    vi.useRealTimers();
   });
 
   describe('checkRateLimit', () => {
@@ -101,32 +103,45 @@ describe('Rate Limiter', () => {
       expect(result.reset).toBe(resetTime);
     });
 
-    it('returns success true on Redis error (graceful degradation)', async () => {
+    // FAIL-CLOSED TESTS - Updated from fail-open behavior
+    it('returns success false on Redis error (fail-closed)', async () => {
       const mockLimiter: MockLimiter = {
         limit: vi.fn().mockRejectedValue(new Error('Redis connection failed')),
       };
 
       const result = await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
 
-      expect(result.success).toBe(true);
+      expect(result.success).toBe(false);
+      expect(result.circuitOpen).toBe(true);
       expect(mockLogger.error).toHaveBeenCalledWith(
         expect.objectContaining({
           service: 'rate-limiter',
           identifier: 'test-ip',
         }),
-        'Rate limiter error'
+        'Rate limiter error - FAIL-CLOSED: rejecting request'
       );
     });
 
-    it('returns success true on Redis timeout (graceful degradation)', async () => {
+    it('returns success false on Redis timeout (fail-closed)', async () => {
       const mockLimiter: MockLimiter = {
         limit: vi.fn().mockRejectedValue(new Error('ETIMEDOUT')),
       };
 
       const result = await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
 
-      expect(result.success).toBe(true);
+      expect(result.success).toBe(false);
+      expect(result.circuitOpen).toBe(true);
       expect(mockLogger.error).toHaveBeenCalled();
+    });
+
+    it('sets circuitOpen flag on Redis failure', async () => {
+      const mockLimiter: MockLimiter = {
+        limit: vi.fn().mockRejectedValue(new Error('Connection refused')),
+      };
+
+      const result = await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+
+      expect(result.circuitOpen).toBe(true);
     });
   });
 
@@ -179,6 +194,396 @@ describe('Rate Limiter', () => {
       expect(result1.remaining).toBe(4);
       expect(result2.remaining).toBe(3);
       expect(result3.remaining).toBe(2);
+    });
+  });
+});
+
+// =====================================================
+// CIRCUIT BREAKER TESTS
+// =====================================================
+
+describe('Circuit Breaker', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    resetCircuitBreaker();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  describe('Fail-Closed Behavior', () => {
+    it('should return success false on Redis error (fail-closed)', async () => {
+      const mockLimiter: MockLimiter = {
+        limit: vi.fn().mockRejectedValue(new Error('Redis connection failed')),
+      };
+
+      const result = await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+
+      expect(result.success).toBe(false);
+      expect(result.circuitOpen).toBe(true);
+    });
+
+    it('should return success false on Redis timeout (fail-closed)', async () => {
+      const mockLimiter: MockLimiter = {
+        limit: vi.fn().mockRejectedValue(new Error('ETIMEDOUT')),
+      };
+
+      const result = await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+
+      expect(result.success).toBe(false);
+      expect(result.circuitOpen).toBe(true);
+    });
+
+    it('should set circuitOpen flag correctly on failure', async () => {
+      const mockLimiter: MockLimiter = {
+        limit: vi.fn().mockRejectedValue(new Error('Network error')),
+      };
+
+      const result = await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+
+      expect(result.circuitOpen).toBe(true);
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('Circuit Open/Close Behavior', () => {
+    it('should open circuit after 5 consecutive failures', async () => {
+      const mockLimiter: MockLimiter = {
+        limit: vi.fn().mockRejectedValue(new Error('Redis down')),
+      };
+
+      // 5 failures should open circuit
+      for (let i = 0; i < 5; i++) {
+        await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+      }
+
+      const status = getCircuitBreakerStatus();
+      expect(status.isOpen).toBe(true);
+      expect(status.failures).toBe(5);
+    });
+
+    it('should reject requests when circuit is open without calling Redis', async () => {
+      const mockLimiter: MockLimiter = {
+        limit: vi.fn().mockRejectedValue(new Error('Redis down')),
+      };
+
+      // Open circuit with 5 failures
+      for (let i = 0; i < 5; i++) {
+        await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+      }
+
+      // Clear mock to track subsequent calls
+      mockLimiter.limit = vi.fn();
+      const result = await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+
+      expect(result.success).toBe(false);
+      expect(result.circuitOpen).toBe(true);
+      expect(mockLimiter.limit).not.toHaveBeenCalled();
+    });
+
+    it('should reset circuit on successful request', async () => {
+      const mockLimiter: MockLimiter = {
+        limit: vi
+          .fn()
+          .mockRejectedValueOnce(new Error('Redis down'))
+          .mockRejectedValueOnce(new Error('Redis down'))
+          .mockResolvedValue({ success: true, remaining: 5, reset: Date.now() + 60000 }),
+      };
+
+      // Accumulate 2 failures
+      await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+      await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+
+      let status = getCircuitBreakerStatus();
+      expect(status.failures).toBe(2);
+
+      // Success resets circuit
+      await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+
+      status = getCircuitBreakerStatus();
+      expect(status.failures).toBe(0);
+      expect(status.isOpen).toBe(false);
+    });
+
+    it('should not open circuit before threshold is reached', async () => {
+      const mockLimiter: MockLimiter = {
+        limit: vi.fn().mockRejectedValue(new Error('Redis down')),
+      };
+
+      // 4 failures should NOT open circuit
+      for (let i = 0; i < 4; i++) {
+        await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+      }
+
+      const status = getCircuitBreakerStatus();
+      expect(status.isOpen).toBe(false);
+      expect(status.failures).toBe(4);
+    });
+  });
+
+  describe('Half-Open Recovery', () => {
+    it('should allow half-open requests after recovery timeout', async () => {
+      vi.useFakeTimers();
+
+      const mockLimiter: MockLimiter = {
+        limit: vi.fn().mockRejectedValue(new Error('Redis down')),
+      };
+
+      // Open circuit with 5 failures
+      for (let i = 0; i < 5; i++) {
+        await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+      }
+
+      expect(getCircuitBreakerStatus().isOpen).toBe(true);
+
+      // Advance time past recovery timeout (30 seconds)
+      vi.advanceTimersByTime(31000);
+
+      // Should allow half-open request (replace mock to track calls)
+      mockLimiter.limit = vi.fn().mockResolvedValue({
+        success: true,
+        remaining: 5,
+        reset: Date.now() + 60000,
+      });
+
+      const result = await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+
+      expect(result.success).toBe(true);
+      expect(mockLimiter.limit).toHaveBeenCalled();
+      expect(getCircuitBreakerStatus().isOpen).toBe(false);
+    });
+
+    it('should allow limited half-open requests (3 max)', async () => {
+      vi.useFakeTimers();
+
+      const mockLimiter: MockLimiter = {
+        limit: vi.fn().mockRejectedValue(new Error('Redis down')),
+      };
+
+      // Open circuit with 5 failures
+      for (let i = 0; i < 5; i++) {
+        await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+      }
+
+      // Advance time past recovery timeout
+      vi.advanceTimersByTime(31000);
+
+      // Replace mock to count calls
+      let callCount = 0;
+      mockLimiter.limit = vi.fn().mockImplementation(() => {
+        callCount++;
+        // Continue to fail in half-open
+        return Promise.reject(new Error('Still down'));
+      });
+
+      // First 3 should be allowed (half-open quota)
+      await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+      await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+      await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+
+      expect(callCount).toBe(3);
+
+      // 4th should be blocked (quota exhausted)
+      await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+      expect(callCount).toBe(3); // Should not have called limit again
+    });
+
+    it('should fully recover on successful half-open request', async () => {
+      vi.useFakeTimers();
+
+      const mockLimiter: MockLimiter = {
+        limit: vi.fn().mockRejectedValue(new Error('Redis down')),
+      };
+
+      // Open circuit with 5 failures
+      for (let i = 0; i < 5; i++) {
+        await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+      }
+
+      // Advance time past recovery timeout
+      vi.advanceTimersByTime(31000);
+
+      // Successful half-open request
+      mockLimiter.limit = vi.fn().mockResolvedValue({
+        success: true,
+        remaining: 10,
+        reset: Date.now() + 60000,
+      });
+
+      await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+
+      // Circuit should be fully closed now
+      const status = getCircuitBreakerStatus();
+      expect(status.isOpen).toBe(false);
+      expect(status.failures).toBe(0);
+    });
+  });
+
+  describe('getCircuitBreakerStatus', () => {
+    it('should return correct status when circuit is closed', () => {
+      const status = getCircuitBreakerStatus();
+
+      expect(status.isOpen).toBe(false);
+      expect(status.failures).toBe(0);
+      expect(status.timeSinceLastFailure).toBeNull();
+      expect(status.recoveryIn).toBeNull();
+    });
+
+    it('should return correct status when circuit is open', async () => {
+      vi.useFakeTimers();
+
+      const mockLimiter: MockLimiter = {
+        limit: vi.fn().mockRejectedValue(new Error('Redis down')),
+      };
+
+      // Open circuit
+      for (let i = 0; i < 5; i++) {
+        await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+      }
+
+      const status = getCircuitBreakerStatus();
+
+      expect(status.isOpen).toBe(true);
+      expect(status.failures).toBe(5);
+      expect(status.timeSinceLastFailure).not.toBeNull();
+      expect(status.recoveryIn).not.toBeNull();
+    });
+
+    it('should calculate recoveryIn correctly', async () => {
+      vi.useFakeTimers();
+
+      const mockLimiter: MockLimiter = {
+        limit: vi.fn().mockRejectedValue(new Error('Redis down')),
+      };
+
+      // Open circuit
+      for (let i = 0; i < 5; i++) {
+        await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+      }
+
+      // Advance 10 seconds
+      vi.advanceTimersByTime(10000);
+
+      const status = getCircuitBreakerStatus();
+
+      // Should have ~20 seconds remaining (30s - 10s)
+      expect(status.recoveryIn).toBe(20000);
+    });
+
+    it('should show recoveryIn as 0 after timeout passes', async () => {
+      vi.useFakeTimers();
+
+      const mockLimiter: MockLimiter = {
+        limit: vi.fn().mockRejectedValue(new Error('Redis down')),
+      };
+
+      // Open circuit
+      for (let i = 0; i < 5; i++) {
+        await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+      }
+
+      // Advance past recovery timeout
+      vi.advanceTimersByTime(35000);
+
+      const status = getCircuitBreakerStatus();
+
+      expect(status.recoveryIn).toBe(0);
+    });
+  });
+
+  describe('resetCircuitBreaker', () => {
+    it('should reset all circuit breaker state', async () => {
+      const mockLimiter: MockLimiter = {
+        limit: vi.fn().mockRejectedValue(new Error('Redis down')),
+      };
+
+      // Open circuit
+      for (let i = 0; i < 5; i++) {
+        await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+      }
+
+      expect(getCircuitBreakerStatus().isOpen).toBe(true);
+
+      resetCircuitBreaker();
+
+      const status = getCircuitBreakerStatus();
+      expect(status.isOpen).toBe(false);
+      expect(status.failures).toBe(0);
+      expect(status.timeSinceLastFailure).toBeNull();
+    });
+  });
+
+  describe('Logging', () => {
+    it('should log when circuit breaker opens', async () => {
+      const mockLimiter: MockLimiter = {
+        limit: vi.fn().mockRejectedValue(new Error('Redis down')),
+      };
+
+      // Open circuit with 5 failures
+      for (let i = 0; i < 5; i++) {
+        await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+      }
+
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        expect.objectContaining({
+          service: 'rate-limiter',
+          failureCount: 5,
+          recoveryTimeMs: 30000,
+        }),
+        'Circuit breaker OPEN: Rate limiting will reject all requests'
+      );
+    });
+
+    it('should log when circuit breaker recovers', async () => {
+      vi.useFakeTimers();
+
+      const mockLimiter: MockLimiter = {
+        limit: vi
+          .fn()
+          .mockRejectedValueOnce(new Error('Redis down'))
+          .mockRejectedValueOnce(new Error('Redis down'))
+          .mockResolvedValue({ success: true, remaining: 5, reset: Date.now() + 60000 }),
+      };
+
+      // Accumulate 2 failures
+      await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+      await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+
+      // Success should log recovery
+      await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        expect.objectContaining({
+          service: 'rate-limiter',
+          previousFailures: 2,
+        }),
+        'Circuit breaker: Redis recovered, resetting'
+      );
+    });
+
+    it('should log when request is rejected due to open circuit', async () => {
+      const mockLimiter: MockLimiter = {
+        limit: vi.fn().mockRejectedValue(new Error('Redis down')),
+      };
+
+      // Open circuit
+      for (let i = 0; i < 5; i++) {
+        await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
+      }
+
+      vi.clearAllMocks();
+
+      // Next request should trigger warning log
+      await checkRateLimit(asMockRateLimiter(mockLimiter), 'new-ip');
+
+      expect(mockLogger.warn).toHaveBeenCalledWith(
+        expect.objectContaining({
+          service: 'rate-limiter',
+          identifier: 'new-ip',
+        }),
+        'Rate limit check rejected: Circuit breaker open'
+      );
     });
   });
 });
@@ -280,6 +685,11 @@ describe('Rate Limit Error Handling', () => {
     it('provides specific message for auth endpoints', () => {
       const errorMessage = 'Too many authentication attempts. Please wait and try again.';
       expect(errorMessage).toContain('authentication');
+    });
+
+    it('provides circuit breaker message when Redis is down', () => {
+      const errorMessage = 'Service temporarily unavailable. Please try again shortly.';
+      expect(errorMessage).toContain('temporarily unavailable');
     });
   });
 });

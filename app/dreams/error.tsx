@@ -1,5 +1,6 @@
 'use client';
 
+import * as Sentry from '@sentry/nextjs';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -20,7 +21,19 @@ export default function DreamsError({
   const router = useRouter();
 
   useEffect(() => {
-    // Log error to console (future: integrate with Sentry)
+    // Capture error in Sentry with context
+    Sentry.captureException(error, {
+      tags: {
+        errorBoundary: 'dreams',
+        digest: error.digest,
+      },
+      extra: {
+        componentStack: error.stack,
+        route: '/dreams',
+      },
+    });
+
+    // Also log to console for development
     console.error('[Dreams Error] Route error:', {
       message: error.message,
       digest: error.digest,

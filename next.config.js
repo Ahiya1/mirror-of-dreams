@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+const { withSentryConfig } = require('@sentry/nextjs');
 
 // Security headers to protect against common web vulnerabilities
 const securityHeaders = [
@@ -82,4 +83,24 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+// Wrap with Sentry config for error monitoring and source map uploads
+module.exports = withSentryConfig(nextConfig, {
+  // Sentry webpack plugin options
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+
+  // Suppresses source map upload logs during build
+  silent: true,
+
+  // Routes browser source maps to Sentry
+  widenClientFileUpload: true,
+
+  // Hides source maps from generated client bundles
+  hideSourceMaps: true,
+
+  // Tree shaking for smaller bundles
+  disableLogger: true,
+
+  // Automatically set release to git commit SHA
+  automaticVercelMonitors: true,
+});

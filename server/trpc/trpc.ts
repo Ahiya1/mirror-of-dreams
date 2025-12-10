@@ -1,13 +1,32 @@
 // server/trpc/trpc.ts - tRPC instance and base procedures
 
-import { initTRPC, TRPCError } from '@trpc/server';
+import * as Sentry from '@sentry/nextjs';
+import { initTRPC } from '@trpc/server';
 import superjson from 'superjson';
 
 import { type Context } from './context';
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson, // Preserves Date, Map, Set, etc.
-  errorFormatter({ shape, error }) {
+  errorFormatter({ shape, error, ctx }) {
+    // Don't report auth errors (expected, not bugs)
+    if (error.code !== 'UNAUTHORIZED' && error.code !== 'FORBIDDEN') {
+      Sentry.captureException(error.cause ?? error, {
+        user: ctx?.user
+          ? {
+              id: ctx.user.id,
+              email: ctx.user.email,
+            }
+          : undefined,
+        tags: {
+          trpcCode: error.code,
+        },
+        extra: {
+          trpcPath: shape.data?.path,
+        },
+      });
+    }
+
     return {
       ...shape,
       data: {

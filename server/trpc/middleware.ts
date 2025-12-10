@@ -211,9 +211,12 @@ export const rateLimitByIp = (limiter: typeof authRateLimiter) =>
     const result = await checkRateLimit(limiter, ip);
 
     if (!result.success) {
+      const message = result.circuitOpen
+        ? 'Service temporarily unavailable. Please try again shortly.'
+        : 'Too many requests. Please try again later.';
       throw new TRPCError({
         code: 'TOO_MANY_REQUESTS',
-        message: 'Too many requests. Please try again later.',
+        message,
       });
     }
 
@@ -237,9 +240,12 @@ export const rateLimitByUser = (limiter: typeof aiRateLimiter) =>
     const result = await checkRateLimit(limiter, ctx.user.id);
 
     if (!result.success) {
+      const message = result.circuitOpen
+        ? 'Service temporarily unavailable. Please try again shortly.'
+        : 'Rate limit exceeded. Please slow down.';
       throw new TRPCError({
         code: 'TOO_MANY_REQUESTS',
-        message: 'Rate limit exceeded. Please slow down.',
+        message,
       });
     }
 

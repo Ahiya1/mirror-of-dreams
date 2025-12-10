@@ -24,7 +24,18 @@ const JWT_SECRET = process.env.JWT_SECRET!;
 async function verifyAndGetUser(token: string): Promise<User | null> {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    const payload = decoded as { userId: string };
+    const payload = decoded as { userId: string; exp?: number };
+
+    // Explicit expiry check with logging
+    const now = Math.floor(Date.now() / 1000);
+    if (payload.exp && payload.exp < now) {
+      console.warn('[Clarify Stream] JWT token expired', {
+        userId: payload.userId,
+        expiredAt: new Date(payload.exp * 1000).toISOString(),
+        expiredAgo: `${Math.floor((now - payload.exp) / 60)} minutes`,
+      });
+      return null;
+    }
 
     const { data, error } = await supabase
       .from('users')
@@ -34,7 +45,25 @@ async function verifyAndGetUser(token: string): Promise<User | null> {
 
     if (error || !data) return null;
     return userRowToUser(data);
-  } catch {
+  } catch (e) {
+    // Handle specific JWT errors with appropriate log levels
+    if (e instanceof jwt.TokenExpiredError) {
+      console.warn('[Clarify Stream] JWT token expired (caught by jwt.verify)', {
+        expiredAt: e.expiredAt?.toISOString(),
+        message: e.message,
+      });
+    } else if (e instanceof jwt.JsonWebTokenError) {
+      console.warn('[Clarify Stream] Invalid JWT token', {
+        message: (e as Error).message,
+      });
+    } else if (e instanceof jwt.NotBeforeError) {
+      console.warn('[Clarify Stream] JWT token not yet valid', {
+        date: (e as jwt.NotBeforeError).date?.toISOString(),
+      });
+    } else {
+      // Unexpected error
+      console.error('[Clarify Stream] Token verification error:', e);
+    }
     return null;
   }
 }

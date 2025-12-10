@@ -1,5 +1,6 @@
 'use client';
 
+import * as Sentry from '@sentry/nextjs';
 import { useEffect } from 'react';
 
 /**
@@ -20,7 +21,19 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Log critical error to console (future: integrate with Sentry)
+    // Capture critical error in Sentry with context
+    Sentry.captureException(error, {
+      tags: {
+        errorBoundary: 'global',
+        digest: error.digest,
+      },
+      extra: {
+        componentStack: error.stack,
+      },
+      level: 'fatal', // Global errors are critical
+    });
+
+    // Also log to console for development
     console.error('[Global Error Boundary] Critical error:', {
       message: error.message,
       digest: error.digest,
