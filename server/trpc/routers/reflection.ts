@@ -8,6 +8,7 @@ import { usageLimitedProcedure } from '../middleware';
 import { router } from '../trpc';
 
 import { withAIRetry } from '@/lib/utils/retry';
+import { cacheDelete, cacheKeys } from '@/server/lib/cache';
 import { aiLogger, dbLogger } from '@/server/lib/logger';
 import { loadPrompts, buildReflectionUserPrompt } from '@/server/lib/prompts';
 import { supabase } from '@/server/lib/supabase';
@@ -185,6 +186,9 @@ Please mirror back what you see, in a flowing reflection I can return to months 
         last_reflection_at: new Date().toISOString(),
       })
       .eq('id', ctx.user.id);
+
+    // Invalidate reflections cache after successful create
+    await cacheDelete(cacheKeys.reflections(ctx.user.id));
 
     // Check if evolution report should be triggered
     const shouldTriggerEvolution = await checkEvolutionEligibility(ctx.user.id, ctx.user.tier);

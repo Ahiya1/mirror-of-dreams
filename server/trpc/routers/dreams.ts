@@ -7,6 +7,7 @@ import { protectedProcedure } from '../middleware';
 import { router } from '../trpc';
 
 import { DREAM_LIMITS } from '@/lib/utils/constants';
+import { cacheDelete, cacheKeys } from '@/server/lib/cache';
 import { dbLogger } from '@/server/lib/logger';
 import { supabase } from '@/server/lib/supabase';
 
@@ -196,6 +197,9 @@ export const dreamsRouter = router({
       .eq('user_id', userId)
       .eq('status', 'active');
 
+    // Invalidate dreams cache after successful create
+    await cacheDelete(cacheKeys.dreams(userId));
+
     const tierLimit = DREAM_LIMITS[userTier as keyof typeof DREAM_LIMITS] ?? 0;
     return {
       dream: data,
@@ -331,6 +335,9 @@ export const dreamsRouter = router({
       });
     }
 
+    // Invalidate dreams cache after successful update
+    await cacheDelete(cacheKeys.dreams(userId));
+
     return data;
   }),
 
@@ -379,6 +386,9 @@ export const dreamsRouter = router({
       });
     }
 
+    // Invalidate dreams cache after successful status update
+    await cacheDelete(cacheKeys.dreams(userId));
+
     return data;
   }),
 
@@ -410,6 +420,9 @@ export const dreamsRouter = router({
         message: 'Failed to delete dream',
       });
     }
+
+    // Invalidate dreams cache after successful delete
+    await cacheDelete(cacheKeys.dreams(userId));
 
     return { success: true };
   }),

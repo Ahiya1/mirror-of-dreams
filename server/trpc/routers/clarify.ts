@@ -17,6 +17,7 @@ import { router } from '../trpc';
 import { buildClarifyContext, getUserPatterns } from '@/lib/clarify/context-builder';
 import { CLARIFY_SESSION_LIMITS } from '@/lib/utils/constants';
 import { withAIRetry } from '@/lib/utils/retry';
+import { cacheDelete, cacheKeys } from '@/server/lib/cache';
 import { aiLogger } from '@/server/lib/logger';
 import { supabase } from '@/server/lib/supabase';
 import {
@@ -259,6 +260,9 @@ export const clarifyRouter = router({
           total_clarify_sessions: ctx.user.totalClarifySessions + 1,
         })
         .eq('id', userId);
+
+      // Invalidate sessions cache after successful create
+      await cacheDelete(cacheKeys.sessions(userId));
 
       // If initial message provided, send it
       let initialResponse: string | null = null;

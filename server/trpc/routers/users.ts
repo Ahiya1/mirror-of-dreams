@@ -11,6 +11,7 @@ import { router } from '../trpc';
 import type { UserRow, JWTPayload } from '@/types/user';
 
 import { TIER_LIMITS } from '@/lib/utils/constants';
+import { cacheDelete, cacheKeys } from '@/server/lib/cache';
 import { supabase } from '@/server/lib/supabase';
 import { updateProfileSchema, changeEmailSchema, updatePreferencesSchema } from '@/types/schemas';
 import { userRowToUser, DEFAULT_PREFERENCES } from '@/types/user';
@@ -105,6 +106,9 @@ export const usersRouter = router({
         message: 'Failed to update profile',
       });
     }
+
+    // Invalidate user context cache after successful profile update
+    await cacheDelete(cacheKeys.userContext(ctx.user.id));
 
     return {
       user: userRowToUser(data as UserRow),
