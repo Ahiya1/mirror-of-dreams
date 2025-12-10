@@ -11,6 +11,7 @@ import {
   getPlanId,
   determineTierFromPlanId,
   determinePeriodFromPlanId,
+  _resetTokenCache,
   type PayPalWebhookHeaders,
 } from '../paypal';
 
@@ -33,6 +34,8 @@ const mockEnv = {
 describe('PayPal Client Library', () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    // Reset token cache to ensure tests don't affect each other
+    _resetTokenCache();
     // Reset environment
     Object.assign(process.env, mockEnv);
   });

@@ -326,3 +326,11 @@ export function determinePeriodFromPlanId(planId: string): 'monthly' | 'yearly' 
 
   throw new Error(`Unknown plan ID: ${planId}`);
 }
+
+/**
+ * Reset the cached token - FOR TESTING ONLY
+ * This allows tests to reset state between test cases
+ */
+export function _resetTokenCache(): void {
+  cachedToken = null;
+}

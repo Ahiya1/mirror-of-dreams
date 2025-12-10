@@ -2,6 +2,11 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
+import { logger as mockLogger } from '../logger';
+import { checkRateLimit } from '../rate-limiter';
+
+import type { Ratelimit } from '@upstash/ratelimit';
+
 // Mock @upstash/redis before any imports
 vi.mock('@upstash/redis', () => ({
   Redis: vi.fn().mockImplementation(() => ({
@@ -16,10 +21,19 @@ vi.mock('@upstash/ratelimit', () => ({
   })),
 }));
 
-// Import the actual checkRateLimit function
-import { checkRateLimit } from '../rate-limiter';
-
-import type { Ratelimit } from '@upstash/ratelimit';
+// Mock logger module - must be inline because vi.mock is hoisted
+vi.mock('../logger', () => {
+  const mockLoggerInstance = {
+    warn: vi.fn(),
+    error: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+    child: vi.fn(() => mockLoggerInstance),
+  };
+  return {
+    logger: mockLoggerInstance,
+  };
+});
 
 /**
  * Interface for mock limiters used in tests
@@ -92,15 +106,16 @@ describe('Rate Limiter', () => {
         limit: vi.fn().mockRejectedValue(new Error('Redis connection failed')),
       };
 
-      // Suppress console.error for this test
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
       const result = await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
 
       expect(result.success).toBe(true);
-      expect(consoleSpy).toHaveBeenCalledWith('Rate limiter error:', expect.any(Error));
-
-      consoleSpy.mockRestore();
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        expect.objectContaining({
+          service: 'rate-limiter',
+          identifier: 'test-ip',
+        }),
+        'Rate limiter error'
+      );
     });
 
     it('returns success true on Redis timeout (graceful degradation)', async () => {
@@ -108,13 +123,10 @@ describe('Rate Limiter', () => {
         limit: vi.fn().mockRejectedValue(new Error('ETIMEDOUT')),
       };
 
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
       const result = await checkRateLimit(asMockRateLimiter(mockLimiter), 'test-ip');
 
       expect(result.success).toBe(true);
-
-      consoleSpy.mockRestore();
+      expect(mockLogger.error).toHaveBeenCalled();
     });
   });
 

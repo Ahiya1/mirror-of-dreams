@@ -8,6 +8,7 @@ import { router, publicProcedure } from '../trpc';
 
 import type { ReflectionRow } from '@/types/reflection';
 
+import { TIER_LIMITS } from '@/lib/utils/constants';
 import { supabase } from '@/server/lib/supabase';
 import { reflectionRowToReflection } from '@/types/reflection';
 import {
@@ -194,14 +195,8 @@ export const reflectionsRouter = router({
 
   // Check current usage status
   checkUsage: protectedProcedure.query(async ({ ctx }) => {
-    // Aligned with vision: Free tier gets 4 reflections/month
-    const TIER_LIMITS = {
-      free: 4, // Vision: 4 reflections/month for Free tier
-      pro: 10, // Pro tier (formerly essential)
-      unlimited: 999999, // Unlimited for admin/creator
-    };
-
-    const limit = ctx.user.isCreator || ctx.user.isAdmin ? 999999 : TIER_LIMITS[ctx.user.tier] || 0;
+    const limit =
+      ctx.user.isCreator || ctx.user.isAdmin ? Infinity : TIER_LIMITS[ctx.user.tier] || 0;
 
     const used = ctx.user.reflectionCountThisMonth;
     const remaining = Math.max(0, limit - used);

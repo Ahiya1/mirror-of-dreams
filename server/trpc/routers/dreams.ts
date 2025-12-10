@@ -6,17 +6,9 @@ import { z } from 'zod';
 import { protectedProcedure } from '../middleware';
 import { router } from '../trpc';
 
+import { DREAM_LIMITS } from '@/lib/utils/constants';
 import { dbLogger } from '@/server/lib/logger';
 import { supabase } from '@/server/lib/supabase';
-
-// =====================================================
-// TIER LIMITS CONFIGURATION
-// =====================================================
-const TIER_LIMITS = {
-  free: { dreams: 2 },
-  pro: { dreams: 5 },
-  unlimited: { dreams: 999999 }, // Effectively unlimited
-} as const;
 
 // =====================================================
 // VALIDATION SCHEMAS
@@ -84,10 +76,10 @@ const listDreamsSchema = z.object({
 // =====================================================
 
 async function checkDreamLimit(userId: string, userTier: string): Promise<boolean> {
-  const tier = userTier as keyof typeof TIER_LIMITS;
-  const limit = TIER_LIMITS[tier]?.dreams || 0;
+  const tier = userTier as keyof typeof DREAM_LIMITS;
+  const limit = DREAM_LIMITS[tier] ?? 0;
 
-  if (limit === 999999) return true; // Unlimited
+  if (!Number.isFinite(limit)) return true; // Unlimited
 
   const { count, error } = await supabase
     .from('dreams')
@@ -167,7 +159,7 @@ export const dreamsRouter = router({
     // Check tier limit
     const canCreate = await checkDreamLimit(userId, userTier);
     if (!canCreate) {
-      const limit = TIER_LIMITS[userTier as keyof typeof TIER_LIMITS]?.dreams || 0;
+      const limit = DREAM_LIMITS[userTier as keyof typeof DREAM_LIMITS] ?? 0;
       throw new TRPCError({
         code: 'FORBIDDEN',
         message: `Dream limit reached for ${userTier} tier. Maximum: ${limit} active dreams. Upgrade to create more dreams.`,
@@ -204,13 +196,13 @@ export const dreamsRouter = router({
       .eq('user_id', userId)
       .eq('status', 'active');
 
+    const tierLimit = DREAM_LIMITS[userTier as keyof typeof DREAM_LIMITS] ?? 0;
     return {
       dream: data,
       usage: {
         dreamsUsed: activeCount || 0,
-        dreamsLimit: TIER_LIMITS[userTier as keyof typeof TIER_LIMITS]?.dreams || 0,
-        dreamLimitReached:
-          (activeCount || 0) >= (TIER_LIMITS[userTier as keyof typeof TIER_LIMITS]?.dreams || 0),
+        dreamsLimit: tierLimit,
+        dreamLimitReached: Number.isFinite(tierLimit) && (activeCount || 0) >= tierLimit,
       },
     };
   }),
@@ -425,7 +417,7 @@ export const dreamsRouter = router({
   // Get dream limits for current user
   getLimits: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.user.id;
-    const userTier = ctx.user.tier as keyof typeof TIER_LIMITS;
+    const userTier = ctx.user.tier as keyof typeof DREAM_LIMITS;
 
     const { count: activeCount } = await supabase
       .from('dreams')
@@ -433,14 +425,14 @@ export const dreamsRouter = router({
       .eq('user_id', userId)
       .eq('status', 'active');
 
-    const limit = TIER_LIMITS[userTier]?.dreams || 0;
+    const limit = DREAM_LIMITS[userTier] ?? 0;
 
     return {
       tier: userTier,
       dreamsUsed: activeCount || 0,
       dreamsLimit: limit,
-      dreamsRemaining: limit === 999999 ? 999999 : Math.max(0, limit - (activeCount || 0)),
-      canCreate: (activeCount || 0) < limit,
+      dreamsRemaining: !Number.isFinite(limit) ? Infinity : Math.max(0, limit - (activeCount || 0)),
+      canCreate: !Number.isFinite(limit) || (activeCount || 0) < limit,
     };
   }),
 });

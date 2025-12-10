@@ -1,0 +1,105 @@
+plan_id: plan-20
+created_at: 2025-12-10T09:00:00Z
+status: IN_PROGRESS
+total_iterations: 1
+
+strategy: |
+  Simple quality improvement plan: fix 6 failing tests and consolidate TIER_LIMITS.
+
+  The vision mentioned secrets rotation, but that's a MANUAL user task - .env files
+  are properly gitignored and not tracked. The warning was about historical commits.
+
+  All changes are either test-only (zero production risk) or small refactors that
+  improve maintainability without changing business logic.
+
+  Single iteration with 2 parallel builders:
+  - Builder 1: Test fixes (PayPal mocking, rate limiter logger)
+  - Builder 2: TIER_LIMITS consolidation (remove duplicates)
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 34
+    name: "Test Stability & Constants Consolidation"
+    vision: "100% test pass rate and single source of truth for tier limits"
+    scope: |
+      ## Goals
+      - Fix all 6 failing tests (5 PayPal + 1 rate limiter)
+      - Consolidate TIER_LIMITS to single source (lib/utils/constants.ts)
+      - Remove duplicate/hardcoded tier values from codebase
+      - Eliminate unhandled promise rejections in test output
+
+      ## Builder 1: Test Fixes
+
+      ### PayPal Tests (5 failures) - server/lib/__tests__/paypal.test.ts
+      Root cause: Module-level cachedToken persists between tests
+
+      Fix approach:
+      1. Add vi.resetModules() in beforeEach to reset module state
+      2. Re-import paypal module fresh for each test
+      3. Ensure mock chain is properly sequenced for each test
+
+      Specific fixes:
+      - "should use cached token if still valid" - reset cache before test
+      - "should throw error on failed token request" - reset cache before test
+      - "should create subscription and return approval URL" - mock must return links array
+      - "should fetch subscription details" - fix mock chain order
+      - "should verify valid webhook signature" - fix mock chain order
+
+      ### Rate Limiter Test (1 failure) - server/lib/__tests__/rate-limiter.test.ts
+      Root cause: Test expects console.error but implementation uses logger.error
+
+      Fix approach:
+      1. Mock logger module instead of console
+      2. Update assertion to expect logger.error call
+
+      ### Unhandled Promise Rejections
+      Files: lib/utils/__tests__/retry.test.ts, lib/utils/__tests__/anthropic-retry.test.ts
+
+      Fix approach:
+      1. Ensure all rejected promises are properly awaited
+      2. Add proper error boundaries in mock setup
+
+      ## Builder 2: TIER_LIMITS Consolidation
+
+      ### Source of Truth (DO NOT MODIFY)
+      lib/utils/constants.ts:
+      - TIER_LIMITS = { free: 2, pro: 30, unlimited: 60 }
+      - DREAM_LIMITS = { free: 2, pro: 5, unlimited: Infinity }
+
+      ### Files to Update
+
+      1. server/trpc/routers/dreams.ts (lines 15-19)
+         - REMOVE local TIER_LIMITS definition
+         - IMPORT { DREAM_LIMITS } from '@/lib/utils/constants'
+         - Update checkDreamLimit to use DREAM_LIMITS[tier]
+
+      2. test/fixtures/dreams.ts
+         - Import DREAM_LIMITS from constants
+         - Replace hardcoded values
+
+      3. test/integration/dreams/crud.test.ts
+         - Import constants, remove hardcoded limits
+
+      4. test/integration/dreams/create.test.ts
+         - Import constants, remove hardcoded limits
+
+      5. components/subscription/CancelSubscriptionModal.tsx
+         - Import TIER_LIMITS from constants
+         - Replace hardcoded "30/60" with template literal
+
+      6. app/onboarding/page.tsx
+         - Check for "4 conversations" text (should be "2")
+         - Update to use constants if applicable
+
+      ## Success Criteria
+      - npm run test:run shows 566/566 passing (100%)
+      - npm run test:run has no unhandled promise rejection warnings
+      - grep TIER_LIMITS finds only 1 definition (constants.ts)
+      - grep DREAM_LIMITS finds only 1 definition (constants.ts)
+      - TypeScript compilation passes
+      - Build passes
+
+    status: PENDING
+    dependencies: []
+    risk_level: LOW
+    estimated_hours: 2-4

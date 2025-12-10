@@ -359,7 +359,7 @@ describe('reflections.checkUsage', () => {
       const result = await caller.reflections.checkUsage();
 
       expect(result.tier).toBe('free');
-      expect(result.limit).toBe(4); // Free tier limit
+      expect(result.limit).toBe(2); // Free tier limit (TIER_LIMITS.free)
       expect(result.used).toBe(freeTierUser.reflectionCountThisMonth);
       expect(result.canReflect).toBe(true);
     });
@@ -370,14 +370,14 @@ describe('reflections.checkUsage', () => {
       const result = await caller.reflections.checkUsage();
 
       expect(result.tier).toBe('pro');
-      expect(result.limit).toBe(10); // Pro tier limit
+      expect(result.limit).toBe(30); // Pro tier limit (TIER_LIMITS.pro)
       expect(result.used).toBe(proTierUser.reflectionCountThisMonth);
     });
 
     it('should indicate when user cannot reflect', async () => {
       const userAtLimit = {
         ...freeTierUser,
-        reflectionCountThisMonth: 4, // At free tier limit
+        reflectionCountThisMonth: 2, // At free tier limit (TIER_LIMITS.free)
       };
       const { caller } = createTestCaller(userAtLimit);
 

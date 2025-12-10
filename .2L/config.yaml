@@ -210,7 +210,7 @@ plans:
     current_phase: exploration
     paused_reason: Superseded by plan-19 for technical hardening
   plan-19:
-    status: PLANNED
+    status: COMPLETE
     created: '2025-12-10'
     vision_file: plan-19/vision.md
     master_plan_file: plan-19/master-plan.yaml
@@ -220,7 +220,21 @@ plans:
       num_explorers: 4
       complexity_level: COMPLEX
     total_iterations: 5
-    current_iteration: 29
+    current_iteration: 33
+    current_phase: complete
+    completed_at: '2025-12-10T08:00:00Z'
+  plan-20:
+    status: IN_PROGRESS
+    created: '2025-12-10'
+    vision_file: plan-20/vision.md
+    master_plan_file: plan-20/master-plan.yaml
+    description: Code Excellence & Test Stability - Fix failing tests, TIER_LIMITS consolidation
+    github_repo: git@github.com:Ahiya1/mirror-of-dreams.git
+    master_exploration:
+      num_explorers: 2
+      complexity_level: SIMPLE
+    total_iterations: 1
+    current_iteration: 34
     current_phase: exploration
-current_plan: plan-19
-global_iteration_counter: 28
+current_plan: plan-20
+global_iteration_counter: 33
