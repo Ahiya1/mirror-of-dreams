@@ -124,3 +124,9 @@ dist/
 out/
 
 test.mcp.json
+
+# Playwright
+/playwright-report/
+/playwright/.cache/
+/test-results/
+/e2e/.auth/

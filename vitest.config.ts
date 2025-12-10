@@ -15,6 +15,12 @@ export default defineConfig({
       reporter: ['text', 'json', 'html'],
       include: ['lib/**/*.ts', 'server/**/*.ts', 'types/**/*.ts'],
       exclude: ['**/*.d.ts', '**/__tests__/**', '**/test/**'],
+      thresholds: {
+        statements: 35,
+        branches: 55,
+        functions: 60,
+        lines: 35,
+      },
     },
     setupFiles: ['./vitest.setup.ts'],
     alias: {

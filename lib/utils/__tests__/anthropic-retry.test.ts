@@ -272,9 +272,12 @@ describe('withRetry with Anthropic Errors', () => {
 
       const resultPromise = withRetry(fn, { maxRetries: 2, baseDelayMs: 50 });
 
+      // Attach rejection handler BEFORE advancing timers
+      const assertion = expect(resultPromise).rejects.toThrow('Rate limit exceeded');
+
       await vi.advanceTimersByTimeAsync(1000);
 
-      await expect(resultPromise).rejects.toThrow('Rate limit exceeded');
+      await assertion;
 
       // Initial call + 2 retries = 3 total
       expect(fn).toHaveBeenCalledTimes(3);
@@ -289,9 +292,12 @@ describe('withRetry with Anthropic Errors', () => {
 
       const resultPromise = withRetry(fn, { baseDelayMs: 50 });
 
+      // Attach rejection handler BEFORE advancing timers
+      const assertion = expect(resultPromise).rejects.toThrow('Invalid API key');
+
       await vi.advanceTimersByTimeAsync(500);
 
-      await expect(resultPromise).rejects.toThrow('Invalid API key');
+      await assertion;
 
       // First call + retry that got auth error = 2 total
       expect(fn).toHaveBeenCalledTimes(2);
@@ -313,9 +319,12 @@ describe('withRetry with Anthropic Errors', () => {
         },
       });
 
+      // Attach rejection handler BEFORE advancing timers
+      const assertion = expect(resultPromise).rejects.toThrow();
+
       await vi.advanceTimersByTimeAsync(10000);
 
-      await expect(resultPromise).rejects.toThrow();
+      await assertion;
 
       // Verify exponential increase
       expect(delays).toEqual([100, 200, 400]);
@@ -388,9 +397,12 @@ describe('Retry Wrapper Integration', () => {
         operation: 'evolution.generate',
       });
 
+      // Attach rejection handler BEFORE advancing timers
+      const assertion = expect(resultPromise).rejects.toThrow('Service unavailable');
+
       await vi.advanceTimersByTimeAsync(60000);
 
-      await expect(resultPromise).rejects.toThrow('Service unavailable');
+      await assertion;
 
       // Should have tried 4 times (initial + 3 retries)
       expect(mockApiCall).toHaveBeenCalledTimes(4);

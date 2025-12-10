@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-import { createTestCaller } from '../setup';
+import { createTestCaller, createPartialMock } from '../setup';
 
 import { createMockUserRow } from '@/test/fixtures/users';
 
@@ -36,29 +36,29 @@ describe('auth.signin', () => {
           callCount++;
           if (callCount === 1) {
             // First call: fetch user for signin
-            return {
+            return createPartialMock({
               select: vi.fn().mockReturnThis(),
               eq: vi.fn().mockReturnThis(),
               single: vi.fn().mockResolvedValue({
                 data: userRow,
                 error: null,
               }),
-            };
+            });
           } else {
             // Second call: update last_sign_in_at
-            return {
+            return createPartialMock({
               update: vi.fn().mockReturnThis(),
               eq: vi.fn().mockResolvedValue({
                 data: null,
                 error: null,
               }),
-            };
+            });
           }
         }
-        return {
+        return createPartialMock({
           select: vi.fn().mockReturnThis(),
           single: vi.fn().mockResolvedValue({ data: null, error: null }),
-        };
+        });
       });
 
       const result = await caller.auth.signin(validInput);
@@ -87,25 +87,25 @@ describe('auth.signin', () => {
         if (table === 'users') {
           callCount++;
           if (callCount === 1) {
-            return {
+            return createPartialMock({
               select: vi.fn().mockReturnThis(),
               eq: vi.fn().mockReturnThis(),
               single: vi.fn().mockResolvedValue({
                 data: userRow,
                 error: null,
               }),
-            };
+            });
           } else {
-            return {
+            return createPartialMock({
               update: vi.fn().mockReturnThis(),
               eq: vi.fn().mockResolvedValue({ data: null, error: null }),
-            };
+            });
           }
         }
-        return {
+        return createPartialMock({
           select: vi.fn().mockReturnThis(),
           single: vi.fn().mockResolvedValue({ data: null, error: null }),
-        };
+        });
       });
 
       const result = await caller.auth.signin(validInput);
@@ -135,25 +135,25 @@ describe('auth.signin', () => {
         if (table === 'users') {
           callCount++;
           if (callCount === 1) {
-            return {
+            return createPartialMock({
               select: vi.fn().mockReturnThis(),
               eq: vi.fn().mockReturnThis(),
               single: vi.fn().mockResolvedValue({
                 data: userRow,
                 error: null,
               }),
-            };
+            });
           } else {
-            return {
+            return createPartialMock({
               update: updateMock,
               eq: vi.fn().mockResolvedValue({ data: null, error: null }),
-            };
+            });
           }
         }
-        return {
+        return createPartialMock({
           select: vi.fn().mockReturnThis(),
           single: vi.fn().mockResolvedValue({ data: null, error: null }),
-        };
+        });
       });
 
       await caller.auth.signin(validInput);
@@ -182,25 +182,25 @@ describe('auth.signin', () => {
         if (table === 'users') {
           callCount++;
           if (callCount === 1) {
-            return {
+            return createPartialMock({
               select: vi.fn().mockReturnThis(),
               eq: vi.fn().mockReturnThis(),
               single: vi.fn().mockResolvedValue({
                 data: userRow,
                 error: null,
               }),
-            };
+            });
           } else {
-            return {
+            return createPartialMock({
               update: updateMock,
               eq: vi.fn().mockResolvedValue({ data: null, error: null }),
-            };
+            });
           }
         }
-        return {
+        return createPartialMock({
           select: vi.fn().mockReturnThis(),
           single: vi.fn().mockResolvedValue({ data: null, error: null }),
-        };
+        });
       });
 
       const result = await caller.auth.signin(validInput);
@@ -223,25 +223,25 @@ describe('auth.signin', () => {
         if (table === 'users') {
           callCount++;
           if (callCount === 1) {
-            return {
+            return createPartialMock({
               select: vi.fn().mockReturnThis(),
               eq: vi.fn().mockReturnThis(),
               single: vi.fn().mockResolvedValue({
                 data: userRow,
                 error: null,
               }),
-            };
+            });
           } else {
-            return {
+            return createPartialMock({
               update: vi.fn().mockReturnThis(),
               eq: vi.fn().mockResolvedValue({ data: null, error: null }),
-            };
+            });
           }
         }
-        return {
+        return createPartialMock({
           select: vi.fn().mockReturnThis(),
           single: vi.fn().mockResolvedValue({ data: null, error: null }),
-        };
+        });
       });
 
       const result = await caller.auth.signin({
@@ -260,19 +260,19 @@ describe('auth.signin', () => {
 
       supabase.from.mockImplementation((table: string) => {
         if (table === 'users') {
-          return {
+          return createPartialMock({
             select: vi.fn().mockReturnThis(),
             eq: vi.fn().mockReturnThis(),
             single: vi.fn().mockResolvedValue({
               data: null,
               error: { code: 'PGRST116' },
             }),
-          };
+          });
         }
-        return {
+        return createPartialMock({
           select: vi.fn().mockReturnThis(),
           single: vi.fn().mockResolvedValue({ data: null, error: null }),
-        };
+        });
       });
 
       await expect(caller.auth.signin(validInput)).rejects.toMatchObject({
@@ -292,19 +292,19 @@ describe('auth.signin', () => {
 
       supabase.from.mockImplementation((table: string) => {
         if (table === 'users') {
-          return {
+          return createPartialMock({
             select: vi.fn().mockReturnThis(),
             eq: vi.fn().mockReturnThis(),
             single: vi.fn().mockResolvedValue({
               data: userRow,
               error: null,
             }),
-          };
+          });
         }
-        return {
+        return createPartialMock({
           select: vi.fn().mockReturnThis(),
           single: vi.fn().mockResolvedValue({ data: null, error: null }),
-        };
+        });
       });
 
       await expect(caller.auth.signin(validInput)).rejects.toMatchObject({
@@ -327,19 +327,19 @@ describe('auth.signin', () => {
       // Test with non-existent user
       supabase.from.mockImplementation((table: string) => {
         if (table === 'users') {
-          return {
+          return createPartialMock({
             select: vi.fn().mockReturnThis(),
             eq: vi.fn().mockReturnThis(),
             single: vi.fn().mockResolvedValue({
               data: null,
               error: { code: 'PGRST116' },
             }),
-          };
+          });
         }
-        return {
+        return createPartialMock({
           select: vi.fn().mockReturnThis(),
           single: vi.fn().mockResolvedValue({ data: null, error: null }),
-        };
+        });
       });
 
       try {

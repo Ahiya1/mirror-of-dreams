@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-import { createTestCaller } from '../setup';
+import { createTestCaller, createPartialMock } from '../setup';
 
 import { createMockUserRow } from '@/test/fixtures/users';
 
@@ -35,7 +35,6 @@ describe('auth.signup', () => {
         is_admin: false,
         is_creator: false,
         email_verified: false,
-        onboarding_completed: false,
       });
 
       // Mock sequence: first check for existing user (not found), then insert succeeds

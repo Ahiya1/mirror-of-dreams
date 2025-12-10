@@ -239,10 +239,13 @@ describe('withRetry', () => {
 
       const resultPromise = withRetry(fn, { maxRetries: 3, baseDelayMs: 10 });
 
+      // Attach rejection handler BEFORE advancing timers
+      const assertion = expect(resultPromise).rejects.toEqual(error);
+
       // Advance timers to complete all retries
       await vi.advanceTimersByTimeAsync(1000);
 
-      await expect(resultPromise).rejects.toEqual(error);
+      await assertion;
       // Initial call + 3 retries = 4 total calls
       expect(fn).toHaveBeenCalledTimes(4);
     });
@@ -253,9 +256,12 @@ describe('withRetry', () => {
 
       const resultPromise = withRetry(fn, { maxRetries: 2, baseDelayMs: 10 });
 
+      // Attach rejection handler BEFORE advancing timers
+      const assertion = expect(resultPromise).rejects.toEqual(error);
+
       await vi.advanceTimersByTimeAsync(500);
 
-      await expect(resultPromise).rejects.toEqual(error);
+      await assertion;
       // Initial call + 2 retries = 3 total calls
       expect(fn).toHaveBeenCalledTimes(3);
     });
@@ -289,9 +295,12 @@ describe('withRetry', () => {
         },
       });
 
+      // Attach rejection handler BEFORE advancing timers
+      const assertion = expect(resultPromise).rejects.toEqual(error);
+
       await vi.advanceTimersByTimeAsync(10000);
 
-      await expect(resultPromise).rejects.toEqual(error);
+      await assertion;
 
       // Verify exponential increase: 100ms, 200ms, 400ms
       expect(delays).toHaveLength(3);
@@ -316,9 +325,12 @@ describe('withRetry', () => {
         },
       });
 
+      // Attach rejection handler BEFORE advancing timers
+      const assertion = expect(resultPromise).rejects.toEqual(error);
+
       await vi.advanceTimersByTimeAsync(30000);
 
-      await expect(resultPromise).rejects.toEqual(error);
+      await assertion;
 
       // All delays should be capped at 2000ms
       delays.forEach((delay) => {
@@ -351,9 +363,12 @@ describe('withRetry', () => {
         },
       });
 
+      // Attach rejection handler BEFORE advancing timers
+      const assertion = expect(resultPromise).rejects.toEqual(error);
+
       await vi.advanceTimersByTimeAsync(10000);
 
-      await expect(resultPromise).rejects.toEqual(error);
+      await assertion;
 
       // Delays should include jitter (not exactly exponential values)
       // Base: 100, 200, 400
@@ -380,9 +395,12 @@ describe('withRetry', () => {
         },
       });
 
+      // Attach rejection handler BEFORE advancing timers
+      const assertion = expect(resultPromise).rejects.toEqual(error);
+
       await vi.advanceTimersByTimeAsync(10000);
 
-      await expect(resultPromise).rejects.toEqual(error);
+      await assertion;
 
       // Exact exponential values
       expect(delays[0]).toBe(100);
@@ -449,9 +467,12 @@ describe('withRetry', () => {
         onRetry,
       });
 
+      // Attach rejection handler BEFORE advancing timers
+      const assertion = expect(resultPromise).rejects.toEqual(error);
+
       await vi.advanceTimersByTimeAsync(1000);
 
-      await expect(resultPromise).rejects.toEqual(error);
+      await assertion;
 
       expect(onRetry).toHaveBeenCalledTimes(3);
       expect(onRetry).toHaveBeenNthCalledWith(1, 1, error, 10);
@@ -834,9 +855,12 @@ describe('withAIRetry', () => {
 
     const resultPromise = withAIRetry(fn);
 
+    // Attach rejection handler BEFORE advancing timers
+    const assertion = expect(resultPromise).rejects.toThrow('Rate limit exceeded');
+
     await vi.advanceTimersByTimeAsync(60000);
 
-    await expect(resultPromise).rejects.toThrow('Rate limit exceeded');
+    await assertion;
 
     // Initial call + 3 retries = 4 total calls
     expect(fn).toHaveBeenCalledTimes(4);

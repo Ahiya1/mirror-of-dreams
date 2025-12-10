@@ -47,7 +47,7 @@ const { supabaseMock, createSupabaseQueryMock, cookieMock, createMockLogger, rat
       return mockChain;
     };
 
-    const supabase = {
+    const supabase: { from: ReturnType<typeof vi.fn>; auth: any; storage: any; rpc: any } = {
       from: vi.fn((_table: string) => createQueryMock({ data: null, error: null })),
       auth: {
         getUser: vi.fn().mockResolvedValue({ data: { user: null }, error: null }),
@@ -71,12 +71,10 @@ const { supabaseMock, createSupabaseQueryMock, cookieMock, createMockLogger, rat
           getPublicUrl: vi
             .fn()
             .mockReturnValue({ data: { publicUrl: 'https://example.com/public-url' } }),
-          createSignedUrl: vi
-            .fn()
-            .mockResolvedValue({
-              data: { signedUrl: 'https://example.com/signed-url' },
-              error: null,
-            }),
+          createSignedUrl: vi.fn().mockResolvedValue({
+            data: { signedUrl: 'https://example.com/signed-url' },
+            error: null,
+          }),
           list: vi.fn().mockResolvedValue({ data: [], error: null }),
         }),
       },
@@ -288,3 +286,32 @@ export function createTestCaller(user: User | null = null) {
 }
 
 export { supabaseMock, cookieMock };
+
+/**
+ * Type for the full query mock chain returned by supabase.from()
+ * This is the complete type with all methods that TypeScript expects
+ */
+export type SupabaseQueryMock = ReturnType<typeof createSupabaseQueryMock>;
+
+/**
+ * Helper to create a partial query mock for use in mockImplementation.
+ * This bypasses TypeScript's strict type checking when tests only need
+ * to mock a subset of the Supabase query methods.
+ *
+ * Usage:
+ * ```typescript
+ * supabase.from.mockImplementation((table: string) => {
+ *   if (table === 'users') {
+ *     return createPartialMock({
+ *       select: vi.fn().mockReturnThis(),
+ *       eq: vi.fn().mockReturnThis(),
+ *       single: vi.fn().mockResolvedValue({ data: user, error: null }),
+ *     });
+ *   }
+ *   return createPartialMock({});
+ * });
+ * ```
+ */
+export function createPartialMock(partialMock: Record<string, unknown>): SupabaseQueryMock {
+  return partialMock as SupabaseQueryMock;
+}
