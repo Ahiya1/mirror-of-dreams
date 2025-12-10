@@ -10,6 +10,12 @@ import { z } from 'zod';
 import { protectedProcedure } from '../middleware';
 import { router } from '../trpc';
 
+import {
+  type ExtendedMessageCreateParams,
+  type ExtendedUsage,
+  isTextBlock,
+  isThinkingBlock,
+} from '@/lib/anthropic';
 import { withAIRetry } from '@/lib/utils/retry';
 import { calculateCost, getModelIdentifier, getThinkingBudget } from '@/server/lib/cost-calculator';
 import { aiLogger } from '@/server/lib/logger';
@@ -145,7 +151,7 @@ Write as if you're a wise mentor who has witnessed their entire journey. Be spec
 
 Length: 800-1200 words. Tone: Warm, insightful, empowering.`;
 
-      const requestConfig: any = {
+      const requestConfig: ExtendedMessageCreateParams = {
         model: modelId,
         max_tokens: 4000,
         temperature: 1,
@@ -186,11 +192,11 @@ Length: 800-1200 words. Tone: Warm, insightful, empowering.`;
         });
       }
 
-      // Extract text and thinking
-      const contentBlock = response.content.find((block) => block.type === 'text');
-      const thinkingBlock = response.content.find((block) => block.type === 'thinking');
+      // Extract text and thinking using type guards
+      const contentBlock = response.content.find(isTextBlock);
+      const thinkingBlock = response.content.find(isThinkingBlock);
 
-      if (!contentBlock || contentBlock.type !== 'text') {
+      if (!contentBlock) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'No text response from Claude',
@@ -203,10 +209,9 @@ Length: 800-1200 words. Tone: Warm, insightful, empowering.`;
       const costBreakdown = calculateCost({
         inputTokens: response.usage.input_tokens,
         outputTokens: response.usage.output_tokens,
-        thinkingTokens:
-          thinkingBlock && 'thinking' in thinkingBlock
-            ? (response.usage as any).thinking_tokens || 0
-            : 0,
+        thinkingTokens: thinkingBlock
+          ? ((response.usage as ExtendedUsage).thinking_tokens ?? 0)
+          : 0,
       });
 
       // 9. Store evolution report
@@ -242,10 +247,9 @@ Length: 800-1200 words. Tone: Warm, insightful, empowering.`;
         model_used: modelId,
         input_tokens: response.usage.input_tokens,
         output_tokens: response.usage.output_tokens,
-        thinking_tokens:
-          thinkingBlock && 'thinking' in thinkingBlock
-            ? (response.usage as any).thinking_tokens || 0
-            : 0,
+        thinking_tokens: thinkingBlock
+          ? ((response.usage as ExtendedUsage).thinking_tokens ?? 0)
+          : 0,
         cost_usd: costBreakdown.totalCost,
         dream_id: input.dreamId,
         metadata: {
@@ -335,23 +339,26 @@ Length: 800-1200 words. Tone: Warm, insightful, empowering.`;
     const selectedReflections = selectTemporalContext(reflections as Reflection[], contextLimit);
 
     // 6. Build context for Claude (grouped by dream)
-    const dreamGroups = new Map<string, any[]>();
-    selectedReflections.forEach((r: any) => {
+    const dreamGroups = new Map<string, Reflection[]>();
+    selectedReflections.forEach((r) => {
       const dreamId = r.dream_id;
-      if (!dreamGroups.has(dreamId)) {
-        dreamGroups.set(dreamId, []);
+      if (dreamId) {
+        if (!dreamGroups.has(dreamId)) {
+          dreamGroups.set(dreamId, []);
+        }
+        dreamGroups.get(dreamId)!.push(r);
       }
-      dreamGroups.get(dreamId)!.push(r);
     });
 
     const contextText = Array.from(dreamGroups.entries())
-      .map(([dreamId, refs]) => {
-        const dreamTitle = (refs[0] as any).dreams?.title || 'Unknown Dream';
-        const dreamCategory = (refs[0] as any).dreams?.category || 'other';
+      .map(([, refs]) => {
+        const dreamTitle = refs[0]?.dreams?.title || 'Unknown Dream';
+        const dreamCategory = refs[0]?.dreams?.category || 'other';
         const reflectionsText = refs
           .map((r, i) => {
             const date = new Date(r.created_at).toLocaleDateString();
-            return `  Reflection ${i + 1} (${date}): ${r.dream.substring(0, 200)}...`;
+            const dreamText = r.dream || '';
+            return `  Reflection ${i + 1} (${date}): ${dreamText.substring(0, 200)}...`;
           })
           .join('\n');
 
@@ -380,7 +387,7 @@ Write as if you're a wise mentor seeing the full tapestry of their aspirations. 
 
 Length: 1000-1500 words. Tone: Profound, holistic, empowering.`;
 
-    const requestConfig: any = {
+    const requestConfig: ExtendedMessageCreateParams = {
       model: modelId,
       max_tokens: 4000,
       temperature: 1,
@@ -415,10 +422,11 @@ Length: 1000-1500 words. Tone: Profound, holistic, empowering.`;
       });
     }
 
-    const contentBlock = response.content.find((block) => block.type === 'text');
-    const thinkingBlock = response.content.find((block) => block.type === 'thinking');
+    // Extract text and thinking using type guards
+    const contentBlock = response.content.find(isTextBlock);
+    const thinkingBlock = response.content.find(isThinkingBlock);
 
-    if (!contentBlock || contentBlock.type !== 'text') {
+    if (!contentBlock) {
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'No text response from Claude',
@@ -431,10 +439,7 @@ Length: 1000-1500 words. Tone: Profound, holistic, empowering.`;
     const costBreakdown = calculateCost({
       inputTokens: response.usage.input_tokens,
       outputTokens: response.usage.output_tokens,
-      thinkingTokens:
-        thinkingBlock && 'thinking' in thinkingBlock
-          ? (response.usage as any).thinking_tokens || 0
-          : 0,
+      thinkingTokens: thinkingBlock ? ((response.usage as ExtendedUsage).thinking_tokens ?? 0) : 0,
     });
 
     // 9. Store evolution report (dream_id = NULL for cross-dream)
@@ -470,10 +475,7 @@ Length: 1000-1500 words. Tone: Profound, holistic, empowering.`;
       model_used: modelId,
       input_tokens: response.usage.input_tokens,
       output_tokens: response.usage.output_tokens,
-      thinking_tokens:
-        thinkingBlock && 'thinking' in thinkingBlock
-          ? (response.usage as any).thinking_tokens || 0
-          : 0,
+      thinking_tokens: thinkingBlock ? ((response.usage as ExtendedUsage).thinking_tokens ?? 0) : 0,
       cost_usd: costBreakdown.totalCost,
       metadata: {
         reflections_analyzed: selectedReflections.length,

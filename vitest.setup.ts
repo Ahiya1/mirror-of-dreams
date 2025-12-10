@@ -1,4 +1,11 @@
+import '@testing-library/jest-dom/vitest';
 import { beforeEach, vi } from 'vitest';
+
+// Mock haptic feedback for all component tests
+vi.mock('@/lib/utils/haptics', () => ({
+  haptic: vi.fn(),
+  isHapticSupported: vi.fn(() => true),
+}));
 
 // Set test environment variables
 // Note: NODE_ENV is already set to 'test' by Vitest

@@ -12,7 +12,18 @@
 export interface Reflection {
   id: string;
   created_at: string;
-  [key: string]: any;
+  dream?: string;
+  plan?: string;
+  relationship?: string;
+  offering?: string;
+  dream_date?: string;
+  dream_id?: string;
+  dreams?: {
+    title: string;
+    category: string;
+  };
+  /** Allow additional properties from database queries */
+  [key: string]: unknown;
 }
 
 /**

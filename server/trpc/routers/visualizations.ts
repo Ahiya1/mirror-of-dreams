@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { protectedProcedure } from '../middleware';
 import { router } from '../trpc';
 
+import { type ExtendedMessageCreateParams, isTextBlock, isThinkingBlock } from '@/lib/anthropic';
 import { withAIRetry } from '@/lib/utils/retry';
 import { calculateCost, getModelIdentifier, getThinkingBudget } from '@/server/lib/cost-calculator';
 import { supabase } from '@/server/lib/supabase';
@@ -79,7 +80,7 @@ export const visualizationsRouter = router({
       }
 
       // 3. Get reflections based on type
-      let reflections: any[];
+      let reflections: Reflection[];
       let dreamTitle: string | null = null;
 
       if (isDreamSpecific) {
@@ -169,7 +170,7 @@ export const visualizationsRouter = router({
       const modelId = getModelIdentifier();
       const thinkingBudget = getThinkingBudget(userTier);
 
-      const requestConfig: any = {
+      const requestConfig: ExtendedMessageCreateParams = {
         model: modelId,
         max_tokens: 3000,
         temperature: 1,
@@ -178,7 +179,7 @@ export const visualizationsRouter = router({
 
       if (thinkingBudget > 0) {
         requestConfig.thinking = {
-          type: 'enabled' as const,
+          type: 'enabled',
           budget_tokens: thinkingBudget,
         };
       }
@@ -195,9 +196,9 @@ export const visualizationsRouter = router({
         });
       }
 
-      // Extract narrative text
-      const narrativeBlock = response.content.find((block) => block.type === 'text');
-      const narrative = narrativeBlock && narrativeBlock.type === 'text' ? narrativeBlock.text : '';
+      // Extract narrative text using type guard
+      const narrativeBlock = response.content.find(isTextBlock);
+      const narrative = narrativeBlock?.text ?? '';
 
       if (!narrative) {
         throw new TRPCError({
@@ -207,9 +208,8 @@ export const visualizationsRouter = router({
       }
 
       // Extract thinking tokens if present
-      const thinkingBlock = response.content.find((block: any) => block.type === 'thinking');
-      const thinkingTokens =
-        thinkingBlock && 'thinking' in thinkingBlock ? thinkingBlock.thinking?.length || 0 : 0;
+      const thinkingBlock = response.content.find(isThinkingBlock);
+      const thinkingTokens = thinkingBlock?.thinking?.length ?? 0;
 
       // 7. Calculate cost
       const costBreakdown = calculateCost({
@@ -339,7 +339,7 @@ export const visualizationsRouter = router({
  * Build visualization prompt based on style
  */
 function buildVisualizationPrompt(
-  reflections: any[],
+  reflections: Reflection[],
   style: 'achievement' | 'spiral' | 'synthesis',
   isDreamSpecific: boolean,
   dreamTitle: string | null
