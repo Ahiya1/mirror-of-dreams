@@ -5,15 +5,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 import { createTestCaller } from '../setup';
 
-import {
-  createMockReflectionRow,
-  createMockReflections,
-  createReflectionForUser,
-  basicReflection,
-  premiumReflection,
-  gentleReflection,
-  intenseReflection,
-} from '@/test/fixtures/reflections';
+import { createMockReflections, createReflectionForUser } from '@/test/fixtures/reflections';
 import { freeTierUser, proTierUser } from '@/test/fixtures/users';
 
 describe('reflections.list', () => {
@@ -393,6 +385,436 @@ describe('reflections.checkUsage', () => {
       const { caller } = createTestCaller(null);
 
       await expect(caller.reflections.checkUsage()).rejects.toMatchObject({
+        code: 'UNAUTHORIZED',
+      });
+    });
+  });
+});
+
+// =============================================================================
+// Update Tests (7 test cases)
+// =============================================================================
+
+// Additional UUIDs for update/delete/feedback tests
+const UPDATE_REFLECTION_ID = '33333333-3333-3333-3333-333333333333';
+const DELETE_REFLECTION_ID = '44444444-4444-4444-4444-444444444444';
+const FEEDBACK_REFLECTION_ID = '55555555-5555-5555-5555-555555555555';
+
+describe('reflections.update', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe('success cases', () => {
+    it('should update title successfully', async () => {
+      const { caller, mockQueries } = createTestCaller(freeTierUser);
+
+      const updatedReflection = createReflectionForUser(freeTierUser.id, {
+        id: UPDATE_REFLECTION_ID,
+        title: 'Updated Title',
+      });
+
+      mockQueries({
+        reflections: { data: updatedReflection, error: null },
+      });
+
+      const result = await caller.reflections.update({
+        id: UPDATE_REFLECTION_ID,
+        title: 'Updated Title',
+      });
+
+      expect(result.reflection.title).toBe('Updated Title');
+      expect(result.message).toBe('Reflection updated successfully');
+    });
+
+    it('should update tags successfully', async () => {
+      const { caller, mockQueries } = createTestCaller(freeTierUser);
+
+      const updatedReflection = createReflectionForUser(freeTierUser.id, {
+        id: UPDATE_REFLECTION_ID,
+        tags: ['music', 'creativity', 'growth'],
+      });
+
+      mockQueries({
+        reflections: { data: updatedReflection, error: null },
+      });
+
+      const result = await caller.reflections.update({
+        id: UPDATE_REFLECTION_ID,
+        tags: ['music', 'creativity', 'growth'],
+      });
+
+      expect(result.reflection.tags).toEqual(['music', 'creativity', 'growth']);
+      expect(result.message).toBe('Reflection updated successfully');
+    });
+
+    it('should update both title and tags', async () => {
+      const { caller, mockQueries } = createTestCaller(freeTierUser);
+
+      const updatedReflection = createReflectionForUser(freeTierUser.id, {
+        id: UPDATE_REFLECTION_ID,
+        title: 'New Title',
+        tags: ['new', 'tags'],
+      });
+
+      mockQueries({
+        reflections: { data: updatedReflection, error: null },
+      });
+
+      const result = await caller.reflections.update({
+        id: UPDATE_REFLECTION_ID,
+        title: 'New Title',
+        tags: ['new', 'tags'],
+      });
+
+      expect(result.reflection.title).toBe('New Title');
+      expect(result.reflection.tags).toEqual(['new', 'tags']);
+    });
+  });
+
+  describe('error cases', () => {
+    it('should throw error when reflection not found', async () => {
+      const { caller, mockQueries } = createTestCaller(freeTierUser);
+
+      mockQueries({
+        reflections: { data: null, error: { code: 'PGRST116', message: 'Not found' } as any },
+      });
+
+      await expect(
+        caller.reflections.update({
+          id: NON_EXISTENT_ID,
+          title: 'Updated',
+        })
+      ).rejects.toMatchObject({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to update reflection',
+      });
+    });
+
+    it('should not update other user reflection', async () => {
+      const { caller, mockQueries } = createTestCaller(freeTierUser);
+
+      // Database query filters by user_id, so attempting to update another user's
+      // reflection results in no rows returned (error)
+      mockQueries({
+        reflections: { data: null, error: { code: 'PGRST116' } as any },
+      });
+
+      await expect(
+        caller.reflections.update({
+          id: OTHER_USER_REFLECTION_ID,
+          title: 'Hacked Title',
+        })
+      ).rejects.toMatchObject({
+        code: 'INTERNAL_SERVER_ERROR',
+      });
+    });
+  });
+
+  describe('authentication', () => {
+    it('should require authentication', async () => {
+      const { caller } = createTestCaller(null);
+
+      await expect(
+        caller.reflections.update({
+          id: UPDATE_REFLECTION_ID,
+          title: 'Should Fail',
+        })
+      ).rejects.toMatchObject({
+        code: 'UNAUTHORIZED',
+      });
+    });
+  });
+
+  describe('input validation', () => {
+    it('should reject invalid UUID format', async () => {
+      const { caller } = createTestCaller(freeTierUser);
+
+      await expect(
+        caller.reflections.update({
+          id: 'not-a-valid-uuid',
+          title: 'Test',
+        })
+      ).rejects.toThrow();
+    });
+  });
+});
+
+// =============================================================================
+// Delete Tests (5 test cases)
+// =============================================================================
+
+describe('reflections.delete', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe('success cases', () => {
+    it('should delete own reflection successfully', async () => {
+      const { caller, mockQueries } = createTestCaller(freeTierUser);
+
+      // First query: verify ownership (select)
+      // Second query: delete
+      // Third query: update user counters
+      mockQueries({
+        reflections: { data: { id: DELETE_REFLECTION_ID }, error: null },
+        users: { data: null, error: null },
+      });
+
+      const result = await caller.reflections.delete({ id: DELETE_REFLECTION_ID });
+
+      expect(result.message).toBe('Reflection deleted successfully');
+    });
+
+    it('should decrement user counters on delete', async () => {
+      const userWithReflections = {
+        ...freeTierUser,
+        reflectionCountThisMonth: 3,
+        totalReflections: 10,
+      };
+      const { caller, mockQueries, supabase } = createTestCaller(userWithReflections);
+
+      mockQueries({
+        reflections: { data: { id: DELETE_REFLECTION_ID }, error: null },
+        users: { data: null, error: null },
+      });
+
+      await caller.reflections.delete({ id: DELETE_REFLECTION_ID });
+
+      // Verify the update call was made to 'users' table
+      expect(supabase.from).toHaveBeenCalledWith('users');
+    });
+
+    it('should not decrement counters below zero', async () => {
+      const userWithZeroReflections = {
+        ...freeTierUser,
+        reflectionCountThisMonth: 0,
+        totalReflections: 0,
+      };
+      const { caller, mockQueries } = createTestCaller(userWithZeroReflections);
+
+      mockQueries({
+        reflections: { data: { id: DELETE_REFLECTION_ID }, error: null },
+        users: { data: null, error: null },
+      });
+
+      // Should not throw even with zero counters (Math.max(0, count - 1) logic)
+      const result = await caller.reflections.delete({ id: DELETE_REFLECTION_ID });
+      expect(result.message).toBe('Reflection deleted successfully');
+    });
+  });
+
+  describe('error cases', () => {
+    it('should throw NOT_FOUND when reflection does not exist', async () => {
+      const { caller, mockQueries } = createTestCaller(freeTierUser);
+
+      // Ownership check returns null
+      mockQueries({
+        reflections: { data: null, error: null },
+      });
+
+      await expect(caller.reflections.delete({ id: NON_EXISTENT_ID })).rejects.toMatchObject({
+        code: 'NOT_FOUND',
+        message: 'Reflection not found',
+      });
+    });
+
+    it('should throw NOT_FOUND when deleting other user reflection', async () => {
+      const { caller, mockQueries } = createTestCaller(freeTierUser);
+
+      // The query filters by user_id, so another user's reflection returns null
+      mockQueries({
+        reflections: { data: null, error: null },
+      });
+
+      await expect(
+        caller.reflections.delete({ id: OTHER_USER_REFLECTION_ID })
+      ).rejects.toMatchObject({
+        code: 'NOT_FOUND',
+        message: 'Reflection not found',
+      });
+    });
+  });
+
+  describe('authentication', () => {
+    it('should require authentication', async () => {
+      const { caller } = createTestCaller(null);
+
+      await expect(caller.reflections.delete({ id: DELETE_REFLECTION_ID })).rejects.toMatchObject({
+        code: 'UNAUTHORIZED',
+      });
+    });
+  });
+});
+
+// =============================================================================
+// Submit Feedback Tests (8 test cases)
+// =============================================================================
+
+describe('reflections.submitFeedback', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe('success cases', () => {
+    it('should submit rating only', async () => {
+      const { caller, mockQueries } = createTestCaller(freeTierUser);
+
+      const updatedReflection = createReflectionForUser(freeTierUser.id, {
+        id: FEEDBACK_REFLECTION_ID,
+        rating: 8,
+        user_feedback: null,
+      });
+
+      mockQueries({
+        reflections: { data: updatedReflection, error: null },
+      });
+
+      const result = await caller.reflections.submitFeedback({
+        id: FEEDBACK_REFLECTION_ID,
+        rating: 8,
+      });
+
+      expect(result.reflection.rating).toBe(8);
+      expect(result.message).toBe('Feedback submitted successfully');
+    });
+
+    it('should submit rating and feedback together', async () => {
+      const { caller, mockQueries } = createTestCaller(freeTierUser);
+
+      const updatedReflection = createReflectionForUser(freeTierUser.id, {
+        id: FEEDBACK_REFLECTION_ID,
+        rating: 9,
+        user_feedback: 'Very insightful and helpful',
+      });
+
+      mockQueries({
+        reflections: { data: updatedReflection, error: null },
+      });
+
+      const result = await caller.reflections.submitFeedback({
+        id: FEEDBACK_REFLECTION_ID,
+        rating: 9,
+        feedback: 'Very insightful and helpful',
+      });
+
+      expect(result.reflection.rating).toBe(9);
+      expect(result.reflection.userFeedback).toBe('Very insightful and helpful');
+    });
+
+    it('should accept rating at minimum boundary (1)', async () => {
+      const { caller, mockQueries } = createTestCaller(freeTierUser);
+
+      const updatedReflection = createReflectionForUser(freeTierUser.id, {
+        id: FEEDBACK_REFLECTION_ID,
+        rating: 1,
+      });
+
+      mockQueries({
+        reflections: { data: updatedReflection, error: null },
+      });
+
+      const result = await caller.reflections.submitFeedback({
+        id: FEEDBACK_REFLECTION_ID,
+        rating: 1,
+      });
+
+      expect(result.reflection.rating).toBe(1);
+    });
+
+    it('should accept rating at maximum boundary (10)', async () => {
+      const { caller, mockQueries } = createTestCaller(freeTierUser);
+
+      const updatedReflection = createReflectionForUser(freeTierUser.id, {
+        id: FEEDBACK_REFLECTION_ID,
+        rating: 10,
+      });
+
+      mockQueries({
+        reflections: { data: updatedReflection, error: null },
+      });
+
+      const result = await caller.reflections.submitFeedback({
+        id: FEEDBACK_REFLECTION_ID,
+        rating: 10,
+      });
+
+      expect(result.reflection.rating).toBe(10);
+    });
+  });
+
+  describe('input validation', () => {
+    it('should reject rating below minimum (0)', async () => {
+      const { caller } = createTestCaller(freeTierUser);
+
+      await expect(
+        caller.reflections.submitFeedback({
+          id: FEEDBACK_REFLECTION_ID,
+          rating: 0,
+        })
+      ).rejects.toThrow();
+    });
+
+    it('should reject rating above maximum (11)', async () => {
+      const { caller } = createTestCaller(freeTierUser);
+
+      await expect(
+        caller.reflections.submitFeedback({
+          id: FEEDBACK_REFLECTION_ID,
+          rating: 11,
+        })
+      ).rejects.toThrow();
+    });
+  });
+
+  describe('error cases', () => {
+    it('should throw error for non-existent reflection', async () => {
+      const { caller, mockQueries } = createTestCaller(freeTierUser);
+
+      mockQueries({
+        reflections: { data: null, error: { code: 'PGRST116' } as any },
+      });
+
+      await expect(
+        caller.reflections.submitFeedback({
+          id: NON_EXISTENT_ID,
+          rating: 8,
+        })
+      ).rejects.toMatchObject({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to submit feedback',
+      });
+    });
+
+    it('should throw error when submitting feedback on other user reflection', async () => {
+      const { caller, mockQueries } = createTestCaller(freeTierUser);
+
+      // Query filters by user_id, so another user's reflection triggers error
+      mockQueries({
+        reflections: { data: null, error: { code: 'PGRST116' } as any },
+      });
+
+      await expect(
+        caller.reflections.submitFeedback({
+          id: OTHER_USER_REFLECTION_ID,
+          rating: 5,
+        })
+      ).rejects.toMatchObject({
+        code: 'INTERNAL_SERVER_ERROR',
+      });
+    });
+  });
+
+  describe('authentication', () => {
+    it('should require authentication', async () => {
+      const { caller } = createTestCaller(null);
+
+      await expect(
+        caller.reflections.submitFeedback({
+          id: FEEDBACK_REFLECTION_ID,
+          rating: 8,
+        })
+      ).rejects.toMatchObject({
         code: 'UNAUTHORIZED',
       });
     });
