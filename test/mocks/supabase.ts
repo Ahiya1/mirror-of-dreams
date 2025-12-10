@@ -9,6 +9,7 @@ import { vi } from 'vitest';
 export interface SupabaseQueryResponse<T> {
   data: T | null;
   error: Error | null;
+  count?: number; // Add count support for pagination queries
 }
 
 /**
