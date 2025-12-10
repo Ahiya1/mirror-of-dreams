@@ -20,23 +20,30 @@ export const TEST_USER = {
 /**
  * Demo user login helper
  *
- * The application has a demo login feature that doesn't require
- * credentials. This is the safest way to test authenticated flows.
+ * The application has a demo login feature on the landing page
+ * that doesn't require credentials. The "Try It" button calls
+ * the loginDemo tRPC mutation and redirects to dashboard.
+ * This is the safest way to test authenticated flows.
  */
 async function loginWithDemo(page: Page): Promise<void> {
-  await page.goto('/auth/signin');
+  // Go to landing page where the "Try It" demo button is located
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
 
-  // Look for demo login button (if available)
-  const demoButton = page.locator('button:has-text("Demo"), button:has-text("Try Demo")');
+  // Look for the "Try It" demo login button specifically
+  // This button is in the hero section CTA area
+  const demoButton = page.locator('button').filter({ hasText: 'Try It' }).first();
 
-  if (await demoButton.isVisible({ timeout: 2000 }).catch(() => false)) {
+  // Wait for the button to be visible with extended timeout
+  try {
+    await demoButton.waitFor({ state: 'visible', timeout: 15000 });
     await demoButton.click();
     // Wait for redirect to dashboard
     await page.waitForURL('/dashboard', { timeout: 30000 });
-  } else {
+  } catch {
     // Demo button not available - throw informative error
     throw new Error(
-      'Demo login button not found. Authenticated tests require demo login functionality.'
+      'Demo login button not found on landing page. Authenticated tests require demo login functionality.'
     );
   }
 }
