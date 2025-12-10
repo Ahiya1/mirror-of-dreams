@@ -21,3 +21,10 @@ export { useKeyboardHeight } from './useKeyboardHeight';
 // Reflection
 export { useReflectionForm } from './useReflectionForm';
 export { useReflectionViewMode } from './useReflectionViewMode';
+export {
+  useMobileReflectionFlow,
+  WIZARD_STEPS,
+  type WizardStep,
+  type UseMobileReflectionFlowOptions,
+  type UseMobileReflectionFlowReturn,
+} from './useMobileReflectionFlow';

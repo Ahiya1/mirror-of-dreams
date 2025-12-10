@@ -1,0 +1,314 @@
+plan_id: plan-22
+created_at: "2025-12-10T14:30:00Z"
+status: PLANNED
+mode: production
+total_iterations: 13
+
+strategy: |
+  Transform Mirror of Dreams from ~21% to 80%+ test coverage through systematic
+  iteration from foundation (refactoring + infrastructure) through router tests,
+  hooks, components, libraries, integration tests, E2E expansion, and documentation.
+
+  Critical path: Iter 1 → 2 → 3 → 4 → 5 → 11 → 12 → 13
+
+  Key principles:
+  - MobileReflectionFlow MUST be refactored before component testing
+  - Test infrastructure (factories, mocks) MUST be in place before router tests
+  - Progressive CI threshold increases (35% → 50% → 60% → 70% → 80%)
+  - All routers target 85%+, all components target 75-80%+
+
+complexity_assessment:
+  level: COMPLEX
+  features_detected: 8
+  router_lines: 2818
+  component_refactoring_lines: 812
+  target_test_count: 2000+
+  current_test_count: 991
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 40
+    name: "MobileReflectionFlow Refactoring"
+    vision: "Extract hooks and views from 812-line mega-component to enable testing"
+    scope: |
+      - Extract useMobileReflectionForm.ts hook
+      - Extract useMobileReflectionFlow.ts hook
+      - Create views/MobileDreamSelectionView.tsx
+      - Create views/MobileQuestionnaireView.tsx
+      - Create views/MobileReflectionOutputView.tsx
+      - Reduce MobileReflectionFlow.tsx to <300 lines orchestration
+      - Verify existing functionality preserved
+    status: PENDING
+    dependencies: []
+    risk: HIGH
+    duration_estimate: "4-6h"
+    success_criteria:
+      - MobileReflectionFlow.tsx reduced to < 300 lines
+      - All extracted components compile with TypeScript strict
+      - Existing functionality preserved (manual verification)
+
+  - iteration_id: 2
+    global_iteration: 41
+    name: "Test Infrastructure Hardening"
+    vision: "Establish robust test factories, helpers, and CI coverage gates"
+    scope: |
+      - Create test/factories/ directory with factory functions
+      - Add User, Dream, Reflection, ClarifySession factories
+      - Create test/helpers/render.tsx for component testing
+      - Create test/helpers/trpc.ts for tRPC test utilities
+      - Update vitest.config.ts thresholds (50% initial)
+      - Enhance Anthropic mock for streaming/tool use
+      - Document testing patterns
+    status: PENDING
+    dependencies: [1]
+    risk: MEDIUM
+    duration_estimate: "3-4h"
+    success_criteria:
+      - All factories created and documented
+      - CI blocks on coverage below 50%
+      - Test helpers available for all test types
+
+  - iteration_id: 3
+    global_iteration: 42
+    name: "Reflection Router Tests"
+    vision: "Achieve 85%+ coverage for reflection.ts router"
+    scope: |
+      - Test create mutation (tier limits, Anthropic, caching)
+      - Test getById query (access control, 404)
+      - Test getByDreamId query (pagination, ordering)
+      - Test getRecent query (limit parameter)
+      - Test delete mutation (authorization)
+      - Cover error paths and edge cases
+    status: PENDING
+    dependencies: [2]
+    risk: LOW
+    duration_estimate: "3-4h"
+    success_criteria:
+      - reflection.ts at 85%+ line coverage
+      - All mutations tested with success/error cases
+      - Tier limit enforcement tested
+
+  - iteration_id: 4
+    global_iteration: 43
+    name: "Clarify Router Tests"
+    vision: "Achieve 85%+ coverage for clarify.ts router (most complex)"
+    scope: |
+      - Test startSession mutation (context building)
+      - Test sendMessage mutation (tool use, streaming)
+      - Test createDream tool execution
+      - Test createReflection tool execution
+      - Test getSession/getSessions queries
+      - Test endSession mutation
+      - Cover extended thinking processing
+    status: PENDING
+    dependencies: [2, 3]
+    risk: MEDIUM
+    duration_estimate: "4-6h"
+    success_criteria:
+      - clarify.ts at 85%+ line coverage
+      - Tool use (createDream, createReflection) tested
+      - Streaming response handling tested
+      - Context building tested thoroughly
+
+  - iteration_id: 5
+    global_iteration: 44
+    name: "Evolution & Visualizations Router Tests"
+    vision: "Achieve 85%+ coverage for evolution.ts and visualizations.ts"
+    scope: |
+      - Test evolveDream mutation
+      - Test getEvolutionHistory query
+      - Test generateVisualization mutation
+      - Test getVisualizations query
+      - Cover extended thinking for evolution
+      - Cover all visualization types
+    status: PENDING
+    dependencies: [2, 3, 4]
+    risk: LOW
+    duration_estimate: "4-5h"
+    success_criteria:
+      - evolution.ts at 85%+ line coverage
+      - visualizations.ts at 85%+ line coverage
+      - Extended thinking handling tested
+
+  - iteration_id: 6
+    global_iteration: 45
+    name: "Hook Tests"
+    vision: "Achieve 85%+ coverage for all React hooks"
+    scope: |
+      - Test useReflectionForm.ts (169 lines, 0% → 90%)
+      - Test useReflectionViewMode.ts (63 lines, 0% → 90%)
+      - Test useMobileReflectionForm.ts (new from Iter 1)
+      - Test useMobileReflectionFlow.ts (new from Iter 1)
+      - Test useAuth.ts, useDashboard.ts
+      - Test utility hooks (useIsMobile, useKeyboardHeight, etc.)
+      - Cover state transitions, persistence, edge cases
+    status: PENDING
+    dependencies: [1, 2]
+    risk: LOW
+    duration_estimate: "4-5h"
+    success_criteria:
+      - All hooks at 85%+ coverage
+      - State transitions tested
+      - Persistence mechanisms tested
+
+  - iteration_id: 7
+    global_iteration: 46
+    name: "Reflection Component Tests"
+    vision: "Achieve 80%+ coverage for reflection components"
+    scope: |
+      - Test views/DreamSelectionView.tsx
+      - Test views/ReflectionFormView.tsx
+      - Test views/ReflectionOutputView.tsx
+      - Test mobile/views/*.tsx (from Iter 1)
+      - Test ReflectionQuestionCard.tsx
+      - Test ToneSelection.tsx, ToneBadge.tsx
+      - Test ProgressBar.tsx, ProgressIndicator.tsx
+      - Cover user interactions, loading/error states
+    status: PENDING
+    dependencies: [1, 6]
+    risk: LOW
+    duration_estimate: "4-5h"
+    success_criteria:
+      - Reflection components at 80%+ coverage
+      - User interactions tested with userEvent
+      - Loading/error states tested
+
+  - iteration_id: 8
+    global_iteration: 47
+    name: "Dashboard Component Tests"
+    vision: "Achieve 75%+ coverage for dashboard components"
+    scope: |
+      - Test cards/DreamsCard.tsx
+      - Test cards/ReflectionsCard.tsx
+      - Test cards/EvolutionCard.tsx
+      - Test cards/ProgressStatsCard.tsx
+      - Test cards/SubscriptionCard.tsx
+      - Test cards/UsageCard.tsx
+      - Test shared/DashboardCard.tsx, DashboardGrid.tsx
+      - Test shared/ProgressRing.tsx, TierBadge.tsx
+      - Test DashboardHero.tsx
+    status: PENDING
+    dependencies: [2]
+    risk: LOW
+    duration_estimate: "3-4h"
+    success_criteria:
+      - Dashboard components at 75%+ coverage
+      - Data display tested
+      - Loading/error states tested
+
+  - iteration_id: 9
+    global_iteration: 48
+    name: "UI & Auth Component Tests"
+    vision: "Achieve 80%+ coverage for UI and auth components"
+    scope: |
+      - Test components/ui/glass/*.tsx
+      - Test components/ui/forms/*.tsx
+      - Test components/ui/*.tsx (remaining)
+      - Test components/icons/*.tsx
+      - Test AuthLayout.tsx and auth-related UI
+      - Cover props variations, interaction states
+      - Test form validation flows
+    status: PENDING
+    dependencies: [2]
+    risk: LOW
+    duration_estimate: "3-4h"
+    success_criteria:
+      - UI components at 80%+ coverage
+      - Auth components at 85%+ coverage
+      - Props variations tested
+
+  - iteration_id: 10
+    global_iteration: 49
+    name: "Library Tests"
+    vision: "Achieve 90%+ coverage for critical library files"
+    scope: |
+      - Test lib/clarify/context-builder.ts (20% → 90%)
+      - Test lib/clarify/consolidation.ts (15% → 90%)
+      - Test lib/clarify/tools.ts
+      - Test lib/anthropic/type-guards.ts (target 95%)
+      - Test server/lib/cache.ts
+      - Test server/lib/rate-limiter.ts
+      - Test server/lib/temporal-distribution.ts
+      - Cover all context scenarios, tool execution
+    status: PENDING
+    dependencies: [2]
+    risk: LOW
+    duration_estimate: "4-5h"
+    success_criteria:
+      - Clarify lib at 90%+ coverage
+      - Anthropic lib at 95%+ coverage
+      - Server libs at 90%+ coverage
+
+  - iteration_id: 11
+    global_iteration: 50
+    name: "Integration Tests"
+    vision: "Add end-to-end tRPC flow tests for critical user journeys"
+    scope: |
+      - Full reflection creation flow
+      - Dream lifecycle (create → reflect → evolve → complete)
+      - Clarify conversation flow with tool use
+      - User registration → profile setup → usage tracking
+      - Subscription flow testing
+      - Error propagation verification
+    status: PENDING
+    dependencies: [3, 4, 5, 10]
+    risk: MEDIUM
+    duration_estimate: "4-5h"
+    success_criteria:
+      - Critical user flows have integration tests
+      - Database interactions verified
+      - Error propagation tested
+
+  - iteration_id: 12
+    global_iteration: 51
+    name: "E2E Test Expansion"
+    vision: "Expand from 2 E2E specs to 100+ comprehensive tests"
+    scope: |
+      - Dreams flow (create, edit, delete, archive, complete)
+      - Reflection flow (desktop + mobile)
+      - Clarify flow (conversation, tool use)
+      - Dashboard flow (all cards, navigation)
+      - Settings flow (profile, subscription)
+      - Mobile responsive tests (touch, viewport)
+      - Add page objects for new flows
+    status: PENDING
+    dependencies: [7, 8, 9, 11]
+    risk: MEDIUM
+    duration_estimate: "5-7h"
+    success_criteria:
+      - 100+ E2E tests
+      - All critical user journeys covered
+      - Mobile viewport tests included
+
+  - iteration_id: 13
+    global_iteration: 52
+    name: "Documentation & Polish"
+    vision: "Complete testing documentation and CI polish"
+    scope: |
+      - Create docs/testing/overview.md
+      - Create docs/testing/patterns.md
+      - Create docs/testing/mocking.md
+      - Create docs/testing/factories.md
+      - Create docs/testing/e2e.md
+      - Create docs/testing/debugging.md
+      - Add coverage badge to README
+      - Configure PR coverage comments
+      - Final coverage threshold enforcement (80%)
+    status: PENDING
+    dependencies: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    risk: LOW
+    duration_estimate: "3-4h"
+    success_criteria:
+      - 6 documentation files created
+      - Coverage badge in README
+      - CI enforces 80% threshold
+      - PR comments show coverage diff
+
+ci_threshold_progression:
+  iteration_2: 50%
+  iteration_5: 60%
+  iteration_9: 70%
+  iteration_11: 75%
+  iteration_13: 80%
+
+total_duration_estimate: "44-63 hours"
