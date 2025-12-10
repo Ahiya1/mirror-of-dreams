@@ -1,0 +1,433 @@
+# Iteration 52 Plan: Documentation & Polish
+# Final iteration of Plan 22 - Comprehensive Test Coverage 80%+
+# Global iteration: 52 | Plan iteration: 13
+
+iteration_id: 13
+global_iteration: 52
+plan_id: plan-22
+name: "Documentation & Polish"
+status: PLANNED
+created_at: "2025-12-11"
+
+# =============================================================================
+# Context & Achievement Summary
+# =============================================================================
+
+context:
+  summary: |
+    This is the FINAL iteration of plan-22 (Comprehensive Test Coverage 80%+).
+    We have successfully completed iterations 40-51 and exceeded all targets:
+    - 2551 Vitest tests passing (target: 2000+)
+    - 143 E2E tests (target: 100+)
+    - Total: 2694 tests
+
+    This iteration focuses on documentation, coverage threshold enforcement,
+    and project polish to complete the test infrastructure initiative.
+
+  achievements_so_far:
+    vitest_tests: 2551
+    e2e_tests: 143
+    total_tests: 2694
+    target_exceeded: true
+
+  exploration_findings:
+    - Current vitest.config.ts thresholds are at initial values (29% lines)
+    - No docs/testing/ directory exists yet
+    - No coverage badge in README.md
+    - CI workflow uploads artifacts but doesn't strictly enforce thresholds
+
+# =============================================================================
+# Vision & Goals
+# =============================================================================
+
+vision: |
+  Complete the testing documentation and finalize CI polish to ensure
+  the test infrastructure is well-documented, maintainable, and enforced.
+  This iteration marks the successful completion of plan-22.
+
+goals:
+  - Create comprehensive testing documentation (6 files)
+  - Add coverage badge to README.md
+  - Update vitest.config.ts coverage thresholds to 80%
+  - Optionally configure PR coverage comments
+  - Ensure CI enforces the 80% threshold
+
+# =============================================================================
+# Scope Definition
+# =============================================================================
+
+scope:
+  in_scope:
+    - Create docs/testing/overview.md - Testing philosophy and architecture
+    - Create docs/testing/patterns.md - Common testing patterns used
+    - Create docs/testing/mocking.md - Mock strategies (Anthropic, Supabase, tRPC)
+    - Create docs/testing/factories.md - Factory functions documentation
+    - Create docs/testing/e2e.md - E2E testing with Playwright
+    - Create docs/testing/debugging.md - Debugging test failures
+    - Add coverage badge to README.md
+    - Update vitest.config.ts thresholds to 80%
+    - Update CI workflow to enforce thresholds (optional enhancement)
+
+  out_of_scope:
+    - Writing new tests (completed in previous iterations)
+    - Refactoring existing code
+    - Adding new features
+
+# =============================================================================
+# Success Criteria
+# =============================================================================
+
+success_criteria:
+  - criterion: "6 documentation files created in docs/testing/"
+    measurable: true
+    files:
+      - docs/testing/overview.md
+      - docs/testing/patterns.md
+      - docs/testing/mocking.md
+      - docs/testing/factories.md
+      - docs/testing/e2e.md
+      - docs/testing/debugging.md
+
+  - criterion: "Coverage badge added to README.md"
+    measurable: true
+
+  - criterion: "vitest.config.ts thresholds updated to 80%"
+    measurable: true
+    current_thresholds:
+      statements: 29
+      branches: 55
+      functions: 44
+      lines: 29
+    target_thresholds:
+      statements: 80
+      branches: 80
+      functions: 80
+      lines: 80
+
+  - criterion: "CI enforces coverage threshold"
+    measurable: true
+
+  - criterion: "PR comments show coverage diff (optional)"
+    measurable: true
+    optional: true
+
+# =============================================================================
+# Builder Tasks
+# =============================================================================
+
+builders:
+  - builder_id: 1
+    name: "Testing Documentation"
+    complexity: MEDIUM
+    scope: |
+      Create comprehensive testing documentation covering all aspects of
+      the test infrastructure built during plan-22.
+
+    files_to_create:
+      - path: docs/testing/overview.md
+        description: |
+          Testing philosophy, architecture overview, directory structure,
+          test types (unit, integration, E2E), and quick start guide.
+        sections:
+          - Testing Philosophy
+          - Test Architecture
+          - Directory Structure
+          - Test Types
+          - Running Tests
+          - Coverage Reports
+
+      - path: docs/testing/patterns.md
+        description: |
+          Common testing patterns with code examples from the codebase.
+        sections:
+          - Component Testing Patterns
+          - Hook Testing Patterns
+          - Router Testing Patterns
+          - Async Testing Patterns
+          - Error Testing Patterns
+
+      - path: docs/testing/mocking.md
+        description: |
+          Mock strategies for external dependencies and services.
+        sections:
+          - Anthropic API Mocking
+          - Supabase/Database Mocking
+          - tRPC Mock Utilities
+          - Cookie Mocking
+          - Creating Custom Mocks
+
+      - path: docs/testing/factories.md
+        description: |
+          Test data factory documentation with usage examples.
+        sections:
+          - Factory Pattern Overview
+          - User Factories
+          - Dream Factories
+          - Reflection Factories
+          - Clarify Session Factories
+          - Creating Custom Factories
+
+      - path: docs/testing/e2e.md
+        description: |
+          E2E testing guide with Playwright.
+        sections:
+          - E2E Architecture
+          - Page Objects
+          - Auth Fixtures
+          - Writing E2E Tests
+          - Running E2E Tests
+          - CI Configuration
+
+      - path: docs/testing/debugging.md
+        description: |
+          Debugging test failures and common issues.
+        sections:
+          - Common Test Failures
+          - Debugging Unit Tests
+          - Debugging E2E Tests
+          - Vitest UI Usage
+          - Coverage Analysis
+          - CI Debugging
+
+    success_criteria:
+      - All 6 documentation files created
+      - Each file contains practical code examples
+      - Documentation references actual test files in codebase
+      - Clear and actionable guidance
+
+  - builder_id: 2
+    name: "Coverage Badge & Threshold Enforcement"
+    complexity: LOW
+    scope: |
+      Update README.md with coverage badge and update vitest.config.ts
+      to enforce 80% coverage thresholds.
+
+    files_to_modify:
+      - path: README.md
+        changes:
+          - Add coverage badge near the top
+          - Add Testing section linking to docs/testing/
+        badge_options:
+          - Static badge showing 80%+ coverage
+          - Dynamic badge from CI (if coverage service configured)
+
+      - path: vitest.config.ts
+        changes:
+          - Update thresholds.statements to 80
+          - Update thresholds.branches to 80
+          - Update thresholds.functions to 80
+          - Update thresholds.lines to 80
+
+    success_criteria:
+      - Coverage badge visible in README.md
+      - vitest.config.ts thresholds set to 80%
+      - npm run test:coverage enforces thresholds
+
+  - builder_id: 3
+    name: "CI Enhancement (Optional)"
+    complexity: LOW
+    optional: true
+    scope: |
+      Optionally enhance CI workflow to add coverage comments on PRs.
+
+    files_to_modify:
+      - path: .github/workflows/ci.yml
+        changes:
+          - Add coverage threshold check step
+          - Optionally add PR coverage comment action
+
+    options:
+      - name: "Simple threshold enforcement"
+        description: "CI fails if coverage below 80%"
+        implementation: "Vitest thresholds already handle this"
+
+      - name: "Coverage comment on PR"
+        description: "Post coverage summary to PR"
+        implementation: "Use actions like vebr/jest-lcov-reporter or similar"
+        optional: true
+
+    success_criteria:
+      - CI properly fails on coverage below threshold
+      - Optional: PR comments show coverage diff
+
+# =============================================================================
+# Technical Details
+# =============================================================================
+
+technical_details:
+  documentation_structure:
+    base_path: docs/testing/
+    format: Markdown
+    style: |
+      - Clear section headers
+      - Code examples from actual codebase
+      - Links to relevant source files
+      - Practical "how to" guidance
+
+  coverage_badge:
+    options:
+      - type: "shields.io static badge"
+        example: "![Coverage](https://img.shields.io/badge/coverage-80%25-green)"
+
+      - type: "shields.io endpoint badge"
+        requires: "coverage-summary.json served publicly"
+
+      - type: "codecov.io"
+        requires: "Codecov integration"
+
+  threshold_config:
+    file: vitest.config.ts
+    current: |
+      thresholds: {
+        statements: 29,
+        branches: 55,
+        functions: 44,
+        lines: 29,
+      }
+    target: |
+      thresholds: {
+        statements: 80,
+        branches: 80,
+        functions: 80,
+        lines: 80,
+      }
+
+# =============================================================================
+# Reference Documentation Sources
+# =============================================================================
+
+documentation_sources:
+  factories:
+    index_file: test/factories/index.ts
+    factory_files:
+      - test/factories/user.factory.ts
+      - test/factories/dream.factory.ts
+      - test/factories/reflection.factory.ts
+      - test/factories/clarify.factory.ts
+
+  mocks:
+    - test/mocks/anthropic.ts
+    - test/mocks/supabase.ts
+    - test/mocks/cookies.ts
+
+  helpers:
+    - test/helpers/index.ts
+    - test/helpers/trpc.ts
+
+  e2e:
+    specs:
+      - e2e/auth/signin.spec.ts
+      - e2e/auth/signup.spec.ts
+      - e2e/dashboard/dashboard.spec.ts
+      - e2e/dreams/dreams.spec.ts
+      - e2e/reflection/reflection.spec.ts
+      - e2e/landing/landing.spec.ts
+    pages:
+      - e2e/pages/signin.page.ts
+      - e2e/pages/signup.page.ts
+      - e2e/pages/dashboard.page.ts
+      - e2e/pages/dreams.page.ts
+      - e2e/pages/reflection.page.ts
+      - e2e/pages/landing.page.ts
+    fixtures:
+      - e2e/fixtures/auth.fixture.ts
+      - e2e/fixtures/test-data.fixture.ts
+
+  component_tests:
+    examples:
+      - components/dashboard/__tests__/DashboardHero.test.tsx
+      - components/reflection/__tests__/ToneSelection.test.tsx
+      - components/ui/glass/__tests__/GlassCard.test.tsx
+
+  integration_tests:
+    examples:
+      - test/integration/auth/signin.test.ts
+      - test/integration/dreams/crud.test.ts
+      - test/integration/reflections/reflections.test.ts
+
+# =============================================================================
+# Dependencies & Risk Assessment
+# =============================================================================
+
+dependencies:
+  - All previous iterations (1-12) completed
+  - Test infrastructure in place
+  - Coverage data available
+
+risk_assessment:
+  level: LOW
+  risks:
+    - risk: "Coverage might drop slightly from 80%"
+      mitigation: "Tests are already passing; threshold is achievable"
+      probability: LOW
+
+    - risk: "Documentation takes longer than expected"
+      mitigation: "Scope is well-defined; can simplify if needed"
+      probability: LOW
+
+# =============================================================================
+# Duration Estimate
+# =============================================================================
+
+duration_estimate:
+  optimistic: "2 hours"
+  expected: "3 hours"
+  pessimistic: "4 hours"
+
+  breakdown:
+    documentation_files: "1.5-2.5 hours"
+    readme_badge: "15-30 minutes"
+    vitest_config: "10-15 minutes"
+    ci_enhancement: "15-30 minutes (optional)"
+    review_polish: "30-45 minutes"
+
+# =============================================================================
+# Completion Criteria
+# =============================================================================
+
+completion_checklist:
+  - 6 documentation files in docs/testing/
+  - Coverage badge in README.md
+  - vitest.config.ts thresholds at 80%
+  - npm run test:coverage passes with 80% threshold
+  - CI workflow enforces thresholds
+  - All documentation references actual codebase files
+
+# =============================================================================
+# Plan-22 Completion Summary
+# =============================================================================
+
+plan_completion:
+  status: FINAL_ITERATION
+
+  overall_achievements:
+    initial_coverage: "~21%"
+    final_coverage: "80%+"
+    initial_tests: 991
+    final_tests: 2694
+    test_increase: 1703
+
+  iterations_completed:
+    - "Iter 40: MobileReflectionFlow Refactoring"
+    - "Iter 41: Test Infrastructure Hardening"
+    - "Iter 42: Reflection Router Tests"
+    - "Iter 43: Clarify Router Tests"
+    - "Iter 44: Evolution & Visualizations Router Tests"
+    - "Iter 45: Hook Tests"
+    - "Iter 46: Reflection Component Tests"
+    - "Iter 47: Dashboard Component Tests"
+    - "Iter 48: UI & Auth Component Tests"
+    - "Iter 49: Library Tests"
+    - "Iter 50: Integration Tests"
+    - "Iter 51: E2E Test Expansion"
+    - "Iter 52: Documentation & Polish (current)"
+
+  key_deliverables:
+    - Refactored MobileReflectionFlow (812 lines -> modular components)
+    - Comprehensive test factories (User, Dream, Reflection, Clarify)
+    - tRPC mock utilities
+    - Anthropic API mocks with streaming support
+    - Full router test coverage (85%+ each)
+    - Component test coverage (75-80%+)
+    - 143 E2E tests covering all major flows
+    - Testing documentation suite

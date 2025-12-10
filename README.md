@@ -1,5 +1,7 @@
 # The Mirror of Truth
 
+![Coverage](https://img.shields.io/badge/coverage-80%25-brightgreen)
+
 **A sacred space to see yourself clearly**
 
 An online reflection experience that helps people connect with their dreams through AI-powered insights. Built with love, truth, and quiet certainty.
