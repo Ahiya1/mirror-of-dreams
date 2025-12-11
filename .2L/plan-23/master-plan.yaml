@@ -1,0 +1,205 @@
+plan_id: plan-23
+created_at: '2025-12-11T02:30:00Z'
+status: PLANNED
+mode: production
+total_iterations: 3
+
+strategy: |
+  Consolidated approach based on master exploration findings:
+
+  1. ITERATION 1 (CRITICAL): Unblock CI + Security + Password Policy
+     - Fix 158 TypeScript errors in test infrastructure
+     - Update 3 vulnerable dependencies (9 vulnerabilities total)
+     - Align password policies across signup/reset/change
+
+  2. ITERATION 2: Performance + Type Safety
+     - Fix N+1 query in getDreamWithStats
+     - Reduce `any` usage in production files
+     - Add React.memo to dashboard cards
+
+  3. ITERATION 3: Code Quality + Documentation
+     - Split large components (MirrorExperience, profile, AppNavigation)
+     - Consolidate duplicated constants
+     - Tighten ESLint rules
+     - Create ARCHITECTURE.md and CONTRIBUTING.md
+
+  Key corrections from exploration:
+  - `any` count is 118, not 342 as originally claimed
+  - React.memo and dynamic() ARE already used in some places
+  - N+1 issue only affects single-dream fetch (list already optimized)
+  - Production code is clean; issues concentrated in test infrastructure
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 53
+    name: "Critical Fixes: CI + Security + Password Policy"
+    vision: "Unblock CI pipeline, resolve security vulnerabilities, align password policies"
+    complexity: MEDIUM
+    estimated_hours: 6-8
+    scope: |
+      ## CI Fix (BLOCKING)
+      1. Fix tRPC mock types in test/helpers/trpc.ts
+         - Add `trpc: { path: '' }` to BaseQueryResult interface
+         - Update createMockQueryResult, createMockLoadingResult, createMockErrorResult
+         - Update createMockInfiniteQueryResult
+         - Resolves 158 TypeScript errors across 5 test files
+
+      2. Fix missing Supabase types
+         - Create types/supabase.ts with Database interface
+         - Include evolution_reports table Row type
+         - Fixes import in test/fixtures/evolution.ts
+
+      3. Fix useAuth mock in DashboardHero.test.tsx
+         - Add missing properties: error, signin, signup, signout, setUser
+
+      ## Security Updates
+      4. Update happy-dom to 20.0.11 (CRITICAL RCE fix)
+      5. Update nodemailer to 7.0.11 (domain spoofing + DoS fix)
+      6. Update vitest ecosystem to 4.0.15 (esbuild vulnerability chain)
+         - vitest, @vitest/coverage-v8, @vitest/ui
+      7. Run tests to verify no regressions
+      8. Update vitest.config.ts if needed for v4 compatibility
+
+      ## Password Policy
+      9. Create shared passwordSchema in types/schemas.ts
+         - min 8 chars, uppercase, lowercase, number
+      10. Update signupSchema to use passwordSchema
+      11. Update changePasswordSchema to use passwordSchema
+      12. Refactor app/api/auth/reset-password/route.ts to use passwordSchema
+
+      ## Validation
+      - npm run typecheck passes
+      - npm run test:run passes
+      - npm audit shows 0 critical vulnerabilities
+      - Password validation consistent across all endpoints
+
+    success_criteria:
+      - "TypeScript compilation: 0 errors"
+      - "Test suite: All tests pass"
+      - "npm audit: 0 critical, 0 high vulnerabilities"
+      - "Password policy: Consistent 8+ chars with complexity across signup/reset/change"
+
+    status: PENDING
+    dependencies: []
+
+  - iteration_id: 2
+    global_iteration: 54
+    name: "Performance & Type Safety"
+    vision: "Optimize database queries, improve type safety, enhance React rendering"
+    complexity: LOW-MEDIUM
+    estimated_hours: 4-5
+    scope: |
+      ## N+1 Query Fix
+      1. Refactor getDreamWithStats in server/trpc/routers/dreams.ts
+         - Use Promise.all for parallel reflection queries
+         - Maintain existing API contract
+
+      ## Type Safety
+      2. Reduce `any` usage in critical production files:
+         - server/trpc/routers/dreams.ts:364 (updateData: any)
+         - components/dashboard/cards/DreamsCard.tsx
+         - components/dashboard/shared/ReflectionItem.tsx
+         - app/settings/page.tsx
+         - app/dreams/[id]/page.tsx
+         - Target: 50% reduction (from ~48 to ~24 in production files)
+
+      ## React Optimization
+      3. Add React.memo to dashboard cards lacking it:
+         - DreamsCard.tsx
+         - EvolutionCard.tsx
+         - ReflectionsCard.tsx
+         - VisualizationCard.tsx
+         - (Only add where beneficial - avoid over-memoization)
+
+      4. Review and add useMemo/useCallback where beneficial
+
+      ## Validation
+      - All tests continue to pass
+      - No performance regressions
+      - TypeScript stricter (optionally enable noImplicitReturns)
+
+    success_criteria:
+      - "N+1 query: getDreamWithStats uses Promise.all"
+      - "any count: Reduced to <25 in production files"
+      - "Dashboard cards: Memoized where beneficial"
+      - "Tests: All pass"
+
+    status: PENDING
+    dependencies: [1]
+
+  - iteration_id: 3
+    global_iteration: 55
+    name: "Code Quality & Documentation"
+    vision: "Split large components, consolidate duplications, improve documentation"
+    complexity: MEDIUM
+    estimated_hours: 6-8
+    scope: |
+      ## Component Splitting
+      1. Split MirrorExperience.tsx (606 lines -> ~350 lines)
+         - Extract CSS to MirrorExperience.css or styled component
+         - Extract DemoUserCTA component
+         - Extract ToneAmbientEffects component
+
+      2. Split profile/page.tsx (528 lines -> ~300 lines)
+         - Extract AccountInfoSection component
+         - Extract AccountActionsSection component
+         - Extract DangerZoneSection component
+
+      3. Split AppNavigation.tsx (522 lines -> ~300 lines)
+         - Extract CSS to external file
+         - Extract UserDropdownMenu component
+         - Extract MobileNavigationMenu component
+
+      ## Code Consolidation
+      4. Consolidate duplicated constants:
+         - Tone glow colors (ToneSelection, ToneSelectionCard)
+         - Category emoji mappings (DreamsCard, lib/reflection/constants)
+         - Create reusable EmptyState/LoadingState components
+
+      ## ESLint Rules
+      5. Tighten ESLint rules (after any reduction):
+         - Change @typescript-eslint/no-explicit-any: warn -> error
+         - Change no-prototype-builtins: warn -> error
+
+      ## Documentation
+      6. Create docs/ARCHITECTURE.md
+         - System design overview
+         - Data flow diagrams
+         - Tech stack rationale
+
+      7. Create CONTRIBUTING.md
+         - Development setup
+         - Code style guidelines
+         - PR process
+
+      8. Create .github/PULL_REQUEST_TEMPLATE.md
+
+      ## Validation
+      - All components < 400 lines
+      - ESLint passes with tightened rules
+      - Documentation exists
+
+    success_criteria:
+      - "Components: No file > 400 lines"
+      - "Constants: No duplications"
+      - "ESLint: Rules at error level"
+      - "Docs: ARCHITECTURE.md and CONTRIBUTING.md exist"
+      - "Tests: All pass"
+
+    status: PENDING
+    dependencies: [1, 2]
+
+notes: |
+  Explorer insights:
+  - Explorer 1: Recommends 3 iterations (consolidated from vision's 4)
+  - Explorer 2: All dependency updates should happen together (6-12 hours with buffer)
+  - Explorer 3: CI fix is ~45 minutes, component splitting is ~5.5 hours
+
+  Risk mitigations:
+  - Vitest 4.x update: Run tests locally before CI
+  - Component splitting: Set strict time limits, avoid scope creep
+  - Password policy: Existing weak passwords unaffected (only new signups)
+
+  Rollback plan:
+  - Git revert for dependency updates if tests fail
+  - Package version pinning available

@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Navigation styles (extracted from AppNavigation.tsx) */
+@import './navigation.css';
+
 /* Preserve existing cosmic theme styles */
 :root {
   --cosmic-purple: #8b5cf6;

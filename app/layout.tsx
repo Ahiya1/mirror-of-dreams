@@ -4,6 +4,7 @@ import '@/styles/variables.css'; // First: CSS custom properties
 import '@/styles/animations.css'; // Second: Keyframe animations
 import '@/styles/globals.css';
 import '@/styles/reflection.css'; // Reflection experience sacred styling
+import '@/styles/mirror-experience.css'; // Mirror experience ambient effects
 import { TRPCProvider } from '@/components/providers/TRPCProvider';
 import { NavigationProvider } from '@/contexts/NavigationContext';
 import { ToastProvider } from '@/contexts/ToastContext';

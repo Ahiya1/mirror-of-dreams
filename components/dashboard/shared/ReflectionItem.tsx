@@ -5,24 +5,30 @@ import React, { useState, memo } from 'react';
 
 import styles from './ReflectionItem.module.css';
 
+/** Base reflection data structure used for display */
+interface ReflectionData {
+  id: string | number;
+  title?: string | null;
+  dream?: string;
+  dreams?: { title: string } | null; // Joined dream data
+  content?: string;
+  preview?: string;
+  created_at?: string;
+  timeAgo?: string;
+  tone?: string;
+  is_premium?: boolean;
+  updatedAt?: string; // For custom comparator
+  // Optional fields that may come from API responses
+  aiResponse?: string;
+  ai_response?: string;
+}
+
 interface ReflectionItemProps {
-  reflection: {
-    id: string | number;
-    title?: string | null;
-    dream?: string;
-    dreams?: { title: string } | null; // Joined dream data
-    content?: string;
-    preview?: string;
-    created_at?: string;
-    timeAgo?: string;
-    tone?: string;
-    is_premium?: boolean;
-    updatedAt?: string; // For custom comparator
-  };
+  reflection: ReflectionData;
   index?: number;
   animated?: boolean;
   animationDelay?: number;
-  onClick?: (reflection: any) => void;
+  onClick?: (reflection: ReflectionData) => void;
   className?: string;
 }
 
@@ -77,7 +83,7 @@ const ReflectionItem = memo(function ReflectionItem({
     isPremium: reflection.is_premium || false,
   };
 
-  function getReflectionPreview(refl: any): string {
+  function getReflectionPreview(refl: ReflectionData): string {
     // Try to get AI response first for better snippets
     const text = refl.aiResponse || refl.ai_response || refl.dream || refl.content || refl.preview;
     if (!text) return 'Your reflection content...';

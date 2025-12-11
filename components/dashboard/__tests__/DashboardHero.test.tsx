@@ -52,30 +52,53 @@ vi.mock('@/components/ui/glass', () => ({
 }));
 
 // Import mocked modules
+import type { User } from '@/types';
+
 import { useAuth } from '@/hooks/useAuth';
 import { trpc } from '@/lib/trpc';
+import { createMockUser } from '@/test/factories';
 import { createMockQueryResult, createMockLoadingResult } from '@/test/helpers';
 
 /**
  * Helper to set up auth mock
  */
 const mockAuth = (
-  overrides: Partial<{
-    user: { id: string; name?: string; email?: string } | null;
-    isLoading: boolean;
-    isAuthenticated: boolean;
-  }> = {}
+  overrides: {
+    user?: Partial<User> | null;
+    isLoading?: boolean;
+    isAuthenticated?: boolean;
+    error?: string | null;
+  } = {}
 ) => {
-  const defaultAuth = {
-    user: {
+  // Build user: if overrides.user is null, use null; if overrides.user has partial props, merge with defaults
+  let user: User | null;
+  if (overrides.user === null) {
+    user = null;
+  } else if (overrides.user !== undefined) {
+    user = createMockUser({
       id: 'user-1',
       name: 'John Doe',
       email: 'john@example.com',
-    },
-    isLoading: false,
-    isAuthenticated: true,
-    signOut: vi.fn(),
-    ...overrides,
+      ...overrides.user,
+    });
+  } else {
+    user = createMockUser({
+      id: 'user-1',
+      name: 'John Doe',
+      email: 'john@example.com',
+    });
+  }
+
+  const defaultAuth = {
+    user,
+    isLoading: overrides.isLoading ?? false,
+    isAuthenticated: overrides.isAuthenticated ?? true,
+    error: overrides.error ?? null,
+    signin: vi.fn(),
+    signup: vi.fn(),
+    signout: vi.fn(),
+    refreshUser: vi.fn(),
+    setUser: vi.fn(),
   };
   vi.mocked(useAuth).mockReturnValue(defaultAuth);
   return defaultAuth;

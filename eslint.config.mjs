@@ -90,14 +90,14 @@ export default [
         'warn',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn', // TODO: Change to 'error' after fixing remaining ~20 any usages
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/no-require-imports': 'off',
 
       // General rules that need to be more lenient for existing code
-      'no-prototype-builtins': 'warn',
+      'no-prototype-builtins': 'warn', // TODO: Change to 'error' after fixing hasOwnProperty usage
       'no-empty': 'warn',
       'no-case-declarations': 'warn',
       'no-shadow-restricted-names': 'warn',

@@ -1,27 +1,28 @@
 'use client';
 
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { Check } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 
 // Internal utilities
 import type { Dream } from '@/lib/reflection/types';
-import type { ToneId } from '@/lib/utils/constants';
 
 // Components (view, mobile, shared, ui)
+import { CosmicParticles } from '@/components/reflection/CosmicParticles';
+import { DemoUserCTA } from '@/components/reflection/DemoUserCTA';
 import { GazingOverlay } from '@/components/reflection/mobile/GazingOverlay';
 import { MobileReflectionFlow } from '@/components/reflection/mobile/MobileReflectionFlow';
+import { ToneAmbientEffects } from '@/components/reflection/ToneAmbientEffects';
 import { DreamSelectionView } from '@/components/reflection/views/DreamSelectionView';
 import { ReflectionFormView } from '@/components/reflection/views/ReflectionFormView';
 import { ReflectionOutputView } from '@/components/reflection/views/ReflectionOutputView';
 import CosmicBackground from '@/components/shared/CosmicBackground';
-import { GlassCard, GlowButton, CosmicLoader } from '@/components/ui/glass';
+import { GlassCard, CosmicLoader } from '@/components/ui/glass';
 import { useToast } from '@/contexts/ToastContext';
 import { useIsMobile, useReflectionForm, useReflectionViewMode } from '@/hooks';
 import { useAuth } from '@/hooks/useAuth';
-import { STORAGE_KEY, EMPTY_FORM_DATA } from '@/lib/reflection/constants';
+import { STORAGE_KEY } from '@/lib/reflection/constants';
 import { trpc } from '@/lib/trpc';
 import { cn } from '@/lib/utils';
 import { checkReflectionLimits } from '@/lib/utils/limits';
@@ -95,7 +96,7 @@ export default function MirrorExperience() {
   );
 
   // Redirect to signin if not authenticated
-  useEffect(() => {
+  React.useEffect(() => {
     if (!authLoading) {
       if (!isAuthenticated) {
         router.push('/auth/signin');
@@ -104,24 +105,6 @@ export default function MirrorExperience() {
       }
     }
   }, [isAuthenticated, authLoading, user, router]);
-
-  // Memoize gentle star positions to prevent repositioning on every render
-  const gentleStarPositions = useMemo(() => {
-    return Array.from({ length: 12 }, (_, i) => ({
-      left: `${10 + Math.random() * 80}%`,
-      top: `${10 + Math.random() * 80}%`,
-      animationDelay: `${-i * 0.8}s`,
-    }));
-  }, []);
-
-  // Memoize cosmic particle positions
-  const cosmicParticlePositions = useMemo(() => {
-    return Array.from({ length: 20 }, () => ({
-      left: `${Math.random() * 100}%`,
-      animationDelay: `${Math.random() * 20}s`,
-      animationDuration: `${15 + Math.random() * 10}s`,
-    }));
-  }, []);
 
   const createReflection = trpc.reflection.create.useMutation({
     onSuccess: (data) => {
@@ -205,79 +188,7 @@ export default function MirrorExperience() {
 
   // Demo user CTA
   if (user?.isDemo && viewMode === 'questionnaire') {
-    return (
-      <div className="reflection-experience">
-        <CosmicBackground />
-        <div className="reflection-vignette" />
-        <div className="flex min-h-screen items-center justify-center p-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="w-full max-w-xl"
-          >
-            <GlassCard className="p-8 text-center">
-              <div className="mb-6">
-                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-purple-500/40 bg-gradient-to-br from-purple-500/30 to-pink-500/30">
-                  <span className="text-4xl">{'\uD83E\uDE9E'}</span>
-                </div>
-              </div>
-              <h1 className="mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-3xl font-bold text-transparent">
-                Ready to Start Your Journey?
-              </h1>
-              <p className="mb-6 text-lg leading-relaxed text-white/70">
-                You've explored what Mirror of Dreams can offer. Now it's time to create your own
-                reflections and discover insights unique to your path.
-              </p>
-              <div className="mb-8 rounded-xl bg-white/5 p-4 text-left">
-                <p className="mb-3 font-medium text-purple-300">With a free account, you get:</p>
-                <ul className="space-y-2 text-white/70">
-                  <li className="flex items-center gap-2">
-                    <Check className="h-4 w-4 text-mirror-success" />
-                    <span>2 reflections per month</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="h-4 w-4 text-mirror-success" />
-                    <span>Track up to 2 dreams</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="h-4 w-4 text-mirror-success" />
-                    <span>Personal reflection history</span>
-                  </li>
-                </ul>
-              </div>
-              <div className="flex flex-col gap-4 sm:flex-row">
-                <GlowButton
-                  variant="primary"
-                  size="lg"
-                  className="flex-1"
-                  onClick={() => router.push('/auth/signup')}
-                >
-                  Create Free Account
-                </GlowButton>
-                <GlowButton
-                  variant="ghost"
-                  size="lg"
-                  className="flex-1"
-                  onClick={() => router.push('/reflections')}
-                >
-                  Continue Exploring
-                </GlowButton>
-              </div>
-              <p className="mt-6 text-sm text-white/50">
-                Already have an account?{' '}
-                <button
-                  onClick={() => router.push('/auth/signin')}
-                  className="text-purple-400 transition-colors hover:text-purple-300"
-                >
-                  Sign in
-                </button>
-              </p>
-            </GlassCard>
-          </motion.div>
-        </div>
-      </div>
-    );
+    return <DemoUserCTA />;
   }
 
   // Mobile flow
@@ -305,54 +216,10 @@ export default function MirrorExperience() {
       <div className="reflection-vignette" />
 
       {/* Tone-based ambient elements */}
-      <div className="tone-elements">
-        {selectedTone === 'fusion' && (
-          <>
-            <div
-              className="fusion-breath"
-              style={{
-                left: '20%',
-                top: '30%',
-                width: 'clamp(220px, 45vw, 300px)',
-                height: 'clamp(220px, 45vw, 300px)',
-              }}
-            />
-            <div
-              className="fusion-breath"
-              style={{
-                right: '15%',
-                bottom: '25%',
-                width: 'clamp(180px, 35vw, 240px)',
-                height: 'clamp(180px, 35vw, 240px)',
-                animationDelay: '-12s',
-              }}
-            />
-          </>
-        )}
-        {selectedTone === 'gentle' && (
-          <>
-            {gentleStarPositions.map((pos, i) => (
-              <div key={i} className="gentle-star" style={pos} />
-            ))}
-          </>
-        )}
-        {selectedTone === 'intense' && (
-          <>
-            <div className="intense-swirl" style={{ left: '15%', top: '20%' }} />
-            <div
-              className="intense-swirl"
-              style={{ right: '10%', bottom: '15%', animationDelay: '-9s' }}
-            />
-          </>
-        )}
-      </div>
+      <ToneAmbientEffects selectedTone={selectedTone} />
 
       {/* Floating cosmic particles */}
-      <div className="cosmic-particles">
-        {cosmicParticlePositions.map((pos, i) => (
-          <div key={i} className="particle" style={pos} />
-        ))}
-      </div>
+      <CosmicParticles count={20} />
 
       <AnimatePresence mode="wait">
         {viewMode === 'questionnaire' && (
@@ -414,184 +281,6 @@ export default function MirrorExperience() {
 
       {/* Gazing Overlay (elaborate variant for desktop) */}
       <GazingOverlay isVisible={isSubmitting} variant="elaborate" statusText={statusText} />
-
-      <style jsx>{`
-        .reflection-experience {
-          position: fixed;
-          inset: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          overflow-x: hidden;
-          overflow-y: auto;
-          background: radial-gradient(
-            ellipse at center,
-            rgba(15, 23, 42, 0.95) 0%,
-            rgba(2, 6, 23, 1) 100%
-          );
-        }
-
-        .reflection-vignette {
-          position: fixed;
-          inset: 0;
-          pointer-events: none;
-          background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
-          z-index: 1;
-        }
-
-        .tone-elements {
-          position: fixed;
-          inset: 0;
-          z-index: 1;
-          pointer-events: none;
-        }
-
-        .fusion-breath {
-          position: absolute;
-          border-radius: 50%;
-          background: radial-gradient(
-            circle,
-            rgba(251, 191, 36, 0.3) 0%,
-            rgba(245, 158, 11, 0.15) 30%,
-            rgba(217, 119, 6, 0.08) 60%,
-            transparent 80%
-          );
-          filter: blur(35px);
-          animation: fusionBreathe 25s ease-in-out infinite;
-        }
-
-        @keyframes fusionBreathe {
-          0%,
-          100% {
-            opacity: 0;
-            transform: scale(0.4) translate(0, 0);
-          }
-          25% {
-            opacity: 0.6;
-            transform: scale(1.1) translate(30px, -40px);
-          }
-          50% {
-            opacity: 0.8;
-            transform: scale(1.4) translate(-15px, 25px);
-          }
-          75% {
-            opacity: 0.5;
-            transform: scale(0.9) translate(40px, 15px);
-          }
-        }
-
-        .gentle-star {
-          position: absolute;
-          width: 3px;
-          height: 3px;
-          background: rgba(255, 255, 255, 0.95);
-          border-radius: 50%;
-          box-shadow:
-            0 0 8px rgba(255, 255, 255, 0.7),
-            0 0 15px rgba(255, 255, 255, 0.4);
-          animation: gentleTwinkle 10s ease-in-out infinite;
-        }
-
-        @keyframes gentleTwinkle {
-          0%,
-          100% {
-            opacity: 0;
-            transform: scale(0.4);
-          }
-          50% {
-            opacity: 1;
-            transform: scale(1.3);
-          }
-        }
-
-        .intense-swirl {
-          position: absolute;
-          width: clamp(180px, 35vw, 240px);
-          height: clamp(180px, 35vw, 240px);
-          background: radial-gradient(
-            circle at 30% 30%,
-            rgba(147, 51, 234, 0.35) 0%,
-            rgba(168, 85, 247, 0.18) 30%,
-            rgba(139, 92, 246, 0.1) 60%,
-            transparent 80%
-          );
-          filter: blur(30px);
-          border-radius: 50%;
-          animation: intenseSwirl 18s ease-in-out infinite;
-        }
-
-        @keyframes intenseSwirl {
-          0%,
-          100% {
-            opacity: 0;
-            transform: rotate(0deg) scale(0.2);
-          }
-          25% {
-            opacity: 0.7;
-            transform: rotate(180deg) scale(1.1);
-          }
-          50% {
-            opacity: 0.9;
-            transform: rotate(360deg) scale(1.4);
-          }
-          75% {
-            opacity: 0.6;
-            transform: rotate(540deg) scale(0.8);
-          }
-        }
-
-        .cosmic-particles {
-          position: fixed;
-          inset: 0;
-          pointer-events: none;
-          z-index: 2;
-        }
-
-        .particle {
-          position: absolute;
-          width: 2px;
-          height: 2px;
-          background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
-          border-radius: 50%;
-          animation: float-up linear infinite;
-        }
-
-        @keyframes float-up {
-          0% {
-            transform: translateY(100vh) scale(0);
-            opacity: 0;
-          }
-          10% {
-            opacity: 1;
-          }
-          90% {
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(-100vh) scale(1);
-            opacity: 0;
-          }
-        }
-
-        .questionnaire-container,
-        .output-container {
-          position: relative;
-          z-index: 10;
-          width: 100%;
-          max-width: 800px;
-          padding: var(--space-xl);
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .fusion-breath,
-          .gentle-star,
-          .intense-swirl,
-          .particle {
-            animation: none;
-            opacity: 0.3;
-          }
-        }
-      `}</style>
 
       {/* Upgrade Modal */}
       <UpgradeModal

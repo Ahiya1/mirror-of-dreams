@@ -65,7 +65,10 @@ export default function SettingsPage() {
   });
 
   // Handle toggle (immediate save)
-  const handleToggle = (key: keyof UserPreferences, value: any) => {
+  const handleToggle = (
+    key: keyof UserPreferences,
+    value: UserPreferences[keyof UserPreferences]
+  ) => {
     if (!preferences) return;
 
     // Optimistic update
@@ -210,16 +213,19 @@ export default function SettingsPage() {
   );
 }
 
+// Setting value types that match UserPreferences values
+type SettingValue = UserPreferences[keyof UserPreferences];
+
 // Reusable setting row component
 interface SettingRowProps {
   label: string;
   description: string;
   checked?: boolean;
-  onChange: (value: any) => void;
+  onChange: (value: SettingValue) => void;
   disabled?: boolean;
   type?: 'toggle' | 'select' | 'tristate';
-  value?: any;
-  options?: Array<{ value: any; label: string }>;
+  value?: SettingValue;
+  options?: Array<{ value: SettingValue; label: string }>;
 }
 
 function SettingRow({
@@ -254,13 +260,13 @@ function SettingRow({
 
       {type === 'select' && (
         <select
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
+          value={value as string}
+          onChange={(e) => onChange(e.target.value as SettingValue)}
           disabled={disabled}
           className="ml-4 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {options.map((option) => (
-            <option key={option.value} value={option.value} className="bg-gray-900">
+            <option key={String(option.value)} value={String(option.value)} className="bg-gray-900">
               {option.label}
             </option>
           ))}
@@ -269,7 +275,7 @@ function SettingRow({
 
       {type === 'tristate' && (
         <select
-          value={value === null ? 'null' : value.toString()}
+          value={value === null ? 'null' : String(value)}
           onChange={(e) => {
             const val = e.target.value;
             onChange(val === 'null' ? null : val === 'true');
@@ -279,8 +285,8 @@ function SettingRow({
         >
           {options.map((option) => (
             <option
-              key={option.value === null ? 'null' : option.value.toString()}
-              value={option.value === null ? 'null' : option.value.toString()}
+              key={option.value === null ? 'null' : String(option.value)}
+              value={option.value === null ? 'null' : String(option.value)}
               className="bg-gray-900"
             >
               {option.label}

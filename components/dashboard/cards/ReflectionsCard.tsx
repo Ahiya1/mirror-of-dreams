@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import DashboardCard, {
   CardHeader,
@@ -29,7 +29,7 @@ const ReflectionsCard: React.FC<ReflectionsCardProps> = ({ animated = true, clas
     limit: 3, // Only show 3 most recent
   });
 
-  const reflections = data?.items || [];
+  const reflections = useMemo(() => data?.items || [], [data?.items]);
 
   // Empty state component
   const EmptyState = () => (
@@ -205,4 +205,4 @@ const ReflectionsCard: React.FC<ReflectionsCardProps> = ({ animated = true, clas
   );
 };
 
-export default ReflectionsCard;
+export default React.memo(ReflectionsCard);

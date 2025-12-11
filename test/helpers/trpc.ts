@@ -16,16 +16,32 @@ import type { AppRouter } from '@/server/trpc/routers/_app';
 type QueryStatus = 'pending' | 'success' | 'error';
 
 /**
+ * Fetch status for query results
+ */
+type FetchStatus = 'fetching' | 'paused' | 'idle';
+
+/**
  * Possible states for a tRPC mutation
  */
 type MutationStatus = 'idle' | 'pending' | 'success' | 'error';
 
 /**
- * Base query result fields common to all states
+ * tRPC hook result metadata required by UseTRPCQueryResult
  */
-interface BaseQueryResult<TData> {
+interface TRPCHookMetadata {
+  trpc: {
+    path: string;
+  };
+}
+
+/**
+ * Base query result fields common to all states (TanStack Query v5 compatible)
+ * These are the required properties from QueryObserverBaseResult
+ * Using unknown/any for error types and functions to satisfy tRPC's complex type requirements
+ */
+interface BaseQueryResult<TData> extends TRPCHookMetadata {
   data: TData | undefined;
-  error: Error | null;
+  error: unknown;
   isLoading: boolean;
   isError: boolean;
   isSuccess: boolean;
@@ -33,7 +49,26 @@ interface BaseQueryResult<TData> {
   isFetching: boolean;
   isRefetching: boolean;
   status: QueryStatus;
-  refetch: ReturnType<typeof vi.fn>;
+
+  refetch: any;
+  // TanStack Query v5 additional required properties
+  dataUpdatedAt: number;
+  errorUpdatedAt: number;
+  failureCount: number;
+  failureReason: unknown;
+  errorUpdateCount: number;
+  isFetched: boolean;
+  isFetchedAfterMount: boolean;
+  isLoadingError: boolean;
+  isInitialLoading: boolean;
+  isPaused: boolean;
+  isPlaceholderData: boolean;
+  isRefetchError: boolean;
+  isStale: boolean;
+  isEnabled: boolean;
+  fetchStatus: FetchStatus;
+
+  promise: Promise<any>;
 }
 
 /**
@@ -42,11 +77,15 @@ interface BaseQueryResult<TData> {
 interface QuerySuccessResult<TData> extends BaseQueryResult<TData> {
   data: TData;
   error: null;
+  failureReason: null;
   isLoading: false;
   isError: false;
   isSuccess: true;
   isPending: false;
   status: 'success';
+  isLoadingError: false;
+  isRefetchError: false;
+  isPlaceholderData: false;
 }
 
 /**
@@ -55,24 +94,35 @@ interface QuerySuccessResult<TData> extends BaseQueryResult<TData> {
 interface QueryLoadingResult<TData> extends BaseQueryResult<TData> {
   data: undefined;
   error: null;
+  failureReason: null;
   isLoading: true;
   isError: false;
   isSuccess: false;
   isPending: true;
   status: 'pending';
+  isLoadingError: false;
+  isRefetchError: false;
+  isPlaceholderData: false;
 }
 
 /**
  * Error state for a query result
+ * Using 'any' for error type to satisfy tRPC's TRPCClientErrorLike requirements
  */
 interface QueryErrorResult<TData> extends BaseQueryResult<TData> {
   data: undefined;
-  error: Error;
+
+  error: any;
+
+  failureReason: any;
   isLoading: false;
   isError: true;
   isSuccess: false;
   isPending: false;
   status: 'error';
+  isLoadingError: true;
+  isRefetchError: false;
+  isPlaceholderData: false;
 }
 
 /**
@@ -99,7 +149,7 @@ export interface MockMutationResult<TInput, TOutput> {
   isError: boolean;
   isSuccess: boolean;
   isIdle: boolean;
-  error: Error | null;
+  error: unknown;
   data: TOutput | undefined;
   status: MutationStatus;
   reset: MockFn;
@@ -115,9 +165,9 @@ interface InfiniteQueryPages<TData> {
 }
 
 /**
- * Infinite query result object
+ * Infinite query result object (TanStack Query v5 compatible)
  */
-export interface MockInfiniteQueryResult<TData> {
+export interface MockInfiniteQueryResult<TData> extends TRPCHookMetadata {
   data: InfiniteQueryPages<TData> | undefined;
   isLoading: boolean;
   isPending: boolean;
@@ -126,12 +176,35 @@ export interface MockInfiniteQueryResult<TData> {
   isFetching: boolean;
   isFetchingNextPage: boolean;
   isFetchingPreviousPage: boolean;
-  error: Error | null;
+  error: unknown;
   hasNextPage: boolean;
   hasPreviousPage: boolean;
-  fetchNextPage: ReturnType<typeof vi.fn>;
-  fetchPreviousPage: ReturnType<typeof vi.fn>;
-  refetch: ReturnType<typeof vi.fn>;
+
+  fetchNextPage: any;
+
+  fetchPreviousPage: any;
+
+  refetch: any;
+  // TanStack Query v5 additional required properties
+  status: QueryStatus;
+  fetchStatus: FetchStatus;
+  dataUpdatedAt: number;
+  errorUpdatedAt: number;
+  failureCount: number;
+  failureReason: unknown;
+  errorUpdateCount: number;
+  isFetched: boolean;
+  isFetchedAfterMount: boolean;
+  isLoadingError: boolean;
+  isInitialLoading: boolean;
+  isPaused: boolean;
+  isPlaceholderData: boolean;
+  isRefetchError: boolean;
+  isRefetching: boolean;
+  isStale: boolean;
+  isEnabled: boolean;
+
+  promise: Promise<any>;
 }
 
 // ============================================================================
@@ -179,6 +252,24 @@ export function createMockQueryResult<TData>(data: TData): QuerySuccessResult<TD
     isRefetching: false,
     status: 'success',
     refetch: vi.fn().mockResolvedValue({ data }),
+    trpc: { path: '' },
+    // TanStack Query v5 properties
+    dataUpdatedAt: Date.now(),
+    errorUpdatedAt: 0,
+    failureCount: 0,
+    failureReason: null,
+    errorUpdateCount: 0,
+    isFetched: true,
+    isFetchedAfterMount: true,
+    isLoadingError: false,
+    isInitialLoading: false,
+    isPaused: false,
+    isPlaceholderData: false,
+    isRefetchError: false,
+    isStale: false,
+    isEnabled: true,
+    fetchStatus: 'idle',
+    promise: Promise.resolve(data),
   };
 }
 
@@ -215,6 +306,24 @@ export function createMockLoadingResult<TData>(): QueryLoadingResult<TData> {
     isRefetching: false,
     status: 'pending',
     refetch: vi.fn(),
+    trpc: { path: '' },
+    // TanStack Query v5 properties
+    dataUpdatedAt: 0,
+    errorUpdatedAt: 0,
+    failureCount: 0,
+    failureReason: null,
+    errorUpdateCount: 0,
+    isFetched: false,
+    isFetchedAfterMount: false,
+    isLoadingError: false,
+    isInitialLoading: true,
+    isPaused: false,
+    isPlaceholderData: false,
+    isRefetchError: false,
+    isStale: false,
+    isEnabled: true,
+    fetchStatus: 'fetching',
+    promise: new Promise<TData>(() => {}), // Never resolves for loading state
   };
 }
 
@@ -262,6 +371,28 @@ export function createMockErrorResult<TData>(
     isRefetching: false,
     status: 'error',
     refetch: vi.fn().mockRejectedValue(error),
+    trpc: { path: '' },
+    // TanStack Query v5 properties
+    dataUpdatedAt: 0,
+    errorUpdatedAt: Date.now(),
+    failureCount: 1,
+    failureReason: error,
+    errorUpdateCount: 1,
+    isFetched: true,
+    isFetchedAfterMount: true,
+    isLoadingError: true,
+    isInitialLoading: false,
+    isPaused: false,
+    isPlaceholderData: false,
+    isRefetchError: false,
+    isStale: false,
+    isEnabled: true,
+    fetchStatus: 'idle',
+    promise: (() => {
+      const p = Promise.reject(error);
+      p.catch(() => {}); // Prevent unhandled rejection in vitest 4.x
+      return p;
+    })(),
   };
 }
 
@@ -488,14 +619,15 @@ export function createMockInfiniteQueryResult<TData>(
 
   const isError = error !== null;
   const isSuccess = !isLoading && !isError;
+  const dataValue = isSuccess
+    ? {
+        pages,
+        pageParams: pages.map((_, i) => (i === 0 ? undefined : i)),
+      }
+    : undefined;
 
   return {
-    data: isSuccess
-      ? {
-          pages,
-          pageParams: pages.map((_, i) => (i === 0 ? undefined : i)),
-        }
-      : undefined,
+    data: dataValue,
     isLoading,
     isPending: isLoading,
     isError,
@@ -509,6 +641,34 @@ export function createMockInfiniteQueryResult<TData>(
     fetchNextPage: vi.fn().mockResolvedValue({ data: pages }),
     fetchPreviousPage: vi.fn().mockResolvedValue({ data: pages }),
     refetch: vi.fn().mockResolvedValue({ data: { pages, pageParams: [] } }),
+    trpc: { path: '' },
+    // TanStack Query v5 properties
+    status: isLoading ? 'pending' : isError ? 'error' : 'success',
+    fetchStatus: isLoading ? 'fetching' : 'idle',
+    dataUpdatedAt: isSuccess ? Date.now() : 0,
+    errorUpdatedAt: isError ? Date.now() : 0,
+    failureCount: isError ? 1 : 0,
+    failureReason: error,
+    errorUpdateCount: isError ? 1 : 0,
+    isFetched: !isLoading,
+    isFetchedAfterMount: !isLoading,
+    isLoadingError: isError && !isSuccess,
+    isInitialLoading: isLoading,
+    isPaused: false,
+    isPlaceholderData: false,
+    isRefetchError: false,
+    isRefetching: false,
+    isStale: false,
+    isEnabled: true,
+    promise: isSuccess
+      ? Promise.resolve(dataValue as InfiniteQueryPages<TData>)
+      : isError
+        ? (() => {
+            const p = Promise.reject(error);
+            p.catch(() => {}); // Prevent unhandled rejection in vitest 4.x
+            return p;
+          })()
+        : new Promise<InfiniteQueryPages<TData>>(() => {}),
   };
 }
 

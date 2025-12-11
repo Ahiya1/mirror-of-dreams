@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { withRateLimit } from '@/server/lib/api-rate-limit';
 import { supabase } from '@/server/lib/supabase';
+import { passwordSchema } from '@/types/schemas';
 
 export async function POST(request: NextRequest) {
   return withRateLimit(request, async () => {
@@ -24,31 +25,14 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      // Validate password strength
-      if (newPassword.length < 8) {
+      // Validate password strength using shared schema
+      const passwordResult = passwordSchema.safeParse(newPassword);
+      if (!passwordResult.success) {
         return NextResponse.json(
-          { success: false, error: 'Password must be at least 8 characters' },
-          { status: 400 }
-        );
-      }
-
-      if (!/[A-Z]/.test(newPassword)) {
-        return NextResponse.json(
-          { success: false, error: 'Password must contain at least one uppercase letter' },
-          { status: 400 }
-        );
-      }
-
-      if (!/[a-z]/.test(newPassword)) {
-        return NextResponse.json(
-          { success: false, error: 'Password must contain at least one lowercase letter' },
-          { status: 400 }
-        );
-      }
-
-      if (!/[0-9]/.test(newPassword)) {
-        return NextResponse.json(
-          { success: false, error: 'Password must contain at least one number' },
+          {
+            success: false,
+            error: passwordResult.error.errors[0].message,
+          },
           { status: 400 }
         );
       }

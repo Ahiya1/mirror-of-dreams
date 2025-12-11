@@ -120,10 +120,10 @@ describe('signupSchema', () => {
   });
 
   describe('password validation', () => {
-    test('should reject password shorter than 6 characters', () => {
+    test('should reject password shorter than 8 characters', () => {
       const invalidData = {
         email: 'test@example.com',
-        password: '12345',
+        password: 'Short1A',
         name: 'Test User',
       };
 
@@ -132,14 +132,66 @@ describe('signupSchema', () => {
       expect(result.success).toBe(false);
       if (!result.success) {
         expect(result.error.issues[0].path).toContain('password');
-        expect(result.error.issues[0].message).toBe('Password must be at least 6 characters');
+        expect(result.error.issues[0].message).toBe('Password must be at least 8 characters');
       }
     });
 
-    test('should accept password with exactly 6 characters', () => {
+    test('should reject password without uppercase letter', () => {
+      const invalidData = {
+        email: 'test@example.com',
+        password: 'password123',
+        name: 'Test User',
+      };
+
+      const result = signupSchema.safeParse(invalidData);
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues[0].path).toContain('password');
+        expect(result.error.issues[0].message).toBe(
+          'Password must contain at least one uppercase letter'
+        );
+      }
+    });
+
+    test('should reject password without lowercase letter', () => {
+      const invalidData = {
+        email: 'test@example.com',
+        password: 'PASSWORD123',
+        name: 'Test User',
+      };
+
+      const result = signupSchema.safeParse(invalidData);
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues[0].path).toContain('password');
+        expect(result.error.issues[0].message).toBe(
+          'Password must contain at least one lowercase letter'
+        );
+      }
+    });
+
+    test('should reject password without number', () => {
+      const invalidData = {
+        email: 'test@example.com',
+        password: 'PasswordABC',
+        name: 'Test User',
+      };
+
+      const result = signupSchema.safeParse(invalidData);
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues[0].path).toContain('password');
+        expect(result.error.issues[0].message).toBe('Password must contain at least one number');
+      }
+    });
+
+    test('should accept password meeting all requirements', () => {
       const validData = {
         email: 'test@example.com',
-        password: '123456',
+        password: 'Password1',
         name: 'Test User',
       };
 
@@ -148,7 +200,7 @@ describe('signupSchema', () => {
       expect(result.success).toBe(true);
     });
 
-    test('should accept long password', () => {
+    test('should accept long password with complexity', () => {
       const validData = {
         email: 'test@example.com',
         password: 'AVeryLongAndSecurePassword123!@#',
@@ -296,7 +348,7 @@ describe('changePasswordSchema', () => {
   test('should accept valid password change', () => {
     const validData = {
       currentPassword: 'oldPassword',
-      newPassword: 'newPassword123',
+      newPassword: 'NewPassword1',
     };
 
     const result = changePasswordSchema.safeParse(validData);
@@ -304,15 +356,18 @@ describe('changePasswordSchema', () => {
     expect(result.success).toBe(true);
   });
 
-  test('should reject new password shorter than 6 characters', () => {
+  test('should reject new password not meeting complexity requirements', () => {
     const invalidData = {
       currentPassword: 'oldPassword',
-      newPassword: '12345',
+      newPassword: 'short1',
     };
 
     const result = changePasswordSchema.safeParse(invalidData);
 
     expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0].path).toContain('newPassword');
+    }
   });
 });
 

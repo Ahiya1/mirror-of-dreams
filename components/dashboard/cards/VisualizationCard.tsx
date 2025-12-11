@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import DashboardCard, {
   CardHeader,
@@ -40,8 +40,14 @@ const VisualizationCard: React.FC<VisualizationCardProps> = ({
     limit: 1,
   });
 
-  const latestVisualization = visualizationsData?.items?.[0];
-  const hasVisualizations = (visualizationsData?.total || 0) > 0;
+  const latestVisualization = useMemo(
+    () => visualizationsData?.items?.[0],
+    [visualizationsData?.items]
+  );
+  const hasVisualizations = useMemo(
+    () => (visualizationsData?.total || 0) > 0,
+    [visualizationsData?.total]
+  );
 
   return (
     <DashboardCard
@@ -333,4 +339,4 @@ const VisualizationCard: React.FC<VisualizationCardProps> = ({
   );
 };
 
-export default VisualizationCard;
+export default React.memo(VisualizationCard);

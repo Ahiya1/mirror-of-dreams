@@ -110,7 +110,7 @@ function calculateDaysLeft(targetDate: string | null): number | null {
 }
 
 async function getDreamWithStats(dreamId: string, userId: string) {
-  // Get dream
+  // Query 1: Get dream (must complete first to verify access)
   const { data: dream, error: dreamError } = await supabase
     .from('dreams')
     .select('*')
@@ -125,25 +125,26 @@ async function getDreamWithStats(dreamId: string, userId: string) {
     });
   }
 
-  // Get reflection count and last reflection
-  const { count: reflectionCount, error: countError } = await supabase
-    .from('reflections')
-    .select('*', { count: 'exact', head: true })
-    .eq('dream_id', dreamId);
-
-  const { data: lastReflection, error: lastError } = await supabase
-    .from('reflections')
-    .select('created_at')
-    .eq('dream_id', dreamId)
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .single();
+  // Queries 2 & 3: Run in parallel to fix N+1 query pattern
+  const [countResult, lastReflectionResult] = await Promise.all([
+    supabase
+      .from('reflections')
+      .select('*', { count: 'exact', head: true })
+      .eq('dream_id', dreamId),
+    supabase
+      .from('reflections')
+      .select('created_at')
+      .eq('dream_id', dreamId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single(),
+  ]);
 
   return {
     ...dream,
     daysLeft: calculateDaysLeft(dream.target_date),
-    reflectionCount: reflectionCount || 0,
-    lastReflectionAt: lastReflection?.created_at || null,
+    reflectionCount: countResult.count || 0,
+    lastReflectionAt: lastReflectionResult.data?.created_at || null,
   };
 }
 
@@ -361,7 +362,12 @@ export const dreamsRouter = router({
     }
 
     // Prepare update data with timestamp
-    const updateData: any = { status: input.status };
+    const updateData: {
+      status: 'active' | 'achieved' | 'archived' | 'released';
+      achieved_at?: string;
+      archived_at?: string;
+      released_at?: string;
+    } = { status: input.status };
 
     if (input.status === 'achieved') {
       updateData.achieved_at = new Date().toISOString();

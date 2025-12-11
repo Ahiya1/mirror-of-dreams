@@ -2,9 +2,12 @@
 
 'use client';
 
+import { inferRouterOutputs } from '@trpc/server';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
+
+import type { AppRouter } from '@/server/trpc/routers/_app';
 
 import { EvolutionHistory } from '@/components/dreams/EvolutionHistory';
 import { AppNavigation } from '@/components/shared/AppNavigation';
@@ -16,6 +19,9 @@ import {
   AnimatedBackground,
 } from '@/components/ui/glass';
 import { trpc } from '@/lib/trpc';
+
+type RouterOutput = inferRouterOutputs<AppRouter>;
+type ReflectionItem = RouterOutput['reflections']['list']['items'][number];
 
 // Lazy load EvolutionModal - reduces initial bundle size
 const EvolutionModal = dynamic(
@@ -50,7 +56,8 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
   );
 
   // Filter reflections by dreamId (camelCase from API response)
-  const dreamReflections = reflections?.items?.filter((r: any) => r.dreamId === params.id) || [];
+  const dreamReflections =
+    reflections?.items?.filter((r: ReflectionItem) => r.dreamId === params.id) || [];
 
   const reflectionCount = dreamReflections.length;
   const isEligibleForGeneration = reflectionCount >= MIN_REFLECTIONS_FOR_GENERATION;
@@ -411,7 +418,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
           <h2 className="text-h3 mb-4 font-semibold text-white">Reflections ({reflectionCount})</h2>
           {dreamReflections.length > 0 ? (
             <div className="space-y-4">
-              {dreamReflections.map((reflection: any) => (
+              {dreamReflections.map((reflection: ReflectionItem) => (
                 <GlassCard
                   key={reflection.id}
                   interactive
@@ -419,14 +426,14 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
                   className="p-4"
                 >
                   <div className="text-body-sm mb-2 text-white/60">
-                    {new Date(reflection.created_at).toLocaleDateString()}
+                    {new Date(reflection.createdAt).toLocaleDateString()}
                   </div>
                   <div className="text-body mb-2 line-clamp-2 text-white/90">
                     {reflection.dream?.substring(0, 150)}...
                   </div>
                   <div className="text-body-sm flex gap-4">
                     <span className="text-mirror-purple-light capitalize">{reflection.tone}</span>
-                    <span className="text-white/60">{reflection.word_count} words</span>
+                    <span className="text-white/60">{reflection.wordCount} words</span>
                   </div>
                 </GlassCard>
               ))}

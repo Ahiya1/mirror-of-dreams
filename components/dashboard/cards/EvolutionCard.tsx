@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import DashboardCard, {
   CardHeader,
@@ -39,19 +39,23 @@ const EvolutionCard: React.FC<EvolutionCardProps> = ({ animated = true, classNam
   const latestReport = reportsData?.reports?.[0];
   const hasReports = (reportsData?.total || 0) > 0;
 
-  // Calculate progress (rough estimate based on eligibility)
-  const progress = {
-    current: 0,
-    threshold: 4,
-    percentage: 0,
-  };
+  // Calculate progress (rough estimate based on eligibility) - memoized
+  const progress = useMemo(() => {
+    const progressObj = {
+      current: 0,
+      threshold: 4,
+      percentage: 0,
+    };
 
-  if (eligibilityData && !hasReports) {
-    // If no reports yet, show progress toward first report
-    // This is a placeholder - ideally would get reflection count per dream
-    progress.current = 0;
-    progress.percentage = 0;
-  }
+    if (eligibilityData && !hasReports) {
+      // If no reports yet, show progress toward first report
+      // This is a placeholder - ideally would get reflection count per dream
+      progressObj.current = 0;
+      progressObj.percentage = 0;
+    }
+
+    return progressObj;
+  }, [eligibilityData, hasReports]);
 
   return (
     <DashboardCard
@@ -431,4 +435,4 @@ const EvolutionCard: React.FC<EvolutionCardProps> = ({ animated = true, classNam
   );
 };
 
-export default EvolutionCard;
+export default React.memo(EvolutionCard);

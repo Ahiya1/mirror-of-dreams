@@ -1,8 +1,11 @@
 'use client';
 
+import { inferRouterOutputs } from '@trpc/server';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
+
+import type { AppRouter } from '@/server/trpc/routers/_app';
 
 import DashboardCard, {
   CardHeader,
@@ -13,10 +16,27 @@ import DashboardCard, {
 import { CosmicLoader, GlowButton } from '@/components/ui/glass';
 import { trpc } from '@/lib/trpc';
 
+type RouterOutput = inferRouterOutputs<AppRouter>;
+type DreamWithStats = RouterOutput['dreams']['list'][number];
+
 interface DreamsCardProps {
   animated?: boolean;
   className?: string;
 }
+
+// Category emoji mapping - moved outside component to avoid recreation on each render
+const CATEGORY_EMOJI: Record<string, string> = {
+  health: '\uD83C\uDFC3',
+  career: '\uD83D\uDCBC',
+  relationships: '\u2764\uFE0F',
+  financial: '\uD83D\uDCB0',
+  personal_growth: '\uD83C\uDF31',
+  creative: '\uD83C\uDFA8',
+  spiritual: '\uD83D\uDE4F',
+  entrepreneurial: '\uD83D\uDE80',
+  educational: '\uD83D\uDCDA',
+  other: '\u2B50',
+};
 
 /**
  * Active dreams card showing up to 3 active dreams
@@ -36,25 +56,14 @@ const DreamsCard: React.FC<DreamsCardProps> = ({ animated = true, className = ''
 
   const { data: limits } = trpc.dreams.getLimits.useQuery();
 
-  const activeDreams = dreams?.slice(0, 3) || [];
+  const activeDreams = useMemo(() => dreams?.slice(0, 3) || [], [dreams]);
 
-  const handleReflectOnDream = (dreamId: string) => {
-    router.push(`/reflection?dreamId=${dreamId}`);
-  };
-
-  // Category emoji mapping
-  const categoryEmoji: Record<string, string> = {
-    health: '🏃',
-    career: '💼',
-    relationships: '❤️',
-    financial: '💰',
-    personal_growth: '🌱',
-    creative: '🎨',
-    spiritual: '🙏',
-    entrepreneurial: '🚀',
-    educational: '📚',
-    other: '⭐',
-  };
+  const handleReflectOnDream = useCallback(
+    (dreamId: string) => {
+      router.push(`/reflection?dreamId=${dreamId}`);
+    },
+    [router]
+  );
 
   // Empty state component
   const EmptyState = () => (
@@ -98,8 +107,8 @@ const DreamsCard: React.FC<DreamsCardProps> = ({ animated = true, className = ''
           <EmptyState />
         ) : (
           <div className="dreams-list">
-            {activeDreams.map((dream: any, index: number) => {
-              const emoji = categoryEmoji[dream.category || 'other'] || '⭐';
+            {activeDreams.map((dream: DreamWithStats, index: number) => {
+              const emoji = CATEGORY_EMOJI[dream.category || 'other'] || '\u2B50';
               const daysLeft = dream.daysLeft;
 
               return (
@@ -396,4 +405,4 @@ const DreamsCard: React.FC<DreamsCardProps> = ({ animated = true, className = ''
   );
 };
 
-export default DreamsCard;
+export default React.memo(DreamsCard);
