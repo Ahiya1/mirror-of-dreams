@@ -294,7 +294,7 @@ plan-24:
       num_explorers: 4
       complexity_level: COMPLEX
     total_iterations: 3
-    current_iteration: 57
-    current_phase: validation
+    current_iteration: 58
+    current_phase: exploration
 current_plan: plan-24
-global_iteration_counter: 56
+global_iteration_counter: 57
