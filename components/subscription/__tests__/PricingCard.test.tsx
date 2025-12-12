@@ -86,8 +86,8 @@ describe('PricingCard', () => {
   ];
 
   const defaultProps = {
-    tier: 'seeker' as const,
-    name: 'Seeker',
+    tier: 'pro' as const,
+    name: 'Pro',
     monthlyPrice: 19,
     yearlyPrice: 190,
     description: 'For dedicated dreamers',
@@ -102,7 +102,7 @@ describe('PricingCard', () => {
   describe('basic rendering', () => {
     it('renders tier name', () => {
       render(<PricingCard {...defaultProps} />);
-      expect(screen.getByText('Seeker')).toBeInTheDocument();
+      expect(screen.getByText('Pro')).toBeInTheDocument();
     });
 
     it('renders description', () => {
@@ -183,14 +183,14 @@ describe('PricingCard', () => {
     });
 
     it('does not show popular badge when is current plan', () => {
-      render(<PricingCard {...defaultProps} popular={true} currentUserTier="seeker" />);
+      render(<PricingCard {...defaultProps} popular={true} currentUserTier="pro" />);
       expect(screen.queryByText('Most Popular')).not.toBeInTheDocument();
     });
   });
 
   describe('current plan badge', () => {
     it('shows current plan badge when tier matches currentUserTier', () => {
-      render(<PricingCard {...defaultProps} currentUserTier="seeker" />);
+      render(<PricingCard {...defaultProps} currentUserTier="pro" />);
       // May have multiple "Current Plan" elements (badge + button)
       expect(screen.getAllByText('Current Plan').length).toBeGreaterThan(0);
     });
@@ -222,28 +222,26 @@ describe('PricingCard', () => {
 
   describe('paid tier CTA', () => {
     it('shows checkout button for paid tiers when not current plan', () => {
-      render(<PricingCard {...defaultProps} tier="seeker" currentUserTier="free" />);
+      render(<PricingCard {...defaultProps} tier="pro" currentUserTier="free" />);
       expect(screen.getByTestId('checkout-button')).toBeInTheDocument();
     });
 
     it('shows disabled Current Plan button when on current plan', () => {
-      render(<PricingCard {...defaultProps} tier="seeker" currentUserTier="seeker" />);
+      render(<PricingCard {...defaultProps} tier="pro" currentUserTier="pro" />);
       const button = screen.getByRole('button', { name: 'Current Plan' });
       expect(button).toBeDisabled();
     });
 
     it('passes correct props to CheckoutButton', () => {
-      render(<PricingCard {...defaultProps} tier="seeker" billingPeriod="yearly" popular />);
+      render(<PricingCard {...defaultProps} tier="pro" billingPeriod="yearly" popular />);
       const checkoutButton = screen.getByTestId('checkout-button');
-      expect(checkoutButton).toHaveAttribute('data-tier', 'seeker');
+      expect(checkoutButton).toHaveAttribute('data-tier', 'pro');
       expect(checkoutButton).toHaveAttribute('data-period', 'yearly');
       expect(checkoutButton).toHaveAttribute('data-variant', 'primary');
     });
 
     it('uses secondary variant for non-popular tiers', () => {
-      render(
-        <PricingCard {...defaultProps} tier="seeker" billingPeriod="monthly" popular={false} />
-      );
+      render(<PricingCard {...defaultProps} tier="pro" billingPeriod="monthly" popular={false} />);
       const checkoutButton = screen.getByTestId('checkout-button');
       expect(checkoutButton).toHaveAttribute('data-variant', 'secondary');
     });
@@ -257,7 +255,7 @@ describe('PricingCard', () => {
     });
 
     it('applies border styling when current plan', () => {
-      render(<PricingCard {...defaultProps} currentUserTier="seeker" />);
+      render(<PricingCard {...defaultProps} currentUserTier="pro" />);
       const card = screen.getByTestId('glass-card');
       expect(card.className).toContain('border-green-500');
     });
@@ -269,7 +267,7 @@ describe('PricingCard', () => {
     });
 
     it('is not interactive when current plan', () => {
-      render(<PricingCard {...defaultProps} popular={true} currentUserTier="seeker" />);
+      render(<PricingCard {...defaultProps} popular={true} currentUserTier="pro" />);
       const card = screen.getByTestId('glass-card');
       expect(card).toHaveAttribute('data-interactive', 'false');
     });

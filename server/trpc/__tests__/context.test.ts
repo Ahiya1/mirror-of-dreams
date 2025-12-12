@@ -74,7 +74,7 @@ describe('createContext', () => {
 
   describe('when no token is present', () => {
     it('should return null user when no cookie or header token', async () => {
-      vi.mocked(getAuthCookie).mockResolvedValue(null);
+      vi.mocked(getAuthCookie).mockResolvedValue(undefined);
       vi.mocked(mockRequest.headers.get).mockReturnValue(null);
 
       const { createContext } = await import('../context');
@@ -180,7 +180,7 @@ describe('createContext', () => {
         'test-jwt-secret-at-least-32-characters-long'
       );
 
-      vi.mocked(getAuthCookie).mockResolvedValue(null);
+      vi.mocked(getAuthCookie).mockResolvedValue(undefined);
       vi.mocked(mockRequest.headers.get).mockReturnValue(`Bearer ${headerToken}`);
 
       const mockFrom = vi.fn().mockReturnValue({
@@ -205,7 +205,7 @@ describe('createContext', () => {
         'test-jwt-secret-at-least-32-characters-long'
       );
 
-      vi.mocked(getAuthCookie).mockResolvedValue(null);
+      vi.mocked(getAuthCookie).mockResolvedValue(undefined);
       vi.mocked(mockRequest.headers.get).mockReturnValue(`Bearer ${token}`);
 
       const mockFrom = vi.fn().mockReturnValue({
@@ -483,7 +483,7 @@ describe('createContext', () => {
 
   describe('context shape', () => {
     it('should always include req property', async () => {
-      vi.mocked(getAuthCookie).mockResolvedValue(null);
+      vi.mocked(getAuthCookie).mockResolvedValue(undefined);
       vi.mocked(mockRequest.headers.get).mockReturnValue(null);
 
       const { createContext } = await import('../context');
@@ -494,7 +494,7 @@ describe('createContext', () => {
     });
 
     it('should always include user property (even if null)', async () => {
-      vi.mocked(getAuthCookie).mockResolvedValue(null);
+      vi.mocked(getAuthCookie).mockResolvedValue(undefined);
       vi.mocked(mockRequest.headers.get).mockReturnValue(null);
 
       const { createContext } = await import('../context');

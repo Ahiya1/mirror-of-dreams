@@ -74,7 +74,7 @@ import { CheckoutButton } from '../CheckoutButton';
 
 describe('CheckoutButton', () => {
   const defaultProps = {
-    tier: 'seeker' as const,
+    tier: 'pro' as const,
     period: 'monthly' as const,
   };
 
@@ -91,12 +91,12 @@ describe('CheckoutButton', () => {
   describe('rendering', () => {
     it('renders button with tier name', () => {
       render(<CheckoutButton {...defaultProps} />);
-      expect(screen.getByText('Start Seeker')).toBeInTheDocument();
+      expect(screen.getByText('Start Pro')).toBeInTheDocument();
     });
 
-    it('renders button with devoted tier name', () => {
-      render(<CheckoutButton {...defaultProps} tier="devoted" />);
-      expect(screen.getByText('Start Devoted')).toBeInTheDocument();
+    it('renders button with unlimited tier name', () => {
+      render(<CheckoutButton {...defaultProps} tier="unlimited" />);
+      expect(screen.getByText('Start Unlimited')).toBeInTheDocument();
     });
 
     it('applies custom className', () => {
@@ -128,7 +128,7 @@ describe('CheckoutButton', () => {
       render(<CheckoutButton {...defaultProps} />);
       fireEvent.click(screen.getByRole('button'));
 
-      expect(mockPush).toHaveBeenCalledWith('/auth/signup?plan=seeker&period=monthly');
+      expect(mockPush).toHaveBeenCalledWith('/auth/signup?plan=pro&period=monthly');
     });
 
     it('includes yearly period in redirect', () => {
@@ -140,7 +140,7 @@ describe('CheckoutButton', () => {
       render(<CheckoutButton {...defaultProps} period="yearly" />);
       fireEvent.click(screen.getByRole('button'));
 
-      expect(mockPush).toHaveBeenCalledWith('/auth/signup?plan=seeker&period=yearly');
+      expect(mockPush).toHaveBeenCalledWith('/auth/signup?plan=pro&period=yearly');
     });
   });
 
@@ -148,26 +148,26 @@ describe('CheckoutButton', () => {
     it('shows info toast when already on selected tier', () => {
       mockUseAuth.mockReturnValue({
         isAuthenticated: true,
-        user: { tier: 'seeker' },
+        user: { tier: 'pro' },
       });
 
-      render(<CheckoutButton {...defaultProps} tier="seeker" />);
+      render(<CheckoutButton {...defaultProps} tier="pro" />);
       fireEvent.click(screen.getByRole('button'));
 
-      expect(mockToast.info).toHaveBeenCalledWith("You're already on the Seeker plan.");
+      expect(mockToast.info).toHaveBeenCalledWith("You're already on the Pro plan.");
       expect(mockMutate).not.toHaveBeenCalled();
     });
 
     it('capitalizes tier name in toast', () => {
       mockUseAuth.mockReturnValue({
         isAuthenticated: true,
-        user: { tier: 'devoted' },
+        user: { tier: 'unlimited' },
       });
 
-      render(<CheckoutButton {...defaultProps} tier="devoted" />);
+      render(<CheckoutButton {...defaultProps} tier="unlimited" />);
       fireEvent.click(screen.getByRole('button'));
 
-      expect(mockToast.info).toHaveBeenCalledWith("You're already on the Devoted plan.");
+      expect(mockToast.info).toHaveBeenCalledWith("You're already on the Unlimited plan.");
     });
   });
 
@@ -182,7 +182,7 @@ describe('CheckoutButton', () => {
       fireEvent.click(screen.getByRole('button'));
 
       expect(mockMutate).toHaveBeenCalledWith({
-        tier: 'seeker',
+        tier: 'pro',
         period: 'monthly',
       });
     });
@@ -197,7 +197,7 @@ describe('CheckoutButton', () => {
       fireEvent.click(screen.getByRole('button'));
 
       expect(mockMutate).toHaveBeenCalledWith({
-        tier: 'seeker',
+        tier: 'pro',
         period: 'yearly',
       });
     });
@@ -246,7 +246,7 @@ describe('CheckoutButton', () => {
       // We need to test the intermediate loading state
       // For now, just verify the button text changes pattern exists
       render(<CheckoutButton {...defaultProps} />);
-      expect(screen.getByText('Start Seeker')).toBeInTheDocument();
+      expect(screen.getByText('Start Pro')).toBeInTheDocument();
     });
   });
 });

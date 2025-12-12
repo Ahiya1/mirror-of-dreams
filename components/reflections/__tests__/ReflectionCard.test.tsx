@@ -25,8 +25,19 @@ describe('ReflectionCard', () => {
       '## Title\n\nThis is **bold** and *italic* text that provides insight into your dream journey.',
     wordCount: 150,
     createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
     isPremium: false,
     tags: [],
+    dream: 'I had a dream about flying over mountains.',
+    plan: 'To explore the meaning of freedom in my life.',
+    hasDate: 'yes' as const,
+    dreamDate: new Date().toISOString(),
+    relationship: 'Personal growth',
+    offering: 'Insight into my subconscious',
+    viewCount: 0,
+    estimatedReadTime: null,
+    rating: null,
+    userFeedback: null,
   };
 
   describe('rendering', () => {
