@@ -15,6 +15,7 @@ const {
   cacheMock,
   promptsMock,
   anthropicMock,
+  contextBuilderMock,
 } = vi.hoisted(() => {
   const createQueryMock = <T>(response: {
     data: T | null;
@@ -179,6 +180,12 @@ const {
     },
   };
 
+  // Context builder mock for Clarify tests
+  const contextBuilder = {
+    buildClarifyContext: vi.fn().mockResolvedValue('[User Context]\nMocked context for testing'),
+    getUserPatterns: vi.fn().mockResolvedValue([]),
+  };
+
   return {
     supabaseMock: supabase,
     createSupabaseQueryMock: createQueryMock,
@@ -188,6 +195,7 @@ const {
     cacheMock: cache,
     promptsMock: prompts,
     anthropicMock: anthropicClient,
+    contextBuilderMock: contextBuilder,
   };
 });
 
@@ -261,6 +269,12 @@ vi.mock('@anthropic-ai/sdk', () => {
   };
 });
 
+// Mock the Clarify context builder to avoid complex cache/db dependencies
+vi.mock('@/lib/clarify/context-builder', () => ({
+  buildClarifyContext: contextBuilderMock.buildClarifyContext,
+  getUserPatterns: contextBuilderMock.getUserPatterns,
+}));
+
 // Import appRouter AFTER mocks are set up
 import { appRouter } from '@/server/trpc/routers/_app';
 
@@ -327,6 +341,12 @@ export function createTestCaller(user: User | null = null) {
   cacheMock.cacheGet.mockResolvedValue(null);
   cacheMock.cacheSet.mockResolvedValue(undefined);
 
+  // Restore context builder mock after clearing
+  contextBuilderMock.buildClarifyContext.mockResolvedValue(
+    '[User Context]\nMocked context for testing'
+  );
+  contextBuilderMock.getUserPatterns.mockResolvedValue([]);
+
   // Create fresh caller with mocked context
   const caller = appRouter.createCaller({
     user,
@@ -370,7 +390,7 @@ export function createTestCaller(user: User | null = null) {
   };
 }
 
-export { supabaseMock, cookieMock, cacheMock, promptsMock, anthropicMock };
+export { supabaseMock, cookieMock, cacheMock, promptsMock, anthropicMock, contextBuilderMock };
 
 /**
  * Type for the full query mock chain returned by supabase.from()

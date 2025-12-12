@@ -1,0 +1,201 @@
+plan_id: plan-24
+created_at: 2025-12-12T17:30:00Z
+status: PLANNED
+mode: production
+total_iterations: 3
+
+strategy: |
+  Systematic test coverage expansion from 79% to 95%+ through three focused iterations:
+  1. Server-side gaps (clarify router, auth router, cookies, supabase, tRPC)
+  2. Component coverage (subscription, dashboard, shared, clarify components)
+  3. E2E expansion (profile, subscription, admin, clarify, error handling)
+
+  Key dependencies:
+  - PayPal SDK mock must be created early in Iteration 2
+  - Anthropic tool_use mock extension needed in Iteration 1
+  - Admin/paid-user fixtures needed for Iteration 3 E2E tests
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 56
+    name: "Server-Side Remaining Gaps"
+    vision: "Close all server-side coverage gaps to achieve 90%+ router/lib coverage"
+    scope: |
+      ## Focus Areas
+      1. Clarify Router (45% -> 90%)
+         - createSession with initial message
+         - sendMessage with tool_use blocks
+         - Tool execution flow (createDream)
+         - Error handling in AI calls
+         - Pattern extraction
+
+      2. Auth Router (70% -> 90%)
+         - Email verification token flow
+         - Monthly usage reset on signin
+         - Update profile error handling
+         - Delete account flow
+
+      3. Cookies Module (33% -> 90%)
+         - setAuthCookie() function
+         - getAuthCookie() function
+         - clearAuthCookie() function
+         - Next.js cookies() API mocking
+
+      4. Supabase Client (0% -> 90%)
+         - Client initialization
+         - Environment variable handling
+
+      5. tRPC Core (57% -> 90%)
+         - Error formatter function
+         - Sentry capture logic
+         - Zod error flattening
+
+      ## Expected Output
+      - ~110 new tests
+      - All P0 server modules at 90%+ coverage
+      - Enhanced Anthropic mock with tool_use support
+
+    status: PENDING
+    dependencies: []
+    estimated_tests: 110
+    risk_level: MEDIUM
+
+  - iteration_id: 2
+    global_iteration: 57
+    name: "Component Coverage Expansion"
+    vision: "Achieve comprehensive component test coverage for all UI components at 90%+"
+    scope: |
+      ## Pre-requisite
+      Create PayPal SDK mock module (test/mocks/paypal-sdk.tsx)
+
+      ## Focus Areas
+      1. Subscription Components (0% -> 90%)
+         - CancelSubscriptionModal
+         - PayPalCheckoutModal (requires PayPal SDK mock)
+         - SubscriptionStatusCard
+
+      2. Dashboard Cards (gaps -> 90%)
+         - SubscriptionCard
+         - DashboardGrid
+         - WelcomeSection
+
+      3. Shared/Navigation Components (0% -> 90%)
+         - AppNavigation (complex, responsive)
+         - UserDropdownMenu
+         - MobileNavigationMenu
+         - CosmicBackground
+         - NavigationBase
+
+      4. Clarify Components (0% -> 90%)
+         - ClarifyCard (all states, access checks)
+
+      5. Profile Components (0% -> 90%)
+         - NotificationsSection
+         - ProfileInfoSection
+         - TimezoneSection
+
+      6. Mobile/Reflection Components
+         - MobileBottomSheet
+         - ReflectionPageRenderer
+         - ReflectionFilters
+         - BottomNavigation
+
+      ## Expected Output
+      - ~230 new tests
+      - PayPal SDK mock infrastructure
+      - All component modules at 90%+ coverage
+
+    status: PENDING
+    dependencies: [1]
+    estimated_tests: 230
+    risk_level: MEDIUM
+
+  - iteration_id: 3
+    global_iteration: 58
+    name: "E2E Test Expansion"
+    vision: "Double E2E coverage with comprehensive user flow testing (6 -> 12+ specs)"
+    scope: |
+      ## Infrastructure First
+      - Create admin.fixture.ts
+      - Create paid-user.fixture.ts
+      - Create network.fixture.ts
+      - Update Playwright config with admin/paid projects
+
+      ## New Spec Files
+      1. Profile E2E (e2e/profile/profile.spec.ts)
+         - Profile page display
+         - Edit name, change password
+         - Delete account flow
+         - Demo user restrictions
+         - ~18-20 tests
+
+      2. Subscription E2E (e2e/subscription/subscription.spec.ts)
+         - Pricing page display
+         - Billing period toggle
+         - PayPal checkout (mocked)
+         - Usage limits enforcement
+         - ~15-18 tests
+
+      3. Admin E2E (e2e/admin/admin.spec.ts)
+         - Authorization checks
+         - Stats display
+         - User tables
+         - Webhook events table
+         - ~12-15 tests
+
+      4. Clarify E2E (e2e/clarify/clarify.spec.ts)
+         - Access control (free vs paid)
+         - Session list and management
+         - Chat interface
+         - Tool interactions display
+         - ~20-25 tests
+
+      5. Error Handling E2E (e2e/error/error.spec.ts)
+         - Error boundary behavior
+         - Network error recovery
+         - Session expiry handling
+         - Rate limit display
+         - ~8-10 tests
+
+      ## Expected Output
+      - 5+ new spec files (12+ total)
+      - ~75 new E2E tests (~250 total)
+      - New page objects for each spec
+      - Admin and paid-user test fixtures
+
+    status: PENDING
+    dependencies: [1, 2]
+    estimated_tests: 75
+    risk_level: MEDIUM
+
+success_criteria:
+  - description: "Overall coverage at 95%+ lines"
+    metric: "npm run test:coverage | grep Lines"
+    target: ">= 95%"
+
+  - description: "Branch coverage at 90%+"
+    metric: "npm run test:coverage | grep Branches"
+    target: ">= 90%"
+
+  - description: "Function coverage at 90%+"
+    metric: "npm run test:coverage | grep Functions"
+    target: ">= 90%"
+
+  - description: "E2E test files count"
+    metric: "ls e2e/**/*.spec.ts | wc -l"
+    target: ">= 12"
+
+  - description: "All tests pass"
+    metric: "npm run test:coverage -- --run"
+    target: "exit 0"
+
+  - description: "Zero flaky tests"
+    metric: "10 consecutive CI runs"
+    target: "0 failures"
+
+notes: |
+  - Vision document updated to reflect current 79% baseline (not 57%)
+  - QuickStatsCard mentioned in vision but file doesn't exist - may be renamed
+  - Some subscription components already have tests (CheckoutButton, FeatureLockOverlay, etc.)
+  - PayPal SDK mock is the critical blocker for Iteration 2
+  - E2E tests may need mocked auth contexts for admin/paid-user tests

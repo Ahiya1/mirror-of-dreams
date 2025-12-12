@@ -16,7 +16,17 @@ export interface ThinkingContentBlock {
   thinking: string;
 }
 
-export type ContentBlock = TextContentBlock | ThinkingContentBlock;
+/**
+ * Tool use content block from Anthropic API
+ */
+export interface ToolUseContentBlock {
+  type: 'tool_use';
+  id: string;
+  name: string;
+  input: Record<string, unknown>;
+}
+
+export type ContentBlock = TextContentBlock | ThinkingContentBlock | ToolUseContentBlock;
 
 /**
  * Usage information from API response
@@ -37,7 +47,7 @@ export interface AnthropicMessageResponse {
   role: 'assistant';
   content: ContentBlock[];
   model: string;
-  stop_reason: 'end_turn' | 'max_tokens' | 'stop_sequence' | null;
+  stop_reason: 'end_turn' | 'max_tokens' | 'stop_sequence' | 'tool_use' | null;
   stop_sequence: string | null;
   usage: Usage;
 }
@@ -249,3 +259,123 @@ export const mockResponses = {
     stop_reason: 'max_tokens',
   }),
 };
+
+// =============================================================================
+// TOOL USE HELPERS
+// =============================================================================
+
+/**
+ * Input schema for createDream tool
+ */
+export interface CreateDreamToolInput {
+  title: string;
+  description?: string;
+  category?: string;
+}
+
+/**
+ * Creates a mock tool_use response for createDream
+ *
+ * @param toolInput - The input that Claude would pass to the tool
+ * @param toolUseId - Optional custom tool use ID (defaults to 'toolu_test_123')
+ * @returns AnthropicMessageResponse with tool_use content block
+ *
+ * @example
+ * ```typescript
+ * const response = createMockToolUseResponse({
+ *   title: 'My Dream',
+ *   category: 'personal_growth',
+ * });
+ * ```
+ */
+export const createMockToolUseResponse = (
+  toolInput: CreateDreamToolInput,
+  toolUseId: string = 'toolu_test_123'
+): AnthropicMessageResponse => ({
+  id: 'msg_tool_123',
+  type: 'message',
+  role: 'assistant',
+  content: [
+    {
+      type: 'tool_use',
+      id: toolUseId,
+      name: 'createDream',
+      input: toolInput as unknown as Record<string, unknown>,
+    },
+  ],
+  model: 'claude-sonnet-4-5-20250929',
+  stop_reason: 'tool_use',
+  stop_sequence: null,
+  usage: { input_tokens: 100, output_tokens: 30 },
+});
+
+/**
+ * Creates a mock follow-up text response after tool execution
+ *
+ * @param text - The text response from Claude after tool execution
+ * @returns AnthropicMessageResponse with text content block
+ *
+ * @example
+ * ```typescript
+ * const followUp = createMockToolFollowUpResponse("I've created that dream for you!");
+ * ```
+ */
+export const createMockToolFollowUpResponse = (text: string): AnthropicMessageResponse => ({
+  id: 'msg_followup_456',
+  type: 'message',
+  role: 'assistant',
+  content: [{ type: 'text', text }],
+  model: 'claude-sonnet-4-5-20250929',
+  stop_reason: 'end_turn',
+  stop_sequence: null,
+  usage: { input_tokens: 150, output_tokens: 40 },
+});
+
+/**
+ * Type for the mock function from vi.fn()
+ */
+type MockFunction = ReturnType<typeof vi.fn>;
+
+/**
+ * Configures an Anthropic mock to return a tool_use response followed by a text follow-up.
+ * This simulates the two-step tool use flow:
+ * 1. First API call returns tool_use block
+ * 2. After tool execution, second API call returns acknowledgment text
+ *
+ * @param messagesCreateMock - The messages.create mock function to configure
+ * @param toolInput - The tool input for createDream
+ * @param followUpText - The text response after tool execution
+ *
+ * @example
+ * ```typescript
+ * mockAnthropicToolUse(
+ *   anthropicMock.messages.create,
+ *   { title: 'My Dream', category: 'personal_growth' },
+ *   "I've created that dream for you!"
+ * );
+ * ```
+ */
+export function mockAnthropicToolUse(
+  messagesCreateMock: MockFunction,
+  toolInput: CreateDreamToolInput,
+  followUpText: string
+): void {
+  messagesCreateMock
+    .mockResolvedValueOnce(createMockToolUseResponse(toolInput))
+    .mockResolvedValueOnce(createMockToolFollowUpResponse(followUpText));
+}
+
+/**
+ * Creates a mock response with no text block (edge case for error handling)
+ * This simulates a response that has only tool_use but no text content
+ */
+export const createMockNoTextBlockResponse = (): AnthropicMessageResponse => ({
+  id: 'msg_no_text_123',
+  type: 'message',
+  role: 'assistant',
+  content: [], // Empty content array
+  model: 'claude-sonnet-4-5-20250929',
+  stop_reason: 'end_turn',
+  stop_sequence: null,
+  usage: { input_tokens: 100, output_tokens: 0 },
+});
