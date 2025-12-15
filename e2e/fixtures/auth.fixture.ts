@@ -4,9 +4,6 @@ import { test as base, expect, Page } from '@playwright/test';
 
 /**
  * Test user configuration
- *
- * Uses unique timestamps to avoid conflicts between test runs.
- * For authenticated tests, use demo login flow.
  */
 export function generateTestEmail(): string {
   return `e2e-test-${Date.now()}-${Math.random().toString(36).substring(7)}@test.local`;
@@ -18,59 +15,44 @@ export const TEST_USER = {
 };
 
 /**
- * Demo user login helper
- *
- * The application has a demo login feature on the landing page
- * that doesn't require credentials. The "Try It" button calls
- * the loginDemo tRPC mutation and redirects to dashboard.
- * This is the safest way to test authenticated flows.
+ * Demo user login helper (used in local development)
  */
 async function loginWithDemo(page: Page): Promise<void> {
-  // Go to landing page where the "Try It" demo button is located
   await page.goto('/');
   await page.waitForLoadState('networkidle');
 
-  // Look for the "Try It" demo login button specifically
-  // This button is in the hero section CTA area
   const demoButton = page.locator('button').filter({ hasText: 'Try It' }).first();
-
-  // Wait for the button to be visible with extended timeout
-  try {
-    await demoButton.waitFor({ state: 'visible', timeout: 15000 });
-    await demoButton.click();
-    // Wait for redirect to dashboard
-    await page.waitForURL('/dashboard', { timeout: 30000 });
-  } catch {
-    // Demo button not available - throw informative error
-    throw new Error(
-      'Demo login button not found on landing page. Authenticated tests require demo login functionality.'
-    );
-  }
+  await demoButton.waitFor({ state: 'visible', timeout: 15000 });
+  await demoButton.click();
+  await page.waitForURL('/dashboard', { timeout: 30000 });
 }
 
 /**
  * Extended test fixture with authenticated page context
+ *
+ * In CI: Uses storage state from global setup (already authenticated)
+ * Locally: Performs demo login per test
  *
  * Usage:
  * ```typescript
  * import { test, expect } from '../fixtures/auth.fixture';
  *
  * test('authenticated test', async ({ authenticatedPage }) => {
- *   // Page is already logged in
  *   await authenticatedPage.goto('/dashboard');
  * });
  * ```
  */
 export const test = base.extend<{ authenticatedPage: Page }>({
   authenticatedPage: async ({ page }, use) => {
-    try {
+    if (process.env.CI) {
+      // CI: Storage state handles auth, just navigate
+      await page.goto('/dashboard');
+      await page.waitForLoadState('domcontentloaded');
+    } else {
+      // Local: Perform demo login
       await loginWithDemo(page);
-      await use(page);
-    } catch {
-      // If demo login fails, provide clear error for debugging
-      console.error('Authentication fixture failed - demo login not available');
-      throw new Error('Demo login required for authenticated tests');
     }
+    await use(page);
   },
 });
 
