@@ -540,33 +540,45 @@
 .dashboard-card {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
   backdrop-filter: blur(40px) saturate(130%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-3xl);
   padding: var(--space-xl);
   position: relative;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.4s ease,
+    backdrop-filter 0.4s ease;
   height: 100%;
   display: flex;
   flex-direction: column;
   max-width: 100%;
   box-sizing: border-box;
+  /* Ambient glow - subtle purple aura at rest */
+  box-shadow:
+    0 4px 20px rgba(147, 51, 234, 0.08),
+    0 8px 40px rgba(124, 58, 237, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  /* Gentle breathing animation */
+  animation: cardAmbientPulse 8s ease-in-out infinite;
 }
 
 .dashboard-card::before {
   content: '';
   position: absolute;
-  inset: 1px;
+  inset: 0;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.08) 0%,
-    transparent 50%,
-    rgba(147, 51, 234, 0.02) 100%
+    rgba(255, 255, 255, 0.04) 0%,
+    transparent 40%,
+    rgba(147, 51, 234, 0.03) 70%,
+    rgba(251, 191, 36, 0.02) 100%
   );
   border-radius: var(--radius-3xl);
   pointer-events: none;
-  opacity: 0;
-  transition: opacity var(--transition-smooth);
+  opacity: 0.6;
+  transition: opacity 0.5s ease;
 }
 
 .dashboard-card::after {
@@ -595,11 +607,18 @@
   }
 
   .dashboard-card:hover {
-    transform: translateY(-4px) scale(1.01);
-    box-shadow: 0 20px 64px rgba(139, 92, 246, 0.4);
-    border-color: rgba(139, 92, 246, 0.3);
-    backdrop-filter: blur(50px) saturate(140%);
-    will-change: transform;
+    transform: translateY(-8px);
+    /* Multi-layer ethereal glow: purple core + golden warmth + ambient lift */
+    box-shadow:
+      0 8px 32px rgba(147, 51, 234, 0.3),
+      0 16px 48px rgba(124, 58, 237, 0.2),
+      0 24px 64px rgba(139, 92, 246, 0.15),
+      0 4px 16px rgba(251, 191, 36, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    border-color: rgba(167, 139, 250, 0.4);
+    backdrop-filter: blur(50px) saturate(160%);
+    /* Pause breathing animation on hover for clean effect */
+    animation-play-state: paused;
   }
 }
 
@@ -620,6 +639,23 @@
   }
   50% {
     transform: scale(1.01);
+  }
+}
+
+/* Ambient glow pulse - subtle mesmerizing effect */
+@keyframes cardAmbientPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 4px 20px rgba(147, 51, 234, 0.08),
+      0 8px 40px rgba(124, 58, 237, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+  50% {
+    box-shadow:
+      0 6px 28px rgba(147, 51, 234, 0.12),
+      0 12px 48px rgba(124, 58, 237, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 }
 
