@@ -538,87 +538,97 @@
 /* ╭─ DASHBOARD CARDS FOUNDATION ─────────────────────────────────────────╮ */
 
 .dashboard-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
-  backdrop-filter: blur(40px) saturate(130%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(40px) saturate(150%);
+  border: 1px solid transparent;
   border-radius: var(--radius-3xl);
   padding: var(--space-xl);
   position: relative;
   overflow: hidden;
   transition:
-    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 0.4s ease,
-    backdrop-filter 0.4s ease;
+    transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+    backdrop-filter 0.5s ease;
   height: 100%;
   display: flex;
   flex-direction: column;
   max-width: 100%;
   box-sizing: border-box;
-  /* Ambient glow - subtle purple aura at rest */
+  /* Deep luxury glow - light emanating from within */
   box-shadow:
-    0 4px 20px rgba(147, 51, 234, 0.08),
-    0 8px 40px rgba(124, 58, 237, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  /* Gentle breathing animation */
-  animation: cardAmbientPulse 8s ease-in-out infinite;
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 4px 16px rgba(147, 51, 234, 0.15),
+    0 8px 32px rgba(124, 58, 237, 0.1),
+    0 16px 48px rgba(88, 28, 135, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(147, 51, 234, 0.05);
+  /* Ambient aurora breathing */
+  animation: cardAuroraBreath 6s ease-in-out infinite;
 }
 
+/* Aurora gradient overlay - flowing colors */
 .dashboard-card::before {
   content: '';
   position: absolute;
   inset: 0;
+  border-radius: var(--radius-3xl);
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.04) 0%,
-    transparent 40%,
-    rgba(147, 51, 234, 0.03) 70%,
-    rgba(251, 191, 36, 0.02) 100%
+    rgba(147, 51, 234, 0.08) 0%,
+    rgba(124, 58, 237, 0.04) 25%,
+    transparent 50%,
+    rgba(251, 191, 36, 0.03) 75%,
+    rgba(236, 72, 153, 0.04) 100%
   );
-  border-radius: var(--radius-3xl);
+  opacity: 1;
   pointer-events: none;
-  opacity: 0.6;
-  transition: opacity 0.5s ease;
+  animation: auroraShift 12s ease-in-out infinite;
 }
 
+/* Shimmer light beam - moves continuously */
 .dashboard-card::after {
   content: '';
   position: absolute;
-  inset: -20%;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
   background: linear-gradient(
     45deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.05) 50%,
-    transparent 70%
+    transparent 40%,
+    rgba(255, 255, 255, 0.03) 45%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 55%,
+    transparent 60%
   );
-  transform: translateX(-100%);
-  transition: transform 0.8s ease;
+  transform: translateX(-100%) rotate(0deg);
   pointer-events: none;
+  animation: shimmerFlow 8s ease-in-out infinite;
 }
 
 /* Guard hover effects for touch devices - only apply on hover-capable devices */
 @media (hover: hover) {
   .dashboard-card:hover::before {
+    animation: auroraShiftFast 4s ease-in-out infinite;
     opacity: 1;
   }
 
   .dashboard-card:hover::after {
-    transform: translateX(100%);
+    animation: shimmerFlowFast 3s ease-in-out infinite;
   }
 
   .dashboard-card:hover {
-    transform: translateY(-8px);
-    /* Multi-layer ethereal glow: purple core + golden warmth + ambient lift */
+    transform: translateY(-10px) scale(1.01);
+    /* Intensified luxury glow on hover */
     box-shadow:
-      0 8px 32px rgba(147, 51, 234, 0.3),
-      0 16px 48px rgba(124, 58, 237, 0.2),
-      0 24px 64px rgba(139, 92, 246, 0.15),
-      0 4px 16px rgba(251, 191, 36, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.12);
-    border-color: rgba(167, 139, 250, 0.4);
-    backdrop-filter: blur(50px) saturate(160%);
-    /* Pause breathing animation on hover for clean effect */
-    animation-play-state: paused;
+      0 0 0 1px rgba(167, 139, 250, 0.3),
+      0 8px 24px rgba(147, 51, 234, 0.35),
+      0 16px 48px rgba(124, 58, 237, 0.25),
+      0 24px 64px rgba(88, 28, 135, 0.2),
+      0 8px 32px rgba(251, 191, 36, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15),
+      inset 0 -1px 0 rgba(147, 51, 234, 0.1);
+    backdrop-filter: blur(60px) saturate(180%);
   }
 }
 
@@ -642,20 +652,124 @@
   }
 }
 
-/* Ambient glow pulse - subtle mesmerizing effect */
-@keyframes cardAmbientPulse {
+/* Aurora breathing - glow intensity cycles */
+@keyframes cardAuroraBreath {
   0%,
   100% {
     box-shadow:
-      0 4px 20px rgba(147, 51, 234, 0.08),
-      0 8px 40px rgba(124, 58, 237, 0.04),
-      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      0 0 0 1px rgba(255, 255, 255, 0.1),
+      0 4px 16px rgba(147, 51, 234, 0.15),
+      0 8px 32px rgba(124, 58, 237, 0.1),
+      0 16px 48px rgba(88, 28, 135, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 -1px 0 rgba(147, 51, 234, 0.05);
   }
   50% {
     box-shadow:
-      0 6px 28px rgba(147, 51, 234, 0.12),
-      0 12px 48px rgba(124, 58, 237, 0.06),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      0 0 0 1px rgba(255, 255, 255, 0.15),
+      0 6px 20px rgba(147, 51, 234, 0.2),
+      0 12px 40px rgba(124, 58, 237, 0.15),
+      0 20px 56px rgba(88, 28, 135, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      inset 0 -1px 0 rgba(147, 51, 234, 0.08);
+  }
+}
+
+/* Aurora color shift - flowing gradient animation */
+@keyframes auroraShift {
+  0%,
+  100% {
+    background: linear-gradient(
+      135deg,
+      rgba(147, 51, 234, 0.08) 0%,
+      rgba(124, 58, 237, 0.04) 25%,
+      transparent 50%,
+      rgba(251, 191, 36, 0.03) 75%,
+      rgba(236, 72, 153, 0.04) 100%
+    );
+    filter: hue-rotate(0deg);
+  }
+  33% {
+    background: linear-gradient(
+      180deg,
+      rgba(124, 58, 237, 0.06) 0%,
+      transparent 30%,
+      rgba(147, 51, 234, 0.05) 60%,
+      rgba(251, 191, 36, 0.04) 100%
+    );
+    filter: hue-rotate(15deg);
+  }
+  66% {
+    background: linear-gradient(
+      225deg,
+      rgba(251, 191, 36, 0.04) 0%,
+      rgba(147, 51, 234, 0.06) 30%,
+      transparent 60%,
+      rgba(124, 58, 237, 0.05) 100%
+    );
+    filter: hue-rotate(-10deg);
+  }
+}
+
+/* Faster aurora shift for hover */
+@keyframes auroraShiftFast {
+  0%,
+  100% {
+    background: linear-gradient(
+      135deg,
+      rgba(147, 51, 234, 0.12) 0%,
+      rgba(124, 58, 237, 0.08) 25%,
+      transparent 50%,
+      rgba(251, 191, 36, 0.06) 75%,
+      rgba(236, 72, 153, 0.08) 100%
+    );
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    background: linear-gradient(
+      225deg,
+      rgba(251, 191, 36, 0.08) 0%,
+      rgba(147, 51, 234, 0.1) 30%,
+      transparent 60%,
+      rgba(124, 58, 237, 0.08) 100%
+    );
+    filter: hue-rotate(20deg);
+  }
+}
+
+/* Shimmer flow - light beam moving across */
+@keyframes shimmerFlow {
+  0% {
+    transform: translateX(-100%) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%) rotate(0deg);
+    opacity: 0;
+  }
+}
+
+/* Faster shimmer for hover */
+@keyframes shimmerFlowFast {
+  0% {
+    transform: translateX(-100%) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%) rotate(0deg);
+    opacity: 0;
   }
 }
 
