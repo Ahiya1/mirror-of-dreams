@@ -355,6 +355,12 @@ const DreamsCard: React.FC<DreamsCardProps> = ({ animated = true, className = ''
         @media (max-width: 768px) {
           .dreams-list {
             gap: var(--space-2);
+            min-height: auto;
+          }
+
+          .empty-state,
+          .loading-dreams {
+            min-height: auto;
           }
 
           .dream-item {

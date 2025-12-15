@@ -164,10 +164,16 @@ const ReflectionsCard: React.FC<ReflectionsCardProps> = ({ animated = true, clas
         @media (max-width: 768px) {
           .reflections-list {
             gap: var(--space-3);
+            min-height: auto;
           }
 
           .empty-state {
             padding: var(--space-lg) var(--space-md);
+            min-height: auto;
+          }
+
+          .loading-reflections {
+            min-height: auto;
           }
 
           .empty-icon {

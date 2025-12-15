@@ -266,6 +266,10 @@ const ProgressStatsCard: React.FC<ProgressStatsCardProps> = ({
 
         /* Mobile responsive */
         @media (max-width: 768px) {
+          .stats-container {
+            min-height: auto;
+          }
+
           .stat-primary__value {
             font-size: 3rem;
           }

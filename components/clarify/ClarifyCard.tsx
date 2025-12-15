@@ -229,6 +229,14 @@ const ClarifyCard: React.FC<ClarifyCardProps> = ({ animated = true, className = 
           justify-content: center;
           padding: var(--space-lg);
         }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+          .empty-state {
+            min-height: auto;
+            padding: var(--space-md);
+          }
+        }
       `}</style>
     </DashboardCard>
   );
