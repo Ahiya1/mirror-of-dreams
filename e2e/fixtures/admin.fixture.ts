@@ -32,16 +32,22 @@ export const test = base.extend<{ adminPage: Page }>({
     if (process.env.CI) {
       // CI: Storage state handles auth, just navigate to admin
       await page.goto('/admin');
-      // Wait for admin page element - more reliable than waitForLoadState
+      // Wait for admin page to load - admin pages can be slower due to data fetching
+      // Don't catch the error - let the test fail if page doesn't load
       await page
         .locator('h1, [class*="GradientText"]')
         .filter({ hasText: /Admin Dashboard/i })
         .first()
-        .waitFor({ state: 'visible', timeout: 15000 })
-        .catch(() => {});
+        .waitFor({ state: 'visible', timeout: 25000 });
     } else {
-      // Local: Perform demo login
+      // Local: Perform demo login then navigate to admin
       await loginAsAdmin(page);
+      await page.goto('/admin');
+      await page
+        .locator('h1, [class*="GradientText"]')
+        .filter({ hasText: /Admin Dashboard/i })
+        .first()
+        .waitFor({ state: 'visible', timeout: 25000 });
     }
     await use(page);
   },

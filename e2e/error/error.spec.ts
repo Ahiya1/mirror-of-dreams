@@ -1,13 +1,12 @@
 // e2e/error/error.spec.ts - Error Handling E2E Tests
 // Builder: Builder-4 (Plan-24 Iteration 58)
-// Purpose: Test error handling scenarios including network errors and session expiry
+// Purpose: Test error handling scenarios including network errors and API errors
+// NOTE: Session Expiry tests moved to e2e/session/session.spec.ts
 
 import { test as baseTest } from '@playwright/test';
 
-import { test as authTest } from '../fixtures/auth.fixture';
 import { test, expect } from '../fixtures/network.fixture';
 import { TEST_TIMEOUTS } from '../fixtures/test-data.fixture';
-import { DashboardPage } from '../pages/dashboard.page';
 
 /**
  * Error Handling E2E Tests
@@ -16,7 +15,6 @@ import { DashboardPage } from '../pages/dashboard.page';
  * - Network failures (offline state)
  * - API errors (500, 401)
  * - Slow network conditions
- * - Session expiry (cookie cleared)
  *
  * IMPORTANT: Always restore network after simulation tests
  * to avoid affecting subsequent tests.
@@ -150,8 +148,8 @@ test.describe('Error Handling', () => {
       // Navigate to a page - should still work, just slower
       await networkPage.goto('/profile');
 
-      // Wait with extended timeout for slow network
-      await networkPage.waitForLoadState('domcontentloaded', { timeout: 30000 }).catch(() => {});
+      // Brief wait for page to stabilize on slow network
+      await networkPage.waitForTimeout(2000);
 
       // Page should eventually load
       await expect(networkPage.locator('body')).toBeVisible();
@@ -207,8 +205,8 @@ test.describe('Error Handling', () => {
       // Navigate to a protected page
       await networkPage.goto('/profile');
 
-      // Wait for potential redirect
-      await networkPage.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {});
+      // Brief wait for potential redirect
+      await networkPage.waitForTimeout(1000);
 
       // Page should either show error or redirect to signin
       // The important thing is it handles the error gracefully
@@ -244,7 +242,8 @@ test.describe('Error Handling', () => {
 
       // Navigate to a page that makes API calls
       await networkPage.goto('/dreams');
-      await networkPage.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {});
+      // Brief wait for page to load
+      await networkPage.waitForTimeout(1000);
 
       // Page should handle error without crashing
       // May show error message or fallback UI
@@ -253,83 +252,6 @@ test.describe('Error Handling', () => {
       // Restore network
       await restoreNetwork();
     });
-  });
-});
-
-/**
- * Session Expiry Tests
- *
- * Tests handling of session expiration and cookie clearing
- * Uses authenticatedPage fixture to start with valid session
- */
-authTest.describe('Session Expiry', () => {
-  authTest('redirects to signin when session expired', async ({ authenticatedPage }) => {
-    const dashboardPage = new DashboardPage(authenticatedPage);
-    await dashboardPage.goto();
-    await dashboardPage.waitForLoad();
-
-    // Verify we're on dashboard
-    await expect(authenticatedPage).toHaveURL(/\/dashboard/);
-
-    // Clear cookies to simulate session expiry
-    await authenticatedPage.context().clearCookies();
-
-    // Try navigating to a protected page
-    await authenticatedPage.goto('/profile');
-
-    // Wait for redirect to signin or landing
-    await authenticatedPage.waitForURL(/\/auth\/signin|\//, { timeout: TEST_TIMEOUTS.navigation });
-
-    // Should be redirected to signin or landing page
-    const url = authenticatedPage.url();
-    expect(url.includes('/auth/signin') || url === 'http://localhost:3000/').toBe(true);
-  });
-
-  authTest('handles cleared cookies gracefully', async ({ authenticatedPage }) => {
-    const dashboardPage = new DashboardPage(authenticatedPage);
-    await dashboardPage.goto();
-    await dashboardPage.waitForLoad();
-
-    // Clear all cookies
-    await authenticatedPage.context().clearCookies();
-
-    // Reload the page
-    await authenticatedPage.reload();
-
-    // Wait briefly for page to stabilize
-    await authenticatedPage.waitForTimeout(1000);
-
-    // Page should redirect or show appropriate UI without crashing
-    await expect(authenticatedPage.locator('body')).toBeVisible();
-  });
-
-  authTest('page remains usable after error recovery', async ({ authenticatedPage }) => {
-    const dashboardPage = new DashboardPage(authenticatedPage);
-    await dashboardPage.goto();
-    await dashboardPage.waitForLoad();
-
-    // Clear cookies to trigger session error
-    await authenticatedPage.context().clearCookies();
-
-    // Navigate to protected page (should redirect)
-    await authenticatedPage.goto('/profile');
-    await authenticatedPage.waitForURL(/\/auth\/signin|\//, { timeout: TEST_TIMEOUTS.navigation });
-
-    // Now re-authenticate using demo login
-    // Navigate to landing and login again
-    await authenticatedPage.goto('/');
-
-    const demoButton = authenticatedPage.locator('button').filter({ hasText: 'Try It' }).first();
-    const isVisible = await demoButton.isVisible({ timeout: 15000 }).catch(() => false);
-
-    if (isVisible) {
-      await demoButton.click();
-      await authenticatedPage.waitForURL('/dashboard', { timeout: 30000 });
-
-      // Page should be fully functional after recovery
-      await expect(authenticatedPage).toHaveURL(/\/dashboard/);
-      await dashboardPage.waitForLoad();
-    }
   });
 });
 

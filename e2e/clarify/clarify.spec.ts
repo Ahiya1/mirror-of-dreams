@@ -235,9 +235,15 @@ test.describe('Clarify Feature', () => {
  * Clarify Non-Authenticated Tests
  *
  * Tests access control for non-authenticated users
+ *
+ * IMPORTANT: In CI, this runs under chromium-auth which has storage state,
+ * so we must clear cookies first to test non-authenticated behavior.
  */
 baseTest.describe('Clarify Access Control - Non-Authenticated', () => {
-  baseTest('redirects non-authenticated users to signin', async ({ page }) => {
+  baseTest('redirects non-authenticated users to signin', async ({ page, context }) => {
+    // Clear any existing auth from storage state
+    await context.clearCookies();
+
     await page.goto('/clarify');
 
     // Wait for redirect - should go to signin page
