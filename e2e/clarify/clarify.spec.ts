@@ -247,7 +247,10 @@ baseTest.describe('Clarify Access Control - Non-Authenticated', () => {
     await page.goto('/clarify');
 
     // Wait for redirect - should go to signin page
-    await page.waitForURL(/\/auth\/signin|\//, { timeout: TEST_TIMEOUTS.navigation });
+    // Use function matcher to check pathname properly (avoid matching any URL with '/')
+    await page.waitForURL((url) => url.pathname.includes('/auth/signin') || url.pathname === '/', {
+      timeout: TEST_TIMEOUTS.navigation,
+    });
 
     const url = page.url();
     // Should redirect to signin or landing page

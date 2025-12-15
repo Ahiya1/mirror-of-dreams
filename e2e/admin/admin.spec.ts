@@ -112,7 +112,10 @@ baseTest.describe('Admin Authorization - Non-Admin', () => {
 
     // Wait for the client-side redirect to happen
     // The page uses useEffect to check auth and redirect non-authenticated users
-    await page.waitForURL(/\/auth\/signin|\//, { timeout: 15000 });
+    // Regex matches: /auth/signin OR exactly the landing page (localhost:3000/ with optional trailing slash)
+    await page.waitForURL((url) => url.pathname.includes('/auth/signin') || url.pathname === '/', {
+      timeout: 15000,
+    });
 
     // Verify we ended up on the signin or landing page
     const url = page.url();

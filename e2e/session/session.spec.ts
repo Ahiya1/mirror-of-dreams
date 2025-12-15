@@ -31,7 +31,11 @@ test.describe('Session Expiry', () => {
     await authenticatedPage.goto('/profile');
 
     // Wait for redirect to signin or landing
-    await authenticatedPage.waitForURL(/\/auth\/signin|\//, { timeout: TEST_TIMEOUTS.navigation });
+    // Use function matcher to check pathname properly (avoid matching any URL with '/')
+    await authenticatedPage.waitForURL(
+      (url) => url.pathname.includes('/auth/signin') || url.pathname === '/',
+      { timeout: TEST_TIMEOUTS.navigation }
+    );
 
     // Should be redirected to signin or landing page
     const url = authenticatedPage.url();
@@ -66,7 +70,10 @@ test.describe('Session Expiry', () => {
 
     // Navigate to protected page (should redirect)
     await authenticatedPage.goto('/profile');
-    await authenticatedPage.waitForURL(/\/auth\/signin|\//, { timeout: TEST_TIMEOUTS.navigation });
+    await authenticatedPage.waitForURL(
+      (url) => url.pathname.includes('/auth/signin') || url.pathname === '/',
+      { timeout: TEST_TIMEOUTS.navigation }
+    );
 
     // Now re-authenticate using demo login
     // Navigate to landing and login again
