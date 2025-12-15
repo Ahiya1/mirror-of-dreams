@@ -538,14 +538,14 @@
 /* ╭─ DASHBOARD CARDS FOUNDATION ─────────────────────────────────────────╮ */
 
 .dashboard-card {
-  /* Pure gradient - no backdrop-filter edges */
+  /* Gradient fades to transparent at bottom - no hard edges */
   background: linear-gradient(
     180deg,
-    rgba(30, 20, 50, 0.6) 0%,
-    rgba(20, 15, 40, 0.5) 50%,
-    rgba(15, 10, 35, 0.4) 100%
+    rgba(40, 25, 70, 0.5) 0%,
+    rgba(30, 20, 55, 0.35) 40%,
+    rgba(20, 15, 45, 0.15) 80%,
+    transparent 100%
   );
-  /* NO backdrop-filter - eliminates visible edges */
   border: none;
   border-radius: var(--radius-3xl);
   padding: var(--space-xl);
