@@ -43,6 +43,7 @@ export default function MirrorExperience() {
   const toast = useToast();
   const prefersReducedMotion = useReducedMotion();
   const isMobile = useIsMobile();
+  const utils = trpc.useUtils();
 
   // View mode and URL sync
   const {
@@ -112,6 +113,12 @@ export default function MirrorExperience() {
       localStorage.removeItem(STORAGE_KEY);
       // Store the reflection content
       setNewReflection({ id: data.reflectionId, content: data.reflection });
+
+      // Invalidate caches so dream pages show the new reflection
+      utils.reflections.list.invalidate();
+      utils.reflections.checkUsage.invalidate();
+      utils.dreams.list.invalidate();
+
       // Brief "complete" message then fade to output
       setStatusText('Reflection complete!');
       setMirrorGlow(true);
