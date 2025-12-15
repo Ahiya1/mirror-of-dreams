@@ -538,36 +538,37 @@
 /* ╭─ DASHBOARD CARDS FOUNDATION ─────────────────────────────────────────╮ */
 
 .dashboard-card {
-  /* Soft, ethereal glass - no hard edges */
-  background: radial-gradient(
-    ellipse at 30% 20%,
-    rgba(147, 51, 234, 0.06) 0%,
-    rgba(255, 255, 255, 0.03) 40%,
+  /* Very subtle glass - almost invisible edges */
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(147, 51, 234, 0.03) 50%,
     rgba(124, 58, 237, 0.02) 100%
   );
-  backdrop-filter: blur(40px) saturate(150%);
-  /* No visible border - cards float freely */
+  /* Lighter blur to reduce hard edges */
+  backdrop-filter: blur(20px) saturate(120%);
+  -webkit-backdrop-filter: blur(20px) saturate(120%);
   border: none;
   border-radius: var(--radius-3xl);
   padding: var(--space-xl);
   position: relative;
   overflow: hidden;
   transition:
-    transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-    backdrop-filter 0.5s ease;
+    transform 1s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+    backdrop-filter 0.8s ease;
   height: 100%;
   display: flex;
   flex-direction: column;
   max-width: 100%;
   box-sizing: border-box;
-  /* Soft ambient glow - light from within, no hard edges */
+  /* Soft diffused glow - no hard edges */
   box-shadow:
-    0 8px 32px rgba(147, 51, 234, 0.12),
-    0 16px 48px rgba(124, 58, 237, 0.08),
-    0 24px 64px rgba(88, 28, 135, 0.06);
-  /* Gentle breathing - cards feel alive */
-  animation: cardAliveBreath 8s ease-in-out infinite;
+    0 8px 40px rgba(147, 51, 234, 0.08),
+    0 20px 60px rgba(124, 58, 237, 0.05),
+    0 30px 80px rgba(88, 28, 135, 0.03);
+  /* Very slow, dreamy breathing - 25 seconds */
+  animation: cardDreamBreath 25s ease-in-out infinite;
 }
 
 /* Soft inner light - gentle highlight at top */
@@ -586,7 +587,7 @@
   pointer-events: none;
 }
 
-/* Shimmer light beam - subtle, only on hover */
+/* Shimmer light beam - very subtle, slow on hover */
 .dashboard-card::after {
   content: '';
   position: absolute;
@@ -596,15 +597,15 @@
   height: 200%;
   background: linear-gradient(
     45deg,
-    transparent 42%,
-    rgba(255, 255, 255, 0.02) 46%,
-    rgba(255, 255, 255, 0.06) 50%,
-    rgba(255, 255, 255, 0.02) 54%,
-    transparent 58%
+    transparent 44%,
+    rgba(255, 255, 255, 0.01) 47%,
+    rgba(255, 255, 255, 0.04) 50%,
+    rgba(255, 255, 255, 0.01) 53%,
+    transparent 56%
   );
   transform: translateX(-150%);
   pointer-events: none;
-  transition: transform 1.2s ease;
+  transition: transform 2s ease;
 }
 
 /* Guard hover effects for touch devices - only apply on hover-capable devices */
@@ -618,15 +619,14 @@
   }
 
   .dashboard-card:hover {
-    transform: translateY(-6px);
-    /* Expanded soft glow - card comes alive */
+    transform: translateY(-4px);
+    /* Gently expanded glow */
     box-shadow:
-      0 12px 40px rgba(147, 51, 234, 0.18),
-      0 24px 64px rgba(124, 58, 237, 0.12),
-      0 32px 80px rgba(88, 28, 135, 0.08);
-    backdrop-filter: blur(50px) saturate(160%);
-    /* Pause breathing on hover for smooth transition */
-    animation-play-state: paused;
+      0 12px 48px rgba(147, 51, 234, 0.12),
+      0 24px 72px rgba(124, 58, 237, 0.08),
+      0 36px 96px rgba(88, 28, 135, 0.05);
+    backdrop-filter: blur(24px) saturate(130%);
+    -webkit-backdrop-filter: blur(24px) saturate(130%);
   }
 }
 
@@ -650,22 +650,22 @@
   }
 }
 
-/* Gentle alive breathing - subtle, inviting, no hard edges */
-@keyframes cardAliveBreath {
+/* Very slow dreamy breathing - like gentle tide */
+@keyframes cardDreamBreath {
   0%,
   100% {
     box-shadow:
-      0 8px 32px rgba(147, 51, 234, 0.12),
-      0 16px 48px rgba(124, 58, 237, 0.08),
-      0 24px 64px rgba(88, 28, 135, 0.06);
+      0 8px 40px rgba(147, 51, 234, 0.08),
+      0 20px 60px rgba(124, 58, 237, 0.05),
+      0 30px 80px rgba(88, 28, 135, 0.03);
     transform: translateY(0);
   }
   50% {
     box-shadow:
-      0 10px 36px rgba(147, 51, 234, 0.16),
-      0 20px 56px rgba(124, 58, 237, 0.1),
-      0 28px 72px rgba(88, 28, 135, 0.08);
-    transform: translateY(-2px);
+      0 10px 44px rgba(147, 51, 234, 0.1),
+      0 24px 68px rgba(124, 58, 237, 0.06),
+      0 34px 88px rgba(88, 28, 135, 0.04);
+    transform: translateY(-1px);
   }
 }
 
