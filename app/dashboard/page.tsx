@@ -190,7 +190,7 @@ export default function DashboardPage() {
         .dashboard {
           position: relative;
           min-height: 100vh;
-          background: var(--cosmic-bg);
+          /* No solid background - let CosmicBackground show through */
           color: var(--cosmic-text);
           transition: opacity 0.6s ease-out;
           overflow-x: hidden;

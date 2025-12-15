@@ -8,7 +8,7 @@
 .dashboard {
   position: relative;
   min-height: 100vh;
-  background: var(--cosmic-bg);
+  /* No solid background - let CosmicBackground show through (matches landing/pricing) */
   color: var(--cosmic-text);
   font-family: var(--font-family-sans);
   overflow-x: hidden;
