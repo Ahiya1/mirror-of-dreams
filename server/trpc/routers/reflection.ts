@@ -98,10 +98,11 @@ Please mirror back what you see, in a flowing reflection I can return to months 
 
     // Call Claude API (using Sonnet 4.5)
     // Reduced max_tokens to encourage concise responses (200-500 words target)
+    // Note: When using extended thinking, max_tokens must be > budget_tokens
     const requestConfig: Anthropic.MessageCreateParams = {
       model: 'claude-sonnet-4-5-20250929',
       temperature: 1,
-      max_tokens: shouldUsePremium ? 2000 : 1500,
+      max_tokens: shouldUsePremium ? 4000 : 1500,
       system: systemPromptWithDate,
       messages: [{ role: 'user', content: userPrompt }],
     };
@@ -109,7 +110,7 @@ Please mirror back what you see, in a flowing reflection I can return to months 
     if (shouldUsePremium) {
       requestConfig.thinking = {
         type: 'enabled' as const,
-        budget_tokens: 5000,
+        budget_tokens: 2000,
       };
     }
 
