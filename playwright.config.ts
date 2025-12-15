@@ -102,8 +102,8 @@ export default defineConfig({
 
   // Web server configuration
   webServer: {
-    // Use dev server (handles missing env vars gracefully)
-    command: 'npm run dev',
+    // Use production server in CI (faster), dev locally
+    command: process.env.CI ? 'npm run start' : 'npm run dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
