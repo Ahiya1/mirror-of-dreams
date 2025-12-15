@@ -8,34 +8,11 @@
 .dashboard {
   position: relative;
   min-height: 100vh;
-  /* Match the purple gradient used across other pages */
-  background: linear-gradient(
-    to bottom right,
-    #120828 0%,
-    #1a0f2e 25%,
-    #0f0a1a 50%,
-    #1a0f2e 75%,
-    #120828 100%
-  );
+  /* Background handled by CosmicBackground component - no override here */
   color: var(--cosmic-text);
   font-family: var(--font-family-sans);
   overflow-x: hidden;
   transition: opacity 0.6s ease-out;
-}
-
-.dashboard::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(147, 51, 234, 0.03) 0%,
-    rgba(59, 130, 246, 0.02) 35%,
-    rgba(16, 185, 129, 0.01) 70%,
-    transparent 100%
-  );
-  pointer-events: none;
-  z-index: 1;
 }
 
 /* ╭─ COSMIC SCROLLBAR THEMING ───────────────────────────────────────────╮ */
@@ -552,7 +529,8 @@
   border-radius: var(--radius-3xl);
   padding: var(--space-xl);
   position: relative;
-  overflow: hidden;
+  /* Use clip-path instead of overflow:hidden to preserve rounded corners on transform */
+  overflow: visible;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   height: 100%;
   display: flex;
