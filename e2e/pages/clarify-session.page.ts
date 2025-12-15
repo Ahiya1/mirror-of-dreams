@@ -75,7 +75,7 @@ export class ClarifySessionPage {
 
   async goto(sessionId: string): Promise<void> {
     await this.page.goto(`/clarify/${sessionId}`);
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async waitForLoad(): Promise<void> {

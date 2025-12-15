@@ -96,7 +96,7 @@ export class PricingPage {
 
   async goto(): Promise<void> {
     await this.page.goto('/pricing');
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async waitForLoad(): Promise<void> {

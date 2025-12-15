@@ -68,33 +68,33 @@ test.describe('Dreams', () => {
     test('can filter by active status', async () => {
       await dreamsPage.filterByStatus('active');
       // Wait for filter to apply
-      await dreamsPage.page.waitForLoadState('networkidle').catch(() => {});
+      await dreamsPage.page.waitForLoadState('domcontentloaded').catch(() => {});
       // Page should still be loaded
       await dreamsPage.expectLoaded();
     });
 
     test('can filter by achieved status', async () => {
       await dreamsPage.filterByStatus('achieved');
-      await dreamsPage.page.waitForLoadState('networkidle').catch(() => {});
+      await dreamsPage.page.waitForLoadState('domcontentloaded').catch(() => {});
       await dreamsPage.expectLoaded();
     });
 
     test('can filter by archived status', async () => {
       await dreamsPage.filterByStatus('archived');
-      await dreamsPage.page.waitForLoadState('networkidle').catch(() => {});
+      await dreamsPage.page.waitForLoadState('domcontentloaded').catch(() => {});
       await dreamsPage.expectLoaded();
     });
 
     test('can show all dreams', async () => {
       await dreamsPage.filterByStatus('all');
-      await dreamsPage.page.waitForLoadState('networkidle').catch(() => {});
+      await dreamsPage.page.waitForLoadState('domcontentloaded').catch(() => {});
       await dreamsPage.expectLoaded();
     });
 
     test('filter buttons change visual state when clicked', async () => {
       // Click achieved filter
       await dreamsPage.filterByStatus('achieved');
-      await dreamsPage.page.waitForLoadState('networkidle').catch(() => {});
+      await dreamsPage.page.waitForLoadState('domcontentloaded').catch(() => {});
 
       // Achieved button should now have primary styling
       const achievedFilter = dreamsPage.filterAchieved;
@@ -106,7 +106,7 @@ test.describe('Dreams', () => {
     test('displays empty state when no dreams match filter', async () => {
       // Filter by achieved - may show empty state if no achieved dreams
       await dreamsPage.filterByStatus('achieved');
-      await dreamsPage.page.waitForLoadState('networkidle').catch(() => {});
+      await dreamsPage.page.waitForLoadState('domcontentloaded').catch(() => {});
 
       // Check if empty state OR dream cards are visible
       const hasEmptyState = await dreamsPage.isEmptyStateVisible();
@@ -119,7 +119,7 @@ test.describe('Dreams', () => {
     test('empty state has create dream CTA when applicable', async () => {
       // Filter by a status that might have no dreams
       await dreamsPage.filterByStatus('archived');
-      await dreamsPage.page.waitForLoadState('networkidle').catch(() => {});
+      await dreamsPage.page.waitForLoadState('domcontentloaded').catch(() => {});
 
       const hasEmptyState = await dreamsPage.isEmptyStateVisible();
 
@@ -134,7 +134,7 @@ test.describe('Dreams', () => {
     test('displays dream cards when dreams exist', async () => {
       // Filter by active which typically has dreams for demo user
       await dreamsPage.filterByStatus('active');
-      await dreamsPage.page.waitForLoadState('networkidle').catch(() => {});
+      await dreamsPage.page.waitForLoadState('domcontentloaded').catch(() => {});
 
       const dreamCount = await dreamsPage.getDreamCount();
       const hasEmptyState = await dreamsPage.isEmptyStateVisible();
@@ -149,7 +149,7 @@ test.describe('Dreams', () => {
 
     test('dream card shows title', async () => {
       await dreamsPage.filterByStatus('active');
-      await dreamsPage.page.waitForLoadState('networkidle').catch(() => {});
+      await dreamsPage.page.waitForLoadState('domcontentloaded').catch(() => {});
 
       const dreamCount = await dreamsPage.getDreamCount();
       if (dreamCount > 0) {
@@ -159,7 +159,7 @@ test.describe('Dreams', () => {
 
     test('dream card shows category emoji', async () => {
       await dreamsPage.filterByStatus('active');
-      await dreamsPage.page.waitForLoadState('networkidle').catch(() => {});
+      await dreamsPage.page.waitForLoadState('domcontentloaded').catch(() => {});
 
       const dreamCount = await dreamsPage.getDreamCount();
       if (dreamCount > 0) {
@@ -169,7 +169,7 @@ test.describe('Dreams', () => {
 
     test('dream card has reflect action button for active dreams', async () => {
       await dreamsPage.filterByStatus('active');
-      await dreamsPage.page.waitForLoadState('networkidle').catch(() => {});
+      await dreamsPage.page.waitForLoadState('domcontentloaded').catch(() => {});
 
       const dreamCount = await dreamsPage.getDreamCount();
       if (dreamCount > 0) {
@@ -179,7 +179,7 @@ test.describe('Dreams', () => {
 
     test('dream card shows status badge', async () => {
       await dreamsPage.filterByStatus('all');
-      await dreamsPage.page.waitForLoadState('networkidle').catch(() => {});
+      await dreamsPage.page.waitForLoadState('domcontentloaded').catch(() => {});
 
       const dreamCount = await dreamsPage.getDreamCount();
       if (dreamCount > 0) {
@@ -191,7 +191,7 @@ test.describe('Dreams', () => {
   test.describe('Navigation', () => {
     test('clicking dream card navigates to detail page', async ({ authenticatedPage }) => {
       await dreamsPage.filterByStatus('active');
-      await dreamsPage.page.waitForLoadState('networkidle').catch(() => {});
+      await dreamsPage.page.waitForLoadState('domcontentloaded').catch(() => {});
 
       const dreamCount = await dreamsPage.getDreamCount();
       if (dreamCount > 0) {
@@ -213,7 +213,7 @@ test.describe('Dreams', () => {
       authenticatedPage,
     }) => {
       await dreamsPage.filterByStatus('active');
-      await dreamsPage.page.waitForLoadState('networkidle').catch(() => {});
+      await dreamsPage.page.waitForLoadState('domcontentloaded').catch(() => {});
 
       const dreamCount = await dreamsPage.getDreamCount();
       if (dreamCount > 0) {
@@ -277,7 +277,7 @@ test.describe('Dreams Mobile', () => {
   test('displays bottom navigation on mobile viewport', async ({ page }) => {
     // Navigate to landing page and use demo login ("Try It" button)
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const demoButton = page.locator(
       'button:has-text("Try It"), button:has-text("Try Demo"), button:has-text("Demo")'
@@ -293,7 +293,7 @@ test.describe('Dreams Mobile', () => {
 
       // Navigate to dreams
       await page.goto('/dreams');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       const dreamsPage = new DreamsPage(page);
       await dreamsPage.waitForLoad();
@@ -307,7 +307,7 @@ test.describe('Dreams Mobile', () => {
 
   test('dream cards display correctly on mobile', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const demoButton = page.locator(
       'button:has-text("Try It"), button:has-text("Try Demo"), button:has-text("Demo")'
@@ -322,7 +322,7 @@ test.describe('Dreams Mobile', () => {
       await page.waitForURL('/dashboard', { timeout: 30000 });
 
       await page.goto('/dreams');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       const dreamsPage = new DreamsPage(page);
       await dreamsPage.waitForLoad();
@@ -338,7 +338,7 @@ test.describe('Dreams Mobile', () => {
 
   test('filter buttons wrap on mobile viewport', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const demoButton = page.locator(
       'button:has-text("Try It"), button:has-text("Try Demo"), button:has-text("Demo")'
@@ -353,7 +353,7 @@ test.describe('Dreams Mobile', () => {
       await page.waitForURL('/dashboard', { timeout: 30000 });
 
       await page.goto('/dreams');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       const dreamsPage = new DreamsPage(page);
       await dreamsPage.waitForLoad();

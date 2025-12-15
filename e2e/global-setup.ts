@@ -20,7 +20,7 @@ async function globalSetup(config: FullConfig) {
   try {
     // Navigate to landing page
     await page.goto(baseURL || 'http://localhost:3000');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Click the "Try It" demo login button
     const demoButton = page.locator('button').filter({ hasText: 'Try It' }).first();

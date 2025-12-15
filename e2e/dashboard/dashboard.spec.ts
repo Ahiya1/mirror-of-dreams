@@ -166,7 +166,7 @@ test.describe('Dashboard Mobile', () => {
   test('displays bottom navigation on mobile viewport', async ({ page }) => {
     // Navigate to landing page and use demo login ("Try It" button)
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const demoButton = page.locator(
       'button:has-text("Try It"), button:has-text("Try Demo"), button:has-text("Demo")'
@@ -193,7 +193,7 @@ test.describe('Dashboard Mobile', () => {
   test('cards stack vertically on mobile viewport', async ({ page }) => {
     // Navigate to landing page and use demo login
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const demoButton = page.locator(
       'button:has-text("Try It"), button:has-text("Try Demo"), button:has-text("Demo")'
@@ -225,7 +225,7 @@ test.describe('Dashboard Mobile', () => {
 
   test('hero section is responsive on mobile', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const demoButton = page.locator(
       'button:has-text("Try It"), button:has-text("Try Demo"), button:has-text("Demo")'

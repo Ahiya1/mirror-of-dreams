@@ -95,7 +95,7 @@ export class SignUpPage {
    */
   async goto(): Promise<void> {
     await this.page.goto('/auth/signup');
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   /**

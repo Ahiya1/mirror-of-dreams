@@ -172,7 +172,7 @@ test.describe('Settings Mobile', () => {
   test('displays correctly on mobile viewport', async ({ page }) => {
     // Manual demo login for mobile viewport tests
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const demoButton = page.locator('button').filter({ hasText: 'Try It' }).first();
     const isVisible = await demoButton.isVisible({ timeout: 5000 }).catch(() => false);

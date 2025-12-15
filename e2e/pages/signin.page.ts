@@ -61,7 +61,7 @@ export class SignInPage {
    */
   async goto(): Promise<void> {
     await this.page.goto('/auth/signin');
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   /**

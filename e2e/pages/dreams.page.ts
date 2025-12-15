@@ -102,7 +102,7 @@ export class DreamsPage {
    */
   async goto(): Promise<void> {
     await this.page.goto('/dreams');
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   /**
@@ -140,7 +140,7 @@ export class DreamsPage {
     };
     await filterMap[status].click();
     // Wait for filter to apply
-    await this.page.waitForLoadState('networkidle').catch(() => {});
+    await this.page.waitForLoadState('domcontentloaded').catch(() => {});
   }
 
   /**

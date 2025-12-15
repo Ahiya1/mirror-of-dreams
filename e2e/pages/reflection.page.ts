@@ -135,7 +135,7 @@ export class ReflectionPage {
    */
   async goto(): Promise<void> {
     await this.page.goto('/reflection');
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   /**
@@ -143,7 +143,7 @@ export class ReflectionPage {
    */
   async gotoWithDream(dreamId: string): Promise<void> {
     await this.page.goto(`/reflection?dreamId=${dreamId}`);
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   /**
@@ -151,7 +151,7 @@ export class ReflectionPage {
    */
   async gotoOutput(reflectionId: string): Promise<void> {
     await this.page.goto(`/reflection?id=${reflectionId}`);
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   /**

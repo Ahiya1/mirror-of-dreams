@@ -94,7 +94,7 @@ export class LandingPage {
    */
   async goto(): Promise<void> {
     await this.page.goto('/');
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   /**

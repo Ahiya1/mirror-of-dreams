@@ -100,7 +100,7 @@ export class ClarifyListPage {
 
   async goto(): Promise<void> {
     await this.page.goto('/clarify');
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async waitForLoad(): Promise<void> {

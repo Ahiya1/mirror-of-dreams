@@ -100,7 +100,7 @@ export class AdminPage {
 
   async goto(): Promise<void> {
     await this.page.goto('/admin');
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async waitForLoad(): Promise<void> {

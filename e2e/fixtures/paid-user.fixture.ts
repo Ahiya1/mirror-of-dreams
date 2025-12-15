@@ -15,7 +15,7 @@ import { test as base, expect, Page } from '@playwright/test';
  */
 async function loginAsPaidUser(page: Page): Promise<void> {
   await page.goto('/');
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('domcontentloaded');
 
   const demoButton = page.locator('button').filter({ hasText: 'Try It' }).first();
 

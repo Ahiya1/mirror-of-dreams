@@ -19,7 +19,7 @@ export const TEST_USER = {
  */
 async function loginWithDemo(page: Page): Promise<void> {
   await page.goto('/');
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('domcontentloaded');
 
   const demoButton = page.locator('button').filter({ hasText: 'Try It' }).first();
   await demoButton.waitFor({ state: 'visible', timeout: 15000 });
@@ -87,7 +87,7 @@ export const authWaits = {
    * Wait for form to be ready (page loaded, inputs visible)
    */
   async forFormReady(page: Page, formSelector: string): Promise<void> {
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await expect(page.locator(formSelector)).toBeVisible({ timeout: 10000 });
   },
 };

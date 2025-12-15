@@ -49,7 +49,7 @@ test.describe('Clarify Feature', () => {
 
     test('displays clarify page without redirecting to pricing', async ({ paidUserPage }) => {
       // Verify the page remains on /clarify and doesn't redirect to /pricing
-      await paidUserPage.waitForLoadState('networkidle');
+      await paidUserPage.waitForLoadState('domcontentloaded');
       const url = paidUserPage.url();
       expect(url).toContain('/clarify');
       expect(url).not.toContain('/pricing');
@@ -129,21 +129,21 @@ test.describe('Clarify Feature', () => {
   test.describe('Session Management', () => {
     test('can filter sessions by Active status', async () => {
       await clarifyPage.filterActive();
-      await clarifyPage.page.waitForLoadState('networkidle').catch(() => {});
+      await clarifyPage.page.waitForLoadState('domcontentloaded').catch(() => {});
       // Page should still be loaded and functional
       await clarifyPage.expectLoaded();
     });
 
     test('can filter sessions by Archived status', async () => {
       await clarifyPage.filterArchived();
-      await clarifyPage.page.waitForLoadState('networkidle').catch(() => {});
+      await clarifyPage.page.waitForLoadState('domcontentloaded').catch(() => {});
       // Page should still be loaded and functional
       await clarifyPage.expectLoaded();
     });
 
     test('can filter sessions by All status', async () => {
       await clarifyPage.filterAll();
-      await clarifyPage.page.waitForLoadState('networkidle').catch(() => {});
+      await clarifyPage.page.waitForLoadState('domcontentloaded').catch(() => {});
       // Page should still be loaded and functional
       await clarifyPage.expectLoaded();
     });
@@ -265,7 +265,7 @@ test.describe('Clarify Mobile', () => {
   test('displays correctly on mobile viewport', async ({ page }) => {
     // Manual demo login for mobile viewport tests (fixture may not apply)
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const demoButton = page.locator('button').filter({ hasText: 'Try It' }).first();
     const isVisible = await demoButton.isVisible({ timeout: 5000 }).catch(() => false);
@@ -288,7 +288,7 @@ test.describe('Clarify Mobile', () => {
 
   test('filter buttons are accessible on mobile', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const demoButton = page.locator('button').filter({ hasText: 'Try It' }).first();
     const isVisible = await demoButton.isVisible({ timeout: 5000 }).catch(() => false);
@@ -306,7 +306,7 @@ test.describe('Clarify Mobile', () => {
 
       // Test tapping filters
       await clarifyPage.filterActive();
-      await page.waitForLoadState('networkidle').catch(() => {});
+      await page.waitForLoadState('domcontentloaded').catch(() => {});
       await clarifyPage.expectLoaded();
     } else {
       baseTest.skip(true, 'Demo login not available');
