@@ -25,6 +25,22 @@ html,
 body {
   overflow-x: hidden;
   max-width: 100vw;
+  width: 100%;
+}
+
+/* Next.js root container - prevent overflow */
+#__next {
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
+}
+
+/* Force all text to break properly on mobile */
+@media (max-width: 768px) {
+  * {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
 }
 
 body {
