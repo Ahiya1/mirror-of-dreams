@@ -8,11 +8,13 @@
   position: fixed;
   inset: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   overflow-x: hidden;
   overflow-y: auto;
   background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 1) 100%);
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 }
 
 /* Vignette Overlay */

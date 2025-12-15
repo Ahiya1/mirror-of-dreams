@@ -97,10 +97,11 @@ export const reflectionRouter = router({
 Please mirror back what you see, in a flowing reflection I can return to months from now.`;
 
     // Call Claude API (using Sonnet 4.5)
+    // Reduced max_tokens to encourage concise responses (200-500 words target)
     const requestConfig: Anthropic.MessageCreateParams = {
       model: 'claude-sonnet-4-5-20250929',
       temperature: 1,
-      max_tokens: shouldUsePremium ? 6000 : 4000,
+      max_tokens: shouldUsePremium ? 2000 : 1500,
       system: systemPromptWithDate,
       messages: [{ role: 'user', content: userPrompt }],
     };
