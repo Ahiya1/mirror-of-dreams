@@ -345,8 +345,8 @@ describe('MobileDreamSelectionView', () => {
       );
 
       const buttons = screen.getAllByRole('button');
-      // 3 dream cards (CTA button not present since we have dreams)
-      expect(buttons.length).toBe(3);
+      // 3 dream cards + 1 Create New Dream button
+      expect(buttons.length).toBe(4);
     });
 
     it('has accessible heading', () => {

@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Sparkles, Layers, TrendingUp, User, MessageSquare } from 'lucide-react';
+import { Home, Sparkles, Layers, TrendingUp, User, MessageSquare, Eye } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -42,6 +42,7 @@ const CLARIFY_NAV_ITEM: NavItem = { href: '/clarify', icon: MessageSquare, label
 // Remaining navigation items
 const REMAINING_NAV_ITEMS: NavItem[] = [
   { href: '/reflection', icon: Layers, label: 'Reflect' },
+  { href: '/visualizations', icon: Eye, label: 'Insights' },
   { href: '/evolution', icon: TrendingUp, label: 'Evolution' },
   { href: '/profile', icon: User, label: 'Profile' },
 ];
@@ -54,9 +55,9 @@ const REMAINING_NAV_ITEMS: NavItem[] = [
  * BottomNavigation - Fixed bottom navigation bar for mobile devices
  *
  * Features:
- * - 5-6 navigation tabs depending on user tier:
- *   - Free: Home, Dreams, Reflect, Evolution, Profile
- *   - Paid (Pro/Unlimited): Home, Dreams, Clarify, Reflect, Evolution, Profile
+ * - 6-7 navigation tabs depending on user tier:
+ *   - Free: Home, Dreams, Reflect, Insights, Evolution, Profile
+ *   - Paid (Pro/Unlimited): Home, Dreams, Clarify, Reflect, Insights, Evolution, Profile
  * - Active state with animated pill indicator
  * - Hides on scroll down, reveals on scroll up
  * - Safe area padding for notched devices (iPhone X+)

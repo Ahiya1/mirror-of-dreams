@@ -119,6 +119,9 @@ vi.mock('lucide-react', () => ({
   MessageSquare: ({ className, 'aria-hidden': ariaHidden }: any) => (
     <svg data-testid="message-icon" className={className} aria-hidden={ariaHidden} />
   ),
+  Eye: ({ className, 'aria-hidden': ariaHidden }: any) => (
+    <svg data-testid="eye-icon" className={className} aria-hidden={ariaHidden} />
+  ),
 }));
 
 // =============================================================================

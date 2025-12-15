@@ -47,45 +47,56 @@ export function MobileDreamSelectionView({
 
       <div className="flex-1 space-y-3 overflow-y-auto pb-20">
         {dreams.length > 0 ? (
-          dreams.map((dream) => {
-            const isSelected = dream.id === selectedDreamId;
-            const emoji = CATEGORY_EMOJI[dream.category || 'other'] || CATEGORY_EMOJI.other;
+          <>
+            {dreams.map((dream) => {
+              const isSelected = dream.id === selectedDreamId;
+              const emoji = CATEGORY_EMOJI[dream.category ?? 'other'] ?? CATEGORY_EMOJI.other;
 
-            return (
-              <motion.button
-                key={dream.id}
-                onClick={() => handleDreamClick(dream)}
-                whileTap={{ scale: 0.98 }}
-                className={cn(
-                  'flex w-full items-center gap-4 p-4',
-                  'min-h-[60px] rounded-2xl',
-                  'transition-colors duration-200',
-                  isSelected
-                    ? 'border border-purple-500/50 bg-purple-500/20'
-                    : 'border border-white/10 bg-white/5 active:bg-white/10'
-                )}
-                data-testid={`dream-card-${dream.id}`}
-              >
-                <span className="text-2xl" role="img" aria-label={dream.category || 'dream'}>
-                  {emoji}
-                </span>
-                <div className="flex-1 text-left">
-                  <h3 className="truncate font-medium text-white">{dream.title}</h3>
-                  {dream.description && (
-                    <p className="mt-0.5 truncate text-sm text-white/60">{dream.description}</p>
+              return (
+                <motion.button
+                  key={dream.id}
+                  onClick={() => handleDreamClick(dream)}
+                  whileTap={{ scale: 0.98 }}
+                  className={cn(
+                    'flex w-full items-center gap-4 p-4',
+                    'min-h-[60px] rounded-2xl',
+                    'transition-colors duration-200',
+                    isSelected
+                      ? 'border border-purple-500/50 bg-purple-500/20'
+                      : 'border border-white/10 bg-white/5 active:bg-white/10'
                   )}
-                </div>
-                {isSelected && (
-                  <div
-                    className="flex h-6 w-6 items-center justify-center rounded-full bg-purple-500"
-                    data-testid="selection-indicator"
-                  >
-                    <Check className="h-4 w-4 text-white" />
+                  data-testid={`dream-card-${dream.id}`}
+                >
+                  <span className="text-2xl" role="img" aria-label={dream.category || 'dream'}>
+                    {emoji}
+                  </span>
+                  <div className="min-w-0 flex-1 text-left">
+                    <h3 className="truncate font-medium text-white">{dream.title}</h3>
+                    {dream.description && (
+                      <p className="mt-0.5 truncate text-sm text-white/60">{dream.description}</p>
+                    )}
                   </div>
-                )}
-              </motion.button>
-            );
-          })
+                  {isSelected && (
+                    <div
+                      className="flex h-6 w-6 items-center justify-center rounded-full bg-purple-500"
+                      data-testid="selection-indicator"
+                    >
+                      <Check className="h-4 w-4 text-white" />
+                    </div>
+                  )}
+                </motion.button>
+              );
+            })}
+            {/* Create New Dream link */}
+            <button
+              onClick={() => router.push('/dreams')}
+              className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-white/20 p-4 text-white/60 transition-colors hover:border-purple-500/50 hover:bg-white/5 hover:text-white/80"
+              data-testid="create-dream-button"
+            >
+              <span className="text-lg">+</span>
+              <span className="text-sm">Create New Dream</span>
+            </button>
+          </>
         ) : (
           <div className="py-8 text-center" data-testid="empty-state">
             <p className="mb-6 text-white/70">No active dreams yet.</p>
