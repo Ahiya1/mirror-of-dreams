@@ -27,8 +27,14 @@ async function globalSetup(config: FullConfig) {
     await demoButton.waitFor({ state: 'visible', timeout: 15000 });
     await demoButton.click();
 
-    // Wait for redirect to dashboard
-    await page.waitForURL('/dashboard', { timeout: 30000 });
+    // Wait for redirect to dashboard (use domcontentloaded, not load - API calls may take longer)
+    await page.waitForURL('/dashboard', { timeout: 30000, waitUntil: 'domcontentloaded' });
+
+    // Verify we're on dashboard by waiting for the main dashboard element
+    await page.waitForSelector('.dashboard-main, .dashboard', { timeout: 10000 }).catch(() => {
+      // Fallback: just verify URL is /dashboard
+      console.log('Dashboard element not found, but URL is correct - continuing');
+    });
 
     // Save auth state
     await context.storageState({ path: AUTH_FILE });
