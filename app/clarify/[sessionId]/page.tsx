@@ -255,7 +255,7 @@ export default function ClarifySessionPage() {
       <div className="from-mirror-dark via-mirror-midnight to-mirror-dark flex min-h-screen items-center justify-center bg-gradient-to-br p-8">
         <div className="flex flex-col items-center gap-4">
           <CosmicLoader size="lg" />
-          <p className="text-small text-white/60">Loading conversation...</p>
+          <p className="text-small text-white/60">Loading session...</p>
         </div>
       </div>
     );
@@ -309,7 +309,7 @@ export default function ClarifySessionPage() {
         <div className="mx-auto max-w-3xl space-y-6">
           {messages.length === 0 ? (
             <div className="py-12 text-center">
-              <p className="mb-2 text-lg text-white/50">Start your conversation</p>
+              <p className="mb-2 text-lg text-white/50">Start exploring</p>
               <p className="text-sm text-white/30">
                 Share what's on your mind - there's no right or wrong here.
               </p>

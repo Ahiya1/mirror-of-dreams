@@ -39,8 +39,8 @@ export function UpgradeModal({
           icon: Clock,
           title: 'Rest Until Tomorrow',
           message: resetTime
-            ? `You've reflected deeply today. Return after ${resetTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}, or expand your space for more conversations.`
-            : "You've reflected deeply today. Return tomorrow, or expand your space for more conversations.",
+            ? `You've reflected deeply today. Return after ${resetTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}, or expand your space for more reflections.`
+            : "You've reflected deeply today. Return tomorrow, or expand your space for more reflections.",
         };
       case 'feature_locked':
         return {
@@ -60,7 +60,7 @@ export function UpgradeModal({
           icon: Lock,
           title: 'Expand Your Space',
           message:
-            'When you feel ready for deeper conversations, your expanded space will be waiting.',
+            'When you feel ready for deeper reflections, your expanded space will be waiting.',
         };
     }
   };
@@ -99,7 +99,7 @@ export function UpgradeModal({
             </p>
 
             <ul className="mb-4 space-y-1.5 text-sm text-white/80">
-              <li>• 30 conversations/month</li>
+              <li>• 30 reflections/month</li>
               <li>• Hold 5 dreams at once</li>
               <li>• Journey insights</li>
               <li>• Pattern visualizations</li>
@@ -127,7 +127,7 @@ export function UpgradeModal({
             </p>
 
             <ul className="mb-4 space-y-1.5 text-sm text-white/80">
-              <li>• 60 conversations/month</li>
+              <li>• 60 reflections/month</li>
               <li>• Hold unlimited dreams</li>
               <li>• Deeper reflection time</li>
               <li>• Everything in Seeker</li>

@@ -124,7 +124,7 @@ export default function ClarifyPage() {
           <CosmicLoader size="lg" label="Gathering your explorations" />
           <div className="space-y-2">
             <p className="text-lg text-white/80">Gathering your explorations...</p>
-            <p className="text-sm text-white/50">Your conversations are surfacing</p>
+            <p className="text-sm text-white/50">Your sessions are surfacing</p>
           </div>
         </div>
       </div>
@@ -156,7 +156,7 @@ export default function ClarifyPage() {
               disabled={(limits && !limits.canCreateSession) || createSession.isPending}
               className="w-full whitespace-nowrap sm:w-auto"
             >
-              {createSession.isPending ? 'Creating...' : '+ New Conversation'}
+              {createSession.isPending ? 'Creating...' : '+ New Session'}
             </GlowButton>
           </div>
         </GlassCard>
@@ -275,7 +275,7 @@ export default function ClarifyPage() {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              if (confirm('Delete this conversation? This cannot be undone.')) {
+                              if (confirm('Delete this session? This cannot be undone.')) {
                                 deleteSession.mutate({ sessionId: session.id });
                               }
                             }}
@@ -298,7 +298,7 @@ export default function ClarifyPage() {
             icon=""
             title="Start exploring"
             description="Clarify is a space to explore what's emerging - thoughts, feelings, possibilities - before they crystallize into dreams."
-            ctaLabel="Start a Conversation"
+            ctaLabel="Start a Session"
             ctaAction={handleNewSession}
           />
         )}

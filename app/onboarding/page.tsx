@@ -17,7 +17,6 @@ import {
   GlowButton,
   ProgressOrbs,
   GradientText,
-  AnimatedBackground,
   CosmicLoader,
 } from '@/components/ui/glass';
 import { useAuth } from '@/hooks/useAuth';
@@ -37,7 +36,7 @@ const steps: OnboardingStep[] = [
     visual: '🌙',
   },
   {
-    title: 'How Conversations Work',
+    title: 'How Reflections Work',
     content:
       "When you're ready, you'll explore 5 questions about what you're holding:\n\n1. What's the dream you're carrying?\n2. What feels like your next step?\n3. Is there a time horizon?\n4. How do you relate to this dream?\n5. What are you willing to give for it?\n\nOver time, patterns begin to emerge—not because we reveal them, but because you start to see them yourself.",
     visual: '✨',
@@ -45,13 +44,13 @@ const steps: OnboardingStep[] = [
   {
     title: 'Clarify: Your Exploration Space',
     content:
-      "Before naming a dream, explore what's stirring in you.\n\nHave open conversations to discover what truly resonates. When something feels clear, you can give it a name and begin tending to it.",
+      "Before naming a dream, explore what's stirring in you.\n\nHave open reflections to discover what truly resonates. When something feels clear, you can give it a name and begin tending to it.",
     visual: '🔮',
   },
   {
     title: 'Your Wanderer Space',
     content:
-      "As a Wanderer, you receive:\n✓ 2 dreams to hold\n✓ 4 conversations per month\n✓ Access to your journey insights\n✓ Pattern visualizations\n\nWhen you're ready for more space, Seeker and Devoted paths await.\n\nNo rush. Begin where you are.",
+      "As a Wanderer, you receive:\n✓ 2 dreams to hold\n✓ 2 reflections per month\n✓ Access to your journey insights\n✓ Pattern visualizations\n\nWhen you're ready for more space, Seeker and Devoted paths await.\n\nNo rush. Begin where you are.",
     visual: '🌱',
   },
 ];
@@ -114,10 +113,14 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="from-mirror-dark via-mirror-midnight to-mirror-dark flex min-h-screen items-center justify-center bg-gradient-to-br p-4">
-      <AnimatedBackground />
+    <div className="from-mirror-dark via-mirror-midnight to-mirror-dark relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br p-4">
+      {/* Simple static ambient glow - no heavy animations */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-1/4 top-1/4 h-96 w-96 rounded-full bg-purple-600/20 blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 h-80 w-80 rounded-full bg-amber-500/10 blur-3xl" />
+      </div>
 
-      <GlassCard className="w-full max-w-2xl p-8" elevated>
+      <GlassCard className="relative z-10 w-full max-w-2xl p-8" elevated>
         {/* Progress Indicator */}
         <ProgressOrbs steps={steps.length} currentStep={step} className="mb-8 justify-center" />
 
@@ -125,11 +128,15 @@ export default function OnboardingPage() {
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{
+              duration: 0.3,
+              ease: [0.4, 0, 0.2, 1], // Smooth ease-out curve
+            }}
             className="mb-8 text-center"
+            style={{ willChange: 'opacity, transform' }}
           >
             {/* Visual Emoji */}
             <div className="mb-4 text-6xl">{steps[step].visual}</div>

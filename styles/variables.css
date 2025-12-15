@@ -22,7 +22,7 @@
    * - 60% opacity: WCAG AA BORDERLINE (may need 70% for critical content)
    * - 40% opacity: WCAG AA FAIL (use only for decorative/non-essential text)
    */
-  --cosmic-bg: #020617;
+  --cosmic-bg: #0f0a1a;
   --cosmic-text: #ffffff; /* 100% - Primary text */
   --cosmic-text-secondary: rgba(255, 255, 255, 0.8); /* 80% - Body text (WCAG AA compliant) */
   --cosmic-text-muted: rgba(255, 255, 255, 0.6); /* 60% - Metadata (WCAG AA borderline) */
