@@ -185,7 +185,7 @@ export function MobileReflectionFlow({
       </div>
 
       {/* Step Content with swipe */}
-      <div className="relative flex-1 overflow-hidden">
+      <div className="relative flex-1 overflow-y-auto">
         <AnimatePresence mode="wait" custom={flow.direction}>
           <motion.div
             key={flow.currentStepIndex}

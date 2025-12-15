@@ -85,7 +85,7 @@ const ReflectionItem = memo(function ReflectionItem({
 
   function getReflectionPreview(refl: ReflectionData): string {
     // Try to get AI response first for better snippets
-    const text = refl.aiResponse || refl.ai_response || refl.dream || refl.content || refl.preview;
+    const text = refl.aiResponse || refl.ai_response || refl.content || refl.preview;
     if (!text) return 'Your reflection content...';
 
     // Use 120 chars as per plan requirement

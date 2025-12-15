@@ -297,5 +297,19 @@ plan-24:
     current_iteration: 58
     current_phase: complete
     completed_at: '2025-12-12T20:30:00Z'
-current_plan: plan-24
-global_iteration_counter: 58
+plan-25:
+    status: IN_PROGRESS
+    created: '2025-12-15'
+    vision_file: plan-25/vision.md
+    master_plan_file: plan-25/master-plan.yaml
+    description: Mobile Experience & Dashboard Bug Fixes - Fix reflection preview, bottom padding, hidden create button
+    github_repo: git@github.com:Ahiya1/mirror-of-dreams.git
+    mode: production
+    master_exploration:
+      num_explorers: 2
+      complexity_level: SIMPLE
+    total_iterations: 1
+    current_iteration: 59
+    current_phase: healing
+current_plan: plan-25
+global_iteration_counter: 59

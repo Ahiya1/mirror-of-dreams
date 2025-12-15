@@ -1,0 +1,42 @@
+plan_id: plan-25
+created_at: "2025-12-15T00:45:00Z"
+status: PLANNED
+mode: production
+total_iterations: 1
+
+strategy: |
+  Single iteration focused bug fix plan. All 4 issues are independent with no
+  blocking dependencies. Each fix has clear file/line references and follows
+  existing patterns in the codebase.
+
+  Key pattern to apply: pb-[calc(80px+env(safe-area-inset-bottom))] md:pb-6
+  Reference implementation: /app/clarify/[sessionId]/page.tsx:400
+
+iterations:
+  - iteration_id: 1
+    global_iteration: 59
+    name: "Mobile Experience & Dashboard Bug Fixes"
+    vision: "Fix all mobile UX issues and dashboard reflection preview bug"
+    scope: |
+      1. CRITICAL: Fix ReflectionItem preview text (remove refl.dream from fallback chain)
+         - File: /components/dashboard/shared/ReflectionItem.tsx:88
+         - Change: aiResponse || ai_response || content || preview (remove dream)
+
+      2. HIGH: Fix bottom padding on all mobile pages
+         - /app/visualizations/page.tsx:132
+         - /app/dreams/page.tsx:108
+         - /app/evolution/page.tsx:115
+         - /app/clarify/page.tsx:137
+         - Pattern: pb-[calc(80px+env(safe-area-inset-bottom))] md:pb-6
+
+      3. HIGH: Fix mobile reflection Create Dream button
+         - /components/reflection/mobile/MobileReflectionFlow.tsx:188 (overflow-hidden)
+         - /components/reflection/mobile/views/MobileDreamSelectionView.tsx (button padding)
+
+      4. MEDIUM: Check dashboard/reflections pages for consistency
+         - /app/dashboard/page.tsx
+         - /app/reflections/page.tsx
+
+      Testing: Update ReflectionItem.test.tsx to verify AI response priority
+    status: PENDING
+    dependencies: []

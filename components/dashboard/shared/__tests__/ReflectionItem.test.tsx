@@ -49,6 +49,8 @@ const createMockReflection = (
     dreams?: { title: string } | null;
     content?: string;
     preview?: string;
+    aiResponse?: string;
+    ai_response?: string;
     created_at?: string;
     timeAgo?: string;
     tone?: string;
@@ -372,14 +374,17 @@ describe('ReflectionItem', () => {
       expect(screen.getByText('AI generated content')).toBeInTheDocument();
     });
 
-    it('should use dream field if available', () => {
+    it('should NOT use dream field for preview (shows fallback instead)', () => {
       const reflection = createMockReflection({
         content: undefined,
         dream: 'Dream content here',
+        aiResponse: undefined,
+        ai_response: undefined,
+        preview: undefined,
       });
       render(<ReflectionItem reflection={reflection} />);
 
-      expect(screen.getByText('Dream content here')).toBeInTheDocument();
+      expect(screen.getByText('Your reflection content...')).toBeInTheDocument();
     });
   });
 

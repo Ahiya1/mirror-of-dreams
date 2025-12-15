@@ -45,7 +45,7 @@ export function MobileDreamSelectionView({
         Which dream are you reflecting on?
       </h2>
 
-      <div className="flex-1 space-y-3 overflow-y-auto">
+      <div className="flex-1 space-y-3 overflow-y-auto pb-20">
         {dreams.length > 0 ? (
           dreams.map((dream) => {
             const isSelected = dream.id === selectedDreamId;

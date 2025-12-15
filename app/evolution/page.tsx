@@ -112,7 +112,7 @@ export default function EvolutionPage() {
   }
 
   return (
-    <div className="from-mirror-dark via-mirror-midnight to-mirror-dark min-h-screen bg-gradient-to-br px-4 pb-20 pt-nav sm:px-8 md:pb-8">
+    <div className="from-mirror-dark via-mirror-midnight to-mirror-dark min-h-screen bg-gradient-to-br px-4 pb-[calc(80px+env(safe-area-inset-bottom))] pt-nav sm:px-8 md:pb-8">
       <AppNavigation currentPage="evolution" />
 
       <div className="mx-auto max-w-6xl">
