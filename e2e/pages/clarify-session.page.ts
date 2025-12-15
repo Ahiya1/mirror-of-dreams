@@ -73,9 +73,14 @@ export class ClarifySessionPage {
     this.notFoundMessage = page.locator('text=/session not found/i');
   }
 
+  /**
+   * Navigate to clarify session page
+   * Uses element wait instead of waitForLoadState for CI reliability
+   */
   async goto(sessionId: string): Promise<void> {
     await this.page.goto(`/clarify/${sessionId}`);
-    await this.page.waitForLoadState('domcontentloaded');
+    // Wait for message input - more reliable than waitForLoadState
+    await this.messageInput.waitFor({ state: 'visible', timeout: 15000 }).catch(() => {});
   }
 
   async waitForLoad(): Promise<void> {

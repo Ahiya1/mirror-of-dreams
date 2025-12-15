@@ -30,10 +30,9 @@ test.describe('Error Handling', () => {
     }) => {
       // First authenticate with demo login
       await networkPage.goto('/');
-      await networkPage.waitForLoadState('domcontentloaded');
 
       const demoButton = networkPage.locator('button').filter({ hasText: 'Try It' }).first();
-      const isVisible = await demoButton.isVisible({ timeout: 5000 }).catch(() => false);
+      const isVisible = await demoButton.isVisible({ timeout: 15000 }).catch(() => false);
 
       if (!isVisible) {
         baseTest.skip(true, 'Demo login not available');
@@ -64,10 +63,9 @@ test.describe('Error Handling', () => {
     }) => {
       // Authenticate first
       await networkPage.goto('/');
-      await networkPage.waitForLoadState('domcontentloaded');
 
       const demoButton = networkPage.locator('button').filter({ hasText: 'Try It' }).first();
-      const isVisible = await demoButton.isVisible({ timeout: 5000 }).catch(() => false);
+      const isVisible = await demoButton.isVisible({ timeout: 15000 }).catch(() => false);
 
       if (!isVisible) {
         baseTest.skip(true, 'Demo login not available');
@@ -82,7 +80,8 @@ test.describe('Error Handling', () => {
 
       // Try to navigate to a page that makes API calls
       await networkPage.goto('/dreams');
-      await networkPage.waitForLoadState('domcontentloaded').catch(() => {});
+      // Brief wait for potential error handling
+      await networkPage.waitForTimeout(1000);
 
       // Page should still be visible (may show error state or cached data)
       await expect(networkPage.locator('body')).toBeVisible();
@@ -98,10 +97,9 @@ test.describe('Error Handling', () => {
     }) => {
       // Authenticate first
       await networkPage.goto('/');
-      await networkPage.waitForLoadState('domcontentloaded');
 
       const demoButton = networkPage.locator('button').filter({ hasText: 'Try It' }).first();
-      const isVisible = await demoButton.isVisible({ timeout: 5000 }).catch(() => false);
+      const isVisible = await demoButton.isVisible({ timeout: 15000 }).catch(() => false);
 
       if (!isVisible) {
         baseTest.skip(true, 'Demo login not available');
@@ -122,7 +120,6 @@ test.describe('Error Handling', () => {
 
       // Now navigation should work again
       await networkPage.goto('/dashboard');
-      await networkPage.waitForLoadState('domcontentloaded');
 
       // Dashboard should load properly
       await expect(networkPage).toHaveURL(/\/dashboard/);
@@ -135,10 +132,9 @@ test.describe('Error Handling', () => {
     }) => {
       // Authenticate first
       await networkPage.goto('/');
-      await networkPage.waitForLoadState('domcontentloaded');
 
       const demoButton = networkPage.locator('button').filter({ hasText: 'Try It' }).first();
-      const isVisible = await demoButton.isVisible({ timeout: 5000 }).catch(() => false);
+      const isVisible = await demoButton.isVisible({ timeout: 15000 }).catch(() => false);
 
       if (!isVisible) {
         baseTest.skip(true, 'Demo login not available');
@@ -176,7 +172,8 @@ test.describe('Error Handling', () => {
 
       // Navigate to landing page (doesn't require auth)
       await networkPage.goto('/');
-      await networkPage.waitForLoadState('domcontentloaded').catch(() => {});
+      // Brief wait for potential error handling
+      await networkPage.waitForTimeout(1000);
 
       // Page should still render (landing page has static content)
       await expect(networkPage.locator('h1').first()).toBeVisible();
@@ -192,10 +189,9 @@ test.describe('Error Handling', () => {
     }) => {
       // Authenticate first
       await networkPage.goto('/');
-      await networkPage.waitForLoadState('domcontentloaded');
 
       const demoButton = networkPage.locator('button').filter({ hasText: 'Try It' }).first();
-      const isVisible = await demoButton.isVisible({ timeout: 5000 }).catch(() => false);
+      const isVisible = await demoButton.isVisible({ timeout: 15000 }).catch(() => false);
 
       if (!isVisible) {
         baseTest.skip(true, 'Demo login not available');
@@ -225,10 +221,9 @@ test.describe('Error Handling', () => {
     test('displays meaningful error message', async ({ networkPage, restoreNetwork }) => {
       // Authenticate first
       await networkPage.goto('/');
-      await networkPage.waitForLoadState('domcontentloaded');
 
       const demoButton = networkPage.locator('button').filter({ hasText: 'Try It' }).first();
-      const isVisible = await demoButton.isVisible({ timeout: 5000 }).catch(() => false);
+      const isVisible = await demoButton.isVisible({ timeout: 15000 }).catch(() => false);
 
       if (!isVisible) {
         baseTest.skip(true, 'Demo login not available');
@@ -325,10 +320,9 @@ authTest.describe('Session Expiry', () => {
     // Now re-authenticate using demo login
     // Navigate to landing and login again
     await authenticatedPage.goto('/');
-    await authenticatedPage.waitForLoadState('domcontentloaded');
 
     const demoButton = authenticatedPage.locator('button').filter({ hasText: 'Try It' }).first();
-    const isVisible = await demoButton.isVisible({ timeout: 5000 }).catch(() => false);
+    const isVisible = await demoButton.isVisible({ timeout: 15000 }).catch(() => false);
 
     if (isVisible) {
       await demoButton.click();
@@ -359,7 +353,8 @@ baseTest.describe('Error Resilience - Landing Page', () => {
 
     // Navigate to landing page
     await page.goto('/');
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
+    // Brief wait for potential error handling
+    await page.waitForTimeout(1000);
 
     // Landing page should still render (it has static content)
     await expect(page.locator('body')).toBeVisible();
@@ -384,7 +379,8 @@ baseTest.describe('Error Resilience - Landing Page', () => {
 
     // Navigate to landing page
     await page.goto('/');
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
+    // Brief wait for potential error handling
+    await page.waitForTimeout(1000);
 
     // Find and click signin link
     const signinLink = page.locator('a[href*="signin"], button:has-text("Sign In")').first();

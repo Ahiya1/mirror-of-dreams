@@ -127,9 +127,14 @@ export class ProfilePage {
     this.errorMessage = page.locator('.status-box-error, [class*="error"]');
   }
 
+  /**
+   * Navigate to profile page
+   * Uses element wait instead of waitForLoadState for CI reliability
+   */
   async goto(): Promise<void> {
     await this.page.goto('/profile');
-    await this.page.waitForLoadState('domcontentloaded');
+    // Wait for page title to be visible - more reliable than waitForLoadState
+    await this.pageTitle.waitFor({ state: 'visible', timeout: 15000 }).catch(() => {});
   }
 
   async waitForLoad(): Promise<void> {

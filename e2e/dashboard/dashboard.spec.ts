@@ -166,14 +166,13 @@ test.describe('Dashboard Mobile', () => {
   test('displays bottom navigation on mobile viewport', async ({ page }) => {
     // Navigate to landing page and use demo login ("Try It" button)
     await page.goto('/');
-    await page.waitForLoadState('domcontentloaded');
 
     const demoButton = page.locator(
       'button:has-text("Try It"), button:has-text("Try Demo"), button:has-text("Demo")'
     );
     const isVisible = await demoButton
       .first()
-      .isVisible({ timeout: 5000 })
+      .isVisible({ timeout: 15000 })
       .catch(() => false);
 
     if (isVisible) {
@@ -193,14 +192,13 @@ test.describe('Dashboard Mobile', () => {
   test('cards stack vertically on mobile viewport', async ({ page }) => {
     // Navigate to landing page and use demo login
     await page.goto('/');
-    await page.waitForLoadState('domcontentloaded');
 
     const demoButton = page.locator(
       'button:has-text("Try It"), button:has-text("Try Demo"), button:has-text("Demo")'
     );
     const isVisible = await demoButton
       .first()
-      .isVisible({ timeout: 5000 })
+      .isVisible({ timeout: 15000 })
       .catch(() => false);
 
     if (isVisible) {
@@ -225,14 +223,13 @@ test.describe('Dashboard Mobile', () => {
 
   test('hero section is responsive on mobile', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('domcontentloaded');
 
     const demoButton = page.locator(
       'button:has-text("Try It"), button:has-text("Try Demo"), button:has-text("Demo")'
     );
     const isVisible = await demoButton
       .first()
-      .isVisible({ timeout: 5000 })
+      .isVisible({ timeout: 15000 })
       .catch(() => false);
 
     if (isVisible) {

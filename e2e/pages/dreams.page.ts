@@ -99,10 +99,12 @@ export class DreamsPage {
 
   /**
    * Navigate to dreams page
+   * Uses element wait instead of waitForLoadState for CI reliability
    */
   async goto(): Promise<void> {
     await this.page.goto('/dreams');
-    await this.page.waitForLoadState('domcontentloaded');
+    // Wait for page title to be visible - more reliable than waitForLoadState
+    await this.pageTitle.waitFor({ state: 'visible', timeout: 15000 }).catch(() => {});
   }
 
   /**
@@ -139,8 +141,8 @@ export class DreamsPage {
       all: this.filterAll,
     };
     await filterMap[status].click();
-    // Wait for filter to apply
-    await this.page.waitForLoadState('domcontentloaded').catch(() => {});
+    // Wait for filter to apply - brief timeout since filtering is client-side
+    await this.page.waitForTimeout(500);
   }
 
   /**

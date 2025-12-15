@@ -98,9 +98,17 @@ export class ClarifyListPage {
     this.loader = page.locator('[class*="loader"], [class*="CosmicLoader"]');
   }
 
+  /**
+   * Navigate to clarify list page
+   * Uses element wait instead of waitForLoadState for CI reliability
+   */
   async goto(): Promise<void> {
     await this.page.goto('/clarify');
-    await this.page.waitForLoadState('domcontentloaded');
+    // Wait for page title or filters - more reliable than waitForLoadState
+    await Promise.race([
+      this.pageTitle.waitFor({ state: 'visible', timeout: 15000 }),
+      this.activeFilter.waitFor({ state: 'visible', timeout: 15000 }),
+    ]).catch(() => {});
   }
 
   async waitForLoad(): Promise<void> {
@@ -122,14 +130,20 @@ export class ClarifyListPage {
 
   async filterActive(): Promise<void> {
     await this.activeFilter.click();
+    // Brief wait for client-side filtering
+    await this.page.waitForTimeout(500);
   }
 
   async filterArchived(): Promise<void> {
     await this.archivedFilter.click();
+    // Brief wait for client-side filtering
+    await this.page.waitForTimeout(500);
   }
 
   async filterAll(): Promise<void> {
     await this.allFilter.click();
+    // Brief wait for client-side filtering
+    await this.page.waitForTimeout(500);
   }
 
   async openSessionOptions(index: number): Promise<void> {

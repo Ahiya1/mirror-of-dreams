@@ -90,10 +90,12 @@ export class DashboardPage {
 
   /**
    * Navigate to dashboard page
+   * Uses element wait instead of waitForLoadState for CI reliability
    */
   async goto(): Promise<void> {
     await this.page.goto('/dashboard');
-    await this.page.waitForLoadState('domcontentloaded');
+    // Wait for page container to be visible - more reliable than waitForLoadState
+    await this.pageContainer.waitFor({ state: 'visible', timeout: 15000 }).catch(() => {});
   }
 
   /**

@@ -132,26 +132,29 @@ export class ReflectionPage {
 
   /**
    * Navigate to reflection page
+   * Uses waitForLoad instead of waitForLoadState for CI reliability
    */
   async goto(): Promise<void> {
     await this.page.goto('/reflection');
-    await this.page.waitForLoadState('domcontentloaded');
+    await this.waitForLoad();
   }
 
   /**
    * Navigate to reflection with dream ID
+   * Uses waitForLoad instead of waitForLoadState for CI reliability
    */
   async gotoWithDream(dreamId: string): Promise<void> {
     await this.page.goto(`/reflection?dreamId=${dreamId}`);
-    await this.page.waitForLoadState('domcontentloaded');
+    await this.waitForLoad();
   }
 
   /**
    * Navigate to reflection output
+   * Uses waitForLoad instead of waitForLoadState for CI reliability
    */
   async gotoOutput(reflectionId: string): Promise<void> {
     await this.page.goto(`/reflection?id=${reflectionId}`);
-    await this.page.waitForLoadState('domcontentloaded');
+    await this.waitForLoad();
   }
 
   /**

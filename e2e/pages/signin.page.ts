@@ -58,10 +58,12 @@ export class SignInPage {
 
   /**
    * Navigate to sign in page
+   * Uses element wait instead of waitForLoadState for CI reliability
    */
   async goto(): Promise<void> {
     await this.page.goto('/auth/signin');
-    await this.page.waitForLoadState('domcontentloaded');
+    // Wait for the email input to be visible - more reliable than waitForLoadState
+    await this.emailInput.waitFor({ state: 'visible', timeout: 15000 });
   }
 
   /**

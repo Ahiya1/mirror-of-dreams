@@ -98,9 +98,14 @@ export class AdminPage {
     this.emptyState = page.locator('text=/no users|no events|no webhook/i');
   }
 
+  /**
+   * Navigate to admin page
+   * Uses element wait instead of waitForLoadState for CI reliability
+   */
   async goto(): Promise<void> {
     await this.page.goto('/admin');
-    await this.page.waitForLoadState('domcontentloaded');
+    // Wait for page title to be visible - more reliable than waitForLoadState
+    await this.pageTitle.waitFor({ state: 'visible', timeout: 15000 }).catch(() => {});
   }
 
   async waitForLoad(): Promise<void> {

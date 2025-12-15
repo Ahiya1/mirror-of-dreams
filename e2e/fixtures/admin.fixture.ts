@@ -14,8 +14,8 @@ import { test as base, expect, Page } from '@playwright/test';
 async function loginAsAdmin(page: Page): Promise<void> {
   // Demo user has creator privileges = admin access
   await page.goto('/');
-  await page.waitForLoadState('domcontentloaded');
 
+  // Wait for demo button instead of waitForLoadState (more reliable in CI)
   const demoButton = page.locator('button').filter({ hasText: 'Try It' }).first();
 
   try {

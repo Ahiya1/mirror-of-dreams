@@ -94,9 +94,14 @@ export class PricingPage {
     this.landingNavigation = page.locator('nav').filter({ hasText: /sign in/i });
   }
 
+  /**
+   * Navigate to pricing page
+   * Uses element wait instead of waitForLoadState for CI reliability
+   */
   async goto(): Promise<void> {
     await this.page.goto('/pricing');
-    await this.page.waitForLoadState('domcontentloaded');
+    // Wait for page title to be visible - more reliable than waitForLoadState
+    await this.pageTitle.waitFor({ state: 'visible', timeout: 15000 }).catch(() => {});
   }
 
   async waitForLoad(): Promise<void> {

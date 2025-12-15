@@ -19,7 +19,7 @@ export const TEST_USER = {
  */
 async function loginWithDemo(page: Page): Promise<void> {
   await page.goto('/');
-  await page.waitForLoadState('domcontentloaded');
+  await page.waitForLoadState('networkidle');
 
   const demoButton = page.locator('button').filter({ hasText: 'Try It' }).first();
   await demoButton.waitFor({ state: 'visible', timeout: 15000 });
@@ -47,7 +47,12 @@ export const test = base.extend<{ authenticatedPage: Page }>({
     if (process.env.CI) {
       // CI: Storage state handles auth, just navigate
       await page.goto('/dashboard');
-      await page.waitForLoadState('domcontentloaded');
+      // Wait for dashboard element instead of waitForLoadState (more reliable in CI)
+      await page
+        .locator('.dashboard, .dashboard-main, h1')
+        .first()
+        .waitFor({ state: 'visible', timeout: 15000 })
+        .catch(() => {});
     } else {
       // Local: Perform demo login
       await loginWithDemo(page);
@@ -87,7 +92,7 @@ export const authWaits = {
    * Wait for form to be ready (page loaded, inputs visible)
    */
   async forFormReady(page: Page, formSelector: string): Promise<void> {
-    await page.waitForLoadState('domcontentloaded');
+    await page.waitForLoadState('networkidle');
     await expect(page.locator(formSelector)).toBeVisible({ timeout: 10000 });
   },
 };

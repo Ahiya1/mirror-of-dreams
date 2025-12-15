@@ -121,9 +121,14 @@ export class SettingsPage {
       .filter({ hasText: /error|failed/i });
   }
 
+  /**
+   * Navigate to settings page
+   * Uses element wait instead of waitForLoadState for CI reliability
+   */
   async goto(): Promise<void> {
     await this.page.goto('/settings');
-    await this.page.waitForLoadState('domcontentloaded');
+    // Wait for page title to be visible - more reliable than waitForLoadState
+    await this.pageTitle.waitFor({ state: 'visible', timeout: 15000 }).catch(() => {});
   }
 
   async waitForLoad(): Promise<void> {

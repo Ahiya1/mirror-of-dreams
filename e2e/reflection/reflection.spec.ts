@@ -395,7 +395,6 @@ test.describe('Reflection Demo User', () => {
 
       // Navigate to reflection page
       await page.goto('/reflection');
-      await page.waitForLoadState('domcontentloaded');
 
       const reflectionPage = new ReflectionPage(page);
 
