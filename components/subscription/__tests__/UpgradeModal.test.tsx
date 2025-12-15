@@ -167,13 +167,13 @@ describe('UpgradeModal', () => {
 
     it('shows Seeker features', () => {
       render(<UpgradeModal {...defaultProps} />);
-      expect(screen.getByText('• 30 conversations/month')).toBeInTheDocument();
+      expect(screen.getByText('• 30 reflections/month')).toBeInTheDocument();
       expect(screen.getByText('• Hold 5 dreams at once')).toBeInTheDocument();
     });
 
     it('shows Devoted features', () => {
       render(<UpgradeModal {...defaultProps} />);
-      expect(screen.getByText('• 60 conversations/month')).toBeInTheDocument();
+      expect(screen.getByText('• 60 reflections/month')).toBeInTheDocument();
       expect(screen.getByText('• Hold unlimited dreams')).toBeInTheDocument();
     });
   });

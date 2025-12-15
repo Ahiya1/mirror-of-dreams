@@ -733,10 +733,10 @@ describe('reflection.create', () => {
       expect(anthropicMock.messages.create).toHaveBeenCalledWith(
         expect.objectContaining({
           model: 'claude-sonnet-4-5-20250929',
-          max_tokens: 6000, // Premium max tokens
+          max_tokens: 4000, // Premium max tokens
           thinking: {
             type: 'enabled',
-            budget_tokens: 5000,
+            budget_tokens: 2000,
           },
         })
       );
@@ -757,7 +757,7 @@ describe('reflection.create', () => {
       expect(anthropicMock.messages.create).toHaveBeenCalledWith(
         expect.objectContaining({
           model: 'claude-sonnet-4-5-20250929',
-          max_tokens: 4000, // Non-premium max tokens
+          max_tokens: 1500, // Non-premium max tokens
         })
       );
 

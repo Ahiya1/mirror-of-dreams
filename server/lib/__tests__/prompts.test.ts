@@ -457,11 +457,11 @@ describe('Prompts Service', () => {
       const { loadPrompts } = await import('../prompts');
       const result = await loadPrompts('fusion', true);
 
-      expect(result).toContain('Sacred Guidelines for Premium Reflection');
-      expect(result).toContain('Depth of Seeing');
-      expect(result).toContain('Truth Without Fixing');
-      expect(result).toContain('Sacred Mirroring');
-      expect(result).toContain('Philosophical Resonance');
+      expect(result).toContain('PREMIUM REFLECTION ENHANCEMENT');
+      expect(result).toContain('Premium Depth Guidelines');
+      expect(result).toContain('Look Deeper');
+      expect(result).toContain('Be More Specific');
+      expect(result).toContain('Ask Harder Questions');
     });
 
     it('premium evolution enhancement should include analysis depth', async () => {
