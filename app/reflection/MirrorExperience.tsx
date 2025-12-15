@@ -8,11 +8,10 @@ import React, { useState, useCallback } from 'react';
 // Internal utilities
 import type { Dream } from '@/lib/reflection/types';
 
-// Components (view, mobile, shared, ui)
+// Components (view, shared, ui)
 import { CosmicParticles } from '@/components/reflection/CosmicParticles';
 import { DemoUserCTA } from '@/components/reflection/DemoUserCTA';
 import { GazingOverlay } from '@/components/reflection/mobile/GazingOverlay';
-import { MobileReflectionFlow } from '@/components/reflection/mobile/MobileReflectionFlow';
 import { ToneAmbientEffects } from '@/components/reflection/ToneAmbientEffects';
 import { DreamSelectionView } from '@/components/reflection/views/DreamSelectionView';
 import { ReflectionFormView } from '@/components/reflection/views/ReflectionFormView';
@@ -20,7 +19,7 @@ import { ReflectionOutputView } from '@/components/reflection/views/ReflectionOu
 import CosmicBackground from '@/components/shared/CosmicBackground';
 import { GlassCard, CosmicLoader } from '@/components/ui/glass';
 import { useToast } from '@/contexts/ToastContext';
-import { useIsMobile, useReflectionForm, useReflectionViewMode } from '@/hooks';
+import { useReflectionForm, useReflectionViewMode } from '@/hooks';
 import { useAuth } from '@/hooks/useAuth';
 import { STORAGE_KEY } from '@/lib/reflection/constants';
 import { trpc } from '@/lib/trpc';
@@ -42,7 +41,6 @@ export default function MirrorExperience() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const toast = useToast();
   const prefersReducedMotion = useReducedMotion();
-  const isMobile = useIsMobile();
   const utils = trpc.useUtils();
 
   // View mode and URL sync
@@ -198,25 +196,7 @@ export default function MirrorExperience() {
     return <DemoUserCTA />;
   }
 
-  // Mobile flow
-  if (isMobile && viewMode === 'questionnaire') {
-    return (
-      <MobileReflectionFlow
-        dreams={(dreams as Dream[]) || []}
-        selectedDreamId={selectedDreamId}
-        onDreamSelect={(dream) => handleDreamSelect(dream.id)}
-        formData={formData}
-        onFieldChange={handleFieldChange}
-        selectedTone={selectedTone}
-        onToneSelect={setSelectedTone}
-        onSubmit={handleSubmit}
-        isSubmitting={isSubmitting}
-        onClose={() => router.push('/dashboard')}
-      />
-    );
-  }
-
-  // Desktop experience
+  // Unified experience (same for mobile and desktop)
   return (
     <div className="reflection-experience">
       <CosmicBackground />
