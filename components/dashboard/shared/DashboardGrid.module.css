@@ -13,7 +13,7 @@
 /* Apply to all direct children (grid items) */
 .dashboardGrid > * {
   max-width: 100%;
-  overflow: hidden;
+  overflow: visible; /* Changed: let card handle its own overflow with rounded corners */
   min-width: 0;
 }
 
@@ -21,7 +21,7 @@
   position: relative;
   min-height: 280px;
   max-width: 100%;
-  overflow: hidden;
+  overflow: visible; /* Changed: let card handle its own overflow with rounded corners */
 }
 
 /* Grid entrance animation */
@@ -76,10 +76,12 @@
 
   .dashboardGrid > * {
     min-height: auto;
+    overflow: visible;
   }
 
   .gridItem {
     min-height: 180px;
+    overflow: visible;
   }
 }
 
