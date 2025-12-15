@@ -37,14 +37,13 @@ body {
   inset: 0;
   z-index: var(--z-background);
   pointer-events: none;
-  /* Purple cosmic gradient matching the app's amethyst theme */
   background: linear-gradient(
     135deg,
-    #0f0a1a 0%,
-    #120828 25%,
-    #1a0f2e 50%,
-    #120828 75%,
-    #0f0a1a 100%
+    #0f172a 0%,
+    #1e293b 25%,
+    #334155 50%,
+    #1e293b 75%,
+    #0f172a 100%
   );
 }
 
