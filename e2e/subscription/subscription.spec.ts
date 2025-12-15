@@ -80,8 +80,8 @@ test.describe('Pricing Page', () => {
   test.describe('Tier Cards', () => {
     test('displays feature lists on cards', async ({ page }) => {
       // Each tier card has features listed with Check/X icons
-      // Verify that feature items are visible by looking for content like "conversations per month"
-      const conversationFeature = page.locator('text=/conversations per month/i').first();
+      // Verify that feature items are visible by looking for content like "reflections/month"
+      const conversationFeature = page.locator('text=/reflections/i').first();
       const dreamsFeature = page.locator('text=/dreams/i').first();
 
       await expect(conversationFeature).toBeVisible();
@@ -91,17 +91,17 @@ test.describe('Pricing Page', () => {
       const wandererFeature = page
         .locator('h3:has-text("Wanderer")')
         .locator('..')
-        .locator('text=/conversations/i')
+        .locator('text=/reflections/i')
         .first();
       const seekerFeature = page
         .locator('h3:has-text("Seeker")')
         .locator('..')
-        .locator('text=/conversations/i')
+        .locator('text=/reflections/i')
         .first();
       const devotedFeature = page
         .locator('h3:has-text("Devoted")')
         .locator('..')
-        .locator('text=/conversations/i')
+        .locator('text=/reflections/i')
         .first();
 
       await expect(wandererFeature).toBeVisible();
