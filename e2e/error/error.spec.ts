@@ -296,10 +296,8 @@ authTest.describe('Session Expiry', () => {
     // Reload the page
     await authenticatedPage.reload();
 
-    // Wait for page to stabilize
-    await authenticatedPage
-      .waitForLoadState('domcontentloaded', { timeout: 15000 })
-      .catch(() => {});
+    // Wait briefly for page to stabilize
+    await authenticatedPage.waitForTimeout(1000);
 
     // Page should redirect or show appropriate UI without crashing
     await expect(authenticatedPage.locator('body')).toBeVisible();

@@ -32,7 +32,20 @@ async function loginAsPaidUser(page: Page): Promise<void> {
 
 export const test = base.extend<{ paidUserPage: Page }>({
   paidUserPage: async ({ page }, use) => {
-    await loginAsPaidUser(page);
+    if (process.env.CI) {
+      // CI: Storage state handles auth, just navigate to clarify
+      await page.goto('/clarify');
+      // Wait for clarify page element - more reliable than waitForLoadState
+      await page
+        .locator('h1')
+        .filter({ hasText: /clarify/i })
+        .first()
+        .waitFor({ state: 'visible', timeout: 15000 })
+        .catch(() => {});
+    } else {
+      // Local: Perform demo login
+      await loginAsPaidUser(page);
+    }
     await use(page);
   },
 });

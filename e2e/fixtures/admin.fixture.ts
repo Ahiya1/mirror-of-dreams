@@ -29,7 +29,20 @@ async function loginAsAdmin(page: Page): Promise<void> {
 
 export const test = base.extend<{ adminPage: Page }>({
   adminPage: async ({ page }, use) => {
-    await loginAsAdmin(page);
+    if (process.env.CI) {
+      // CI: Storage state handles auth, just navigate to admin
+      await page.goto('/admin');
+      // Wait for admin page element - more reliable than waitForLoadState
+      await page
+        .locator('h1, [class*="GradientText"]')
+        .filter({ hasText: /Admin Dashboard/i })
+        .first()
+        .waitFor({ state: 'visible', timeout: 15000 })
+        .catch(() => {});
+    } else {
+      // Local: Perform demo login
+      await loginAsAdmin(page);
+    }
     await use(page);
   },
 });
