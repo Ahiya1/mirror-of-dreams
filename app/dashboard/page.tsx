@@ -242,19 +242,38 @@ export default function DashboardPage() {
         @media (max-width: 1024px) {
           .dashboard-grid {
             grid-template-columns: 1fr;
-            grid-template-rows: repeat(5, minmax(200px, auto));
+            grid-template-rows: repeat(auto-fill, minmax(120px, auto));
+          }
+
+          .dashboard-grid__item {
+            min-height: 120px;
           }
         }
 
         @media (max-width: 768px) {
           .dashboard-container {
-            padding: 1rem; /* 16px - consistent with px-4 on other pages */
+            padding: 1rem;
+            gap: var(--space-lg);
+          }
+
+          .dashboard-grid {
+            gap: var(--space-md);
+            min-height: auto;
+          }
+
+          .dashboard-grid__item {
+            min-height: auto;
           }
         }
 
         @media (max-width: 480px) {
           .dashboard-container {
-            padding: 1rem; /* Same 16px for consistency */
+            padding: 0.75rem;
+            gap: var(--space-md);
+          }
+
+          .dashboard-grid {
+            gap: var(--space-sm);
           }
         }
       `}</style>
