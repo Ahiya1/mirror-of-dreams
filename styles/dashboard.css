@@ -1820,24 +1820,26 @@
 
 /* ╭─ MOBILE DASHBOARD OPTIMIZATION ──────────────────────────────────────╮ */
 
-/* Mobile: De-emphasize secondary cards (3rd onwards) */
+/* Mobile: Compact dashboard optimization */
 @media (max-width: 767px) {
-  /* Secondary cards: ProgressStats, Evolution, Visualization, Subscription */
-  /* These are children 3-6 of the dashboard grid */
-  .dashboard-grid > *:nth-child(n + 3) {
-    /* Slightly muted on mobile to draw focus to primary cards */
-    opacity: 0.92;
+  /* Remove all min-heights on mobile - let content determine size */
+  .dashboard-grid {
+    min-height: auto;
+    gap: var(--space-md);
   }
 
-  /* Compact card sizing for mobile */
+  .dashboard-grid__item {
+    min-height: auto;
+  }
+
   .dashboard-card {
-    min-height: 160px;
+    min-height: auto;
+    padding: var(--space-md);
   }
 
-  /* Primary cards (Dreams, Reflections) keep full prominence */
-  .dashboard-grid > *:nth-child(1),
-  .dashboard-grid > *:nth-child(2) {
-    opacity: 1;
+  .empty-state {
+    min-height: auto;
+    padding: var(--space-md);
   }
 
   /* Hero section: More compact on mobile */
@@ -1850,6 +1852,17 @@
     min-width: 140px;
     padding: var(--space-3) var(--space-5);
     font-size: var(--text-base);
+  }
+
+  /* Prevent horizontal overflow */
+  .dashboard-container {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  .reflections-list,
+  .dreams-list {
+    overflow-x: hidden;
   }
 }
 
