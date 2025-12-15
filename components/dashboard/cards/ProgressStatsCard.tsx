@@ -133,6 +133,8 @@ const ProgressStatsCard: React.FC<ProgressStatsCardProps> = ({
           gap: var(--space-lg);
           flex: 1;
           min-height: 200px;
+          max-width: 100%;
+          overflow: hidden;
         }
 
         .stat-primary {

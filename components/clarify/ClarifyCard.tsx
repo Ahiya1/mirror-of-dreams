@@ -128,24 +128,33 @@ const ClarifyCard: React.FC<ClarifyCardProps> = ({ animated = true, className = 
       <style jsx>{`
         .usage-bar {
           margin-bottom: var(--space-4);
+          max-width: 100%;
+          overflow: hidden;
         }
 
         .usage-text {
           display: flex;
           align-items: baseline;
           margin-bottom: var(--space-2);
+          max-width: 100%;
+          overflow: hidden;
         }
 
         .usage-count {
           font-size: var(--text-2xl);
           font-weight: var(--font-semibold);
           color: var(--cosmic-text);
+          flex-shrink: 0;
         }
 
         .usage-limit {
           font-size: var(--text-sm);
           color: var(--cosmic-text-muted);
           margin-left: var(--space-1);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          min-width: 0;
         }
 
         .usage-progress {
@@ -166,6 +175,8 @@ const ClarifyCard: React.FC<ClarifyCardProps> = ({ animated = true, className = 
           display: flex;
           flex-direction: column;
           gap: var(--space-3);
+          max-width: 100%;
+          overflow: hidden;
         }
 
         .session-item {
@@ -176,6 +187,9 @@ const ClarifyCard: React.FC<ClarifyCardProps> = ({ animated = true, className = 
           border-radius: var(--radius-lg);
           transition: all 0.2s ease;
           text-decoration: none;
+          max-width: 100%;
+          overflow: hidden;
+          box-sizing: border-box;
         }
 
         .session-item:hover {
@@ -191,11 +205,15 @@ const ClarifyCard: React.FC<ClarifyCardProps> = ({ animated = true, className = 
           overflow: hidden;
           text-overflow: ellipsis;
           margin-bottom: var(--space-1);
+          max-width: 100%;
         }
 
         .session-meta {
           font-size: var(--text-xs);
           color: var(--cosmic-text-muted);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
 
         .session-dot {

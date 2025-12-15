@@ -178,6 +178,8 @@ const DreamsCard: React.FC<DreamsCardProps> = ({ animated = true, className = ''
           gap: var(--space-3);
           flex: 1;
           min-height: 150px;
+          max-width: 100%;
+          overflow: hidden;
         }
 
         .dream-item {
@@ -191,6 +193,9 @@ const DreamsCard: React.FC<DreamsCardProps> = ({ animated = true, className = ''
           transition: all 0.2s ease;
           animation: dreamSlideIn 0.4s ease-out forwards;
           opacity: 0;
+          max-width: 100%;
+          overflow: hidden;
+          box-sizing: border-box;
         }
 
         @keyframes dreamSlideIn {
@@ -217,6 +222,7 @@ const DreamsCard: React.FC<DreamsCardProps> = ({ animated = true, className = ''
           text-decoration: none;
           color: var(--cosmic-text);
           min-width: 0;
+          overflow: hidden;
         }
 
         .dream-item__link:hover .dream-item__title {
@@ -238,6 +244,7 @@ const DreamsCard: React.FC<DreamsCardProps> = ({ animated = true, className = ''
         .dream-item__content {
           flex: 1;
           min-width: 0;
+          overflow: hidden;
         }
 
         .dream-item__title {
@@ -248,6 +255,7 @@ const DreamsCard: React.FC<DreamsCardProps> = ({ animated = true, className = ''
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          max-width: 100%;
         }
 
         .dream-item__meta {
@@ -255,6 +263,7 @@ const DreamsCard: React.FC<DreamsCardProps> = ({ animated = true, className = ''
           gap: var(--space-3);
           font-size: var(--text-xs);
           color: var(--cosmic-text-muted);
+          overflow: hidden;
         }
 
         .dream-item__days {
@@ -285,6 +294,9 @@ const DreamsCard: React.FC<DreamsCardProps> = ({ animated = true, className = ''
           font-size: var(--text-xs);
           color: var(--cosmic-text-muted);
           font-weight: var(--font-medium);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
 
         .empty-state {

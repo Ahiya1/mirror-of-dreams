@@ -193,6 +193,8 @@ export default function DashboardPage() {
           background: var(--cosmic-bg);
           color: var(--cosmic-text);
           transition: opacity 0.6s ease-out;
+          overflow-x: hidden;
+          max-width: 100vw;
         }
 
         .dashboard-main {
@@ -202,6 +204,7 @@ export default function DashboardPage() {
           min-height: 100vh;
           /* Bottom padding for mobile bottom nav - 64px nav height + safe area */
           padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+          overflow-x: hidden;
         }
 
         /* Remove bottom padding on tablet and desktop where bottom nav is hidden */
@@ -218,6 +221,12 @@ export default function DashboardPage() {
           display: flex;
           flex-direction: column;
           gap: var(--space-xl);
+          overflow-x: hidden;
+        }
+
+        .dashboard-grid-container {
+          max-width: 100%;
+          overflow: hidden;
         }
 
         .dashboard-grid {
@@ -225,11 +234,15 @@ export default function DashboardPage() {
           grid-template-columns: repeat(3, 1fr);
           gap: var(--space-xl);
           min-height: 500px;
+          max-width: 100%;
+          overflow: hidden;
         }
 
         .dashboard-grid__item {
           position: relative;
           min-height: 280px;
+          max-width: 100%;
+          overflow: hidden;
         }
 
         /* Mobile responsive */
@@ -254,6 +267,8 @@ export default function DashboardPage() {
           .dashboard-container {
             padding: 1rem;
             gap: var(--space-lg);
+            max-width: 100vw;
+            box-sizing: border-box;
           }
 
           .dashboard-grid {

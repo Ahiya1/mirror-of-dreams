@@ -94,6 +94,8 @@ const ReflectionsCard: React.FC<ReflectionsCardProps> = ({ animated = true, clas
           gap: var(--space-4);
           flex: 1;
           min-height: 200px;
+          max-width: 100%;
+          overflow: hidden;
         }
 
         .empty-state {
