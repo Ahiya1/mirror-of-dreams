@@ -538,12 +538,12 @@
 /* ╭─ DASHBOARD CARDS FOUNDATION ─────────────────────────────────────────╮ */
 
 .dashboard-card {
-  /* Gradient fades to transparent at bottom - no hard edges */
-  background: linear-gradient(
-    180deg,
-    rgba(40, 25, 70, 0.5) 0%,
-    rgba(30, 20, 55, 0.35) 40%,
-    rgba(20, 15, 45, 0.15) 80%,
+  /* Radial gradient - fades to transparent at ALL edges */
+  background: radial-gradient(
+    ellipse at 50% 30%,
+    rgba(45, 30, 75, 0.45) 0%,
+    rgba(35, 22, 60, 0.3) 40%,
+    rgba(25, 18, 50, 0.15) 70%,
     transparent 100%
   );
   border: none;
