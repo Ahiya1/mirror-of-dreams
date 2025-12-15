@@ -136,7 +136,7 @@ export function AnimatedBackground({
           ease: 'easeInOut',
         }}
         className={cn('absolute inset-0 -top-1/4', 'blur-3xl', variant_config.far)}
-        style={{ zIndex: 1 }}
+        style={{ zIndex: 1, willChange: 'transform, opacity', transform: 'translateZ(0)' }}
       />
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -150,7 +150,7 @@ export function AnimatedBackground({
           ease: 'easeInOut',
         }}
         className={cn('absolute inset-0', 'blur-2xl', variant_config.mid)}
-        style={{ zIndex: 2 }}
+        style={{ zIndex: 2, willChange: 'transform, opacity', transform: 'translateZ(0)' }}
       />
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -164,7 +164,7 @@ export function AnimatedBackground({
           ease: 'easeInOut',
         }}
         className={cn('absolute inset-0', 'blur-xl', variant_config.near)}
-        style={{ zIndex: 3 }}
+        style={{ zIndex: 3, willChange: 'transform, opacity', transform: 'translateZ(0)' }}
       />
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -178,7 +178,7 @@ export function AnimatedBackground({
           ease: 'easeInOut',
         }}
         className={cn('absolute inset-0', 'blur-3xl', 'bg-warmth-ambient')}
-        style={{ zIndex: 4 }}
+        style={{ zIndex: 4, willChange: 'transform, opacity', transform: 'translateZ(0)' }}
       />
     </div>
   );

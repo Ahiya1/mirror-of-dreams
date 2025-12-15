@@ -66,6 +66,7 @@ export function useReflectionForm({
   }, [dreams, selectedDreamId]);
 
   // Load saved form data from localStorage on mount
+  // URL parameter (initialDreamId) takes precedence over localStorage
   useEffect(() => {
     if (typeof window === 'undefined') return;
     try {
@@ -79,7 +80,8 @@ export function useReflectionForm({
         }: SavedFormState = JSON.parse(saved);
         if (Date.now() - timestamp < STORAGE_EXPIRY_MS) {
           setFormData(data);
-          if (savedDreamId) setSelectedDreamId(savedDreamId);
+          // Only restore saved dreamId if no URL parameter was provided
+          if (savedDreamId && !initialDreamId) setSelectedDreamId(savedDreamId);
           if (savedTone) setSelectedTone(savedTone);
         } else {
           localStorage.removeItem(STORAGE_KEY);
@@ -88,7 +90,7 @@ export function useReflectionForm({
     } catch {
       // Ignore localStorage errors
     }
-  }, []);
+  }, [initialDreamId]);
 
   // Save form data to localStorage whenever it changes
   useEffect(() => {
