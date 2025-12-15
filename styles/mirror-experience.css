@@ -186,13 +186,157 @@
   position: relative;
 }
 
+/* === GAZING OVERLAY (Elaborate Variant) === */
+.gazing-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.98) 0%, rgba(2, 6, 23, 1) 100%);
+  backdrop-filter: blur(20px);
+}
+
+.gazing-cosmos {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.gazing-star {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+}
+
+.gazing-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.8) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.gazing-center {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 280px;
+  height: 280px;
+}
+
+.mirror-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid;
+}
+
+.mirror-ring-outer {
+  width: 280px;
+  height: 280px;
+  border-color: rgba(168, 85, 247, 0.3);
+  box-shadow:
+    0 0 30px rgba(168, 85, 247, 0.2),
+    inset 0 0 30px rgba(168, 85, 247, 0.1);
+}
+
+.mirror-ring-middle {
+  width: 240px;
+  height: 240px;
+  border-color: rgba(251, 191, 36, 0.3);
+  box-shadow:
+    0 0 25px rgba(251, 191, 36, 0.15),
+    inset 0 0 25px rgba(251, 191, 36, 0.1);
+}
+
+.mirror-portal {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(139, 92, 246, 0.4) 0%,
+    rgba(88, 28, 135, 0.6) 50%,
+    rgba(30, 10, 60, 0.8) 100%
+  );
+  box-shadow:
+    0 0 60px rgba(139, 92, 246, 0.4),
+    0 0 100px rgba(168, 85, 247, 0.2),
+    inset 0 0 40px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.mirror-surface-effect {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  border-radius: 50%;
+}
+
+.mirror-reflection-inner {
+  position: absolute;
+  inset: 20%;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    rgba(251, 191, 36, 0.2) 0%,
+    rgba(168, 85, 247, 0.3) 50%,
+    rgba(139, 92, 246, 0.2) 100%
+  );
+  background-size: 200% 200%;
+}
+
+.mirror-glow-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+}
+
+.gazing-text {
+  position: absolute;
+  bottom: 20%;
+  text-align: center;
+}
+
+.gazing-status {
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.5rem;
+}
+
+.gazing-subtitle {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
 /* === ACCESSIBILITY - Reduced Motion === */
 @media (prefers-reduced-motion: reduce) {
   .fusion-breath,
   .gentle-star,
   .intense-swirl,
-  .cosmic-particles .particle {
+  .cosmic-particles .particle,
+  .gazing-star,
+  .gazing-particle,
+  .mirror-ring,
+  .mirror-portal,
+  .mirror-reflection-inner,
+  .mirror-glow-center {
     animation: none;
-    opacity: 0.3;
   }
 }
