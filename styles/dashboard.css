@@ -8,7 +8,15 @@
 .dashboard {
   position: relative;
   min-height: 100vh;
-  background: var(--cosmic-bg);
+  /* Match the purple gradient used across other pages */
+  background: linear-gradient(
+    to bottom right,
+    #120828 0%,
+    #1a0f2e 25%,
+    #0f0a1a 50%,
+    #1a0f2e 75%,
+    #120828 100%
+  );
   color: var(--cosmic-text);
   font-family: var(--font-family-sans);
   overflow-x: hidden;
